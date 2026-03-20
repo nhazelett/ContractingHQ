@@ -1,7 +1,7 @@
 // ContractingHQ — Tools Data
 // url: set to "#" for coming soon items, set comingSoon: true
 
-const TOOLS = [
+var TOOLS = [
   {
     icon: "📖",
     title: "eCFR — FAR Full Text",
