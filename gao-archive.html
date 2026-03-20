@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GAO Decision Archive | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#welcome">Welcome</a></li>
+      <li><a href="videos.html">Training</a></li>
+      <li><a href="index.html#gao">GAO Updates</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="index.html#far">FAR Updates</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ARCHIVE -->
+<section class="section" id="gao-archive" style="padding-top:5rem;">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">GAO Archive</span>
+      <h2>All Past Decisions</h2>
+      <p class="section-desc">Every GAO bid protest decision we have covered, in reverse chronological order. Nothing gets deleted &mdash; decisions stay here permanently. <a href="index.html#gao" class="archive-page-link">See the current week &rarr;</a></p>
+    </div>
+
+    <!-- Topic filter placeholder — future feature -->
+    <!-- When enough decisions accumulate, add topic tags and a filter UI here -->
+    <!-- Topics will include: evaluation-reasonableness, interested-party, unduly-restrictive, -->
+    <!--   disparate-treatment, discussions, source-selection-documentation, etc. -->
+
+    <div id="archiveAllDecisions">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html#welcome">Welcome</a>
+      <a href="videos.html">Training</a>
+      <a href="index.html#gao">GAO Updates</a>
+      <a href="tools.html">Tools</a>
+      <a href="index.html#far">FAR Updates</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2025 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="data/gao.js"></script>
+<script src="main.js"></script>
+<script>
+// Archive page: render all weeks, current first, all expanded
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('archiveAllDecisions');
+  if (!container || !window.GAO_UPDATES || GAO_UPDATES.length === 0) return;
+
+  container.innerHTML = GAO_UPDATES.map((week, i) => {
+    const isCurrent = (i === 0);
+    return `
+      <div class="archive-item ${isCurrent ? 'archive-item-current' : ''}">
+        <div class="archive-week-header">
+          <span class="gao-week-label">Week of ${week.weekOf}</span>
+          ${isCurrent ? '<span class="gao-week-date">Current</span>' : ''}
+        </div>
+        <div class="gao-cards">${renderGaoCards(week.decisions)}</div>
+      </div>
+    `;
+  }).join('');
+});
+</script>
+</body>
+</html>
