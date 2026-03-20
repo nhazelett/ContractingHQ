@@ -1,7 +1,7 @@
 // ContractingHQ — FAR Updates Data
 // Status options: "Final Rule" | "Proposed Rule" | "Interim Rule"
 
-const FAR_UPDATES = [
+var FAR_UPDATES = [
   {
     id: 1,
     date: "March 2025",
