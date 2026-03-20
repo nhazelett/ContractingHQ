@@ -1,32 +1,33 @@
 // ContractingHQ — FAR Updates Data
-// Status options: "Final Rule" | "Proposed Rule" | "Interim Rule"
+// To add an update: copy a block below and fill in the details.
+// status options: "final", "proposed", "interim"
 
 var FAR_UPDATES = [
   {
     id: 1,
-    date: "March 2025",
-    title: "FAR Rewrite — Simplified Structure Proposed",
-    status: "Proposed Rule",
-    farCase: "FAR Case 2024-001",
-    summary: "The FAC has proposed a comprehensive rewrite of the FAR structure, consolidating redundant provisions and modernizing language throughout Parts 1-53. The goal is to reduce the regulatory burden on small businesses and streamline the acquisition process. Public comment period closes April 30, 2025.",
-    practitionerNote: "This is the most significant proposed change to the FAR framework in decades. Pay attention to proposed changes in Parts 12 and 15 — commercial item contracting and source selection procedures are both in scope. Submit comments if your organization has strong equities here."
+    date: "February 2026",
+    title: "FAR Overhaul — First Wave of Changes Now in Effect",
+    status: "interim",
+    farCase: "EO 14275 / FAR Deviations",
+    summary: "The first wave of the Revolutionary FAR Overhaul (Executive Order 14275, signed April 2025) took effect February 1, 2026. The overhaul is restructuring the FAR from a prescriptive, rule-based system to a principles-based framework that gives contracting officers greater discretion. 38 FAR parts are currently subject to deviations, with rolling updates continuing through June 30, 2026. Formal notice-and-comment rulemaking is expected to begin spring 2026.",
+    practitionerNote: "This is the most significant change to the FAR since its 1984 rewrite. The rules you learned may already have changed. Before relying on any FAR provision, check acquisition.gov/far-overhaul for the latest class deviations. Agency-specific interim guidance is where the action is right now."
   },
   {
     id: 2,
-    date: "February 2025",
-    title: "Cybersecurity Maturity Model Certification (CMMC) — Final Rule",
-    status: "Final Rule",
-    farCase: "DFARS Case 2019-D041",
-    summary: "The CMMC 2.0 final rule is now in effect. Defense contractors handling Controlled Unclassified Information (CUI) must meet specified CMMC levels. Level 1 is self-assessed; Levels 2 and 3 require third-party or government assessment.",
-    practitionerNote: "If you are acquiring anything that touches CUI — even peripherally — CMMC requirements belong in your solicitation. Work with your program office early to determine the right CMMC level. Getting this wrong at solicitation means a mod later, or worse, a protest."
+    date: "November 2025",
+    title: "CMMC 2.0 Final Rule — Mandatory for DoD Contracts",
+    status: "final",
+    farCase: "DFARS Case 2025-D001",
+    summary: "The Cybersecurity Maturity Model Certification (CMMC) 2.0 became enforceable under DFARS effective November 10, 2025. Phase 1 (November 2025 through November 2026) requires CMMC Level 1 self-attestation and Level 2 assessments in select DoD solicitations. All contractors handling Controlled Unclassified Information (CUI) must meet applicable CMMC level requirements. Third-party assessment organizations (C3PAOs) are required for Level 2+ certifications starting Phase 2 in November 2026.",
+    practitionerNote: "If you’re writing or awarding DoD contracts involving CUI, CMMC clauses are now required. Verify contractor CMMC status in SPRS before award. Level 1 contractors can self-attest, but Level 2+ need documented assessments. Missing this is a significant liability at award."
   },
   {
     id: 3,
-    date: "January 2025",
-    title: "Inflation Adjustments to Acquisition Thresholds",
-    status: "Final Rule",
-    farCase: "FAR Case 2023-010",
-    summary: "Effective January 2025, several key acquisition thresholds have been adjusted for inflation per statutory requirements. The micro-purchase threshold remains at $10,000; the simplified acquisition threshold remains at $250,000; the Truth in Negotiations Act threshold increases to $2.5M.",
-    practitionerNote: "The TINA threshold change is the one to bookmark. Verify current thresholds any time you are drafting a solicitation above $1M — these change periodically and the consequences of using the wrong threshold can be significant."
+    date: "March 2026",
+    title: "Trade Agreements Thresholds Updated — FAC 2026-01",
+    status: "final",
+    farCase: "FAC 2026-01",
+    summary: "Federal Acquisition Circular 2026-01 (published March 13, 2026) updated WTO Government Procurement Agreement and Free Trade Agreement procurement thresholds under FAR Subpart 25.4. The new thresholds reflect updated figures published by the U.S. Trade Representative and affect which acquisitions require international competitive procedures and country-of-origin analysis.",
+    practitionerNote: "If you’re running a competitive acquisition above the simplified acquisition threshold, verify whether Trade Agreements Act requirements apply under the new thresholds. This is a routine but commonly missed update — especially on requirements near the boundary values. Check FAR 25.402 for the current figures."
   }
 ];
