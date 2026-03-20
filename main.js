@@ -52,19 +52,27 @@ function renderGaoCards(decisions) {
       <div class="gao-card-header">
         <div>
           <div class="gao-case">${d.caseName}</div>
-          <div style="font-size:0.78rem;color:#8a9bb0;margin-top:2px;">${d.caseNumber} &middot; ${d.date}</div>
+          <div class="gao-case-meta">
+            ${d.caseNumber} · ${d.date}
+            ${d.link ? `<a href="${d.link}" target="_blank" rel="noopener" class="gao-case-link">View Decision →</a>` : ''}
+          </div>
         </div>
-        <span class="gao-outcome ${outcomeClass(d.outcome)}">${d.outcome}</span>
+        <span class="gao-outcome outcome-${d.outcome}">${d.outcome}</span>
       </div>
       <p class="gao-summary">${d.summary}</p>
+      ${d.bottomLine ? `
+      <div class="gao-bottom-line">
+        <div class="gao-bl-label">GAO's Words</div>
+        <p>“${d.bottomLine}”</p>
+      </div>
+      ` : ''}
       <div class="gao-takeaway">
-        <div class="gao-takeaway-label">&#9733; Practitioner Takeaway</div>
+        <div class="gao-takeaway-label">★ Practitioner Takeaway</div>
         <p>${d.takeaway}</p>
       </div>
     </div>
   `).join('');
 }
-
 function renderGAO() {
   const currentEl = document.getElementById('gaoCurrentWeek');
   const archiveEl = document.getElementById('gaoArchive');
