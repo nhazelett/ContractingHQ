@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAR/DFARS Updates | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#welcome">Welcome</a></li>
+      <li><a href="videos.html">Training</a></li>
+      <li><a href="index.html#gao">GAO Updates</a></li>
+      <li><a href="asbca.html">ASBCA</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li><a href="dfars.html" class="active">FAR Updates</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- FEDERAL REGISTER FEED -->
+<section class="section" id="dfars" style="padding-top:5rem;">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Federal Register</span>
+      <h2>DARS Regulatory Updates</h2>
+      <p class="section-desc">Recent Defense Acquisition Regulations System notices — final rules, proposed rules, and interim rules — pulled live from the Federal Register.</p>
+    </div>
+
+    <div class="dfars-meta-bar">
+      <span class="dfars-source-note">Source: <a href="https://www.federalregister.gov/agencies/defense-acquisition-regulations-system" target="_blank" rel="noopener">FederalRegister.gov — DARS</a></span>
+      <span id="dfarsCount" class="dfars-count-note"></span>
+    </div>
+
+    <div id="dfarsFeed" class="dfars-feed">
+      <div class="dfars-loading">Loading Federal Register notices&hellip;</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAR OVERHAUL TRACKER -->
+<section class="section section-alt" id="far-overhaul" style="padding-top:3rem;">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">FAR Overhaul</span>
+      <h2>FAR Overhaul Tracker</h2>
+      <p class="section-desc">The Federal Acquisition Regulation is being overhauled. Here is what is changing, what it means for you, and what to watch.</p>
+    </div>
+    <div class="far-list" id="farList"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html#welcome">Welcome</a>
+      <a href="videos.html">Training</a>
+      <a href="index.html#gao">GAO Updates</a>
+      <a href="tools.html">Tools</a>
+      <a href="links.html">Links</a>
+      <a href="dfars.html">FAR Updates</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2025 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="data/far.js"></script>
+<script src="main.js"></script>
+<script>
+(function () {
+  const TYPE_MAP = {
+    'Rule': 'FINAL RULE',
+    'Proposed Rule': 'PROPOSED',
+    'Interim Rule': 'INTERIM',
+    'Notice': 'NOTICE',
+    'Presidential Document': 'PRES. DOC'
+  };
+  const TYPE_CLASS = {
+    'Rule': 'dfars-type-final',
+    'Proposed Rule': 'dfars-type-proposed',
+    'Interim Rule': 'dfars-type-interim',
+    'Notice': 'dfars-type-notice',
+    'Presidential Document': 'dfars-type-notice'
+  };
+
+  function fmtDate(d) {
+    if (!d) return '';
+    const [y, m, day] = d.split('-');
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return months[parseInt(m,10)-1] + ' ' + parseInt(day,10) + ', ' + y;
+  }
+
+  function extractCase(doc) {
+    if (doc.regulation_id_numbers && doc.regulation_id_numbers.length) {
+      const match = doc.regulation_id_numbers.find(r => /dfars|dars/i.test(r));
+      if (match) return match;
+      return doc.regulation_id_numbers[0];
+    }
+    return '';
+  }
+
+  function shortenTitle(title) {
+    return title
+      .replace(/^Defense Federal Acquisition Regulation Supplement[:s]*/i, 'DFARS: ')
+      .replace(/^Defense Acquisition Regulations System[:s]*/i, 'DARS: ')
+      .replace(/^Information Collection Requirement[;s]*/i, 'Info Collection: ');
+  }
+
+  async function loadDFARS() {
+    const feed = document.getElementById('dfarsFeed');
+    const countEl = document.getElementById('dfarsCount');
+    if (!feed) return;
+
+    try {
+      const url = 'https://www.federalregister.gov/api/v1/documents.json'
+        + '?conditions[agencies][]=defense-acquisition-regulations-system'
+        + '&per_page=20'
+        + '&fields[]=document_number,title,type,publication_date,html_url,regulation_id_numbers'
+        + '&order=newest';
+
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const docs = data.results || [];
+
+      if (!docs.length) {
+        feed.innerHTML = '<p class="dfars-empty">No recent notices found.</p>';
+        return;
+      }
+
+      if (countEl) countEl.textContent = docs.length + ' most recent notices';
+
+      feed.innerHTML = docs.map(doc => {
+        const typeLabel = TYPE_MAP[doc.type] || doc.type || 'NOTICE';
+        const typeClass = TYPE_CLASS[doc.type] || 'dfars-type-notice';
+        const caseNum = extractCase(doc);
+        const title = shortenTitle(doc.title || '');
+        return `<div class="dfars-row">
+          <span class="dfars-date">${fmtDate(doc.publication_date)}</span>
+          <span class="dfars-type ${typeClass}">${typeLabel}</span>
+          ${caseNum ? `<span class="dfars-case">${caseNum}</span>` : ''}
+          <a href="${doc.html_url}" class="dfars-title-link" target="_blank" rel="noopener">${title}</a>
+        </div>`;
+      }).join('');
+
+    } catch (e) {
+      feed.innerHTML = `<div class="dfars-error">
+        <p>Could not load Federal Register data. <a href="https://www.federalregister.gov/agencies/defense-acquisition-regulations-system" target="_blank" rel="noopener">View directly on FederalRegister.gov &rarr;</a></p>
+      </div>`;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadDFARS);
+})();
+</script>
+</body>
+</html>
