@@ -41,11 +41,6 @@ function renderVideos() {
 }
 
 // ===== RENDER GAO =====
-function outcomeClass(outcome) {
-  const map = { 'Sustained': 'sustained', 'Denied': 'denied', 'Dismissed': 'dismissed' };
-  return 'outcome-' + (map[outcome] || 'dismissed');
-}
-
 function renderGaoCards(decisions) {
   return decisions.map(d => `
     <div class="gao-card">
@@ -63,20 +58,17 @@ function renderGaoCards(decisions) {
       ${d.bottomLine ? `
       <div class="gao-bottom-line">
         <div class="gao-bl-label">GAO's Words</div>
-        <p>“${d.bottomLine}”</p>
+        <p>"${d.bottomLine}"</p>
       </div>
       ` : ''}
-      <div class="gao-takeaway">
-        <div class="gao-takeaway-label">★ Practitioner Takeaway</div>
-        <p>${d.takeaway}</p>
-      </div>
     </div>
   `).join('');
 }
+
 function renderGAO() {
   const currentEl = document.getElementById('gaoCurrentWeek');
   const archiveEl = document.getElementById('gaoArchive');
-  if (!currentEl || !archiveEl || !window.GAO_UPDATES || GAO_UPDATES.length === 0) return;
+  if (!currentEl || !window.GAO_UPDATES || GAO_UPDATES.length === 0) return;
 
   const current = GAO_UPDATES[0];
   currentEl.innerHTML = `
@@ -87,17 +79,20 @@ function renderGAO() {
     <div class="gao-cards">${renderGaoCards(current.decisions)}</div>
   `;
 
-  archiveEl.innerHTML = GAO_UPDATES.slice(1).map((week, i) => `
-    <div class="archive-item">
-      <button class="archive-toggle" onclick="toggleArchive(this)">
-        <span>Week of ${week.weekOf} &mdash; ${week.decisions.length} decision${week.decisions.length !== 1 ? 's' : ''}</span>
-        <span class="chevron">&#9660;</span>
-      </button>
-      <div class="archive-body">
-        <div class="gao-cards">${renderGaoCards(week.decisions)}</div>
+  // Archive section (used on gao-archive.html — optional on index)
+  if (archiveEl) {
+    archiveEl.innerHTML = GAO_UPDATES.slice(1).map((week, i) => `
+      <div class="archive-item">
+        <button class="archive-toggle" onclick="toggleArchive(this)">
+          <span>Week of ${week.weekOf} &mdash; ${week.decisions.length} decision${week.decisions.length !== 1 ? 's' : ''}</span>
+          <span class="chevron">&#9660;</span>
+        </button>
+        <div class="archive-body">
+          <div class="gao-cards">${renderGaoCards(week.decisions)}</div>
+        </div>
       </div>
-    </div>
-  `).join('');
+    `).join('');
+  }
 }
 
 function toggleArchive(btn) {
@@ -125,7 +120,7 @@ function renderTools() {
 
 // ===== RENDER FAR =====
 function statusBadgeClass(status) {
-  const map = { 'Final Rule': 'badge-final', 'Proposed Rule': 'badge-proposed', 'Interim Rule': 'badge-interim' };
+  const map = { 'final': 'badge-final', 'proposed': 'badge-proposed', 'interim': 'badge-interim' };
   return map[status] || 'badge-proposed';
 }
 
