@@ -2,19 +2,23 @@
 
 // ===== NAV SCROLL =====
 const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-  navbar.classList.toggle('scrolled', window.scrollY > 40);
-});
+if (navbar) {
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  });
+}
 
 // ===== MOBILE NAV =====
 const navToggle = document.getElementById('navToggle');
 const navLinks = document.getElementById('navLinks');
-navToggle.addEventListener('click', () => {
-  navLinks.classList.toggle('open');
-});
-document.querySelectorAll('.nav-links a').forEach(link => {
-  link.addEventListener('click', () => navLinks.classList.remove('open'));
-});
+if (navToggle && navLinks) {
+  navToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => navLinks.classList.remove('open'));
+  });
+}
 
 // ===== RENDER VIDEOS =====
 function renderVideos() {
@@ -26,9 +30,9 @@ function renderVideos() {
         ${v.youtubeId
           ? `<iframe src="https://www.youtube.com/embed/${v.youtubeId}" allowfullscreen loading="lazy"></iframe>`
           : `<div class="video-thumb-placeholder">
-               <span class="play-icon">&#9654;</span>
-               <span class="coming-soon-badge">Coming Soon</span>
-             </div>`
+              <span class="play-icon">&#9654;</span>
+              <span class="coming-soon-badge">Coming Soon</span>
+            </div>`
         }
       </div>
       <div class="video-info">
@@ -79,7 +83,6 @@ function renderGAO() {
     <div class="gao-cards">${renderGaoCards(current.decisions)}</div>
   `;
 
-  // Archive section (used on gao-archive.html — optional on index)
   if (archiveEl) {
     archiveEl.innerHTML = GAO_UPDATES.slice(1).map((week, i) => `
       <div class="archive-item">
@@ -99,6 +102,46 @@ function toggleArchive(btn) {
   btn.classList.toggle('open');
   const body = btn.nextElementSibling;
   body.classList.toggle('open');
+}
+
+// ===== RENDER ASBCA =====
+function renderAsbcaCards(decisions) {
+  return decisions.map(d => `
+    <div class="gao-card">
+      <div class="gao-card-header">
+        <div>
+          <div class="gao-case">${d.caseName}</div>
+          <div class="gao-case-meta">
+            ${d.caseNumber} · ${d.date} · Judge ${d.judge}
+            ${d.decisionType ? `<span class="asbca-type-tag">${d.decisionType}</span>` : ''}
+            ${d.link ? `<a href="${d.link}" target="_blank" rel="noopener" class="gao-case-link">All Decisions →</a>` : ''}
+          </div>
+        </div>
+        <span class="gao-outcome outcome-${d.outcome}">${d.outcome}</span>
+      </div>
+      <p class="gao-summary">${d.summary}</p>
+      ${d.bottomLine ? `
+      <div class="gao-bottom-line">
+        <div class="gao-bl-label">Board's Holding</div>
+        <p>${d.bottomLine}</p>
+      </div>
+      ` : ''}
+    </div>
+  `).join('');
+}
+
+function renderASBCA() {
+  const currentEl = document.getElementById('asbcaCurrentWeek');
+  if (!currentEl || !window.ASBCA_DECISIONS || ASBCA_DECISIONS.length === 0) return;
+
+  const current = ASBCA_DECISIONS[0];
+  currentEl.innerHTML = `
+    <div class="gao-week-header">
+      <span class="gao-week-label">Decisions: ${current.weekOf}</span>
+      <span class="gao-week-date">Current</span>
+    </div>
+    <div class="gao-cards">${renderAsbcaCards(current.decisions)}</div>
+  `;
 }
 
 // ===== RENDER TOOLS =====
@@ -159,6 +202,7 @@ function toggleFAR(header) {
 document.addEventListener('DOMContentLoaded', () => {
   renderVideos();
   renderGAO();
+  renderASBCA();
   renderTools();
   renderFAR();
 });
