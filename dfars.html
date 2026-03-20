@@ -33,8 +33,17 @@
   </div>
 </nav>
 
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Federal Register</span>
+    <h1 class="page-hero-title">FAR / DFARS Updates</h1>
+    <p class="page-hero-sub">Live regulatory notices pulled straight from the Federal Register — final rules, proposed rules, and interim rules.</p>
+  </div>
+</div>
+
 <!-- FEDERAL REGISTER FEED -->
-<section class="section" id="dfars" style="padding-top:5rem;">
+<section class="section" id="dfars">
   <div class="container">
     <div class="section-header">
       <span class="section-tag">Federal Register</span>
@@ -122,9 +131,14 @@
 
   function shortenTitle(title) {
     return title
-      .replace(/^Defense Federal Acquisition Regulation Supplement[:s]*/i, 'DFARS: ')
-      .replace(/^Defense Acquisition Regulations System[:s]*/i, 'DARS: ')
-      .replace(/^Information Collection Requirement[;s]*/i, 'Info Collection: ');
+      // Strip if title begins with the long agency name
+      .replace(/^Defense Federal Acquisition Regulation Supplement[;:\s]*/i, 'DFARS: ')
+      .replace(/^Defense Acquisition Regulations System[;:\s]*/i, 'DARS: ')
+      // Strip agency name appearing mid-title (e.g. after "Info Collection: ")
+      .replace(/Defense Federal Acquisition Regulation Supplement[;:\s]*/gi, 'DFARS \u2014 ')
+      .replace(/Defense Acquisition Regulations System[;:\s]*/gi, 'DARS \u2014 ')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
   }
 
   async function loadDFARS() {
