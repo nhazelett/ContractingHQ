@@ -2,7 +2,7 @@
 // Updated weekly. Most recent week is index 0.
 // Outcome options: "Sustained" | "Denied" | "Dismissed"
 
-const GAO_UPDATES = [
+var GAO_UPDATES = [
   {
     weekOf: "March 17, 2025",
     decisions: [
