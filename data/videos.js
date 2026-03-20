@@ -3,7 +3,7 @@
 // For YouTube videos, set youtubeId to the video ID (e.g., "dQw4w9WgXcQ")
 // Leave youtubeId as null for "Coming Soon" cards.
 
-const VIDEOS = [
+var VIDEOS = [
   {
     id: 1,
     category: "Foundations",
