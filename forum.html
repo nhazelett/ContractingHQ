@@ -173,6 +173,20 @@
       font-family: inherit;
     }
     .rxn-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.18); }
+  .post-delete-btn {
+    margin-left: auto;
+    padding: 0.26rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid rgba(220,50,50,0.3);
+    background: rgba(220,50,50,0.05);
+    color: rgba(255,110,110,0.85);
+    font-size: 0.78rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .post-delete-btn:hover { background: rgba(220,50,50,0.25); border-color: rgba(220,50,50,0.7); }
     .rxn-btn.rxn-up   { }
     .rxn-btn.rxn-down { }
     .rxn-btn.rxn-star { }
@@ -694,7 +708,7 @@ async function fetchPosts() {
   try {
     const { data, error } = await db
       .from('posts')
-      .select('*, profiles(username), comments(id), reactions(id, type, user_id)')
+      .select('*, profiles(username), comments(id)')
       .order('created_at', { ascending: false });
     if (error) throw error;
     allPosts = data || [];
@@ -832,7 +846,19 @@ function renderPosts() {
         handleReact(p.id, type);
       });
     });
-  });
+
+    // Delete button
+    const delBtn = document.getElementById('del-' + p.id);
+    if (delBtn) delBtn.addEventListener('click', e => { e.stopPropagation(); deletePost(p.id); });  });
+}
+
+
+async function deletePost(postId) {
+  if (!confirm('Delete this post and all its comments?')) return;
+  const { error } = await db.from('posts').delete().eq('id', postId);
+  if (error) { alert('Could not delete: ' + error.message); return; }
+  allPosts = allPosts.filter(p => p.id !== postId);
+  renderPosts();
 }
 
 function postCard(p) {
@@ -867,6 +893,7 @@ function postCard(p) {
       <button class="post-comment-link" id="cmtlink-${p.id}">
         ð¬ <span>${cmts.length} comment${cmts.length !== 1 ? 's' : ''}</span>
       </button>
+      ${ currentUser && (currentProfile?.username === 'nhazelett' || p.user_id === currentUser?.id) ? '<button class="post-delete-btn" id="del-' + p.id + '" title="Delete post" onclick="event.stopPropagation()">🗑 Delete</button>' : '' }
     </div>
     <div class="post-body-panel" id="panel-${p.id}">
       <div class="post-body-text">${esc(p.body)}</div>
@@ -986,18 +1013,18 @@ async function handleReact(postId, shortType) {
   const post = allPosts.find(p => p.id === postId);
   if (!post) return;
 
-  const existing = post.reactions.find(r => r.user_id === currentUser.id && r.type === type);
+  const existing = (post.reactions||[]).find(r => r.user_id === currentUser.id && r.type === type);
   try {
     if (existing) {
       const { error } = await db.from('reactions').delete()
         .eq('post_id', postId).eq('user_id', currentUser.id).eq('type', type);
       if (error) throw error;
-      post.reactions = post.reactions.filter(r => !(r.user_id === currentUser.id && r.type === type));
+      post.reactions = (post.reactions||[]).filter(r => !(r.user_id === currentUser.id && r.type === type));
     } else {
       const { data, error } = await db.from('reactions')
         .insert({ post_id: postId, user_id: currentUser.id, type }).select().single();
       if (error) throw error;
-      post.reactions.push(data);
+      (post.reactions||[]).push(data);
     }
     renderPosts();
   } catch {
