@@ -3,24 +3,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CO Toolkit | ContractingHQ</title>
+  <title>Custom Tools | ContractingHQ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .tools-page-bg { background: #040d1f; padding: 4rem 1.5rem 6rem; }
+    .tools-intro { text-align: center; margin-bottom: 3.5rem; }
+    .tools-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.3rem 1rem; border-radius: 100px; margin-bottom: 0.75rem; }
+    .tools-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.7rem,3.5vw,2.5rem); font-weight: 700; color: var(--white); margin-bottom: 0.65rem; }
+    .tools-intro p { color: var(--silver); font-size: 1rem; max-width: 540px; margin: 0 auto; line-height: 1.65; }
+    .custom-tools-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(320px,1fr)); gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
+    .ctool-card { background: rgba(10,22,50,0.8); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.75rem; display: flex; flex-direction: column; transition: border-color 0.2s,transform 0.18s,box-shadow 0.2s; position: relative; overflow: hidden; }
+    .ctool-card::before { content: ''; position: absolute; top:0;left:0;right:0; height: 3px; background: linear-gradient(90deg,var(--accent),rgba(74,158,255,0.3)); opacity:0; transition: opacity 0.2s; }
+    .ctool-card:hover { border-color: rgba(74,158,255,0.35); transform: translateY(-3px); box-shadow: 0 10px 36px rgba(0,0,0,0.35); }
+    .ctool-card:hover::before { opacity:1; }
+    .ctool-card.coming-soon { border-style:dashed; border-color:rgba(74,158,255,0.08); background:rgba(10,22,50,0.35); cursor:default; }
+    .ctool-card.coming-soon:hover { transform:none; box-shadow:none; border-color:rgba(74,158,255,0.12); }
+    .ctool-card.coming-soon::before { display:none; }
+    .ctool-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:1.1rem; }
+    .ctool-icon { width:48px; height:48px; border-radius:12px; background:rgba(74,158,255,0.12); border:1px solid rgba(74,158,255,0.2); display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; }
+    .ctool-status { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; padding:0.22rem 0.65rem; border-radius:999px; }
+    .status-live { background:rgba(52,211,153,0.12); color:#6ee7b7; border:1px solid rgba(52,211,153,0.3); }
+    .status-coming-soon { background:rgba(156,163,175,0.1); color:#9ca3af; border:1px solid rgba(156,163,175,0.2); }
+    .ctool-category { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; color:var(--accent); margin-bottom:0.3rem; }
+    .ctool-name { font-family:'Rajdhani',sans-serif; font-size:1.25rem; font-weight:700; color:var(--white); margin-bottom:0.5rem; line-height:1.2; }
+    .ctool-desc { font-size:0.875rem; color:var(--silver); line-height:1.65; flex:1; margin-bottom:1.4rem; }
+    .ctool-btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.6rem 1.25rem; background:var(--accent); color:var(--white); border-radius:8px; font-size:0.875rem; font-weight:700; text-decoration:none; transition:all 0.18s; border:none; cursor:pointer; font-family:inherit; align-self:flex-start; }
+    .ctool-btn:hover { background:#3a8eef; transform:translateX(2px); }
+    .ctool-btn-ghost { background:rgba(74,158,255,0.08); color:var(--silver); cursor:default; }
+    .ctool-btn-ghost:hover { background:rgba(74,158,255,0.08); transform:none; color:var(--silver); }
+    .ctool-arrow { transition:transform 0.18s; }
+    .ctool-btn:hover:not(.ctool-btn-ghost) .ctool-arrow { transform:translateX(3px); }
+    .ctool-tags { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1rem; }
+    .ctool-tag { font-size:0.68rem; font-weight:600; color:var(--silver); background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); padding:0.15rem 0.55rem; border-radius:999px; }
+    .tools-footer-note { text-align:center; margin-top:3.5rem; padding-top:2.5rem; border-top:1px solid rgba(74,158,255,0.08); max-width:1100px; margin-left:auto; margin-right:auto; }
+    .tools-footer-note p { font-size:0.9rem; color:var(--text-muted); line-height:1.65; }
+    .tools-footer-note a { color:var(--accent); text-decoration:none; font-weight:600; }
+    .tools-footer-note a:hover { text-decoration:underline; }
+    @media (max-width:680px) { .custom-tools-grid { grid-template-columns:1fr; } }
+  </style>
 </head>
 <body>
-
-<!-- NAV -->
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo">
-      <span class="logo-kthq">KTHQ</span>
-      <span class="logo-full">ContractingHQ</span>
-    </a>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </button>
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html">Home</a></li>
       <li><a href="videos.html">Training Videos</a></li>
@@ -29,485 +58,56 @@
       <li><a href="dfars.html">FAR Updates</a></li>
       <li><a href="tools.html" class="active">Tools</a></li>
       <li><a href="links.html">Links</a></li>
+      <li><a href="forum.html">Forum</a></li>
     </ul>
   </div>
 </nav>
-
-<!-- PAGE HERO -->
 <div class="page-hero">
   <div class="container">
     <span class="hero-badge">CO Toolkit</span>
-    <h1 class="page-hero-title">Contracting Officer Toolkit</h1>
-    <p class="page-hero-sub">Every resource you'll actually reach for — organized by experience level from day-one essentials to advanced practitioner tools.</p>
+    <h1 class="page-hero-title">Custom-Built CO Tools</h1>
+    <p class="page-hero-sub">Purpose-built for real contracting work. No fluff, no paywall, no login required.</p>
   </div>
 </div>
-
-<!-- SEARCH + TIER NAV -->
-<div class="toolkit-controls">
-  <div class="toolkit-search-wrap">
-    <svg class="toolkit-search-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.8"/>
-      <path d="M13 13L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    </svg>
-    <input
-      type="text"
-      id="toolSearch"
-      class="toolkit-search"
-      placeholder="Search tools..."
-      autocomplete="off"
-    />
-    <button class="toolkit-search-clear" id="searchClear" aria-label="Clear search" style="display:none;">✕</button>
-  </div>
-  <div class="tier-nav-pills">
-    <a href="#tier-beginner" class="tier-pill tier-pill--beginner">🟢 Beginner</a>
-    <a href="#tier-intermediate" class="tier-pill tier-pill--intermediate">🔵 Intermediate</a>
-    <a href="#tier-advanced" class="tier-pill tier-pill--advanced">🟣 Advanced</a>
+<div class="tools-page-bg">
+  <div class="container">
+    <div class="tools-intro">
+      <div class="tools-intro-tag">Live Tools</div>
+      <h2>Tools Built for Contracting Officers</h2>
+      <p>Every tool on this page was built specifically for the CO community &mdash; not adapted from a generic template. New tools are added regularly.</p>
+    </div>
+    <div class="custom-tools-grid">
+      <div class="ctool-card">
+        <div class="ctool-top">
+          <div class="ctool-icon">📝</div>
+          <span class="ctool-status status-live">Live</span>
+        </div>
+        <div class="ctool-category">Contingency Contracting</div>
+        <h3 class="ctool-name">CCO PWS Builder</h3>
+        <div class="ctool-tags">
+          <span class="ctool-tag">AFICC / KQ</span>
+          <span class="ctool-tag">Overseas Ops</span>
+          <span class="ctool-tag">Performance Work Statement</span>
+        </div>
+        <p class="ctool-desc">Build fully structured Performance Work Statements for AFICC/KQ contingency and OCONUS operations. A step-by-step wizard walks you through all 7 sections &mdash; contract type, overview, requirements, performance standards, GFP/security, deliverables, and final review &mdash; and generates a complete, ready-to-use PWS.</p>
+        <a href="https://claude.ai/public/artifacts/07509870-0106-4987-baa3-36c92aa02eef" target="_blank" rel="noopener" class="ctool-btn">Open Tool <span class="ctool-arrow">&rarr;</span></a>
+      </div>
+      <div class="ctool-card coming-soon">
+        <div class="ctool-top">
+          <div class="ctool-icon" style="background:rgba(156,163,175,0.06);border-color:rgba(156,163,175,0.1);font-size:1.3rem">🔧</div>
+          <span class="ctool-status status-coming-soon">Coming Soon</span>
+        </div>
+        <div class="ctool-category" style="color:var(--text-muted)">In Development</div>
+        <h3 class="ctool-name" style="color:var(--silver)">More Tools Coming</h3>
+        <p class="ctool-desc" style="color:var(--text-muted)">New tools are being built for the CO community. Have a specific need? Post in the forum and tell us what would help you most.</p>
+        <span class="ctool-btn ctool-btn-ghost">In Development</span>
+      </div>
+    </div>
+    <div class="tools-footer-note">
+      <p>Have a tool idea? <a href="forum.html">Post it in the forum</a> &mdash; if it solves a real problem, we'll build it.</p>
+    </div>
   </div>
 </div>
-
-<!-- NO RESULTS MESSAGE -->
-<div id="noResults" class="no-results" style="display:none;">
-  <div class="no-results-inner">
-    <div class="no-results-icon">🔍</div>
-    <p>No tools match your search. Try a different keyword.</p>
-  </div>
-</div>
-
-<!-- ==================== BEGINNER TIER ==================== -->
-<section class="tier-section tier-section--beginner" id="tier-beginner">
-  <div class="container">
-    <div class="tier-header">
-      <div class="tier-header-left">
-        <div class="tier-label tier-label--beginner">
-          <span class="tier-icon">🟢</span>
-          <span>Beginner</span>
-        </div>
-        <h2 class="tier-title">Foundation Tools</h2>
-        <p class="tier-desc">Day-one essentials every CO, COR, and contracting support staff should know cold. If you're new to contracting or just need fast access to the basics, start here.</p>
-      </div>
-      <div class="tier-stat">
-        <span class="tier-count" id="count-beginner">10</span>
-        <span class="tier-count-label">tools</span>
-      </div>
-    </div>
-
-    <div class="tools-tier-grid" id="grid-beginner">
-
-      <!-- SAM.gov -->
-      <div class="tool-card" data-tier="beginner" data-name="SAM.gov System for Award Management registrations exclusions CAGE">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--beginner">Beginner</div>
-          <div class="tool-card-icon">🏛️</div>
-        </div>
-        <h3 class="tool-card-name">SAM.gov</h3>
-        <p class="tool-card-desc">The central federal registry for contractor registrations, entity searches, exclusions checks, CAGE codes, and wage determinations — your first stop before any award.</p>
-        <a href="https://sam.gov" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- PIEE -->
-      <div class="tool-card" data-tier="beginner" data-name="PIEE Procurement Integrated Enterprise Environment invoice receipt acceptance iRAPT WAWF">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--beginner">Beginner</div>
-          <div class="tool-card-icon">📋</div>
-        </div>
-        <h3 class="tool-card-name">PIEE</h3>
-        <p class="tool-card-desc">Procurement Integrated Enterprise Environment — the DoD portal for invoice processing, receiving reports, acceptance, and contract payment actions (formerly WAWF/iRAPT).</p>
-        <a href="https://piee.eb.mil" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- FPDS-NG -->
-      <div class="tool-card" data-tier="beginner" data-name="FPDS Federal Procurement Data System contract awards reporting search">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--beginner">Beginner</div>
-          <div class="tool-card-icon">📊</div>
-        </div>
-        <h3 class="tool-card-name">FPDS-NG</h3>
-        <p class="tool-card-desc">Federal Procurement Data System — search and retrieve contract award data across the federal government; essential for market research and price analysis baselines.</p>
-        <a href="https://www.fpds.gov" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- FAR Current Text -->
-      <div class="tool-card" data-tier="beginner" data-name="FAR Federal Acquisition Regulation current text acquisition.gov">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--beginner">Beginner</div>
-          <div class="tool-card-icon">📖</div>
-        </div>
-        <h3 class="tool-card-name">FAR — Current Text</h3>
-        <p class="tool-card-desc">The authoritative, continuously-updated Federal Acquisition Regulation on acquisition.gov — always current, including all active class deviations from the Revolutionary FAR Overhaul.</p>
-        <a href="https://www.acquisition.gov/browse/index/far" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- DFARS -->
-      <div class="tool-card" data-tier="beginner" data-name="DFARS DoD FAR Supplement defense acquisition regulation supplement">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--beginner">Beginner</div>
-          <div class="tool-card-icon">🛡️</div>
-        </div>
-        <h3 class="tool-card-name">DFARS</h3>
-        <p class="tool-card-desc">DoD's supplement to the FAR — governs all defense acquisitions. Updated frequently via class deviations; check DARS for the latest DFARS RFO deviations.</p>
-        <a href="https://www.acquisition.gov/dfars" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- Wage Determinations Online -->
-      <div class="tool-card" data-tier="beginner" data-name="Wage Determinations WD Online SCA Service Contract Act prevailing wages SAM.gov">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--beginner">Beginner</div>
-          <div class="tool-card-icon">💵</div>
-        </div>
-        <h3 class="tool-card-name">Wage Determinations Online</h3>
-        <p class="tool-card-desc">SAM.gov's wage determination portal — look up applicable SCA and Davis-Bacon wage rates by location, occupation, and contract type before solicitation.</p>
-        <a href="https://sam.gov/search/?index=wd" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- GSA Advantage / eBuy -->
-      <div class="tool-card" data-tier="beginner" data-name="GSA Advantage eBuy schedule contracts multiple award federal supply schedule">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--beginner">Beginner</div>
-          <div class="tool-card-icon">🛒</div>
-        </div>
-        <h3 class="tool-card-name">GSA Advantage &amp; eBuy</h3>
-        <p class="tool-card-desc">GSA's ordering platforms for Federal Supply Schedule contracts — Advantage for commercial items, eBuy for services RFQs. Great for simplified acquisition.</p>
-        <a href="https://www.gsaadvantage.gov" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- SBA Size Standards -->
-      <div class="tool-card" data-tier="beginner" data-name="SBA Small Business Administration size standards NAICS set-aside">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--beginner">Beginner</div>
-          <div class="tool-card-icon">🏢</div>
-        </div>
-        <h3 class="tool-card-name">SBA Size Standards Tool</h3>
-        <p class="tool-card-desc">SBA's interactive tool to look up small business size standards by NAICS code — essential for market research, set-aside determinations, and solicitation planning.</p>
-        <a href="https://www.sba.gov/document/support-table-size-standards" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- Standard Forms Reference -->
-      <div class="tool-card" data-tier="beginner" data-name="SF 1449 SF 18 DD 254 AF Form 9 standard forms purchase request">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--beginner">Beginner</div>
-          <div class="tool-card-icon">📄</div>
-        </div>
-        <h3 class="tool-card-name">Standard Forms Library</h3>
-        <p class="tool-card-desc">GSA's official repository for all standard procurement forms including SF 1449 (solicitation/contract), SF 18 (RFQ), DD 254 (security), and more.</p>
-        <a href="https://www.gsa.gov/forms-library" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- AFMC Warrant Tracker -->
-      <div class="tool-card" data-tier="beginner" data-name="DAF Air Force warrant PCO KO contracting officer brevets ACO">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--beginner">Beginner</div>
-          <div class="tool-card-icon">🎖️</div>
-        </div>
-        <h3 class="tool-card-name">DAF Contracting Warrant Info</h3>
-        <p class="tool-card-desc">AF/A4C guidance on warrant thresholds, brevet authority, and contracting officer appointment — check AFFARS MP5301.603 for current Air Force warrant policy.</p>
-        <a href="https://www.acquisition.gov/affars/mp5301.603-3" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-    </div><!-- /grid-beginner -->
-  </div>
-</section>
-
-<!-- ==================== INTERMEDIATE TIER ==================== -->
-<section class="tier-section tier-section--intermediate" id="tier-intermediate">
-  <div class="container">
-    <div class="tier-header">
-      <div class="tier-header-left">
-        <div class="tier-label tier-label--intermediate">
-          <span class="tier-icon">🔵</span>
-          <span>Intermediate</span>
-        </div>
-        <h2 class="tier-title">Practitioner Resources</h2>
-        <p class="tier-desc">For COs working day-to-day acquisition actions, managing contracts, and needing deeper regulatory guidance, reporting tools, and compliance resources.</p>
-      </div>
-      <div class="tier-stat">
-        <span class="tier-count" id="count-intermediate">11</span>
-        <span class="tier-count-label">tools</span>
-      </div>
-    </div>
-
-    <!-- ⚡ FAR OVERHAUL CALLOUT BANNER -->
-    <div class="far-overhaul-banner">
-      <div class="far-overhaul-banner-inner">
-        <div class="far-overhaul-left">
-          <div class="far-overhaul-badge">⚡ Active Reform</div>
-          <h3 class="far-overhaul-title">Revolutionary FAR Overhaul — In Progress</h3>
-          <p class="far-overhaul-desc">
-            Executive Order 14275 (April 2025) directed the most significant FAR rewrite in 40+ years. <strong>Phase 1</strong> class deviations are already in effect — the first 31 DFARS deviations took effect <strong>February 1, 2026</strong>, with subsequent tranches rolling out every few weeks. Key threshold changes include: CAS full coverage threshold doubled from $50M → <strong>$100M</strong>; TINA certified cost/pricing threshold raised from $2M → <strong>$10M</strong> (defense, effective June 30, 2026). FAR Part 12 commercial clauses reduced from 154 → 108. <strong>Phase 2</strong> formal notice-and-comment rulemaking begins Spring 2026, targeting completion by end of 2026. Track current model deviation texts and Part deviation guides on acquisition.gov.
-          </p>
-          <div class="far-overhaul-links">
-            <a href="https://www.acquisition.gov/far-overhaul" target="_blank" rel="noopener" class="far-overhaul-link">RFO Hub ↗</a>
-            <a href="https://www.acquisition.gov/far-overhaul/far-part-deviation-guide" target="_blank" rel="noopener" class="far-overhaul-link">Part Deviation Guide ↗</a>
-            <a href="https://www.acq.osd.mil/dpap/dars/dfars_far_overhaul_class_deviations.html" target="_blank" rel="noopener" class="far-overhaul-link">DFARS Deviations ↗</a>
-          </div>
-        </div>
-        <div class="far-overhaul-status">
-          <div class="far-status-item far-status-active">
-            <span class="far-status-dot"></span>
-            <span>Phase 1 Active</span>
-          </div>
-          <div class="far-status-item far-status-upcoming">
-            <span class="far-status-dot"></span>
-            <span>Phase 2 Spring 2026</span>
-          </div>
-          <div class="far-status-item">
-            <span class="far-status-dot far-status-dot--future"></span>
-            <span>Full Rewrite EOY 2026</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="tools-tier-grid" id="grid-intermediate">
-
-      <!-- FPDS Advanced -->
-      <div class="tool-card" data-tier="intermediate" data-name="FPDS advanced reporting data dictionary analytics procurement spending">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--intermediate">Intermediate</div>
-          <div class="tool-card-icon">📈</div>
-        </div>
-        <h3 class="tool-card-name">FPDS Advanced Reports</h3>
-        <p class="tool-card-desc">FPDS-NG advanced reporting module and data dictionary — drill into agency spend, NAICS breakdowns, competition rates, and contractor history for robust price analysis.</p>
-        <a href="https://www.fpds.gov/fpdsng_cms/index.php/en/reports" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- USASpending -->
-      <div class="tool-card" data-tier="intermediate" data-name="USASpending.gov federal spending contracts grants awards transparency">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--intermediate">Intermediate</div>
-          <div class="tool-card-icon">💰</div>
-        </div>
-        <h3 class="tool-card-name">USASpending.gov</h3>
-        <p class="tool-card-desc">Treasury's federal spending transparency portal — useful for market research, identifying competitors, benchmarking pricing, and understanding government-wide spending trends.</p>
-        <a href="https://www.usaspending.gov" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- Section 889 -->
-      <div class="tool-card" data-tier="intermediate" data-name="Section 889 FAR 52.204-24 25 26 Huawei ZTE prohibited telecom equipment representation compliance">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--intermediate">Intermediate</div>
-          <div class="tool-card-icon">🚫</div>
-        </div>
-        <h3 class="tool-card-name">Section 889 Compliance</h3>
-        <p class="tool-card-desc">Resources for Section 889 (NDAA) prohibited telecom/video equipment compliance — note that under RFO, cybersecurity clauses are moving to FAR 52.240-xx series; verify current clause numbers.</p>
-        <a href="https://www.acquisition.gov/Section-889-Policies" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- CPARS -->
-      <div class="tool-card" data-tier="intermediate" data-name="CPARS Contractor Performance Assessment Reporting System past performance evaluation ratings">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--intermediate">Intermediate</div>
-          <div class="tool-card-icon">⭐</div>
-        </div>
-        <h3 class="tool-card-name">CPARS</h3>
-        <p class="tool-card-desc">Contractor Performance Assessment Reporting System — document and retrieve contractor past performance ratings. Required for contracts meeting thresholds; feeds PPIRS/SPRS.</p>
-        <a href="https://www.cpars.gov" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- SPRS / PPIRS -->
-      <div class="tool-card" data-tier="intermediate" data-name="SPRS Supplier Performance Risk System PPIRS past performance information retrieval">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--intermediate">Intermediate</div>
-          <div class="tool-card-icon">🔎</div>
-        </div>
-        <h3 class="tool-card-name">SPRS / PPIRS</h3>
-        <p class="tool-card-desc">Supplier Performance Risk System — access contractor past performance history, quality scores, and delivery ratings during source selection. Replaces the legacy PPIRS interface.</p>
-        <a href="https://www.sprs.csd.disa.mil" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- DCAA Resources -->
-      <div class="tool-card" data-tier="intermediate" data-name="DCAA Defense Contract Audit Agency audit guidance forward pricing incurred cost">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--intermediate">Intermediate</div>
-          <div class="tool-card-icon">🔍</div>
-        </div>
-        <h3 class="tool-card-name">DCAA Resources</h3>
-        <p class="tool-card-desc">Defense Contract Audit Agency — access audit guidance, the Contract Audit Manual, and resources for evaluating contractor cost proposals and forward pricing rates.</p>
-        <a href="https://www.dcaa.mil" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- J&A / Sole Source Templates -->
-      <div class="tool-card" data-tier="intermediate" data-name="J&A Justification Approval sole source limited competition template AFFARS">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--intermediate">Intermediate</div>
-          <div class="tool-card-icon">📝</div>
-        </div>
-        <h3 class="tool-card-name">J&amp;A / Sole Source Templates</h3>
-        <p class="tool-card-desc">AFFARS and DAF templates for Justification &amp; Approval documents, sole source determinations, and limited competition justifications — check SAF/AQC for current approved formats.</p>
-        <a href="https://www.acquisition.gov/affars/5306.304" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- Price Reasonableness / Market Research -->
-      <div class="tool-card" data-tier="intermediate" data-name="price reasonableness market research documentation independent government estimate IGE">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--intermediate">Intermediate</div>
-          <div class="tool-card-icon">💱</div>
-        </div>
-        <h3 class="tool-card-name">DPC Price &amp; Market Research</h3>
-        <p class="tool-card-desc">DoD Defense Pricing &amp; Contracting guidance on price reasonableness determinations, market research techniques, and independent government estimate documentation standards.</p>
-        <a href="https://www.acq.osd.mil/dpap/cpic/cp/price_reasonableness.html" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- SBIR/STTR -->
-      <div class="tool-card" data-tier="intermediate" data-name="SBIR STTR Small Business Innovation Research set-aside eligibility tech transfer">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--intermediate">Intermediate</div>
-          <div class="tool-card-icon">🔬</div>
-        </div>
-        <h3 class="tool-card-name">SBIR / STTR Portal</h3>
-        <p class="tool-card-desc">Official SBIR/STTR program portal — check phase award eligibility, search awarded topics, and understand sole-source authority for SBIR Phase II follow-on contracts.</p>
-        <a href="https://www.sbir.gov" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- DARS (DFARS Class Deviations) -->
-      <div class="tool-card" data-tier="intermediate" data-name="DARS DFARS defense acquisition regulations system class deviations PGI">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--intermediate">Intermediate</div>
-          <div class="tool-card-icon">⚙️</div>
-        </div>
-        <h3 class="tool-card-name">DARS — DFARS RFO Deviations</h3>
-        <p class="tool-card-desc">Defense Acquisition Regulations System page tracking all active DFARS Revolutionary FAR Overhaul class deviations — critical to stay current as tranches roll out through 2026.</p>
-        <a href="https://www.acq.osd.mil/dpap/dars/dfars_far_overhaul_class_deviations.html" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- AFFARS -->
-      <div class="tool-card" data-tier="intermediate" data-name="AFFARS Air Force Federal Acquisition Regulation Supplement mandatory procedures MP">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--intermediate">Intermediate</div>
-          <div class="tool-card-icon">✈️</div>
-        </div>
-        <h3 class="tool-card-name">AFFARS</h3>
-        <p class="tool-card-desc">Air Force Federal Acquisition Regulation Supplement — AF-specific clauses, mandatory procedures (MPs), and unique DAF acquisition requirements layered on top of the FAR/DFARS.</p>
-        <a href="https://www.acquisition.gov/affars" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-    </div><!-- /grid-intermediate -->
-  </div>
-</section>
-
-<!-- ==================== ADVANCED TIER ==================== -->
-<section class="tier-section tier-section--advanced" id="tier-advanced">
-  <div class="container">
-    <div class="tier-header">
-      <div class="tier-header-left">
-        <div class="tier-label tier-label--advanced">
-          <span class="tier-icon">🟣</span>
-          <span>Advanced</span>
-        </div>
-        <h2 class="tier-title">Expert &amp; Oversight Resources</h2>
-        <p class="tier-desc">For senior COs, PCOs, SCOs, and legal/policy professionals handling complex acquisitions, cost-type contracts, source selections, bid protests, and audit readiness.</p>
-      </div>
-      <div class="tier-stat">
-        <span class="tier-count" id="count-advanced">9</span>
-        <span class="tier-count-label">tools</span>
-      </div>
-    </div>
-
-    <div class="tools-tier-grid" id="grid-advanced">
-
-      <!-- CAS Coverage -->
-      <div class="tool-card" data-tier="advanced" data-name="CAS Cost Accounting Standards coverage determination threshold full modified">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--advanced">Advanced</div>
-          <div class="tool-card-icon">🧮</div>
-        </div>
-        <h3 class="tool-card-name">Cost Accounting Standards (CAS)</h3>
-        <p class="tool-card-desc">CAS Board regulations and coverage determination resources — note RFO doubled full CAS coverage threshold to $100M and per-contract trigger to $35M (effective June 30, 2026).</p>
-        <a href="https://www.acquisition.gov/far/subpart-9901" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- Defense Pricing and Contracting (DPC) -->
-      <div class="tool-card" data-tier="advanced" data-name="DPC Defense Pricing Contracting policy guidance forward pricing rates TINA">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--advanced">Advanced</div>
-          <div class="tool-card-icon">🏗️</div>
-        </div>
-        <h3 class="tool-card-name">Defense Pricing &amp; Contracting (DPC)</h3>
-        <p class="tool-card-desc">DoD's authoritative source for pricing policy, contract finance guidance, TINA/Truth in Negotiations, forward pricing rate guidance, and DFARS class deviation tracking.</p>
-        <a href="https://www.acq.osd.mil/dpap/" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- Source Selection Templates -->
-      <div class="tool-card" data-tier="advanced" data-name="source selection evaluation plan SEP SSP template SSEB DAF Air Force tradeoff">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--advanced">Advanced</div>
-          <div class="tool-card-icon">🎯</div>
-        </div>
-        <h3 class="tool-card-name">Source Selection Templates (DAF)</h3>
-        <p class="tool-card-desc">DAF-specific source selection evaluation plan templates, SSEB training, and tradeoff analysis guidance — found via AFFARS MP5315.3 and SAF/AQC community resources.</p>
-        <a href="https://www.acquisition.gov/affars/mp5315.3" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- UCA Tracking -->
-      <div class="tool-card" data-tier="advanced" data-name="UCA Undefinitized Contract Action tracking limitation of obligation definitization schedule DFARS 217.74">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--advanced">Advanced</div>
-          <div class="tool-card-icon">⏱️</div>
-        </div>
-        <h3 class="tool-card-name">UCA Tracking (DFARS 217.74)</h3>
-        <p class="tool-card-desc">DFARS Subpart 217.74 governs Undefinitized Contract Actions — use DPC guidance and your SCO's UCA tracking system to manage definitization schedules and LOO compliance.</p>
-        <a href="https://www.acquisition.gov/dfars/subpart-217.74" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- FAR/DFARS Deviation Tracker -->
-      <div class="tool-card" data-tier="advanced" data-name="FAR DFARS deviation tracker class individual open cases regulatory agenda">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--advanced">Advanced</div>
-          <div class="tool-card-icon">📡</div>
-        </div>
-        <h3 class="tool-card-name">FAR/DFARS Open Cases</h3>
-        <p class="tool-card-desc">Tracks open FAR and DFARS rulemaking cases — critical for staying ahead of upcoming regulatory changes, especially during the active Phase 2 RFO rulemaking period.</p>
-        <a href="https://www.acq.osd.mil/dpap/dars/opencases/farcasenum/far.pdf" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- SAM API -->
-      <div class="tool-card" data-tier="advanced" data-name="SAM.gov API system award management developer power user entity data beta">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--advanced">Advanced</div>
-          <div class="tool-card-icon">🔌</div>
-        </div>
-        <h3 class="tool-card-name">SAM.gov API</h3>
-        <p class="tool-card-desc">SAM.gov public API for programmatic access to entity data, exclusions, awards, and wage determinations — useful for building internal tools or automating compliance checks.</p>
-        <a href="https://open.gsa.gov/api/entity-api/" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- GAO Bid Protest Database -->
-      <div class="tool-card" data-tier="advanced" data-name="GAO bid protest database decisions opinions legal B-number CICA">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--advanced">Advanced</div>
-          <div class="tool-card-icon">⚖️</div>
-        </div>
-        <h3 class="tool-card-name">GAO Bid Protest Decisions</h3>
-        <p class="tool-card-desc">Full-text searchable database of GAO bid protest decisions — indispensable for source selection officers, legal counsel, and COs defending award decisions.</p>
-        <a href="https://www.gao.gov/legal/bid-protests/search" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- ASBCA Decisions -->
-      <div class="tool-card" data-tier="advanced" data-name="ASBCA Armed Services Board Contract Appeals decisions disputes claims REA">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--advanced">Advanced</div>
-          <div class="tool-card-icon">🏛️</div>
-        </div>
-        <h3 class="tool-card-name">ASBCA Decisions</h3>
-        <p class="tool-card-desc">Armed Services Board of Contract Appeals — searchable database of decisions on contract disputes, claims, and REAs. Essential reference for contracting officers and legal teams.</p>
-        <a href="https://www.asbca.mil/Decisions/decisions.html" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-      <!-- IG / Audit Readiness -->
-      <div class="tool-card" data-tier="advanced" data-name="Inspector General DoD IG audit readiness financial improvement documentation contract files">
-        <div class="tool-card-top">
-          <div class="tool-card-badge tool-card-badge--advanced">Advanced</div>
-          <div class="tool-card-icon">🔒</div>
-        </div>
-        <h3 class="tool-card-name">DoD IG &amp; Audit Readiness</h3>
-        <p class="tool-card-desc">DoD Inspector General reports, audit findings, and OUSD(C) audit readiness guidance — review for systemic contracting deficiencies and prepare contract files for DCAA/IG scrutiny.</p>
-        <a href="https://www.dodig.mil/Reports/Audit-Reports/" target="_blank" rel="noopener" class="tool-card-link">Open <span class="tool-card-arrow">→</span></a>
-      </div>
-
-    </div><!-- /grid-advanced -->
-  </div>
-</section>
-
-<!-- FOOTER -->
 <footer class="footer">
   <div class="container footer-inner">
     <div class="footer-brand">
@@ -518,89 +118,14 @@
       <a href="index.html">Home</a>
       <a href="videos.html">Training Videos</a>
       <a href="gao-archive.html">GAO Updates</a>
-      <a href="asbca.html">ASBCA</a>
-      <a href="dfars.html">FAR Updates</a>
       <a href="tools.html">Tools</a>
-      <a href="links.html">Links</a>
+      <a href="dfars.html">FAR Updates</a>
+      <a href="forum.html">Forum</a>
     </nav>
     <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
     <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
   </div>
 </footer>
-
 <script src="main.js"></script>
-<script>
-// ── Toolbar: nav scroll + mobile toggle (handled by main.js)
-
-// ── Search / Filter
-const searchInput = document.getElementById('toolSearch');
-const searchClear = document.getElementById('searchClear');
-const allCards = document.querySelectorAll('.tool-card');
-const noResults = document.getElementById('noResults');
-
-function filterTools(query) {
-  const q = query.trim().toLowerCase();
-  let visibleCount = 0;
-
-  allCards.forEach(card => {
-    const name = (card.dataset.name || '').toLowerCase();
-    const cardTitle = card.querySelector('.tool-card-name')?.textContent.toLowerCase() || '';
-    const cardDesc = card.querySelector('.tool-card-desc')?.textContent.toLowerCase() || '';
-    const match = !q || name.includes(q) || cardTitle.includes(q) || cardDesc.includes(q);
-    card.style.display = match ? '' : 'none';
-    if (match) visibleCount++;
-  });
-
-  // Update tier section visibility
-  ['beginner','intermediate','advanced'].forEach(tier => {
-    const section = document.getElementById('tier-' + tier);
-    const grid = document.getElementById('grid-' + tier);
-    if (!section || !grid) return;
-    const visibleInTier = Array.from(grid.querySelectorAll('.tool-card')).filter(c => c.style.display !== 'none').length;
-    section.style.display = visibleInTier === 0 ? 'none' : '';
-  });
-
-  noResults.style.display = visibleCount === 0 ? 'flex' : 'none';
-  searchClear.style.display = q ? 'block' : 'none';
-}
-
-searchInput.addEventListener('input', e => filterTools(e.target.value));
-searchClear.addEventListener('click', () => {
-  searchInput.value = '';
-  filterTools('');
-  searchInput.focus();
-});
-
-// ── Smooth scroll for tier pill nav
-document.querySelectorAll('.tier-pill').forEach(pill => {
-  pill.addEventListener('click', e => {
-    e.preventDefault();
-    const target = document.querySelector(pill.getAttribute('href'));
-    if (target) {
-      const offset = 120;
-      const top = target.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({ top, behavior: 'smooth' });
-    }
-  });
-});
-
-// ── Active pill highlight on scroll
-const tierSections = ['beginner','intermediate','advanced'].map(t => document.getElementById('tier-' + t));
-const tierPills = document.querySelectorAll('.tier-pill');
-
-function updateActivePill() {
-  const scrollY = window.scrollY + 180;
-  let active = null;
-  tierSections.forEach((section, i) => {
-    if (section && section.offsetTop <= scrollY) active = i;
-  });
-  tierPills.forEach((pill, i) => {
-    pill.classList.toggle('tier-pill--active', i === active);
-  });
-}
-
-window.addEventListener('scroll', updateActivePill, { passive: true });
-updateActivePill();
-</script>
 </body>
 </html>
