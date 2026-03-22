@@ -195,6 +195,8 @@
       .modal-hdr, .modal-body { padding-left: 1.15rem; padding-right: 1.15rem; }
       .rxn-popup { bottom: auto; top: calc(100% + 8px); }
     }
+      .cmt-del-btn{background:none;border:1px solid rgba(239,68,68,.35);color:#f87171;cursor:pointer;font-size:.72rem;padding:.12rem .4rem;border-radius:4px;margin-left:auto;transition:background .15s;}
+    .cmt-del-btn:hover{background:rgba(239,68,68,.15);}
   </style>
 </head>
 <body>
@@ -220,6 +222,7 @@
       <li><a href="forum.html" class="active">Forum</a></li>
     </ul>
   </div>
+<a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Support KTHQ</a>
 </nav>
 
 <!-- PAGE HERO -->
@@ -789,12 +792,30 @@ function renderComments(postId, list) {
 
   wrap.innerHTML = `<div class="comments-hdr">${list.length} Comment${list.length !== 1 ? 's' : ''}</div>${cmtHTML}${inputHTML}`;
 
+  if (currentUser?.username === 'nhazelett') {
+    wrap.querySelectorAll('.comment-item').forEach(function(el, i) {
+      var btn = document.createElement('button');
+      btn.className = 'cmt-del-btn';
+      btn.textContent = 'Delete';
+      var cId = list[i].id, pId = postId;
+      btn.addEventListener('click', function() { deleteComment(cId, pId); });
+      el.querySelector('.comment-item-meta').appendChild(btn);
+    });
+  }
+
   if (currentUser) {
     document.getElementById('cmtsubmit-' + postId)?.addEventListener('click', () => submitComment(postId));
     document.getElementById('cmtinput-'  + postId)?.addEventListener('keydown', e => {
       if (e.key === 'Enter' && e.ctrlKey) submitComment(postId);
     });
   }
+}
+
+async function deleteComment(commentId, postId) {
+  if (!confirm('Delete this comment?')) return;
+  const { error } = await supabase.from('comments').delete().eq('id', commentId);
+  if (error) { toast('Could not delete comment.', true); return; }
+  await loadComments(postId);
 }
 
 async function submitComment(postId) {
