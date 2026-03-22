@@ -1,633 +1,2486 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>CCO PWS Builder — Air Force Contract Tool</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="CCO PWS Builder — build complete Performance Work Statements for AFICC/KQ contingency and OCONUS operations. Step-by-step wizard with editable output." />
+<title>CCO PWS Builder | KTHQ ContractingHQ</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f0;color:#1a1a2e;min-height:100vh}
-/* ── Header ── */
-.hdr{background:#1a2a5e;color:#fff;padding:14px 24px;display:flex;align-items:center;gap:14px}
-.hdr-badge{background:#c8a227;color:#1a2a5e;font-weight:800;font-size:.82rem;border-radius:6px;width:36px;height:36px;display:grid;place-items:center;flex-shrink:0}
-.hdr-title{font-size:1.15rem;font-weight:800;letter-spacing:.04em}
-.hdr-sub{font-size:.7rem;color:#a0b0d0;letter-spacing:.08em;margin-top:2px}
-/* ── Nav tabs ── */
-.nav{background:#f0f0ea;border-bottom:1px solid #d0cfc0;display:flex;overflow-x:auto}
-.nav-tab{padding:10px 18px;font-size:.72rem;font-weight:700;letter-spacing:.07em;color:#888;white-space:nowrap;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s}
-.nav-tab.active{color:#1a2a5e;border-bottom-color:#c8a227}
-.nav-tab.done{color:#1a2a5e}
-/* ── Content ── */
-.content{max-width:900px;margin:0 auto;padding:32px 20px}
-.step{display:none}
-.step.active{display:block}
-.step-title{font-size:1.5rem;font-weight:700;color:#1a2a5e;margin-bottom:4px}
-.step-sub{font-size:.78rem;letter-spacing:.08em;color:#888;text-transform:uppercase;margin-bottom:18px}
-.info-box{background:#e8edf5;border-left:4px solid #1a2a5e;padding:10px 16px;border-radius:4px;margin-bottom:24px;font-size:.85rem;color:#334}
-/* ── Card grids ── */
-.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:20px}
-.card{border:2px solid #ddd;border-radius:10px;background:#fff;padding:18px 12px;cursor:pointer;text-align:center;transition:all .15s}
-.card:hover{border-color:#1a2a5e;background:#f0f3fa}
-.card.selected{border-color:#1a2a5e;background:#1a2a5e;color:#fff}
-.card-icon{font-size:1.6rem;margin-bottom:8px}
-.card-name{font-size:.78rem;font-weight:700;letter-spacing:.05em}
-.card-desc{font-size:.68rem;margin-top:4px;opacity:.7;line-height:1.4}
-/* ── Sub-category label ── */
-.section-label{font-size:.7rem;font-weight:700;letter-spacing:.1em;color:#c8a227;text-transform:uppercase;margin:20px 0 10px}
-/* ── Form elements ── */
-.field{margin-bottom:20px}
-.field label{display:block;font-size:.8rem;font-weight:700;color:#334;letter-spacing:.04em;margin-bottom:6px}
-.field input,.field select,.field textarea{width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px 14px;font-size:.9rem;font-family:inherit;transition:border .15s;background:#fff;color:#1a1a2e}
-.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#1a2a5e}
-.field textarea{resize:vertical;min-height:80px}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-/* ── Checkboxes ── */
-.check-group{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-bottom:16px}
-.check-item{display:flex;align-items:flex-start;gap:10px;background:#fff;border:1px solid #ddd;border-radius:8px;padding:10px 14px;cursor:pointer;transition:border .15s}
-.check-item:hover{border-color:#1a2a5e}
-.check-item input{margin-top:2px;flex-shrink:0;accent-color:#1a2a5e;width:16px;height:16px}
-.check-item span{font-size:.82rem;color:#334;line-height:1.4}
-/* ── Navigation buttons ── */
-.nav-btns{display:flex;justify-content:space-between;margin-top:32px;padding-top:20px;border-top:1px solid #ddd}
-.btn{padding:10px 28px;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .15s}
-.btn-back{background:#fff;border:1.5px solid #bbb;color:#666}
-.btn-back:hover{border-color:#1a2a5e;color:#1a2a5e}
-.btn-next{background:#1a2a5e;border:none;color:#fff}
-.btn-next:hover{background:#243a7e}
-.btn-build{background:#c8a227;border:none;color:#1a2a5e;font-size:1rem;padding:12px 36px}
-.btn-build:hover{background:#e0b82a}
-/* ── PWS Preview ── */
-.pws-preview{background:#fff;border:1px solid #ddd;border-radius:12px;padding:32px;margin-bottom:24px;line-height:1.7;font-size:.92rem}
-.pws-preview h1{font-size:1.2rem;font-weight:800;text-align:center;margin-bottom:4px;color:#1a2a5e}
-.pws-preview h2{font-size:.92rem;font-weight:700;color:#1a2a5e;margin-top:20px;margin-bottom:4px;text-transform:uppercase;border-bottom:1px solid #ddd;padding-bottom:4px}
-.pws-preview p{margin-bottom:10px;color:#334}
-.pws-preview ul{margin:8px 0 12px 18px;color:#334}
-.pws-preview li{margin-bottom:4px}
-.section-num{color:#888;font-size:.8rem}
-/* ── Print ── */
-.btn-print{background:#1a2a5e;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer;margin-right:10px}
-.btn-print:hover{background:#243a7e}
-.btn-copy{background:#fff;color:#1a2a5e;border:1.5px solid #1a2a5e;padding:10px 24px;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer}
-.btn-copy:hover{background:#f0f3fa}
-@media print{.hdr,.nav,.nav-btns,.btn-print,.btn-copy{display:none}.pws-preview{border:none;padding:0}}
-@media(max-width:600px){.field-row{grid-template-columns:1fr}.card-grid{grid-template-columns:repeat(2,1fr)}}
-.bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s;margin-top:.75rem}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+
+  :root {
+    --af-blue:    #003087;
+    --af-blue-lt: #1a4fa8;
+    --af-gold:    #b8961e;
+    --af-gold-lt: #d4ae3a;
+    --steel:      #2c3e50;
+    --slate:      #4a5568;
+    --mist:       #e8edf5;
+    --paper:      #f7f9fc;
+    --white:      #ffffff;
+    --red:        #c0392b;
+    --green:      #1e7e4a;
+    --border:     #c8d0dc;
+    --shadow:     0 2px 8px rgba(0,0,0,0.10);
+    --radius:     4px;
+    --mono:       'IBM Plex Mono', monospace;
+    --sans:       'IBM Plex Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    font-size: 14px;
+    background: var(--paper);
+    color: var(--steel);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  #app-header {
+    background: var(--af-blue);
+    color: #fff;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border-bottom: 3px solid var(--af-gold);
+    position: sticky; top: 64px; z-index: 90;
+  }
+  #app-header .shield {
+    width: 40px; height: 40px;
+    background: var(--af-gold);
+    clip-path: polygon(50% 0%, 100% 15%, 100% 70%, 50% 100%, 0% 70%, 0% 15%);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; color: var(--af-blue); font-family: var(--mono);
+    flex-shrink: 0;
+  }
+  #app-header h1 { font-size: 17px; font-weight: 700; letter-spacing: .04em; }
+  #app-header p  { font-size: 11px; opacity: .75; font-family: var(--mono); margin-top: 2px; }
+
+  /* ── PROGRESS BAR ── */
+  #progress-wrap {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    display: flex;
+    gap: 0;
+  }
+  .prog-step {
+    flex: 1;
+    padding: 10px 6px;
+    text-align: center;
+    font-size: 11px;
+    font-family: var(--mono);
+    font-weight: 600;
+    letter-spacing: .03em;
+    color: var(--slate);
+    border-bottom: 3px solid transparent;
+    cursor: default;
+    transition: all .2s;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .prog-step.active { color: var(--af-blue); border-bottom-color: var(--af-gold); }
+  .prog-step.done   { color: var(--green); border-bottom-color: var(--green); }
+
+  /* ── MAIN LAYOUT ── */
+  #main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+  }
+
+  /* ── STEP PANELS ── */
+  .step-panel { display: none; }
+  .step-panel.active { display: block; animation: fadeIn .25s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+  .step-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--af-blue);
+    margin-bottom: 4px;
+    letter-spacing: -.01em;
+  }
+  .step-sub {
+    font-size: 12px;
+    color: var(--slate);
+    margin-bottom: 22px;
+    font-family: var(--mono);
+  }
+
+  /* ── FORM ELEMENTS ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-grid.single { grid-template-columns: 1fr; }
+  .form-grid.triple { grid-template-columns: 1fr 1fr 1fr; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .field.span2 { grid-column: span 2; }
+  .field.span3 { grid-column: span 3; }
+
+  label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+  label .req { color: var(--red); margin-left: 2px; }
+  label .hint {
+    font-size: 10px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: #888;
+    margin-left: 6px;
+  }
+
+  input[type=text], input[type=date], input[type=number],
+  select, textarea {
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--steel);
+    transition: border-color .15s, box-shadow .15s;
+    width: 100%;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--af-blue);
+    box-shadow: 0 0 0 3px rgba(0,48,135,.10);
+  }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+  /* Pre-filled sample text styling */
+  input.prefilled, textarea.prefilled {
+    background: #fffdf4;
+    border-color: #d4b96a;
+    color: #3a3000;
+  }
+  input.prefilled:focus, textarea.prefilled:focus {
+    background: #fff;
+    border-color: var(--af-blue);
+    color: var(--steel);
+  }
+  .prefill-note {
+    font-size: 10px;
+    color: #9a7a00;
+    font-family: var(--mono);
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .prefill-note::before { content: "✎"; }
+
+  textarea.tall { min-height: 130px; }
+  textarea.xtall { min-height: 180px; }
+
+  /* ── CARD GROUP ── */
+  .card-group {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 18px;
+  }
+  .card-group h3 {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--af-blue);
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--mist);
+  }
+
+  /* ── CHOICE TILES ── */
+  .tile-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 18px; }
+  .tile {
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .15s;
+    background: #fff;
+    user-select: none;
+  }
+  .tile:hover { border-color: var(--af-blue-lt); background: var(--mist); }
+  .tile.selected { border-color: var(--af-blue); background: var(--af-blue); color: #fff; }
+  .tile .tile-icon { font-size: 24px; margin-bottom: 6px; }
+  .tile .tile-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+  .tile .tile-sub { font-size: 10px; margin-top: 3px; opacity: .7; }
+
+  /* ── CHECKBOXES ── */
+  .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .check-grid.single-col { grid-template-columns: 1fr; }
+  .check-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    background: #fff;
+    transition: background .1s;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .check-item:hover { background: var(--mist); }
+  .check-item input[type=checkbox] { margin-top: 2px; flex-shrink: 0; accent-color: var(--af-blue); }
+  .check-item.checked { background: var(--mist); border-color: var(--af-blue); }
+
+  /* ── SECTION DIVIDER ── */
+  .section-divider {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--af-gold);
+    margin: 22px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── BUTTONS ── */
+  .btn-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+  .btn {
+    padding: 10px 22px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    border-radius: var(--radius);
+    cursor: pointer;
+    border: none;
+    transition: all .15s;
+  }
+  .btn-primary { background: var(--af-blue); color: #fff; }
+  .btn-primary:hover { background: var(--af-blue-lt); }
+  .btn-secondary { background: var(--mist); color: var(--steel); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--border); }
+  .btn-gold { background: var(--af-gold); color: #fff; }
+  .btn-gold:hover { background: var(--af-gold-lt); }
+  .btn-danger { background: var(--red); color: #fff; }
+  .btn-danger:hover { background: #a93226; }
+  .btn-green { background: var(--green); color: #fff; }
+  .btn-green:hover { background: #155d37; }
+
+  /* ── ALERT BOX ── */
+  .alert {
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    font-size: 12px;
+    margin-bottom: 14px;
+    border-left: 4px solid;
+  }
+  .alert-info { background: #e8f0fe; border-color: var(--af-blue); color: var(--af-blue); }
+  .alert-warn { background: #fff8e6; border-color: var(--af-gold); color: #7a5c00; }
+  .alert-good { background: #e6f4ea; border-color: var(--green); color: var(--green); }
+
+  /* ── DYNAMIC ROW ── */
+  .dyn-row {
+    display: flex; gap: 8px; align-items: flex-start;
+    margin-bottom: 8px;
+  }
+  .dyn-row input, .dyn-row textarea { flex: 1; }
+  .dyn-row .rm-btn {
+    background: var(--mist);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 7px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    flex-shrink: 0;
+    color: var(--red);
+    transition: background .15s;
+  }
+  .dyn-row .rm-btn:hover { background: #ffe0de; }
+  .add-row-btn {
+    font-size: 11px;
+    font-family: var(--mono);
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--af-blue);
+    background: none;
+    border: 1px dashed var(--af-blue);
+    border-radius: var(--radius);
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: background .15s;
+    margin-top: 4px;
+  }
+  .add-row-btn:hover { background: var(--mist); }
+
+  /* ══════════════════════════════════════
+     PWS OUTPUT
+  ══════════════════════════════════════ */
+  #pws-output-wrap { display: none; }
+
+  /* ── EDITOR TOOLBAR ── */
+  #pws-toolbar {
+    position: sticky;
+    top: 133px; /* below site nav (64px) + app-header (69px) */
+    z-index: 90;
+    background: var(--steel);
+    padding: 0;
+    border-radius: var(--radius) var(--radius) 0 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+  #pws-toolbar-top {
+    display: flex; gap: 8px; align-items: center;
+    padding: 9px 14px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  #pws-toolbar-top span.doc-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #aaa;
+    margin-right: 6px;
+    white-space: nowrap;
+  }
+  .tb-sep {
+    width: 1px; height: 20px;
+    background: rgba(255,255,255,0.2);
+    margin: 0 2px;
+    flex-shrink: 0;
+  }
+  .tb-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 3px;
+    color: #e0e0e0;
+    font-size: 12px;
+    padding: 4px 9px;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-weight: 600;
+    transition: all .12s;
+    white-space: nowrap;
+    letter-spacing: .02em;
+  }
+  .tb-btn:hover { background: rgba(255,255,255,0.18); color: #fff; }
+  .tb-btn.active { background: var(--af-gold); color: #1a1a00; border-color: var(--af-gold); }
+  .tb-btn.green  { background: var(--green); color: #fff; border-color: var(--green); }
+  .tb-btn.green:hover { background: #155d37; }
+  .tb-btn.gold   { background: var(--af-gold); color: #1a1a00; border-color: var(--af-gold-lt); }
+  .tb-btn.gold:hover { background: var(--af-gold-lt); }
+
+  /* Find/Replace bar */
+  #find-bar {
+    display: none;
+    padding: 7px 14px;
+    background: #1a2530;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  #find-bar.open { display: flex; }
+  #find-bar input {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 4px 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 3px;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    width: 180px;
+  }
+  #find-bar input::placeholder { color: rgba(255,255,255,0.4); }
+  #find-bar input:focus { outline: none; border-color: var(--af-gold); }
+  #find-bar label {
+    font-size: 11px;
+    color: #aaa;
+    font-family: var(--mono);
+    white-space: nowrap;
+  }
+  #find-count {
+    font-size: 11px;
+    color: var(--af-gold);
+    font-family: var(--mono);
+    min-width: 60px;
+  }
+
+  /* Jump-to nav */
+  #section-nav {
+    display: none;
+    padding: 6px 14px;
+    background: #232f3a;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  #section-nav.open { display: flex; }
+  #section-nav label {
+    font-size: 10px; font-family: var(--mono);
+    color: #888; white-space: nowrap;
+    text-transform: uppercase; letter-spacing: .06em;
+  }
+  .nav-pill {
+    font-size: 10px; font-family: var(--mono); font-weight: 600;
+    padding: 3px 8px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    color: #ccc;
+    cursor: pointer;
+    background: rgba(255,255,255,0.06);
+    transition: all .12s;
+    white-space: nowrap;
+  }
+  .nav-pill:hover { background: var(--af-blue); color: #fff; border-color: var(--af-blue-lt); }
+
+  /* Status bar */
+  #editor-status {
+    display: flex; gap: 14px; align-items: center;
+    padding: 4px 14px;
+    background: #141e26;
+    font-size: 10px;
+    font-family: var(--mono);
+    color: #667;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-wrap: wrap;
+  }
+  #editor-status span { color: #8a9bb0; }
+  #tbd-count-badge {
+    background: #c0392b;
+    color: #fff;
+    padding: 1px 7px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  #tbd-count-badge.clean { background: var(--green); }
+
+  /* The document itself */
+  #pws-document {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 52px 60px;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #111;
+    min-height: 600px;
+    border-radius: 0 0 var(--radius) var(--radius);
+    outline: none;
+  }
+  #pws-document:focus-within { box-shadow: inset 0 0 0 2px rgba(0,48,135,0.10); }
+  mark.find-hl  { background: #ffe066; color: #111; border-radius: 2px; }
+  mark.find-cur { background: #ff8c00; color: #fff; border-radius: 2px; }
+  #pws-document:focus { box-shadow: inset 0 0 0 2px rgba(0,48,135,0.12); }
+
+  /* Highlight matches */
+  mark.find-highlight { background: #ffe066; color: #111; border-radius: 2px; }
+  mark.find-current   { background: #ff9900; color: #fff; border-radius: 2px; }
+
+  /* PWS formatting styles */
+  #pws-document .pws-header-block {
+    text-align: center;
+    margin-bottom: 28px;
+    border-bottom: 2px solid #111;
+    padding-bottom: 16px;
+  }
+  #pws-document .pws-doc-title {
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 4px;
+  }
+  #pws-document .pws-doc-sub {
+    font-size: 13px;
+    font-style: italic;
+  }
+  #pws-document .pws-meta {
+    font-size: 11px;
+    margin-top: 8px;
+    color: #444;
+    font-family: 'Courier New', monospace;
+  }
+  #pws-document .pws-section {
+    margin-top: 22px;
+    margin-bottom: 4px;
+  }
+  #pws-document .pws-section-hdr {
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 3px;
+    margin-bottom: 8px;
+    letter-spacing: .04em;
+  }
+  #pws-document .pws-sub-hdr {
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 4px;
+  }
+  #pws-document .pws-body {
+    margin-bottom: 8px;
+    text-align: justify;
+  }
+  #pws-document .pws-list {
+    margin-left: 22px;
+    margin-bottom: 8px;
+  }
+  #pws-document .pws-list li { margin-bottom: 3px; }
+  #pws-document .pws-clin-block {
+    border: 1px solid #ccc;
+    padding: 10px 14px;
+    margin: 8px 0;
+    background: #fafafa;
+  }
+  #pws-document .pws-tbd {
+    color: #c0392b;
+    font-weight: bold;
+  }
+  #pws-document table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 12px;
+  }
+  #pws-document th {
+    background: #222;
+    color: #fff;
+    padding: 6px 10px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+  #pws-document td {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    vertical-align: top;
+  }
+  #pws-document tr:nth-child(even) td { background: #f7f7f7; }
+
+
+
+    @media print {
+    #app-header, #progress-wrap, .step-panel, #pws-toolbar, .btn-row,
+    #build-pws-btn, #restart-btn { display: none !important; }
+    #pws-output-wrap { display: block !important; }
+    #pws-document {
+      border: none;
+      padding: 0;
+      font-size: 11pt;
+    }
+    body { background: #fff; }
+  }
 </style>
+
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+  /* Ensure the tool body still uses its own paper background */
+  body { background: var(--paper, #f7f9fc); }
+  /* BMC button */
+  .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+</style>
 </head>
 <body>
 
-<div class="hdr">
-  <div class="hdr-badge">AF</div>
-  <div>
-    <div class="hdr-title">CCO PWS BUILDER</div>
-    <div class="hdr-sub">AFICC/KQ &middot; CONTINGENCY CONTRACTING &middot; OVERSEAS OPERATIONS</div>
+<!-- KTHQ SITE NAV -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#welcome">Welcome</a></li>
+      <li><a href="videos.html">Training</a></li>
+      <li><a href="index.html#gao">GAO Updates</a></li>
+      <li><a href="asbca.html">ASBCA</a></li>
+      <li><a href="tools.html" class="active">Tools</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li><a href="dfars.html">FAR Updates</a></li>
+      <li><a href="forum.html">Forum</a></li>
+    </ul>
   </div>
-</div>
-
-<nav class="nav" id="navBar">
-  <div class="nav-tab active" data-step="1">1 &bull; CONTRACT TYPE</div>
-  <div class="nav-tab" data-step="2">2 &bull; OVERVIEW</div>
-  <div class="nav-tab" data-step="3">3 &bull; REQUIREMENTS</div>
-  <div class="nav-tab" data-step="4">4 &bull; PERFORMANCE</div>
-  <div class="nav-tab" data-step="5">5 &bull; GFP / SECURITY</div>
-  <div class="nav-tab" data-step="6">6 &bull; DELIVERABLES</div>
-  <div class="nav-tab" data-step="7">7 &bull; REVIEW &amp; BUILD</div>
+  <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Support KTHQ</a>
 </nav>
 
-<div class="content">
+<div id="app-header">
+  <div class="shield">AF</div>
+  <div>
+    <h1>CCO PWS BUILDER</h1>
+    <p>AFICC/KQ · CONTINGENCY CONTRACTING · OVERSEAS OPERATIONS</p>
+  </div>
+</div>
 
-<!-- ═══ STEP 1: CONTRACT TYPE ═══ -->
-<div class="step active" id="step1">
+<div id="progress-wrap">
+  <div class="prog-step active" id="prog-0">1 · Contract Type</div>
+  <div class="prog-step" id="prog-1">2 · Overview</div>
+  <div class="prog-step" id="prog-2">3 · Requirements</div>
+  <div class="prog-step" id="prog-3">4 · Performance</div>
+  <div class="prog-step" id="prog-4">5 · GFP / Security</div>
+  <div class="prog-step" id="prog-5">6 · Deliverables</div>
+  <div class="prog-step" id="prog-6">7 · Review & Build</div>
+</div>
+
+<div id="main">
+
+<!-- ══════════════════════════════════════
+     STEP 0 — CONTRACT TYPE
+══════════════════════════════════════ -->
+<div class="step-panel active" id="step-0">
   <div class="step-title">Contract Type</div>
-  <div class="step-sub">Select the primary contract type &mdash; this drives the entire PWS structure</div>
-  <div class="info-box">All PWS language is pre-loaded for contingency/OCONUS operations. You will refine the specifics in the following steps.</div>
+  <div class="step-sub">SELECT THE PRIMARY CONTRACT TYPE — THIS DRIVES THE ENTIRE PWS STRUCTURE</div>
 
-  <div class="card-grid" id="ctCards">
-    <div class="card" data-ct="services">
-      <div class="card-icon">🔧</div>
-      <div class="card-name">SERVICES</div>
-      <div class="card-desc">Operations, logistics, maintenance, support, food, transportation</div>
+  <div class="alert alert-info">All PWS language is pre-loaded for contingency/OCONUS operations. You will refine the specifics in the following steps.</div>
+
+  <div class="tile-row" id="type-tiles">
+    <div class="tile" onclick="selectType('services','SERVICES','🔧')">
+      <div class="tile-icon">🔧</div>
+      <div class="tile-label">Services</div>
+      <div class="tile-sub">Operations, logistics, maintenance, support, food, transportation</div>
     </div>
-    <div class="card" data-ct="construction">
-      <div class="card-icon">🏗️</div>
-      <div class="card-name">CONSTRUCTION</div>
-      <div class="card-desc">New construction, renovation, repair, force protection structures</div>
+    <div class="tile" onclick="selectType('construction','CONSTRUCTION','🏗️')">
+      <div class="tile-icon">🏗️</div>
+      <div class="tile-label">Construction</div>
+      <div class="tile-sub">New construction, renovation, repair, force protection structures</div>
     </div>
-    <div class="card" data-ct="supply">
-      <div class="card-icon">📦</div>
-      <div class="card-name">SUPPLY / EQUIPMENT</div>
-      <div class="card-desc">Supplies, equipment, vehicles, parts, CLIN-based delivery</div>
+    <div class="tile" onclick="selectType('supply','SUPPLY / EQUIPMENT','📦')">
+      <div class="tile-icon">📦</div>
+      <div class="tile-label">Supply / Equipment</div>
+      <div class="tile-sub">Supplies, equipment, vehicles, parts, CLIN-based delivery</div>
     </div>
-    <div class="card" data-ct="it">
-      <div class="card-icon">💻</div>
-      <div class="card-name">IT / COMMS</div>
-      <div class="card-desc">Network, IT support, communications, satellite, software</div>
+    <div class="tile" onclick="selectType('it','IT / COMMUNICATIONS','💻')">
+      <div class="tile-icon">💻</div>
+      <div class="tile-label">IT / Comms</div>
+      <div class="tile-sub">Network, IT support, communications, satellite, software</div>
     </div>
-    <div class="card" data-ct="medical">
-      <div class="card-icon">⚕️</div>
-      <div class="card-name">MEDICAL SUPPORT</div>
-      <div class="card-desc">Medical services, dental, laboratory, healthcare support</div>
+    <div class="tile" onclick="selectType('medical','MEDICAL SUPPORT','⚕️')">
+      <div class="tile-icon">⚕️</div>
+      <div class="tile-label">Medical Support</div>
+      <div class="tile-sub">Medical services, dental, laboratory, healthcare support</div>
     </div>
-    <div class="card" data-ct="baseops">
-      <div class="card-icon">🏛️</div>
-      <div class="card-name">BASE OPS SUPPORT</div>
-      <div class="card-desc">DFAC, HAZMAT, waste, laundry, morale, base life support</div>
+    <div class="tile" onclick="selectType('base_ops','BASE OPS SUPPORT','🏛️')">
+      <div class="tile-icon">🏛️</div>
+      <div class="tile-label">Base Ops Support</div>
+      <div class="tile-sub">DFAC, HAZMAT, waste, laundry, morale, base life support</div>
     </div>
   </div>
 
-  <div id="subCatSection" style="display:none">
-    <div class="section-label">Sub-Category</div>
-    <div class="card-grid" id="subCards"></div>
+  <div id="subtype-section" style="display:none">
+    <div class="section-divider">Sub-Category</div>
+    <div id="subtype-tiles" class="tile-row"></div>
   </div>
 
-  <div class="nav-btns">
-    <div></div>
-    <button class="btn btn-next" onclick="goStep(2)">NEXT →</button>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="goToStep(1)">Next →</button>
   </div>
 </div>
 
-<!-- ═══ STEP 2: OVERVIEW ═══ -->
-<div class="step" id="step2">
+<!-- ══════════════════════════════════════
+     STEP 1 — OVERVIEW / BACKGROUND
+══════════════════════════════════════ -->
+<div class="step-panel" id="step-1">
   <div class="step-title">Contract Overview</div>
-  <div class="step-sub">Basic contract identification and scope</div>
+  <div class="step-sub">IDENTIFY THE CONTRACT AND OPERATIONAL CONTEXT</div>
 
-  <div class="field-row">
-    <div class="field">
-      <label>Contract/Requirement Title</label>
-      <input type="text" id="title" placeholder="e.g., Maintenance and Repair Services, AB Kandahar"/>
+  <div class="card-group">
+    <h3>Contract Identification</h3>
+    <div class="form-grid triple">
+      <div class="field">
+        <label>Contract / Solicitation Number<span class="req">*</span></label>
+        <input type="text" id="contract_number" placeholder="FA####-##-X-####">
+      </div>
+      <div class="field">
+        <label>Date of PWS<span class="req">*</span></label>
+        <input type="date" id="pws_date">
+      </div>
+      <div class="field">
+        <label>PWS Version</label>
+        <input type="text" id="pws_version" value="1.0">
+      </div>
     </div>
-    <div class="field">
-      <label>Location / Installation</label>
-      <input type="text" id="location" placeholder="e.g., Kandahar Airfield, Afghanistan"/>
-    </div>
-  </div>
-  <div class="field-row">
-    <div class="field">
-      <label>Requesting Organization (Unit/Office)</label>
-      <input type="text" id="reqOrg" placeholder="e.g., 451 AEW/LGC"/>
-    </div>
-    <div class="field">
-      <label>Period of Performance</label>
-      <input type="text" id="pop" placeholder="e.g., 12 months from date of award"/>
-    </div>
-  </div>
-  <div class="field">
-    <label>Mission Context / Background</label>
-    <textarea id="background" placeholder="Briefly describe the operational context and why this contract is needed..."></textarea>
-  </div>
-  <div class="field">
-    <label>Objective / Scope Summary</label>
-    <textarea id="objective" placeholder="Describe what the contractor will provide at a high level..."></textarea>
-  </div>
-  <div class="field-row">
-    <div class="field">
-      <label>Place of Performance</label>
-      <input type="text" id="popPlace" placeholder="e.g., Kandahar Airfield, Kandahar Province"/>
-    </div>
-    <div class="field">
-      <label>Estimated Value (if known)</label>
-      <input type="text" id="estValue" placeholder="e.g., $500,000 or TBD"/>
+    <div class="form-grid">
+      <div class="field">
+        <label>Requiring Activity / Unit<span class="req">*</span></label>
+        <input type="text" id="requiring_activity" value="386 ESFS / 386 ABW/CE">
+      </div>
+      <div class="field">
+        <label>Contracting Office<span class="req">*</span></label>
+        <input type="text" id="contracting_office" value="AFICC Det 1 / 386 CONS">
+      </div>
     </div>
   </div>
 
-  <div class="nav-btns">
-    <button class="btn btn-back" onclick="goStep(1)">← BACK</button>
-    <button class="btn btn-next" onclick="goStep(3)">NEXT →</button>
+  <div class="card-group">
+    <h3>Contract Title &amp; Purpose</h3>
+    <div class="form-grid single">
+      <div class="field">
+        <label>Official Contract Title<span class="req">*</span></label>
+        <input type="text" id="contract_title" value="Base Life Support — Dining Facility Operations, Ali Al Salem AB, Kuwait">
+      </div>
+    </div>
+    <div class="form-grid single">
+      <div class="field">
+        <label>Purpose / Mission Need Statement<span class="req">*</span><span class="hint">1–3 sentences: why is this contract needed?</span></label>
+        <textarea id="mission_need" class="tall">The 386th Air Expeditionary Wing requires contractor support to operate the Ali Al Salem Air Base dining facility (DFAC) in order to sustain mission readiness of assigned and transient forces. The unit lacks sufficient organic military manpower to perform this function on a continuous basis. Contractor support is essential to maintain uninterrupted dining operations and sustain force readiness in this contingency environment.</textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-group">
+    <h3>Background &amp; Operational Context</h3>
+    <div class="form-grid">
+      <div class="field">
+        <label>Installation / Location<span class="req">*</span></label>
+        <input type="text" id="installation" value="Ali Al Salem Air Base, Kuwait">
+      </div>
+      <div class="field">
+        <label>Theater / AOR<span class="req">*</span></label>
+        <select id="aor">
+          <option value="">— Select AOR —</option>
+          <option>USCENTCOM (CENTCOM)</option>
+          <option>USAFRICOM (AFRICOM)</option>
+          <option>USEUCOM (EUCOM)</option>
+          <option>USINDOPACOM (INDOPACOM)</option>
+          <option>USSOUTHCOM (SOUTHCOM)</option>
+          <option>Other OCONUS</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Host Nation<span class="req">*</span></label>
+        <input type="text" id="host_nation" value="Kuwait">
+      </div>
+      <div class="field">
+        <label>Threat / Operational Environment</label>
+        <select id="threat_level">
+          <option value="permissive">Permissive (routine OCONUS)</option>
+          <option value="uncertain">Uncertain / Elevated Threat</option>
+          <option value="hostile" selected>Hostile / Combat Zone</option>
+          <option value="contingency">Active Contingency Operation</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grid single">
+      <div class="field">
+        <label>Background / Operational Context<span class="hint">history, current situation, why OCONUS CCO is acquiring</span></label>
+        <textarea id="background" class="tall">Ali Al Salem Air Base, Kuwait is a primary staging and throughput installation supporting U.S. Air Force operations throughout the USCENTCOM Area of Responsibility (AOR). The installation supports rotational and transient forces and serves as a critical logistics hub for theater operations. The current contract for dining facility operations expires on [EXPIRATION DATE], necessitating a new competitive acquisition to ensure continuity of services. The DFAC serves an average of [NUMBER] personnel per day across three meal periods. This requirement has been reviewed and validated by the Requiring Activity and approved through appropriate resource authority.</textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goToStep(0)">← Back</button>
+    <button class="btn btn-primary" onclick="goToStep(2)">Next →</button>
   </div>
 </div>
 
-<!-- ═══ STEP 3: REQUIREMENTS ═══ -->
-<div class="step" id="step3">
-  <div class="step-title">Technical Requirements</div>
-  <div class="step-sub">Define what the contractor must provide</div>
+<!-- ══════════════════════════════════════
+     STEP 2 — REQUIREMENTS (DYNAMIC BY TYPE)
+══════════════════════════════════════ -->
+<div class="step-panel" id="step-2">
+  <div class="step-title">Scope &amp; Requirements</div>
+  <div class="step-sub">DEFINE WHAT THE CONTRACTOR MUST DO — BE SPECIFIC; VAGUE REQUIREMENTS = BAD OUTCOMES</div>
 
-  <div class="field">
-    <label>Specific Tasks Required (one per line)</label>
-    <textarea id="tasks" rows="6" placeholder="List each specific task or service the contractor must perform...&#10;e.g., Perform preventive maintenance on all HVAC systems&#10;Respond to emergency repair calls within 2 hours&#10;Maintain a parts inventory sufficient for 30 days operations"></textarea>
+  <!-- SERVICES -->
+  <div id="req-services" class="req-section" style="display:none">
+    <div class="alert alert-warn">Use action verbs: "The contractor SHALL provide…", "The contractor SHALL ensure…". Avoid "should" or "will" — those are not legally binding in a PWS.</div>
+    <div class="card-group">
+      <h3>Scope of Work</h3>
+      <div class="form-grid single">
+        <div class="field">
+          <label>Overall Scope Statement<span class="req">*</span></label>
+          <textarea id="svc_scope" class="xtall">The contractor shall provide all personnel, equipment, tools, materials, supervision, and other items and non-personal services necessary to operate and maintain the dining facility (DFAC) at Ali Al Salem Air Base, Kuwait. Services shall be performed on a continuous, uninterrupted basis in accordance with this PWS, Air Force Manual (AFMAN) 34-239, Food Service Management Program, applicable DoD food service standards, and all applicable laws and regulations. The contractor is solely responsible for the quality, adequacy, and legality of all services rendered under this contract.</textarea>
+        </div>
+      </div>
+    </div>
+    <div class="card-group">
+      <h3>Specific Tasks <span style="font-weight:400;font-size:11px;color:#888">(add each major task the contractor must perform)</span></h3>
+      <div id="svc-tasks-list"></div>
+      <button class="add-row-btn" onclick="addDynRow('svc-tasks-list', 'Task description (e.g., Operate dining facility for three meals daily, seven days per week...)', true)">+ Add Task</button>
+    </div>
+    <div class="card-group">
+      <h3>Service Standards</h3>
+      <div class="form-grid">
+        <div class="field">
+          <label>Hours of Operation / Service Availability<span class="req">*</span></label>
+          <input type="text" id="svc_hours" value="24 hours per day, 7 days per week, 365 days per year, including holidays">
+        </div>
+        <div class="field">
+          <label>Response / Surge Requirements</label>
+          <input type="text" id="svc_surge" value="The contractor shall surge to 150% of normal capacity within 4 hours of written notification from the COR">
+        </div>
+      </div>
+      <div class="form-grid single">
+        <div class="field">
+          <label>Minimum Personnel Requirements</label>
+          <textarea id="svc_personnel">The contractor shall provide a minimum of [XX] qualified personnel at all times necessary to meet the performance requirements of this PWS. At no time shall the DFAC be operated below minimum safe staffing levels. Key Personnel shall include: (1) Project Manager/Food Service Director with a minimum of 5 years food service management experience; (1) Head Cook/Executive Chef; and (1) Site Supervisor designated as the primary COR interface. All food handling personnel shall possess current food handler certifications as required by applicable regulations.</textarea>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="field">
-    <label>Applicable Standards / Regulations</label>
-    <textarea id="standards" rows="3" placeholder="e.g., UFC 3-701-02, AFMAN 32-1067, host nation environmental laws, OSHA 29 CFR 1910..."></textarea>
+  <!-- CONSTRUCTION -->
+  <div id="req-construction" class="req-section" style="display:none">
+    <div class="alert alert-warn">Construction PWS must define the END STATE, not the HOW. Reference applicable UFC, AFMAN, and host nation standards. Attach drawings and specs separately.</div>
+    <div class="card-group">
+      <h3>Project Description &amp; Scope</h3>
+      <div class="form-grid single">
+        <div class="field">
+          <label>Project Scope Statement<span class="req">*</span></label>
+          <textarea id="con_scope" class="xtall">The contractor shall provide all labor, materials, equipment, tools, transportation, and supervision required to construct [DESCRIBE FACILITY] at [LOCATION], Ali Al Salem Air Base, Kuwait. All work shall be completed in accordance with this PWS, applicable Unified Facilities Criteria (UFC), AFMAN 32-1084, and all applicable host nation laws and agreements. The contractor shall obtain all required permits and approvals prior to commencing construction. Work shall be performed without interruption to ongoing installation operations unless specifically authorized in writing by the Contracting Officer.</textarea>
+        </div>
+      </div>
+      <div class="form-grid triple">
+        <div class="field">
+          <label>Project Category</label>
+          <select id="con_category">
+            <option>New Construction</option>
+            <option>Renovation / Alteration</option>
+            <option>Repair / Restoration</option>
+            <option>Demolition</option>
+            <option>Expedient / Contingency Construction</option>
+            <option>Hardening / Force Protection</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Estimated Square Footage</label>
+          <input type="text" id="con_sqft" value="[ENTER SQUARE FOOTAGE / SCOPE]">
+        </div>
+        <div class="field">
+          <label>Applicable Standards</label>
+          <input type="text" id="con_standards" value="UFC 4-010-01, AFMAN 32-1084, Unified Facilities Guide Specifications (UFGS)">
+        </div>
+      </div>
+    </div>
+    <div class="card-group">
+      <h3>Specific Work Items</h3>
+      <div id="con-tasks-list"></div>
+      <button class="add-row-btn" onclick="addDynRow('con-tasks-list', 'Work item (e.g., Construct reinforced concrete perimeter wall, 8 ft height, 500 LF total...)', true)">+ Add Work Item</button>
+    </div>
+    <div class="card-group">
+      <h3>Submittals &amp; Schedules</h3>
+      <div class="form-grid">
+        <div class="field">
+          <label>Construction Schedule Required?</label>
+          <select id="con_schedule">
+            <option value="yes">Yes — bar chart required within 5 days of NTP</option>
+            <option value="cpm">Yes — CPM/critical path required</option>
+            <option value="no">No — simple milestone list sufficient</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Submittal Register Required?</label>
+          <select id="con_submittal">
+            <option value="yes">Yes — shop drawings, material submittals required</option>
+            <option value="limited">Limited — key materials only</option>
+            <option value="no">No — expedient construction, minimal submittals</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid single">
+        <div class="field">
+          <label>Special Requirements / Technical Criteria</label>
+          <textarea id="con_special">All structural concrete shall achieve a minimum compressive strength of 3,000 PSI at 28 days. Force protection standoff distances shall be maintained in accordance with UFC 4-010-01, DoD Minimum Antiterrorism Standards for Buildings. All electrical work shall comply with NFPA 70 (National Electrical Code) and applicable Air Force standards. HVAC systems shall be sized to maintain interior temperatures between 68-76 degrees Fahrenheit under local climate conditions. The contractor shall submit material test reports for all structural concrete pours to the COR within 48 hours of testing.</textarea>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="section-label">Required Qualifications</div>
-  <div class="check-group" id="qualChecks">
-    <label class="check-item"><input type="checkbox" value="q1"/> <span>Minimum 3 years experience in contract type</span></label>
-    <label class="check-item"><input type="checkbox" value="q2"/> <span>Supervisor must speak/read English</span></label>
-    <label class="check-item"><input type="checkbox" value="q3"/> <span>Possess applicable professional licenses</span></label>
-    <label class="check-item"><input type="checkbox" value="q4"/> <span>Key personnel must pass background investigation</span></label>
-    <label class="check-item"><input type="checkbox" value="q5"/> <span>Experience with OCONUS/contingency operations</span></label>
-    <label class="check-item"><input type="checkbox" value="q6"/> <span>Certified personnel per local licensing laws</span></label>
+  <!-- SUPPLY -->
+  <div id="req-supply" class="req-section" style="display:none">
+    <div class="card-group">
+      <h3>Supply / Equipment Scope</h3>
+      <div class="form-grid single">
+        <div class="field">
+          <label>Overall Scope Statement<span class="req">*</span></label>
+          <textarea id="sup_scope" class="xtall">The contractor shall furnish, deliver, and where specified install all supplies and equipment identified in the Schedule of Supplies/Services and applicable CLINs. All items shall be new, unissued, in current production, and shall conform to the technical specifications and standards identified in this PWS. Substitution of specified items is not authorized without prior written approval from the Contracting Officer. The contractor shall provide manufacturer documentation and certificates of conformance for all deliverable items as required by the COR.</textarea>
+        </div>
+      </div>
+    </div>
+    <div class="card-group">
+      <h3>Line Items / CLINs</h3>
+      <div id="clin-list"></div>
+      <button class="add-row-btn" onclick="addClinRow()">+ Add CLIN / Item</button>
+    </div>
+    <div class="card-group">
+      <h3>Technical Requirements</h3>
+      <div class="form-grid">
+        <div class="field">
+          <label>Inspection / Acceptance Location</label>
+          <select id="sup_acceptance">
+            <option>Destination — government installation</option>
+            <option>Origin — contractor facility</option>
+            <option>In-transit inspection required</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Packaging Requirements</label>
+          <input type="text" id="sup_packaging" value="Commercial packaging acceptable unless otherwise specified. HAZMAT items shall be packaged per 49 CFR.">
+        </div>
+      </div>
+      <div class="form-grid single">
+        <div class="field">
+          <label>Special Technical Specifications</label>
+          <textarea id="sup_specs">All items shall meet the technical specifications and standards listed below. Items with applicable National Stock Numbers (NSN) shall conform to the requirements of the applicable Federal Supply Class. The contractor shall provide manufacturer data sheets, certificates of conformance, and test reports as required by the COR. Items failing to meet specifications will be rejected and replaced at no cost to the government within [X] calendar days of rejection notification.
+
+[LIST APPLICABLE SPECIFICATIONS, STANDARDS, NSNs, OR PART NUMBERS HERE]</textarea>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="field">
-    <label>Additional Qualifications / Special Requirements</label>
-    <textarea id="addlQuals" rows="3" placeholder="Any additional qualifications specific to this requirement..."></textarea>
+  <!-- IT -->
+  <div id="req-it" class="req-section" style="display:none">
+    <div class="alert alert-warn">IT/Comms contracts must address cybersecurity, authority to operate (ATO), and DISA/AF network connection requirements. Coordinate with base comms (SC) and IA officer before finalizing.</div>
+    <div class="card-group">
+      <h3>IT / Communications Scope</h3>
+      <div class="form-grid single">
+        <div class="field">
+          <label>Overall Scope Statement<span class="req">*</span></label>
+          <textarea id="it_scope" class="xtall">The contractor shall provide all personnel, equipment, hardware, software, cabling, and services necessary to install, configure, operate, and maintain [DESCRIBE IT/COMMS SYSTEM] in support of operations at [INSTALLATION]. All contractor-provided systems and software shall comply with DoD and Air Force information assurance requirements, applicable Defense Information Systems Agency (DISA) Security Technical Implementation Guides (STIGs), and DODI 8510.01, Risk Management Framework (RMF) for DoD Information Technology. No system shall be placed into operation on government networks without a valid Authority to Operate (ATO) issued by the appropriate Authorizing Official.</textarea>
+        </div>
+      </div>
+    </div>
+    <div class="card-group">
+      <h3>Specific Tasks</h3>
+      <div id="it-tasks-list"></div>
+      <button class="add-row-btn" onclick="addDynRow('it-tasks-list', 'IT/Comms task (e.g., Install and configure...)', true)">+ Add Task</button>
+    </div>
+    <div class="card-group">
+      <h3>Cybersecurity &amp; IA Requirements</h3>
+      <div class="form-grid">
+        <div class="field">
+          <label>Government Network Connection?</label>
+          <select id="it_network">
+            <option value="yes_nipr">Yes — NIPRNet connection required</option>
+            <option value="yes_sipr">Yes — SIPRNet connection required</option>
+            <option value="standalone">Standalone system — no network connection</option>
+            <option value="commercial">Commercial internet only</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>ATO / Cybersecurity Status</label>
+          <select id="it_ato">
+            <option value="required">ATO required before system operation</option>
+            <option value="iatt">IATT acceptable pending ATO</option>
+            <option value="existing">Leveraging existing ATO</option>
+            <option value="na">Not applicable — non-networked</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid single">
+        <div class="field">
+          <label>NIST 800-171 / CMMC Requirements</label>
+          <textarea id="it_cyber">The contractor shall comply with DFARS 252.204-7012, Safeguarding Covered Defense Information and Cyber Incident Reporting, and shall maintain a current NIST SP 800-171 self-assessment score in the Supplier Performance Risk System (SPRS). All contractor information systems shall comply with DODI 8510.01 and applicable DISA Security Technical Implementation Guides (STIGs). The contractor shall report cyber incidents to the DoD Cyber Crime Center (DC3) within 72 hours of discovery and shall notify the Contracting Officer within 24 hours of any incident affecting contract performance or government data. Contractor shall not store government data on non-government-approved cloud services.</textarea>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="nav-btns">
-    <button class="btn btn-back" onclick="goStep(2)">← BACK</button>
-    <button class="btn btn-next" onclick="goStep(4)">NEXT →</button>
+  <!-- MEDICAL -->
+  <div id="req-medical" class="req-section" style="display:none">
+    <div class="card-group">
+      <h3>Medical Support Scope</h3>
+      <div class="form-grid single">
+        <div class="field">
+          <label>Overall Scope Statement<span class="req">*</span></label>
+          <textarea id="med_scope" class="xtall">The contractor shall provide qualified medical personnel, equipment, pharmaceuticals, and support services necessary to deliver [DESCRIBE MEDICAL SERVICES — e.g., primary care, dental, laboratory] in support of [UNIT/INSTALLATION] at [LOCATION]. All services shall be performed in accordance with applicable DoD and Air Force Medical Service standards, DODI 6025.13, Medical Quality Assurance, applicable host nation medical regulations, and applicable U.S. medical licensing and credentialing requirements. The contractor shall maintain all required licenses, certifications, and accreditations for the duration of the contract.</textarea>
+        </div>
+      </div>
+    </div>
+    <div class="card-group">
+      <h3>Specific Services</h3>
+      <div id="med-tasks-list"></div>
+      <button class="add-row-btn" onclick="addDynRow('med-tasks-list', 'Medical service task...', true)">+ Add Service</button>
+    </div>
+    <div class="card-group">
+      <h3>Credentials &amp; Licensing</h3>
+      <div class="form-grid single">
+        <div class="field">
+          <label>Credentialing / Licensing Requirements</label>
+          <textarea id="med_credentials">All contractor physicians shall possess a valid, unrestricted license to practice medicine issued by a U.S. state or territory. Nursing personnel shall possess current, unrestricted Registered Nurse (RN) licensure. All medical personnel shall maintain current Basic Life Support (BLS) and Advanced Cardiovascular Life Support (ACLS) certifications. Credentialing shall be maintained in accordance with DODI 6025.13. The contractor shall provide copies of all licenses, certifications, and credentials to the COR within five (5) calendar days of contract award and within five (5) days of any new personnel assignment. Expired or revoked credentials shall be reported to the COR immediately.</textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BASE OPS -->
+  <div id="req-base_ops" class="req-section" style="display:none">
+    <div class="card-group">
+      <h3>Base Operations Support Scope</h3>
+      <div class="form-grid single">
+        <div class="field">
+          <label>Overall Scope Statement<span class="req">*</span></label>
+          <textarea id="bos_scope" class="xtall">The contractor shall provide comprehensive base operations support services, including all personnel, equipment, materials, consumables, and management necessary to sustain the selected functions identified herein at Ali Al Salem Air Base, Kuwait. Services shall be provided continuously, 24 hours per day, 7 days per week, 365 days per year unless specific service windows are identified in individual task areas. The contractor shall maintain the installation operational readiness in support of an average population of [NUMBER] assigned and transient personnel. All services shall comply with applicable DoD, Air Force, and host nation standards and regulations.</textarea>
+        </div>
+      </div>
+    </div>
+    <div class="card-group">
+      <h3>Service Functions Required</h3>
+      <div class="check-grid">
+        <label class="check-item"><input type="checkbox" id="bos_dfac" value="1">Dining Facility (DFAC) Operations</label>
+        <label class="check-item"><input type="checkbox" id="bos_laundry" value="1">Laundry / Linen Services</label>
+        <label class="check-item"><input type="checkbox" id="bos_waste" value="1">Solid Waste / Refuse Collection &amp; Disposal</label>
+        <label class="check-item"><input type="checkbox" id="bos_hazmat" value="1">HAZMAT Storage, Handling &amp; Disposal</label>
+        <label class="check-item"><input type="checkbox" id="bos_water" value="1">Potable Water Production / Distribution</label>
+        <label class="check-item"><input type="checkbox" id="bos_fuel" value="1">Bulk Fuel Storage &amp; Distribution (non-aviation)</label>
+        <label class="check-item"><input type="checkbox" id="bos_grounds" value="1">Grounds Maintenance</label>
+        <label class="check-item"><input type="checkbox" id="bos_pest" value="1">Pest Control</label>
+        <label class="check-item"><input type="checkbox" id="bos_morale" value="1">Morale / Recreation Support</label>
+        <label class="check-item"><input type="checkbox" id="bos_transport" value="1">Installation Transportation / Shuttle</label>
+      </div>
+      <div class="form-grid single" style="margin-top:12px">
+        <div class="field">
+          <label>Additional Specific Tasks</label>
+          <div id="bos-tasks-list"></div>
+          <button class="add-row-btn" onclick="addDynRow('bos-tasks-list', 'Additional task...', true)">+ Add Task</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
+    <button class="btn btn-primary" onclick="goToStep(3)">Next →</button>
   </div>
 </div>
 
-<!-- ═══ STEP 4: PERFORMANCE ═══ -->
-<div class="step" id="step4">
-  <div class="step-title">Performance Standards</div>
-  <div class="step-sub">How performance will be measured and managed</div>
+<!-- ══════════════════════════════════════
+     STEP 3 — PERFORMANCE / PoP
+══════════════════════════════════════ -->
+<div class="step-panel" id="step-3">
+  <div class="step-title">Place &amp; Period of Performance</div>
+  <div class="step-sub">DEFINE WHERE, WHEN, AND HOW PERFORMANCE WILL BE MEASURED</div>
 
-  <div class="field">
-    <label>Hours of Operation / Availability</label>
-    <input type="text" id="hours" placeholder="e.g., 24/7 operations with on-call coverage; or Mon–Fri 0600–2000 local"/>
+  <div class="card-group">
+    <h3>Period of Performance</h3>
+    <div class="form-grid triple">
+      <div class="field">
+        <label>Base Period Start<span class="req">*</span></label>
+        <input type="date" id="pop_start">
+      </div>
+      <div class="field">
+        <label>Base Period End<span class="req">*</span></label>
+        <input type="date" id="pop_end">
+      </div>
+      <div class="field">
+        <label>NTP Type</label>
+        <select id="ntp_type">
+          <option value="date">Date certain</option>
+          <option value="ntp">Notice to Proceed (NTP)</option>
+          <option value="award">Date of Award</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grid" id="option-periods-wrap">
+      <div class="field">
+        <label>Option Periods</label>
+        <select id="option_periods" onchange="updateOptionFields()">
+          <option value="0">No options</option>
+          <option value="1">1 Option Year</option>
+          <option value="2">2 Option Years</option>
+          <option value="3">3 Option Years</option>
+          <option value="4">4 Option Years</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Mobilization Period</label>
+        <input type="text" id="mob_period" value="The contractor shall achieve full operational capability within 30 calendar days of receipt of NTP. A 30-day mobilization period is authorized for transition-in activities.">
+      </div>
+    </div>
+    <div id="option-dates-fields"></div>
   </div>
 
-  <div class="field">
-    <label>Response Time Requirements</label>
-    <input type="text" id="response" placeholder="e.g., Emergency response within 2 hours; routine within 24 hours"/>
+  <div class="card-group">
+    <h3>Place of Performance</h3>
+    <div class="form-grid single">
+      <div class="field">
+        <label>Primary Performance Location<span class="req">*</span></label>
+        <textarea id="perf_location">Primary place of performance is Ali Al Salem Air Base, Kuwait, within the USCENTCOM Area of Responsibility (AOR). The contractor may be required to support operations at secondary locations within the AOR as directed by the Contracting Officer with advance written authorization. The contractor shall be prepared to continue operations at alternate locations in the event of an emergency evacuation or relocation directive. All performance locations are subject to installation security and force protection requirements.</textarea>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Contractor Workspace / Facilities Provided</label>
+        <textarea id="workspace">The government will provide contractor administrative workspace in [BUILDING/LOCATION], Ali Al Salem AB, to the extent available. No guarantee is made regarding the availability or permanence of any government-furnished workspace. The contractor is responsible for providing all tools, equipment, vehicles, office supplies, and communications necessary to perform this contract unless specifically identified as GFP/GFE in Section 5. The contractor may not modify government-provided workspace without prior written COR approval.</textarea>
+      </div>
+      <div class="field">
+        <label>Travel Requirements</label>
+        <textarea id="travel_req">Contractor personnel may be required to travel within the USCENTCOM AOR in support of contract performance. All travel beyond the primary performance location shall require prior written approval from the COR. The contractor is responsible for coordinating and funding all travel unless government transportation is specifically authorized in writing. Contractor personnel traveling within the AOR shall comply with all theater convoy and movement requirements and applicable force protection directives.</textarea>
+      </div>
+    </div>
   </div>
 
-  <div class="field">
-    <label>Acceptable Quality Level (AQL)</label>
-    <textarea id="aql" rows="4" placeholder="Define performance thresholds...&#10;e.g., 95% of routine tasks completed within prescribed timeframes&#10;Zero tolerance for safety violations&#10;Emergency calls responded to within 2 hours, 100% of the time"></textarea>
+  <div class="card-group">
+    <h3>Quality Assurance &amp; Performance Standards</h3>
+    <div class="form-grid">
+      <div class="field">
+        <label>QASP / Surveillance Method<span class="req">*</span></label>
+        <select id="qasp_type">
+          <option value="periodic">Periodic surveillance by COR</option>
+          <option value="random">Random sampling</option>
+          <option value="100pct">100% inspection (high-risk / safety-critical)</option>
+          <option value="customer">Customer feedback / complaint-based</option>
+          <option value="combined">Combined: periodic + random sampling</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>COR Designation Required</label>
+        <select id="cor_required">
+          <option value="yes">Yes — COR will be designated in writing before performance</option>
+          <option value="acor">Yes — COR and Alternate COR required (24/7 ops)</option>
+          <option value="no">No — CO will perform oversight directly</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grid single">
+      <div class="field">
+        <label>Performance Standards / Acceptable Quality Levels (AQLs)</label>
+        <textarea id="perf_standards" class="tall">The following performance standards apply to this contract:
+
+- Services shall be available during all required operating hours with no unauthorized interruptions exceeding 30 minutes per incident
+- The contractor shall respond to all COR-identified deficiencies within 2 hours and resolve within 24 hours, or provide an approved corrective action plan
+- Customer/end-user satisfaction surveys shall reflect a minimum 80% acceptable rating on a quarterly basis
+- All contractor personnel performing safety-sensitive or regulated functions shall maintain current required certifications at all times
+- The contractor shall maintain a minimum staffing level of [XX]% of required personnel at all times during operating hours
+- Monthly status reports shall be submitted NLT the 5th of each month with zero late submissions per base period</textarea>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Incentives / Deductions for Non-Performance</label>
+        <textarea id="incentives">Deductions may be taken from the contractor monthly invoice for failure to meet performance standards as specified in the Quality Assurance Surveillance Plan (QASP), which will be maintained by the COR. The government will provide the contractor written notice of any proposed deduction and an opportunity to respond prior to final determination. Recurring failures (three or more occurrences of the same deficiency within a 30-day period) may result in a Cure Notice issued by the Contracting Officer.</textarea>
+      </div>
+      <div class="field">
+        <label>Reporting Requirements</label>
+        <textarea id="reporting">The contractor shall submit Monthly Status Reports to the COR not later than (NLT) the 5th calendar day of each month for the preceding month performance. Reports shall include: (1) summary of work accomplished; (2) personnel roster and changes; (3) issues, discrepancies, or safety incidents and corrective actions taken; (4) status of all open COR-identified deficiencies; and (5) planned activities for the upcoming period. Reports shall be submitted electronically in PDF or Word format. Additional ad hoc reports may be required by the COR with 24-hour notice.</textarea>
+      </div>
+    </div>
   </div>
 
-  <div class="section-label">Inspection and Surveillance Methods</div>
-  <div class="check-group">
-    <label class="check-item"><input type="checkbox" id="insp1" value="random"/> <span>Random sampling inspections</span></label>
-    <label class="check-item"><input type="checkbox" id="insp2" value="periodic"/> <span>Periodic scheduled inspections</span></label>
-    <label class="check-item"><input type="checkbox" id="insp3" value="customer"/> <span>Customer feedback / complaint monitoring</span></label>
-    <label class="check-item"><input type="checkbox" id="insp4" value="100pct"/> <span>100% inspection of deliverables</span></label>
-    <label class="check-item"><input type="checkbox" id="insp5" value="selfinspect"/> <span>Contractor self-inspection program</span></label>
-    <label class="check-item"><input type="checkbox" id="insp6" value="metrics"/> <span>Metrics / reporting dashboard</span></label>
-  </div>
-
-  <div class="field">
-    <label>Contracting Officer's Representative (COR) Responsibilities</label>
-    <textarea id="cor" rows="3" placeholder="Describe COR oversight responsibilities...&#10;e.g., The COR will conduct weekly inspections, review monthly status reports, and document performance in CORT Tool."></textarea>
-  </div>
-
-  <div class="nav-btns">
-    <button class="btn btn-back" onclick="goStep(3)">← BACK</button>
-    <button class="btn btn-next" onclick="goStep(5)">NEXT →</button>
-  </div>
-</div>
-
-<!-- ═══ STEP 5: GFP / SECURITY ═══ -->
-<div class="step" id="step5">
-  <div class="step-title">GFP, GFE &amp; Security Requirements</div>
-  <div class="step-sub">Government-furnished resources and force protection requirements</div>
-
-  <div class="section-label">Government-Furnished Property / Equipment</div>
-  <div class="check-group">
-    <label class="check-item"><input type="checkbox" id="gfp1"/> <span>Government workspace / office space</span></label>
-    <label class="check-item"><input type="checkbox" id="gfp2"/> <span>Government vehicles or transportation</span></label>
-    <label class="check-item"><input type="checkbox" id="gfp3"/> <span>Tools / equipment provided by Gov't</span></label>
-    <label class="check-item"><input type="checkbox" id="gfp4"/> <span>Fuel / utilities provided by Gov't</span></label>
-    <label class="check-item"><input type="checkbox" id="gfp5"/> <span>Communications equipment (radio, phone)</span></label>
-    <label class="check-item"><input type="checkbox" id="gfp6"/> <span>No GFP — contractor furnishes all resources</span></label>
-  </div>
-  <div class="field">
-    <label>GFP Details (list specific items if applicable)</label>
-    <textarea id="gfpDetails" rows="3" placeholder="Describe any government-furnished property in detail..."></textarea>
-  </div>
-
-  <div class="section-label">Personnel Security Requirements</div>
-  <div class="check-group">
-    <label class="check-item"><input type="checkbox" id="sec1"/> <span>AFMAN 31-101 base access requirements apply</span></label>
-    <label class="check-item"><input type="checkbox" id="sec2"/> <span>Background checks required for all personnel</span></label>
-    <label class="check-item"><input type="checkbox" id="sec3"/> <span>Security clearance required (specify level below)</span></label>
-    <label class="check-item"><input type="checkbox" id="sec4"/> <span>Anti-terrorism/force protection training required</span></label>
-    <label class="check-item"><input type="checkbox" id="sec5"/> <span>OPSEC training required within 30 days of award</span></label>
-    <label class="check-item"><input type="checkbox" id="sec6"/> <span>Host nation access requirements apply</span></label>
-  </div>
-  <div class="field">
-    <label>Security Clearance Level / Additional Security Notes</label>
-    <input type="text" id="clearanceLevel" placeholder="e.g., Secret clearance required for personnel with access to SCIF"/>
-  </div>
-
-  <div class="field">
-    <label>Force Protection Considerations</label>
-    <textarea id="forceProtection" rows="3" placeholder="e.g., Contractor personnel must comply with all base force protection measures, FPCON changes, and shelter-in-place directives..."></textarea>
-  </div>
-
-  <div class="nav-btns">
-    <button class="btn btn-back" onclick="goStep(4)">← BACK</button>
-    <button class="btn btn-next" onclick="goStep(6)">NEXT →</button>
-  </div>
-</div>
-
-<!-- ═══ STEP 6: DELIVERABLES ═══ -->
-<div class="step" id="step6">
-  <div class="step-title">Deliverables &amp; Reporting</div>
-  <div class="step-sub">Required reports, documentation, and data deliverables</div>
-
-  <div class="section-label">Required Deliverables</div>
-  <div class="check-group">
-    <label class="check-item"><input type="checkbox" id="del1"/> <span>Contractor Transition / Phase-In Plan (within 5 days of award)</span></label>
-    <label class="check-item"><input type="checkbox" id="del2"/> <span>Quality Control Plan (QCP) (within 30 days of award)</span></label>
-    <label class="check-item"><input type="checkbox" id="del3"/> <span>Monthly Status Report (due 5th of each month)</span></label>
-    <label class="check-item"><input type="checkbox" id="del4"/> <span>Roster of Contractor Personnel (updated monthly)</span></label>
-    <label class="check-item"><input type="checkbox" id="del5"/> <span>Accident / Incident Reports (within 24 hours)</span></label>
-    <label class="check-item"><input type="checkbox" id="del6"/> <span>Subcontractor List (within 10 days of award)</span></label>
-    <label class="check-item"><input type="checkbox" id="del7"/> <span>Work Schedule / Plan of Action</span></label>
-    <label class="check-item"><input type="checkbox" id="del8"/> <span>Final Transition / Phase-Out Plan (30 days before completion)</span></label>
-  </div>
-
-  <div class="field">
-    <label>Additional / Custom Deliverables</label>
-    <textarea id="addlDels" rows="4" placeholder="List any additional deliverables specific to this requirement, including frequency and format..."></textarea>
-  </div>
-
-  <div class="field">
-    <label>Deliverable Submission Method</label>
-    <input type="text" id="submitMethod" placeholder="e.g., Electronic delivery to COR email address; hard copy to contracting office upon request"/>
-  </div>
-
-  <div class="nav-btns">
-    <button class="btn btn-back" onclick="goStep(5)">← BACK</button>
-    <button class="btn btn-next btn-build" onclick="buildPWS()">⚡ BUILD PWS</button>
-  </div>
-</div>
-
-<!-- ═══ STEP 7: REVIEW & BUILD ═══ -->
-<div class="step" id="step7">
-  <div class="step-title">Performance Work Statement</div>
-  <div class="step-sub">Review your completed PWS — ready for use</div>
-
-  <div style="margin-bottom:16px">
-    <button class="btn-print" onclick="window.print()">🔨️ Print</button>
-    <button class="btn-copy" onclick="copyPWS()">📋 Copy Text</button>
-    <button class="btn btn-back" style="float:right" onclick="goStep(6)">← Edit</button>
-  </div>
-
-  <div class="pws-preview" id="pwsOutput">
-    <!-- Generated by buildPWS() -->
-  </div>
-
-  <div style="margin-top:16px">
-    <button class="btn-print" onclick="window.print()">🔨️ Print</button>
-    <button class="btn-copy" onclick="copyPWS()">📋 Copy Text</button>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
+    <button class="btn btn-primary" onclick="goToStep(4)">Next →</button>
   </div>
 </div>
 
-</div><!-- /content -->
+<!-- ══════════════════════════════════════
+     STEP 4 — GFP / PERSONNEL / SECURITY
+══════════════════════════════════════ -->
+<div class="step-panel" id="step-4">
+  <div class="step-title">GFP, Personnel &amp; Security</div>
+  <div class="step-sub">GOVERNMENT-FURNISHED PROPERTY, CONTRACTOR PERSONNEL REQUIREMENTS, AND SECURITY REQUIREMENTS</div>
+
+  <div class="card-group">
+    <h3>Government-Furnished Property (GFP) / Equipment (GFE)</h3>
+    <div class="form-grid">
+      <div class="field">
+        <label>GFP Provided?</label>
+        <select id="gfp_yn" onchange="toggleGFP()">
+          <option value="yes">Yes — government will provide property/equipment</option>
+          <option value="no">No — contractor provides all equipment and materials</option>
+          <option value="limited">Limited — facilities/utilities only</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>GFE Vehicles?</label>
+        <select id="gfe_vehicles">
+          <option value="no">No GFE vehicles</option>
+          <option value="yes">Yes — government vehicles authorized</option>
+          <option value="poc">POV/rental authorized with approval</option>
+        </select>
+      </div>
+    </div>
+    <div id="gfp-detail" style="display:none">
+      <div class="field" style="margin-top:10px">
+        <label>GFP/GFE Item List</label>
+        <div id="gfp-list"></div>
+        <button class="add-row-btn" onclick="addDynRow('gfp-list', 'Description of GFP/GFE item (e.g., 1x Refrigerator unit, Building 1204, SN: XXX)')">+ Add GFP Item</button>
+      </div>
+    </div>
+    <div class="form-grid single" style="margin-top:10px">
+      <div class="field">
+        <label>GFP Accountability / Care Requirements</label>
+        <textarea id="gfp_accountability">The contractor shall be responsible for the proper use, care, and maintenance of all Government-Furnished Property (GFP) and Equipment (GFE) provided under this contract. GFP/GFE shall be used exclusively for performance of this contract and shall not be removed from the installation without prior written COR approval. The contractor shall report any loss, damage, theft, or destruction of GFP/GFE to the COR within 24 hours of discovery. At contract completion, all GFP/GFE shall be returned to the government in the same condition as received, less normal wear and tear, accompanied by a signed property receipt.</textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-group">
+    <h3>Contractor Personnel Requirements</h3>
+    <div class="form-grid">
+      <div class="field">
+        <label>Key Personnel Required?</label>
+        <select id="key_personnel_yn" onchange="toggleKeyPersonnel()">
+          <option value="yes">Yes — key personnel positions designated</option>
+          <option value="no">No key personnel designations</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Personnel Security Clearance Required?</label>
+        <select id="clearance_req">
+          <option value="no">No clearance required</option>
+          <option value="secret">SECRET clearance required (all personnel)</option>
+          <option value="ts">TOP SECRET required (some/all)</option>
+          <option value="favorably">Favorable background investigation required</option>
+          <option value="naci">NACI/NAC sufficient</option>
+        </select>
+      </div>
+    </div>
+    <div id="key-personnel-fields" style="display:none">
+      <div class="section-divider">Key Personnel Positions</div>
+      <div id="key-personnel-list"></div>
+      <button class="add-row-btn" onclick="addKeyPersonnelRow()">+ Add Key Personnel Position</button>
+    </div>
+    <div class="form-grid single" style="margin-top:10px">
+      <div class="field">
+        <label>Minimum Qualifications / Experience Requirements</label>
+        <textarea id="min_quals">All contractor personnel performing under this contract shall possess the qualifications, licenses, certifications, and experience required by applicable law, regulation, and professional standards for their assigned duties. At a minimum, all personnel shall: (1) be able to read, write, and communicate effectively in the English language; (2) possess any required professional licenses or certifications for their position; (3) have a minimum of [X] years of relevant experience in their field; and (4) be legally authorized to work and be present in the host nation. The contractor shall provide documentation of qualifications to the COR within five (5) days of any new personnel assignment.</textarea>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Training Requirements</label>
+        <textarea id="training_req">Contractor personnel shall complete all required training prior to commencing performance, including: (1) Anti-Terrorism (AT) Level I Awareness training (annual requirement); (2) theater-specific operational and safety briefings as required by the installation; (3) job-specific certifications required for the assigned function; and (4) any additional training required by the Contracting Officer or COR. The contractor is solely responsible for scheduling, funding, and documenting all required training. Training records shall be maintained and provided to the COR within two (2) business days upon request.</textarea>
+      </div>
+      <div class="field">
+        <label>OCONUS / Theater Entry Requirements</label>
+        <textarea id="oconus_req">All contractor personnel performing in an overseas location under this contract shall comply with DFARS 252.225-7040. Prior to deployment, contractor personnel shall: (1) receive a government-issued Letter of Authorization (LOA); (2) meet theater medical and dental readiness standards; (3) complete all required theater inoculations and vaccinations; (4) be registered in the Synchronized Pre-deployment and Operational Tracker (SPOT) system; and (5) comply with all theater-specific entry requirements. The contractor is responsible for ensuring all personnel are deployment-ready prior to travel. Contractor personnel who fail to maintain deployment readiness may be removed from theater at the contractor expense. All personnel shall comply with applicable Rules for the Use of Force (RUF) and theater directives.</textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-group">
+    <h3>Security Requirements</h3>
+    <div class="form-grid">
+      <div class="field">
+        <label>Facility / Installation Access</label>
+        <select id="base_access">
+          <option value="escort">Escorted access only</option>
+          <option value="badge">Contractor badge / installation pass required</option>
+          <option value="cac">CAC required (long-term, >6 months)</option>
+          <option value="biometric">Biometric enrollment required (OCONUS)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>AT/FP Requirements</label>
+        <select id="atfp">
+          <option value="standard">Standard DoD AT/FP (DFARS 252.225-7043)</option>
+          <option value="enhanced">Enhanced — contractor AT plan required</option>
+          <option value="convoy">Convoy/force protection procedures required</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grid single">
+      <div class="field">
+        <label>Additional Security Requirements</label>
+        <textarea id="security_add">Contractor personnel shall comply with all installation security directives and force protection measures in effect at the performance location. The contractor shall report all security incidents, suspicious activity, or potential threats to the COR within one (1) hour of discovery. Contractor personnel shall not photograph, video record, or otherwise document installation facilities, force composition, or operational activities without prior written Contracting Officer authorization. All contractor personnel shall carry required identification at all times while on the installation. The contractor shall designate a Security POC to interface with installation Security Forces and report all security matters to the COR.</textarea>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Sensitive / Classified Information Handling?</label>
+        <select id="cui_yn">
+          <option value="no">No CUI/classified — unclassified only</option>
+          <option value="cui">CUI handling required</option>
+          <option value="classified">Classified information handling required</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>OPSEC Requirements</label>
+        <select id="opsec">
+          <option value="standard">Standard contractor OPSEC awareness</option>
+          <option value="plan">Contractor OPSEC plan required</option>
+          <option value="enhanced">Enhanced OPSEC — all products reviewed before release</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
+    <button class="btn btn-primary" onclick="goToStep(5)">Next →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     STEP 5 — DELIVERABLES / DOCS
+══════════════════════════════════════ -->
+<div class="step-panel" id="step-5">
+  <div class="step-title">Deliverables &amp; Applicable Documents</div>
+  <div class="step-sub">DEFINE ALL REQUIRED CONTRACTOR DELIVERABLES AND REFERENCE DOCUMENTS</div>
+
+  <div class="card-group">
+    <h3>Contract Deliverables</h3>
+    <div class="alert alert-info">Deliverables must have a specific due date or frequency. Avoid vague language like "as required" unless truly appropriate.</div>
+    <div id="deliverables-list"></div>
+    <button class="add-row-btn" onclick="addDeliverableRow()">+ Add Deliverable</button>
+    <div style="margin-top:12px">
+      <label style="font-size:11px;color:#555;font-weight:600;letter-spacing:.04em;text-transform:uppercase">Common Deliverables (click to add):</label>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+        <button class="add-row-btn" style="font-size:10px;padding:4px 10px" onclick="addPresetDeliverable('Monthly Status Report','Monthly, NLT 5th of following month','COR')">Monthly Report</button>
+        <button class="add-row-btn" style="font-size:10px;padding:4px 10px" onclick="addPresetDeliverable('Quality Control Plan (QCP)','Within 15 days of contract award','CO/COR')">Quality Control Plan</button>
+        <button class="add-row-btn" style="font-size:10px;padding:4px 10px" onclick="addPresetDeliverable('Project Schedule','Within 5 days of NTP','COR')">Project Schedule</button>
+        <button class="add-row-btn" style="font-size:10px;padding:4px 10px" onclick="addPresetDeliverable('Subcontractor List','Within 10 days of award','CO')">Subcontractor List</button>
+        <button class="add-row-btn" style="font-size:10px;padding:4px 10px" onclick="addPresetDeliverable('Safety / Accident Prevention Plan','Within 10 days of NTP','COR')">Safety Plan</button>
+        <button class="add-row-btn" style="font-size:10px;padding:4px 10px" onclick="addPresetDeliverable('Manning / Personnel Roster','Within 5 days of award and updated monthly','COR')">Manning Roster</button>
+        <button class="add-row-btn" style="font-size:10px;padding:4px 10px" onclick="addPresetDeliverable('Transition-In Plan','Within 10 days of award','CO/COR')">Transition-In Plan</button>
+        <button class="add-row-btn" style="font-size:10px;padding:4px 10px" onclick="addPresetDeliverable('Transition-Out Plan','90 days prior to contract expiration','CO/COR')">Transition-Out Plan</button>
+        <button class="add-row-btn" style="font-size:10px;padding:4px 10px" onclick="addPresetDeliverable('Incident / Discrepancy Report','Within 24 hours of incident','COR')">Incident Report</button>
+        <button class="add-row-btn" style="font-size:10px;padding:4px 10px" onclick="addPresetDeliverable('As-Built Drawings','Within 30 days of substantial completion','COR')">As-Built Drawings</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-group">
+    <h3>Applicable Documents &amp; Standards</h3>
+    <div class="form-grid single">
+      <div class="field">
+        <label>Standard Applicable Documents <span class="hint">(auto-populated — remove inapplicable)</span></label>
+        <textarea id="applicable_docs" class="xtall">Federal Acquisition Regulation (FAR) — current edition
+Defense Federal Acquisition Regulation Supplement (DFARS) — current edition
+Air Force Federal Acquisition Regulation Supplement (AFFARS) — current edition
+DAFI 64-101, Multi-Tier Contracting
+DAFI 64-105, Contracting Support to Operations
+DoD Instruction 3020.37, Continuation of Essential DoD Contractor Services During Crises
+DoD Instruction 5000.74, Defense Acquisition of Services
+DoD Instruction 3020.41, Operational Contract Support (OCS)
+DFARS 252.225-7040, Contractor Personnel Supporting U.S. Armed Forces Deployed OCONUS
+DFARS 252.225-7043, Antiterrorism/Force Protection Policy for Defense Contractors OCONUS</textarea>
+      </div>
+    </div>
+    <div class="form-grid single">
+      <div class="field">
+        <label>Additional Technical / Contract-Specific Documents</label>
+        <div id="docs-list"></div>
+        <button class="add-row-btn" onclick="addDynRow('docs-list', 'Document title and number (e.g., UFC 4-010-01, DoD Minimum Antiterrorism Standards for Buildings)')">+ Add Document</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-group">
+    <h3>Points of Contact</h3>
+    <div class="form-grid">
+      <div class="field">
+        <label>Contracting Officer (CO)<span class="req">*</span></label>
+        <input type="text" id="co_name" value="[CO Name, Rank, Phone, Email]">
+      </div>
+      <div class="field">
+        <label>Contracting Officer Representative (COR)</label>
+        <input type="text" id="cor_name" value="To Be Designated in Writing Prior to Contract Award">
+      </div>
+      <div class="field">
+        <label>Requiring Activity POC</label>
+        <input type="text" id="ra_poc" value="[RA POC Name, Rank, Phone, Email]">
+      </div>
+      <div class="field">
+        <label>Emergency / After-Hours POC</label>
+        <input type="text" id="emerg_poc" value="[Emergency POC Name/Position, DSN/Comm Phone]">
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goToStep(4)">← Back</button>
+    <button class="btn btn-primary" onclick="goToStep(6)">Next →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     STEP 6 — REVIEW & BUILD
+══════════════════════════════════════ -->
+<div class="step-panel" id="step-6">
+  <div class="step-title">Review &amp; Build PWS</div>
+  <div class="step-sub">VERIFY YOUR INPUTS THEN GENERATE THE COMPLETE PWS DOCUMENT</div>
+
+  <div id="review-summary" class="card-group">
+    <h3>Summary Review</h3>
+    <div id="review-content"></div>
+  </div>
+
+  <div class="alert alert-warn">
+    <strong>CCO NOTE:</strong> This tool generates an 80–95% solution based on your inputs. Review all <span style="color:#c0392b;font-weight:bold">[TBD]</span> placeholders before issuing. All regulatory citations are current as of FAC 2025-06. Verify current DFARS deviations with your theater contracting authority.
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goToStep(5)">← Back</button>
+    <button class="btn btn-gold" id="build-pws-btn" onclick="buildPWS()" style="font-size:13px;padding:12px 28px">⚡ Generate PWS Document</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PWS OUTPUT
+══════════════════════════════════════ -->
+<div id="pws-output-wrap">
+  <div id="pws-toolbar">
+    <div id="pws-toolbar-top">
+      <span class="doc-label" id="pws-doc-label">PWS DOCUMENT</span>
+      <div class="tb-sep"></div>
+      <button class="tb-btn" onclick="fmt('bold')" title="Bold"><b>B</b></button>
+      <button class="tb-btn" onclick="fmt('italic')" title="Italic"><i>I</i></button>
+      <button class="tb-btn" onclick="fmt('underline')" title="Underline"><u>U</u></button>
+      <div class="tb-sep"></div>
+      <button class="tb-btn" onclick="document.execCommand('undo')" title="Undo (Ctrl+Z)">&#x21A9; Undo</button>
+      <button class="tb-btn" onclick="document.execCommand('redo')" title="Redo (Ctrl+Y)">&#x21AA; Redo</button>
+      <div class="tb-sep"></div>
+      <button class="tb-btn" onclick="highlightTBDs()" title="Highlight all [TBD] placeholders">&#x2691; Flag TBDs</button>
+      <button class="tb-btn" onclick="jumpNextTBD()" title="Jump to next [TBD]">&#x2192; Next TBD</button>
+      <div class="tb-sep"></div>
+      <button class="tb-btn" id="find-toggle-btn" onclick="toggleFind()" title="Find and Replace">&#x1F50D; Find</button>
+      <button class="tb-btn" id="nav-toggle-btn" onclick="toggleNav()" title="Jump to section">&#167; Sections</button>
+      <div class="tb-sep"></div>
+      <button class="tb-btn green" onclick="copyPWS()" id="copy-btn">&#x1F4CB; Copy</button>
+      <button class="tb-btn gold" onclick="window.print()">&#x1F5A8; Print / PDF</button>
+      <button class="tb-btn" id="restart-btn" onclick="restartBuilder()">&#x21BA; New PWS</button>
+    </div>
+    <div id="find-bar">
+      <label>FIND</label>
+      <input type="text" id="find-input" placeholder="Search text..." oninput="doFind()" onkeydown="findKeyNav(event)">
+      <label>REPLACE</label>
+      <input type="text" id="replace-input" placeholder="Replace with...">
+      <button class="tb-btn" onclick="doReplace()">Replace</button>
+      <button class="tb-btn" onclick="doReplaceAll()">All</button>
+      <span id="find-count"></span>
+      <button class="tb-btn" onclick="clearFind()" style="margin-left:auto">X Close</button>
+    </div>
+    <div id="section-nav">
+      <label>JUMP</label>
+      <span class="nav-pill" onclick="jumpToSection(0)">1 Scope</span>
+      <span class="nav-pill" onclick="jumpToSection(1)">2 Background</span>
+      <span class="nav-pill" onclick="jumpToSection(2)">3 Period</span>
+      <span class="nav-pill" onclick="jumpToSection(3)">4 Place</span>
+      <span class="nav-pill" onclick="jumpToSection(4)">5 GFP</span>
+      <span class="nav-pill" onclick="jumpToSection(5)">6 Personnel</span>
+      <span class="nav-pill" onclick="jumpToSection(6)">7 Security</span>
+      <span class="nav-pill" onclick="jumpToSection(7)">8 Quality</span>
+      <span class="nav-pill" onclick="jumpToSection(8)">9 Deliverables</span>
+      <span class="nav-pill" onclick="jumpToSection(9)">10 POCs</span>
+      <span class="nav-pill" onclick="jumpToSection(10)">11 Ref Docs</span>
+      <span class="nav-pill" onclick="jumpToSection(11)">12 General</span>
+    </div>
+    <div id="editor-status">
+      <span>LIVE EDITOR - click anywhere in the document to edit</span>
+      <span id="word-count">0 words</span>
+      <span id="char-count">0 chars</span>
+      <span>TBDs remaining: <span id="tbd-count-badge">-</span></span>
+    </div>
+  </div>
+  <div id="pws-document" contenteditable="true" spellcheck="true"></div>
+</div>
+
+</div><!-- end #main -->
 
 <script>
-// ── State ──
-const state = {
+// ══════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════
+let state = {
   contractType: '',
-  subCategory: '',
+  contractTypeLabel: '',
+  subType: ''
 };
 
-// ── Sub-category definitions ──
-const SUB_CATS = {
+let currentStep = 0;
+const TOTAL_STEPS = 7;
+
+// ── SUBTYPES ──────────────────────────────────────────────────────
+const subTypes = {
   services: [
-    { id:'maint',  icon:'🔩', name:'MAINTENANCE &\nREPAIR',       desc:'Facility, equipment, vehicle maintenance' },
-    { id:'log',    icon:'📋', name:'LOGISTICS /\nMATERIAL HANDLING', desc:'Warehousing, inventory, distribution' },
-    { id:'trans',  icon:'🚛', name:'TRANSPORTATION /\nMOTOR POOL',  desc:'Driver services, vehicle dispatch' },
-    { id:'sec',    icon:'🛡️', name:'SECURITY /\nGUARD SERVICES',  desc:'Guard force, access control, patrols' },
-    { id:'env',    icon:'♻️', name:'ENVIRONMENTAL /\nSANITATION',  desc:'Waste, HAZMAT, sewage, laundry' },
-    { id:'pas',    icon:'📊', name:'PROFESSIONAL /\nADVISORY',     desc:'Technical advisory, training, consulting' },
-    { id:'other',  icon:'⚙️', name:'OTHER SERVICES',              desc:'Unique or multi-category services' },
+    {v:'maintenance',l:'Maintenance & Repair',i:'🔩'},
+    {v:'logistics',l:'Logistics / Material Handling',i:'📋'},
+    {v:'transportation',l:'Transportation / Motor Pool',i:'🚛'},
+    {v:'guard',l:'Security / Guard Services',i:'🛡️'},
+    {v:'environmental',l:'Environmental / Sanitation',i:'♻️'},
+    {v:'professional',l:'Professional / Advisory',i:'📊'},
+    {v:'other_svc',l:'Other Services',i:'⚙️'},
   ],
   construction: [
-    { id:'newcon', icon:'🏗️', name:'NEW CONSTRUCTION',  desc:'Buildings, facilities, infrastructure' },
-    { id:'renov',  icon:'🔨', name:'RENOVATION / REPAIR', desc:'Upgrade, repair, renovation projects' },
-    { id:'force',  icon:'🛡️', name:'FORCE PROTECTION\nSTRUCTURES', desc:'Barriers, bunkers, hardened positions' },
-    { id:'util',   icon:'⚡',  name:'UTILITIES / MEP',   desc:'Electrical, plumbing, HVAC systems' },
+    {v:'new_const',l:'New Construction',i:'🏗️'},
+    {v:'renovation',l:'Renovation / Alteration',i:'🔨'},
+    {v:'repair',l:'Repair / Restoration',i:'🛠️'},
+    {v:'hardening',l:'Hardening / Force Protection',i:'🧱'},
+    {v:'demo',l:'Demolition',i:'💥'},
   ],
   supply: [
-    { id:'eq',     icon:'🔧', name:'EQUIPMENT',          desc:'Machinery, tools, specialized equipment' },
-    { id:'parts',  icon:'🔩', name:'PARTS / SPARES',     desc:'Repair parts, expendable items' },
-    { id:'veh',    icon:'🚗', name:'VEHICLES',            desc:'POVs, tactical vehicles, trailers' },
-    { id:'supps',  icon:'📦', name:'GENERAL SUPPLIES',   desc:'Office, field, consumable supplies' },
+    {v:'equipment',l:'Equipment / Vehicles',i:'⚙️'},
+    {v:'consumables',l:'Consumable Supplies',i:'📦'},
+    {v:'parts',l:'Spare Parts / Repair Parts',i:'🔧'},
+    {v:'fuel',l:'Bulk Fuel / POL',i:'⛽'},
   ],
   it: [
-    { id:'net',    icon:'🌐', name:'NETWORK / COMMS',    desc:'LAN/WAN, wireless, VOIP' },
-    { id:'satcom', icon:'📡', name:'SATCOM',              desc:'Satellite communications, VSAT' },
-    { id:'itsup',  icon:'💻', name:'IT SUPPORT / HELP DESK', desc:'Tier 1-3 support, break/fix' },
-    { id:'sw',     icon:'🖥️', name:'SOFTWARE / SYSTEMS', desc:'Custom software, integration, licensing' },
+    {v:'network',l:'Network / Infrastructure',i:'🌐'},
+    {v:'hardware',l:'Hardware / End-User Devices',i:'🖥️'},
+    {v:'software',l:'Software / Application',i:'💾'},
+    {v:'satellite',l:'SATCOM / Communications',i:'📡'},
   ],
   medical: [
-    { id:'med',    icon:'🏥', name:'MEDICAL SERVICES',   desc:'Physicians, nurses, clinical care' },
-    { id:'dental', icon:'🦷', name:'DENTAL SUPPORT',     desc:'Dental care, oral health' },
-    { id:'lab',    icon:'🔬', name:'LABORATORY',          desc:'Lab testing, specimen processing' },
-    { id:'medlog', icon:'💊', name:'MEDICAL LOGISTICS',  desc:'Pharmaceutical supply, equipment' },
+    {v:'primary_care',l:'Primary / Preventive Care',i:'🏥'},
+    {v:'dental',l:'Dental Services',i:'🦷'},
+    {v:'lab',l:'Laboratory / Diagnostics',i:'🔬'},
+    {v:'pharmacy',l:'Pharmacy / Medication',i:'💊'},
   ],
-  baseops: [
-    { id:'dfac',   icon:'🍽️', name:'DFAC / FOOD SERVICE', desc:'Dining facility, catering, food ops' },
-    { id:'hazmat', icon:'☢️',  name:'HAZMAT / WASTE',     desc:'HAZMAT handling, disposal, RCRA' },
-    { id:'laund',  icon:'👕', name:'LAUNDRY / LINEN',     desc:'Laundry services, linen exchange' },
-    { id:'morale', icon:'🎯', name:'MWR / MORALE',        desc:'Recreation, MWR, morale programs' },
-  ],
+  base_ops: []
 };
 
-// ── Contract type click ──
-document.querySelectorAll('#ctCards .card').forEach(c => {
-  c.addEventListener('click', function() {
-    document.querySelectorAll('#ctCards .card').forEach(x => x.classList.remove('selected'));
-    this.classList.add('selected');
-    state.contractType = this.dataset.ct;
-    state.subCategory = '';
-    renderSubCats(this.dataset.ct);
-  });
-});
+// ══════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════════
+function goToStep(n) {
+  document.getElementById('step-'+currentStep).classList.remove('active');
+  document.getElementById('prog-'+currentStep).classList.remove('active');
+  document.getElementById('prog-'+currentStep).classList.add('done');
 
-function renderSubCats(ct) {
-  const subs = SUB_CATS[ct];
-  if (!subs) { document.getElementById('subCatSection').style.display = 'none'; return; }
-  document.getElementById('subCatSection').style.display = '';
-  const container = document.getElementById('subCards');
-  container.innerHTML = '';
-  subs.forEach(s => {
-    const d = document.createElement('div');
-    d.className = 'card';
-    d.dataset.sub = s.id;
-    d.innerHTML = `<div class="card-icon">${s.icon}</div><div class="card-name">${s.name.replace('\n','<br>')}</div><div class="card-desc">${s.desc}</div>`;
-    d.addEventListener('click', function() {
-      document.querySelectorAll('#subCards .card').forEach(x => x.classList.remove('selected'));
-      this.classList.add('selected');
-      state.subCategory = this.dataset.sub;
+  currentStep = n;
+  document.getElementById('step-'+n).classList.add('active');
+  document.getElementById('prog-'+n).classList.remove('done');
+  document.getElementById('prog-'+n).classList.add('active');
+
+  if (n === 6) buildReviewSummary();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ══════════════════════════════════════════════════════════════════
+// TYPE SELECTION
+// ══════════════════════════════════════════════════════════════════
+function selectType(type, label, icon) {
+  state.contractType = type;
+  state.contractTypeLabel = label;
+
+  document.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+
+  // show req section
+  document.querySelectorAll('.req-section').forEach(s => s.style.display = 'none');
+  const sec = document.getElementById('req-'+type);
+  if (sec) sec.style.display = 'block';
+
+  // subtypes
+  const subs = subTypes[type] || [];
+  const wrap = document.getElementById('subtype-section');
+  if (subs.length > 0) {
+    const container = document.getElementById('subtype-tiles');
+    container.innerHTML = '';
+    subs.forEach(s => {
+      const d = document.createElement('div');
+      d.className = 'tile';
+      d.innerHTML = `<div class="tile-icon">${s.i}</div><div class="tile-label">${s.l}</div>`;
+      d.onclick = () => {
+        container.querySelectorAll('.tile').forEach(t=>t.classList.remove('selected'));
+        d.classList.add('selected');
+        state.subType = s.v;
+      };
+      container.appendChild(d);
     });
-    container.appendChild(d);
-  });
+    wrap.style.display = 'block';
+  } else {
+    wrap.style.display = 'none';
+  }
 }
 
-// ── Step navigation ──
-function goStep(n) {
-  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-  document.getElementById('step' + n).classList.add('active');
-  document.querySelectorAll('.nav-tab').forEach((t, i) => {
-    t.classList.remove('active', 'done');
-    if (i + 1 === n) t.classList.add('active');
-    else if (i + 1 < n) t.classList.add('done');
-  });
-  window.scrollTo(0, 0);
+// ══════════════════════════════════════════════════════════════════
+// DYNAMIC ROW HELPERS
+// ══════════════════════════════════════════════════════════════════
+function addDynRow(containerId, placeholder, isTextarea) {
+  const c = document.getElementById(containerId);
+  const row = document.createElement('div');
+  row.className = 'dyn-row';
+  if (isTextarea) {
+    row.innerHTML = `<textarea placeholder="${placeholder}" style="min-height:60px"></textarea><button class="rm-btn" onclick="this.parentElement.remove()">✕</button>`;
+  } else {
+    row.innerHTML = `<input type="text" placeholder="${placeholder}"><button class="rm-btn" onclick="this.parentElement.remove()">✕</button>`;
+  }
+  c.appendChild(row);
 }
 
-// ── Get form value helper ──
-function val(id) {
+function getDynRows(containerId) {
+  const c = document.getElementById(containerId);
+  if (!c) return [];
+  return Array.from(c.querySelectorAll('input[type=text], textarea'))
+    .map(el => el.value.trim()).filter(v => v);
+}
+
+function addClinRow() {
+  const c = document.getElementById('clin-list');
+  const row = document.createElement('div');
+  row.className = 'dyn-row';
+  row.style.gap = '6px';
+  row.innerHTML = `
+    <input type="text" placeholder="CLIN #" style="width:80px;flex:none">
+    <input type="text" placeholder="Item Description">
+    <input type="text" placeholder="Qty / Unit" style="width:100px;flex:none">
+    <button class="rm-btn" onclick="this.parentElement.remove()">✕</button>`;
+  c.appendChild(row);
+}
+
+function getClinRows() {
+  const rows = document.querySelectorAll('#clin-list .dyn-row');
+  return Array.from(rows).map(row => {
+    const inputs = row.querySelectorAll('input');
+    return { clin: inputs[0]?.value||'', desc: inputs[1]?.value||'', qty: inputs[2]?.value||'' };
+  }).filter(r => r.desc);
+}
+
+function addDeliverableRow() {
+  const c = document.getElementById('deliverables-list');
+  const row = document.createElement('div');
+  row.className = 'dyn-row';
+  row.style.gap = '6px';
+  row.innerHTML = `
+    <input type="text" placeholder="Deliverable name" style="flex:2">
+    <input type="text" placeholder="Due date / frequency" style="flex:1.5">
+    <input type="text" placeholder="Submit to" style="flex:1">
+    <button class="rm-btn" onclick="this.parentElement.remove()">✕</button>`;
+  c.appendChild(row);
+}
+
+function addPresetDeliverable(name, freq, to) {
+  const c = document.getElementById('deliverables-list');
+  const row = document.createElement('div');
+  row.className = 'dyn-row';
+  row.style.gap = '6px';
+  row.innerHTML = `
+    <input type="text" value="${name}" style="flex:2">
+    <input type="text" value="${freq}" style="flex:1.5">
+    <input type="text" value="${to}" style="flex:1">
+    <button class="rm-btn" onclick="this.parentElement.remove()">✕</button>`;
+  c.appendChild(row);
+}
+
+function getDeliverables() {
+  const rows = document.querySelectorAll('#deliverables-list .dyn-row');
+  return Array.from(rows).map(row => {
+    const inputs = row.querySelectorAll('input');
+    return { name: inputs[0]?.value||'', freq: inputs[1]?.value||'', to: inputs[2]?.value||'' };
+  }).filter(r => r.name);
+}
+
+function addKeyPersonnelRow() {
+  const c = document.getElementById('key-personnel-list');
+  const row = document.createElement('div');
+  row.className = 'dyn-row';
+  row.style.gap = '6px';
+  row.innerHTML = `
+    <input type="text" placeholder="Position title (e.g., Project Manager)" style="flex:2">
+    <input type="text" placeholder="Min qualifications / experience" style="flex:3">
+    <button class="rm-btn" onclick="this.parentElement.remove()">✕</button>`;
+  c.appendChild(row);
+}
+
+function getKeyPersonnel() {
+  const rows = document.querySelectorAll('#key-personnel-list .dyn-row');
+  return Array.from(rows).map(row => {
+    const inputs = row.querySelectorAll('input');
+    return { title: inputs[0]?.value||'', quals: inputs[1]?.value||'' };
+  }).filter(r => r.title);
+}
+
+// ── TOGGLES ───────────────────────────────────────────────────────
+function toggleGFP() {
+  const v = document.getElementById('gfp_yn').value;
+  document.getElementById('gfp-detail').style.display = v==='yes' ? 'block' : 'none';
+}
+
+function toggleKeyPersonnel() {
+  const v = document.getElementById('key_personnel_yn').value;
+  document.getElementById('key-personnel-fields').style.display = v==='yes' ? 'block' : 'none';
+}
+
+function updateOptionFields() {
+  const n = parseInt(document.getElementById('option_periods').value);
+  const c = document.getElementById('option-dates-fields');
+  c.innerHTML = '';
+  if (n === 0) return;
+  const grid = document.createElement('div');
+  grid.className = 'form-grid triple';
+  grid.style.marginTop = '10px';
+  for (let i = 1; i <= n; i++) {
+    grid.innerHTML += `
+      <div class="field">
+        <label>Option ${i} Period</label>
+        <input type="text" id="opt_${i}" placeholder="e.g., 12 months / [dates]">
+      </div>`;
+  }
+  c.appendChild(grid);
+}
+
+// ══════════════════════════════════════════════════════════════════
+// REVIEW SUMMARY
+// ══════════════════════════════════════════════════════════════════
+function v(id) {
   const el = document.getElementById(id);
   return el ? el.value.trim() : '';
 }
 
-function checkedItems(prefix, count) {
-  const items = [];
-  for (let i = 1; i <= count; i++) {
-    const el = document.getElementById(prefix + i);
-    if (el && el.checked) {
-      items.push(el.closest('.check-item').querySelector('span').textContent.trim());
+function buildReviewSummary() {
+  const items = [
+    ['Contract Type', state.contractTypeLabel || '(not selected)'],
+    ['Contract Number', v('contract_number') || '(not entered)'],
+    ['Contract Title', v('contract_title') || '(not entered)'],
+    ['Installation', v('installation') || '(not entered)'],
+    ['AOR', v('aor') || '(not selected)'],
+    ['Base Period', `${v('pop_start')||'?'} to ${v('pop_end')||'?'}`],
+    ['Option Periods', v('option_periods') + ' option year(s)'],
+    ['Contracting Office', v('contracting_office') || '(not entered)'],
+  ];
+  let html = '<table><tr><th>Field</th><th>Value</th></tr>';
+  items.forEach(([k,val]) => {
+    const flag = (val==='(not entered)'||val==='(not selected)') ? ' style="color:#c0392b"' : '';
+    html += `<tr><td style="font-weight:600;width:35%">${k}</td><td${flag}>${val}</td></tr>`;
+  });
+  html += '</table>';
+  document.getElementById('review-content').innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// TBD HELPER
+// ══════════════════════════════════════════════════════════════════
+function tbd(val, fallback) {
+  if (!val || val.trim()==='') return fallback || '<span class="pws-tbd">[TBD]</span>';
+  return val.trim();
+}
+
+function ul(items) {
+  if (!items || items.length===0) return '<p class="pws-body"><span class="pws-tbd">[TBD — specify items]</span></p>';
+  return '<ul class="pws-list">' + items.map(i=>`<li>${i}</li>`).join('') + '</ul>';
+}
+
+// ══════════════════════════════════════════════════════════════════
+// BUILD PWS
+// ══════════════════════════════════════════════════════════════════
+function buildPWS() {
+  const today = new Date();
+  const pwsDate = v('pws_date') ? new Date(v('pws_date')).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : today.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+  // Gather all data
+  const D = {
+    type:         state.contractTypeLabel || 'SERVICES',
+    typeLc:       state.contractType || 'services',
+    contractNum:  tbd(v('contract_number'),'[CONTRACT NUMBER]'),
+    pwsDate,
+    version:      v('pws_version')||'1.0',
+    title:        tbd(v('contract_title'),'[CONTRACT TITLE]'),
+    reqActivity:  tbd(v('requiring_activity'),'[REQUIRING ACTIVITY]'),
+    contrOffice:  tbd(v('contracting_office'),'[CONTRACTING OFFICE]'),
+    missionNeed:  tbd(v('mission_need'),'[MISSION NEED STATEMENT — DESCRIBE WHY THIS REQUIREMENT EXISTS]'),
+    installation: tbd(v('installation'),'[INSTALLATION]'),
+    hostNation:   tbd(v('host_nation'),'[HOST NATION]'),
+    aor:          tbd(v('aor'),'[AOR]'),
+    threat:       v('threat_level')||'hostile',
+    background:   tbd(v('background'),'[BACKGROUND — DESCRIBE OPERATIONAL CONTEXT, CURRENT STATE, AND MISSION REQUIREMENTS]'),
+    popStart:     tbd(v('pop_start'),'[START DATE]'),
+    popEnd:       tbd(v('pop_end'),'[END DATE]'),
+    ntpType:      v('ntp_type')||'ntp',
+    optPeriods:   parseInt(v('option_periods')||'0'),
+    mobPeriod:    v('mob_period'),
+    perfLocation: tbd(v('perf_location'),'[PERFORMANCE LOCATION]'),
+    workspace:    v('workspace')||'The government will provide contractor workspace as available. Contractor is responsible for providing all required equipment and supplies unless specified as GFP.',
+    travelReq:    v('travel_req')||'Contractor travel within the AOR may be required as directed by the COR. All travel requires prior COR approval.',
+    qaspType:     v('qasp_type')||'periodic',
+    corReq:       v('cor_required')||'yes',
+    perfStandards:tbd(v('perf_standards'),'[PERFORMANCE STANDARDS / ACCEPTABLE QUALITY LEVELS — DEFINE MEASURABLE METRICS]'),
+    incentives:   v('incentives')||'Deductions may be taken for failure to meet performance standards as specified in the Quality Assurance Surveillance Plan (QASP), which will be maintained by the COR.',
+    reporting:    v('reporting')||'The contractor shall submit monthly status reports to the COR not later than (NLT) the 5th calendar day of each month. Reports shall address work accomplished, issues encountered, and upcoming work.',
+    gfpYN:        v('gfp_yn')||'no',
+    gfpItems:     getDynRows('gfp-list'),
+    gfpAccount:   v('gfp_accountability')||'The contractor shall be responsible for the proper use, care, and maintenance of all GFP/GFE. Any loss, damage, or destruction shall be reported to the COR within 24 hours.',
+    gfeVehicles:  v('gfe_vehicles')||'no',
+    keyPersonnelYN: v('key_personnel_yn')||'no',
+    keyPersonnel:   getKeyPersonnel(),
+    clearanceReq:   v('clearance_req')||'no',
+    minQuals:       v('min_quals')||'Contractor personnel shall possess the qualifications, licenses, and certifications required by applicable law, regulation, and professional standards for the services provided under this contract.',
+    trainingReq:    v('training_req')||'Contractor personnel shall complete all theater-required training prior to deployment, including Anti-Terrorism Level I awareness training. The contractor is responsible for maintaining and providing documentation of all required training records.',
+    oconusReq:      v('oconus_req')||'All contractor personnel performing under this contract in an overseas location shall obtain a Letter of Authorization (LOA) prior to deployment and shall comply with all requirements of DFARS 252.225-7040, including medical readiness, dental fitness, and required theater-specific inoculations.',
+    baseAccess:     v('base_access')||'badge',
+    atfp:           v('atfp')||'standard',
+    securityAdd:    v('security_add')||'',
+    cuiYN:          v('cui_yn')||'no',
+    opsec:          v('opsec')||'standard',
+    deliverables:   getDeliverables(),
+    applicDocs:     v('applicable_docs')||'',
+    addDocs:        getDynRows('docs-list'),
+    coPOC:          tbd(v('co_name'),'[CO NAME, RANK/GRADE, PHONE, EMAIL]'),
+    corPOC:         v('cor_name')||'<span class="pws-tbd">[COR — TO BE DESIGNATED IN WRITING PRIOR TO PERFORMANCE]</span>',
+    raPOC:          v('ra_poc')||'<span class="pws-tbd">[REQUIRING ACTIVITY POC]</span>',
+    emergPOC:       v('emerg_poc')||'<span class="pws-tbd">[EMERGENCY POC]</span>',
+  };
+
+  // type-specific scope
+  function getScope() {
+    switch(D.typeLc) {
+      case 'services': return tbd(v('svc_scope'), '[DESCRIBE SERVICES REQUIRED]');
+      case 'construction': return tbd(v('con_scope'), '[DESCRIBE CONSTRUCTION SCOPE]');
+      case 'supply': return tbd(v('sup_scope'), '[DESCRIBE SUPPLY/EQUIPMENT REQUIREMENT]');
+      case 'it': return tbd(v('it_scope'), '[DESCRIBE IT/COMMS REQUIREMENT]');
+      case 'medical': return tbd(v('med_scope'), '[DESCRIBE MEDICAL SUPPORT REQUIREMENT]');
+      case 'base_ops': return tbd(v('bos_scope'), '[DESCRIBE BASE OPS SUPPORT REQUIREMENT]');
+      default: return tbd('','');
     }
   }
-  return items;
-}
 
-function checkedQuals() {
-  const items = [];
-  document.querySelectorAll('#qualChecks input:checked').forEach(el => {
-    items.push(el.closest('.check-item').querySelector('span').textContent.trim());
-  });
-  return items;
-}
+  function getTasks() {
+    const taskMap = {
+      services:    getDynRows('svc-tasks-list'),
+      construction:getDynRows('con-tasks-list'),
+      supply:      [],
+      it:          getDynRows('it-tasks-list'),
+      medical:     getDynRows('med-tasks-list'),
+      base_ops:    getDynRows('bos-tasks-list'),
+    };
+    return taskMap[D.typeLc] || [];
+  }
 
-// ── Build the PWS ──
-function buildPWS() {
-  goStep(7);
+  function getSpecificRequirements() {
+    switch(D.typeLc) {
+      case 'services': {
+        const lines = [];
+        if (v('svc_hours')) lines.push(`<div class="pws-sub-hdr">1.3.1 Hours of Operation</div><p class="pws-body">Services shall be available ${v('svc_hours')}. The contractor shall maintain continuous capability to perform all required services within the specified hours.</p>`);
+        if (v('svc_surge')) lines.push(`<div class="pws-sub-hdr">1.3.2 Surge Requirements</div><p class="pws-body">${v('svc_surge')}</p>`);
+        if (v('svc_personnel')) lines.push(`<div class="pws-sub-hdr">1.3.3 Minimum Personnel</div><p class="pws-body">${v('svc_personnel')}</p>`);
+        return lines.join('');
+      }
+      case 'construction': {
+        const lines = [];
+        lines.push(`<div class="pws-sub-hdr">1.3.1 Project Category</div><p class="pws-body">Project Category: ${v('con_category')||'[TBD]'}. ${v('con_sqft') ? 'Approximate scope: '+v('con_sqft')+'.' : ''} ${v('con_standards') ? 'Applicable standards: '+v('con_standards')+'.' : ''}</p>`);
+        if (v('con_special')) lines.push(`<div class="pws-sub-hdr">1.3.2 Special Technical Requirements</div><p class="pws-body">${v('con_special')}</p>`);
+        const sched = v('con_schedule');
+        if (sched==='yes') lines.push(`<div class="pws-sub-hdr">1.3.3 Construction Schedule</div><p class="pws-body">The contractor shall submit a bar chart construction schedule to the COR within five (5) calendar days of receipt of Notice to Proceed (NTP). The schedule shall identify all major work activities, milestones, and the planned completion date.</p>`);
+        else if (sched==='cpm') lines.push(`<div class="pws-sub-hdr">1.3.3 Construction Schedule (CPM)</div><p class="pws-body">The contractor shall submit a Critical Path Method (CPM) construction schedule within five (5) calendar days of NTP. The CPM schedule shall identify all critical path activities, float, and dependencies. The schedule shall be updated monthly and submitted to the COR.</p>`);
+        const sub = v('con_submittal');
+        if (sub==='yes') lines.push(`<div class="pws-sub-hdr">1.3.4 Submittals</div><p class="pws-body">The contractor shall prepare and submit a Submittal Register within ten (10) calendar days of NTP identifying all required shop drawings, material submittals, and product data. Submittals shall be submitted a minimum of 14 calendar days prior to the date the material or equipment is needed. No work shall proceed until the applicable submittal is approved by the COR.</p>`);
+        return lines.join('');
+      }
+      case 'it': {
+        const lines = [];
+        const net = v('it_network');
+        if (net.includes('nipr')||net.includes('sipr')) lines.push(`<div class="pws-sub-hdr">1.3.1 Network Connection Requirements</div><p class="pws-body">The contractor shall obtain required Authority to Connect (ATC) approval prior to connecting any contractor-provided or government-furnished equipment to DoD networks. All systems connecting to NIPRNet/SIPRNet shall comply with DODI 8500.01 and applicable DISA STIGs.</p>`);
+        const ato = v('it_ato');
+        if (ato==='required') lines.push(`<div class="pws-sub-hdr">1.3.2 Authority to Operate (ATO)</div><p class="pws-body">A valid Authority to Operate (ATO) issued by the appropriate Authorizing Official (AO) is required before any system may be placed into operation. The contractor shall support the ATO process and provide all required system documentation, artifacts, and access for security assessments.</p>`);
+        if (v('it_cyber')) lines.push(`<div class="pws-sub-hdr">1.3.3 Cybersecurity Requirements</div><p class="pws-body">${v('it_cyber')}</p>`);
+        return lines.join('');
+      }
+      case 'medical': {
+        const lines = [];
+        if (v('med_credentials')) lines.push(`<div class="pws-sub-hdr">1.3.1 Credentials and Licensing</div><p class="pws-body">${v('med_credentials')}</p>`);
+        return lines.join('');
+      }
+      case 'base_ops': {
+        const checks = ['bos_dfac','bos_laundry','bos_waste','bos_hazmat','bos_water','bos_fuel','bos_grounds','bos_pest','bos_morale','bos_transport'];
+        const labels = {
+          bos_dfac:'Dining Facility (DFAC) Operations', bos_laundry:'Laundry/Linen Services',
+          bos_waste:'Solid Waste Collection and Disposal', bos_hazmat:'HAZMAT Management',
+          bos_water:'Potable Water Production/Distribution', bos_fuel:'Bulk Fuel/POL Storage and Distribution',
+          bos_grounds:'Grounds Maintenance', bos_pest:'Pest Control',
+          bos_morale:'Morale/Recreation Support', bos_transport:'Installation Transportation/Shuttle Operations'
+        };
+        const active = checks.filter(id => document.getElementById(id)?.checked);
+        if (active.length > 0) {
+          return `<div class="pws-sub-hdr">1.3.1 Required Service Functions</div><p class="pws-body">The contractor shall provide the following base operations support functions:</p>
+          <ul class="pws-list">${active.map(id=>`<li>${labels[id]}</li>`).join('')}</ul>`;
+        }
+        return '';
+      }
+      default: return '';
+    }
+  }
 
-  const ctNames = {
-    services: 'Services', construction: 'Construction', supply: 'Supply / Equipment',
-    it: 'IT / Communications', medical: 'Medical Support', baseops: 'Base Operations Support'
+  const scope = getScope();
+  const tasks = getTasks();
+  const specReqs = getSpecificRequirements();
+
+  // Option periods text
+  let optPeriodsText = '';
+  if (D.optPeriods > 0) {
+    optPeriodsText = `\n<p class="pws-body">This contract includes ${D.optPeriods} option period(s):</p><ul class="pws-list">`;
+    for (let i = 1; i <= D.optPeriods; i++) {
+      const optVal = v('opt_'+i) || '[OPTION '+i+' PERIOD — TBD]';
+      optPeriodsText += `<li>Option Period ${i}: ${optVal}</li>`;
+    }
+    optPeriodsText += '</ul>';
+  }
+
+  // NTP language
+  const ntpMap = {
+    date: 'Performance shall commence on the date specified in the contract.',
+    ntp: 'Performance shall commence upon receipt of a written Notice to Proceed (NTP) from the Contracting Officer or authorized representative.',
+    award: 'Performance shall commence on the date of contract award.'
   };
-  const ctName = ctNames[state.contractType] || state.contractType || '[Contract Type]';
-  const title = val('title') || '[Contract Title]';
-  const location = val('location') || '[Location]';
-  const reqOrg = val('reqOrg') || '[Requesting Organization]';
-  const pop = val('pop') || '[Period of Performance]';
-  const background = val('background') || 'The contractor shall provide support services in a contingency/OCONUS operating environment.';
-  const objective = val('objective') || 'The contractor shall provide all personnel, equipment, tools, materials, supervision, and services necessary to accomplish the work described herein.';
-  const popPlace = val('popPlace') || location;
-  const tasks = val('tasks');
-  const standards = val('standards');
-  const quals = checkedQuals();
-  const addlQuals = val('addlQuals');
-  const hours = val('hours') || 'As specified by the Contracting Officer\'s Representative (COR)';
-  const response = val('response') || 'Per schedule established by the COR';
-  const aql = val('aql') || '95% of all tasks completed within scheduled timeframes; emergency response 100% within required time.';
-  const corText = val('cor') || 'The COR shall conduct periodic inspections, review contractor reports, and document contractor performance.';
-  const gfpItems = checkedItems('gfp', 6);
-  const gfpDetails = val('gfpDetails');
-  const secItems = checkedItems('sec', 6);
-  const clearance = val('clearanceLevel');
-  const fp = val('forceProtection');
-  const inspItems = checkedItems('insp', 6);
-  const delivItems = checkedItems('del', 8);
-  const addlDels = val('addlDels');
-  const submitMethod = val('submitMethod') || 'Electronic delivery to the COR; hard copy upon request.';
 
-  const taskList = tasks
-    ? tasks.split('\n').filter(t => t.trim()).map(t => `<li>${t.trim()}</li>`).join('')
-    : '<li>Perform all tasks as directed by the COR in accordance with applicable technical standards</li>';
+  // QASP language
+  const qaspMap = {
+    periodic: 'The COR will conduct periodic surveillance of contractor performance through scheduled and unscheduled site visits, record reviews, and direct observation.',
+    random: 'The COR will conduct random sampling of contractor deliverables and performance to assess compliance with PWS requirements.',
+    '100pct': 'Due to the safety-critical or mission-essential nature of the work, the COR will conduct 100% inspection of all contractor deliverables and work products.',
+    customer: 'Performance will be assessed through customer feedback, satisfaction surveys, and complaint tracking maintained by the COR.',
+    combined: 'The COR will use a combined surveillance approach including periodic scheduled inspections, random sampling, and customer feedback mechanisms.'
+  };
 
-  const qualList = quals.length
-    ? quals.map(q => `<li>${q}</li>`).join('')
-    : '<li>Contractor key personnel shall have a minimum of three (3) years relevant experience</li>';
+  // Security/clearance language
+  function getClearanceText() {
+    switch(v('clearance_req')) {
+      case 'secret': return 'All contractor personnel performing under this contract shall possess and maintain a minimum SECRET clearance. Contractor shall submit names and clearance information to the COR within five (5) calendar days of contract award.';
+      case 'ts': return 'Contractor personnel requiring access to TOP SECRET information shall possess and maintain current TS clearances. Contractor shall coordinate with the cognizant security authority for access processing.';
+      case 'favorably': return 'All contractor personnel shall have a favorably adjudicated background investigation prior to commencing performance.';
+      case 'naci': return 'All contractor personnel shall have a completed and favorably adjudicated National Agency Check with Inquiries (NACI) prior to commencing performance.';
+      default: return 'No security clearances are required for performance under this contract. However, all contractor personnel are subject to background check procedures as required by installation security directives.';
+    }
+  }
 
-  const inspList = inspItems.length
-    ? inspItems.map(i => `<li>${i}</li>`).join('')
-    : '<li>Periodic scheduled inspections by the COR</li><li>Customer feedback monitoring</li>';
+  function getATFPText() {
+    switch(v('atfp')) {
+      case 'enhanced': return 'The contractor shall prepare and submit an Antiterrorism/Force Protection (AT/FP) plan within 15 calendar days of contract award. The plan shall address threat awareness, emergency procedures, and reporting protocols. The AT/FP plan shall be reviewed and approved by the installation AT Officer prior to performance commencement.';
+      case 'convoy': return 'All contractor convoy and vehicle movement operations shall comply with theater-specific force protection convoy requirements. The contractor shall coordinate all convoy operations with the installation AT/FP officer and applicable theater movement control authority. Contractors shall not conduct vehicle movements in restricted areas without prior COR/CO approval.';
+      default: return 'The contractor shall comply with all DoD and installation antiterrorism and force protection (AT/FP) requirements in accordance with DFARS 252.225-7043. Contractor personnel shall receive and acknowledge AT/FP threat briefings prior to performance.';
+    }
+  }
 
-  const delList = delivItems.length
-    ? delivItems.map(d => `<li>${d}</li>`).join('')
-    : '<li>Quality Control Plan within 30 days of award</li><li>Monthly Status Reports</li>';
+  function getCUIText() {
+    switch(v('cui_yn')) {
+      case 'cui': return 'This contract may involve access to Controlled Unclassified Information (CUI). The contractor shall handle, mark, protect, and destroy CUI in accordance with Executive Order 13556, 32 CFR Part 2002, and DoD Instruction 5200.48. The contractor shall designate a CUI Program Manager and provide CUI training documentation to the COR within 10 calendar days of award.';
+      case 'classified': return 'This contract involves access to classified national security information. The contractor shall comply with the National Industrial Security Program Operating Manual (NISPOM), DoD 5220.22-M, and all applicable security classification guides. A classified material receipt/distribution system shall be maintained by the contractor.';
+      default: return 'This contract does not involve classified information or CUI. Contractor personnel shall not introduce classified materials into unclassified work areas. All contractor products and reports shall be marked UNCLASSIFIED unless otherwise directed.';
+    }
+  }
 
-  const gfpText = gfpItems.includes('No GFP — contractor furnishes all resources')
-    ? 'No Government-Furnished Property (GFP) will be provided. The contractor shall furnish all resources necessary to perform the work.'
-    : gfpItems.length
-      ? `The Government will provide the following: <ul>${gfpItems.map(g=>`<li>${g}</li>`).join('')}</ul>${gfpDetails ? `<p>${gfpDetails}</p>` : ''}`
-      : (gfpDetails || 'Government-Furnished Property, if any, will be specified in the contract schedule.');
+  // Deliverables table
+  function getDeliverableTable() {
+    const items = D.deliverables;
+    if (items.length === 0) return '<p class="pws-body"><span class="pws-tbd">[IDENTIFY ALL REQUIRED DELIVERABLES WITH DUE DATES AND SUBMISSION REQUIREMENTS]</span></p>';
+    let html = `<table>
+      <tr><th>#</th><th>Deliverable</th><th>Frequency / Due Date</th><th>Submit To</th><th>Format</th></tr>`;
+    items.forEach((item, i) => {
+      html += `<tr><td>${i+1}</td><td>${item.name}</td><td>${item.freq||'[TBD]'}</td><td>${item.to||'COR'}</td><td>Electronic / email</td></tr>`;
+    });
+    html += '</table>';
+    return html;
+  }
 
-  const secText = secItems.length
-    ? `<ul>${secItems.map(s=>`<li>${s}</li>`).join('')}</ul>${clearance ? `<p><strong>Clearance/Security:</strong> ${clearance}</p>` : ''}`
-    : 'Contractor personnel shall comply with all applicable base access and security requirements.';
+  // Applicable documents
+  function getApplicDocs() {
+    const base = D.applicDocs ? D.applicDocs.split('\n').filter(l=>l.trim()) : [];
+    const add = D.addDocs || [];
+    const all = [...base, ...add];
+    if (all.length === 0) return '<p class="pws-body"><span class="pws-tbd">[LIST APPLICABLE DOCUMENTS]</span></p>';
+    return '<ul class="pws-list">' + all.map(d=>`<li>${d}</li>`).join('') + '</ul>';
+  }
 
-  const today = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+  // Key personnel section
+  function getKeyPersonnelSection() {
+    if (D.keyPersonnelYN !== 'yes' || D.keyPersonnel.length === 0) {
+      return '<p class="pws-body">No key personnel positions are designated under this contract. The contractor shall identify a primary point of contact to the COR within five (5) calendar days of contract award.</p>';
+    }
+    let html = `<p class="pws-body">The following positions are designated as Key Personnel. Key Personnel may not be removed, replaced, or their effort substantially reduced without prior written approval of the Contracting Officer. Proposed replacements shall have equal or superior qualifications.</p>
+    <table><tr><th>Position</th><th>Minimum Qualifications / Requirements</th></tr>`;
+    D.keyPersonnel.forEach(kp => {
+      html += `<tr><td><strong>${kp.title}</strong></td><td>${kp.quals||'[TBD — specify required qualifications]'}</td></tr>`;
+    });
+    html += '</table>';
+    return html;
+  }
 
+  // GFP section
+  function getGFPSection() {
+    if (D.gfpYN === 'no') {
+      return '<p class="pws-body">No Government-Furnished Property (GFP) or Government-Furnished Equipment (GFE) will be provided under this contract. The contractor is responsible for providing all equipment, tools, materials, supplies, and other items necessary to perform the requirements of this PWS.</p>';
+    }
+    if (D.gfpYN === 'limited') {
+      return `<p class="pws-body">The government will provide limited facilities and/or utilities as specified below. No other GFP or GFE will be provided.</p>
+      <p class="pws-body">${D.gfpAccount}</p>`;
+    }
+    let html = `<p class="pws-body">The Government will provide the following Government-Furnished Property (GFP) and/or Equipment (GFE) for use under this contract. The contractor shall use GFP/GFE only for performance of this contract.</p>`;
+    if (D.gfpItems.length > 0) {
+      html += '<ul class="pws-list">' + D.gfpItems.map(i=>`<li>${i}</li>`).join('') + '</ul>';
+    } else {
+      html += '<p class="pws-body"><span class="pws-tbd">[LIST ALL GFP/GFE ITEMS, QUANTITIES, AND LOCATIONS]</span></p>';
+    }
+    html += `<p class="pws-body">${D.gfpAccount}</p>`;
+    return html;
+  }
+
+  // ── ASSEMBLE DOCUMENT ────────────────────────────────────────────
   const html = `
-<h1>PERFORMANCE WORK STATEMENT</h1>
-<p style="text-align:center;color:#888;font-size:.82rem">AFICC/KQ &bull; CONTINGENCY CONTRACTING &bull; OVERSEAS OPERATIONS</p>
-<p style="text-align:center;font-weight:700;font-size:1rem;margin:8px 0">${title}</p>
-<p style="text-align:center;color:#666;font-size:.85rem">${location} &bull; Generated ${today}</p>
+<div class="pws-header-block">
+  <div class="pws-doc-title">Performance Work Statement</div>
+  <div class="pws-doc-title">${D.title}</div>
+  <div class="pws-doc-sub">${D.installation} | ${D.aor}</div>
+  <div class="pws-meta">
+    Contract / Solicitation No.: ${D.contractNum} &nbsp;|&nbsp;
+    Version: ${D.version} &nbsp;|&nbsp;
+    Date: ${D.pwsDate}<br>
+    Contracting Office: ${D.contrOffice} &nbsp;|&nbsp;
+    Requiring Activity: ${D.reqActivity}
+  </div>
+</div>
 
-<h2><span class="section-num">1. </span>GENERAL</h2>
-<p><strong>1.1 Overview.</strong> This Performance Work Statement (PWS) establishes the requirements for ${ctName.toLowerCase()} in support of ${reqOrg || 'the supported unit'} at ${location}. ${background}</p>
-<p><strong>1.2 Objective.</strong> ${objective}</p>
-<p><strong>1.3 Period of Performance.</strong> ${pop}</p>
-<p><strong>1.4 Place of Performance.</strong> ${popPlace}. The contractor shall be prepared to perform work at all locations designated by the COR within the area of operations.</p>
+<div class="pws-section">
+  <div class="pws-section-hdr">Section 1. Scope of Work</div>
+  <div class="pws-sub-hdr">1.1 Purpose</div>
+  <p class="pws-body">${D.missionNeed}</p>
 
-<h2><span class="section-num">2. </span>SCOPE OF WORK</h2>
-<p><strong>2.1 General Requirements.</strong> The contractor shall provide all personnel, equipment, tools, materials, supervision, and other items and non-personal services necessary to perform the following tasks on a non-personal services basis. The contractor shall perform to the standards in this PWS.</p>
-<p><strong>2.2 Specific Tasks.</strong> The contractor shall:</p>
-<ul>${taskList}</ul>
-${standards ? `<p><strong>2.3 Applicable Standards.</strong> The contractor shall comply with the following standards and regulations:<br>${standards}</p>` : ''}
+  <div class="pws-sub-hdr">1.2 Scope</div>
+  <p class="pws-body">${scope}</p>
+  ${tasks.length > 0 ? `<div class="pws-sub-hdr">1.2.1 Specific Tasks</div>${ul(tasks)}` : ''}
+  ${specReqs}
+</div>
 
-<h2><span class="section-num">3. </span>PERSONNEL REQUIREMENTS</h2>
-<p><strong>3.1 Qualifications.</strong> Contractor personnel shall meet the following minimum qualifications:</p>
-<ul>${qualList}</ul>
-${addlQuals ? `<p><strong>3.2 Additional Requirements.</strong> ${addlQuals}</p>` : ''}
-<p><strong>${addlQuals ? '3.3' : '3.2'} Contractor Responsibility.</strong> The contractor shall ensure all personnel are appropriately trained and qualified before beginning work. The contractor is responsible for the actions of all employees, subcontractors, and their employees on the contract.</p>
+<div class="pws-section">
+  <div class="pws-section-hdr">Section 2. Background</div>
+  <p class="pws-body">${D.background}</p>
+  <p class="pws-body">This requirement is being acquired by ${D.contrOffice} on behalf of ${D.reqActivity} at ${D.installation}, ${D.hostNation}, within the ${D.aor}. The operational environment is characterized as ${D.threat === 'hostile' ? 'a hostile/combat zone requiring strict adherence to force protection and antiterrorism requirements' : D.threat === 'contingency' ? 'an active contingency operation requiring contractor compliance with all theater-specific requirements' : D.threat === 'uncertain' ? 'an uncertain/elevated threat environment requiring enhanced force protection measures' : 'a permissive overseas environment'}. All contractor personnel must comply with theater entry requirements and applicable host nation agreements.</p>
+</div>
 
-<h2><span class="section-num">4. </span>PERFORMANCE STANDARDS</h2>
-<p><strong>4.1 Hours of Operations.</strong> ${hours}. The contractor shall provide services on a continuous basis as required by the mission. The contractor shall provide personnel capable of surge operations when directed by the COR.</p>
-<p><strong>4.2 Response Time.</strong> ${response}.</p>
-<p><strong>4.3 Acceptable Quality Level (AQL).</strong></p>
-<p>${aql.replace(/\n/g, '<br>')}</p>
-<p><strong>4.4 Surveillance Methods.</strong> The Government will use the following quality assurance surveillance methods:</p>
-<ul>${inspList}</ul>
-<p><strong>4.5 COR Oversight.</strong> ${corText}</p>
+<div class="pws-section">
+  <div class="pws-section-hdr">Section 3. Period of Performance</div>
+  <div class="pws-sub-hdr">3.1 Base Period</div>
+  <p class="pws-body">The base period of performance is ${D.popStart} through ${D.popEnd}. ${ntpMap[D.ntpType]}</p>
+  ${D.mobPeriod ? `<div class="pws-sub-hdr">3.2 Mobilization Period</div><p class="pws-body">${D.mobPeriod}</p>` : ''}
+  ${optPeriodsText ? `<div class="pws-sub-hdr">${D.mobPeriod ? '3.3' : '3.2'} Option Periods</div>${optPeriodsText}` : ''}
+  <p class="pws-body"><strong>Note:</strong> All option periods are unilateral government options. The Government is not obligated to exercise any option. The Contractor shall continue performance under the base period until the option is exercised or the contract expires.</p>
+</div>
 
-<h2><span class="section-num">5. </span>GOVERNMENT-FURNISHED PROPERTY / EQUIPMENT</h2>
-<p>${gfpText}</p>
+<div class="pws-section">
+  <div class="pws-section-hdr">Section 4. Place of Performance</div>
+  <p class="pws-body">${D.perfLocation}</p>
+  <p class="pws-body"><strong>Contractor Workspace:</strong> ${D.workspace}</p>
+  <p class="pws-body"><strong>Travel:</strong> ${D.travelReq}</p>
+</div>
 
-<h2><span class="section-num">6. </span>SECURITY REQUIREMENTS</h2>
-<p>${secText}</p>
-${fp ? `<p><strong>Force Protection.</strong> ${fp}</p>` : '<p><strong>Force Protection.</strong> Contractor personnel shall comply with all current Force Protection Condition (FPCON) measures and directives as communicated by the Installation Commander or designated authority.</p>'}
+<div class="pws-section">
+  <div class="pws-section-hdr">Section 5. Government-Furnished Property (GFP) / Equipment (GFE)</div>
+  ${getGFPSection()}
+  ${D.gfeVehicles === 'yes' ? '<p class="pws-body"><strong>Government Vehicles:</strong> Government vehicles are authorized for contractor use in performance of this contract. Contractor shall comply with applicable motor vehicle regulations and shall not use government vehicles for personal transportation.</p>' : ''}
+</div>
 
-<h2><span class="section-num">7. </span>DELIVERABLES</h2>
-<p><strong>7.1 Required Deliverables.</strong> The contractor shall provide the following deliverables:</p>
-<ul>${delList}</ul>
-${addlDels ? `<p><strong>7.2 Additional Deliverables.</strong> ${addlDels.replace(/\n/g,'<br>')}</p>` : ''}
-<p><strong>${addlDels ? '7.3' : '7.2'} Submission.</strong> ${submitMethod}</p>
+<div class="pws-section">
+  <div class="pws-section-hdr">Section 6. Contractor Personnel Requirements</div>
+  <div class="pws-sub-hdr">6.1 Key Personnel</div>
+  ${getKeyPersonnelSection()}
 
-<h2><span class="section-num">8. </span>CONTRACTOR MANAGEMENT</h2>
-<p><strong>8.1 Key Personnel.</strong> The contractor shall designate a Project Manager / Site Supervisor as the primary point of contact. The key personnel designation must be provided within five (5) days of contract award. Changes to key personnel require advance notification to and approval by the Contracting Officer.</p>
-<p><strong>8.2 Non-Personal Services.</strong> The contractor shall not perform inherently governmental functions. The contractor employees are under the supervision and control of the contractor, not the Government. The Government shall not direct contractor employees on the specific manner of performance.</p>
-<p><strong>8.3 Subcontracting.</strong> The contractor shall provide a list of all subcontractors within ten (10) days of award. All subcontractors are subject to the same security and performance requirements as the prime contractor.</p>
+  <div class="pws-sub-hdr">6.2 Minimum Qualifications</div>
+  <p class="pws-body">${D.minQuals}</p>
 
-<h2><span class="section-num">9. </span>CONTINGENCY / OCONUS PROVISIONS</h2>
-<p><strong>9.1 Changing Conditions.</strong> This contract is executed in a contingency operating environment. Requirements may change based on mission needs, force protection conditions, and operational circumstances. The contractor shall remain flexible and responsive to directed changes within the scope of this PWS.</p>
-<p><strong>9.2 SOFA and Host Nation Law.</strong> The contractor shall comply with the Status of Forces Agreement (SOFA), applicable host nation laws and regulations, and any implementing directives issued by the Theater Commander or Installation Commander.</p>
-<p><strong>9.3 Safety.</strong> The contractor shall comply with all applicable U.S. and host nation safety requirements. Contractor shall report all accidents and injuries to the COR within 24 hours.</p>
-<p style="margin-top:24px;font-size:.8rem;color:#888;border-top:1px solid #ddd;padding-top:12px">
-  <em>This PWS was generated using the CCO PWS Builder — AFICC/KQ Contingency Contracting tool. Review all content for accuracy before use. This document is a starting point and may require modification by legal counsel, contracting officer, or subject matter experts before contract award.</em>
-</p>
-`;
+  <div class="pws-sub-hdr">6.3 Training Requirements</div>
+  <p class="pws-body">${D.trainingReq}</p>
 
-  document.getElementById('pwsOutput').innerHTML = html;
+  <div class="pws-sub-hdr">6.4 OCONUS / Theater Entry Requirements</div>
+  <p class="pws-body">${D.oconusReq}</p>
+  <p class="pws-body">The contractor shall comply with all requirements of DFARS 252.225-7040, Contractor Personnel Supporting U.S. Armed Forces Deployed Outside the United States. Contractor personnel shall be registered in the Synchronized Pre-deployment and Operational Tracker (SPOT) system prior to deployment. The Contracting Officer will issue Letters of Authorization (LOA) to authorized contractor personnel. Contractor personnel must maintain medical and dental fitness standards required for theater deployment.</p>
+
+  <div class="pws-sub-hdr">6.5 Personnel Changes</div>
+  <p class="pws-body">The contractor shall notify the COR a minimum of five (5) calendar days in advance of any planned personnel changes. Unplanned personnel departures shall be reported within 24 hours. Contractor is responsible for ensuring continuity of performance during all transitions. All replacement personnel shall meet the minimum qualification requirements of this PWS.</p>
+</div>
+
+<div class="pws-section">
+  <div class="pws-section-hdr">Section 7. Security Requirements</div>
+  <div class="pws-sub-hdr">7.1 Personnel Security</div>
+  <p class="pws-body">${getClearanceText()}</p>
+
+  <div class="pws-sub-hdr">7.2 Installation Access</div>
+  <p class="pws-body">Contractor personnel requiring access to ${D.installation} shall comply with installation access control procedures. ${D.baseAccess === 'cac' ? 'Contractor personnel requiring installation access for periods exceeding six (6) months shall obtain a Common Access Card (CAC) in accordance with DAFFARS 5352.242-9001.' : D.baseAccess === 'biometric' ? 'Biometric enrollment is required for all contractor personnel accessing the installation. Contractor shall coordinate biometric enrollment with installation security forces prior to commencing performance.' : 'Contractor personnel shall obtain contractor installation passes/badges as required by installation security directives. The COR will assist with base access coordination.'}</p>
+
+  <div class="pws-sub-hdr">7.3 Antiterrorism / Force Protection (AT/FP)</div>
+  <p class="pws-body">${getATFPText()}</p>
+
+  <div class="pws-sub-hdr">7.4 Information Security / CUI</div>
+  <p class="pws-body">${getCUIText()}</p>
+
+  <div class="pws-sub-hdr">7.5 Operations Security (OPSEC)</div>
+  <p class="pws-body">${D.opsec === 'plan' ? 'The contractor shall prepare and submit an Operations Security (OPSEC) plan within 15 calendar days of contract award. The plan shall address protection of critical program information, contractor personnel social media guidance, and communication protocols.' : D.opsec === 'enhanced' ? 'All contractor-produced documents, reports, photographs, and communications that reference installation activities, force composition, or operational schedules shall be reviewed and approved by the COR prior to release or transmission. Contractor personnel shall comply with enhanced OPSEC briefing requirements.' : 'The contractor shall comply with installation and theater OPSEC requirements. Contractor personnel shall receive OPSEC awareness training. Contractor shall not disclose sensitive information about installation activities, force structure, or operational schedules through any medium.'}</p>
+
+  ${D.securityAdd ? `<div class="pws-sub-hdr">7.6 Additional Security Requirements</div><p class="pws-body">${D.securityAdd}</p>` : ''}
+</div>
+
+<div class="pws-section">
+  <div class="pws-section-hdr">Section 8. Quality Assurance</div>
+  <div class="pws-sub-hdr">8.1 Government Quality Assurance Surveillance</div>
+  <p class="pws-body">${qaspMap[D.qaspType]} The COR will document all surveillance findings in a Quality Assurance Surveillance Plan (QASP) record. The Government reserves the right to inspect all contractor work at any reasonable time.</p>
+  ${D.corReq === 'acor' ? '<p class="pws-body">A Contracting Officer Representative (COR) and Alternate COR (ACOR) will be designated in writing prior to contract performance to provide coverage for 24-hour/7-day operations. The COR/ACOR designations will be incorporated into the contract by modification.</p>' : D.corReq === 'yes' ? '<p class="pws-body">A Contracting Officer Representative (COR) will be designated in writing prior to contract performance. The COR designation will be incorporated into the contract by modification.</p>' : '<p class="pws-body">The Contracting Officer will perform quality assurance surveillance directly or through designated technical representatives.</p>'}
+
+  <div class="pws-sub-hdr">8.2 Performance Standards / Acceptable Quality Levels (AQLs)</div>
+  <p class="pws-body">${D.perfStandards}</p>
+
+  <div class="pws-sub-hdr">8.3 Contractor Quality Control</div>
+  <p class="pws-body">The contractor is responsible for establishing and maintaining a Quality Control Program to ensure services are performed in accordance with this PWS. The contractor shall submit a Quality Control Plan (QCP) within 15 calendar days of contract award. The QCP shall describe how the contractor will identify and prevent defects, perform self-inspection, and ensure corrective actions are implemented.</p>
+
+  <div class="pws-sub-hdr">8.4 Incentives / Deductions</div>
+  <p class="pws-body">${D.incentives}</p>
+
+  <div class="pws-sub-hdr">8.5 Reporting</div>
+  <p class="pws-body">${D.reporting}</p>
+</div>
+
+<div class="pws-section">
+  <div class="pws-section-hdr">Section 9. Contract Deliverables</div>
+  ${getDeliverableTable()}
+  <p class="pws-body">All deliverables shall be submitted electronically in a format approved by the COR unless otherwise specified. The contractor shall retain copies of all deliverables for the duration of the contract and for a period of three (3) years following contract completion. Deliverables shall not contain CUI unless the COR has specifically authorized and the CUI handling requirements of Section 7 are met.</p>
+</div>
+
+<div class="pws-section">
+  <div class="pws-section-hdr">Section 10. Points of Contact</div>
+  <table>
+    <tr><th>Role</th><th>Name / Contact Information</th></tr>
+    <tr><td><strong>Contracting Officer (CO)</strong></td><td>${D.coPOC}</td></tr>
+    <tr><td><strong>Contracting Officer Representative (COR)</strong></td><td>${D.corPOC}</td></tr>
+    <tr><td><strong>Requiring Activity POC</strong></td><td>${D.raPOC}</td></tr>
+    <tr><td><strong>Emergency / After-Hours POC</strong></td><td>${D.emergPOC}</td></tr>
+  </table>
+  <p class="pws-body"><strong>Note:</strong> All contractor communications regarding contract administration shall be directed to the Contracting Officer. The COR is not authorized to make changes to the contract, authorize additional work, or modify the scope of requirements. Any direction that would result in additional cost, change in delivery schedule, or change in scope must be authorized by the Contracting Officer in writing prior to execution.</p>
+</div>
+
+<div class="pws-section">
+  <div class="pws-section-hdr">Section 11. Applicable Documents and Standards</div>
+  ${getApplicDocs()}
+  <p class="pws-body">In the event of a conflict between this PWS and any applicable document or standard, the Contracting Officer shall resolve the conflict. The contractor shall notify the COR immediately upon discovery of any actual or potential conflict. All applicable documents are incorporated by reference and made part of this PWS.</p>
+</div>
+
+<div class="pws-section">
+  <div class="pws-section-hdr">Section 12. General Requirements</div>
+  <div class="pws-sub-hdr">12.1 Contractor Authority and Limitations</div>
+  <p class="pws-body">The contractor shall not perform inherently governmental functions under this contract. The contractor shall not commit the Government to any expenditure of funds without the express written authorization of the Contracting Officer. The contractor shall not disclose, release, or authorize publication of any information related to this contract without prior written approval of the Contracting Officer.</p>
+
+  <div class="pws-sub-hdr">12.2 Combating Trafficking in Persons</div>
+  <p class="pws-body">The contractor shall comply with FAR 52.222-50, Combating Trafficking in Persons. The contractor shall not engage in, or facilitate, any form of trafficking in persons during the performance of this contract. This prohibition applies to all contractor personnel, subcontractors, and agents. Contractor shall train all personnel on trafficking in persons awareness prior to deployment and annually thereafter. Any suspected violations shall be reported immediately to the Contracting Officer.</p>
+
+  <div class="pws-sub-hdr">12.3 Subcontracting</div>
+  <p class="pws-body">Contractor consent to subcontract is required for all subcontracts not identified in the contract. The contractor shall provide a list of proposed subcontractors to the COR within ten (10) calendar days of contract award. The contractor is fully responsible for the performance of all subcontractors. Flow-down requirements apply per FAR 52.244-6. The contractor shall ensure subcontractors comply with all applicable PWS requirements including security, personnel, and OCONUS requirements.</p>
+
+  <div class="pws-sub-hdr">12.4 Transition-In</div>
+  <p class="pws-body">The contractor shall develop and execute a Transition-In Plan to assume full responsibility for all PWS requirements without interruption to operations. The Transition-In Plan shall be submitted to the COR within ten (10) calendar days of contract award. Full operational capability shall be achieved NLT the start of the base period of performance, or as directed by the Contracting Officer.</p>
+
+  <div class="pws-sub-hdr">12.5 Transition-Out</div>
+  <p class="pws-body">The contractor shall develop a Transition-Out Plan and submit to the COR no later than ninety (90) calendar days prior to contract expiration (or upon notice of termination). The contractor shall cooperate fully with any successor contractor and the Government during transition. Contractor shall not take any action that would disrupt operations or compromise the ability of the Government or a successor contractor to assume performance.</p>
+
+  <div class="pws-sub-hdr">12.6 Environmental and Host Nation Compliance</div>
+  <p class="pws-body">The contractor shall comply with all applicable environmental, occupational health, and safety requirements including Status of Forces Agreements (SOFA), host nation laws, U.S. Executive Orders, DoD Instructions, and Air Force directives. The contractor shall obtain all required environmental permits and approvals prior to commencing work. Hazardous waste generation, storage, and disposal shall comply with applicable regulations. The contractor shall not discharge, dump, or otherwise improperly dispose of any waste on or near ${D.installation}.</p>
+</div>
+
+<div style="margin-top:32px; border-top:2px solid #111; padding-top:12px; text-align:center">
+  <p style="font-size:12px; color:#444; font-style:italic; font-family:'Courier New',monospace">
+    END OF PERFORMANCE WORK STATEMENT<br>
+    ${D.title}<br>
+    ${D.contractNum} | Version ${D.version} | ${pwsDate}<br>
+    Generated by CCO PWS Builder — AFICC/KQ
+  </p>
+</div>`;
+
+  // Display
+  const docEl = document.getElementById('pws-document');
+  docEl.innerHTML = html;
+  document.getElementById('pws-doc-label').textContent = 'PWS — ' + D.contractNum;
+  document.getElementById('pws-output-wrap').style.display = 'block';
+
+  // Wire live stats
+  docEl.addEventListener('input', updateStats);
+  updateStats();
+
+  // Auto-highlight TBDs on first load
+  highlightTBDs();
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'f' && document.getElementById('pws-output-wrap').style.display !== 'none') {
+      e.preventDefault();
+      const bar = document.getElementById('find-bar');
+      if (!bar.classList.contains('open')) toggleFind();
+      else document.getElementById('find-input').focus();
+    }
+  });
+
+  // Hide step and show output
+  document.getElementById('step-6').style.display = 'none';
+  document.getElementById('pws-output-wrap').scrollIntoView({behavior:'smooth'});
 }
 
-// ── Copy PWS text ──
+// ── COPY ──────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════
+// LIVE EDITOR FUNCTIONS
+// ══════════════════════════════════════════════════════════════════
+
+// ── Format commands ───────────────────────────────────────────────
+function fmt(cmd) {
+  document.getElementById('pws-document').focus();
+  document.execCommand(cmd, false, null);
+}
+
+// ── Word / char counter (live) ────────────────────────────────────
+function updateStats() {
+  const el = document.getElementById('pws-document');
+  const text = el.innerText || '';
+  const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+  const chars = text.length;
+  document.getElementById('word-count').textContent = words.toLocaleString() + ' words';
+  document.getElementById('char-count').textContent = chars.toLocaleString() + ' chars';
+  // TBD count (scan raw text)
+  const tbds = (text.match(/\[TBD\]/gi) || []).length;
+  const badge = document.getElementById('tbd-count-badge');
+  badge.textContent = tbds;
+  badge.className = tbds === 0 ? 'clean' : '';
+}
+
+// ── Highlight all [TBD] in document ──────────────────────────────
+function highlightTBDs() {
+  const doc = document.getElementById('pws-document');
+  // Replace text node [TBD] occurrences with highlighted mark
+  // Work on innerHTML to avoid breaking structure
+  let h = doc.innerHTML;
+  // Remove previous TBD highlights first
+  h = h.replace(/<mark class="tbd-hl"[^>]*>(.*?)<\/mark>/gi, '$1');
+  // Add new highlights (don't touch existing mark tags)
+  h = h.replace(/(\[TBD\])/gi, '<mark class="tbd-hl" style="background:#ffcccc;color:#8b0000;border-radius:2px;padding:0 2px;font-weight:bold">$1</mark>');
+  doc.innerHTML = h;
+  updateStats();
+  // Jump to first one
+  const first = doc.querySelector('mark.tbd-hl');
+  if (first) first.scrollIntoView({behavior:'smooth', block:'center'});
+  else alert('No [TBD] placeholders remaining. Document looks complete.');
+}
+
+// ── Jump to next [TBD] ────────────────────────────────────────────
+let _tbdIdx = -1;
+function jumpNextTBD() {
+  const marks = document.getElementById('pws-document').querySelectorAll('mark.tbd-hl');
+  if (marks.length === 0) {
+    // Try highlighting first
+    highlightTBDs();
+    return;
+  }
+  _tbdIdx = (_tbdIdx + 1) % marks.length;
+  marks.forEach((m,i) => m.style.outline = i === _tbdIdx ? '2px solid red' : 'none');
+  marks[_tbdIdx].scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+// ── Section jump ──────────────────────────────────────────────────
+function jumpToSection(idx) {
+  const hdrs = document.getElementById('pws-document').querySelectorAll('.pws-section-hdr');
+  if (hdrs[idx]) {
+    hdrs[idx].scrollIntoView({behavior:'smooth', block:'start'});
+    // Flash highlight
+    hdrs[idx].style.background = '#fff3cd';
+    setTimeout(() => { hdrs[idx].style.background = ''; }, 1200);
+  }
+}
+
+// ── Toggle panels ─────────────────────────────────────────────────
+function toggleFind() {
+  const bar = document.getElementById('find-bar');
+  const btn = document.getElementById('find-toggle-btn');
+  bar.classList.toggle('open');
+  btn.classList.toggle('active');
+  if (bar.classList.contains('open')) {
+    document.getElementById('find-input').focus();
+  } else {
+    clearFind();
+  }
+}
+function toggleNav() {
+  const nav = document.getElementById('section-nav');
+  const btn = document.getElementById('nav-toggle-btn');
+  nav.classList.toggle('open');
+  btn.classList.toggle('active');
+}
+
+// ── Find & Replace ────────────────────────────────────────────────
+let _findMatches = [];
+let _findIdx = -1;
+
+function doFind() {
+  const doc = document.getElementById('pws-document');
+  const term = document.getElementById('find-input').value;
+
+  // Strip old highlights (preserve tbd-hl marks)
+  doc.innerHTML = doc.innerHTML
+    .replace(/<mark class="find-hl"[^>]*>(.*?)<\/mark>/gi, '$1')
+    .replace(/<mark class="find-cur"[^>]*>(.*?)<\/mark>/gi, '$1');
+
+  _findMatches = [];
+  _findIdx = -1;
+
+  if (!term || term.length < 2) {
+    document.getElementById('find-count').textContent = '';
+    return;
+  }
+
+  // Highlight all matches in innerHTML (simple text, avoids breaking tags)
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(`(${escaped})`, 'gi');
+  doc.innerHTML = doc.innerHTML.replace(re, '<mark class="find-hl" style="background:#ffe066;color:#111;border-radius:2px">$1</mark>');
+
+  _findMatches = Array.from(doc.querySelectorAll('mark.find-hl'));
+  document.getElementById('find-count').textContent = _findMatches.length + ' found';
+
+  if (_findMatches.length > 0) {
+    _findIdx = 0;
+    _findMatches[0].className = 'find-cur';
+    _findMatches[0].style.cssText = 'background:#ff8c00;color:#fff;border-radius:2px';
+    _findMatches[0].scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function findKeyNav(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    if (_findMatches.length === 0) { doFind(); return; }
+    if (_findMatches[_findIdx]) {
+      _findMatches[_findIdx].className = 'find-hl';
+      _findMatches[_findIdx].style.cssText = 'background:#ffe066;color:#111;border-radius:2px';
+    }
+    _findIdx = e.shiftKey
+      ? (_findIdx - 1 + _findMatches.length) % _findMatches.length
+      : (_findIdx + 1) % _findMatches.length;
+    if (_findMatches[_findIdx]) {
+      _findMatches[_findIdx].className = 'find-cur';
+      _findMatches[_findIdx].style.cssText = 'background:#ff8c00;color:#fff;border-radius:2px';
+      _findMatches[_findIdx].scrollIntoView({behavior:'smooth', block:'center'});
+    }
+    document.getElementById('find-count').textContent = (_findIdx+1) + ' / ' + _findMatches.length;
+  }
+  if (e.key === 'Escape') { toggleFind(); }
+}
+
+function doReplace() {
+  if (_findMatches.length === 0 || _findIdx < 0) return;
+  const rep = document.getElementById('replace-input').value;
+  const cur = _findMatches[_findIdx];
+  if (cur) {
+    cur.outerHTML = rep;
+    _findMatches.splice(_findIdx, 1);
+    document.getElementById('find-count').textContent = _findMatches.length + ' found';
+    updateStats();
+  }
+}
+
+function doReplaceAll() {
+  const term = document.getElementById('find-input').value;
+  const rep  = document.getElementById('replace-input').value;
+  if (!term) return;
+  const doc = document.getElementById('pws-document');
+  const count = _findMatches.length || 0;
+  // Replace all highlighted marks
+  doc.querySelectorAll('mark.find-hl, mark.find-cur').forEach(m => {
+    m.outerHTML = rep;
+  });
+  _findMatches = [];
+  _findIdx = -1;
+  document.getElementById('find-count').textContent = count + ' replaced';
+  updateStats();
+}
+
+function clearFind() {
+  const doc = document.getElementById('pws-document');
+  doc.innerHTML = doc.innerHTML
+    .replace(/<mark class="find-hl"[^>]*>(.*?)<\/mark>/gi, '$1')
+    .replace(/<mark class="find-cur"[^>]*>(.*?)<\/mark>/gi, '$1');
+  document.getElementById('find-input').value = '';
+  document.getElementById('replace-input').value = '';
+  document.getElementById('find-count').textContent = '';
+  _findMatches = [];
+  _findIdx = -1;
+}
+
+// ── Copy plain text ────────────────────────────────────────────────
 function copyPWS() {
-  const text = document.getElementById('pwsOutput').innerText;
+  const el = document.getElementById('pws-document');
+  const text = el.innerText;
   navigator.clipboard.writeText(text).then(() => {
-    const btn = document.querySelector('.btn-copy');
-    const orig = btn.textContent;
-    btn.textContent = '✓ Copied!';
-    setTimeout(() => btn.textContent = orig, 2000);
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'Copied!';
+    btn.style.background = '#1e7e4a';
+    setTimeout(()=>{ btn.textContent='Copy'; btn.style.background=''; },2000);
+  }).catch(()=>{
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
   });
 }
+
+// ── Restart ────────────────────────────────────────────────────────
+function restartBuilder() {
+  if (!confirm('Start a new PWS? All current data will be cleared.')) return;
+  location.reload();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Set today's date as default for pws_date
+  document.getElementById('pws_date').valueAsDate = new Date();
+
+  // Mark all pre-filled fields
+  document.querySelectorAll('input[value], textarea').forEach(el => {
+    const val = el.tagName === 'TEXTAREA' ? el.value : el.getAttribute('value');
+    if (val && val.trim() && 
+        !['1.0','1'].includes(val.trim()) &&
+        el.id !== 'pws_version' &&
+        el.type !== 'date') {
+      el.classList.add('prefilled');
+    }
+  });
+  // Remove prefilled class on user edit
+  document.querySelectorAll('.prefilled').forEach(el => {
+    el.addEventListener('input', function() { this.classList.remove('prefilled'); }, {once: true});
+  });
+  // Add note under the step-1 title
+  const noteEl = document.createElement('div');
+  noteEl.className = 'alert alert-warn';
+  noteEl.style.marginBottom = '16px';
+  noteEl.innerHTML = '<strong>Sample text pre-loaded:</strong> All fields with a <span style="background:#fffdf4;border:1px solid #d4b96a;padding:1px 5px;border-radius:3px;font-family:monospace;font-size:11px">warm tint</span> contain sample language — edit to match your specific contract, or leave as-is if it fits.';
+  const step1 = document.getElementById('step-1');
+  if (step1) step1.insertBefore(noteEl, step1.firstChild);
+
+  // Add initial rows for common lists
+  addDeliverableRow();
+  addClinRow();
+});
 </script>
+
+
+<!-- KTHQ SITE FOOTER -->
+<footer class="footer" style="margin-top:3rem;">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html#welcome">Welcome</a>
+      <a href="videos.html">Training</a>
+      <a href="tools.html">Tools</a>
+      <a href="dfars.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
 <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn">&#9749; Buy Me a Coffee</a>
+<script src="main.js"></script>
+
 </body>
 </html>
