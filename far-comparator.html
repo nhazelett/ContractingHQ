@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAR Comparator — ContractingHQ</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{--bg:#0d1117;--surface:#161b22;--border:rgba(255,255,255,.08);--text:#e2e8f0;--muted:#8b949e;--accent:#4a9eff;}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
+  /* Reuse site nav styles */
+  .comparator-shell{display:flex;flex-direction:column;flex:1;overflow:hidden;}
+  .comp-header{background:var(--surface);border-bottom:1px solid var(--border);padding:.75rem 1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+  .comp-title{font-size:1rem;font-weight:700;color:var(--text);}
+  .comp-subtitle{font-size:.8rem;color:var(--muted);}
+  .comp-nav{display:flex;align-items:center;gap:.6rem;flex:1;flex-wrap:wrap;}
+  .part-label{font-size:.78rem;color:var(--muted);white-space:nowrap;}
+  .part-select{background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:.35rem .65rem;font-size:.82rem;cursor:pointer;min-width:200px;}
+  .part-select:focus{outline:none;border-color:var(--accent);}
+  .comp-go-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:.38rem .9rem;font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;}
+  .comp-go-btn:hover{opacity:.88;}
+  .comp-links{display:flex;gap:.5rem;margin-left:auto;}
+  .comp-link{font-size:.75rem;color:var(--accent);text-decoration:none;padding:.25rem .5rem;border:1px solid rgba(74,158,255,.25);border-radius:4px;white-space:nowrap;}
+  .comp-link:hover{background:rgba(74,158,255,.08);}
+  .comp-panes{display:grid;grid-template-columns:1fr 1fr;flex:1;min-height:0;gap:0;}
+  .comp-pane{display:flex;flex-direction:column;border-right:1px solid var(--border);}
+  .comp-pane:last-child{border-right:none;}
+  .pane-header{background:var(--surface);border-bottom:1px solid var(--border);padding:.5rem 1rem;display:flex;align-items:center;gap:.75rem;}
+  .pane-label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+  .pane-badge{font-size:.65rem;font-weight:700;padding:.18rem .5rem;border-radius:3px;text-transform:uppercase;}
+  .badge-new{background:rgba(74,158,255,.18);color:#4a9eff;}
+  .badge-old{background:rgba(255,200,50,.12);color:#fbbf24;}
+  .pane-url{font-size:.7rem;color:var(--muted);margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px;}
+  .pane-iframe{flex:1;border:none;width:100%;background:#fff;}
+  .pane-blocked{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;text-align:center;background:var(--bg);flex:1;}
+  .pane-blocked-icon{font-size:2.5rem;}
+  .pane-blocked-msg{font-size:.9rem;color:var(--muted);line-height:1.6;max-width:360px;}
+  .pane-blocked-link{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.2rem;background:var(--accent);color:#fff;border-radius:7px;font-weight:600;font-size:.88rem;text-decoration:none;}
+  .pane-blocked-link:hover{opacity:.88;}
+  .comp-divider{width:5px;background:var(--border);cursor:col-resize;transition:background .15s;position:relative;}
+  .comp-divider:hover,.comp-divider.dragging{background:var(--accent);}
+  .comp-divider::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:3px;height:40px;border-radius:2px;background:rgba(255,255,255,.15);}
+  .comp-bottom{background:var(--surface);border-top:1px solid var(--border);padding:.5rem 1.25rem;display:flex;align-items:center;gap:1rem;font-size:.75rem;color:var(--muted);}
+  .comp-bottom a{color:var(--accent);}
+  @media(max-width:700px){.comp-panes{grid-template-columns:1fr;}.comp-pane:first-child{height:50vh;}.comp-pane:last-child{height:50vh;}}
+</style>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ContractingHQ | KTHQ &mdash; The One-Stop Resource for Contracting Officers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+<style>.bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s;margin-top:.75rem}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#welcome">Welcome</a></li>
+      <li><a href="videos.html">Training</a></li>
+      <li><a href="index.html#gao">GAO Updates</a></li>
+      <li><a href="asbca.html">ASBCA</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li><a href="dfars.html">FAR Updates</a></li>
+      <li><a href="forum.html">Forum</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="comparator-shell">
+  <div class="comp-header">
+    <div>
+      <div class="comp-title">&#9878;&#65039; FAR Comparator</div>
+      <div class="comp-subtitle">Revolutionary FAR Overhaul &mdash; New vs. Prior</div>
+    </div>
+    <div class="comp-nav">
+      <span class="part-label">Jump to FAR Part:</span>
+      <select class="part-select" id="partSelect">
+        <option value="">-- Select a Part --</option>
+        <option value="1">Part 1 &mdash; Federal Acquisition Regulations System</option>
+        <option value="2">Part 2 &mdash; Definitions</option>
+        <option value="3">Part 3 &mdash; Improper Business Practices</option>
+        <option value="4">Part 4 &mdash; Administrative Matters</option>
+        <option value="5">Part 5 &mdash; Publicizing Contract Actions</option>
+        <option value="6">Part 6 &mdash; Competition Requirements</option>
+        <option value="7">Part 7 &mdash; Acquisition Planning</option>
+        <option value="8">Part 8 &mdash; Required Sources</option>
+        <option value="9">Part 9 &mdash; Contractor Qualifications</option>
+        <option value="10">Part 10 &mdash; Market Research</option>
+        <option value="11">Part 11 &mdash; Describing Agency Needs</option>
+        <option value="12">Part 12 &mdash; Commercial Products &amp; Services</option>
+        <option value="13">Part 13 &mdash; Simplified Acquisition</option>
+        <option value="14">Part 14 &mdash; Sealed Bidding</option>
+        <option value="15">Part 15 &mdash; Contracting by Negotiation</option>
+        <option value="16">Part 16 &mdash; Contract Types</option>
+        <option value="17">Part 17 &mdash; Special Contracting Methods</option>
+        <option value="18">Part 18 &mdash; Emergency Acquisitions</option>
+        <option value="19">Part 19 &mdash; Small Business Programs</option>
+        <option value="22">Part 22 &mdash; Labor Standards</option>
+        <option value="25">Part 25 &mdash; Foreign Acquisition</option>
+        <option value="27">Part 27 &mdash; Patents, Data &amp; Copyrights</option>
+        <option value="28">Part 28 &mdash; Bonds &amp; Insurance</option>
+        <option value="31">Part 31 &mdash; Contract Cost Principles</option>
+        <option value="32">Part 32 &mdash; Contract Financing</option>
+        <option value="33">Part 33 &mdash; Protests &amp; Disputes</option>
+        <option value="36">Part 36 &mdash; Construction</option>
+        <option value="37">Part 37 &mdash; Service Contracting</option>
+        <option value="42">Part 42 &mdash; Contract Administration</option>
+        <option value="43">Part 43 &mdash; Contract Modifications</option>
+        <option value="44">Part 44 &mdash; Subcontracting</option>
+        <option value="45">Part 45 &mdash; Government Property</option>
+        <option value="46">Part 46 &mdash; Quality Assurance</option>
+        <option value="47">Part 47 &mdash; Transportation</option>
+        <option value="49">Part 49 &mdash; Terminations</option>
+        <option value="52">Part 52 &mdash; Solicitation Provisions &amp; Contract Clauses</option>
+      </select>
+      <button class="comp-go-btn" id="goBtn" onclick="navigateParts()">Go</button>
+    </div>
+    <div class="comp-links">
+      <a href="https://acquisition.gov/far-overhaul/far-part-deviation-guide" target="_blank" rel="noopener" class="comp-link">&#8599; New FAR</a>
+      <a href="https://acquisition.gov/browse/index/far" target="_blank" rel="noopener" class="comp-link">&#8599; Prior FAR</a>
+    </div>
+  </div>
+
+  <div class="comp-panes" id="compPanes">
+    <div class="comp-pane" id="leftPane">
+      <div class="pane-header">
+        <span class="pane-label">New FAR</span>
+        <span class="pane-badge badge-new">Overhaul Deviation Guide</span>
+        <span class="pane-url" id="leftUrl">acquisition.gov/far-overhaul/far-part-deviation-guide</span>
+      </div>
+      <div id="leftContent" style="flex:1;display:flex;flex-direction:column;"></div>
+    </div>
+
+    <div class="comp-divider" id="divider"></div>
+
+    <div class="comp-pane" id="rightPane">
+      <div class="pane-header">
+        <span class="pane-label">Prior FAR</span>
+        <span class="pane-badge badge-old">Pre-Overhaul Text</span>
+        <span class="pane-url" id="rightUrl">acquisition.gov/browse/index/far</span>
+      </div>
+      <div id="rightContent" style="flex:1;display:flex;flex-direction:column;"></div>
+    </div>
+  </div>
+
+  <div class="comp-bottom">
+    <span>&#9888; acquisition.gov may block iframe embedding. If panes are blank, use the &#8599; links above to open each side in a new tab.</span>
+    <span style="margin-left:auto;">Sources: <a href="https://acquisition.gov/far-overhaul/far-part-deviation-guide" target="_blank" rel="noopener">FAR Overhaul Deviation Guide</a> &bull; <a href="https://acquisition.gov/browse/index/far" target="_blank" rel="noopener">Prior FAR (acquisition.gov)</a></span>
+  </div>
+</div>
+
+<script>
+const NEW_FAR_BASE = 'https://acquisition.gov/far-overhaul/far-part-deviation-guide';
+const OLD_FAR_BASE = 'https://acquisition.gov/browse/index/far';
+const NEW_FAR_PART = p => 'https://acquisition.gov/far-overhaul/far-part-deviation-guide#far_part_' + p;
+const OLD_FAR_PART = p => 'https://acquisition.gov/browse/index/far#far_part_' + p;
+
+function loadPane(containerId, url, urlLabelId) {
+  const el = document.getElementById(containerId);
+  const lbl = document.getElementById(urlLabelId);
+  if(lbl) lbl.textContent = url.replace('https://','');
+  el.innerHTML = '';
+  const iframe = document.createElement('iframe');
+  iframe.src = url;
+  iframe.style.cssText = 'flex:1;border:none;width:100%;min-height:100%;';
+  iframe.allow = 'fullscreen';
+  iframe.onload = function() {
+    try {
+      // If we can access contentDocument it loaded
+      if(iframe.contentDocument) return;
+    } catch(e) {
+      // Cross-origin = loaded (just can't inspect) — show anyway
+    }
+  };
+  iframe.onerror = function() { showBlocked(el, url); };
+  el.appendChild(iframe);
+  // Check for X-Frame-Options block after 3s
+  setTimeout(function() {
+    try {
+      var h = iframe.contentDocument?.location?.href;
+      if(!h) showBlocked(el, url);
+    } catch(e) { /* cross-origin is normal, do nothing */ }
+  }, 3500);
+}
+
+function showBlocked(container, url) {
+  container.innerHTML = '<div class="pane-blocked"><div class="pane-blocked-icon">&#128683;</div><div class="pane-blocked-msg">This site does not allow embedding in iframes.<br>Click below to open it in a new tab and use side-by-side browser windows for comparison.</div><a href="' + url + '" target="_blank" rel="noopener" class="pane-blocked-link">&#8599; Open in New Tab</a></div>';
+}
+
+function navigateParts() {
+  const part = document.getElementById('partSelect').value;
+  if(!part) {
+    loadPane('leftContent', NEW_FAR_BASE, 'leftUrl');
+    loadPane('rightContent', OLD_FAR_BASE, 'rightUrl');
+    return;
+  }
+  loadPane('leftContent', NEW_FAR_PART(part), 'leftUrl');
+  loadPane('rightContent', OLD_FAR_PART(part), 'rightUrl');
+}
+
+// Draggable divider
+(function() {
+  const div = document.getElementById('divider');
+  const panes = document.getElementById('compPanes');
+  let dragging = false, startX = 0, startLeft = 0;
+  div.addEventListener('mousedown', function(e) {
+    dragging = true; startX = e.clientX;
+    const rect = panes.getBoundingClientRect();
+    const leftPane = document.getElementById('leftPane');
+    startLeft = leftPane.getBoundingClientRect().width / rect.width * 100;
+    div.classList.add('dragging');
+    document.body.style.userSelect = 'none';
+    document.body.style.cursor = 'col-resize';
+  });
+  document.addEventListener('mousemove', function(e) {
+    if(!dragging) return;
+    const rect = panes.getBoundingClientRect();
+    const pct = Math.max(20, Math.min(80, (e.clientX - rect.left) / rect.width * 100));
+    panes.style.gridTemplateColumns = pct + '% 5px 1fr';
+  });
+  document.addEventListener('mouseup', function() {
+    if(!dragging) return;
+    dragging = false;
+    div.classList.remove('dragging');
+    document.body.style.userSelect = '';
+    document.body.style.cursor = '';
+  });
+})();
+
+// Load defaults on page load
+window.addEventListener('DOMContentLoaded', function() {
+  loadPane('leftContent', NEW_FAR_BASE, 'leftUrl');
+  loadPane('rightContent', OLD_FAR_BASE, 'rightUrl');
+});
+</script>
+</body>
+</html>
