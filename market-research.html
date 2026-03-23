@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how to conduct market research for government contracts. Step-by-step walkthrough using a real-world CNC milling machine scenario for contracting officers." />
+  <title>Market Research | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .mr-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .mr-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .mr-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .mr-tab:hover { color: var(--white); }
+    .mr-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .mr-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .mr-panel.active { display: block; }
+
+    /* ── Intro badge ── */
+    .mr-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .mr-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .mr-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .mr-intro p { color: var(--silver); font-size: 0.9rem; max-width: 580px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn section ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-body .far-ref { color: var(--accent); font-weight: 600; font-size: 0.82rem; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.5px; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── Scenario box ── */
+    .scenario-box { background: rgba(251,191,36,0.04); border: 1px solid rgba(251,191,36,0.2); border-radius: 14px; padding: 1.5rem; margin: 1.5rem 0; }
+    .scenario-box .scenario-label { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #fbbf24; margin-bottom: 0.5rem; }
+    .scenario-box p { color: var(--silver); font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.5rem; }
+    .scenario-box p:last-child { margin-bottom: 0; }
+    .scenario-box strong { color: #fde68a; }
+
+    /* ── Decision Aid ── */
+    .da-prompt { text-align: center; margin-bottom: 2rem; }
+    .da-prompt h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .da-prompt p { color: var(--silver); font-size: 0.9rem; }
+    .da-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .da-option { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; cursor: pointer; transition: all 0.2s; text-align: center; }
+    .da-option:hover { border-color: rgba(74,158,255,0.35); background: rgba(74,158,255,0.06); transform: translateY(-2px); }
+    .da-option.selected { border-color: var(--accent); background: rgba(74,158,255,0.1); box-shadow: 0 0 20px rgba(74,158,255,0.1); }
+    .da-option-icon { font-size: 2.5rem; margin-bottom: 0.75rem; display: block; }
+    .da-option-label { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.35rem; }
+    .da-option-sub { font-size: 0.8rem; color: var(--silver); line-height: 1.5; }
+    .da-result { display: none; background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.15); border-radius: 14px; padding: 2rem; animation: fadeSlideUp 0.35s ease-out; }
+    .da-result.visible { display: block; }
+    .da-result h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .da-result p { color: var(--silver); font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.75rem; }
+    .da-result strong { color: var(--white); }
+    .da-result .da-step { background: rgba(74,158,255,0.06); border: 1px solid rgba(74,158,255,0.12); border-radius: 10px; padding: 0.85rem 1rem; margin: 0.75rem 0; font-size: 0.88rem; color: var(--silver); line-height: 1.6; }
+    .da-result .da-step strong { color: var(--accent); }
+    .da-result .da-caution { background: rgba(248,113,113,0.05); border: 1px solid rgba(248,113,113,0.15); border-radius: 10px; padding: 0.85rem 1rem; margin-top: 1rem; font-size: 0.85rem; color: #fca5a5; line-height: 1.6; }
+    .da-result .da-caution strong { color: #fca5a5; }
+    .da-reset { display: none; margin-top: 1.5rem; text-align: center; }
+    .da-reset.visible { display: block; }
+    .da-reset button { padding: 0.55rem 1.4rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.25); background: rgba(74,158,255,0.08); color: var(--silver); cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .da-reset button:hover { background: rgba(74,158,255,0.18); color: var(--white); }
+    @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Lookup section ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    /* ── Quiz section ── */
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem; }
+    .quiz-score { font-size: 0.8rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; }
+    .quiz-progress-bar { width: 100%; height: 4px; background: rgba(74,158,255,0.1); border-radius: 99px; margin-bottom: 2rem; }
+    .quiz-progress-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.3s; }
+    .quiz-question { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.75rem; margin-bottom: 1.5rem; }
+    .quiz-q-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem; }
+    .quiz-q-text { font-size: 1rem; color: var(--white); line-height: 1.7; margin-bottom: 1rem; }
+    .quiz-choices { display: grid; gap: 0.65rem; }
+    .quiz-choice { padding: 0.85rem 1.2rem; border-radius: 10px; border: 1px solid rgba(74,158,255,0.15); background: rgba(10,22,50,0.6); color: var(--silver); font-size: 0.9rem; font-weight: 600; cursor: pointer; text-align: left; font-family: inherit; transition: all 0.18s; line-height: 1.35; }
+    .quiz-choice:hover:not(:disabled) { border-color: rgba(74,158,255,0.4); color: var(--white); background: rgba(74,158,255,0.08); }
+    .quiz-choice.correct { border-color: #34d399; background: rgba(52,211,153,0.1); color: #6ee7b7; }
+    .quiz-choice.wrong { border-color: #f87171; background: rgba(248,113,113,0.08); color: #fca5a5; }
+    .quiz-choice:disabled { cursor: default; }
+    .quiz-feedback { margin-top: 1rem; padding: 0.85rem 1.1rem; border-radius: 10px; font-size: 0.875rem; line-height: 1.55; display: none; }
+    .quiz-feedback.correct { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); color: #6ee7b7; }
+    .quiz-feedback.wrong { background: rgba(248,113,113,0.06); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; }
+    .quiz-feedback.visible { display: block; }
+    .quiz-next { margin-top: 1rem; display: none; }
+    .quiz-next.visible { display: block; }
+    .quiz-done { text-align: center; padding: 3rem 1rem; display: none; }
+    .quiz-done.visible { display: block; }
+    .quiz-done h2 { font-family: 'Rajdhani', sans-serif; font-size: 2.2rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .quiz-done .final-score { font-size: 4rem; font-weight: 800; color: var(--accent); line-height: 1; margin: 1rem 0; }
+    .quiz-done p { color: var(--silver); font-size: 0.95rem; margin-bottom: 1.5rem; }
+    .fc-btn { padding: 0.6rem 1.4rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.25); background: rgba(74,158,255,0.08); color: var(--silver); cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .fc-btn:hover { background: rgba(74,158,255,0.18); color: var(--white); }
+    .fc-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .fc-btn.primary:hover { background: #3a8eef; }
+
+    @media (max-width: 600px) {
+      .mr-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .da-options { grid-template-columns: 1fr; }
+      .lookup-grid { grid-template-columns: 1fr; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s;margin-top:.75rem}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="dfars.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="federal-register.html">Federal Register</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 2</span>
+    <h1 class="page-hero-title">Market Research</h1>
+    <p class="page-hero-sub">FAR Part 10 is short. The skill behind it isn't. Market research is how you figure out what you're buying, who sells it, and what it should cost &mdash; before you commit a dime.</p>
+  </div>
+</div>
+
+<div class="mr-bg">
+  <div class="mr-tabs" role="tablist">
+    <button class="mr-tab active" data-tab="learn" role="tab">&#128218; Learn</button>
+    <button class="mr-tab" data-tab="decide" role="tab">&#129518; Decision Aid</button>
+    <button class="mr-tab" data-tab="quiz" role="tab">&#9889; Quiz</button>
+    <button class="mr-tab" data-tab="lookup" role="tab">&#128269; Look It Up</button>
+    <button class="mr-tab" data-tab="sample" role="tab">&#128196; Sample MRR</button>
+  </div>
+
+  <!-- ═══════════════════════════════════ LEARN ═══ -->
+  <div id="panel-learn" class="mr-panel active">
+    <div class="mr-intro">
+      <div class="mr-intro-tag">The Full Walkthrough</div>
+      <h2>How to Conduct Market Research</h2>
+      <p>We're going to walk through the entire market research process using a real scenario. By the end, you'll know how to go from "I have no idea what this thing is" to a documented market research report.</p>
+    </div>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Your Scenario</div>
+      <p>A purchase request just landed on your desk. It reads:</p>
+      <p><strong>"Need 1 ea Haas VF-2 CNC Vertical Milling Machine for the Base Maintenance Shop. Estimated cost: $65,000."</strong></p>
+      <p>You're the contracting officer. You've never bought a milling machine. You barely know what one does. Let's work through it.</p>
+    </div>
+
+    <!-- Phase 1 -->
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> Figure Out What You're Buying</h3>
+      <div class="learn-body">
+        <p>This is the most important phase and the one most new COs skip. <strong>You cannot buy something intelligently if you don't understand what it is.</strong> You don't need to become a machinist. But you need to know enough to have a conversation, ask the right questions, and evaluate what industry tells you.</p>
+
+        <p>Your first move is simple: <strong>Google it.</strong></p>
+
+        <p>Search "Haas VF-2 CNC milling machine." Spend 30 minutes. Read the manufacturer's spec sheet. Watch a YouTube video of one running. Look at what it does. Within a short time, you'll learn that:</p>
+
+        <div class="highlight-box">
+          <strong>What you learn from 30 minutes of research:</strong> A CNC (Computer Numerical Control) vertical milling machine is a computer-controlled cutting tool used in machine shops. It removes material from a metal workpiece to create parts. The "VF-2" is a specific model made by Haas Automation. It's a 3-axis machine with a 30" x 16" table, 8,100 RPM spindle, and a 20-station tool changer. It runs on 208V 3-phase power. Haas sells them commercially for around $55,000&ndash;$70,000 depending on configuration.
+        </div>
+
+        <p>You don't need to understand G-code or know how to cut a gear. But now you know it's a <strong>commercial, off-the-shelf product</strong> that machine shops buy every day. You know the key specifications. You know the approximate price range. And critically, you know that <strong>Haas is a brand name</strong> &mdash; not the only company that makes vertical CNC mills.</p>
+
+        <div class="highlight-box tip">
+          <strong>Why this matters:</strong> If you skip this step and just process the PR as written, you'll either restrict competition to one manufacturer unnecessarily, or you won't know enough to evaluate quotes, negotiate price, or help your customer document the requirement. Spend a day on this if you need to. A week if it's complex. This investment up front saves you problems downstream.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>Do not be afraid to look stupid.</strong> You're new. You don't know what a CNC mill is. That's fine &mdash; <em>you are</em> stupid on this topic, and this is your opportunity to get smart. You cannot learn experience. What you <em>can</em> do is lean on the people who have it. That means your peers, your contracting officer, the mission partner's technical experts, and yes, industry itself. Ask questions. Lots of them. Nobody expects a new CO to know the difference between a 3-axis and a 5-axis mill. They <em>do</em> expect you to figure it out before you try to buy one. Your job isn't to be the technical expert &mdash; it's to rely on your technical experts and translate what they tell you into a smart acquisition.
+        </div>
+
+        <p><strong>What you're looking for in your research:</strong></p>
+
+        <div class="highlight-box">
+          <strong>Key specifications:</strong> Table size, axis travel (X/Y/Z), spindle speed (RPM), spindle horsepower, tool changer capacity, control system, power requirements, weight, and footprint. These are the specs that define what the machine can do &mdash; and they're what you'll use to describe the requirement functionally instead of by brand name.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Who else makes them:</strong> A quick search shows that Haas, Mazak, DMG Mori, Okuma, and Doosan all manufacture comparable 3-axis vertical CNC mills. Tormach makes smaller ones for lighter-duty work. This tells you the market is competitive &mdash; there are alternatives to the brand name on the PR.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Price range:</strong> Manufacturer websites, dealer listings, and commercial equipment sites give you a ballpark. New 3-axis vertical mills in this class run roughly $50,000&ndash;$120,000 depending on size and features. The $65,000 estimate on the PR is within the commercial range for a base-model Haas VF-2. That's useful context.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Phase 2 -->
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Talk to the Mission Partner</h3>
+      <div class="learn-body">
+        <p>Now that you're not totally in the dark, you can have an intelligent conversation with the maintenance shop. <strong>This is where you figure out what the actual requirement is &mdash; and help the customer document it.</strong></p>
+
+        <div class="highlight-box">
+          <strong>Here's the thing:</strong> Most of the time, your mission partner already did this research. They've been using these machines for years. They know exactly what they need and why. They just didn't know they had to document it in a way that satisfies the FAR. That's where you come in. Your job isn't to tell the customer what they need &mdash; <strong>your job is to guide them to documenting it appropriately.</strong>
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>The right conversation:</strong> "I've been researching CNC mills. Help me understand what you need this machine to do. What are you machining? What tolerances do you need? What size material are you working with? Do you need 3-axis or 5-axis? Does it need to run specific software? What about your existing tooling &mdash; will it work on other manufacturers' machines?"
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>The conversation to avoid:</strong> "Hey, you want a Haas VF-2? Okay, I'll buy it." That's order-taking, not contracting. You haven't documented the requirement. You haven't captured why. You can't defend this purchase to anyone who reviews your file.
+        </div>
+
+        <p><strong>The spec sheet conversation.</strong> Pull up the Haas VF-2 spec sheet and go through it with the mission partner. For each spec, ask: <strong>"Is this a must-have or a nice-to-have?"</strong></p>
+
+        <div class="highlight-box">
+          <strong>What you might learn:</strong> The shop needs a 3-axis vertical mill with at least 30" x 16" table travel, minimum 8,000 RPM spindle speed, and a tool changer with at least 20 stations. They need it to run on 208V 3-phase power because that's what the shop is wired for. But they don't actually care about the brand of the control system &mdash; their machinists can adapt. And the specific Haas tool holders? Those are standard CAT 40 taper &mdash; any manufacturer uses them.
+        </div>
+
+        <p>Now you're getting somewhere. The requirement is starting to look like <strong>"3-axis vertical CNC milling machine meeting these functional specifications"</strong> rather than "Haas VF-2."</p>
+
+        <div class="highlight-box">
+          <strong>What if it really does need to be Haas?</strong> That's fine &mdash; brand name requirements aren't bad. They're appropriate when the documentation supports them. Your job is to help the mission partner get their reasoning on paper and tie it to a regulation that allows it. Ask the questions: <em>"Why Haas specifically? What happens if we go with a different manufacturer?"</em> Most of the time, the customer already has the answers &mdash; they've been working with this equipment for years. They just need you to help them document it in a way the file can support.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Legitimate reasons for a brand name can include:</strong> Their existing fixtures, tooling, and CAM programs are built around the Haas control system &mdash; and switching would cost more than the machine itself. Maybe it's the only unit authorized by the squadron. Maybe it's the only machine the shop is trained on. Maybe the entire force requires standardization for maintenance and parts interchangeability. Maybe a Directive of Operations (DO) mandates it. Maybe it's the only machine confirmed to support a specific mission-critical process. These are real, defensible reasons &mdash; and your mission partner probably already knows them. Your job is to help them get it documented: <em>why</em> this brand, in writing, with enough detail to support the claim and tie it to the applicable regulation.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Why this matters for your acquisition strategy:</strong> If the answer is brand name, it fundamentally changes how you buy. Your solicitation becomes "brand name or equal." Now every offeror who proposes an alternative product has to <strong>prove to you</strong> that their "equal" can do what the brand name can do. That changes your evaluation factors. That changes what you're asking for in proposals. That's a big deal &mdash; and it all flows from this conversation. So help them get the <em>why</em> documented clearly &mdash; the rest of the acquisition flows from that answer.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Phase 3 -->
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Contact Industry &amp; Get Quotes</h3>
+      <div class="learn-body">
+        <p>Here's something new COs are weirdly afraid of: <strong>you can just call the vendor and ask for a quote.</strong> You can call multiple vendors. You can request technical data, pricing, and lead times. <span class="far-ref">FAR 10.002</span> literally tells you to contact knowledgeable people in industry as part of market research.</p>
+
+        <p>You're not committing to anything. You're not obligating funds. You're doing market research. And what you get back is gold:</p>
+
+        <div class="highlight-box">
+          <strong>A real price.</strong> Not a guess, not a GSA schedule ceiling price &mdash; an actual quote for the specific configuration you need. Haas has a published price list. Their dealers will send you a quote in 24 hours. So will Mazak's dealer, and Okuma's, and Doosan's. Now you have real data for your price analysis.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Technical data.</strong> Spec sheets, manuals, configuration options. Companies send this to every commercial customer who walks through the door. You're a customer. They'll send it to you too. This data helps you write the functional description and evaluate whether one machine actually meets the requirement better than another.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Lead times.</strong> "This is a 12-week build" or "We have three in stock at our regional warehouse." Lead time directly affects your acquisition timeline. If the mission partner needs it in 60 days and one manufacturer quotes 16 weeks while another has stock, that's a real factor.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Options you didn't know about.</strong> "Most of our Government customers add the chip conveyor and through-spindle coolant package." Or: "We also have the VF-2SS, which has a 12,000 RPM spindle for $8,000 more &mdash; it's better for the aluminum work you described." Or even: "Have you considered a refurbished unit? We have certified pre-owned machines with a full warranty for 40% less." These are things you only learn by talking to industry.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>Don't stop at one quote.</strong> Get quotes from at least two or three manufacturers. This does three things: it gives you price comparison data, it proves the market is competitive (which helps justify a competitive procurement), and it gives you leverage if you end up negotiating. If Haas quotes $65,000 and Doosan quotes $52,000 for a machine that meets all the specs, that's information.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Phase 4 -->
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Search Government Sources</h3>
+      <div class="learn-body">
+        <p>You've talked to industry. Now check what the Government already knows. Sometimes the requirement you're trying to buy already has an existing contract vehicle &mdash; and starting a brand new procurement when an IDIQ or BPA already exists is wasted effort.</p>
+
+        <div class="highlight-box">
+          <strong>SAM.gov.</strong> SAM.gov is your one-stop shop for multiple market research functions. Use the entity search to look up manufacturers and dealers &mdash; are they registered? What's their small business status? What NAICS codes do they claim? Check their 52.219-1 representations and certifications. You can also search contract award data on SAM.gov to see what the Government has paid for similar items, which vendors have won contracts, and what contract vehicles were used. That data is a pricing benchmark and evidence of the competitive landscape.
+        </div>
+
+        <div class="highlight-box">
+          <strong>GSA Advantage / GSA Schedules.</strong> Is this product on a GSA schedule? Schedule pricing gives you pre-negotiated Government rates. Even if you don't buy off the schedule, the pricing data is useful for comparison. For professional services, <strong>GSA OASIS</strong> is an excellent vehicle &mdash; it's specifically tailored for advisory, assistance, and professional services contracts with pre-vetted small business pools.
+        </div>
+
+        <div class="highlight-box">
+          <strong>AFICC Launchpad.</strong> The Air Force Installation Contracting Center maintains a catalog of pre-existing enterprise contract vehicles organized by category. Before you start a new procurement, check whether there's already an IDIQ, BPA, or enterprise solution that covers your requirement. This is a CAC-required resource, but it's one of the first places you should look.
+        </div>
+
+        <div class="highlight-box">
+          <strong>DLA (Defense Logistics Agency).</strong> Particularly for deployments and operational support, DLA Troop Support is a fantastic resource. They handle food, clothing, medical supplies, construction materials, and industrial equipment at scale. If your requirement has a logistics or deployment angle, DLA may already have an existing contract or catalog solution.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Other existing vehicles.</strong> DHA (Defense Health Agency) handles medical contracts. Your base may have existing BPAs for common equipment categories. Other MAJCOMs may have already competed what you're looking for. Even if you don't have an active requirement, keeping your eyes and ears open for existing contract vehicles is market research that happens passively over time.
+        </div>
+
+        <div class="highlight-box">
+          <strong>AbilityOne.</strong> Check the AbilityOne procurement list. CNC mills won't be on it, but you should build the habit of checking mandatory sources early. For other purchases, skipping this step can create problems.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>USAspending.gov.</strong> Search federal spending by PSC code to see the bigger picture &mdash; how much the Government spends on this category, which agencies are buying, and what contract vehicles they use. This gives you market context beyond your individual purchase.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Phase 5 -->
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Evaluate the Competitive Landscape</h3>
+      <div class="learn-body">
+        <p>At this point you have real data. Now you make the calls that shape your acquisition strategy.</p>
+
+        <div class="highlight-box">
+          <strong>Is this brand name or functional?</strong> Based on your research and the spec sheet conversation, can this requirement be described functionally and competed? If the mission partner agreed that "3-axis vertical CNC mill with 30x16 table, 8,000+ RPM spindle, 20-station tool changer, 208V power" describes what they need &mdash; then you have a functional requirement and a competitive market. If they've provided a written justification for why only the Haas VF-2 will work, that's a different path (brand name justification &mdash; covered in a later training).
+        </div>
+
+        <div class="highlight-box">
+          <strong>Are there small business sources?</strong> Your SAM.gov search and vendor outreach should tell you whether small businesses can provide this product. Many industrial equipment dealers are small businesses, even if the manufacturer is large. If you find two or more small businesses capable of providing what you need, you've met the Rule of Two and should consider a small business set-aside.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Is this a commercial item?</strong> CNC milling machines are sold commercially to the public every day. That makes this a commercial product under <span class="far-ref">FAR Part 12</span>. Under the FAR overhaul, commercial acquisitions follow Part 12 procedures. This simplifies your solicitation and terms significantly. Most of what you'll buy in operational contracting &mdash; supplies, equipment, commercial services &mdash; is commercial.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>What's a fair price?</strong> You now have multiple data points: manufacturer quotes, dealer quotes, SAM.gov award history, GSA schedule pricing, and commercial market pricing. Line them up. If three manufacturers quote between $52,000 and $68,000 for machines that meet the specs, and SAM.gov award data shows the Government has paid $48,000&ndash;$72,000 for similar buys, you have a solid basis for determining price reasonableness later.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Phase 6 -->
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> Document Everything</h3>
+      <div class="learn-body">
+        <p><strong>Everything you just did needs to go in writing.</strong> The market research report is your record of what you found and how it supports your acquisition strategy. If someone asks "why did you do it this way?" six months from now, the market research report is your answer.</p>
+
+        <p>Here's what a solid market research report covers:</p>
+
+        <div class="highlight-box">
+          <strong>Description of the requirement.</strong> What is the Government buying? Describe it functionally. "3-axis vertical CNC milling machine for the Base Maintenance Shop, minimum 30" x 16" table travel, 8,000 RPM spindle, 20-station automatic tool changer, 208V 3-phase power." Include the background &mdash; why the shop needs it, what it replaces, how it supports the mission.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Methods used.</strong> What did you do to research the market? Internet searches, manufacturer websites, vendor quotes, SAM.gov entity searches, SAM.gov award data, GSA Advantage review, conversations with the mission partner, conversations with industry. List each method and what it told you.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Sources identified.</strong> Who can provide this? List the vendors, their small business status, their capabilities, and any relevant past performance. Include the dealers and manufacturers you contacted, what they quoted, and whether they're registered in SAM.gov.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Pricing data.</strong> What does this thing cost? Document the quotes you received, the SAM.gov award history, the GSA schedule prices, and the commercial market range. This data supports your price reasonableness determination later.
+        </div>
+
+        <div class="highlight-box">
+          <strong>NAICS and PSC.</strong> What NAICS code and PSC code did you select? Your market research should support these choices. For a CNC milling machine, you'd likely use a manufacturing NAICS in the 333 series and a product PSC in the 34xx range (metalworking machinery).
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Conclusions and recommendations.</strong> Based on your research, what's the right acquisition strategy? Competitive? Small business set-aside? GSA schedule? Brand name? Your market research drives this recommendation. For our CNC mill scenario: "Market research indicates this is a commercial product available from multiple manufacturers and dealers, including small businesses. Recommend competitive procurement under FAR Part 12 with a small business set-aside."
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>Don't just check boxes.</strong> A market research report that says "Internet search: checked. SAM.gov: checked" without explaining what you found is useless. Document what each method revealed and how it informed your decisions. The report should tell the story of your research &mdash; someone reading it should be able to understand your logic without talking to you.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Summary -->
+    <div class="learn-section">
+      <h3><span class="section-num">&#10003;</span> The Bottom Line</h3>
+      <div class="learn-body">
+        <div class="highlight-box tip">
+          <strong>Market research is not the mission partner's job. It's not a box to check. It's your job, and it's how you buy smart.</strong> The six phases &mdash; understand the product, talk to the mission partner, contact industry, search government sources, evaluate the landscape, and document everything &mdash; apply whether you're buying a $65,000 CNC mill or a $500 printer. The depth changes. The process doesn't.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ DECISION AID ═══ -->
+  <div id="panel-decide" class="mr-panel">
+    <div class="mr-intro">
+      <div class="mr-intro-tag">Interactive</div>
+      <h2>Market Research Decision Aid</h2>
+      <p>Where are you in the process? Select your situation for targeted guidance.</p>
+    </div>
+
+    <div class="da-prompt">
+      <h3>What do you need help with?</h3>
+      <p>Pick the scenario that best describes where you are right now.</p>
+    </div>
+
+    <div class="da-options" id="daOptions">
+      <div class="da-option" data-type="unknown" tabindex="0" role="button">
+        <span class="da-option-icon">&#128270;</span>
+        <div class="da-option-label">I Don't Know What This Thing Is</div>
+        <div class="da-option-sub">A PR landed on my desk for something I've never heard of</div>
+      </div>
+      <div class="da-option" data-type="brandname" tabindex="0" role="button">
+        <span class="da-option-icon">&#127991;</span>
+        <div class="da-option-label">My Customer Wants a Specific Brand</div>
+        <div class="da-option-sub">The PR names a specific manufacturer or model number</div>
+      </div>
+      <div class="da-option" data-type="sources" tabindex="0" role="button">
+        <span class="da-option-icon">&#128101;</span>
+        <div class="da-option-label">I Need to Find Sources &amp; Pricing</div>
+        <div class="da-option-sub">I understand the requirement but I need vendors and price data</div>
+      </div>
+      <div class="da-option" data-type="document" tabindex="0" role="button">
+        <span class="da-option-icon">&#128203;</span>
+        <div class="da-option-label">I Need to Write the Report</div>
+        <div class="da-option-sub">I've done the research and need to document it</div>
+      </div>
+    </div>
+
+    <!-- Unknown product -->
+    <div class="da-result" id="result-unknown">
+      <h4>&#128270; You Don't Know What It Is &mdash; That's Normal</h4>
+      <p>Every CO gets PRs for things they've never seen. That's not a problem &mdash; skipping the research is the problem. Here's your playbook:</p>
+      <div class="da-step"><strong>Step 1: Google it.</strong> Search the product name, the model number, the brand. Read the manufacturer's website. Watch a video. Understand what it does, why it exists, and what the key specifications are. Spend real time here &mdash; this is the foundation of everything that follows.</div>
+      <div class="da-step"><strong>Step 2: Find who else makes it.</strong> Search for alternatives and competitors. "CNC milling machine competitors" or "alternatives to [brand name]." If there are multiple manufacturers, you have a competitive market. If there truly is only one source, you need to know that early.</div>
+      <div class="da-step"><strong>Step 3: Learn the specs that matter.</strong> Every product category has key specifications. For a vehicle it's payload, towing capacity, and engine type. For IT equipment it's processing power, memory, and storage. For a milling machine it's table size, spindle speed, and axis travel. Identify the specs that define the product so you can have an informed conversation with your mission partner.</div>
+      <div class="da-step"><strong>Step 4: Get the price range.</strong> Manufacturer websites, dealer sites, commercial equipment listings. You need to know the ballpark before you can evaluate the estimate on the PR or negotiate later.</div>
+      <div class="da-caution"><strong>How long should this take?</strong> As long as it takes. For a simple commercial item, maybe an hour. For a complex piece of equipment, a day or more. Don't rush this phase &mdash; the time you spend here makes every subsequent step faster and better.</div>
+    </div>
+
+    <!-- Brand name -->
+    <div class="da-result" id="result-brandname">
+      <h4>&#127991; The Brand Name Question</h4>
+      <p>The mission partner named a specific brand or model. Your job is to help them document the requirement &mdash; whether it stays brand name or becomes a functional description.</p>
+      <div class="da-step"><strong>Step 1: Research the product and its competitors.</strong> Before you talk to the mission partner, understand the market. If you find multiple manufacturers making comparable products, you know it's a competitive market. If there truly is only one source, that's important too.</div>
+      <div class="da-step"><strong>Step 2: Have the spec sheet conversation.</strong> Pull up the named product's specifications. Go through each spec with the mission partner: "Is this a must-have or a nice-to-have?" You're identifying the functional requirements &mdash; whether or not the brand name stays.</div>
+      <div class="da-step"><strong>Step 3: Ask WHY this specific brand.</strong> Listen for the answer. Most of the time, the customer already has solid reasons &mdash; they've been working with this equipment for years. They just need help putting it in writing. "Our existing tooling is built for this platform and switching would cost $40,000 in retooling" is defensible and documentable.</div>
+      <div class="da-step"><strong>Step 4: Help them document it.</strong> Whether the conclusion is brand name or functional description, get the rationale in writing with enough detail to support it. Your job is to help the mission partner reach the conclusion they're trying to reach and tie it to the regulation that allows it.</div>
+      <div class="da-caution"><strong>Remember: brand name isn't bad.</strong> It's appropriate when the documentation supports it. Your job isn't to be adversarial &mdash; it's to guide the customer through documenting their requirement in a way that holds up in the contract file. Sometimes that means a functional description. Sometimes it means a well-documented brand name. Both are valid outcomes.</div>
+    </div>
+
+    <!-- Sources & pricing -->
+    <div class="da-result" id="result-sources">
+      <h4>&#128101; Finding Sources &amp; Pricing</h4>
+      <p>You understand the requirement. Now you need to find who sells it and what it costs.</p>
+      <div class="da-step"><strong>Contact vendors directly.</strong> Call manufacturers, dealers, and distributors. Request quotes, spec sheets, and lead times. Companies are happy to talk to Government buyers &mdash; you're a customer. This isn't a commitment; it's market research. Get at least 2&ndash;3 quotes.</div>
+      <div class="da-step"><strong>Search SAM.gov.</strong> Look up manufacturers and dealers by name, NAICS code, or keyword. Check their small business status and certifications. Are there small businesses capable of providing this product? If you find two or more, you may have a set-aside opportunity.</div>
+      <div class="da-step"><strong>Search SAM.gov award data.</strong> What has the Government bought before? Search by PSC code or keywords. Look at prices paid, vendors used, and contract vehicles. Historical award data is one of your strongest tools for price analysis.</div>
+      <div class="da-step"><strong>Check GSA Advantage.</strong> Is the product on a GSA schedule? Schedule pricing gives you pre-negotiated rates. Even if you don't buy off the schedule, it's a useful pricing benchmark.</div>
+      <div class="da-step"><strong>Check mandatory sources.</strong> AbilityOne procurement list, DLA, existing BPAs and IDIQs at your installation. There may be a faster path that's already been competed.</div>
+      <div class="da-caution"><strong>Don't stop at internet searches.</strong> A Google search is a starting point, not the finish line. The best market research comes from direct conversations with industry. Pick up the phone.</div>
+    </div>
+
+    <!-- Documentation -->
+    <div class="da-result" id="result-document">
+      <h4>&#128203; Writing the Market Research Report</h4>
+      <p>Your research is done. Now document it so it tells a clear story.</p>
+      <div class="da-step"><strong>Description of the requirement.</strong> What is the Government buying and why? Describe it functionally. Include the background &mdash; what mission it supports, what it replaces, why it's needed now.</div>
+      <div class="da-step"><strong>Methods used.</strong> List every research method: internet searches, vendor contacts, SAM.gov, GSA Advantage, existing vehicle searches, mission partner discussions, industry quotes. For each one, explain what you found &mdash; not just that you checked the box.</div>
+      <div class="da-step"><strong>Sources identified.</strong> List the vendors who can provide this product or service. Include their name, small business status, capabilities, and any relevant past performance or certifications. Note who you contacted and what they said.</div>
+      <div class="da-step"><strong>Pricing data.</strong> Document every price data point: vendor quotes, SAM.gov award history, GSA schedule prices, commercial market range. This supports your price reasonableness determination.</div>
+      <div class="da-step"><strong>Conclusions &amp; recommendations.</strong> What does the research support? Competitive or sole source? Commercial item? Small business set-aside? FAR Part 12? What NAICS and PSC codes? Your recommendation should flow logically from the data you presented.</div>
+      <div class="da-caution"><strong>Write it like someone else will read it.</strong> Because they will. Your supervisor, the SBA, legal, an auditor &mdash; someone is going to read this report and judge whether your acquisition strategy is supported. Make it defensible.</div>
+      <div class="da-step" style="margin-top: 1rem; background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.2);"><strong style="color: #6ee7b7;">Want to see what a finished one looks like?</strong> Check out our <a href="sample-mrr.html" style="color: #6ee7b7; font-weight: 700;">Sample Market Research Report</a> &mdash; a real, completed Streamlined Market Research and Acquisition Approach with all identifying information changed.</div>
+    </div>
+
+    <div class="da-reset" id="daReset">
+      <button onclick="resetDecisionAid()">&#8592; Start Over</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ QUIZ ═══ -->
+  <div id="panel-quiz" class="mr-panel">
+    <div class="mr-intro">
+      <div class="mr-intro-tag">Test Yourself</div>
+      <h2>Market Research Quick Quiz</h2>
+      <p>Eight scenarios. All based on the CNC milling machine walkthrough. See if the training stuck.</p>
+    </div>
+
+    <div id="quizContainer">
+      <div class="quiz-header">
+        <span class="quiz-score" id="quizScore">Score: 0 / 0</span>
+        <span class="quiz-score" id="quizProgress">Question 1 of 8</span>
+      </div>
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizBar" style="width:0%"></div></div>
+      <div id="quizQuestion"></div>
+      <div class="quiz-choices" id="quizChoices"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <div class="quiz-next" id="quizNext">
+        <button class="fc-btn primary" onclick="nextQuestion()">Next Question &#8594;</button>
+      </div>
+    </div>
+    <div class="quiz-done" id="quizDone">
+      <h2>Quiz Complete</h2>
+      <div class="final-score" id="finalScore">0%</div>
+      <p id="finalMsg"></p>
+      <button class="fc-btn primary" onclick="restartQuiz()">Try Again</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ LOOK IT UP ═══ -->
+  <div id="panel-lookup" class="mr-panel">
+    <div class="mr-intro">
+      <div class="mr-intro-tag">External Resources</div>
+      <h2>Look It Up</h2>
+      <p>The tools and references you'll use during market research.</p>
+    </div>
+
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR Part 10</h4>
+        <p>The FAR authority for market research. Short but foundational &mdash; it establishes the requirement to conduct market research and defines what "adequate" looks like.</p>
+        <a href="https://www.acquisition.gov/far/part-10" target="_blank" rel="noopener">Read FAR Part 10</a>
+      </div>
+      <div class="lookup-card">
+        <h4>SAM.gov Entity Search</h4>
+        <p>Search for registered vendors by name, NAICS code, or keyword. Check small business status, certifications, and 52.219-1 representations.</p>
+        <a href="https://sam.gov/search/" target="_blank" rel="noopener">Search SAM.gov</a>
+      </div>
+      <div class="lookup-card">
+        <h4>GSA Advantage</h4>
+        <p>Search GSA schedule products and pre-negotiated pricing. Even if you don't buy off the schedule, it's a useful pricing benchmark.</p>
+        <a href="https://www.gsaadvantage.gov" target="_blank" rel="noopener">Open GSA Advantage</a>
+      </div>
+      <div class="lookup-card">
+        <h4>AFICC Launchpad</h4>
+        <p>Pre-existing enterprise contract vehicles organized by category. Check here before starting a new procurement &mdash; there may already be an IDIQ or BPA that covers your requirement. CAC required.</p>
+        <a href="https://usaf.dps.mil/sites/aficc/afcc/AFICC/KA/AFLaunch/SitePages/Home.aspx" target="_blank" rel="noopener">Open AFICC Launchpad</a>
+      </div>
+      <div class="lookup-card">
+        <h4>DLA Troop Support</h4>
+        <p>Handles food, clothing, medical supplies, construction materials, and industrial equipment at scale. Particularly valuable for deployments and operational support requirements.</p>
+        <a href="https://www.dla.mil/TroopSupport/" target="_blank" rel="noopener">Open DLA Troop Support</a>
+      </div>
+      <div class="lookup-card">
+        <h4>AbilityOne</h4>
+        <p>Check the AbilityOne procurement list for mandatory sources before starting a new procurement. Required by FAR Subpart 8.7.</p>
+        <a href="https://www.abilityone.gov" target="_blank" rel="noopener">Open AbilityOne</a>
+      </div>
+      <div class="lookup-card">
+        <h4>USAspending.gov</h4>
+        <p>Explore federal spending by PSC code, NAICS code, agency, or vendor. Great for understanding the broader market and identifying trends.</p>
+        <a href="https://www.usaspending.gov" target="_blank" rel="noopener">Open USAspending</a>
+      </div>
+      <div class="lookup-card">
+        <h4>SAM.gov Contract Opportunities</h4>
+        <p>Post sources sought notices and RFIs here. Also search existing opportunities to see how other offices describe similar requirements.</p>
+        <a href="https://sam.gov/search/?index=opp" target="_blank" rel="noopener">Search Opportunities</a>
+      </div>
+      <div class="lookup-card">
+        <h4>DAFFARS Templates</h4>
+        <p>The official Air Force market research report template and other acquisition document templates. Use these as your starting point for documentation. CAC required.</p>
+        <a href="https://usaf.dps.mil/sites/AFCC/AQCP/KnowledgeCenter/SitePages/DAFFARS-Templates.aspx" target="_blank" rel="noopener">Open DAFFARS Templates</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Sample Market Research Report</h4>
+        <p>See what a completed Streamlined Market Research and Acquisition Approach looks like. Real structure, real reasoning, redacted for training.</p>
+        <a href="sample-mrr.html">View Sample MRR</a>
+      </div>
+      <div class="lookup-card">
+        <h4>PSC Tool</h4>
+        <p>Find the right PSC code for your requirement. Cross-reference with NAICS codes you've already selected.</p>
+        <a href="https://psctool.us/home" target="_blank" rel="noopener">Open PSC Tool</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ SAMPLE MRR ═══ -->
+  <div id="panel-sample" class="mr-panel">
+    <div class="mr-intro">
+      <div class="mr-intro-tag">Real Example</div>
+      <h2>Sample Market Research Report</h2>
+      <p>This is a completed Streamlined Market Research and Acquisition Approach. All names, units, and locations have been changed &mdash; the structure, reasoning, and level of detail are real.</p>
+    </div>
+
+    <div style="background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.2); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 2rem; font-size: 0.88rem; color: #fde68a; line-height: 1.7;">
+      <strong style="color: #fbbf24;">Training Example Only.</strong> This is a real market research report that has been redacted and modified for training purposes. Use it to understand the level of detail and reasoning expected &mdash; not as a template to copy verbatim. Every acquisition is different. Your report should tell <em>your</em> story.
+    </div>
+
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <a href="sample-mrr.html" style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(74,158,255,0.12); border: 1px solid rgba(74,158,255,0.3); color: var(--accent); padding: 0.85rem 2rem; border-radius: 10px; font-weight: 700; font-size: 1rem; text-decoration: none; transition: all 0.2s; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.5px;">&#128196; View Full Sample MRR &rarr;</a>
+    </div>
+
+    <div style="max-width: 700px; margin: 0 auto;">
+      <h3 style="font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; color: var(--white); margin-bottom: 1rem;">What's in this example?</h3>
+
+      <div style="background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+        <strong style="color: var(--white);">Section A: General Contract Information</strong>
+        <p style="color: var(--silver); font-size: 0.88rem; margin-top: 0.35rem; line-height: 1.6;">Organization, customer, estimated cost ($3.3M), PSC/FSC code (R699), NAICS (541614), type of acquisition (Service), performance-based designation.</p>
+      </div>
+
+      <div style="background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+        <strong style="color: var(--white);">Section B: Description of Requirement</strong>
+        <p style="color: var(--silver); font-size: 0.88rem; margin-top: 0.35rem; line-height: 1.6;">Detailed scope: 3 FTEs providing A&amp;AS logistics and readiness support. Explains what each role does and why it's classified as professional services.</p>
+      </div>
+
+      <div style="background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+        <strong style="color: var(--white);">Section D: Market Research Techniques</strong>
+        <p style="color: var(--silver); font-size: 0.88rem; margin-top: 0.35rem; line-height: 1.6;">8 methods checked with detailed narrative. Sources sought via SAM.gov and GSA Symphony. 5 vendors responded across both markets.</p>
+      </div>
+
+      <div style="background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+        <strong style="color: var(--white);">Section E: Vendor Information</strong>
+        <p style="color: var(--silver); font-size: 0.88rem; margin-top: 0.35rem; line-height: 1.6;">Three vendors analyzed in depth: capabilities, relevant contracts, CPARS ratings, comparable past performance. This is the most detailed section.</p>
+      </div>
+
+      <div style="background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+        <strong style="color: var(--white);">Section F: Conclusions &amp; Recommendations</strong>
+        <p style="color: var(--silver); font-size: 0.88rem; margin-top: 0.35rem; line-height: 1.6;">Ties everything together: why GSA OASIS, why direct 8(a) award, why no J&amp;A needed, why no synopsis required. Every conclusion flows from the research.</p>
+      </div>
+
+      <div style="background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+        <strong style="color: var(--white);">Part II: Acquisition Approach</strong>
+        <p style="color: var(--silver); font-size: 0.88rem; margin-top: 0.35rem; line-height: 1.6;">Competition strategy, FAR citations, contract type rationale (FFP with hourly CLINs), basis for award, and CO signature block.</p>
+      </div>
+
+      <div style="background: rgba(52,211,153,0.05); border: 1px solid rgba(52,211,153,0.2); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1.5rem; font-size: 0.88rem; color: var(--silver); line-height: 1.7;">
+        <strong style="color: #6ee7b7;">This is a services example.</strong> A market research report for a supply item (like a CNC milling machine) would look different &mdash; you'd focus more on product specs, manufacturer comparisons, and pricing data. But the structure and level of detail are the same.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="dfars.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ═══════════════════════════════════ TABS ═══ */
+document.querySelectorAll('.mr-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.mr-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.mr-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ═══════════════════════════════════ DECISION AID ═══ */
+document.querySelectorAll('.da-option').forEach(opt => {
+  opt.addEventListener('click', () => selectCategory(opt.dataset.type));
+  opt.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectCategory(opt.dataset.type); } });
+});
+
+function selectCategory(type) {
+  document.querySelectorAll('.da-option').forEach(o => o.classList.remove('selected'));
+  document.querySelector(`.da-option[data-type="${type}"]`).classList.add('selected');
+  document.querySelectorAll('.da-result').forEach(r => r.classList.remove('visible'));
+  document.getElementById('result-' + type).classList.add('visible');
+  document.getElementById('daReset').classList.add('visible');
+  setTimeout(() => document.getElementById('result-' + type).scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+}
+
+function resetDecisionAid() {
+  document.querySelectorAll('.da-option').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('.da-result').forEach(r => r.classList.remove('visible'));
+  document.getElementById('daReset').classList.remove('visible');
+}
+
+/* ═══════════════════════════════════ QUIZ ═══ */
+const quizData = [
+  {
+    q: "A PR lands on your desk for a \"Haas VF-2 CNC Vertical Milling Machine.\" You've never bought one before. What's your first move?",
+    choices: [
+      "Send it straight to the customer for more details",
+      "Google it \u2014 understand what it is, what it does, and what it costs before doing anything else",
+      "Start writing the solicitation based on the PR",
+      "Post a sources sought on SAM.gov immediately"
+    ],
+    correct: 1,
+    explanation: "Before you can do anything useful, you need to understand what you're buying. Google the product, read spec sheets, learn the key specifications and price range. You can't have an informed conversation with the mission partner or evaluate quotes if you don't know what the thing is."
+  },
+  {
+    q: "After researching the CNC mill, you meet with the mission partner. They say \"We need a Haas VF-2 because that's what we've always used.\" How do you respond?",
+    choices: [
+      "Accept it \u2014 the mission partner knows their equipment better than you do",
+      "Reject it outright and tell them they can't have a brand name",
+      "Walk through the spec sheet together \u2014 figure out which specs are must-haves, and help them document the real reasons behind the brand preference",
+      "Tell them to submit a brand name justification before you'll process the PR"
+    ],
+    correct: 2,
+    explanation: "\"We've always used it\" isn't strong enough documentation on its own \u2014 but that doesn't mean the brand name is wrong. Your mission partner probably has real technical reasons; they just expressed it casually. Work through the spec sheet together and help them articulate the actual requirement. Maybe it ends up as a functional description. Maybe it stays brand name with solid documentation. Either outcome is fine \u2014 your job is to make sure the file supports the conclusion."
+  },
+  {
+    q: "Your research shows that Haas, Mazak, Okuma, and Doosan all make 3-axis vertical CNC mills with comparable specifications. What does this tell you about the competitive landscape?",
+    choices: [
+      "It doesn't matter \u2014 the PR says Haas, so buy Haas",
+      "There's a competitive market with multiple sources, which supports a competitive procurement",
+      "You should buy the cheapest one regardless of what the mission partner needs",
+      "You need to post a sources sought to confirm \u2014 your Google research doesn't count as market research"
+    ],
+    correct: 1,
+    explanation: "Multiple manufacturers making comparable products means a competitive market exists. This is exactly the kind of information that supports a competitive procurement. Internet research absolutely counts as a market research method \u2014 FAR 10.002 recognizes it. But you should still contact vendors directly and check government sources to build a complete picture."
+  },
+  {
+    q: "You want to get pricing data for the CNC mill. Which approach gives you the most useful information?",
+    choices: [
+      "Only use GSA schedule pricing \u2014 that's the official Government rate",
+      "Estimate based on what similar items cost at Home Depot",
+      "Contact multiple manufacturers and dealers for quotes, then cross-reference with SAM.gov award data and GSA pricing",
+      "Use the estimate on the PR \u2014 the mission partner knows what it costs"
+    ],
+    correct: 2,
+    explanation: "The best price analysis uses multiple data points: actual vendor quotes, SAM.gov award data, GSA schedule prices, and commercial market pricing. No single source is sufficient. Vendor quotes give you real current pricing; SAM.gov shows what the Government has paid; GSA gives you pre-negotiated rates. Together, they build a solid basis for price reasonableness."
+  },
+  {
+    q: "You find that several industrial equipment dealers are registered small businesses in SAM.gov and carry CNC milling machines from multiple manufacturers. What does this mean for your acquisition strategy?",
+    choices: [
+      "Nothing \u2014 small business status doesn't affect how you buy equipment",
+      "You must award to a small business regardless of price",
+      "You've likely met the Rule of Two, which means you should consider setting this aside for small business competition",
+      "You should only buy from large businesses for expensive equipment to reduce risk"
+    ],
+    correct: 2,
+    explanation: "If two or more small businesses can provide the product at a fair market price, you've met the Rule of Two and should consider a small business set-aside. Many equipment dealers are small businesses even when the manufacturers are large. Your SAM.gov research directly informs this decision."
+  },
+  {
+    q: "The mission partner insists only the Haas VF-2 will work because \"our existing fixtures use the Haas T-slot pattern.\" You research this and find that Haas uses a standard T-slot pattern that's compatible with all major CNC manufacturers. What do you do?",
+    choices: [
+      "Accept the justification \u2014 the mission partner said the fixtures are brand-specific",
+      "Share your research showing the T-slot pattern is an industry standard \u2014 then help the mission partner identify their actual reasons for Haas, if any",
+      "Ignore the fixture issue and just buy whichever mill is cheapest",
+      "Defer to your supervisor since you're not a machinist"
+    ],
+    correct: 1,
+    explanation: "This is exactly why Phase 1 matters. Because you researched the product, you know that CAT 40 taper and standard T-slot patterns are industry-wide, not proprietary to Haas. That specific justification won't hold up in the file. But don't stop there \u2014 the mission partner may have other legitimate reasons for wanting Haas that they haven't articulated yet. Help them get to the real reason and document it properly."
+  },
+  {
+    q: "You're writing your market research report. Under \"Methods Used,\" which of these is the best approach?",
+    choices: [
+      "\"Internet search: checked. SAM.gov: checked. GSA: checked.\"",
+      "Document each method and what you found \u2014 specific vendors, prices, small business sources, historical data, and how each finding informed your strategy",
+      "Just list the websites you visited with dates",
+      "Skip this section \u2014 the conclusions are what matter"
+    ],
+    correct: 1,
+    explanation: "Checking boxes is not market research. Each method should explain what you did and what you found. \"SAM.gov search identified 4 registered dealers, 3 of which are small businesses\" is useful. \"SAM.gov: checked\" tells the reader nothing. The report should tell the story of your research so someone can follow your logic."
+  },
+  {
+    q: "A CNC milling machine is sold commercially to machine shops every day. Under the current FAR, what does this make it?",
+    choices: [
+      "A non-commercial item that requires certified cost and pricing data",
+      "A commercial product that should be acquired using FAR Part 12 procedures",
+      "A military-unique item since it's being bought for a Government maintenance shop",
+      "It depends on whether the vendor has a GSA schedule"
+    ],
+    correct: 1,
+    explanation: "If it's sold commercially to the public in the same form or with minor modifications, it's a commercial product. CNC mills are sold to commercial machine shops every day. Commercial products are acquired under FAR Part 12, which simplifies your solicitation terms and conditions. The buyer (Government or commercial) doesn't change what the product is."
+  }
+];
+
+let currentQ = 0, score = 0, answered = false;
+
+function renderQuestion() {
+  if (currentQ >= quizData.length) { showResults(); return; }
+  const q = quizData[currentQ];
+  answered = false;
+  document.getElementById('quizQuestion').innerHTML = `<div class="quiz-question"><div class="quiz-q-label">Scenario ${currentQ + 1}</div><div class="quiz-q-text">${q.q}</div></div>`;
+  const choicesEl = document.getElementById('quizChoices');
+  choicesEl.innerHTML = q.choices.map((c, i) => `<button class="quiz-choice" data-idx="${i}">${c}</button>`).join('');
+  choicesEl.querySelectorAll('.quiz-choice').forEach(btn => btn.addEventListener('click', () => handleAnswer(parseInt(btn.dataset.idx))));
+  document.getElementById('quizFeedback').classList.remove('visible', 'correct', 'wrong');
+  document.getElementById('quizNext').classList.remove('visible');
+  document.getElementById('quizProgress').textContent = `Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById('quizBar').style.width = ((currentQ) / quizData.length * 100) + '%';
+  document.getElementById('quizScore').textContent = `Score: ${score} / ${currentQ}`;
+}
+
+function handleAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = quizData[currentQ];
+  const btns = document.querySelectorAll('#quizChoices .quiz-choice');
+  btns.forEach(b => { b.disabled = true; });
+  btns[q.correct].classList.add('correct');
+  const fb = document.getElementById('quizFeedback');
+  if (idx === q.correct) {
+    score++;
+    fb.className = 'quiz-feedback visible correct';
+    fb.textContent = '\u2713 Correct. ' + q.explanation;
+  } else {
+    btns[idx].classList.add('wrong');
+    fb.className = 'quiz-feedback visible wrong';
+    fb.textContent = '\u2717 Not quite. ' + q.explanation;
+  }
+  document.getElementById('quizScore').textContent = `Score: ${score} / ${currentQ + 1}`;
+  document.getElementById('quizBar').style.width = ((currentQ + 1) / quizData.length * 100) + '%';
+  document.getElementById('quizNext').classList.add('visible');
+}
+
+function nextQuestion() { currentQ++; renderQuestion(); }
+
+function showResults() {
+  document.getElementById('quizContainer').style.display = 'none';
+  const pct = Math.round(score / quizData.length * 100);
+  document.getElementById('finalScore').textContent = pct + '%';
+  document.getElementById('finalMsg').textContent = pct === 100 ? "Perfect. You're ready to research your next requirement." : pct >= 67 ? "Solid foundation. Review the ones you missed." : "Worth another pass through the Learn tab \u2014 market research is the foundation of everything else you'll do.";
+  document.getElementById('quizDone').classList.add('visible');
+}
+
+function restartQuiz() {
+  currentQ = 0; score = 0;
+  document.getElementById('quizContainer').style.display = 'block';
+  document.getElementById('quizDone').classList.remove('visible');
+  renderQuestion();
+}
+
+renderQuestion();
+</script>
+</body>
+</html>
