@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn to research the Federal Acquisition Regulation (FAR) and the Revolutionary FAR Overhaul (RFO). Flashcards, quizzes, and a printable cheat sheet for contracting officers." />
+  <title>FAR Research Tool | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Tool shell ── */
+    .frt-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+    .frt-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .frt-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .frt-tab:hover { color: var(--white); }
+    .frt-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .frt-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .frt-panel.active { display: block; }
+
+    /* ── Flashcards ── */
+    .fc-wrap { display: flex; flex-direction: column; align-items: center; gap: 2rem; }
+    .fc-progress { font-size: 0.8rem; color: var(--silver); letter-spacing: 1px; text-transform: uppercase; }
+    .fc-scene { width: 100%; max-width: 600px; height: 280px; perspective: 1000px; cursor: pointer; }
+    .fc-card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.55s cubic-bezier(.4,.2,.2,1); }
+    .fc-card.flipped { transform: rotateY(180deg); }
+    .fc-face { position: absolute; inset: 0; border-radius: 16px; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; }
+    .fc-front { background: linear-gradient(135deg, rgba(74,158,255,0.12) 0%, rgba(10,22,50,0.9) 100%); border: 1px solid rgba(74,158,255,0.25); }
+    .fc-back { background: linear-gradient(135deg, rgba(10,22,50,0.95) 0%, rgba(15,30,70,0.9) 100%); border: 1px solid rgba(74,158,255,0.18); transform: rotateY(180deg); }
+    .fc-part-num { font-family: 'Rajdhani', sans-serif; font-size: 5rem; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 0.5rem; }
+    .fc-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(74,158,255,0.6); margin-bottom: 0.5rem; }
+    .fc-title { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--white); line-height: 1.2; margin-bottom: 0.75rem; }
+    .fc-hint { font-size: 0.875rem; color: var(--silver); line-height: 1.6; max-width: 440px; }
+    .fc-reserved { opacity: 0.4; }
+    .fc-controls { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; justify-content: center; }
+    .fc-btn { padding: 0.6rem 1.4rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.25); background: rgba(74,158,255,0.08); color: var(--silver); cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .fc-btn:hover { background: rgba(74,158,255,0.18); color: var(--white); }
+    .fc-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .fc-btn.primary:hover { background: #3a8eef; }
+    .fc-flip-hint { font-size: 0.75rem; color: rgba(74,158,255,0.5); letter-spacing: 0.5px; }
+
+    /* ── Quiz shared ── */
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem; }
+    .quiz-score { font-size: 0.8rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; }
+    .quiz-progress-bar { width: 100%; height: 4px; background: rgba(74,158,255,0.1); border-radius: 99px; margin-bottom: 2rem; }
+    .quiz-progress-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.3s; }
+    .quiz-question { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.75rem; margin-bottom: 1.5rem; }
+    .quiz-q-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem; }
+    .quiz-q-text { font-size: 1rem; color: var(--white); line-height: 1.7; }
+    .quiz-blank { display: inline-block; background: rgba(74,158,255,0.1); border-bottom: 2px solid var(--accent); padding: 0 0.5rem; border-radius: 4px 4px 0 0; min-width: 120px; text-align: center; color: rgba(74,158,255,0.5); font-style: italic; }
+    .quiz-choices { display: grid; gap: 0.65rem; }
+    .quiz-choices.cols-2 { grid-template-columns: 1fr 1fr; }
+    .quiz-choice { padding: 0.85rem 1.2rem; border-radius: 10px; border: 1px solid rgba(74,158,255,0.15); background: rgba(10,22,50,0.6); color: var(--silver); font-size: 0.9rem; font-weight: 600; cursor: pointer; text-align: left; font-family: inherit; transition: all 0.18s; line-height: 1.35; }
+    .quiz-choice:hover:not(:disabled) { border-color: rgba(74,158,255,0.4); color: var(--white); background: rgba(74,158,255,0.08); }
+    .quiz-choice.correct { border-color: #34d399; background: rgba(52,211,153,0.1); color: #6ee7b7; }
+    .quiz-choice.wrong { border-color: #f87171; background: rgba(248,113,113,0.08); color: #fca5a5; }
+    .quiz-choice:disabled { cursor: default; }
+    .quiz-feedback { margin-top: 1rem; padding: 0.85rem 1.1rem; border-radius: 10px; font-size: 0.875rem; line-height: 1.55; }
+    .quiz-feedback.correct { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); color: #6ee7b7; }
+    .quiz-feedback.wrong { background: rgba(248,113,113,0.06); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; }
+    .quiz-next { margin-top: 1rem; display: none; }
+    .quiz-citation-prompt { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(74,158,255,0.7); margin: 1.25rem 0 0.65rem; }
+    .quiz-done { text-align: center; padding: 3rem 1rem; }
+    .quiz-done h2 { font-family: 'Rajdhani', sans-serif; font-size: 2.2rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .quiz-done .final-score { font-size: 4rem; font-weight: 800; color: var(--accent); line-height: 1; margin: 1rem 0; }
+    .quiz-done p { color: var(--silver); font-size: 0.95rem; margin-bottom: 1.5rem; }
+    .quiz-filter { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .quiz-filter-btn { padding: 0.35rem 0.85rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.2); background: transparent; color: var(--silver); cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .quiz-filter-btn:hover, .quiz-filter-btn.active { background: rgba(74,158,255,0.12); border-color: rgba(74,158,255,0.4); color: var(--accent); }
+
+    /* ── Cheat Sheet ── */
+    .cs-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem; }
+    .cs-print-btn { padding: 0.55rem 1.25rem; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .cs-print-btn:hover { background: #3a8eef; }
+    .cs-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    .cs-table th { padding: 0.6rem 1rem; text-align: left; font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); border-bottom: 1px solid rgba(74,158,255,0.2); }
+    .cs-table td { padding: 0.65rem 1rem; color: var(--silver); border-bottom: 1px solid rgba(74,158,255,0.06); vertical-align: top; }
+    .cs-table td:first-child { color: var(--white); font-weight: 700; white-space: nowrap; width: 80px; }
+    .cs-table tr:hover td { background: rgba(74,158,255,0.04); }
+    .cs-table .reserved td { opacity: 0.35; }
+    .cs-note { font-size: 0.78rem; color: var(--text-muted); margin-top: 1rem; line-height: 1.6; }
+
+    /* ── Intro badge ── */
+    .frt-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .frt-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .frt-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .frt-intro p { color: var(--silver); font-size: 0.9rem; max-width: 520px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── How-to banner ── */
+    .howto { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.12); border-radius: 12px; padding: 1.1rem 1.25rem; margin-bottom: 1.75rem; font-size: 0.85rem; color: var(--silver); line-height: 1.6; }
+    .howto strong { color: var(--white); }
+
+    @media (max-width: 600px) {
+      .quiz-choices.cols-2 { grid-template-columns: 1fr; }
+      .frt-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+    }
+
+    @media print {
+      nav, .frt-tabs, .frt-panel:not(#panel-sheet), .page-hero, footer, .cs-print-btn { display: none !important; }
+      #panel-sheet { display: block !important; padding: 0; }
+      body { background: #fff; color: #000; }
+      .cs-table td { color: #333; }
+      .cs-table td:first-child { color: #000; }
+      .cs-table th { color: #000; }
+      .cs-table tr:hover td { background: none; }
+      .cs-note { color: #666; }
+    }
+
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s;margin-top:.75rem}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html" class="active">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="dfars.html">FAR Updates</a></li>
+      <li><a href="videos.html">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="federal-register.html">Federal Register</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Research Skill Builder</span>
+    <h1 class="page-hero-title">FAR Research Tool</h1>
+    <p class="page-hero-sub">Master the Revolutionary FAR Overhaul structure. Flashcards, scenario quizzes, and a printable reference — built for week-one COs.</p>
+  </div>
+</div>
+
+<div class="frt-bg">
+  <div class="frt-tabs" role="tablist">
+    <button class="frt-tab active" data-tab="flashcards" role="tab">&#127183; Flashcards</button>
+    <button class="frt-tab" data-tab="quickquiz" role="tab">&#9889; Quick Quiz</button>
+    <button class="frt-tab" data-tab="research" role="tab">&#128269; Research Quiz</button>
+    <button class="frt-tab" data-tab="sheet" role="tab">&#128196; Cheat Sheet</button>
+  </div>
+
+  <!-- ═══════════════════════════════════ FLASHCARDS ═══ -->
+  <div id="panel-flashcards" class="frt-panel active">
+    <div class="frt-intro">
+      <div class="frt-intro-tag">All 53 RFO Parts</div>
+      <h2>Know Your FAR Parts Cold</h2>
+      <p>Click the card to flip it. Know the part number? Guess the title. Know the title? Recall the number. Shuffle anytime.</p>
+    </div>
+    <div class="fc-wrap" id="fcWrap">
+      <p class="fc-progress" id="fcProgress">Card 1 of 53</p>
+      <div class="fc-scene" id="fcScene" tabindex="0" aria-label="Flashcard — click to flip">
+        <div class="fc-card" id="fcCard">
+          <div class="fc-face fc-front">
+            <div class="fc-label">FAR Part</div>
+            <div class="fc-part-num" id="fcNum">1</div>
+            <div class="fc-flip-hint">Click to reveal title &rarr;</div>
+          </div>
+          <div class="fc-face fc-back">
+            <div class="fc-label">Title</div>
+            <div class="fc-title" id="fcTitle">Federal Acquisition Regulations System</div>
+            <div class="fc-hint" id="fcHint">The rules about the rules — how the FAR is issued, maintained, and followed.</div>
+          </div>
+        </div>
+      </div>
+      <div class="fc-controls">
+        <button class="fc-btn" id="fcPrev">&larr; Prev</button>
+        <button class="fc-btn primary" id="fcFlip">Flip Card</button>
+        <button class="fc-btn" id="fcNext">Next &rarr;</button>
+      </div>
+      <div class="fc-controls" style="margin-top:0;">
+        <button class="fc-btn" id="fcShuffle">&#128256; Shuffle</button>
+        <button class="fc-btn" id="fcReset">Reset Order</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ QUICK QUIZ ════ -->
+  <div id="panel-quickquiz" class="frt-panel">
+    <div class="frt-intro" style="padding-top:0;">
+      <div class="frt-intro-tag">Part Identification</div>
+      <h2>Quick Quiz — Which FAR Part?</h2>
+      <p>Read the scenario. Pick the FAR Part where you'd look first. Some are trickier than they seem.</p>
+    </div>
+    <div id="qqContainer">
+      <div class="quiz-header">
+        <span class="quiz-score" id="qqScore">Score: 0 / 0</span>
+        <button class="fc-btn" id="qqRestart" style="display:none;">&#8635; Restart</button>
+      </div>
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="qqBar" style="width:0%"></div></div>
+      <div id="qqBody"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ RESEARCH QUIZ ═ -->
+  <div id="panel-research" class="frt-panel">
+    <div class="frt-intro" style="padding-top:0;">
+      <div class="frt-intro-tag">50 RFO-Based Questions</div>
+      <h2>Research Quiz — Fill in the Blank</h2>
+      <p>Each question pulls verbatim text from the RFO. Select the missing word or phrase, then identify the exact FAR reference. Filter by part or go all-in.</p>
+    </div>
+    <div class="howto">
+      <strong>How it works:</strong> Read the blanked regulation text &rarr; pick the correct answer &rarr; then identify the correct FAR citation. Both count toward your score. When stuck, open <a href="https://acquisition.gov/far-overhaul/far-part-deviation-guide" target="_blank" rel="noopener" style="color:var(--accent);">acquisition.gov</a> and Ctrl+F — that's the whole point.
+    </div>
+    <div class="quiz-filter" id="rqFilter">
+      <button class="quiz-filter-btn active" data-part="all">All Parts</button>
+    </div>
+    <div id="rqContainer">
+      <div class="quiz-header">
+        <span class="quiz-score" id="rqScore">Score: 0 / 0</span>
+        <button class="fc-btn" id="rqRestart" style="display:none;">&#8635; Restart</button>
+      </div>
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="rqBar" style="width:0%"></div></div>
+      <div id="rqBody"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ CHEAT SHEET ═══ -->
+  <div id="panel-sheet" class="frt-panel">
+    <div class="cs-header">
+      <div>
+        <div class="frt-intro-tag" style="margin-bottom:0.5rem;">Printable Reference</div>
+        <h2 style="font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;color:var(--white);margin:0;">All 53 FAR Parts — RFO Edition</h2>
+      </div>
+      <button class="cs-print-btn" onclick="window.print()">&#128438; Print / Save PDF</button>
+    </div>
+    <table class="cs-table" id="csTable">
+  #   <thead>
+        <tr><th>Part</th><th>Title</th><th>What's Here</th></tr>
+      </thead>
+      <tbody id="csTbody"></tbody>
+    </table>
+    <p class="cs-note">Source: Revolutionary FAR Overhaul (RFO) — FAR Part Deviation Guidance, acquisition.gov. Parts 20, 21, 38, and 51 are reserved with no active regulatory content. ContractingHQ is not affiliated with the U.S. government.</p>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="videos.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="dfars.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   DATA
+══════════════════════════════════════════════════════════ */
+const FAR_PARTS = [
+  { num:1,  title:"Federal Acquisition Regulations System", hint:"The rules about the rules — how the FAR is issued, maintained, and followed.", reserved:false },
+  { num:2,  title:"Definitions of Words and Terms", hint:"The FAR's dictionary. Check here first when a term is unclear — definitions in Part 2 apply FAR-wide.", reserved:false },
+  { num:3,  title:"Improper Business Practices and Personal Conflicts of Interest", hint:"Ethics, kickbacks, gratuities, contingent fees, and contractor codes of conduct.", reserved:false },
+  { num:4,  title:"Administrative and Information Matters", hint:"Contract execution, file maintenance, SAM registration, and reporting requirements.", reserved:false },
+  { num:5,  title:"Publicizing Contract Actions", hint:"When and how to synopsize opportunities on SAM.gov — pre-solicitation, award notices, and exceptions.", reserved:false },
+  { num:6,  title:"Competition Requirements", hint:"Full and open competition, authorized exceptions, and Justification & Approval (J&A) requirements.", reserved:false },
+  { num:7,  title:"Acquisition Planning", hint:"Acquisition plans, lead times, make-or-buy, and inherently governmental function determinations.", reserved:false },
+  { num:8,  title:"Required Sources of Supplies and Services", hint:"Priority order of sources: AbilityOne, GSA Schedules, mandatory sources. Check here before going to market.", reserved:false },
+  { num:9,  title:"Contractor Qualifications", hint:"Responsibility determinations, debarment, suspension, pre-award surveys, and qualified products.", reserved:false },
+  { num:10, title:"Market Research", hint:"Determining commercial availability, pricing, and industry capabilities before you solicit.", reserved:false },
+  { num:11, title:"Describing Agency Needs", hint:"Writing specs and SOWs — performance/functional requirements, brand-name restrictions, and delivery terms.", reserved:false },
+  { num:12, title:"Acquisition of Commercial Products and Commercial Services", hint:"Streamlined procedures, preferred contract type (FFP), and tailored clauses for commercial buys.", reserved:false },
+  { num:13, title:"Simplified Procedures for Noncommercial Acquisitions", hint:"SAT-and-below buying — purchase orders, requests for quotes, and micro-purchase procedures.", reserved:false },
+  { num:14, title:"Sealed Bidding", hint:"IFBs, public bid opening, responsiveness vs. responsibility, and award to the lowest responsive responsible bidder.", reserved:false },
+  { num:15, title:"Contracting by Negotiation", hint:"RFPs, source selection, clarifications vs. discussions, BAFOs, certified cost or pricing data, and price negotiation.", reserved:false },
+  { num:16, title:"Types of Contracts", hint:"FFP, T&M, cost-plus, IDIQ, requirements contracts — selection criteria and limitations for each.", reserved:false },
+  { num:17, title:"Special Contracting Methods", hint:"Options, interagency acquisitions, BOAs, BPAs, and multi-year contracting.", reserved:false },
+  { num:18, title:"Emergency Acquisitions", hint:"Flexibilities and expanded authorities available during contingencies, disasters, and urgent national defense needs.", reserved:false },
+  { num:19, title:"Small Business", hint:"Set-asides, sole source programs, 8(a), HUBZone, SDVOSB, WOSB, and subcontracting plan requirements.", reserved:false },
+  { num:20, title:"[Reserved]", hint:"No active regulatory content.", reserved:true },
+  { num:21, title:"[Reserved]", hint:"No active regulatory content.", reserved:true },
+  { num:22, title:"Application of Labor Laws to Government Acquisitions", hint:"Davis-Bacon, Service Contract Labor Standards, Walsh-Healey, and other wage rate requirements.", reserved:false },
+  { num:23, title:"Sustainable Acquisition, Material Safety, and Pollution Prevention", hint:"Green procurement, energy efficiency, hazardous materials, and environmental requirements.", reserved:false },
+  { num:24, title:"Protection of Privacy and Freedom of Information", hint:"Privacy Act requirements and FOIA considerations in contracting.", reserved:false },
+  { num:25, title:"Foreign Acquisition", hint:"Buy American Act, Trade Agreements Act, country-of-origin restrictions, and End Product determinations.", reserved:false },
+  { num:26, title:"Other Socioeconomic Programs", hint:"Drug-free workplace, HBCUs, veterans employment, and other socioeconomic goals.", reserved:false },
+  { num:27, title:"Patents, Data, and Copyrights", hint:"Intellectual property rights, technical data rights, patent infringement liability, and royalties.", reserved:false },
+  { num:28, title:"Bonds and Insurance", hint:"Bid bonds, performance bonds, payment bonds, and contractor insurance requirements.", reserved:false },
+  { num:29, title:"Taxes", hint:"Federal, state, and local tax exemptions, and foreign tax relief provisions in contracts.", reserved:false },
+  { num:30, title:"Cost Accounting Standards Administration", hint:"CAS applicability thresholds, disclosure statements, and contractor compliance requirements.", reserved:false },
+  { num:31, title:"Contract Cost Principles and Procedures", hint:"Allowable vs. unallowable costs, reasonableness, allocability — the rules for what the government will pay for.", reserved:false },
+  { num:32, title:"Contract Financing", hint:"Advance payments, progress payments, performance-based payments, and invoice requirements.", reserved:false },
+  { num:33, title:"Protests, Disputes, and Appeals", hint:"GAO bid protest procedures, Contract Disputes Act, and the appeals process to boards and courts.", reserved:false },
+  { num:34, title:"Major System Acquisition", hint:"Special procedures and oversight for large-scale, complex system acquisitions.", reserved:false },
+  { num:35, title:"Research and Development Contracting", hint:"R&D contract types, funding, and patent rights in federally-funded research.", reserved:false },
+  { num:36, title:"Construction and Architect-Engineer Contracts", hint:"Construction contract procedures, A-E qualifications-based selection (Brooks Act), and Davis-Bacon.", reserved:false },
+  { num:37, title:"Service Contracting", hint:"PWSs, performance-based acquisition, non-personal services, and inherently governmental functions.", reserved:false },
+  { num:38, title:"[Reserved]", hint:"No active regulatory content.", reserved:true },
+  { num:39, title:"Acquisition of Information and Communication Technology", hint:"IT/ICT acquisitions, Section 508 accessibility requirements, and software licensing.", reserved:false },
+  { num:40, title:"Information Security and Supply Chain Security", hint:"Cybersecurity requirements, supply chain risk management (SCRM), and controlled unclassified information.", reserved:false },
+  { num:41, title:"Acquisition of Utility Services", hint:"Utility service contracts, areawide contracts, and utility tariff provisions.", reserved:false },
+  { num:42, title:"Contract Administration and Audit Services", hint:"DCAA audit requests, contract administration assignments, COR duties, and closeout procedures.", reserved:false },
+  { num:43, title:"Contract Modifications", hint:"Change orders, supplemental agreements, unilateral vs. bilateral mods, and constructive changes.", reserved:false },
+  { num:44, title:"Subcontracting Policies and Procedures", hint:"Consent to subcontract, subcontracting plans for large businesses, and flow-down clause requirements.", reserved:false },
+  { num:45, title:"Government Property", hint:"GFP, GFE, contractor property management systems, and disposition of government property.", reserved:false },
+  { num:46, title:"Quality Assurance", hint:"Inspection, acceptance, warranty requirements, and quality system standards.", reserved:false },
+  { num:47, title:"Transportation", hint:"Shipping terms, freight, cargo insurance, and transportation contracting procedures.", reserved:false },
+  { num:48, title:"Value Engineering", hint:"VECPs — contractor proposals to reduce cost while maintaining performance; sharing arrangements.", reserved:false },
+  { num:49, title:"Termination of Contracts", hint:"T4C and T4D procedures, settlement proposals, equitable adjustment rights, and partial terminations.", reserved:false },
+  { num:50, title:"Extraordinary Contractual Actions and the SAFETY Act", hint:"Contractual relief during emergencies; SAFETY Act provisions to support anti-terrorism technology.", reserved:false },
+  { num:51, title:"[Reserved]", hint:"No active regulatory content.", reserved:true },
+  { num:52, title:"Solicitation Provisions and Contract Clauses", hint:"The FAR clause library — every provision and clause is prescribed here by section number.", reserved:false },
+  { num:53, title:"Forms", hint:"Standard forms (SF), optional forms (OF), and other prescribed forms used in federal contracting.", reserved:false }
+];
+
+const QUICK_QUIZ = [
+  { q:"Which FAR Part contains all solicitation provisions and contract clauses?", correct:52, wrong:[15,12,4], explain:"Part 52 is the FAR's clause library. Every provision and clause has a 52.XXX number that references back to where it's prescribed." },
+  { q:"Options on contracts — which FAR Part governs them?", correct:17, wrong:[16,13,43], explain:"Part 17 covers special contracting methods, including options. This surprises many people who expect options to be in Part 16 (contract types)." },
+  { q:"Where would you find information about certified cost or pricing data and the TINA threshold?", correct:15, wrong:[31,32,2], explain:"Certified cost or pricing data requirements — thresholds, exceptions, and defective pricing remedies — are in Part 15 (Contracting by Negotiation)." },
+  { q:"Which part covers IDIQ and requirements contracts?", correct:16, wrong:[17,13,8], explain:"Contract types — including indefinite-delivery, requirements, and indefinite-quantity contracts — all live in Part 16." },
+  { q:"You need to write a Performance Work Statement for a services contract. Which part guides you?", correct:37, wrong:[11,15,7], explain:"Part 37 covers service contracting, including PWSs, performance-based acquisition, and determinations about inherently governmental functions." },
+  { q:"A vendor has been debarred from federal contracting. Which part covers debarment and suspension?", correct:9, wrong:[3,6,4], explain:"Contractor qualifications — including responsibility determinations, debarment, and suspension — are in Part 9." },
+  { q:"You want to purchase off a GSA Schedule. Which part covers ordering procedures?", correct:8, wrong:[13,12,17], explain:"Part 8 covers required sources — including the priority order and GSA Schedule (Federal Supply Schedule) ordering procedures." },
+  { q:"A contractor submits a Value Engineering Change Proposal (VECP). Which FAR Part governs?", correct:48, wrong:[43,46,31], explain:"Value engineering — VECPs, government shares, and contractor incentives — is entirely within Part 48." },
+  { q:"Where would you look to determine whether a function is 'inherently governmental'?", correct:7, wrong:[37,11,3], explain:"Inherently governmental function determinations are an acquisition planning requirement addressed in Part 7." },
+  { q:"Davis-Bacon wage rates — which part applies, even for construction contracts?", correct:22, wrong:[36,37,31], explain:"Labor laws — including Davis-Bacon Act requirements — live in Part 22, even when the underlying contract is for construction." },
+  { q:"You need to issue a Justification and Approval (J&A) for a sole source award. Which part?", correct:6, wrong:[15,7,5], explain:"Competition requirements — including the authorities for other than full and open competition and their J&A requirements — are in Part 6." },
+  { q:"Where is the definition of 'commercially available off-the-shelf (COTS) item' found?", correct:2, wrong:[12,11,1], explain:"Part 2 contains all FAR-wide definitions. When a term is unclear, check here first — the definition applies throughout the FAR." },
+  { q:"A contractor files a GAO bid protest. Which FAR part covers this?", correct:33, wrong:[9,52,6], explain:"Protests, disputes, and appeals — including GAO bid protest procedures and the Contract Disputes Act — all fall under Part 33." },
+  { q:"You're awarding a cost-plus-fixed-fee contract and need to negotiate price. Which part applies?", correct:15, wrong:[16,31,32], explain:"Price negotiation and cost or pricing data requirements fall under Part 15 regardless of contract type. Part 16 just tells you which type to use." },
+  { q:"Where do you find the requirement to post a pre-solicitation notice on SAM.gov?", correct:5, wrong:[4,14,6], explain:"Part 5 covers publicizing contract actions — synopsizing requirements, timeframes, and exceptions for posting on SAM.gov." },
+  { q:"What part covers termination for convenience and termination for default?", correct:49, wrong:[52,43,33], explain:"All termination procedures — T4C, T4D, partial terminations, and settlement — are in Part 49." },
+  { q:"Which part covers government-furnished property (GFP) and contractor accountability for it?", correct:45, wrong:[46,44,52], explain:"Government property — GFP, GFE, contractor property management systems, and disposition — is all in Part 45." },
+  { q:"When must you conduct market research, and what does it require? Which part?", correct:10, wrong:[7,11,5], explain:"Part 10 prescribes market research requirements — when to do it, what to look for, and how it informs acquisition strategy." },
+  { q:"A contract requires Section 508 accessibility for an IT system. Which FAR part covers this?", correct:39, wrong:[40,11,37], explain:"ICT acquisitions — including Section 508 accessibility requirements — fall under Part 39, not Part 40 (which covers cybersecurity)." },
+  { q:"Where would you find allowable vs. unallowable cost principles?", correct:31, wrong:[15,30,32], explain:"Part 31 contains the cost principles — allowable, allocable, reasonable. Part 30 covers CAS (the accounting standards themselves), not the cost principles." },
+  { q:"Which part covers advance payments and progress payments to contractors?", correct:32, wrong:[16,31,43], explain:"Contract financing — advance payments, progress payments, and performance-based payments — is in Part 32." },
+  { q:"You need to place a purchase order for supplies below the SAT, non-commercial. Which part?", correct:13, wrong:[12,15,8], explain:"Part 13 covers simplified acquisition procedures for noncommercial supplies and services at or below the simplified acquisition threshold." },
+  { q:"Anti-kickback rules and contractor ethics requirements — which part?", correct:3, wrong:[9,26,22], explain:"Part 3 covers improper business practices — kickbacks, gratuities, contingent fees, and conflicts of interest." },
+  { q:"Architect-engineer service contracts are selected under which FAR part?", correct:36, wrong:[37,34,11], explain:"Part 36 covers both construction contracts and A-E qualifications-based selection procedures required by the Brooks Act." },
+  { q:"A contractor wants to appeal a termination for default decision. Which part governs the dispute?", correct:33, wrong:[49,9,43], explain:"While termination procedures are in Part 49, the dispute and appeals process — Contract Disputes Act, boards of contract appeals — is Part 33." },
+  { q:"Large business prime contractors — subcontracting plans, flow-down clauses. Which part?", correct:44, wrong:[19,52,37], explain:"Subcontracting plans, consent to subcontract, and flow-down requirements are in Part 44." },
+  { q:"Warranties on supplies and services — which FAR part?", correct:46, wrong:[12,11,52], explain:"Quality assurance — including inspection, acceptance, and warranty requirements — is in Part 46." },
+  { q:"Multi-year contracting authority — which part?", correct:17, wrong:[16,32,7], explain:"Multi-year contracting is a special contracting method in Part 17, along with options and interagency acquisitions." },
+  { q:"You're issuing an Invitation for Bids (IFB). Which part governs sealed bidding?", correct:14, wrong:[15,13,6], explain:"Part 14 covers sealed bidding — IFBs, public bid opening, responsiveness, and award to the lowest responsive responsible bidder." },
+  { q:"Cost Accounting Standards (CAS) applicability and disclosure statements — which part?", correct:30, wrong:[15,31,2], explain:"CAS administration — applicability thresholds and disclosure statements — is Part 30. Cost principles (what's allowable) are Part 31." },
+  { q:"8(a) program, HUBZone, SDVOSB — small business set-asides. Which part?", correct:19, wrong:[13,6,26], explain:"All small business programs — 8(a), HUBZone, SDVOSB, WOSB, and set-aside thresholds — are covered in Part 19." },
+  { q:"A contract modification adds new work and increases the price. Which part governs modifications?", correct:43, wrong:[52,15,16], explain:"Contract modifications — change orders, supplemental agreements, bilateral and unilateral mods — are all in Part 43." },
+  { q:"You're buying a commercial product. Which part provides the streamlined acquisition procedures?", correct:12, wrong:[13,8,11], explain:"Part 12 provides streamlined procedures specifically for commercial products and services, including preferred contract types and tailored clause sets." },
+  { q:"Interagency acquisitions — buying goods or services on behalf of another agency. Which part?", correct:17, wrong:[8,6,42], explain:"Interagency acquisitions are a special contracting method in Part 17, alongside options, BOAs, and multi-year contracts." },
+  { q:"Which part covers the standard forms used in federal contracting (SF-26, SF-1449, etc.)?", correct:53, wrong:[4,52,13], explain:"Part 53 prescribes the use of standard forms and optional forms — the physical documents used in solicitations, awards, and modifications." },
+  { q:"Buy American Act and Trade Agreements Act restrictions — which part?", correct:25, wrong:[11,8,26], explain:"Foreign acquisition requirements — Buy American Act, Trade Agreements Act, and end product determinations — are in Part 25." },
+  { q:"A construction contract requires a performance bond. Which FAR part covers bonding?", correct:28, wrong:[36,46,9], explain:"Bonds and insurance — bid bonds, performance bonds, payment bonds, and insurance requirements — are in Part 28." },
+  { q:"Contract file content and maintenance requirements — which part?", correct:4, wrong:[1,42,7], explain:"Administrative and information matters — including what goes in a contract file and how long to keep it — are in Part 4." },
+  { q:"Brand-name specification restrictions — if you want to specify a particular manufacturer's product, which part?", correct:11, wrong:[10,12,37], explain:"Part 11 covers how to describe agency needs, including the requirement to document and justify any brand-name specifications." },
+  { q:"Data rights and intellectual property clauses for research contracts — which part?", correct:27, wrong:[35,52,40], explain:"Patents, data rights, and copyrights in federal contracting — including technical data rights — are addressed in Part 27." }
+];
+
+const RESEARCH_QUIZ = [
+  // Part 15
+  { part:15, text:'A <span class="quiz-blank">_____</span> is a material failure of a proposal to meet a Government requirement or a combination of significant weaknesses in a proposal that increases the risk of unsuccessful contract performance to an unacceptable level.', blank:'deficiency', wrong:['significant weakness','weakness','omission'], cite:'FAR 15.001', citeWrong:['FAR 15.002','FAR 15.101','FAR 15.201'] },
+  { part:15, text:'A <span class="quiz-blank">_____</span> is a flaw that appreciably increases the risk of unsuccessful contract performance.', blank:'significant weakness', wrong:['deficiency','weakness','risk factor'], cite:'FAR 15.001', citeWrong:['FAR 15.002','FAR 15.101','FAR 15.302'] },
+  { part:15, text:'<span class="quiz-blank">_____</span> acquisition is a process whereby an award is made to a single vendor without soliciting offers from multiple sources.', blank:'Noncompetitive', wrong:['Competitive','Streamlined','Simplified'], cite:'FAR 15.002(a)', citeWrong:['FAR 6.302-1','FAR 13.001','FAR 15.001'] },
+  { part:15, text:'RFPs using the uniform contract format should include Parts I, II, III, and IV. Upon award, contracting officers should not physically include <span class="quiz-blank">_____</span> in the resulting contract, but should retain it in the contract file.', blank:'Part IV', wrong:['Part I','Part II','Part III'], cite:'FAR 15.109', citeWrong:['FAR 15.102','FAR 15.201','FAR 15.302'] },
+  { part:15, text:'Clarifications are <span class="quiz-blank">_____</span> exchanges between the Government and offerors that may occur when award without discussions is contemplated.', blank:'limited', wrong:['formal','comprehensive','unrestricted'], cite:'FAR 15.202', citeWrong:['FAR 15.201','FAR 15.301','FAR 15.306'] },
+  { part:15, text:'<span class="quiz-blank">_____</span> do not permit offerors to revise their proposal and cannot be used to cure proposal deficiencies or material omissions or materially alter the technical or cost elements of the proposal.', blank:'Clarifications', wrong:['Discussions','Communications','Exchanges'], cite:'FAR 15.202', citeWrong:['FAR 15.201','FAR 15.306','FAR 15.307'] },
+  { part:15, text:'When using the <span class="quiz-blank">_____</span> approach, proposals are evaluated for technical acceptability only.', blank:'lowest price technically acceptable (LPTA)', wrong:['tradeoff','best value tradeoff','highest technically rated with a fair and reasonable price'], cite:'FAR 15.103-2', citeWrong:['FAR 15.103-1','FAR 15.103-3','FAR 15.104'] },
+  { part:15, text:'An offeror without a record of relevant past performance or for whom information on past performance is not available may not be evaluated <span class="quiz-blank">_____</span> on past performance.', blank:'favorably or unfavorably', wrong:['favorably','unfavorably','negatively'], cite:'FAR 15.305', citeWrong:['FAR 15.104','FAR 15.204','FAR 15.404'] },
+  { part:15, text:'Cost realism <span class="quiz-blank">_____</span> when contemplating the award of a cost-reimbursement contract.', blank:'must be used', wrong:['may be used','should be used','is not required'], cite:'FAR 15.404', citeWrong:['FAR 15.305','FAR 15.402','FAR 31.201'] },
+  { part:15, text:'Price analysis is the process of examining and evaluating a proposed price without evaluating its separate cost elements and proposed <span class="quiz-blank">_____</span>.', blank:'profit', wrong:['overhead','G&A','fee'], cite:'FAR 15.404-1', citeWrong:['FAR 15.402','FAR 15.403','FAR 31.201'] },
+  { part:15, text:'In a tradeoff source selection, the evaluation must include an assessment of each offeror\'s ability to accomplish the technical requirements and an evaluation of the relative strengths, deficiencies, significant weaknesses, and <span class="quiz-blank">_____</span> supporting proposal evaluation.', blank:'risks', wrong:['costs','past performance ratings','price reasonableness determinations'], cite:'FAR 15.305', citeWrong:['FAR 15.101','FAR 15.103-1','FAR 15.204'] },
+  { part:15, text:'Agencies must not unfavorably evaluate an offer that includes telework unless the contracting officer executes a written determination in accordance with <span class="quiz-blank">_____</span>.', blank:'part 7', wrong:['part 11','part 37','part 15.104'], cite:'FAR 15.305', citeWrong:['FAR 15.103-3','FAR 15.106','FAR 37.114'] },
+  { part:15, text:'Discussions are <span class="quiz-blank">_____</span> oral or written communications between the Government and an offeror that involve information essential for determining the acceptability of a proposal, or an offeror\'s price, technical, or past performance proposal.', blank:'any', wrong:['limited','formal','written only'], cite:'FAR 15.201', citeWrong:['FAR 15.202','FAR 15.203','FAR 15.306'] },
+  { part:15, text:'Contracting officers are prohibited from disclosing the number of offerors, identity of offerors, proposed solutions, prices, <span class="quiz-blank">_____</span>, and rankings of proposals to other offerors during source selection.', blank:'technical evaluations', wrong:['past performance ratings','small business status','responsibility determinations'], cite:'FAR 15.305', citeWrong:['FAR 15.202','FAR 15.306','FAR 9.105'] },
+  { part:15, text:'When the uniform contract format is not used and the acquisition is competitive, RFPs must at a minimum describe the Government\'s requirement and the factors and significant subfactors that will be used to evaluate the proposal and their <span class="quiz-blank">_____</span>.', blank:'relative importance', wrong:['numerical weights','priority ranking','evaluation methodology'], cite:'FAR 15.102', citeWrong:['FAR 15.104','FAR 15.109','FAR 15.201'] },
+  // Part 2
+  { part:2, text:'An <span class="quiz-blank">_____</span> means a substantive variation of a basic provision or clause prescribed for use in a defined circumstance. It adds wording to, deletes wording from, or substitutes specified wording for a portion of the basic provision or clause.', blank:'Alternate', wrong:['Deviation','Modification','Supplement'], cite:'FAR 2.101', citeWrong:['FAR 1.401','FAR 52.105','FAR 43.101'] },
+  { part:2, text:'Words and terms defined in FAR Part 2 have the same meaning throughout <span class="quiz-blank">_____</span>, unless a different definition is provided in a specific part, subpart, or section.', blank:'this chapter (48 CFR Chapter 1)', wrong:['all federal regulations','the DFARS','agency supplements only'], cite:'FAR 2.000', citeWrong:['FAR 1.101','FAR 2.201','FAR 1.301'] },
+  // Part 13
+  { part:13, text:'Part 13 implements simplified procedures for the acquisition of noncommercial products and services valued at or below the <span class="quiz-blank">_____</span>.', blank:'simplified acquisition threshold (SAT)', wrong:['micro-purchase threshold','TINA threshold','competition threshold'], cite:'FAR 13.000', citeWrong:['FAR 13.001','FAR 13.401','FAR 2.101'] },
+  { part:13, text:'When using Part 13 procedures, do not use Part 12 procedures unless the items being acquired are <span class="quiz-blank">_____</span>.', blank:'commercial products or commercial services', wrong:['sole source','below the micro-purchase threshold','set aside for small business'], cite:'FAR 13.204', citeWrong:['FAR 13.001','FAR 12.101','FAR 13.102'] },
+  { part:13, text:'Under Part 13, contracting officers must <span class="quiz-blank">_____</span> to the maximum extent practicable to promote competition.', blank:'solicit at least three quotes or offers', wrong:['issue a synopsis on SAM.gov','use a formal RFP','obtain certified cost or pricing data'], cite:'FAR 13.201', citeWrong:['FAR 13.101','FAR 13.203','FAR 5.101'] },
+  // Part 6
+  { part:6, text:'When using other than full and open competition, contracting officers must justify that authority in a document called a <span class="quiz-blank">_____</span>.', blank:'Justification and Approval (J&A)', wrong:['Determination and Findings (D&F)','Memorandum for Record','Source Selection Plan'], cite:'FAR 6.303', citeWrong:['FAR 6.302','FAR 6.301','FAR 7.103'] },
+  { part:6, text:'Full and open competition requires that all responsible sources are permitted to <span class="quiz-blank">_____</span>.', blank:'compete', wrong:['submit proposals','receive award consideration','request debriefs'], cite:'FAR 6.101', citeWrong:['FAR 6.301','FAR 6.102','FAR 9.104'] },
+  // Part 9
+  { part:9, text:'Agencies may not award a contract to a contractor that is not <span class="quiz-blank">_____</span> for the specific contract requirement.', blank:'responsible', wrong:['registered in SAM','a large business','certified'], cite:'FAR 9.103', citeWrong:['FAR 9.104','FAR 9.105','FAR 4.1102'] },
+  { part:9, text:'A prospective contractor must have a satisfactory performance record and a satisfactory record of <span class="quiz-blank">_____</span> to be determined responsible.', blank:'integrity and business ethics', wrong:['financial stability','past award history','cost accounting practices'], cite:'FAR 9.104-1', citeWrong:['FAR 9.103','FAR 9.105','FAR 3.101'] },
+  // Part 5
+  { part:5, text:'Contracting officers must synopsize proposed contract actions exceeding <span class="quiz-blank">_____</span> on SAM.gov, unless an exception applies.', blank:'$25,000', wrong:['$10,000','$150,000','$250,000'], cite:'FAR 5.101', citeWrong:['FAR 5.201','FAR 5.202','FAR 13.000'] },
+  { part:5, text:'After contract award, agencies must publicize the award if the total value exceeds <span class="quiz-blank">_____</span> on SAM.gov.', blank:'$25,000', wrong:['$10,000','$150,000','$500,000'], cite:'FAR 5.301', citeWrong:['FAR 5.101','FAR 5.201','FAR 4.606'] },
+  // Part 4
+  { part:4, text:'Before a contractor can receive a contract award, the contractor must be registered in the <span class="quiz-blank">_____</span>.', blank:'System for Award Management (SAM)', wrong:['FPDS-NG','USASpending.gov','CPARS'], cite:'FAR 4.1102', citeWrong:['FAR 4.601','FAR 9.104','FAR 52.204-7'] },
+  { part:4, text:'The contracting officer is responsible for ensuring the <span class="quiz-blank">_____</span> is complete, accurate, and legally sufficient.', blank:'contract file', wrong:['contractor registration','subcontracting plan','source selection plan'], cite:'FAR 4.801', citeWrong:['FAR 4.802','FAR 4.101','FAR 42.301'] },
+  // Part 7
+  { part:7, text:'Acquisition planning should begin as early as possible, as soon as the agency need is <span class="quiz-blank">_____</span>.', blank:'identified', wrong:['approved','funded','synopsized'], cite:'FAR 7.102', citeWrong:['FAR 7.103','FAR 7.104','FAR 5.101'] },
+  { part:7, text:'A function is inherently governmental if it is so intimately related to the public interest as to mandate performance by <span class="quiz-blank">_____</span> employees.', blank:'Government', wrong:['cleared','senior contracting','contractor'], cite:'FAR 7.500', citeWrong:['FAR 7.104','FAR 37.101','FAR 2.101'] },
+  // Part 10
+  { part:10, text:'Agencies must conduct market research <span class="quiz-blank">_____</span> to issuing a solicitation for supplies or services over the simplified acquisition threshold.', blank:'appropriate to the circumstances', wrong:['at least 30 days prior','in writing','using only SAM.gov data'], cite:'FAR 10.001', citeWrong:['FAR 10.002','FAR 7.102','FAR 5.101'] },
+  { part:10, text:'Market research must be used to determine if <span class="quiz-blank">_____</span> solutions exist before developing unique specifications.', blank:'commercial product or commercial service', wrong:['small business','multiple award contract','IDIQ contract'], cite:'FAR 10.001', citeWrong:['FAR 10.002','FAR 11.101','FAR 12.101'] },
+  // Part 11
+  { part:11, text:'When the Government requires use of a brand-name specification, the contracting officer must document the file with a written <span class="quiz-blank">_____</span> before the solicitation is issued.', blank:'justification', wrong:['J&A','Determination and Findings','market research report'], cite:'FAR 11.105', citeWrong:['FAR 11.101','FAR 11.002','FAR 6.303'] },
+  { part:11, text:'Specifications must describe the Government\'s needs in terms of <span class="quiz-blank">_____</span> characteristics, to the maximum extent practicable.', blank:'functional or performance', wrong:['brand name','design','technical prescriptive'], cite:'FAR 11.002', citeWrong:['FAR 11.101','FAR 11.105','FAR 10.002'] },
+  // Part 16
+  { part:16, text:'A <span class="quiz-blank">_____</span> contract places maximum risk upon the contractor and full responsibility for all costs and profit or loss.', blank:'firm-fixed-price', wrong:['cost-reimbursement','time-and-materials','labor-hour'], cite:'FAR 16.202', citeWrong:['FAR 16.301','FAR 16.601','FAR 16.701'] },
+  { part:16, text:'A time-and-materials contract may be used only when it is <span class="quiz-blank">_____</span> to estimate accurately the extent or duration of the work at the time of placing the contract.', blank:'not possible', wrong:['possible but undesirable','required by agency policy','preferred by the contractor'], cite:'FAR 16.601', citeWrong:['FAR 16.602','FAR 16.505','FAR 16.301'] },
+  { part:16, text:'An IDIQ contract is a contract for supplies or services that does not specify the exact quantities to be ordered but provides for ordering during a fixed period, subject to a stated <span class="quiz-blank">_____</span>.', blank:'minimum quantity', wrong:['maximum quantity','ceiling price','period of performance'], cite:'FAR 16.504', citeWrong:['FAR 16.501','FAR 16.503','FAR 17.502'] },
+  // Part 17
+  { part:17, text:'Before exercising an option, the contracting officer must determine that the option price is <span class="quiz-blank">_____</span> or lower than that available on the open market.', blank:'fair and reasonable', wrong:['the lowest available','within the IGE','at or below the SAT'], cite:'FAR 17.207', citeWrong:['FAR 17.204','FAR 17.202','FAR 15.402'] },
+  // Part 19
+  { part:19, text:'The contracting officer shall set aside acquisitions for small business concerns when the acquisition exceeds the micro-purchase threshold and there is a reasonable expectation that at least <span class="quiz-blank">_____</span> responsible small business concerns will submit offers.', blank:'two', wrong:['three','four','five'], cite:'FAR 19.502-2', citeWrong:['FAR 19.201','FAR 19.501','FAR 13.401'] },
+  // Part 22
+  { part:22, text:'The Service Contract Labor Standards statute applies to contracts that principally involve furnishing <span class="quiz-blank">_____</span> in the United States through the use of service employees.', blank:'services', wrong:['construction','supplies','information technology'], cite:'FAR 22.1002', citeWrong:['FAR 22.401','FAR 22.1003','FAR 37.101'] },
+  // Part 32
+  { part:32, text:'<span class="quiz-blank">_____</span> payments are financing payments made based on measurable deliverables or performance outcomes rather than costs incurred.', blank:'Performance-based', wrong:['Progress','Advance','Partial'], cite:'FAR 32.1001', citeWrong:['FAR 32.501','FAR 32.401','FAR 32.202'] },
+  { part:32, text:'Advance payments are the <span class="quiz-blank">_____</span> form of contract financing and may be authorized only when other forms of financing are not available.', blank:'least preferred', wrong:['most preferred','required','prohibited'], cite:'FAR 32.401', citeWrong:['FAR 32.202','FAR 32.501','FAR 32.001'] },
+  // Part 33
+  { part:33, text:'An interested party may protest a solicitation or proposed award to the Government Accountability Office (GAO) no later than <span class="quiz-blank">_____</span> days after the basis of protest is known or should have been known.', blank:'10', wrong:['5','15','30'], cite:'FAR 33.103', citeWrong:['FAR 33.102','FAR 33.104','FAR 33.201'] },
+  { part:33, text:'A contractor must submit a claim to the contracting officer in writing and certify the claim if it exceeds <span class="quiz-blank">_____</span>.', blank:'$100,000', wrong:['$25,000','$250,000','$1,000,000'], cite:'FAR 33.207', citeWrong:['FAR 33.201','FAR 33.203','FAR 33.206'] },
+  // Part 36
+  { part:36, text:'When selecting architect-engineer firms, agencies must use a qualifications-based selection method under the Brooks Act — selecting based on <span class="quiz-blank">_____</span>, not price.', blank:'professional qualifications', wrong:['lowest fee','best value tradeoff','past performance only'], cite:'FAR 36.602', citeWrong:['FAR 36.601','FAR 36.209','FAR 15.103-2'] },
+  // Part 37
+  { part:37, text:'A Performance Work Statement (PWS) describes the <span class="quiz-blank">_____</span> required rather than how the work is to be accomplished.', blank:'results or outcomes', wrong:['specific tasks and methods','number of labor hours','personnel qualifications'], cite:'FAR 37.602', citeWrong:['FAR 37.101','FAR 37.601','FAR 11.002'] },
+  // Part 43
+  { part:43, text:'A <span class="quiz-blank">_____</span> contract modification is signed by the contracting officer only and does not require the contractor\'s signature.', blank:'unilateral', wrong:['bilateral','supplemental agreement','administrative'], cite:'FAR 43.103', citeWrong:['FAR 43.101','FAR 43.201','FAR 43.102'] },
+  { part:43, text:'Only contracting officers acting within the scope of their authority are empowered to execute <span class="quiz-blank">_____</span> on behalf of the Government.', blank:'contract modifications', wrong:['contractor invoices','technical direction letters','contract data requirements lists'], cite:'FAR 43.102', citeWrong:['FAR 43.101','FAR 43.201','FAR 1.602'] },
+  // Part 46
+  { part:46, text:'Acceptance of a supply or service is conclusive, except for <span class="quiz-blank">_____</span>, gross mistakes amounting to fraud, or as otherwise provided in the contract.', blank:'latent defects', wrong:['patent defects','minor deficiencies','quality nonconformances'], cite:'FAR 46.501', citeWrong:['FAR 46.401','FAR 46.601','FAR 46.101'] },
+  // Part 49
+  { part:49, text:'In a termination for convenience, the contractor is entitled to recover its <span class="quiz-blank">_____</span> costs, a reasonable profit on work performed, and reasonable settlement costs.', blank:'allowable incurred', wrong:['anticipated','projected future','estimated overhead'], cite:'FAR 49.201', citeWrong:['FAR 49.101','FAR 49.301','FAR 31.201'] },
+  { part:49, text:'A termination for default may be converted to a termination for convenience if the contracting officer determines that the default was <span class="quiz-blank">_____</span> or caused by an excusable delay.', blank:'not justified', wrong:['government-caused','documented in the file','appealed by the contractor'], cite:'FAR 49.401', citeWrong:['FAR 49.101','FAR 49.501','FAR 33.213'] },
+  // Part 8
+  { part:8, text:'When placing orders under Federal Supply Schedules for services requiring a statement of work, ordering activities must consider at least <span class="quiz-blank">_____</span> schedule contractors.', blank:'three', wrong:['two','five','ten'], cite:'FAR 8.405-2', citeWrong:['FAR 8.405-1','FAR 8.402','FAR 13.201'] },
+  // Part 12
+  { part:12, text:'When acquiring commercial products or commercial services, agencies must use <span class="quiz-blank">_____</span> to the maximum extent practicable.', blank:'firm-fixed-price contracts or fixed-price contracts with economic price adjustment', wrong:['time-and-materials contracts','cost-reimbursement contracts','labor-hour contracts'], cite:'FAR 12.207', citeWrong:['FAR 12.101','FAR 12.301','FAR 16.202'] }
+];
+
+/* ══════════════════════════════════════════════════════════
+   UTILITY
+══════════════════════════════════════════════════════════ */
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function shuffleChoices(correct, wrong) {
+  return shuffle([correct, ...wrong]);
+}
+
+/* ══════════════════════════════════════════════════════════
+   TABS
+══════════════════════════════════════════════════════════ */
+document.querySelectorAll('.frt-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.frt-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.frt-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ══════════════════════════════════════════════════════════
+   FLASHCARDS
+══════════════════════════════════════════════════════════ */
+let fcDeck = [...FAR_PARTS];
+let fcIdx = 0;
+let fcFlipped = false;
+
+function renderFC() {
+  const card = fcDeck[fcIdx];
+  document.getElementById('fcNum').textContent = card.num;
+  document.getElementById('fcTitle').textContent = card.title;
+  document.getElementById('fcHint').textContent = card.hint;
+  document.getElementById('fcProgress').textContent = 'Card ' + (fcIdx + 1) + ' of ' + fcDeck.length;
+  const cardEl = document.getElementById('fcCard');
+  cardEl.classList.remove('flipped');
+  fcFlipped = false;
+  if (card.reserved) {
+    cardEl.classList.add('fc-reserved');
+  } else {
+    cardEl.classList.remove('fc-reserved');
+  }
+}
+
+function doFlip() {
+  fcFlipped = !fcFlipped;
+  document.getElementById('fcCard').classList.toggle('flipped', fcFlipped);
+}
+
+document.getElementById('fcScene').addEventListener('click', doFlip);
+document.getElementById('fcScene').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); doFlip(); } });
+document.getElementById('fcFlip').addEventListener('click', doFlip);
+document.getElementById('fcPrev').addEventListener('click', () => { fcIdx = (fcIdx - 1 + fcDeck.length) % fcDeck.length; renderFC(); });
+document.getElementById('fcNext').addEventListener('click', () => { fcIdx = (fcIdx + 1) % fcDeck.length; renderFC(); });
+document.getElementById('fcShuffle').addEventListener('click', () => { fcDeck = shuffle(FAR_PARTS); fcIdx = 0; renderFC(); });
+document.getElementById('fcReset').addEventListener('click', () => { fcDeck = [...FAR_PARTS]; fcIdx = 0; renderFC(); });
+renderFC();
+
+/* ══════════════════════════════════════════════════════════
+   QUICK QUIZ
+══════════════════════════════════════════════════════════ */
+let qqDeck = [], qqIdx = 0, qqCorrect = 0, qqAnswered = false;
+
+function qqStart() {
+  qqDeck = shuffle(QUICK_QUIZ);
+  qqIdx = 0; qqCorrect = 0;
+  document.getElementById('qqRestart').style.display = 'none';
+  qqRender();
+}
+
+function qqRender() {
+  const total = qqDeck.length;
+  document.getElementById('qqScore').textContent = 'Score: ' + qqCorrect + ' / ' + qqIdx;
+  document.getElementById('qqBar').style.width = ((qqIdx / total) * 100) + '%';
+
+  if (qqIdx >= total) { qqDone(); return; }
+  const q = qqDeck[qqIdx];
+  const choices = shuffleChoices(q.correct, q.wrong);
+
+  let html = '<div class="quiz-question"><div class="quiz-q-label">Question ' + (qqIdx+1) + ' of ' + total + '</div>';
+  html += '<div class="quiz-q-text">' + q.q + '</div></div>';
+  html += '<div class="quiz-choices cols-2" id="qqChoices">';
+  choices.forEach(c => {
+    const part = FAR_PARTS.find(p => p.num === c);
+    html += '<button class="quiz-choice" data-val="' + c + '">' + '<strong>Part ' + c + '</strong><br><span style="font-weight:400;font-size:0.8rem;">' + part.title + '</span></button>';
+  });
+  html += '</div>';
+  html += '<div id="qqFeedback"></div>';
+  html += '<button class="fc-btn primary quiz-next" id="qqNext">Next Question &rarr;</button>';
+  document.getElementById('qqBody').innerHTML = html;
+  qqAnswered = false;
+
+  document.querySelectorAll('#qqChoices .quiz-choice').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (qqAnswered) return;
+      qqAnswered = true;
+      const val = parseInt(btn.dataset.val);
+      const isRight = val === q.correct;
+      if (isRight) qqCorrect++;
+      document.querySelectorAll('#qqChoices .quiz-choice').forEach(b => {
+        b.disabled = true;
+        if (parseInt(b.dataset.val) === q.correct) b.classList.add('correct');
+        else if (parseInt(b.dataset.val) === val && !isRight) b.classList.add('wrong');
+      });
+      const fb = document.getElementById('qqFeedback');
+      fb.className = 'quiz-feedback ' + (isRight ? 'correct' : 'wrong');
+      fb.innerHTML = (isRight ? '&#10003; Correct! ' : '&#10007; Part ' + q.correct + ' — ') + q.explain;
+      document.getElementById('qqScore').textContent = 'Score: ' + qqCorrect + ' / ' + (qqIdx+1);
+      document.getElementById('qqNext').style.display = 'inline-flex';
+      document.getElementById('qqNext').addEventListener('click', () => { qqIdx++; qqRender(); });
+    });
+  });
+}
+
+function qqDone() {
+  const pct = Math.round((qqCorrect / qqDeck.length) * 100);
+  let grade = pct >= 90 ? '&#127881; Outstanding' : pct >= 75 ? '&#128077; Solid' : pct >= 60 ? '&#128218; Keep Studying' : '&#128214; Hit Those Flashcards';
+  document.getElementById('qqBody').innerHTML = '<div class="quiz-done"><h2>' + grade + '</h2><div class="final-score">' + pct + '%</div><p>' + qqCorrect + ' correct out of ' + qqDeck.length + ' questions.</p></div>';
+  document.getElementById('qqRestart').style.display = 'inline-flex';
+  document.getElementById('qqRestart').onclick = qqStart;
+}
+
+qqStart();
+
+/* ══════════════════════════════════════════════════════════
+   RESEARCH QUIZ
+══════════════════════════════════════════════════════════ */
+let rqDeck = [], rqIdx = 0, rqBlankPts = 0, rqCitePts = 0, rqStage = 'blank', rqFilterPart = 'all';
+let rqBlankCorrect = false;
+
+// Build filter buttons
+const uniqueParts = [...new Set(RESEARCH_QUIZ.map(q => q.part))].sort((a,b) => a-b);
+const filterEl = document.getElementById('rqFilter');
+uniqueParts.forEach(p => {
+  const btn = document.createElement('button');
+  btn.className = 'quiz-filter-btn';
+  btn.dataset.part = p;
+  btn.textContent = 'Part ' + p;
+  filterEl.appendChild(btn);
+});
+filterEl.querySelectorAll('.quiz-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterEl.querySelectorAll('.quiz-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    rqFilterPart = btn.dataset.part;
+    rqStart();
+  });
+});
+
+function rqStart() {
+  const pool = rqFilterPart === 'all' ? RESEARCH_QUIZ : RESEARCH_QUIZ.filter(q => q.part == rqFilterPart);
+  rqDeck = shuffle(pool);
+  rqIdx = 0; rqBlankPts = 0; rqCitePts = 0; rqStage = 'blank';
+  document.getElementById('rqRestart').style.display = 'none';
+  rqRender();
+}
+
+function rqRender() {
+  const total = rqDeck.length;
+  const maxPts = total * 2;
+  const earned = rqBlankPts + rqCitePts;
+  document.getElementById('rqScore').textContent = 'Score: ' + earned + ' / ' + (rqIdx * 2);
+  document.getElementById('rqBar').style.width = ((rqIdx / total) * 100) + '%';
+
+  if (rqIdx >= total) { rqDone(); return; }
+  const q = rqDeck[rqIdx];
+
+  let html = '<div class="quiz-question">';
+  html += '<div class="quiz-q-label">Part ' + q.part + ' &mdash; Question ' + (rqIdx+1) + ' of ' + total + '</div>';
+  html += '<div class="quiz-q-text">' + q.text + '</div></div>';
+  html += '<div class="quiz-choices" id="rqChoices">';
+  shuffleChoices(q.blank, q.wrong).forEach(c => {
+    html += '<button class="quiz-choice" data-val="' + encodeURIComponent(c) + '">' + c + '</button>';
+  });
+  html += '</div>';
+  html += '<div id="rqFeedback"></div>';
+  html += '<div id="rqCiteSection" style="display:none;">';
+  html += '<div class="quiz-citation-prompt">Now select the correct FAR reference:</div>';
+  html += '<div class="quiz-choices cols-2" id="rqCiteChoices">';
+  shuffleChoices(q.cite, q.citeWrong).forEach(c => {
+    html += '<button class="quiz-choice" data-val="' + encodeURIComponent(c) + '">' + c + '</button>';
+  });
+  html += '</div><div id="rqCiteFeedback"></div></div>';
+  html += '<button class="fc-btn primary quiz-next" id="rqNext" style="display:none;margin-top:1rem;">Next Question &rarr;</button>';
+
+  document.getElementById('rqBody').innerHTML = html;
+
+  // Stage 1 — blank answer
+  document.querySelectorAll('#rqChoices .quiz-choice').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = decodeURIComponent(btn.dataset.val);
+      rqBlankCorrect = val === q.blank;
+      if (rqBlankCorrect) rqBlankPts++;
+      document.querySelectorAll('#rqChoices .quiz-choice').forEach(b => {
+        b.disabled = true;
+        if (decodeURIComponent(b.dataset.val) === q.blank) b.classList.add('correct');
+        else if (decodeURIComponent(b.dataset.val) === val && !rqBlankCorrect) b.classList.add('wrong');
+      });
+      const fb = document.getElementById('rqFeedback');
+      fb.className = 'quiz-feedback ' + (rqBlankCorrect ? 'correct' : 'wrong');
+      fb.textContent = rqBlankCorrect ? '✓ Correct answer.' : '✗ The correct answer is: ' + q.blank;
+      document.getElementById('rqScore').textContent = 'Score: ' + (rqBlankPts + rqCitePts) + ' / ' + ((rqIdx) * 2 + 1);
+
+      // Stage 2 — citation
+      document.getElementById('rqCiteSection').style.display = 'block';
+      document.querySelectorAll('#rqCiteChoices .quiz-choice').forEach(cb => {
+        cb.addEventListener('click', () => {
+          const cval = decodeURIComponent(cb.dataset.val);
+          const cRight = cval === q.cite;
+          if (cRight) rqCitePts++;
+          document.querySelectorAll('#rqCiteChoices .quiz-choice').forEach(b => {
+            b.disabled = true;
+            if (decodeURIComponent(b.dataset.val) === q.cite) b.classList.add('correct');
+            else if (decodeURIComponent(b.dataset.val) === cval && !cRight) b.classList.add('wrong');
+          });
+          const cfb = document.getElementById('rqCiteFeedback');
+          cfb.className = 'quiz-feedback ' + (cRight ? 'correct' : 'wrong');
+          cfb.textContent = cRight ? '✓ Correct citation: ' + q.cite : '✗ Correct citation: ' + q.cite;
+          document.getElementById('rqScore').textContent = 'Score: ' + (rqBlankPts + rqCitePts) + ' / ' + ((rqIdx + 1) * 2);
+          document.getElementById('rqNext').style.display = 'inline-flex';
+          document.getElementById('rqNext').addEventListener('click', () => { rqIdx++; rqRender(); });
+        });
+      });
+    });
+  });
+}
+
+function rqDone() {
+  const total = rqDeck.length;
+  const maxPts = total * 2;
+  const earned = rqBlankPts + rqCitePts;
+  const pct = Math.round((earned / maxPts) * 100);
+  let grade = pct >= 90 ? '&#127881; Research Pro' : pct >= 75 ? '&#128077; Getting There' : pct >= 60 ? '&#128218; Keep Digging' : '&#128214; More Ctrl+F Time';
+  document.getElementById('rqBody').innerHTML = '<div class="quiz-done"><h2>' + grade + '</h2><div class="final-score">' + pct + '%</div><p>Answers: ' + rqBlankPts + '/' + total + ' correct &nbsp;|&nbsp; Citations: ' + rqCitePts + '/' + total + ' correct<br>' + earned + ' points out of ' + maxPts + '</div>';
+  document.getElementById('rqRestart').style.display = 'inline-flex';
+  document.getElementById('rqRestart').onclick = rqStart;
+}
+
+rqStart();
+
+/* ══════════════════════════════════════════════════════════
+   CHEAT SHEET
+══════════════════════════════════════════════════════════ */
+const tbody = document.getElementById('csTbody');
+FAR_PARTS.forEach(p => {
+  const tr = document.createElement('tr');
+  if (p.reserved) tr.className = 'reserved';
+  tr.innerHTML = '<td>Part ' + p.num + '</td><td>' + p.title + '</td><td>' + (p.reserved ? 'Reserved — no active content' : p.hint) + '</td>';
+  tbody.appendChild(tr);
+});
+</script>
+<script src="main.js"></script>
+</body>
+</html>
