@@ -95,7 +95,7 @@
     <div class="container">
       <div class="section-header">
         <span class="section-tag">Training</span>
-        <h2>Video Training Library</h2>
+        <h2>Training</h2>
         <p class="section-desc">Practical, scenario-based videos covering the contracting topics that matter most. Built for the way real COs learn — not the way regulations are written.</p>
       </div>
       <div class="video-grid" id="videoGrid">
