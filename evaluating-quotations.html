@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how to evaluate quotations for commercial acquisitions under FAR 12.203. Interactive evaluation walkthrough for new contracting officers." />
+  <title>Evaluating Quotations | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .eq-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    .eq-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .eq-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .eq-tab:hover { color: var(--white); }
+    .eq-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .eq-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .eq-panel.active { display: block; }
+
+    .eq-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .eq-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .eq-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .eq-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-body ul { margin-left: 1.5rem; margin-bottom: 1rem; }
+    .learn-body li { margin-bottom: 0.5rem; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    /* ── Interactive walkthrough ── */
+    .walk-step { background: rgba(10,22,50,0.5); border: 1px solid rgba(74,158,255,0.15); border-radius: 14px; padding: 1.5rem; margin: 1.25rem 0; }
+    .walk-step-label { font-family: 'Rajdhani', sans-serif; font-size: 0.75rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem; }
+    .walk-step h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; }
+    .walk-step p { color: var(--silver); font-size: 0.88rem; line-height: 1.7; margin-bottom: 0.75rem; }
+
+    /* Factor checkboxes */
+    .factor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 1rem 0; }
+    .factor-option { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 10px; padding: 0.85rem 1rem; cursor: pointer; transition: all 0.18s; display: flex; align-items: flex-start; gap: 0.6rem; }
+    .factor-option:hover { border-color: rgba(74,158,255,0.35); }
+    .factor-option.selected { border-color: var(--accent); background: rgba(74,158,255,0.1); }
+    .factor-check { width: 20px; height: 20px; border: 2px solid rgba(74,158,255,0.3); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: transparent; transition: all 0.15s; margin-top: 1px; }
+    .factor-option.selected .factor-check { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .factor-label { font-size: 0.88rem; font-weight: 600; color: var(--white); }
+    .factor-desc { font-size: 0.78rem; color: var(--silver); margin-top: 0.15rem; line-height: 1.5; }
+
+    /* Evaluation results */
+    .eval-result { display: none; margin-top: 1.5rem; }
+    .eval-result.visible { display: block; }
+    .eval-card { background: rgba(10,22,50,0.5); border: 1px solid rgba(74,158,255,0.12); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+    .eval-card h5 { font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem; }
+    .eval-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.7; margin-bottom: 0.5rem; }
+    .eval-card .eval-example { background: rgba(0,0,0,0.2); border-radius: 8px; padding: 0.85rem 1rem; margin-top: 0.6rem; font-size: 0.82rem; color: var(--silver); line-height: 1.7; border-left: 3px solid rgba(74,158,255,0.3); }
+    .eval-btn { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(74,158,255,0.15); border: 1px solid rgba(74,158,255,0.35); color: var(--accent); font-size: 0.85rem; font-weight: 700; padding: 0.65rem 1.25rem; border-radius: 8px; cursor: pointer; transition: all 0.18s; font-family: inherit; margin-top: 0.75rem; }
+    .eval-btn:hover { background: rgba(74,158,255,0.25); color: var(--white); }
+
+    /* Quotation comparison grid */
+    .quote-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin: 1rem 0; }
+    .quote-col { background: rgba(0,0,0,0.2); border: 1px solid rgba(74,158,255,0.1); border-radius: 10px; padding: 1rem; }
+    .quote-col h5 { font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 0.6rem; text-align: center; }
+    .quote-col .quote-row { font-size: 0.8rem; color: var(--silver); line-height: 1.6; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(74,158,255,0.06); }
+    .quote-col .quote-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .quote-col .quote-row strong { color: var(--white); font-size: 0.78rem; display: block; margin-bottom: 0.15rem; }
+
+    @media (max-width: 768px) {
+      .eq-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+      .factor-grid { grid-template-columns: 1fr; }
+      .quote-grid { grid-template-columns: 1fr; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s;margin-top:.75rem}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="dfars.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="federal-register.html">Federal Register</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 23</span>
+    <h1 class="page-hero-title">Evaluating Quotations</h1>
+    <p class="page-hero-sub">FAR 12.203 gives you broad discretion and keeps things simple. No scoring sheets, no competitive ranges, no Part 15 formality. Just good business judgment, documented.</p>
+  </div>
+</div>
+
+<div class="eq-bg">
+
+  <div class="eq-intro">
+    <span class="eq-intro-tag">Interactive Training</span>
+    <h2>How to Evaluate Quotations</h2>
+    <p>Quotations are not proposals. The evaluation rules are simpler than you think. Learn what FAR 12.203 actually says, then walk through an evaluation yourself.</p>
+  </div>
+
+  <div class="eq-tabs">
+    <button class="eq-tab active" onclick="showTab('learn')">Learn</button>
+    <button class="eq-tab" onclick="showTab('tryit')">Try It</button>
+    <button class="eq-tab" onclick="showTab('lookup')">Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="eq-panel active">
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> Quotations Are Not Proposals</h3>
+      <div class="learn-body">
+        <p>A quotation is a response to a Request for Quotation (RFQ). It results in a purchase order, not a bilateral contract. This distinction matters because it determines which rules apply to your evaluation.</p>
+        <p>When you evaluate quotations under FAR Part 12, <strong>you are not in FAR Part 15 or Part 14 territory.</strong> FAR 12.203(c)(2) says it plainly: "The evaluation procedures are not subject to part 15 or 14." That means no evaluation plans, no scoring sheets, no competitive range, no formal discussions requirement. You have broad discretion in deciding how quotations will be evaluated.</p>
+        <p>That does not mean you can be arbitrary. It means the process is built around good business judgment, not bureaucratic procedure. You still need to be fair, you still need to evaluate against your stated criteria, and you still need to document your reasoning. But the FAR is intentionally giving you room to keep things efficient.</p>
+
+        <div class="highlight-box tip">
+          <strong>FAR 12.203(c)(1):</strong> Consider all quotations that are timely received. Use good business judgment in deciding whether or not to accept a quotation received after the due date or time.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> What FAR 12.203 Says About Evaluation Factors</h3>
+      <div class="learn-body">
+        <p>FAR 12.203(a) keeps it straightforward. For most commercial acquisitions, your evaluation factors need not be more detailed than three things: <strong>technical capability, price, and past performance.</strong> That is the FAR telling you to keep it simple.</p>
+
+        <p><strong>Technical (FAR 12.203(a)(1)):</strong> Evaluate based on how well the proposed products or services meet the Government's requirement. Predetermined subfactors are not required. You can consider things like delivery timeframe, warranty terms, training included, transition plan, or anything else relevant to whether the vendor can meet the need. These do not have to be broken out as formal subfactors. They are considerations under the technical umbrella.</p>
+
+        <p><strong>Past Performance (FAR 12.203(a)(2)):</strong> Past performance should be an important evaluation factor. Consider information from a wide variety of sources, inside and outside the Government. This includes CPARS (Contractor Performance Assessment Reporting System), but also commercial market experience. For emerging technology or newer vendors, consider their commercial track record. You can also consider an offeror's experience as a subcontractor.</p>
+
+        <p><strong>Price (FAR 12.203(a)(3)):</strong> Evaluate prices inclusive of transportation charges from shipping point to delivery destination. Get prompt payment discounts when you can, but do not include them when evaluating prices.</p>
+
+        <div class="highlight-box">
+          <strong>Basis for Award (FAR 12.203(b)):</strong> In your solicitation, tell potential quoters or offerors the basis on which you will make the award decision. This goes in 52.212-2, which is part of your solicitation. Offerors need to know what matters and how much it matters before they put together their response.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>What you say you will evaluate is what you must evaluate.</strong> If your solicitation says technical capability is the most important factor but you award to the lowest price without discussing technical differences, you have a problem. Evaluate against your stated criteria, consistently and fairly.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> You Have More Flexibility Than You Think</h3>
+      <div class="learn-body">
+        <p>FAR 12.203(c)(2) gives the contracting officer <strong>broad discretion</strong> in establishing how quotations will be evaluated. Read that again. Broad discretion. Here is what that means in practice:</p>
+
+        <p><strong>Comparative evaluation:</strong> You can perform a comparative evaluation of quotations. This means you compare quotations against each other rather than scoring each one against a rubric. "Vendor A's approach is stronger than Vendor B's because they specifically addressed the maintenance schedule and provided named technicians with relevant certifications." That is a valid evaluation method.</p>
+
+        <p><strong>No scoring required:</strong> You do not have to assign numerical scores. You do not have to build a scoring matrix. You can if you want to, but the FAR does not require it. What matters is that your evaluation is documented, rational, and consistent with your stated criteria.</p>
+
+        <p><strong>No competitive range:</strong> You are not required to establish a competitive range before communicating with quoters or soliciting revised quotations. If you want to call a vendor and ask them to clarify something in their quote, you can. If you want to ask all vendors for revised pricing, you can. The formality of Part 15 discussions does not apply here.</p>
+
+        <div class="highlight-box tip">
+          <strong>FAR 12.203(c):</strong> "Ensure that quotations and offers can be evaluated in an efficient and minimally burdensome fashion." The FAR is telling you not to overcomplicate this. The evaluation process should be proportional to the acquisition.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Price Evaluation</h3>
+      <div class="learn-body">
+        <p>Price evaluation for commercial quotations is a price analysis, not a cost analysis. You are not digging into the vendor's cost structure. You are determining whether the quoted price is fair and reasonable.</p>
+        <p>The standard techniques: compare to other quotations received, compare to prior prices for same or similar items, compare to published price lists or GSA schedules, compare to your IGCE. Use whichever techniques make sense for the buy. The Price Fair and Reasonable training (Topic 24) goes deeper on this.</p>
+        <p>One important detail from FAR 12.203(a)(3): evaluate prices <strong>inclusive of transportation charges</strong> from the shipping point to the delivery destination. A vendor who quotes $100 with free shipping is cheaper than a vendor who quotes $90 with $25 shipping, even if the unit price looks lower.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Document Your Decision</h3>
+      <div class="learn-body">
+        <p>Your documentation does not need to be elaborate, but it needs to exist. A file with a purchase order and nothing else tells the next person (or the GAO, if there's a protest) nothing about how or why you made your decision.</p>
+        <p>Your evaluation documentation should show: what criteria you stated in the solicitation, how each quotation measured against those criteria, your price analysis, and your rationale for selecting the winner. For a comparative evaluation, that means explaining why one quotation was better than the others on the factors that mattered.</p>
+
+        <div class="highlight-box">
+          <strong>Keep it proportional.</strong> A $15,000 purchase order for off-the-shelf supplies does not need a 10-page evaluation memo. A brief narrative covering what you received, how it compared, and why you picked the winner is sufficient. A $200,000 service contract deserves more thoroughness.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>Every award decision is a potential protest.</strong> Your documentation is your defense. If an unsuccessful vendor challenges your decision, the evaluation record is the first thing that gets reviewed. Detailed, consistent, well-reasoned documentation wins protests. Sloppy or missing documentation loses them.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ TRY IT ═══════════════ -->
+  <div id="panel-tryit" class="eq-panel">
+
+    <div class="walk-step">
+      <div class="walk-step-label">Step 1: The Requirement</div>
+      <h4>HVAC Preventive Maintenance, Building 1240</h4>
+      <p>The 88th Civil Engineering Squadron needs quarterly preventive maintenance on 12 Carrier WeatherMaker 48TC rooftop units at Building 1240, Wright-Patterson AFB. Base year plus two option years. Estimated value: $142,000 total. You've completed your market research and your commercial item D&F. Now you need to issue an RFQ and evaluate the responses.</p>
+    </div>
+
+    <div class="walk-step">
+      <div class="walk-step-label">Step 2: Your Solicitation (52.212-2)</div>
+      <h4>What Goes in Your Evaluation Criteria?</h4>
+      <p>FAR 12.203 says technical, price, and past performance. But "technical" is a big umbrella. What specific considerations matter for this requirement? Select the factors you want to evaluate. (There is no single right answer here. The point is to think about what matters for this specific buy.)</p>
+
+      <div class="factor-grid" id="factorGrid">
+        <div class="factor-option" onclick="toggleFactor(this)" data-factor="capability">
+          <div class="factor-check">&#10003;</div>
+          <div>
+            <div class="factor-label">Technical Capability</div>
+            <div class="factor-desc">Can they maintain Carrier 48TC units? Do their technicians have the right certifications (EPA 608, NATE)?</div>
+          </div>
+        </div>
+        <div class="factor-option" onclick="toggleFactor(this)" data-factor="delivery">
+          <div class="factor-check">&#10003;</div>
+          <div>
+            <div class="factor-label">Delivery / Response Time</div>
+            <div class="factor-desc">How quickly can they start? What is their response time for emergency calls outside the PM schedule?</div>
+          </div>
+        </div>
+        <div class="factor-option" onclick="toggleFactor(this)" data-factor="past">
+          <div class="factor-check">&#10003;</div>
+          <div>
+            <div class="factor-label">Past Performance</div>
+            <div class="factor-desc">Have they done similar HVAC maintenance work before? What does CPARS show? What about commercial references?</div>
+          </div>
+        </div>
+        <div class="factor-option selected" onclick="toggleFactor(this)" data-factor="price" data-locked="true">
+          <div class="factor-check">&#10003;</div>
+          <div>
+            <div class="factor-label">Price (Always Required)</div>
+            <div class="factor-desc">Is the total evaluated price fair and reasonable? Includes transportation, materials, labor.</div>
+          </div>
+        </div>
+        <div class="factor-option" onclick="toggleFactor(this)" data-factor="staffing">
+          <div class="factor-check">&#10003;</div>
+          <div>
+            <div class="factor-label">Staffing / Key Personnel</div>
+            <div class="factor-desc">Who will actually be on site doing the work? What are their qualifications?</div>
+          </div>
+        </div>
+        <div class="factor-option" onclick="toggleFactor(this)" data-factor="transition">
+          <div class="factor-check">&#10003;</div>
+          <div>
+            <div class="factor-label">Transition Plan</div>
+            <div class="factor-desc">How will they take over from the current maintenance provider? Timeline, base access, system familiarization.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight-box warn" style="margin-top: 1rem;">
+        <strong>Price must always be an evaluation factor.</strong> You cannot award a government contract without evaluating price. The other factors are your choice based on the requirement, but price is non-negotiable. That is why it is pre-selected above and cannot be removed.
+      </div>
+      <p style="color: var(--silver); font-size: 0.82rem; margin-top: 0.5rem;">Remember: predetermined subfactors are not required under FAR 12.203(a)(1). These are considerations under your technical evaluation, not formal subfactors that need individual scores.</p>
+
+      <button class="eval-btn" onclick="showEvaluation()">Show Me How to Evaluate These &#8594;</button>
+    </div>
+
+    <!-- Evaluation results (hidden until button clicked) -->
+    <div class="eval-result" id="evalResult">
+
+      <div class="walk-step">
+        <div class="walk-step-label">Step 3: The Quotations Come In</div>
+        <h4>Three Vendors Responded</h4>
+        <p>Here is what you received. Now you need to evaluate each quotation against the factors you selected.</p>
+
+        <div class="quote-grid">
+          <div class="quote-col">
+            <h5>ABC Mechanical</h5>
+            <div class="quote-row"><strong>Price:</strong> $44,500/yr ($133,500 total)</div>
+            <div class="quote-row"><strong>Capability:</strong> EPA 608 Universal + NATE certified techs. Currently maintains 48TC units at two other DoD installations in Ohio.</div>
+            <div class="quote-row"><strong>Response Time:</strong> 4-hour emergency response, 24/7.</div>
+            <div class="quote-row"><strong>Past Performance:</strong> 3 CPARS ratings: Satisfactory, Satisfactory, Very Good. No negative commercial references.</div>
+            <div class="quote-row"><strong>Staffing:</strong> Named 2 lead technicians, both with 8+ years Carrier commercial experience.</div>
+            <div class="quote-row"><strong>Transition:</strong> 2-week transition plan with system walkdown and inventory verification.</div>
+          </div>
+          <div class="quote-col">
+            <h5>Comfort Systems USA</h5>
+            <div class="quote-row"><strong>Price:</strong> $47,200/yr ($141,600 total)</div>
+            <div class="quote-row"><strong>Capability:</strong> EPA 608 Universal certified. NATE certification not mentioned. 200+ commercial HVAC contracts in Ohio.</div>
+            <div class="quote-row"><strong>Response Time:</strong> Same-day emergency response during business hours. Next business day otherwise.</div>
+            <div class="quote-row"><strong>Past Performance:</strong> 1 CPARS rating: Very Good. Extensive commercial references from property management firms.</div>
+            <div class="quote-row"><strong>Staffing:</strong> Did not name specific technicians. Stated "qualified personnel will be assigned."</div>
+            <div class="quote-row"><strong>Transition:</strong> "Standard onboarding process, typically 1 week."</div>
+          </div>
+          <div class="quote-col">
+            <h5>Wright-Patt HVAC LLC</h5>
+            <div class="quote-row"><strong>Price:</strong> $38,900/yr ($116,700 total)</div>
+            <div class="quote-row"><strong>Capability:</strong> EPA 608 certified. No NATE. New company (2 years old). No DoD experience.</div>
+            <div class="quote-row"><strong>Response Time:</strong> "As soon as possible." No specific timeframe committed.</div>
+            <div class="quote-row"><strong>Past Performance:</strong> No CPARS. 3 commercial references, all residential customers.</div>
+            <div class="quote-row"><strong>Staffing:</strong> Owner/operator plus 1 part-time employee.</div>
+            <div class="quote-row"><strong>Transition:</strong> Not addressed in quotation.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="walk-step">
+        <div class="walk-step-label">Step 4: Your Evaluation</div>
+        <h4>How to Evaluate What You Selected</h4>
+        <p>Below is how a comparative evaluation might look for each factor you chose. This is not the only right answer. It is one way to apply good business judgment to the quotations you received.</p>
+        <div id="evalCards"></div>
+      </div>
+
+      <div class="walk-step">
+        <div class="walk-step-label">Step 5: The Award Decision</div>
+        <h4>Putting It Together</h4>
+        <p>Based on your evaluation, you write a brief narrative documenting your decision. For a comparative evaluation, that looks something like this. <strong>Notice how the rationale changes based on the factors you selected:</strong></p>
+        <div class="eval-card">
+          <div class="eval-example" id="awardRationale">
+          </div>
+        </div>
+        <p style="color: var(--silver); font-size: 0.85rem;">That is a complete evaluation. No scoring matrix. No numerical ratings. A clear narrative that explains what you received, how you evaluated it, and why you made the decision you made. Anyone reading this file can follow your reasoning.</p>
+
+        <div class="highlight-box tip" style="margin-top: 1.25rem;">
+          <strong>Notice something?</strong> Go back and change your evaluation factors. The awardee can change based on what you chose to evaluate. If price is your only factor, the lowest-priced vendor wins, even if they are the weakest on everything else. Add technical factors and the outcome shifts. That is exactly why your evaluation criteria matter. The factors you put in 52.212-2 shape who wins before a single quotation comes in. Choose them carefully.
+        </div>
+
+        <div class="highlight-box" style="margin-top: 1rem;">
+          <strong>Also notice:</strong> The more evaluation factors you selected, the longer and more complex your evaluation became. Every factor you add is a factor you have to evaluate, document, and defend. Selection of evaluation factors requires careful thought about what will actually matter to you and your evaluation team. Do not add factors just because you can. If a factor will not meaningfully differentiate between quotations or drive your award decision, leave it out. A focused evaluation with three well-chosen factors beats a bloated one with six that you cannot support.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="eq-panel">
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR 12.203: Evaluation</h4>
+        <p>The primary authority for evaluating commercial quotations. Covers evaluation factors, basis for award, and the evaluation process. This is the section that gives you broad discretion and exempts you from Part 15 and Part 14 procedures.</p>
+        <a href="https://www.acquisition.gov/far/12.203" target="_blank" rel="noopener">Open FAR 12.203</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 52.212-2: Evaluation</h4>
+        <p>The provision that goes in your solicitation telling offerors how you will evaluate their quotations. This is where you state your factors and their relative importance. FAR 12.203(b) points you here.</p>
+        <a href="https://www.acquisition.gov/far/52.212-2" target="_blank" rel="noopener">Open FAR 52.212-2</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Part 12: Commercial Acquisition</h4>
+        <p>The complete regulation governing commercial acquisitions. After the RFO, this is the single authority for buying commercial products and services.</p>
+        <a href="https://www.acquisition.gov/far/part-12" target="_blank" rel="noopener">Open FAR Part 12</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Part 12 RFO Deviation Guide</h4>
+        <p>How FAR Part 12 changed under the overhaul. Includes the restructured evaluation procedures and streamlined acquisition authorities.</p>
+        <a href="https://acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12" target="_blank" rel="noopener">Open RFO Deviation Guide</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Part 12 Practitioner Album</h4>
+        <p>Multimedia resource from the FAR Overhaul team explaining Part 12 in practice. Includes flowcharts, decision trees, and Q&A on commercial evaluation.</p>
+        <a href="https://acquisition.gov/sites/default/files/practitioner_albums/far-part-12-acquisition-of-commercial-products-and-commercial-services/content/index.html" target="_blank" rel="noopener">Open Part 12 Album</a>
+      </div>
+      <div class="lookup-card">
+        <h4>GAO Bid Protest Decisions</h4>
+        <p>When a vendor protests an award, the GAO reviews the agency's evaluation. Reading protest decisions teaches you what reviewers look for and how to document your evaluation so it holds up.</p>
+        <a href="https://www.gao.gov/legal/bid-protests" target="_blank" rel="noopener">Browse Recent Decisions</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="dfars.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ── Tab switching ── */
+function showTab(tab) {
+  document.querySelectorAll('.eq-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.eq-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+/* ── Factor selection ── */
+function toggleFactor(el) {
+  if (el.getAttribute('data-locked') === 'true') {
+    el.classList.add('selected');
+    return;
+  }
+  el.classList.toggle('selected');
+}
+
+/* ── Evaluation content per factor ── */
+var factorContent = {
+  capability: {
+    title: "Technical Capability Evaluation",
+    body: "Compare how well each vendor can maintain Carrier 48TC units.",
+    example: "<strong>ABC Mechanical:</strong> Strongest technical capability. EPA 608 Universal + NATE certified. Currently maintains 48TC units at two DoD installations. Demonstrated direct, relevant experience with this exact equipment.<br><br><strong>Comfort Systems:</strong> Acceptable capability. EPA 608 certified, 200+ commercial HVAC contracts. However, NATE certification was not mentioned, and their quotation did not specifically address experience with Carrier 48TC units.<br><br><strong>Wright-Patt HVAC:</strong> Weakest capability. EPA 608 certified only. No NATE certification, no DoD experience, only two years in business with residential-only references. A 12-unit commercial maintenance contract is a significant step up from residential work."
+  },
+  delivery: {
+    title: "Delivery / Response Time Evaluation",
+    body: "Compare emergency response commitments and availability.",
+    example: "<strong>ABC Mechanical:</strong> Committed to 4-hour emergency response, 24/7. This is a specific, measurable commitment that can be enforced.<br><br><strong>Comfort Systems:</strong> Same-day during business hours, next business day otherwise. For a building with occupants, a Friday afternoon HVAC failure would not get attention until Monday. That is a meaningful gap.<br><br><strong>Wright-Patt HVAC:</strong> \"As soon as possible\" is not a commitment. It is not measurable and cannot be enforced. This response provides no basis for evaluating their responsiveness."
+  },
+  past: {
+    title: "Past Performance Evaluation",
+    body: "Compare track records from CPARS and commercial references.",
+    example: "<strong>ABC Mechanical:</strong> 3 CPARS ratings (Satisfactory, Satisfactory, Very Good). Consistent performance on government contracts. No negative commercial references.<br><br><strong>Comfort Systems:</strong> 1 CPARS rating (Very Good). Limited government past performance but extensive commercial references from property management firms. Commercial experience with large-scale HVAC maintenance is relevant and should be considered per FAR 12.203(a)(2).<br><br><strong>Wright-Patt HVAC:</strong> No CPARS. Three commercial references, all residential. Residential HVAC maintenance is a different scale and complexity than 12-unit commercial rooftop maintenance. Limited confidence in their ability to perform this requirement."
+  },
+  price: {
+    title: "Price Evaluation",
+    body: "Compare total evaluated prices and determine fair and reasonable.",
+    example: "<strong>ABC Mechanical:</strong> $133,500 total (base + 2 options). Within the IGCE of $142,000. Middle of the range among quotations received.<br><br><strong>Comfort Systems:</strong> $141,600 total. Highest priced, but still within the IGCE.<br><br><strong>Wright-Patt HVAC:</strong> $116,700 total. Lowest price by a significant margin ($16,800 less than ABC).<br><br>All three prices are fair and reasonable based on comparison to each other and the IGCE."
+  },
+  staffing: {
+    title: "Staffing / Key Personnel Evaluation",
+    body: "Compare the people who will actually do the work.",
+    example: "<strong>ABC Mechanical:</strong> Named two lead technicians with 8+ years of Carrier commercial HVAC experience each. Naming specific people demonstrates they have the workforce committed and allows you to verify qualifications.<br><br><strong>Comfort Systems:</strong> \"Qualified personnel will be assigned.\" This is not responsive. It tells you nothing about who will do the work, what their qualifications are, or whether they have relevant experience. You cannot evaluate what you cannot see.<br><br><strong>Wright-Patt HVAC:</strong> Owner/operator plus one part-time employee. For quarterly maintenance on 12 rooftop units, a two-person team (one part-time) raises concerns about capacity, especially if one person is sick, on vacation, or working another job."
+  },
+  transition: {
+    title: "Transition Plan Evaluation",
+    body: "Compare how each vendor plans to take over from the current provider.",
+    example: "<strong>ABC Mechanical:</strong> Provided a 2-week transition plan including a system walkdown of all 12 units, inventory verification of GFP/GFE, and coordination with the outgoing contractor. This shows they have thought about the handoff and have a structured approach.<br><br><strong>Comfort Systems:</strong> \"Standard onboarding process, typically 1 week.\" Vague, but at least acknowledges a transition period. Does not describe what happens during that week.<br><br><strong>Wright-Patt HVAC:</strong> Did not address transition at all. For a new contractor taking over ongoing maintenance of occupied building HVAC, no transition plan is a gap. It suggests they may not have considered the logistics of taking over from an incumbent."
+  }
+};
+
+/* ── Factor display names for rationale ── */
+var factorNames = {
+  capability: 'technical capability',
+  delivery: 'delivery/response time',
+  past: 'past performance',
+  price: 'price',
+  staffing: 'staffing',
+  transition: 'transition planning'
+};
+
+/* ── Dynamic award rationale builder ── */
+function buildRationale(selected) {
+  var nonPrice = selected.filter(function(f) { return f !== 'price'; });
+  var priceOnly = nonPrice.length === 0;
+
+  /* Build criteria string */
+  var criteriaList = selected.map(function(f) { return factorNames[f]; });
+  var criteriaStr = '';
+  if (criteriaList.length === 1) {
+    criteriaStr = criteriaList[0];
+  } else if (criteriaList.length === 2) {
+    criteriaStr = criteriaList[0] + ' and ' + criteriaList[1];
+  } else {
+    criteriaStr = criteriaList.slice(0, -1).join(', ') + ', and ' + criteriaList[criteriaList.length - 1];
+  }
+
+  var html = '<strong style="color: var(--white);">Award Rationale (Sample):</strong><br><br>';
+  html += 'Three quotations were received in response to RFQ [number]. All three were timely. After evaluating each quotation against the stated criteria (' + criteriaStr + '), ';
+
+  if (priceOnly) {
+    /* ── PRICE ONLY: Wright-Patt wins ── */
+    html += 'I am awarding to Wright-Patt HVAC LLC.<br><br>';
+    html += 'The sole evaluation factor was price. Wright-Patt HVAC submitted the lowest total evaluated price at $116,700 (base + 2 options), which is $16,800 less than ABC Mechanical ($133,500) and $24,900 less than Comfort Systems USA ($141,600). All three prices are fair and reasonable based on comparison to each other and the IGCE of $142,000.<br><br>';
+    html += 'Because price was the only stated evaluation factor, there is no basis to discriminate among quotations on any other grounds. Award goes to the lowest-priced quotation.';
+  } else {
+    /* ── PRICE + OTHER FACTORS: ABC wins ── */
+    html += 'I am awarding to ABC Mechanical Services, Inc.<br><br>';
+
+    /* Build ABC strengths paragraph based on selected factors */
+    var abcStrengths = [];
+    if (selected.indexOf('capability') !== -1) {
+      abcStrengths.push('their technicians hold both EPA 608 and NATE certifications and they currently maintain Carrier 48TC units at two DoD installations');
+    }
+    if (selected.indexOf('delivery') !== -1) {
+      abcStrengths.push('they committed to a 4-hour emergency response time, 24/7');
+    }
+    if (selected.indexOf('past') !== -1) {
+      abcStrengths.push('their past performance is satisfactory to very good across three CPARS-rated contracts');
+    }
+    if (selected.indexOf('staffing') !== -1) {
+      abcStrengths.push('they named specific lead technicians with 8+ years of Carrier commercial experience');
+    }
+    if (selected.indexOf('transition') !== -1) {
+      abcStrengths.push('they provided a detailed 2-week transition plan including system walkdowns and inventory verification');
+    }
+
+    html += 'ABC Mechanical demonstrated the strongest overall quotation: ' + abcStrengths.join('; ') + '.<br><br>';
+
+    /* Comfort Systems paragraph based on selected factors */
+    var comfortWeaknesses = [];
+    if (selected.indexOf('capability') !== -1) {
+      comfortWeaknesses.push('did not hold NATE certification');
+    }
+    if (selected.indexOf('delivery') !== -1) {
+      comfortWeaknesses.push('offered a slower emergency response (same-day business hours only)');
+    }
+    if (selected.indexOf('staffing') !== -1) {
+      comfortWeaknesses.push('did not name specific personnel');
+    }
+    if (selected.indexOf('transition') !== -1) {
+      comfortWeaknesses.push('provided only a vague transition timeline');
+    }
+
+    html += 'Comfort Systems USA submitted an acceptable quotation';
+    if (selected.indexOf('past') !== -1) {
+      html += ' with strong commercial references';
+    }
+    if (comfortWeaknesses.length > 0) {
+      html += ', but ' + comfortWeaknesses.join(', ');
+    }
+    html += '. Their price of $141,600 was $8,100 higher than ABC Mechanical over the life of the contract.<br><br>';
+
+    /* Wright-Patt paragraph based on selected factors */
+    var wpattWeaknesses = [];
+    if (selected.indexOf('capability') !== -1) {
+      wpattWeaknesses.push('no NATE certification, no DoD experience');
+    }
+    if (selected.indexOf('delivery') !== -1) {
+      wpattWeaknesses.push('no specific response time commitment');
+    }
+    if (selected.indexOf('past') !== -1) {
+      wpattWeaknesses.push('residential-only references with no CPARS history');
+    }
+    if (selected.indexOf('staffing') !== -1) {
+      wpattWeaknesses.push('a two-person operation (one part-time) for a 12-unit maintenance requirement');
+    }
+    if (selected.indexOf('transition') !== -1) {
+      wpattWeaknesses.push('no transition plan provided');
+    }
+
+    html += 'Wright-Patt HVAC LLC submitted the lowest price ($116,700)';
+    if (wpattWeaknesses.length > 0) {
+      html += ' but raised concerns: ' + wpattWeaknesses.join(', ');
+    }
+    html += '. The lower price did not offset these risks.<br><br>';
+
+    html += 'ABC Mechanical\'s price of $133,500 (base + 2 options) is fair and reasonable based on comparison to the other quotations received and the IGCE of $142,000.';
+  }
+
+  return html;
+}
+
+function showEvaluation() {
+  var selected = [];
+  document.querySelectorAll('.factor-option.selected').forEach(function(el) {
+    selected.push(el.getAttribute('data-factor'));
+  });
+
+  if (selected.length === 0) {
+    alert('Select at least one evaluation factor first.');
+    return;
+  }
+
+  /* Ensure price is always included */
+  if (selected.indexOf('price') === -1) {
+    selected.push('price');
+    document.querySelector('[data-factor="price"]').classList.add('selected');
+  }
+
+  var container = document.getElementById('evalCards');
+  container.innerHTML = '';
+
+  selected.forEach(function(key) {
+    var fc = factorContent[key];
+    if (!fc) return;
+    var card = document.createElement('div');
+    card.className = 'eval-card';
+    card.innerHTML = '<h5>' + fc.title + '</h5><p>' + fc.body + '</p><div class="eval-example">' + fc.example + '</div>';
+    container.appendChild(card);
+  });
+
+  /* Build dynamic award rationale */
+  document.getElementById('awardRationale').innerHTML = buildRationale(selected);
+
+  document.getElementById('evalResult').classList.add('visible');
+  document.getElementById('evalResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>
