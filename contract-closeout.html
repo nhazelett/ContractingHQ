@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how to close out contract files. Covers physical completion, automated vs manual closeout, time standards, funds review, and the DD 1594 process." />
+  <title>Closeout of Contract Files | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .cco-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .cco-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .cco-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .cco-tab:hover { color: var(--white); }
+    .cco-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .cco-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .cco-panel.active { display: block; }
+
+    /* ── Intro ── */
+    .cco-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .cco-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .cco-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .cco-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; padding: 0; margin: 1rem 0; counter-reset: checklist-counter; }
+    .checklist li { margin-bottom: 1rem; padding-left: 2rem; position: relative; counter-increment: checklist-counter; }
+    .checklist li:before { content: counter(checklist-counter); position: absolute; left: 0; width: 22px; height: 22px; border-radius: 6px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; top: 2px; }
+    .checklist li strong { color: var(--white); }
+
+    /* ── ACCO criteria list ── */
+    .criteria-list { list-style: none; padding: 0; margin: 0.75rem 0; }
+    .criteria-list li { padding: 0.25rem 0 0.25rem 1.25rem; position: relative; font-size: 0.88rem; }
+    .criteria-list li:before { content: '\2713'; position: absolute; left: 0; color: #6ee7b7; font-weight: 700; }
+
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    /* ── Cowboy tip ── */
+    .cowboy-tip { background: rgba(251,191,36,0.04); border: 1px solid rgba(251,191,36,0.2); border-radius: 14px; padding: 1.25rem; margin: 1.25rem 0; }
+    .cowboy-tip .cowboy-label { font-family: 'Rajdhani', sans-serif; font-size: 0.82rem; font-weight: 700; color: #fbbf24; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+    .cowboy-tip p { color: var(--silver); font-size: 0.88rem; line-height: 1.7; margin-bottom: 0.75rem; }
+    .cowboy-tip p:last-child { margin-bottom: 0; }
+    .cowboy-tip strong { color: var(--white); }
+
+    /* ── Credit ── */
+    .credit-box { background: rgba(139,92,246,0.04); border: 1px solid rgba(139,92,246,0.15); border-radius: 14px; padding: 1.25rem; margin-top: 2.5rem; text-align: center; }
+    .credit-box p { color: var(--silver); font-size: 0.85rem; margin: 0; }
+    .credit-box strong { color: #a78bfa; }
+
+    /* ── Step-by-Step guide ── */
+    .step-card { background: rgba(10,22,50,0.5); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.75rem; }
+    .step-card:hover { border-color: rgba(74,158,255,0.25); }
+    .step-header { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 1rem; }
+    .step-number { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; font-family: 'Rajdhani', sans-serif; }
+    .step-header h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin: 0; }
+    .step-card p { color: var(--silver); font-size: 0.88rem; line-height: 1.7; margin-bottom: 0.75rem; }
+    .step-card p:last-of-type { margin-bottom: 1rem; }
+    .step-img { width: 100%; border-radius: 10px; border: 1px solid rgba(74,158,255,0.1); cursor: pointer; transition: transform 0.15s, border-color 0.15s; }
+    .step-img:hover { border-color: rgba(74,158,255,0.3); transform: scale(1.01); }
+    .step-caption { text-align: center; color: rgba(148,163,184,0.6); font-size: 0.75rem; margin-top: 0.5rem; font-style: italic; }
+    .step-intro { text-align: center; margin-bottom: 2rem; }
+    .step-intro p { color: var(--silver); font-size: 0.9rem; line-height: 1.7; max-width: 700px; margin: 0 auto; }
+
+    /* ── Lightbox ── */
+    .cco-lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 9999; align-items: center; justify-content: center; cursor: zoom-out; }
+    .cco-lightbox.open { display: flex; }
+    .cco-lightbox img { max-width: 92vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 0 40px rgba(0,0,0,0.6); }
+
+    @media (max-width: 768px) {
+      .cco-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+      .step-card { padding: 1rem; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s;margin-top:.75rem}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="dfars.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="federal-register.html">Federal Register</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 11</span>
+    <h1 class="page-hero-title">Closeout of Contract Files</h1>
+    <p class="page-hero-sub">Awarding the contract is the exciting part. Closing it out is how you finish the job. Learn when closeout starts, what you need to do, and how to get it done.</p>
+  </div>
+</div>
+
+<div class="cco-bg">
+
+  <div class="cco-intro">
+    <span class="cco-intro-tag">Training</span>
+    <h2>Contract Closeout</h2>
+    <p>The final step in every contract's life cycle. The contractor delivered, the Government paid, and now you need to button up the file and close it in the system.</p>
+  </div>
+
+  <div class="cco-tabs">
+    <button class="cco-tab active" onclick="showTab('learn')">&#128218; Learn</button>
+    <button class="cco-tab" onclick="showTab('steps')">&#128247; Step by Step</button>
+    <button class="cco-tab" onclick="showTab('lookup')">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="cco-panel active">
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> What Is Contract Closeout?</h3>
+      <div class="learn-body">
+        <p>Contract closeout is the final administrative action on a contract. It confirms that both sides held up their end of the deal: the contractor delivered everything the contract required (supplies, services, data, certifications), and the Government paid the contractor in full. Any excess funds on the contract get deobligated.</p>
+        <p>Timely closeout matters because without it, the Government cannot settle its financial records. Unliquidated balances (funds still sitting on a contract after performance ended) can mask improper payments and prevent the Government from reusing unspent money elsewhere.</p>
+
+        <div class="highlight-box warn">
+          <strong>The backlog is real.</strong> Closeout is one of the most neglected tasks in contracting offices. New contracts keep coming in, and old ones pile up waiting to be closed. Do not let your contracts join the backlog. Build closeout into your workflow from the start.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> When Does Closeout Start?</h3>
+      <div class="learn-body">
+        <p>Closeout begins after <strong>physical completion</strong>. FAR 4.804-4 defines physical completion as:</p>
+        <ul class="criteria-list">
+          <li>The contractor delivered all required supplies and the Government inspected and accepted them</li>
+          <li>The contractor performed all required services and the Government accepted them</li>
+          <li>All option provisions have expired (or the Government issued a notice of complete contract termination)</li>
+        </ul>
+        <p>For Indefinite Delivery Contracts (IDCs) and Blanket Purchase Agreements (BPAs), the basic ordering instrument can only be closed when the ordering period has expired and every order issued against it has been closed individually.</p>
+
+        <div class="highlight-box">
+          <strong>Time standard:</strong> For firm-fixed-price contracts, including those using simplified acquisition procedures, you have six calendar months after the month of physical completion to close the contract (FAR 4.804-1). FAR 4.805 requires all contract files to be retained for six years after final payment.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Automated Contract Closeout (ACCO)</h3>
+      <div class="learn-body">
+        <p>Before you start doing this manually, check whether your contract qualifies for Automated Contract Closeout (ACCO). As permitted by FAR 4.804-5(a), ACCO lets the system initiate and execute closeout without the contracting officer having to do it. This capability lives in PIEE.</p>
+        <p>A contract qualifies for ACCO if it meets all of these criteria (DFARS PGI 204.804-3):</p>
+        <ul class="criteria-list">
+          <li>Only has firm-fixed-price line items</li>
+          <li>Does not exceed $500,000</li>
+          <li>Does not contain certain clauses (liquidated damages, allowable cost and payment, progress payments, government property, value engineering, patent rights, and others)</li>
+          <li>All shipments are in a processed or extracted status in WAWF</li>
+          <li>A final invoice has been submitted in WAWF</li>
+          <li>A "Paid" status is present in WAWF</li>
+        </ul>
+        <p>If the contract qualifies, a notification goes out to the administering office. If nobody takes action within 120 days, the system closes the contract and generates an electronic Contract Completion notice (EDI 567C) posted to EDA.</p>
+
+        <div class="highlight-box tip">
+          <strong>Check ACCO first.</strong> If your contract meets these criteria, the system can do the work for you. Focus your manual closeout effort on the contracts that actually need it.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Manual Closeout: The Checklist</h3>
+      <div class="learn-body">
+        <p>If the contract does not qualify for ACCO, you are doing it manually. Here is what needs to happen:</p>
+
+        <ol class="checklist">
+          <li><strong>Verify physical completion.</strong> Confirm that all deliverables have been received and accepted. Check inspection reports, acceptance documents, Contractor Performance Assessment Reports (CPARs), or AF Form 3000s depending on the contract type.</li>
+          <li><strong>Review funds status.</strong> Look at what was obligated versus what was paid. If there are excess funds remaining on the contract, you need to either deobligate them via modification or determine if the contractor still has outstanding invoices to submit. The Financial Management Regulation does not require a contract modification to deobligate excess funds; reporting the unliquidated amount via the EDI 567C or DD 1594 is sufficient. But many offices prefer a deobligation mod for clean records.</li>
+          <li><strong>Release of claims (when applicable).</strong> A release of claims is a document where the contractor discharges the Government from all liabilities, obligations, and claims under the contract. For commercial contracts, the release of claims language lives in FAR 52.212-4 Alternate I, which applies to time-and-materials and labor-hour contracts. For more complex contract types (cost-reimbursement, etc.), releases are typically mandated by other FAR clauses. For a straightforward FFP commercial contract, a release of claims may not be contractually required, but many offices still request one as a best practice. If the contractor submits one with their final invoice, great. Check WAWF attachments.</li>
+          <li><strong>Verify final payment.</strong> Confirm that the Government paid the contractor in full. Check WAWF for a "Paid" status. If the final invoice is hard to track down, you can use PowerBI, DEAMS, or contact DFAS directly to get a payment log.</li>
+          <li><strong>Complete the Contract Completion Statement.</strong> This documents that the vendor completed all required contract elements and the Government accepted them.</li>
+          <li><strong>Generate the DD Form 1594 (or EDI 567C).</strong> This is the Contract Completion Notice. You can do this through PIEE's Contract Closeout module, which generates an electronic EDI 567C and posts it to EDA. Or you can complete a manual DD 1594, but either way there needs to be a record in EDA that the contract is closed.</li>
+        </ol>
+
+        <div class="highlight-box warn">
+          <strong>Check EDA before you start.</strong> Go to EDA first and search for your contract. If there is already a record with a closeout date, someone may have already initiated the process. Download the EDI 567C and verify. Do not duplicate the effort.
+        </div>
+
+        <div class="cowboy-tip">
+          <div class="cowboy-label">Cowboy Tip of the Day</div>
+          <p>I do not do releases of claims on standard FFP contracts. If I see full payment and that amount matches the total contract value, I close it out. Listen to your leadership on this, but I have had claims submitted in court and had to pay the contractor multiple times even when I had a signed release of claims in the file. There is a time and place for them, but that really should be when there are residual funds left over, or when there is a genuine potential for a contractor to submit a claim. Even then, history has shown me that a release does not always mean much.</p>
+          <p>So I do not delay closing out a contract because I cannot obtain one. <strong>Safe rule:</strong> request one, give a suspense. If the contractor does not meet that suspense and you have sufficient evidence of full payment and receipt of goods or services, close it out.</p>
+          <p style="font-size:0.78rem; color:rgba(148,163,184,0.6); margin-top:0.5rem; margin-bottom:0;">- Nick Hazelett</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> The PIEE Process</h3>
+      <div class="learn-body">
+        <p>PIEE's Contract Closeout module is where you generate the electronic DD 1594 (EDI 567C). Here is the general flow:</p>
+
+        <ol class="checklist">
+          <li><strong>Initiate closeout in PIEE.</strong> Create a new closeout action for the contract. If you get an error saying one already exists, search for it. Someone else may have started it but never finished.</li>
+          <li><strong>Fill out the closeout details.</strong> Enter the final invoice number, voucher number, and their dates from WAWF. If you have a manual DD 1594, upload it as an attachment.</li>
+          <li><strong>Notify the CO.</strong> PIEE lets you send an email notification to the contracting officer that the EDI 567C is waiting for their signature. Add the email address, add a note, and send.</li>
+          <li><strong>CO signs in PIEE.</strong> The contracting officer reviews and signs the EDI 567C in the system.</li>
+          <li><strong>Download the signed DD 1594 from EDA.</strong> After the CO signs, go back to EDA and download the electronic DD 1594. It may take some time to appear.</li>
+          <li><strong>Upload to your contract file.</strong> Put the DD 1594 in your contract management system (KTFS or equivalent) and mark the closeout tab as complete.</li>
+          <li><strong>Set the contract status to Closed.</strong> Update the contract status in your system. Depending on the current status, either the contract specialist or the contracting officer sets it to Closed.</li>
+        </ol>
+
+        <div class="highlight-box tip">
+          <strong>PIEE and EDA talk to each other.</strong> When the EDI 567C is signed in PIEE, it flows to EDA and FPDS automatically. The system handles the distribution, but you need to verify the record made it to EDA before you call it done.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> Common Issues</h3>
+      <div class="learn-body">
+        <p><strong>DD 1594 exists in the file but not in EDA.</strong> This means someone completed a manual form and put it in the folder, but the system does not know the contract is closed. You need to initiate closeout in PIEE so the electronic record gets created and posted to EDA.</p>
+        <p><strong>Cannot find the final invoice.</strong> Check WAWF first. If it is not there, try PowerBI or DEAMS. You can also contact DFAS directly for a payment log. For Air Force contracts paying through F87700, call 800-756-4571 (option 4) or email the DFAS Limestone customer inquiries box.</p>
+        <p><strong>Excess funds on the contract.</strong> If money is left over after the contractor has been paid in full and no more invoices are expected, those funds need to be deobligated. You can do this through a contract modification or report the correct unliquidated amount on the EDI 567C/DD 1594.</p>
+        <p><strong>Missing release of claims.</strong> For T&amp;M/LH contracts under 52.212-4 Alternate I, the release is a condition of final payment. For other contract types, check your specific clauses. For a standard FFP commercial contract, it may not be contractually required. Request one, give a suspense, but do not let it hold up closeout indefinitely if you have sufficient evidence of full payment and delivery (see the tip below).</p>
+        <p><strong>Options still on the contract.</strong> You cannot close a contract while option periods are still active. All options must have expired or been exercised and completed before closeout can begin.</p>
+      </div>
+    </div>
+
+    <div class="credit-box">
+      <p>Content adapted from training materials developed by <strong>Sra Dariia Khymchenko</strong>. Thank you for your contribution to the contracting workforce.</p>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ STEP BY STEP ═══════════════ -->
+  <div id="panel-steps" class="cco-panel">
+
+    <div class="step-intro">
+      <p>This walkthrough follows the manual closeout process in PIEE and EDA, step by step. Screenshots are from an actual closeout workflow. Click any image to enlarge it.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-header"><span class="step-number">1</span><h4>Open PIEE Post Award Administration</h4></div>
+      <p>Log into PIEE and navigate to Post Award Administration. You will see modules for SPM, CCM, CDR, EDA, and Contract Closeout. Select <strong>Contract Closeout</strong> to begin.</p>
+      <img class="step-img" src="images/closeout/step1-piee-menu.png" alt="PIEE Post Award Administration menu showing the Contract Closeout module" onclick="openLightbox(this)" />
+      <div class="step-caption">PIEE Post Award Admin menu with Contract Closeout module highlighted</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-header"><span class="step-number">2</span><h4>Create a Closeout Worksheet</h4></div>
+      <p>Click <strong>Create</strong> and select the closeout worksheet option. Enter the contract number and the system will pull in the contract information. If an existing worksheet is found, PIEE will let you know.</p>
+      <img class="step-img" src="images/closeout/step2-create-worksheet.png" alt="PIEE Create dropdown and Contract Information form" onclick="openLightbox(this)" />
+      <div class="step-caption">Creating a new closeout worksheet and entering the contract number</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-header"><span class="step-number">3</span><h4>Review the Worksheet</h4></div>
+      <p>Once the worksheet is saved, review the pre-populated fields: contract type, contract number, physical completion date, and closeout due date. Verify these are correct before moving forward.</p>
+      <img class="step-img" src="images/closeout/step3-worksheet-saved.png" alt="Saved closeout worksheet showing contract type, number, and dates" onclick="openLightbox(this)" />
+      <div class="step-caption">Worksheet with contract details and closeout due date</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-header"><span class="step-number">4</span><h4>Complete the Contract Completion Fields</h4></div>
+      <p>Fill in the Contract Completion section. This includes the last modification number, excess funds (if any), whether a final payment voucher exists, and the final invoice information. Pull the invoice and voucher numbers from WAWF.</p>
+      <img class="step-img" src="images/closeout/step4-contract-completion.png" alt="Contract Completion form with fields for modification number, excess funds, and final invoice" onclick="openLightbox(this)" />
+      <div class="step-caption">Contract Completion form fields</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-header"><span class="step-number">5</span><h4>Verify the Final Invoice in WAWF</h4></div>
+      <p>Cross-reference the invoice in WAWF to confirm the amounts match. Look at the Document Information screen to verify the invoice number, amounts, and payment status. This is how you confirm full payment was made.</p>
+      <img class="step-img" src="images/closeout/step5-wawf-invoice.png" alt="WAWF Document Information screen showing invoice details and amounts" onclick="openLightbox(this)" />
+      <div class="step-caption">WAWF invoice details confirming payment amounts</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-header"><span class="step-number">6</span><h4>Submit the Worksheet</h4></div>
+      <p>After completing all fields, submit the closeout worksheet. If everything checks out, you will see a success message confirming the worksheet has been submitted and the contract status is <strong>Ready to Close</strong>.</p>
+      <img class="step-img" src="images/closeout/step6-success.png" alt="Success screen showing Contract Closeout Worksheet has been successfully submitted with Ready to Close status" onclick="openLightbox(this)" />
+      <div class="step-caption">Success: worksheet submitted, status is Ready to Close</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-header"><span class="step-number">7</span><h4>Verify in EDA</h4></div>
+      <p>Go to EDA and search for your contract. The closeout search results should show the contract with a closed status and a closeout date. This confirms the EDI 567C has been posted. Download the document for your records.</p>
+      <img class="step-img" src="images/closeout/step7-eda-closeout-results.png" alt="EDA Closeout Search Results showing a closed contract with date" onclick="openLightbox(this)" />
+      <div class="step-caption">EDA search results confirming the contract has been closed</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-header"><span class="step-number">8</span><h4>Update Your Contract File (KTFS)</h4></div>
+      <p>Back in your contract management system, update the Pending Close-Out checklist. Mark the Completion Statement, Final Invoice, and Release of Claims tabs as applicable. Upload the DD 1594 or EDI 567C you downloaded from EDA.</p>
+      <img class="step-img" src="images/closeout/step8-ktfs-checklist.png" alt="KTFS Pending Close-Out checklist showing Completion Statement, Final Invoice, and Release of Claims tabs" onclick="openLightbox(this)" />
+      <div class="step-caption">KTFS closeout checklist tabs</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-header"><span class="step-number">9</span><h4>The Electronic DD 1594</h4></div>
+      <p>Once the EDI 567C is signed in PIEE, the electronic DD 1594 (Contract Completion Statement) is generated. It contains the contract number, contractor information, completion and payment dates, and the contracting officer's signature. Download this from EDA and upload it to your contract file. This document is the official record that the contract is closed.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-header"><span class="step-number">10</span><h4>Release of Claims (When Applicable)</h4></div>
+      <p>If the contract requires a release of claims (T&amp;M/LH under 52.212-4 Alternate I, or more complex contract types), the contractor signs a statement discharging the Government from all liabilities, obligations, and claims under the contract. Check WAWF attachments for it. For straightforward FFP commercial contracts, a release of claims may not be contractually required. Request one, give a suspense, but do not hold up closeout if the contractor does not respond and you have evidence of full payment and delivery.</p>
+    </div>
+
+    <div class="credit-box">
+      <p>Screenshots adapted from training materials developed by <strong>Sra Dariia Khymchenko</strong>.</p>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="cco-panel">
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR 4.804: Closeout of Contract Files</h4>
+        <p>The governing regulation for contract closeout procedures. Covers time standards (4.804-1), completion requirements (4.804-4), and procedures for closing out contract files.</p>
+        <a href="https://www.acquisition.gov/far/subpart-4.8" target="_blank" rel="noopener">Open FAR Subpart 4.8</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 4.804-5: Procedures for Closing Out Contract Files</h4>
+        <p>Details the specific steps for closeout, including automated closeout authority and what documentation is required for the contract file.</p>
+        <a href="https://www.acquisition.gov/far/4.804-5" target="_blank" rel="noopener">Open FAR 4.804-5</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 4.805: Storage, Handling, and Contract Files</h4>
+        <p>Retention requirements. Contract files must be retained for six years after final payment. Know what to keep and for how long.</p>
+        <a href="https://www.acquisition.gov/far/4.805" target="_blank" rel="noopener">Open FAR 4.805</a>
+      </div>
+      <div class="lookup-card">
+        <h4>DFARS PGI 204.804: Closeout of Contract Files</h4>
+        <p>DoD-specific guidance including Automated Contract Closeout (ACCO) criteria, PIEE procedures, and the EDI 567C process.</p>
+        <a href="https://www.acq.osd.mil/dpap/dars/pgi/pgi_htm/PGI204_8.htm" target="_blank" rel="noopener">Open DFARS PGI 204.804</a>
+      </div>
+      <div class="lookup-card">
+        <h4>PIEE: Contract Closeout Module</h4>
+        <p>The Procurement Integrated Enterprise Environment. Use the Contract Closeout module and EDA to generate and track your EDI 567C.</p>
+        <a href="https://piee.eb.mil/" target="_blank" rel="noopener">Open PIEE</a>
+      </div>
+      <div class="lookup-card">
+        <h4>DD Form 1594: Contract Completion Statement</h4>
+        <p>The form used to document contract completion. In most cases you will generate the electronic equivalent (EDI 567C) through PIEE rather than filling out the paper form.</p>
+        <a href="https://www.esd.whs.mil/Directives/forms/dd1500_1999/" target="_blank" rel="noopener">DD Forms 1500-1999</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Lightbox overlay -->
+<div class="cco-lightbox" id="ccoLightbox" onclick="closeLightbox()">
+  <img id="ccoLightboxImg" src="" alt="Enlarged screenshot" />
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="dfars.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ── Tab switching ── */
+function showTab(tab) {
+  document.querySelectorAll('.cco-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.cco-tab').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('panel-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+/* ── Lightbox ── */
+function openLightbox(img) {
+  var lb = document.getElementById('ccoLightbox');
+  document.getElementById('ccoLightboxImg').src = img.src;
+  lb.classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('ccoLightbox').classList.remove('open');
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLightbox();
+});
+</script>
+</body>
+</html>
