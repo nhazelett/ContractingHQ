@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn when and how to limit sources on Federal Supply Schedule orders under FAR 8.405-6. Covers the three justification circumstances, documentation requirements, approval thresholds, and real-world examples." />
+  <title>FAR Part 8: Limiting Sources on Federal Supply Schedules | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .fp8-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+    .fp8-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .fp8-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .fp8-tab:hover { color: var(--white); }
+    .fp8-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .fp8-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .fp8-panel.active { display: block; }
+    .fp8-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .fp8-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .fp8-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .fp8-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+    /* ── Document display ── */
+    .fp8-outer { background: rgba(10,22,50,0.3); border-radius: 14px; padding: 1.5rem; overflow-x: auto; }
+    .fp8-doc { min-width: 600px; border: 2px solid #000; background: #fff; color: #000; font-size: 12px; line-height: 1.6; font-family: 'Inter', 'Times New Roman', serif; padding: 2rem 2.5rem; }
+    .fp8-doc h4 { font-size: 14px; font-weight: 700; text-transform: uppercase; text-align: center; margin-bottom: 0.25rem; letter-spacing: 1px; }
+    .fp8-doc h5 { font-size: 11px; font-weight: 400; text-align: center; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #000; }
+    .fp8-doc .doc-label { font-size: 11px; font-weight: 700; margin: 0.75rem 0 0.15rem; text-transform: uppercase; }
+    .fp8-doc .doc-field { font-size: 12px; padding: 0.3rem 0; border-bottom: 1px solid #ccc; margin-bottom: 0.5rem; min-height: 1.2em; }
+    .fp8-doc .doc-section-head { font-size: 12px; font-weight: 700; margin: 1.25rem 0 0.5rem; }
+    .fp8-doc .doc-section-body { font-size: 12px; padding: 0.4rem 0; }
+    .fp8-doc .doc-sig { margin-top: 1.5rem; border-top: 1px solid #000; padding-top: 0.3rem; font-size: 11px; }
+    .fp8-doc .doc-footer { margin-top: 1.5rem; text-align: center; font-size: 10px; font-style: italic; color: #666; border-top: 1px solid #ccc; padding-top: 0.75rem; }
+    /* ── Clickable sections ── */
+    .fp8-section { padding: 0.6rem 0.75rem; margin: 0.5rem 0; border-radius: 4px; cursor: pointer; transition: background 0.12s; border-left: 3px solid transparent; }
+    .fp8-section:hover { background: #f0f4ff; }
+    .fp8-section.active { background: #fff9db; }
+    .fp8-section.fp8-flag { border-left-color: #4a9eff; }
+    .fp8-section.fp8-problem { border-left-color: #dc2626; }
+    /* ── Toggle buttons ── */
+    .fp8-toggle { display: flex; gap: 0; margin-bottom: 1.25rem; }
+    .fp8-toggle-btn { flex: 1; padding: 0.75rem 1rem; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.2); background: rgba(10,22,50,0.5); color: var(--silver); cursor: pointer; transition: all 0.18s; font-family: inherit; }
+    .fp8-toggle-btn:first-child { border-radius: 8px 0 0 8px; }
+    .fp8-toggle-btn:last-child { border-radius: 0 8px 8px 0; }
+    .fp8-toggle-btn.active { background: rgba(74,158,255,0.15); color: var(--accent); border-color: rgba(74,158,255,0.35); }
+    .fp8-toggle-btn.bad { color: var(--silver); }
+    .fp8-toggle-btn.bad.active { background: rgba(220,38,38,0.12); color: #fca5a5; border-color: rgba(220,38,38,0.35); }
+    /* ── Note popup ── */
+    .fp8-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; padding: 1.5rem; }
+    .fp8-overlay.visible { display: flex; }
+    .fp8-note { background: #0d1a33; border: 1px solid rgba(74,158,255,0.3); border-radius: 14px; padding: 1.5rem 1.75rem; max-width: 520px; width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,0.5); animation: popIn 0.18s ease-out; position: relative; }
+    .fp8-note.warn { border-color: rgba(220,38,38,0.4); }
+    .fp8-note-title { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 0.6rem; padding-right: 2rem; }
+    .fp8-note.warn .fp8-note-title { color: #fca5a5; }
+    .fp8-note-body { color: var(--silver); font-size: 0.9rem; line-height: 1.75; }
+    .fp8-note-body strong { color: var(--white); }
+    .fp8-note-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--silver); cursor: pointer; font-size: 1.4rem; line-height: 1; padding: 0; transition: color 0.12s; }
+    .fp8-note-close:hover { color: var(--white); }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+    @media (max-width: 768px) {
+      .fp8-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+      .fp8-doc { min-width: 0; padding: 1rem; font-size: 11px; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s;margin-top:.75rem}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="dfars.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="federal-register.html">Federal Register</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 16</span>
+    <h1 class="page-hero-title">FAR Part 8: Limiting Sources</h1>
+    <p class="page-hero-sub">When you order from GSA Federal Supply Schedules, you normally need to give multiple schedule holders a fair shot. FAR 8.405-6 tells you when and how you can limit that competition.</p>
+  </div>
+</div>
+
+<div class="fp8-bg">
+  <div class="fp8-tabs">
+    <button class="fp8-tab active" data-tab="learn">📖 Learn</button>
+    <button class="fp8-tab" data-tab="examples">📋 LSJ Examples</button>
+    <button class="fp8-tab" data-tab="lookup">🔍 Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="fp8-panel active">
+
+    <div class="fp8-intro">
+      <span class="fp8-intro-tag">The Basics</span>
+      <h2>Limiting Sources on Federal Supply Schedules</h2>
+      <p>The three circumstances, what to document, and who needs to approve.</p>
+    </div>
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> How This Is Different from Part 6</h3>
+      <div class="learn-body">
+        <p>FAR Part 6 covers competition on the open market. FAR Part 8 covers ordering from existing Federal Supply Schedules. They are separate authorities with separate rules. When you place an order against a GSA schedule, you do not need a Part 6 J&A. You follow Part 8 procedures instead. Part 8.405-6 specifically addresses when you can limit the number of schedule contractors you solicit, or restrict an order to one source on a schedule.</p>
+        <div class="highlight-box">
+          <p>Each FAR Part has its own lane for restricting competition, and each lane has its own name for the sole source document:</p>
+          <p><strong>FAR Part 6:</strong> Justification and Approval (J&A). Non-commercial, open market procurements above the SAT.</p>
+          <p><strong>FAR Part 8:</strong> Limited Sources Justification. Orders from Federal Supply Schedules (GSA).</p>
+          <p><strong>FAR Part 12:</strong> Commercial Sole Source Justification. Commercial item buys using simplified procedures.</p>
+          <p><strong>FAR Part 16:</strong> Exception to Fair Opportunity. Task and delivery orders off IDIQ and requirements contracts.</p>
+          <p>When someone says "limited sources justification," a sharp contracting officer hears "GSA schedule order."</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider">
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Three Circumstances for Limiting Sources</h3>
+      <div class="learn-body">
+        <p>FAR 8.405-6 allows you to limit sources in three situations:</p>
+        <div class="highlight-box">
+          <p><strong>1. An urgent and compelling need exists, and following the normal ordering procedures would result in unacceptable delays.</strong> This is the schedule equivalent of urgency. The need must be genuine and unforeseen, not just poor planning.</p>
+        </div>
+        <div class="highlight-box">
+          <p><strong>2. Only one source is capable of providing the supplies or services at the level of quality required because the supplies or services are unique or highly specialized.</strong> The key word here is "capable." If only one vendor on the schedule can actually meet your specific technical requirements, you can go directly to them.</p>
+        </div>
+        <div class="highlight-box">
+          <p><strong>3. The order is a logical follow-on to an order already issued under the schedule.</strong> If you have an existing order and it makes sense to continue with the same vendor for continuity, you can limit the follow-on. However, you need to justify why switching vendors would be disruptive or costly.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider">
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Documentation Requirements</h3>
+      <div class="learn-body">
+        <p>For orders exceeding the micro-purchase threshold, you need to document the basis for limiting sources. The documentation must include a description of what you are ordering, the specific basis for limiting competition (which of the three circumstances), market research supporting your decision, and a determination by the ordering activity contracting officer that the order represents the best value.</p>
+        <p>For orders over the simplified acquisition threshold, the documentation requirements are more substantial. You need a full justification that addresses each of the required elements similar to a Part 6 J&A.</p>
+        <div class="highlight-box tip">
+          <strong>For brand name orders on a schedule, you also need to include the rationale for why the specific brand name item is needed rather than a comparable item available from other schedule contractors.</strong>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider">
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Approval Thresholds</h3>
+      <div class="learn-body">
+        <p>The approval authority depends on the dollar value of the order. For orders up to $800K, the ordering activity contracting officer approves. For orders over $800K to $15M, the competition advocate for the ordering activity approves. For orders exceeding $15M, the head of the ordering activity or designee approves. These thresholds mirror the Part 6 J&A approval levels, but they are separate authorities under Part 8.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider">
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Posting Requirements</h3>
+      <div class="learn-body">
+        <p>Certain limited-source orders have to be posted publicly. For proposed orders exceeding the simplified acquisition threshold, you need to post the justification on GPE (SAM.gov or equivalent) for 30 days if Only One Source. For urgent requirements, you can proceed and post within 30 days after award. The posting requirement ensures transparency even when you are limiting competition.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider">
+
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> The AF Limited Sources J&A Template</h3>
+      <div class="learn-body">
+        <p>The Air Force provides a formal template for Limited Sources Justification and Approval (J&A) under FAR Part 8. This template structures your justification around ten major sections plus header fields that capture the essential information any reviewer needs to evaluate your decision to limit competition.</p>
+
+        <p><strong>Header Fields:</strong> Security Markings, Contracting Activity, PR-ID Number, Program/Project, Program Type, Estimated Contract Cost, and Description of Limitation.</p>
+
+        <p><strong>Section I: Contracting Activity</strong> identifies the organization placing the order and the responsible contracting officer.</p>
+
+        <p><strong>Section II: Nature and/or description of the action being processed</strong> tells the reader whether this is a new order, follow-on, modification, or other action type.</p>
+
+        <p><strong>Section III: Description of supplies/services required to meet agency needs</strong> explains what you are ordering and why your organization needs it. Be specific about technical requirements, operational needs, and timeline.</p>
+
+        <p><strong>Section IV: Identification of the justification/rationale for limiting sources and demonstration of the contractor's unique qualifications</strong> is where the real evaluation happens. This is not a summary or opinion section. You must articulate precisely why the source is being limited on the schedule. Which of the three FAR 8.405-6 circumstances applies? What makes this contractor uniquely capable? Reference specific technical requirements, certifications, integrations, or operational constraints that only this contractor can meet.</p>
+
+        <p><strong>Section V: Determination by the ordering activity Contracting Officer that the order represents the best value consistent with FAR 8.404(d)</strong> is unique to Part 8 schedule orders. Unlike Part 6 where best value is a preference, here you must affirmatively determine that limiting to one source produces best value for the government. Address price, quality, delivery, and any other relevant factors.</p>
+
+        <p><strong>Section VI: Description of the market research conducted and the results</strong> documents what you actually looked for and what you found. List the SINs searched, the vendors evaluated, and why alternatives did not meet the requirement. This is your opportunity to prove you didn't just call one vendor and stop.</p>
+
+        <p><strong>Section VII: Other facts supporting the justification</strong> covers anything else relevant that did not fit neatly into the earlier sections. Infrastructure compatibility, operational continuity, risk, or organizational factors belong here.</p>
+
+        <p><strong>Section VIII: Actions to remove or overcome barriers that led to the restricted consideration</strong> requires you to explain what steps could be taken in the future to open this up to competition. Are you documenting interfaces so other vendors can integrate? Will you standardize on different tools? This forward-looking section prevents indefinite source restrictions.</p>
+
+        <p><strong>Section IX: Certification by the Contracting Officer</strong> requires the CO to certify that the justification is accurate and that the recommended limitation is in the best interest of the government.</p>
+
+        <p><strong>Section X: Certification by the technical/requirements personnel</strong> confirms the technical accuracy of the statements about unique capability or operational constraints.</p>
+
+        <div class="highlight-box tip">
+          <strong>Check the J&A Examples tab to see how this looks on paper, and how it falls apart when done wrong.</strong>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ EXAMPLES ═══════════════ -->
+  <div id="panel-examples" class="fp8-panel">
+
+    <div class="fp8-intro">
+      <span class="fp8-intro-tag">Interactive Tool</span>
+      <h2>Limited Sources Justification Examples</h2>
+      <p>Same scenario, two very different justifications. A base needs to order specialized cybersecurity monitoring software through GSA Schedule 70. Click highlighted sections for coaching notes. <strong style="color:#4a9eff;">Blue borders</strong> highlight what makes a justification strong. <strong style="color:#dc2626;">Red borders</strong> flag problems.</p>
+    </div>
+
+    <div class="fp8-toggle">
+      <button class="fp8-toggle-btn active" onclick="showExample('good')">&#10003; Well-Written LSJ</button>
+      <button class="fp8-toggle-btn bad" onclick="showExample('bad')">&#10007; Poorly-Written LSJ</button>
+    </div>
+
+    <!-- ── Good example ── -->
+    <div id="example-good" class="fp8-outer">
+      <div class="fp8-doc">
+        <h4>Limited Sources Justification and Approval</h4>
+        <h5>FAR 8.405-6</h5>
+
+        <div class="fp8-section fp8-flag" data-note="good-header" onclick="showNote('good-header')">
+          <div class="doc-label">Section I: Contracting Activity</div>
+          <div class="doc-field"><strong>Contracting Activity:</strong> 633 CONS/LGCB, Joint Base Langley-Eustis, VA</div>
+          <div class="doc-field"><strong>PR Number:</strong> FD20260318-0087</div>
+          <div class="doc-field"><strong>Program:</strong> Cybersecurity Operations Center Upgrade</div>
+          <div class="doc-field"><strong>Estimated Cost:</strong> $92,500.00</div>
+        </div>
+
+        <div class="fp8-section fp8-flag" data-note="good-desc" onclick="showNote('good-desc')">
+          <div class="doc-section-head">Section III: Description of Supplies/Services Required</div>
+          <div class="doc-section-body">CyberShield Pro v3.1 Enterprise License (50 seats, 12-month subscription) for continuous cybersecurity monitoring integration with the base Palo Alto Cortex XDR endpoint detection and response platform. Required to maintain USCYBERCOM-directed 15-minute incident response capability per TASKORD 22-0187. Baseline network serves 45 operational squadrons with mission-critical communications infrastructure.</div>
+        </div>
+
+        <div class="fp8-section fp8-flag" data-note="good-just" onclick="showNote('good-just')">
+          <div class="doc-section-head">Section IV: Justification/Rationale for Limiting Sources</div>
+          <div class="doc-section-body">The base network uses Palo Alto Cortex XDR as its endpoint detection and response platform (Contract FA4800-23-F-0001). CyberShield Pro is the only monitoring tool on GSA Schedule 70 that provides native API integration with Cortex XDR for real-time threat correlation. Alternative monitoring tools on the schedule (SolarWinds, Splunk, Datadog) were evaluated and none offer native Cortex XDR integration. Using a non-integrated tool would require manual threat correlation, increasing incident response time from under 5 minutes to an estimated 45 minutes per event, which does not meet the 15-minute response standard. This circumstance satisfies FAR 8.405-6(a)(2): Only one source is capable of providing the supplies or services at the level of quality required because the supplies or services are unique or highly specialized.</div>
+        </div>
+
+        <div class="fp8-section fp8-flag" data-note="good-value" onclick="showNote('good-value')">
+          <div class="doc-section-head">Section V: Best Value Determination</div>
+          <div class="doc-section-body">CyberShield Pro's GSA Schedule price of $1,850 per seat ($92,500 total) is consistent with GSA pricing for comparable enterprise security monitoring tools. The native Cortex XDR integration eliminates approximately $35,000 per year in manual correlation labor costs and reduces incident response time by 90%, directly supporting mission readiness and operational efficiency. This limitation represents best value to the government under FAR 8.404(d) through technical superiority and quantified cost avoidance.</div>
+        </div>
+
+        <div class="fp8-section fp8-flag" data-note="good-effort" onclick="showNote('good-effort')">
+          <div class="doc-section-head">Section VI: Market Research</div>
+          <div class="doc-section-body">Searched GSA eBuy for all SIN 54151S vendors offering cybersecurity monitoring on 10 Jan 2026. Identified 14 schedule holders. Reviewed technical specifications of the 5 vendors offering comparable monitoring capabilities. Contacted 3 vendors (SolarWinds, ph: 555-0147; Splunk, ph: 555-0198; Datadog, ph: 555-0213) to confirm Cortex XDR integration status. All three confirmed they do not currently support native Cortex XDR API integration. See attached market research report dated 10 Jan 2026.</div>
+        </div>
+
+        <div class="fp8-section fp8-flag" data-note="good-future" onclick="showNote('good-future')">
+          <div class="doc-section-head">Section VIII: Actions to Remove Barriers</div>
+          <div class="doc-section-body">The Communications Squadron will evaluate open-standard monitoring solutions during the next endpoint detection platform review (scheduled FY28). If a platform with open API standards is selected, the cybersecurity monitoring requirement can be competed among multiple schedule holders, expanding competition and reducing long-term costs.</div>
+        </div>
+
+        <div class="doc-sig"><strong>Contracting Officer Certification:</strong> I have determined that this limitation to a single source represents the best value to the government and that the circumstances of this acquisition deem only a single source is reasonably available.</div>
+        <div class="doc-footer">TRAINING EXAMPLE | NOT AN OFFICIAL GOVERNMENT DOCUMENT</div>
+      </div>
+    </div>
+
+    <!-- ── Bad example ── -->
+    <div id="example-bad" class="fp8-outer" style="display:none;">
+      <div class="fp8-doc">
+        <h4>Limited Sources Justification and Approval</h4>
+        <h5>FAR 8.405-6</h5>
+
+        <div class="fp8-section fp8-problem" data-note="bad-header" onclick="showNote('bad-header')">
+          <div class="doc-label">Section I: Contracting Activity</div>
+          <div class="doc-field"><strong>Contracting Activity:</strong> 633 CONS</div>
+          <div class="doc-field"><strong>PR Number:</strong> FD20260318-0087</div>
+          <div class="doc-field"><strong>Program:</strong> Cybersecurity Software</div>
+          <div class="doc-field"><strong>Estimated Cost:</strong> $92,500.00</div>
+        </div>
+
+        <div class="fp8-section fp8-problem" data-note="bad-desc" onclick="showNote('bad-desc')">
+          <div class="doc-section-head">Section III: Description of Supplies/Services Required</div>
+          <div class="doc-section-body">Cybersecurity software for the base network.</div>
+        </div>
+
+        <div class="fp8-section fp8-problem" data-note="bad-just" onclick="showNote('bad-just')">
+          <div class="doc-section-head">Section IV: Justification/Rationale for Limiting Sources</div>
+          <div class="doc-section-body">We need CyberShield Pro because it is the best cybersecurity tool on the market. Our IT staff is trained on it and switching would require retraining. CyberShield Inc. is the only vendor on the GSA Schedule that sells this product.</div>
+        </div>
+
+        <div class="fp8-section fp8-problem" data-note="bad-value" onclick="showNote('bad-value')">
+          <div class="doc-section-head">Section V: Best Value Determination</div>
+          <div class="doc-section-body">CyberShield Pro is a good value.</div>
+        </div>
+
+        <div class="fp8-section fp8-problem" data-note="bad-effort" onclick="showNote('bad-effort')">
+          <div class="doc-section-head">Section VI: Market Research</div>
+          <div class="doc-section-body">Searched GSA eBuy. Found CyberShield Inc. on the schedule.</div>
+        </div>
+
+        <div class="fp8-section fp8-problem" data-note="bad-future" onclick="showNote('bad-future')">
+          <div class="doc-section-head">Section VIII: Actions to Remove Barriers</div>
+          <div class="doc-section-body">N/A.</div>
+        </div>
+
+        <div class="doc-sig"><strong>Contracting Officer Certification:</strong> I have determined that the circumstances of this acquisition deem only a single source is reasonably available.</div>
+        <div class="doc-footer">TRAINING EXAMPLE | NOT AN OFFICIAL GOVERNMENT DOCUMENT</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="fp8-panel">
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR 8.405-6</h4>
+        <p>Limiting Sources. The complete regulatory text for restricting competition on Federal Supply Schedule orders.</p>
+        <a href="https://acquisition.gov/far/8.405-6" target="_blank" rel="noopener">Read on acquisition.gov</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 8.405-1</h4>
+        <p>Ordering Procedures for Supplies, and Services Not Requiring a Statement of Work. The baseline ordering procedures that 8.405-6 creates exceptions to.</p>
+        <a href="https://acquisition.gov/far/8.405-1" target="_blank" rel="noopener">Read on acquisition.gov</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 8.405-2</h4>
+        <p>Ordering Procedures for Services Requiring a Statement of Work. Service ordering procedures and when limiting sources interacts with the SOW process.</p>
+        <a href="https://acquisition.gov/far/8.405-2" target="_blank" rel="noopener">Read on acquisition.gov</a>
+      </div>
+      <div class="lookup-card">
+        <h4>GSA eBuy</h4>
+        <p>The online Request for Quote (RFQ) tool for GSA Schedule orders. Where you post schedule solicitations.</p>
+        <a href="https://www.ebuy.gsa.gov/" target="_blank" rel="noopener">Visit GSA eBuy</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Note overlay ── -->
+<div class="fp8-overlay" id="noteOverlay" onclick="hideNote()">
+  <div class="fp8-note" id="notePopup" onclick="event.stopPropagation()">
+    <button class="fp8-note-close" onclick="hideNote()">&times;</button>
+    <div class="fp8-note-title" id="noteTitle"></div>
+    <div class="fp8-note-body" id="noteBody"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="dfars.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ═══════ TABS ═══════ */
+document.querySelectorAll('.fp8-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.fp8-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.fp8-panel').forEach(function(p) { p.classList.remove('active'); });
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ═══════ EXAMPLE TOGGLE ═══════ */
+function showExample(which) {
+  document.querySelectorAll('.fp8-toggle-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('example-good').style.display = 'none';
+  document.getElementById('example-bad').style.display = 'none';
+  if (which === 'good') {
+    document.querySelector('.fp8-toggle-btn:first-child').classList.add('active');
+    document.getElementById('example-good').style.display = 'block';
+  } else {
+    document.querySelector('.fp8-toggle-btn.bad').classList.add('active');
+    document.getElementById('example-bad').style.display = 'block';
+  }
+  hideNote();
+}
+
+/* ═══════ COACHING NOTES ═══════ */
+var notes = {
+  'good-header': {
+    title: "Section I: Complete Identification",
+    body: "Full office symbol (633 CONS/LGCB), installation, and state. Identifies the specific contracting office within the squadron. The project name is descriptive. PR number, program type, and estimated cost all present and complete. A reviewer can immediately understand who is requesting what.",
+    warn: false
+  },
+  'good-desc': {
+    title: "Section III: Technical and Mission-Linked",
+    body: "Names the exact product and version, specifies seat count and term, identifies the dependent platform (Cortex XDR), and ties the requirement directly to a USCYBERCOM directive with a measurable standard (15-minute response). Includes operational context (45 squadrons, mission-critical infrastructure). A reviewer can verify every claim.",
+    warn: false
+  },
+  'good-just': {
+    title: "Section IV: Infrastructure Dependency",
+    body: "Demonstrates the limitation is technical, not preference. Identifies the proprietary API dependency, names specific alternatives that were evaluated and why they failed, and quantifies the operational impact (5 minutes vs. 45 minutes response time) against a documented compliance standard. Explicitly cites the FAR 8.405-6(a)(2) circumstance.",
+    warn: false
+  },
+  'good-value': {
+    title: "Section V: Quantified Best Value",
+    body: "Addresses price reasonableness against GSA benchmarks. Quantifies cost avoidance ($35K per year in labor). Ties value directly to operational readiness and efficiency. This is what a best value determination under FAR 8.404(d) should look like: price plus technical superiority plus tangible mission benefit.",
+    warn: false
+  },
+  'good-effort': {
+    title: "Section VI: Comprehensive Research",
+    body: "14 schedule holders identified, 5 evaluated in detail, 3 contacted directly by phone with phone numbers documented. Specific SIN (54151S) searched on 10 Jan 2026. Attached market research report referenced. This demonstrates genuine effort and due diligence, not a checkbox exercise.",
+    warn: false
+  },
+  'good-future': {
+    title: "Section VIII: Tied to Lifecycle",
+    body: "Connects future competition to a scheduled platform review (FY28) and identifies the specific technical change (open API standards) that would enable competition. Shows forward thinking and understanding that sole source should be temporary, not permanent.",
+    warn: false
+  },
+  'bad-header': {
+    title: "⚠ Section I: Incomplete",
+    body: "\"633 CONS\" is missing the office symbol (LGCB) and installation (Joint Base Langley-Eustis, VA). \"Cybersecurity Software\" as a program name tells you nothing specific. If this J&A ended up on a reviewer's desk, they would have no idea what they are evaluating without digging through the entire package. Same problem as a weak Part 6 J&A.",
+    warn: true
+  },
+  'bad-desc': {
+    title: "⚠ Section III: Hopelessly Vague",
+    body: "\"Cybersecurity software for the base network\" could be anything. Antivirus? Firewall management? Monitoring? Intrusion detection? Endpoint detection and response? Without specifics, a reviewer cannot assess whether the limitation is justified, cannot verify the requirement is real, and cannot determine if it is reasonable. This gets returned for a proper description. Every time.",
+    warn: true
+  },
+  'bad-just': {
+    title: "⚠ Section IV: Opinion, Not Justification",
+    body: "Three critical failures:<br><br><strong>\"Best on the market\"</strong> is marketing language, not a FAR 8.405-6 basis.<br><br><strong>\"Staff training convenience\"</strong> is not one of the three FAR 8.405-6 circumstances for limiting sources. Government personnel being trained on a tool is an operational matter, not a technical limitation.<br><br><strong>\"Only vendor on the schedule that sells this product\"</strong> is circular reasoning. You cannot limit sources based on the fact that you have already decided to buy a brand name. That is the conclusion, not the justification.",
+    warn: true
+  },
+  'bad-value': {
+    title: "⚠ Section V: Empty Assertion",
+    body: "\"CyberShield Pro is a good value.\" This contains zero analysis. No price comparison to alternatives. No cost-benefit. No quantification of any kind. FAR 8.404(d) requires an affirmative determination of best value with reasoned analysis. A four-word opinion is not that.",
+    warn: true
+  },
+  'bad-effort': {
+    title: "⚠ Section VI: Searched for the Answer, Not Alternatives",
+    body: "\"Searched GSA eBuy. Found CyberShield Inc. on the schedule.\" This is not market research. Searching GSA eBuy and finding the vendor you already wanted is not the same as researching alternatives that could meet the requirement. Market research means looking for what ELSE is available. Contacting vendors. Understanding what is out there. This search only confirmed the vendor exists.",
+    warn: true
+  },
+  'bad-future': {
+    title: "⚠ Section VIII: No Plan",
+    body: "\"N/A\" means the customer has no intention of ever competing this requirement. Even if the limitation is justified today, there should be a plan for when competition becomes possible. A future platform review. A technology refresh. Documentation of interfaces. Something. \"N/A\" signals indifference to opening competition in the future.",
+    warn: true
+  }
+};
+
+function showNote(key) {
+  var n = notes[key];
+  if (!n) return;
+  document.querySelectorAll('.fp8-section').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelectorAll('[data-note="' + key + '"]').forEach(function(el) { el.classList.add('active'); });
+  var popup = document.getElementById('notePopup');
+  popup.classList.toggle('warn', !!n.warn);
+  document.getElementById('noteTitle').textContent = n.title;
+  document.getElementById('noteBody').innerHTML = n.body;
+  document.getElementById('noteOverlay').classList.add('visible');
+}
+
+function hideNote() {
+  document.getElementById('noteOverlay').classList.remove('visible');
+  document.querySelectorAll('.fp8-section').forEach(function(s) { s.classList.remove('active'); });
+}
+</script>
+</body>
+</html>
