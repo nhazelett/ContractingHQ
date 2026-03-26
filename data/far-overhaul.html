@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Archive of all FAR and DFARS rulemaking digest summaries from ContractingHQ." />
+  <meta name="description" content="FAR Overhaul Tracker — follow the Revolutionary FAR Overhaul, what is changing, what it means for contracting officers, and what to watch." />
 
-  <title>Federal Register Digest Archive | ContractingHQ</title>
+  <title>FAR Overhaul Tracker | ContractingHQ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -36,7 +36,7 @@
         <ul class="nav-more-menu">
           <li><a href="asbca.html">ASBCA</a></li>
           <li><a href="forum.html">Forum</a></li>
-          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="far-overhaul.html" class="active">FAR Overhaul</a></li>
           <li><a href="about.html">About</a></li>
         </ul>
       </li>
@@ -45,18 +45,24 @@
   </div>
 </nav>
 
-<!-- ARCHIVE -->
-<section class="section" id="fr-archive" style="padding-top:5rem;">
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">FAR Overhaul</span>
+    <h1 class="page-hero-title">FAR Overhaul Tracker</h1>
+    <p class="page-hero-sub">The Federal Acquisition Regulation is being overhauled. Here is what is changing, what it means for you, and what to watch.</p>
+  </div>
+</div>
+
+<!-- FAR OVERHAUL TRACKER -->
+<section class="section" id="far-overhaul">
   <div class="container">
     <div class="section-header">
-      <span class="section-tag">Federal Register Archive</span>
-      <h2>All Past Digests</h2>
-      <p class="section-desc">Every FAR &amp; DFARS rulemaking digest we have published, in reverse chronological order. Nothing gets deleted &mdash; digests stay here permanently. <a href="federal-register.html" class="archive-page-link">See the current digest &rarr;</a></p>
+      <span class="section-tag">FAR Overhaul</span>
+      <h2>FAR Overhaul Tracker</h2>
+      <p class="section-desc">The Federal Acquisition Regulation is being overhauled. Here is what is changing, what it means for you, and what to watch.</p>
     </div>
-
-    <div id="frArchiveAll">
-      <!-- Populated by JS -->
-    </div>
+    <div class="far-list" id="farList"></div>
   </div>
 </section>
 
@@ -72,6 +78,7 @@
       <a href="training.html">Training</a>
       <a href="gao-decisions.html">GAO Decisions</a>
       <a href="tools.html">Tools</a>
+      <a href="links.html">Links</a>
       <a href="federal-register.html">FAR Updates</a>
       <a href="about.html">About</a>
     </nav>
@@ -80,30 +87,7 @@
   </div>
 </footer>
 
-<script src="data/federal-register-data.js"></script>
-<script src="data/federal-register-render.js"></script>
+<script src="data/far.js"></script>
 <script src="main.js"></script>
-<script>
-// Archive page: render all digests, current first, all expanded
-document.addEventListener('DOMContentLoaded', function () {
-  var container = document.getElementById('frArchiveAll');
-  if (!container || !window.FR_DIGESTS || FR_DIGESTS.length === 0) {
-    if (container) container.innerHTML = '<p class="fr-empty">No digests published yet.</p>';
-    return;
-  }
-
-  container.innerHTML = FR_DIGESTS.map(function (digest, i) {
-    var isCurrent = (i === 0);
-    return '<div class="archive-item ' + (isCurrent ? 'archive-item-current' : '') + '">' +
-      '<div class="archive-week-header">' +
-        '<span class="fr-digest-label">Week of ' + digest.weekOf + '</span>' +
-        (isCurrent ? '<span class="fr-digest-date">Current</span>' : '') +
-      '</div>' +
-      (digest.intro ? '<p class="fr-digest-intro">' + digest.intro + '</p>' : '') +
-      '<div class="fr-cards">' + renderFrCards(digest.entries) + '</div>' +
-    '</div>';
-  }).join('');
-});
-</script>
 </body>
 </html>

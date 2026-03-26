@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Purpose-built tools for contracting officers — PWS Builder, FAR Comparator, templates, and more. Free, no login required." />
+
+  <title>Custom Tools | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .tools-page-bg { background: #040d1f; padding: 4rem 1.5rem 6rem; }
+    .tools-intro { text-align: center; margin-bottom: 3.5rem; }
+    .tools-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.3rem 1rem; border-radius: 100px; margin-bottom: 0.75rem; }
+    .tools-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.7rem,3.5vw,2.5rem); font-weight: 700; color: var(--white); margin-bottom: 0.65rem; }
+    .tools-intro p { color: var(--silver); font-size: 1rem; max-width: 540px; margin: 0 auto; line-height: 1.65; }
+    .custom-tools-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(320px,1fr)); gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
+    .ctool-card { background: rgba(10,22,50,0.8); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.75rem; display: flex; flex-direction: column; transition: border-color 0.2s,transform 0.18s,box-shadow 0.2s; position: relative; overflow: hidden; }
+    .ctool-card::before { content: ''; position: absolute; top:0;left:0;right:0; height: 3px; background: linear-gradient(90deg,var(--accent),rgba(74,158,255,0.3)); opacity:0; transition: opacity 0.2s; }
+    .ctool-card:hover { border-color: rgba(74,158,255,0.35); transform: translateY(-3px); box-shadow: 0 10px 36px rgba(0,0,0,0.35); }
+    .ctool-card:hover::before { opacity:1; }
+    .ctool-card.coming-soon { border-style:dashed; border-color:rgba(74,158,255,0.08); background:rgba(10,22,50,0.35); cursor:default; }
+    .ctool-card.coming-soon:hover { transform:none; box-shadow:none; border-color:rgba(74,158,255,0.12); }
+    .ctool-card.coming-soon::before { display:none; }
+    .ctool-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:1.1rem; }
+    .ctool-icon { width:48px; height:48px; border-radius:12px; background:rgba(74,158,255,0.12); border:1px solid rgba(74,158,255,0.2); display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; }
+    .ctool-status { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; padding:0.22rem 0.65rem; border-radius:999px; }
+    .status-live { background:rgba(52,211,153,0.12); color:#6ee7b7; border:1px solid rgba(52,211,153,0.3); }
+    .status-coming-soon { background:rgba(156,163,175,0.1); color:#9ca3af; border:1px solid rgba(156,163,175,0.2); }
+    .ctool-category { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; color:var(--accent); margin-bottom:0.3rem; }
+    .ctool-name { font-family:'Rajdhani',sans-serif; font-size:1.25rem; font-weight:700; color:var(--white); margin-bottom:0.5rem; line-height:1.2; }
+    .ctool-desc { font-size:0.875rem; color:var(--silver); line-height:1.65; flex:1; margin-bottom:1.4rem; }
+    .ctool-btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.6rem 1.25rem; background:var(--accent); color:var(--white); border-radius:8px; font-size:0.875rem; font-weight:700; text-decoration:none; transition:all 0.18s; border:none; cursor:pointer; font-family:inherit; align-self:flex-start; }
+    .ctool-btn:hover { background:#3a8eef; transform:translateX(2px); }
+    .ctool-btn-ghost { background:rgba(74,158,255,0.08); color:var(--silver); cursor:default; }
+    .ctool-btn-ghost:hover { background:rgba(74,158,255,0.08); transform:none; color:var(--silver); }
+    .ctool-arrow { transition:transform 0.18s; }
+    .ctool-btn:hover:not(.ctool-btn-ghost) .ctool-arrow { transform:translateX(3px); }
+    .ctool-tags { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1rem; }
+    .ctool-tag { font-size:0.68rem; font-weight:600; color:var(--silver); background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); padding:0.15rem 0.55rem; border-radius:999px; }
+    .tools-footer-note { text-align:center; margin-top:3.5rem; padding-top:2.5rem; border-top:1px solid rgba(74,158,255,0.08); max-width:1100px; margin-left:auto; margin-right:auto; }
+    .tools-footer-note p { font-size:0.9rem; color:var(--text-muted); line-height:1.65; }
+    .tools-footer-note a { color:var(--accent); text-decoration:none; font-weight:600; }
+    .tools-footer-note a:hover { text-decoration:underline; }
+    @media (max-width:680px) { .custom-tools-grid { grid-template-columns:1fr; } }
+  .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+</style>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html" class="active">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">CO Toolkit</span>
+    <h1 class="page-hero-title">Custom-Built CO Tools</h1>
+    <p class="page-hero-sub">Purpose-built for real contracting work. No fluff, no paywall, no login required.</p>
+  </div>
+</div>
+<div class="tools-page-bg">
+  <div class="container">
+    <div class="tools-intro">
+      <div class="tools-intro-tag">Live Tools</div>
+      <h2>Tools Built for Contracting Officers</h2>
+      <p>Every tool on this page was built specifically for the CO community &mdash; not adapted from a generic template. New tools are added regularly.</p>
+    </div>
+    <div class="custom-tools-grid">
+      <div class="ctool-card">
+        <div class="ctool-top">
+          <div class="ctool-icon">&#128205;</div>
+          <span class="ctool-status status-live">Live</span>
+        </div>
+        <div class="ctool-category">Contingency Contracting</div>
+        <h3 class="ctool-name">CCO PWS Builder</h3>
+        <div class="ctool-tags">
+          <span class="ctool-tag">AFICC / KQ</span>
+          <span class="ctool-tag">Overseas Ops</span>
+          <span class="ctool-tag">Performance Work Statement</span>
+        </div>
+        <p class="ctool-desc">Build fully structured Performance Work Statements for AFICC/KQ contingency and OCONUS operations. A step-by-step wizard walks you through all 7 sections &mdash; contract type, overview, requirements, performance standards, GFP/security, deliverables, and final review &mdash; and generates a complete, ready-to-use PWS.</p>
+        <a href="pws-builder.html" target="_blank" rel="noopener" class="ctool-btn">Open Tool <span class="ctool-arrow">&rarr;</span></a>
+      </div>
+      
+      <!-- FAR Comparator -->
+      <div class="ctool-card">
+        <div class="ctool-top">
+          <div class="ctool-icon">&#9878;&#65039;</div>
+          <span class="ctool-status status-live">Live</span>
+        </div>
+        <div class="ctool-category">Regulatory Research</div>
+        <h3 class="ctool-name">FAR Comparator</h3>
+        <div class="ctool-tags">
+          <span class="ctool-tag">FAR Overhaul</span>
+          <span class="ctool-tag">DFARS</span>
+        </div>
+        <div class="ctool-desc">Side-by-side view of the Revolutionary FAR Overhaul deviation guide vs. the prior FAR. Navigate by part and compare new text against what it replaces.</div>
+        <a href="far-comparator.html" class="ctool-btn">Open Tool <span class="ctool-arrow">&rarr;</span></a>
+      </div>
+
+      <!-- FAR Part Templates -->
+      <div class="ctool-card">
+        <div class="ctool-top">
+          <div class="ctool-icon">&#128196;</div>
+          <span class="ctool-status status-live">Live</span>
+        </div>
+        <div class="ctool-category">Templates Library</div>
+        <h3 class="ctool-name">FAR Part Templates</h3>
+        <div class="ctool-tags">
+          <span class="ctool-tag">Abstracts</span>
+          <span class="ctool-tag">Price Reasonableness</span>
+          <span class="ctool-tag">Memos</span>
+        </div>
+        <div class="ctool-desc">A growing library of acquisition document templates organized by FAR part &mdash; abstracts, price fair and reasonable determinations, D&Fs, and more.</div>
+        <a href="templates.html" class="ctool-btn">Browse Templates <span class="ctool-arrow">&rarr;</span></a>
+      </div>
+
+      <!-- FAR Research Tool -->
+      <div class="ctool-card">
+        <div class="ctool-top">
+          <div class="ctool-icon">&#128270;</div>
+          <span class="ctool-status status-live">Live</span>
+        </div>
+        <div class="ctool-category">Regulatory Research</div>
+        <h3 class="ctool-name">FAR Research Tool</h3>
+        <div class="ctool-tags">
+          <span class="ctool-tag">Flashcards</span>
+          <span class="ctool-tag">Quizzes</span>
+          <span class="ctool-tag">Cheat Sheet</span>
+        </div>
+        <div class="ctool-desc">Study all 53 FAR parts with interactive flashcards, a quick part-identification quiz, a fill-in-the-blank research quiz with citation practice, and a printable cheat sheet.</div>
+        <a href="far-research.html" class="ctool-btn">Open Tool <span class="ctool-arrow">&rarr;</span></a>
+      </div>
+
+      <!-- Clause Matrix -->
+      <div class="ctool-card coming-soon">
+        <div class="ctool-top">
+          <div class="ctool-icon" style="background:rgba(100,116,139,.15);color:#94a3b8;">&#9783;</div>
+          <span class="ctool-status status-coming">Coming Soon</span>
+        </div>
+        <div class="ctool-category">Contract Tools</div>
+        <h3 class="ctool-name" style="color:var(--silver)">Clause Matrix</h3>
+        <div class="ctool-tags">
+          <span class="ctool-tag">FAR 52</span>
+          <span class="ctool-tag">DFARS 252</span>
+        </div>
+        <div class="ctool-desc">Interactive clause matrix to determine required, applicable, and discretionary FAR and DFARS clauses based on contract type, dollar threshold, and acquisition type.</div>
+      </div>
+
+      <!-- Market Research Tool -->
+      <div class="ctool-card coming-soon">
+        <div class="ctool-top">
+          <div class="ctool-icon" style="background:rgba(100,116,139,.15);color:#94a3b8;">&#128202;</div>
+          <span class="ctool-status status-coming">Coming Soon</span>
+        </div>
+        <div class="ctool-category">Market Research</div>
+        <h3 class="ctool-name" style="color:var(--silver)">Market Research Tool</h3>
+        <div class="ctool-tags">
+          <span class="ctool-tag">FAR 10</span>
+          <span class="ctool-tag">SAM.gov</span>
+        </div>
+        <div class="ctool-desc">Guided market research tool to help document FAR Part 10 market research efforts, sources sought responses, and competitive landscape analysis.</div>
+      </div>
+
+    </div>
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+<script src="main.js"></script>
+</body>
+</html>

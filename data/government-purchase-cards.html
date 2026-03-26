@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Government Purchase Card (GPC) training for new contracting officers. Covers the three uses of the GPC under FAR 13.301, the DAFI 64-117 program structure, prohibitions, and how to use GPC as a payment method for maximum efficiency." />
+  <title>Government Purchase Cards | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .gpc-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .gpc-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .gpc-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .gpc-tab:hover { color: var(--white); }
+    .gpc-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .gpc-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .gpc-panel.active { display: block; }
+
+    /* ── Intro ── */
+    .gpc-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .gpc-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .gpc-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .gpc-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── Criteria list ── */
+    .criteria-list { list-style: none; padding: 0; margin: 0.75rem 0; }
+    .criteria-list li { padding: 0.25rem 0 0.25rem 1.25rem; position: relative; font-size: 0.88rem; }
+    .criteria-list li:before { content: '\2713'; position: absolute; left: 0; color: #6ee7b7; font-weight: 700; }
+
+    /* ── Prohib list (X marks) ── */
+    .prohib-list { list-style: none; padding: 0; margin: 0.75rem 0; }
+    .prohib-list li { padding: 0.3rem 0 0.3rem 1.25rem; position: relative; font-size: 0.88rem; color: var(--silver); }
+    .prohib-list li:before { content: '\2717'; position: absolute; left: 0; color: #fca5a5; font-weight: 700; }
+
+    /* ── Cowboy tip ── */
+    .cowboy-tip { background: rgba(251,191,36,0.04); border: 1px solid rgba(251,191,36,0.2); border-radius: 14px; padding: 1.25rem; margin: 1.25rem 0; }
+    .cowboy-tip .cowboy-label { font-family: 'Rajdhani', sans-serif; font-size: 0.82rem; font-weight: 700; color: #fbbf24; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+    .cowboy-tip p { color: var(--silver); font-size: 0.88rem; line-height: 1.7; margin-bottom: 0.75rem; }
+    .cowboy-tip p:last-child { margin-bottom: 0; }
+    .cowboy-tip strong { color: var(--white); }
+
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .gpc-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 31</span>
+    <h1 class="page-hero-title">Government Purchase Cards</h1>
+    <p class="page-hero-sub">The GPC is the part of the acquisition community with the most room for innovation, savings, speed, execution, and efficiency, and we layer it in bureaucracy. I would rather write a $10M contract than swipe my card for $50. That is how annoying it is. But here we are, so let us learn the rules and then talk about how to use the card smarter.</p>
+  </div>
+</div>
+
+<div class="gpc-bg">
+
+  <div class="gpc-intro">
+    <span class="gpc-intro-tag">Training</span>
+    <h2>The Government Purchase Card</h2>
+    <p>A simplified, streamlined method of purchasing and paying for supplies, services, and construction projects. Governed by DAFI 64-117 and FAR 13.301.</p>
+  </div>
+
+  <div class="gpc-tabs">
+    <button class="gpc-tab active" onclick="showTab('learn')">&#128218; Learn</button>
+    <button class="gpc-tab" onclick="showTab('lookup')">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="gpc-panel active">
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> What Is the GPC?</h3>
+      <div class="learn-body">
+        <p>The Government Purchase Card is a charge card issued under the GSA SmartPay program. It gives DAF organizations a way to buy supplies, services, and construction projects without going through the full contracting process every time. The program replaces the old paper-based purchase order process, reduces procurement lead time, and cuts down on office workload.</p>
+        <p>Contracting authority flows from SAF/AQC down to the Head of Contracting Activity (HCA), then to local procurement offices. The Chief of Contracting delegates authority to cardholders (CHs) and convenience check account holders through the Delegation of Contracting Authority Letter in JAM (the Joint Appointment Module in PIEE). Cardholders must countersign to acknowledge this responsibility, and misuse of the card by military members is a violation of Article 92 of the UCMJ.</p>
+        <p>The DAF uses a "pay and confirm" process. Payments must be certified within five calendar days of receipt of supplies or services. This is how the DAF earns rebates from the card program. Faster certification means more rebates flowing back to the Air Force.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> The Three Uses of the GPC</h3>
+      <div class="learn-body">
+        <p>FAR 13.301 authorizes three uses of the GPC. Most people only think about the first one, but the second and third uses are where the real efficiency gains are hiding.</p>
+        <p><strong>Use 1: Micro-purchases (FAR 2.101).</strong> This is what everyone thinks of. Buying supplies or services at or below the micro-purchase threshold (MPT). Below the MPT, purchases are exempt from the Competition in Contracting Act, Buy American Act, Economy Act, Service Contract Labor Standards Act, Wage Rates Requirements Act, and the Small Business Set-Aside Program. Swipe the card, buy the thing, document it. Straightforward.</p>
+        <p><strong>Use 2: Placing orders.</strong> The GPC can be used to place task or delivery orders against existing contracts, ordering agreements, or blanket purchase agreements, if the basic contract authorizes it. This is "expanded use," and it means your cardholders can place orders against pre-priced vehicles up to the simplified acquisition threshold (SAT), not just the MPT.</p>
+        <p><strong>Use 3: Making payments.</strong> The GPC can be used as a payment method on any contract where the contractor agrees to accept it. This is the use that most offices forget about entirely, and it is arguably the one with the most potential for saving time and money.</p>
+
+        <div class="highlight-box">
+          <strong>Key point:</strong> When using the GPC as a method of payment (Use 3), cardholders must follow FAR 32.1108. Appropriated fund GPCs cannot purchase against non-appropriated funds contracts.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> The GPC Hierarchy</h3>
+      <div class="learn-body">
+        <p>The GPC program operates on a six-level hierarchy. You will hear people refer to roles by their level number, so it helps to know the structure:</p>
+        <ul class="criteria-list">
+          <li><strong>Level 1</strong> - OSD/DPC (the Purchase Card Program Office). Sets DoD-wide policy.</li>
+          <li><strong>Level 2</strong> - Component Program Manager (CPM), appointed by SAF/AQC. Oversees the DAF GPC program.</li>
+          <li><strong>Level 3</strong> - Oversight A/OPC (MAJCOM/DRU level). Manages GPC at the command level.</li>
+          <li><strong>Level 4</strong> - A/OPC (installation level). Your local program coordinator. Must be a 1102, 6C0X1, or 64PX.</li>
+          <li><strong>Level 5</strong> - Approving Official (AO). Reviews and approves cardholder transactions.</li>
+          <li><strong>Level 6</strong> - Cardholder (CH). The person swiping the card.</li>
+        </ul>
+        <p>When something goes wrong or you have a question, work your way up: CH asks the AO, AO asks the A/OPC, and so on. All appointments are managed through JAM in PIEE.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> What You Cannot Buy</h3>
+      <div class="learn-body">
+        <p>DAFI 64-117, Chapter 8 has a long list of prohibited purchases. Here are the ones you are most likely to encounter or be tempted by:</p>
+        <ul class="prohib-list">
+          <li><strong>Split purchases</strong> to stay under the MPT. If you know the total requirement exceeds the threshold at the time of purchase, it cannot be broken into smaller transactions.</li>
+          <li><strong>Cash advances</strong>, money orders, wire transfers, travelers' checks, gift cards, or gift certificates. Anything that looks like cash.</li>
+          <li><strong>Services over $2,500.</strong> The Service Contract Labor Standards Act kicks in at $2,500, so services above that threshold need a contract, not a card swipe.</li>
+          <li><strong>Construction over $2,000.</strong> Davis-Bacon applies above $2,000 for construction.</li>
+          <li><strong>Travel expenses.</strong> Airline tickets, fuel, lodging, meals, rental cars. That is what the Government Travel Card (GTC) is for.</li>
+          <li><strong>Personal use</strong> of any kind. This should go without saying.</li>
+          <li><strong>Food and meals.</strong> Generally prohibited, with narrow exceptions for official functions.</li>
+          <li><strong>Weapons, ammunition, and explosives.</strong> Those go through Army contracting via MIPR.</li>
+          <li><strong>Video surveillance cameras.</strong> Prohibited per DAFI 64-117.</li>
+          <li><strong>Preferred use memberships</strong> like Amazon Prime or wholesale clubs.</li>
+          <li><strong>Kaspersky Lab products.</strong> Prohibited by FAR 13.201.</li>
+          <li><strong>Recurring services that exceed the MPT per fiscal year.</strong> If services recur and the annual total exceeds the MPT, it needs a contract.</li>
+        </ul>
+        <p>There are more, but those are the ones new folks run into. When in doubt, check with your A/OPC (Level 4) and legal. All exceptions require consultation with legal counsel, the HCA, and the Financial Manager, documented on a per-transaction basis.</p>
+
+        <div class="highlight-box warn">
+          <strong>The exception that trips people up:</strong> If a valid procurement requirement results in a government contract, the GPC can be used as a payment method against that contract, even if the underlying supply or service would otherwise be on the prohibited list. The prohibition is on purchasing with the card, not paying with it. (DAFI 64-117, para 8.1.3)
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Documentation and Oversight</h3>
+      <div class="learn-body">
+        <p>Every GPC transaction needs to be documented in the electronic order management log provided by the bank at the time of purchase. Keep your receipts, invoices, shipping documents, receiving reports, and any special approvals in the log and available for end-of-cycle review by the AO and the A/OPC.</p>
+        <p>Purchases above the MPT but below the SAT are reserved exclusively for small business. If the CH cannot find a small business to meet the requirement, they refer it to the servicing contracting office. Before any purchase over MPT, the CH must confirm the vendor's size status through System for Award Management and keep that verification in the file.</p>
+        <p>The CH is also responsible for getting a reasonable price. Use price comparisons and market research per FAR Part 10. Request discounts. When overseas, use available prices from existing schedules, other overseas merchants, or commercial sources.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> GPC as a Payment Method: The Untapped Potential</h3>
+      <div class="learn-body">
+        <p>This is where the GPC gets interesting, and where most offices leave money on the table. There is a Tactics, Techniques, and Procedures (TTP) guide published in October 2021 that lays out the case for using GPC as a contract payment method instead of defaulting to DFAS for every invoice. The TTP is not official policy, but it shows how GPC can be used more efficiently.</p>
+        <p>Here is the math. Say a contracting officer has a portfolio of 10 simplified acquisition threshold contracts. Each contract gets paid monthly. Going through DFAS, that is 120 payment transactions per year. DFAS charges between $5.58 (DEAMS certified) and $15.47 (manual processing) per payment. Over five years, DFAS fees alone run between $3,345 and $9,282.</p>
+        <p>If those same contracts are paid by GPC, DFAS only charges about $0.55 per transaction (12 consolidated payments per year instead of 120 individual ones). On top of that, the unit earns rebates from US Bank at roughly 1.5% of the transaction value. The TTP estimates a net gain of over $37,000 per unit over five years on just those 10 contracts, and nearly $187,000 across a five-year window when you factor in cumulative rebates.</p>
+        <p>Beyond the dollars, GPC payments are faster and more controllable. Prompt payment terms become easier to meet, which reduces the risk of interest penalties. Small businesses get paid quickly, which makes them more willing to compete for your requirements. And it aligns how the Government pays with how commercial industry already operates.</p>
+
+        <div class="highlight-box tip">
+          <strong>When GPC as payment works best:</strong> Requirements with high volume or frequency of buys, industries that already accept credit cards (think retail, IT hardware, office supplies), simple deliveries with low invoicing complexity, and contracts where the contractor is receptive. Many GSA schedule contracts already allow GPC as a payment method in paragraph 9 of the schedule terms.
+        </div>
+
+        <p><strong>When it does not work:</strong> Some contractors do not accept credit cards or charge fees that eat into the savings. Complex invoicing structures (partial payments, progress payments) are not a good fit. Contracts paid by GPC must be fully funded; progress or finance payments are not authorized. The organizational factors matter too: you need a willing AO and CH, separation of duties between the certifier (FM), obligator (CO), receiver (customer), and payee (CH), and close coordination with your Resource Advisor.</p>
+
+        <div class="cowboy-tip">
+          <div class="cowboy-label">Cowboy Tip of the Day</div>
+          <p>The GPC is the part of the acquisition community which has the most room for innovation, savings, speed, execution, and efficiency, and we layer it in bureaucracy. I would rather write a $10M contract than swipe my card for $50. That is how annoying it is. But the rules are the rules, and the oversight exists because people have misused the card. Learn the rules, follow them, and then focus your energy on the areas where the card can actually save your office time and money. Using the GPC as a payment method on existing contracts is one of those areas. Stop defaulting to DFAS for everything.</p>
+          <p style="font-size:0.78rem; color:rgba(148,163,184,0.6); margin-top:0.5rem; margin-bottom:0;">- Nick Hazelett</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">7</span> Convenience Checks</h3>
+      <div class="learn-body">
+        <p>Convenience checks are a last resort, used only when the GPC is not feasible and the activity has determined that checks are the most advantageous option. Before issuing a convenience check, the requiring organization must document their effort to find a merchant that accepts the GPC.</p>
+        <p>Convenience checks cannot exceed one half of the MPT. The check writer is appointed by the contracting commander via a Delegation of Contracting Authority Letter, similar to a cardholder. Organizations are limited to one convenience checking account per organization, and the account requires yearly justification from the commander.</p>
+        <p>All of the same prohibitions and controls that apply to the GPC also apply to convenience checks. US Bank applies fees to convenience checks, so the CH and AO need to factor those into the total cost of the purchase.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="gpc-panel">
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>DAFI 64-117: Government Purchase Card Program</h4>
+        <p>The Air Force instruction governing the GPC program. Covers program structure, roles, authorized uses, prohibitions, oversight, and convenience checks. 96 pages. Compliance is mandatory.</p>
+        <a href="https://static.e-publishing.af.mil/production/1/saf_aq/publication/dafi64-117/dafi64-117.pdf" target="_blank" rel="noopener">Open DAFI 64-117</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 13.301: Government-wide Commercial Purchase Card</h4>
+        <p>The FAR section authorizing the three uses of the GPC: micro-purchases, placing orders, and making payments.</p>
+        <a href="https://www.acquisition.gov/far/13.301" target="_blank" rel="noopener">Open FAR 13.301</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 32.1108: Payment by GPC</h4>
+        <p>Governs the use of GPC as a method of payment against existing contracts. Required reading if using the card for Use 3.</p>
+        <a href="https://www.acquisition.gov/far/32.1108" target="_blank" rel="noopener">Open FAR 32.1108</a>
+      </div>
+      <div class="lookup-card">
+        <h4>DoD Charge Card Guidebook</h4>
+        <p>The DoD-level guidance for establishing and managing purchase, travel, and fuel card programs. If DAFI 64-117 conflicts with this, the DoD policy controls.</p>
+        <a href="https://www.acq.osd.mil/asda/dpc/ce/pc/docs-guides.html" target="_blank" rel="noopener">Open DoD Charge Card Guidance</a>
+      </div>
+      <div class="lookup-card">
+        <h4>GSA SmartPay</h4>
+        <p>The GSA SmartPay program website. Covers the master contract, card programs, training, and tax exemption information.</p>
+        <a href="https://smartpay.gsa.gov/" target="_blank" rel="noopener">Open GSA SmartPay</a>
+      </div>
+      <div class="lookup-card">
+        <h4>PIEE / JAM</h4>
+        <p>The Procurement Integrated Enterprise Environment. All GPC appointments and delegation letters are managed in the Joint Appointment Module (JAM).</p>
+        <a href="https://piee.eb.mil/" target="_blank" rel="noopener">Open PIEE</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ── Tab switching ── */
+function showTab(tab) {
+  document.querySelectorAll('.gpc-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.gpc-tab').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('panel-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
+</body>
+</html>

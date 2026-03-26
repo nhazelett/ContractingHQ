@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how to evaluate purchase requests and the AF Form 9. Interactive Form 9 trainer for new contracting officers." />
+  <title>Evaluating Purchase Requests | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .pr-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .pr-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .pr-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .pr-tab:hover { color: var(--white); }
+    .pr-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .pr-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .pr-panel.active { display: block; }
+
+    /* ── Intro ── */
+    .pr-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .pr-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .pr-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .pr-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ═══════ FORM 9 — REALISTIC WHITE ═══════ */
+    .f9-outer { background: rgba(10,22,50,0.3); border-radius: 14px; padding: 1.5rem; overflow-x: auto; }
+    .f9-form { min-width: 700px; border: 2px solid #000; background: #fff; color: #000; font-size: 11px; line-height: 1.4; font-family: 'Inter', Arial, sans-serif; }
+
+    /* Generic cell */
+    .f9-cell { border: 1px solid #000; padding: 4px 6px; }
+    .f9-lbl { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+
+    /* Clickable cells */
+    .f9-click { cursor: pointer; transition: background 0.12s; }
+    .f9-click:hover { background: #f0f4ff; }
+    .f9-click.active { background: #fff9db; }
+
+    /* Important highlight — subtle red left-border */
+    .f9-important { border-left: 3px solid #dc2626; }
+
+    /* Popup overlay */
+    .f9-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; padding: 1.5rem; }
+    .f9-overlay.visible { display: flex; }
+    .f9-popup { background: #0d1a33; border: 1px solid rgba(74,158,255,0.3); border-radius: 14px; padding: 1.5rem 1.75rem; max-width: 520px; width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,0.5); animation: popIn 0.18s ease-out; position: relative; }
+    .f9-popup-title { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 0.6rem; padding-right: 2rem; }
+    .f9-popup-body { color: var(--silver); font-size: 0.9rem; line-height: 1.75; }
+    .f9-popup-body strong { color: var(--white); }
+    .f9-popup-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--silver); cursor: pointer; font-size: 1.4rem; line-height: 1; padding: 0; transition: color 0.12s; }
+    .f9-popup-close:hover { color: var(--white); }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+    /* ── LOA section ── */
+    .loa-section { margin-top: 2rem; }
+    .loa-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; }
+    .loa-grid { display: grid; gap: 0.75rem; }
+    .loa-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 10px; padding: 1rem 1.25rem; }
+    .loa-card-title { font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .loa-line { font-family: 'Courier New', monospace; font-size: 0.92rem; color: var(--accent); background: rgba(74,158,255,0.06); border: 1px solid rgba(74,158,255,0.15); border-radius: 6px; padding: 0.45rem 0.7rem; margin-bottom: 0.5rem; display: inline-block; }
+    .loa-breakdown { font-size: 0.82rem; color: var(--silver); line-height: 1.6; }
+    .loa-breakdown strong { color: var(--white); }
+    .loa-explain { margin-top: 1rem; background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 10px; padding: 1rem 1.25rem; font-size: 0.88rem; color: var(--silver); line-height: 1.7; }
+    .loa-explain strong { color: var(--white); }
+
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .pr-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 5</span>
+    <h1 class="page-hero-title">Evaluating Purchase Requests</h1>
+    <p class="page-hero-sub">A Form 9 is not just an admin document. It's the customer's purchase request and funding signal to contracting. Learn where to look first, what the fields mean, and how to spot problems before they become yours.</p>
+  </div>
+</div>
+
+<div class="pr-bg">
+  <div class="pr-tabs" role="tablist">
+    <button class="pr-tab active" data-tab="learn" role="tab">&#128218; Learn</button>
+    <button class="pr-tab" data-tab="trainer" role="tab">&#128203; Form 9 Trainer</button>
+    <button class="pr-tab" data-tab="lookup" role="tab">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════════════════════════ LEARN ═══ -->
+  <div id="panel-learn" class="pr-panel active">
+    <div class="pr-intro">
+      <div class="pr-intro-tag">The Basics</div>
+      <h2>What Is a Purchase Request?</h2>
+      <p>Before you can buy anything, someone has to ask for it. That request &mdash; and the money behind it &mdash; starts with the Form 9.</p>
+    </div>
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> The Form 9 in 60 Seconds</h3>
+      <div class="learn-body">
+        <p>The AF Form 9, <em>Request for Purchase</em>, is how your customer tells contracting what they need and how they're paying for it. It's a <strong>funding document</strong> &mdash; the package that commits money to a requirement and kicks off the acquisition process. No Form 9 (or equivalent PR), no buy.</p>
+        <div class="highlight-box">
+          <strong>What it tells you:</strong> What the customer wants to buy, how much they think it costs, what money they're using to pay for it, and who approved the request. That's it. It's not a contract document, it's not a solicitation &mdash; it's the funding document that starts everything.
+        </div>
+        <p>In the Air Force, DEAMS generates the Form 9. Other agencies use different formats &mdash; some use a PR&amp;C (Purchase Request and Commitment) or other service-specific documents. The fields are roughly the same everywhere. As long as you've got certified funding, you're ready to press forward with your requirement. If you understand the Form 9, you can read any purchase request.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Where to Look First</h3>
+      <div class="learn-body">
+        <p>When a Form 9 lands on your desk, there are only a few areas where you need to be critical in your review. The rest can typically be changed later in your contract writing system. <strong>Two areas tell you 80% of what you need to know:</strong></p>
+        <div class="highlight-box tip">
+          <strong>1. The line item area.</strong> What are they buying? How is it described? What's the quantity, unit of issue, and estimated price? This tells you whether the requirement makes operational sense.
+        </div>
+        <div class="highlight-box tip">
+          <strong>2. The accounting classification.</strong> What kind of money is behind this? The line of accounting tells you the agency, fiscal year, and type of funding. If the money type doesn't match what they're buying, flag it before you go any further.
+        </div>
+        <div class="highlight-box warn">
+          <strong>Everything else matters, but these two come first.</strong> The requesting official, the approving official, the installation &mdash; those are important for routing and authority. But they're not where problems hide. Problems hide in vague descriptions and wrong money.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> CLIN Structure: Keep It Simple</h3>
+      <div class="learn-body">
+        <p><strong>This is just my opinion (as of this training, March 2026)</strong> &mdash; but simpler is better on the Form 9. You can absolutely work with a Form 9 structured in other ways, and plenty of COs do. But here's why I prefer fewer CLINs up front:</p>
+        <p>When finance builds the Form 9 in DEAMS, they sometimes break the requirement into multiple line items. For a construction project, you might see separate lines for plumbing, electrical, concrete, demolition, and painting. That feels organized, but it creates a problem downstream.</p>
+        <div class="highlight-box">
+          <strong>The practical rule:</strong> You can always break one CLIN into multiple CLINs in the contract writing system. You can split 1 LOT at $500,000 into as many contract line items as you need to match your solicitation and the winning proposal. But going the other direction &mdash; combining multiple finance-built CLINs back into one &mdash; usually means sending the Form 9 back to finance for correction. That's wasted time.
+        </div>
+        <!-- Visual: 1 LOT scenario -->
+        <div style="background:rgba(74,158,255,0.06); border:1px solid rgba(74,158,255,0.2); border-radius:12px; padding:1.5rem; margin:1.5rem 0;">
+          <div style="font-weight:700; color:var(--accent); margin-bottom:1rem; font-family:'Rajdhani',sans-serif; font-size:1.05rem;">&#9989; Scenario A: 1 LOT on the Form 9</div>
+          <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; justify-content:center; margin-bottom:1rem;">
+            <div style="background:var(--navy); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:0.65rem 1rem; text-align:center;">
+              <div style="font-size:0.72rem; color:var(--silver);">Form 9</div>
+              <div style="font-weight:700; color:var(--white); font-size:0.9rem;">1 LOT &mdash; $500K</div>
+            </div>
+            <div style="color:var(--accent); font-size:1.1rem;">&rarr;</div>
+            <div style="font-size:0.78rem; color:var(--silver); text-align:center; line-height:1.4;">Solicit, evaluate,<br>award</div>
+            <div style="color:var(--accent); font-size:1.1rem;">&rarr;</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.3rem;">
+              <div style="background:var(--navy); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:0.4rem 0.6rem; font-size:0.7rem; color:var(--silver); text-align:center;">CLIN 0001<br><strong style="color:var(--white);">Plumbing</strong><br>$125K</div>
+              <div style="background:var(--navy); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:0.4rem 0.6rem; font-size:0.7rem; color:var(--silver); text-align:center;">CLIN 0002<br><strong style="color:var(--white);">Electrical</strong><br>$150K</div>
+              <div style="background:var(--navy); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:0.4rem 0.6rem; font-size:0.7rem; color:var(--silver); text-align:center;">CLIN 0003<br><strong style="color:var(--white);">Concrete</strong><br>$175K</div>
+              <div style="background:var(--navy); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:0.4rem 0.6rem; font-size:0.7rem; color:var(--silver); text-align:center;">CLIN 0004<br><strong style="color:var(--white);">Demo</strong><br>$50K</div>
+            </div>
+          </div>
+          <div style="font-size:0.82rem; color:var(--accent); text-align:center;">Total = $500K &check; &mdash; Split in contract writing system. No problem.</div>
+        </div>
+
+        <!-- Visual: Multiple CLINs scenario -->
+        <div style="background:rgba(220,38,38,0.06); border:1px solid rgba(220,38,38,0.2); border-radius:12px; padding:1.5rem; margin:0 0 1.5rem 0;">
+          <div style="font-weight:700; color:#dc2626; margin-bottom:1rem; font-family:'Rajdhani',sans-serif; font-size:1.05rem;">&#10060; Scenario B: 4 CLINs on the Form 9</div>
+          <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:0.75rem; align-items:center; margin-bottom:1rem;">
+            <div style="display:grid; gap:0.3rem;">
+              <div style="background:var(--navy); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:0.4rem 0.6rem; font-size:0.7rem; color:var(--silver); text-align:center;">CLIN 0001 &mdash; Plumbing &mdash; <strong style="color:var(--white);">$100K</strong></div>
+              <div style="background:var(--navy); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:0.4rem 0.6rem; font-size:0.7rem; color:var(--silver); text-align:center;">CLIN 0002 &mdash; Electrical &mdash; <strong style="color:var(--white);">$100K</strong></div>
+              <div style="background:var(--navy); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:0.4rem 0.6rem; font-size:0.7rem; color:var(--silver); text-align:center;">CLIN 0003 &mdash; Concrete &mdash; <strong style="color:var(--white);">$150K</strong></div>
+              <div style="background:var(--navy); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:0.4rem 0.6rem; font-size:0.7rem; color:var(--silver); text-align:center;">CLIN 0004 &mdash; Demo &mdash; <strong style="color:var(--white);">$150K</strong></div>
+              <div style="font-size:0.75rem; color:var(--silver); text-align:center; margin-top:0.25rem;">Form 9 total: $500K</div>
+            </div>
+            <div style="color:#dc2626; font-size:1.3rem; text-align:center;">&#8800;</div>
+            <div style="display:grid; gap:0.3rem;">
+              <div style="background:var(--navy); border:1px solid rgba(220,38,38,0.3); border-radius:6px; padding:0.4rem 0.6rem; font-size:0.7rem; color:var(--silver); text-align:center;">Plumbing &mdash; <strong style="color:#dc2626;">$125K</strong></div>
+              <div style="background:var(--navy); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:0.4rem 0.6rem; font-size:0.7rem; color:var(--silver); text-align:center;">Electrical &mdash; <strong style="color:var(--white);">$90K</strong></div>
+              <div style="background:var(--navy); border:1px solid rgba(220,38,38,0.3); border-radius:6px; padding:0.4rem 0.6rem; font-size:0.7rem; color:var(--silver); text-align:center;">Concrete &mdash; <strong style="color:#dc2626;">$185K</strong></div>
+              <div style="background:var(--navy); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:0.4rem 0.6rem; font-size:0.7rem; color:var(--silver); text-align:center;">Demo &mdash; <strong style="color:var(--white);">$100K</strong></div>
+              <div style="font-size:0.75rem; color:var(--silver); text-align:center; margin-top:0.25rem;">Contractor's proposal: $500K</div>
+            </div>
+          </div>
+          <div style="font-size:0.82rem; color:#dc2626; text-align:center; margin-bottom:0.5rem;">Plumbing exceeds $100K by $25K. Concrete exceeds $150K by $35K.</div>
+          <div style="font-size:0.82rem; color:#dc2626; text-align:center; font-weight:600;">Even though the total is still $500K &mdash; you can't move money between CLINs. Back to finance. &#8617;</div>
+        </div>
+
+        <div class="highlight-box">
+          <strong>The bottom line:</strong> A CO or CS <strong>cannot</strong> move money from one CLIN to another. But they <strong>can</strong> split one CLIN into as many contract line items as they need. That's why fewer CLINs on the Form 9 gives you flexibility &mdash; you're never boxed in by the way finance structured it.
+        </div>
+        <div class="highlight-box tip">
+          <strong>Again, this is just my opinion.</strong> Some COs prefer more detail on the Form 9 so they can match it directly to their solicitation. That works too, and you can absolutely be successful with either approach. The point is to think about it intentionally rather than just accepting whatever lands on your desk.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Quantity &amp; Unit of Issue</h3>
+      <div class="learn-body">
+        <p>The quantity and unit of issue determine <strong>how the contractor bills you and how deliverables get structured.</strong> That's why they matter. It's not just about counting &mdash; it's about shaping the payment schedule and delivery milestones for the entire contract.</p>
+        <div class="highlight-box">
+          <strong>Pick the unit that matches how you want to pay and receive deliverables.</strong> If the contractor delivers water monthly, the unit is <strong>3 Months</strong> (or whatever the period is). If they deliver a single piece of equipment, it's <strong>1 Each</strong>. If they're providing a service for 12 weeks, it might be <strong>12 Weeks</strong> or <strong>3 Months</strong>. The unit drives the CLIN structure, which drives both invoicing and how you set up delivery milestones.
+        </div>
+        <div class="highlight-box warn">
+          <strong>1 Lot</strong> on a Form 9 is fine &mdash; it gives you flexibility to structure the contract however you need. But <strong>1 Lot in a contract</strong> is a different story. In a contract, "1 Lot" typically means progress payments (like construction), and it changes how inspection, acceptance, and invoicing work. Don't carry "1 Lot" from the Form 9 into your contract CLINs unless that's actually what you need.<br><br><strong>1 Each, 1 Month, 1 Week</strong> &mdash; that's typically what you want in contract CLINs. If someone puts "1 Group" on a Form 9, ask them what that means, because it usually doesn't mean anything useful.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Reading the Money</h3>
+      <div class="learn-body">
+        <p>The accounting classification line looks intimidating. You don't need to memorize the whole thing. You need three pieces:</p>
+        <div class="highlight-box">
+          <strong>First 2 digits &mdash; Agency.</strong> Who owns this money? <strong>57</strong> = Air Force. <strong>21</strong> = Army. <strong>97</strong> = DoD-wide. That's your first cue.
+        </div>
+        <div class="highlight-box">
+          <strong>Next 4 digits &mdash; Appropriation type.</strong> What <em>kind</em> of money? <strong>3400</strong> = O&amp;M (Operations &amp; Maintenance). <strong>3010</strong> = Procurement. <strong>3300</strong> = MILCON. This tells you what you can buy with it.
+        </div>
+        <div class="highlight-box">
+          <strong>Next 2 digits &mdash; Fiscal Year.</strong> <strong>26</strong> = FY26. If someone hands you FY25 O&amp;M money in October 2025, that money is expired.
+        </div>
+        <div class="highlight-box tip">
+          <strong>The rest?</strong> A CO doesn't need to know what every other character means. That's finance's job. You need agency, appropriation type, and fiscal year. Those three tell you if the money matches the requirement.
+        </div>
+        <p>Check the <strong>Form 9 Trainer</strong> tab to see these on a real form, and scroll down for side-by-side LOA examples.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ FORM 9 TRAINER ═══ -->
+  <div id="panel-trainer" class="pr-panel">
+    <div class="pr-intro">
+      <div class="pr-intro-tag">Interactive Tool</div>
+      <h2>Virtual Form 9 Trainer</h2>
+      <p>Click the highlighted sections on the form to see notes. The sections with a <span style="color:#dc2626; font-weight:700;">red left border</span> are the ones that matter most.</p>
+    </div>
+
+    <div class="f9-outer">
+      <div class="f9-form">
+
+        <!-- ── Row 1: Title + right-side fields ── -->
+        <div style="display:grid; grid-template-columns: 1.6fr 0.6fr; border-bottom: 2px solid #000;">
+          <div style="border-right: 1px solid #000; padding: 6px; text-align: center; font-size: 16px; font-weight: 700; display:flex; align-items:center; justify-content:center;">
+            REQUEST FOR PURCHASE
+          </div>
+          <div style="display: grid; grid-template-rows: repeat(4, 1fr);">
+            <!-- NO. -->
+            <div class="f9-cell f9-click f9-important" data-note="prNumber" onclick="showNote('prNumber')">
+              <div class="f9-lbl">NO.</div>
+              <div style="margin-top:2px; font-weight:600;">F2Q4015052AW01</div>
+            </div>
+            <!-- DATE -->
+            <div class="f9-cell">
+              <div class="f9-lbl">DATE</div>
+              <div style="margin-top:2px;">15 OCT 25</div>
+            </div>
+            <!-- CLASS -->
+            <div class="f9-cell">
+              <div class="f9-lbl">CLASS</div>
+              <div style="margin-top:2px;">SUPPLIES</div>
+            </div>
+            <!-- AWARD NO -->
+            <div class="f9-cell">
+              <div class="f9-lbl">CONTRACT, PURCHASE ORDER OR DELIVERY ORDER NO.</div>
+              <div style="margin-top:2px; color: #999;">Assigned after award</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Address rows ── -->
+        <div style="display:grid; grid-template-columns: 1.6fr 0.6fr; border-bottom:1px solid #000;">
+          <div class="f9-cell" style="border-right:1px solid #000;"><span class="f9-lbl">INSTALLATION</span><br>Deployed Wing</div>
+          <div class="f9-cell">&nbsp;</div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1.6fr 0.6fr; border-bottom:1px solid #000;">
+          <div class="f9-cell" style="border-right:1px solid #000;"><span class="f9-lbl">TO:</span> CONTRACTING OFFICER<br>Office DODAAC: FA0000</div>
+          <div class="f9-cell">&nbsp;</div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1.6fr 0.6fr; border-bottom:1px solid #000;">
+          <div class="f9-cell" style="border-right:1px solid #000;"><span class="f9-lbl">THROUGH</span><br>Deployed customer</div>
+          <div class="f9-cell">&nbsp;</div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1.6fr 0.6fr; border-bottom:1px solid #000;">
+          <div class="f9-cell" style="border-right:1px solid #000;"><span class="f9-lbl">FROM:</span> Resource Advisor<br>RA DODAAC: F2Q401</div>
+          <div class="f9-cell">&nbsp;</div>
+        </div>
+
+        <!-- ── Request banner ── -->
+        <div style="padding:3px 6px; text-align:center; font-size:9px; border-bottom:1px solid #000; text-transform:uppercase;">
+          It is requested that supplies and services enumerated below and in the attached list, be
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 0.5fr; border-bottom:1px solid #000; font-size:9px;">
+          <div style="padding:3px 6px; border-right:1px solid #000;">PURCHASED FOR</div>
+          <div style="padding:3px 6px; border-right:1px solid #000;">FOR DELIVERY TO</div>
+          <div style="padding:3px 6px;">NO LATER THAN</div>
+        </div>
+
+        <!-- ── Line item header ── -->
+        <div style="display:grid; grid-template-columns: 0.35fr 2.8fr 0.6fr 0.45fr 0.7fr 0.8fr; border-bottom:1px solid #000; font-size:8px; font-weight:700; text-transform:uppercase; text-align:center;">
+          <div style="padding:4px 2px; border-right:1px solid #000;">ITEM</div>
+          <div style="padding:4px 2px; border-right:1px solid #000;">DESCRIPTION OF MATERIAL OR SERVICES</div>
+          <div style="padding:4px 2px; border-right:1px solid #000;">QUANTITY</div>
+          <div style="padding:4px 2px; border-right:1px solid #000;">UNIT</div>
+          <div style="padding:4px 2px; border-right:1px solid #000;">EST UNIT PRICE</div>
+          <div style="padding:4px 2px;">EST TOTAL COST</div>
+        </div>
+
+        <!-- ── Line item data ── -->
+        <div style="display:grid; grid-template-columns: 0.35fr 2.8fr 0.6fr 0.45fr 0.7fr 0.8fr; min-height:180px; border-bottom:1px solid #000;">
+          <div class="f9-cell" style="border-right:1px solid #000; text-align:center; font-weight:600;">0001</div>
+          <div class="f9-cell f9-click f9-important" data-note="description" onclick="showNote('description')" style="border-right:1px solid #000;">
+            <strong>1.5 Liter Bottled Water</strong><br>(12 per case)
+          </div>
+          <div class="f9-cell f9-click f9-important" data-note="quantity" onclick="showNote('quantity')" style="border-right:1px solid #000; text-align:center; font-weight:600;">500</div>
+          <div class="f9-cell f9-click f9-important" data-note="unitOfIssue" onclick="showNote('unitOfIssue')" style="border-right:1px solid #000; text-align:center; font-weight:600;">CS</div>
+          <div class="f9-cell f9-click f9-important" data-note="quantity" onclick="showNote('quantity')" style="border-right:1px solid #000; text-align:center;">10.00</div>
+          <div class="f9-cell f9-click f9-important" data-note="quantity" onclick="showNote('quantity')" style="text-align:center;">5,000.00</div>
+        </div>
+
+        <!-- ── Total ── -->
+        <div style="display:grid; grid-template-columns: 5.5fr 0.8fr; border-bottom:1px solid #000;">
+          <div style="padding:4px 6px; text-align:right; font-weight:700; border-right:1px solid #000;">TOTAL</div>
+          <div style="padding:4px 6px; font-weight:700;">$ 5,000.00</div>
+        </div>
+
+        <!-- ── Purpose ── -->
+        <div class="f9-cell f9-click" data-note="purpose" onclick="showNote('purpose')" style="border-bottom:1px solid #000; min-height:50px;">
+          <div class="f9-lbl">PURPOSE</div>
+          <div style="margin-top:2px;">Sustain deployed personnel with bottled drinking water for routine consumption.</div>
+        </div>
+
+        <!-- ── Requesting official ── -->
+        <div style="display:grid; grid-template-columns: 0.7fr 1.25fr 0.95fr; border-bottom:1px solid #000;">
+          <div class="f9-cell" style="border-right:1px solid #000;"><div class="f9-lbl">DATE</div>15 OCT 25</div>
+          <div class="f9-cell" style="border-right:1px solid #000;"><div class="f9-lbl">TYPED NAME AND GRADE OF REQUESTING OFFICIAL</div>Capt Jane Doe</div>
+          <div class="f9-cell"><div class="f9-lbl">SIGNATURE / TELEPHONE NO.</div>DSN 555-0101</div>
+        </div>
+
+        <!-- ── Approving official ── -->
+        <div style="display:grid; grid-template-columns: 0.7fr 1.25fr 0.95fr; border-bottom:1px solid #000;">
+          <div class="f9-cell" style="border-right:1px solid #000;"><div class="f9-lbl">DATE</div>15 OCT 25</div>
+          <div class="f9-cell" style="border-right:1px solid #000;"><div class="f9-lbl">TYPED NAME AND GRADE OF APPROVING OFFICIAL</div>Lt Col John Smith</div>
+          <div class="f9-cell"><div class="f9-lbl">SIGNATURE</div>Approved</div>
+        </div>
+
+        <!-- ── Certification text ── -->
+        <div style="padding:4px 6px; font-size:8px; border-bottom:1px solid #000; color:#444; line-height:1.4;">
+          I certify that the supplies and services listed above and in the attached list are properly chargeable to the following allotments, that the available balances of which are sufficient to cover the cost thereof, and funds have been committed.
+        </div>
+
+        <!-- ── Accounting classification (with LOA dropdown) ── -->
+        <div style="display:grid; grid-template-columns: 2.5fr 0.9fr; border-bottom:1px solid #000;">
+          <div class="f9-cell f9-click f9-important" data-note="accounting" onclick="showNote('accounting')" style="border-right:1px solid #000; min-height:60px;">
+            <div class="f9-lbl" style="display:flex; align-items:center; gap:6px;">ACCOUNTING CLASSIFICATION
+              <select id="loaSelect" onclick="event.stopPropagation()" onchange="switchLOA(this.value)" style="font-size:9px; padding:1px 4px; border:1px solid #999; border-radius:3px; background:#f5f5f5; color:#333; cursor:pointer;">
+                <option value="afom">Air Force O&amp;M</option>
+                <option value="afproc">Air Force Procurement</option>
+                <option value="afmilcon">Air Force MILCON</option>
+                <option value="armyom">Army O&amp;M</option>
+                <option value="dod">DoD-Wide O&amp;M</option>
+              </select>
+            </div>
+            <div id="loaLine" style="margin-top:3px; font-family:'Courier New',monospace; font-size:12px; font-weight:600;">57 3400 26 123456 001 0 000000 2D 000000</div>
+            <div id="loaLabel" style="margin-top:2px; font-size:9px; color:#666;">FY26 Air Force O&amp;M</div>
+          </div>
+          <div class="f9-cell f9-click f9-important" data-note="accounting" onclick="showNote('accounting')">
+            <div class="f9-lbl">AMOUNT</div>
+            <div style="margin-top:3px; font-weight:600;">$ 5,000.00</div>
+          </div>
+        </div>
+
+        <!-- ── Certifying official ── -->
+        <div style="display:grid; grid-template-columns: 0.7fr 1.25fr 0.95fr;" class="f9-click f9-important" data-note="certifying" onclick="showNote('certifying')">
+          <div class="f9-cell" style="border-right:1px solid #000;"><div class="f9-lbl">DATE</div>16 OCT 25</div>
+          <div class="f9-cell" style="border-right:1px solid #000;"><div class="f9-lbl">TYPED NAME AND GRADE OF CERTIFYING OFFICIAL</div>MSgt Robert Williams, CDFM<br><span style="font-size:9px; color:#666;">52 CPTS/FMA</span></div>
+          <div class="f9-cell"><div class="f9-lbl">SIGNATURE</div><span style="font-family:'Brush Script MT','Segoe Script',cursive; font-size:14px; color:#333;">//signed// R. Williams</span></div>
+        </div>
+
+        <!-- ── Form footer ── -->
+        <div style="padding:3px 6px; font-size:7px; color:#999; display:flex; justify-content:space-between;">
+          <span>AF FORM 9</span>
+          <span>TRAINING REPLICA &mdash; NOT AN OFFICIAL FORM</span>
+        </div>
+
+      </div><!-- end f9-form -->
+    </div><!-- end f9-outer -->
+
+    <!-- Popup overlay -->
+    <div class="f9-overlay" id="noteOverlay" onclick="if(event.target===this)hideNote()">
+      <div class="f9-popup">
+        <button class="f9-popup-close" onclick="hideNote()">&times;</button>
+        <div class="f9-popup-title" id="noteTitle"></div>
+        <div class="f9-popup-body" id="noteBody"></div>
+      </div>
+    </div>
+
+    <!-- ── LOA Examples ── -->
+    <div class="loa-section">
+      <h3>Lines of Accounting &mdash; Side by Side</h3>
+      <p style="color: var(--silver); font-size: 0.88rem; margin-bottom: 1.25rem; line-height: 1.6;">These are illustrative examples. Exact LOA structure varies by organization and finance system. For a CO, the key is the first three pieces: <strong style="color:var(--white);">agency</strong>, <strong style="color:var(--white);">appropriation type</strong>, and <strong style="color:var(--white);">fiscal year</strong>.</p>
+
+      <div class="loa-grid">
+        <div class="loa-card">
+          <div class="loa-card-title">Air Force O&amp;M</div>
+          <div class="loa-line">57 3400 26 123456 001 0 000000 2D 000000</div>
+          <div class="loa-breakdown"><strong>57</strong> = Air Force &bull; <strong>3400</strong> = O&amp;M &bull; <strong>26</strong> = FY26 &bull; The rest is finance's business.</div>
+        </div>
+        <div class="loa-card">
+          <div class="loa-card-title">Air Force Procurement</div>
+          <div class="loa-line">57 3010 26 987654 002 0 000000 2D 000000</div>
+          <div class="loa-breakdown"><strong>57</strong> = Air Force &bull; <strong>3010</strong> = Procurement &bull; <strong>26</strong> = FY26 &bull; Multi-year money for equipment and systems.</div>
+        </div>
+        <div class="loa-card">
+          <div class="loa-card-title">Air Force MILCON</div>
+          <div class="loa-line">57 3300 26 456789 003 0 000000 2D 000000</div>
+          <div class="loa-breakdown"><strong>57</strong> = Air Force &bull; <strong>3300</strong> = MILCON &bull; <strong>26</strong> = FY26 &bull; Military construction. Different animal entirely.</div>
+        </div>
+        <div class="loa-card">
+          <div class="loa-card-title">Army O&amp;M</div>
+          <div class="loa-line">21 2020 26 234567 004 0 000000 AA 000000</div>
+          <div class="loa-breakdown"><strong>21</strong> = Army &bull; <strong>2020</strong> = O&amp;M &bull; <strong>26</strong> = FY26 &bull; Same concept, different agency code.</div>
+        </div>
+        <div class="loa-card">
+          <div class="loa-card-title">DoD-Wide O&amp;M</div>
+          <div class="loa-line">97 0100 26 345678 005 0 000000 DD 000000</div>
+          <div class="loa-breakdown"><strong>97</strong> = DoD-wide &bull; <strong>0100</strong> = O&amp;M &bull; <strong>26</strong> = FY26 &bull; OSD-level or defense agency money.</div>
+        </div>
+      </div>
+
+      <div class="loa-explain">
+        <strong>The pattern:</strong> First 2 digits = who owns the money. Next 4 digits = what kind of money. Next 2 digits = what fiscal year. Everything after that is cost center, program element, and accounting detail that finance manages. As a CO, if you can read those first 8 characters, you know enough to catch a mismatch between the money and the requirement.
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ LOOK IT UP ═══ -->
+  <div id="panel-lookup" class="pr-panel">
+    <div class="pr-intro">
+      <div class="pr-intro-tag">Rabbit Holes</div>
+      <h2>Look It Up</h2>
+      <p>There's not much written specifically about the Form 9 itself. But if you want to understand the <em>money</em> behind it &mdash; appropriations law, fiscal policy, and the rules that govern how the government spends &mdash; these are the places to go.</p>
+    </div>
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>GAO Antideficiency Act Resources</h4>
+        <p>The GAO's hub for the Antideficiency Act &mdash; the law that makes fund certification matter. Includes the ADA handbook, reporting guidance, and legal decisions. This is the definitive source.</p>
+        <a href="https://www.gao.gov/legal/appropriations-law/resources" target="_blank" rel="noopener">Open GAO Resources</a>
+      </div>
+      <div class="lookup-card">
+        <h4>31 U.S.C. &sect; 1341 &mdash; Antideficiency Act</h4>
+        <p>The actual statute. Prohibits federal employees from obligating or expending funds in excess of available appropriations. This is why the certifying official's signature on the Form 9 matters.</p>
+        <a href="https://uscode.house.gov/view.xhtml?path=/prelim@title31/subtitle2/chapter13/subchapter3&edition=prelim" target="_blank" rel="noopener">Open 31 USC Ch. 13</a>
+      </div>
+      <div class="lookup-card">
+        <h4>DoD Financial Management Regulation (FMR)</h4>
+        <p>DoD 7000.14-R &mdash; the massive regulation that governs all DoD financial management. Multiple volumes cover fund control, obligation rules, and accounting policy. Not light reading.</p>
+        <a href="https://comptroller.defense.gov/Financial-Management/Regulations/" target="_blank" rel="noopener">Open DoD FMR</a>
+      </div>
+      <div class="lookup-card">
+        <h4>GAO Principles of Federal Appropriations Law (Red Book)</h4>
+        <p>The "Red Book" &mdash; GAO's comprehensive treatise on appropriations law. If you really want to understand how government money works at a deep level, this is the bible. Multi-volume, continuously updated.</p>
+        <a href="https://www.gao.gov/legal/appropriations-law/red-book" target="_blank" rel="noopener">Open Red Book</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Market Research Training</h4>
+        <p>Once the PR clears your desk, market research is the next step. Our full walkthrough covers the process end to end.</p>
+        <a href="market-research.html">Open Training</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-brand">ContractingHQ</span>
+      <span class="footer-copy">&copy; 2025 ContractingHQ. Not an official DoD site.</span>
+    </div>
+  </div>
+</footer>
+<script src="main.js"></script>
+<script>
+/* ═══════ TABS ═══════ */
+document.querySelectorAll('.pr-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.pr-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.pr-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ═══════ FORM 9 NOTES ═══════ */
+const notes = {
+  prNumber: {
+    title: "PR Number",
+    body: "This number is <strong>computer-generated</strong> &mdash; neither you nor the customer creates it. It comes out of the finance system when the PR is built.<br><br><strong>Pro tip:</strong> The first 6 characters are the customer's DoDAAC. In this case, <strong>F2Q401</strong>. Write that down &mdash; you'll need it later when you fill out your <strong>WAWF clause</strong> (the clause that tells the contractor where to send invoices). The DoDAAC identifies the receiving organization, and it's sitting right here in the PR number."
+  },
+  description: {
+    title: "Item Description",
+    body: "This is one of the two most important areas on the entire form. The description needs to be clear enough that you can act on it. <strong>\"Supplies\"</strong> is not a description. <strong>\"500 cases of 1.5L bottled water, 12 per case\"</strong> is.<br><br>If you can't figure out what they're buying from this block, send it back with questions before you do anything else. A weak description creates confusion for contracting, finance, and the requiring activity all the way downstream."
+  },
+  quantity: {
+    title: "Quantity &amp; Price",
+    body: "Quantity and price matter because they drive <strong>how the contractor bills you</strong>. The quantity isn't just a count &mdash; it determines the CLIN structure, which determines invoicing.<br><br>Always <strong>check the math</strong>: quantity &times; unit price should equal the total. If it doesn't, send it back. Don't guess which number is wrong.<br><br><strong>On CLIN structure:</strong> Simpler is better. You can break 1 CLIN into multiple CLINs in the contract writing system, but you can't easily combine multiple finance-built CLINs without sending it back. For construction, 1 LOT at $500K beats five separate trade lines."
+  },
+  unitOfIssue: {
+    title: "Unit of Issue",
+    body: "The unit of issue has to <strong>make sense</strong> for how the contractor will deliver and bill.<br><br><strong>CS</strong> (case) works here &mdash; the contractor delivers cases of water, bills per case. <strong>1 Each, 1 Month, 1 Week</strong> are your typical go-to units. They're clean and easy to administer.<br><br><strong>1 Lot</strong> is typically reserved for more complex payment types, like progress payments in construction. Don't use it unless you have to.<br><br><strong>1 Group</strong> &mdash; if you see this, ask what it means. It usually doesn't mean anything useful, and it'll create confusion when it's time to invoice."
+  },
+  purpose: {
+    title: "Purpose",
+    body: "The purpose explains <strong>why</strong> the Government needs the buy. It doesn't need to be a novel &mdash; just clear enough that a reviewer understands the mission need.<br><br>\"Sustain deployed personnel with drinking water\" tells the story. \"Operational support\" does not. This block also helps you later when writing the description of requirement in your market research report."
+  },
+  accounting: {
+    title: "Accounting Classification",
+    body: "The other area you check immediately. The line of accounting tells you three things that matter:<br><br><strong>First 2 digits &mdash; Agency:</strong> 57 = Air Force. 21 = Army. 97 = DoD-wide.<br><strong>Next 4 digits &mdash; Appropriation type:</strong> 3400 = O&M. 3010 = Procurement. 3300 = MILCON.<br><strong>Next 2 digits &mdash; Fiscal year:</strong> 26 = FY26.<br><br>The rest? That's finance's business. As a CO, those first 8 characters tell you if the money matches the requirement. If someone's buying routine maintenance with MILCON money, or using expired FY25 funds in FY26, you need to flag it.<br><br>Scroll down for side-by-side LOA examples."
+  },
+  certifying: {
+    title: "Certifying Official",
+    body: "This is <strong>critical</strong>. The certifying official is finance &mdash; they're the one confirming that funds are available and properly committed.<br><br><strong>Do not proceed without this signature.</strong> If the funds aren't certified, you don't have money. It doesn't matter how urgent the requirement is or how much pressure you get &mdash; no certification means no obligation authority.<br><br>If this block is blank when the PR lands on your desk, send it back. It's not ready."
+  }
+};
+
+function showNote(key) {
+  // Clear active states
+  document.querySelectorAll('.f9-click').forEach(c => c.classList.remove('active'));
+  // Highlight clicked cells
+  document.querySelectorAll('.f9-click[data-note="' + key + '"]').forEach(c => c.classList.add('active'));
+  // Show popup
+  document.getElementById('noteTitle').textContent = notes[key].title;
+  document.getElementById('noteBody').innerHTML = notes[key].body;
+  document.getElementById('noteOverlay').classList.add('visible');
+}
+
+function hideNote() {
+  document.getElementById('noteOverlay').classList.remove('visible');
+  document.querySelectorAll('.f9-click').forEach(c => c.classList.remove('active'));
+}
+
+// LOA dropdown data
+const loaData = {
+  afom:     { line: '57 3400 26 123456 001 0 000000 2D 000000', label: 'FY26 Air Force O&M' },
+  afproc:   { line: '57 3010 26 987654 002 0 000000 2D 000000', label: 'FY26 Air Force Procurement' },
+  afmilcon: { line: '57 3300 26 456789 003 0 000000 2D 000000', label: 'FY26 Air Force MILCON' },
+  armyom:   { line: '21 2020 26 234567 004 0 000000 AA 000000', label: 'FY26 Army O&M' },
+  dod:      { line: '97 0100 26 345678 005 0 000000 DD 000000', label: 'FY26 DoD-Wide O&M' }
+};
+
+function switchLOA(key) {
+  const d = loaData[key];
+  if (!d) return;
+  document.getElementById('loaLine').textContent = d.line;
+  document.getElementById('loaLabel').textContent = d.label;
+}
+</script>
+</body>
+</html>

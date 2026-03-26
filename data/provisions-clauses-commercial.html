@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn provisions vs clauses for commercial acquisitions under FAR Part 12. Includes the complete clause matrix from FAR 12.205 Tables 12-2 and 12-3." />
+  <title>Provisions &amp; Clauses for Commercial Items | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .pcc-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    .pcc-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .pcc-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .pcc-tab:hover { color: var(--white); }
+    .pcc-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .pcc-panel { display: none; padding: 3rem 1.5rem; max-width: 1100px; margin: 0 auto; }
+    .pcc-panel.active { display: block; }
+
+    .pcc-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .pcc-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .pcc-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .pcc-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* Provision/clause cards */
+    .provision-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin: 1.25rem 0; }
+    .provision-card { background: rgba(10,22,50,0.5); border: 1px solid rgba(74,158,255,0.12); border-radius: 10px; padding: 1rem 1.15rem; }
+    .provision-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); margin-bottom: 0.4rem; }
+    .provision-card .prov-tag { display: inline-block; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 0.12rem 0.5rem; border-radius: 999px; margin-bottom: 0.4rem; }
+    .prov-tag.tag-provision { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+    .prov-tag.tag-clause { background: rgba(52,211,153,0.12); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.3); }
+    .provision-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin: 0; }
+
+    /* ── Clause matrix tables ── */
+    .matrix-section { margin-bottom: 3rem; }
+    .matrix-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .matrix-section > p { color: var(--silver); font-size: 0.88rem; line-height: 1.65; margin-bottom: 1.25rem; }
+    .matrix-filter { width: 100%; padding: 0.7rem 1rem; background: rgba(10,22,50,0.6); border: 1px solid rgba(74,158,255,0.15); border-radius: 8px; color: var(--white); font-size: 0.88rem; font-family: inherit; margin-bottom: 1.5rem; outline: none; transition: border-color 0.2s; }
+    .matrix-filter:focus { border-color: var(--accent); }
+    .matrix-filter::placeholder { color: rgba(148,163,184,0.5); }
+
+    .clause-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .clause-table thead th { text-align: left; padding: 0.65rem 0.75rem; font-family: 'Rajdhani', sans-serif; font-size: 0.78rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid rgba(74,158,255,0.2); background: rgba(10,22,50,0.4); white-space: nowrap; }
+    .clause-table tbody tr { border-bottom: 1px solid rgba(74,158,255,0.06); transition: background 0.15s; }
+    .clause-table tbody tr:hover { background: rgba(74,158,255,0.04); }
+    .clause-table tbody td { padding: 0.6rem 0.75rem; color: var(--silver); vertical-align: top; line-height: 1.55; }
+    .clause-table .col-num { color: var(--white); font-weight: 600; white-space: nowrap; min-width: 110px; }
+    .clause-table .col-title { min-width: 200px; }
+    .clause-table .col-source { white-space: nowrap; min-width: 70px; }
+    .clause-table .col-note { font-size: 0.8rem; min-width: 180px; }
+    .clause-table .source-badge { display: inline-block; font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .source-badge.statute { background: rgba(74,158,255,0.12); color: #4a9eff; }
+    .source-badge.eo { background: rgba(251,191,36,0.12); color: #fbbf24; }
+    .source-badge.other { background: rgba(139,92,246,0.12); color: #a78bfa; }
+    .clause-table tbody tr.common-row { background: rgba(52,211,153,0.04); border-left: 3px solid rgba(52,211,153,0.4); }
+    .clause-table tbody tr.common-row:hover { background: rgba(52,211,153,0.08); }
+
+    .special-section { background: rgba(251,191,36,0.04); border: 1px solid rgba(251,191,36,0.15); border-radius: 14px; padding: 1.5rem; margin: 2rem 0; }
+    .special-section h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: #fbbf24; margin-bottom: 0.75rem; }
+    .special-section p { color: var(--silver); font-size: 0.88rem; line-height: 1.7; margin-bottom: 0.75rem; }
+    .special-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+    .special-card { background: rgba(10,22,50,0.5); border: 1px solid rgba(251,191,36,0.12); border-radius: 8px; padding: 0.85rem; }
+    .special-card strong { color: #fbbf24; font-size: 0.82rem; display: block; margin-bottom: 0.25rem; }
+    .special-card span { color: var(--silver); font-size: 0.8rem; line-height: 1.5; }
+
+    .dfars-note { background: rgba(139,92,246,0.04); border: 1px solid rgba(139,92,246,0.15); border-radius: 14px; padding: 1.5rem; margin: 2rem 0; }
+    .dfars-note h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: #a78bfa; margin-bottom: 0.75rem; }
+    .dfars-note p { color: var(--silver); font-size: 0.88rem; line-height: 1.7; margin-bottom: 0.75rem; }
+    .dfars-note p:last-child { margin-bottom: 0; }
+
+    /* Lookup grid */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .pcc-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+      .provision-grid { grid-template-columns: 1fr; }
+      .clause-table { font-size: 0.75rem; }
+      .clause-table .col-note { display: none; }
+      .special-grid { grid-template-columns: 1fr; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 20</span>
+    <h1 class="page-hero-title">Provisions &amp; Clauses for Commercial Items</h1>
+    <p class="page-hero-sub">FAR Part 12 simplified the clause game. Know what is a provision, what is a clause, and what survived the FAR Overhaul. Then use the matrix to build your solicitation and contract.</p>
+  </div>
+</div>
+
+<div class="pcc-bg">
+
+  <div class="pcc-intro">
+    <span class="pcc-intro-tag">Training</span>
+    <h2>Selecting Provisions and Clauses</h2>
+    <p>Provisions go in your solicitation. Clauses go in your contract. 52.212-4 is the only clause that survived the FAR Overhaul in one piece. Learn the difference, then use the matrix.</p>
+  </div>
+
+  <div class="pcc-tabs">
+    <button class="pcc-tab active" onclick="showTab('learn')">&#128218; Learn</button>
+    <button class="pcc-tab" onclick="showTab('matrix')">&#128203; Clause Matrix</button>
+    <button class="pcc-tab" onclick="showTab('lookup')">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="pcc-panel active" style="max-width:900px;">
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> Provisions vs. Clauses</h3>
+      <div class="learn-body">
+        <p>Before you touch the 52.212 series, understand the difference between these two terms because they are not interchangeable.</p>
+
+        <p><strong>A provision</strong> is a term or condition that applies only to the solicitation phase. It tells offerors the rules of the game before they submit. Once the contract is awarded, provisions fall away. They served their purpose.</p>
+
+        <p><strong>A clause</strong> is a term or condition that becomes part of the contract. It survives award and governs the relationship between the Government and the contractor during performance.</p>
+
+        <p>Why does this matter? Because when you are building a commercial solicitation, you need to know which 52.212 documents are provisions (solicitation only) and which are clauses (contract). Mixing them up leads to confusion about what actually binds the contractor after award.</p>
+
+        <div class="provision-grid">
+          <div class="provision-card">
+            <span class="prov-tag tag-provision">Provision</span>
+            <h4>52.212-1</h4>
+            <p>Instructions to Offerors. Tells vendors how to submit. Solicitation only.</p>
+          </div>
+          <div class="provision-card">
+            <span class="prov-tag tag-provision">Provision</span>
+            <h4>52.212-2</h4>
+            <p>Evaluation Criteria. Tells vendors how you will evaluate. Solicitation only.</p>
+          </div>
+          <div class="provision-card">
+            <span class="prov-tag tag-clause">Clause</span>
+            <h4>52.212-4</h4>
+            <p>Contract Terms and Conditions. The foundation clause. Goes in the contract AND solicitation.</p>
+          </div>
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>52.212-1 and -2 are provisions.</strong> They go in the solicitation and do their work before award. 52.212-4 is a clause. It lives in the contract and binds the contractor during performance. 52.212-4 also appears in the solicitation so offerors know what contract terms they are agreeing to.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>What about 52.212-3 and 52.212-5?</strong> They did not survive the FAR Overhaul. Representations and certifications are now handled through SAM and the individual provisions prescribed in Table 12-2. Statutory requirements that were in 52.212-5 are now incorporated through the individual clauses in Table 12-3. You will not see 52.212-3 or 52.212-5 in a post-RFO solicitation.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> 52.212-4: The Only Clause That Survived</h3>
+      <div class="learn-body">
+        <p>The FAR Overhaul restructured commercial acquisitions significantly. But 52.212-4 came through intact. It is still the foundation clause for every commercial contract, and it already contains most of what you need for contract administration.</p>
+
+        <p><strong>What is built into 52.212-4:</strong> Inspection and acceptance. Payment terms and invoice requirements. Assignment rules. The Disputes clause (Contract Disputes Act). Excusable delays. Termination for cause. Termination for the Government's convenience. Warranty provisions. Compliance with laws unique to Government contracts.</p>
+
+        <div class="highlight-box warn">
+          <strong>Before you add any clause, ask: does 52.212-4 already cover this?</strong> New contracting officers often add separate inspection clauses, separate disputes clauses, or separate payment clauses that 52.212-4 already handles. If 52.212-4 covers it, stop. You only add clauses when 52.212-4 leaves a gap for your specific requirement.
+        </div>
+
+        <p><strong>Tailoring:</strong> You can tailor 52.212-4 to reflect customary commercial practice, but certain paragraphs are locked. The paragraphs on Assignments, Disputes, Payment, Invoice, Compliance with laws unique to Government contracts, Unauthorized obligations, and Comptroller General examination of records implement statute and cannot be tailored.</p>
+
+        <p><strong>Alternate I:</strong> If you are awarding a time-and-materials or labor-hour contract, use 52.212-4 with Alternate I. This adds the T&amp;M/LH-specific terms that the base clause does not cover.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Beyond 52.212-4: FAR 12.205</h3>
+      <div class="learn-body">
+        <p>52.212-1, -2, and -4 are your foundation. But they are not the whole picture. FAR 12.205 prescribes additional provisions and clauses that may apply to your commercial acquisition depending on the specific circumstances.</p>
+
+        <p>FAR 12.205(a) covers <strong>required provisions</strong> (Table 12-2). These are solicitation provisions beyond 52.212-1 and -2 that you include when their prescription is met. Things like SAM registration, Buy American certificates, and various statutory certifications.</p>
+
+        <p>FAR 12.205(b) covers <strong>required clauses</strong> (Table 12-3). These are contract clauses beyond 52.212-4 that you include when applicable. Small business set-asides, service contract labor standards, equal opportunity for veterans, and many more.</p>
+
+        <p>Then there are <strong>special cases</strong> from other FAR parts that prescribe clauses for specific situations: options (Part 17), construction (Part 36), government property (Part 45), contract types (Part 16), and data rights (Part 27).</p>
+
+        <div class="highlight-box">
+          <strong>Use the Clause Matrix tab</strong> to see the complete list from Tables 12-2 and 12-3, plus options and construction clauses. Rows highlighted in <span style="color: #6ee7b7;">green</span> apply to most or all acquisitions. You can search and filter the tables.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ CLAUSE MATRIX ═══════════════ -->
+  <div id="panel-matrix" class="pcc-panel">
+
+    <p style="color: var(--silver); font-size: 0.9rem; line-height: 1.7; margin-bottom: 1.5rem;">These tables come from FAR 12.205. Use the search box to filter by clause number, title, or keyword. On mobile, the "When Applicable" column is hidden to save space.</p>
+
+    <input type="text" class="matrix-filter" id="matrixFilter" placeholder="Search clauses (e.g. &quot;small business&quot;, &quot;52.225&quot;, &quot;labor&quot;)..." oninput="filterMatrix()" />
+
+    <!-- ── Table 12-2: Provisions ── -->
+    <div class="matrix-section" id="provSection">
+      <h3>Table 12-2: Provisions (Solicitation Only)</h3>
+      <p>Include these provisions in your solicitation when the prescription is met.</p>
+      <table class="clause-table" id="provTable">
+        <thead>
+          <tr><th class="col-num">Number</th><th class="col-title">Title</th><th class="col-source">Source</th><th class="col-note">When Applicable</th></tr>
+        </thead>
+        <tbody>
+          <tr class="common-row"><td class="col-num">52.212-1</td><td>Instructions to Offerors - Commercial Products and Commercial Services</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All commercial solicitations (FAR 12.205)</td></tr>
+          <tr class="common-row"><td class="col-num">52.212-2</td><td>Evaluation - Commercial Products and Commercial Services</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All commercial solicitations using competitive procedures (FAR 12.205)</td></tr>
+          <tr><td class="col-num">52.203-11</td><td>Certification and Disclosure Regarding Payments to Influence Certain Federal Transactions</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Solicitations expected to exceed $150,000</td></tr>
+          <tr class="common-row"><td class="col-num">52.203-18</td><td>Prohibition on Contracting with Entities that Require Certain Internal Confidentiality Agreements or Statements-Representation</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All solicitations</td></tr>
+          <tr class="common-row"><td class="col-num">52.204-7</td><td>System for Award Management-Registration</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When SAM registration is required (most acquisitions)</td></tr>
+          <tr><td class="col-num">52.204-7 Alt I</td><td>System for Award Management-Registration, with Alternate I</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When SAM registration is required and deploying with Armed Forces</td></tr>
+          <tr><td class="col-num">52.204-90</td><td>Offeror Identification</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Used in lieu of 52.204-7 when SAM registration is NOT required (see 4.203-2)</td></tr>
+          <tr><td class="col-num">52.207-6</td><td>Solicitation of Offers from Small Business Concerns and Small Business Teaming Arrangements or Joint Ventures (Multiple-Award Contracts)</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Multiple-award contracts with small business set-aside of orders</td></tr>
+          <tr><td class="col-num">52.209-12</td><td>Certification Regarding Tax Matters</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Solicitations exceeding $5.5 million</td></tr>
+          <tr><td class="col-num">52.219-2</td><td>Equal Low Bids</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Sealed bidding with potential for equal low bids</td></tr>
+          <tr><td class="col-num">52.222-18</td><td>Certification Regarding Knowledge of Child Labor for Listed End Products</td><td><span class="source-badge eo">EO</span></td><td class="col-note">Supplies that appear on the List of Products Requiring Contractor Certification</td></tr>
+          <tr><td class="col-num">52.222-48</td><td>Exemption from Application of the Service Contract Labor Standards for Maintenance, Calibration, or Repair of Certain Equipment-Certification</td><td><span class="source-badge other">Other</span></td><td class="col-note">Services exempt from SCA for maintenance/calibration/repair of commercial equipment</td></tr>
+          <tr><td class="col-num">52.222-52</td><td>Exemption from Application of the Service Contract Labor Standards for Certain Services-Certification</td><td><span class="source-badge other">Other</span></td><td class="col-note">Services exempt from SCA under other exemption categories</td></tr>
+          <tr><td class="col-num">52.222-56</td><td>Certification Regarding Trafficking in Persons Compliance Plan</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Services or supplies exceeding $550,000 performed outside the US</td></tr>
+          <tr><td class="col-num">52.223-4</td><td>Recovered Material Certification</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">EPA-designated items exceeding $10,000</td></tr>
+          <tr><td class="col-num">52.225-2</td><td>Buy American Certificate</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Supplies subject to Buy American Act (domestic acquisitions)</td></tr>
+          <tr><td class="col-num">52.225-4</td><td>Buy American-Free Trade Agreements-Israeli Trade Act Certificate</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Supplies subject to trade agreements (check thresholds)</td></tr>
+          <tr><td class="col-num">52.225-6</td><td>Trade Agreements-Certificate</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Supplies subject to Trade Agreements Act above the threshold</td></tr>
+          <tr><td class="col-num">52.225-20</td><td>Prohibition on Conducting Restricted Business Operations in Sudan-Certification</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Solicitations exceeding $174,000</td></tr>
+          <tr><td class="col-num">52.225-25</td><td>Prohibition on Contracting with Entities Engaging in Certain Activities or Transactions Relating to Iran-Representation and Certifications</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Solicitations exceeding the SAT</td></tr>
+          <tr><td class="col-num">52.226-3</td><td>Disaster or Emergency Area Representation</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Set-asides for disaster or emergency area firms</td></tr>
+          <tr><td class="col-num">52.229-11</td><td>Tax on Certain Foreign Procurements-Notice and Representation</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Acquisitions from foreign persons when 2% tax may apply</td></tr>
+          <tr><td class="col-num">52.240-90</td><td>Security Prohibitions and Exclusions Representations and Certifications</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When security prohibitions apply (e.g., covered telecommunications)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Table 12-3: Clauses ── -->
+    <div class="matrix-section" id="clauseSection">
+      <h3>Table 12-3: Clauses (Contract)</h3>
+      <p>Include these clauses in your contract (and solicitation) when the prescription is met. Rows highlighted in green apply to most or all acquisitions.</p>
+      <table class="clause-table" id="clauseTable">
+        <thead>
+          <tr><th class="col-num">Number</th><th class="col-title">Title</th><th class="col-source">Source</th><th class="col-note">When Applicable</th></tr>
+        </thead>
+        <tbody>
+          <tr class="common-row"><td class="col-num">52.212-4</td><td>Contract Terms and Conditions - Commercial Products and Commercial Services</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All commercial contracts (FAR 12.205). Use Alt I for T&amp;M/LH contracts.</td></tr>
+          <tr><td class="col-num">52.203-6 Alt I</td><td>Restrictions on Subcontractor Sales to the Government</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts exceeding the SAT</td></tr>
+          <tr><td class="col-num">52.203-13</td><td>Contractor Code of Business Ethics and Conduct</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts exceeding $6 million with performance period &gt; 120 days</td></tr>
+          <tr class="common-row"><td class="col-num">52.203-17</td><td>Contractor Employee Whistleblower Rights</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All contracts exceeding the SAT</td></tr>
+          <tr class="common-row"><td class="col-num">52.203-19</td><td>Prohibition on Requiring Certain Internal Confidentiality Agreements or Statements</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All contracts</td></tr>
+          <tr><td class="col-num">52.204-9</td><td>Personal Identity Verification of Contractor Personnel</td><td><span class="source-badge other">Other</span></td><td class="col-note">Contractor personnel require physical access to Government facilities or IT systems</td></tr>
+          <tr class="common-row"><td class="col-num">52.204-13</td><td>System for Award Management-Maintenance</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When SAM registration is required</td></tr>
+          <tr class="common-row"><td class="col-num">52.204-91</td><td>Contractor Identification</td><td><span class="source-badge other">Other</span></td><td class="col-note">All contracts</td></tr>
+          <tr><td class="col-num">52.209-6</td><td>Protecting the Government's Interest When Subcontracting with Contractors Debarred, Suspended, or Proposed for Debarment</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts exceeding $35,000</td></tr>
+          <tr><td class="col-num">52.209-9</td><td>Updates of Publicly Available Information Regarding Responsibility Matters</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts exceeding $500,000 where FAPIIS reporting applies</td></tr>
+          <tr><td class="col-num">52.209-10</td><td>Prohibition on Contracting with Inverted Domestic Corporations</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts exceeding $1 million unless exception applies</td></tr>
+          <tr><td class="col-num">52.219-4</td><td>Notice of Price Evaluation Preference for HUBZone Small Business Concerns</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Full and open competition with HUBZone price evaluation preference</td></tr>
+          <tr><td class="col-num">52.219-6</td><td>Notice of Total Small Business Set-Aside</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Total small business set-asides</td></tr>
+          <tr><td class="col-num">52.219-6 Alt I</td><td>Notice of Total Small Business Set-Aside, with Alternate I</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Total SB set-asides with partial set-aside of orders under multiple-award contracts</td></tr>
+          <tr><td class="col-num">52.219-8</td><td>Utilization of Small Business Concerns</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts exceeding the SAT (with limited exceptions)</td></tr>
+          <tr><td class="col-num">52.219-9</td><td>Small Business Subcontracting Plan</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts exceeding $750,000 ($1.5M for construction) awarded to other than small business</td></tr>
+          <tr><td class="col-num">52.219-9 Alt I</td><td>Small Business Subcontracting Plan, with Alternate I</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When subcontracting plan applies and development of plan after award is authorized</td></tr>
+          <tr><td class="col-num">52.219-9 Alt II</td><td>Small Business Subcontracting Plan, with Alternate II</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When contractor has a commercial subcontracting plan</td></tr>
+          <tr><td class="col-num">52.219-9 Alt III</td><td>Small Business Subcontracting Plan, with Alternate III</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When using a Master Subcontracting Plan</td></tr>
+          <tr><td class="col-num">52.219-9 Alt IV</td><td>Small Business Subcontracting Plan, with Alternate IV</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts with Indian tribes or HBCUs</td></tr>
+          <tr><td class="col-num">52.219-14</td><td>Limitations on Subcontracting</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Small business set-asides, sole source awards to SBs, or orders set aside for SBs</td></tr>
+          <tr><td class="col-num">52.219-16</td><td>Liquidated Damages-Subcontracting Plan</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts with subcontracting plans where liquidated damages apply</td></tr>
+          <tr><td class="col-num">52.219-33</td><td>Nonmanufacturer Rule</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Supply contracts set aside for SBs where contractor is not the manufacturer</td></tr>
+          <tr class="common-row"><td class="col-num">52.222-3</td><td>Convict Labor</td><td><span class="source-badge eo">EO</span></td><td class="col-note">All contracts exceeding the micro-purchase threshold</td></tr>
+          <tr><td class="col-num">52.222-19</td><td>Child Labor-Cooperation with Authorities and Remedies</td><td><span class="source-badge eo">EO</span></td><td class="col-note">Supplies that appear on the List of Products</td></tr>
+          <tr class="common-row"><td class="col-num">52.222-35</td><td>Equal Opportunity for Veterans</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts of $150,000 or more</td></tr>
+          <tr><td class="col-num">52.222-35 Alt I</td><td>Equal Opportunity for Veterans, with Alternate I</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts performed entirely outside the US</td></tr>
+          <tr class="common-row"><td class="col-num">52.222-36</td><td>Equal Opportunity for Workers with Disabilities</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts exceeding $15,000</td></tr>
+          <tr><td class="col-num">52.222-36 Alt I</td><td>Equal Opportunity for Workers with Disabilities, with Alternate I</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts performed entirely outside the US</td></tr>
+          <tr class="common-row"><td class="col-num">52.222-37</td><td>Employment Reports on Veterans</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts of $150,000 or more</td></tr>
+          <tr class="common-row"><td class="col-num">52.222-40</td><td>Notification of Employee Rights Under the National Labor Relations Act</td><td><span class="source-badge eo">EO</span></td><td class="col-note">Contracts exceeding the SAT</td></tr>
+          <tr><td class="col-num">52.222-41</td><td>Service Contract Labor Standards</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Service contracts subject to SCA (exceeding $2,500)</td></tr>
+          <tr><td class="col-num">52.222-42</td><td>Statement of Equivalent Rates for Federal Hires</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">SCA-covered contracts where comparable Federal employee rates are available</td></tr>
+          <tr><td class="col-num">52.222-43</td><td>Fair Labor Standards Act and Service Contract Labor Standards-Price Adjustment (Multiple Year and Option Contracts)</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">SCA-covered contracts with option years (use instead of 52.222-44)</td></tr>
+          <tr><td class="col-num">52.222-44</td><td>Fair Labor Standards Act and Service Contract Labor Standards-Price Adjustment</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">SCA-covered single-year contracts</td></tr>
+          <tr class="common-row"><td class="col-num">52.222-50</td><td>Combating Trafficking in Persons</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All contracts</td></tr>
+          <tr><td class="col-num">52.222-50 Alt I</td><td>Combating Trafficking in Persons, with Alternate I</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts performed outside the US exceeding $550,000</td></tr>
+          <tr><td class="col-num">52.222-51</td><td>Exemption from Application of the Service Contract Labor Standards to Contracts for Maintenance, Calibration, or Repair of Certain Equipment-Requirements</td><td><span class="source-badge other">Other</span></td><td class="col-note">Companion clause to provision 52.222-48 (SCA-exempt maintenance/repair)</td></tr>
+          <tr><td class="col-num">52.222-53</td><td>Exemption from Application of the Service Contract Labor Standards to Contracts for Certain Services-Requirements</td><td><span class="source-badge other">Other</span></td><td class="col-note">Companion clause to provision 52.222-52 (SCA-exempt services)</td></tr>
+          <tr class="common-row"><td class="col-num">52.222-54</td><td>Employment Eligibility Verification</td><td><span class="source-badge eo">EO</span></td><td class="col-note">Contracts exceeding the SAT (E-Verify requirement)</td></tr>
+          <tr><td class="col-num">52.222-62</td><td>Paid Sick Leave Under Executive Order 13706</td><td><span class="source-badge eo">EO</span></td><td class="col-note">Contracts subject to SCA or DBA covered by EO 13706</td></tr>
+          <tr><td class="col-num">52.223-9</td><td>Estimate of Percentage of Recovered Material Content for EPA-Designated Items</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts for EPA-designated items exceeding $10,000</td></tr>
+          <tr><td class="col-num">52.223-9 Alt I</td><td>Estimate of Percentage of Recovered Material Content for EPA-Designated Items, with Alternate I</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When technical personnel determine recovered material is impracticable</td></tr>
+          <tr><td class="col-num">52.223-11</td><td>Ozone-Depleting Substances and High Global Warming Potential Hydrofluorocarbons</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts for supplies containing ozone-depleting substances or high-GWP HFCs</td></tr>
+          <tr><td class="col-num">52.223-12</td><td>Maintenance, Service, Repair, or Disposal of Refrigeration Equipment and Air Conditioners</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Services involving refrigeration or AC equipment maintenance/disposal</td></tr>
+          <tr><td class="col-num">52.223-20</td><td>Aerosols</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts for supplies that may contain aerosols with ozone-depleting substances</td></tr>
+          <tr><td class="col-num">52.223-21</td><td>Foams</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts for supplies that may contain foams with ozone-depleting substances</td></tr>
+          <tr><td class="col-num">52.223-23</td><td>Sustainable Products and Services</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts for biobased, energy-efficient, water-efficient, or recycled-content products</td></tr>
+          <tr><td class="col-num">52.224-3</td><td>Privacy Training</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contractor employees will have access to PII</td></tr>
+          <tr><td class="col-num">52.224-3 Alt I</td><td>Privacy Training, with Alternate I</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Agency provides its own privacy training</td></tr>
+          <tr><td class="col-num">52.225-1</td><td>Buy American-Supplies</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Domestic supply contracts subject to Buy American Act</td></tr>
+          <tr><td class="col-num">52.225-1 Alt I</td><td>Buy American-Supplies, with Alternate I</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When agency head determines domestic preference not in public interest</td></tr>
+          <tr><td class="col-num">52.225-3</td><td>Buy American-Free Trade Agreements-Israeli Trade Act</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Supplies subject to trade agreements (check dollar thresholds)</td></tr>
+          <tr><td class="col-num">52.225-3 Alt II</td><td>Buy American-Free Trade Agreements-Israeli Trade Act, with Alternate II</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">FTA countries excluded per agency determination</td></tr>
+          <tr><td class="col-num">52.225-3 Alt III</td><td>Buy American-Free Trade Agreements-Israeli Trade Act, with Alternate III</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When Israeli Trade Act applies but not other FTAs</td></tr>
+          <tr><td class="col-num">52.225-3 Alt IV</td><td>Buy American-Free Trade Agreements-Israeli Trade Act, with Alternate IV</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When WTO GPA and certain FTAs apply</td></tr>
+          <tr><td class="col-num">52.225-5</td><td>Trade Agreements</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Supplies exceeding WTO GPA threshold</td></tr>
+          <tr><td class="col-num">52.225-19</td><td>Contractor Personnel in a Designated Operational Area or Supporting a Diplomatic or Consular Mission outside the United States</td><td><span class="source-badge other">Other</span></td><td class="col-note">Contractor personnel deploying to designated operational areas or supporting diplomatic missions</td></tr>
+          <tr><td class="col-num">52.225-26</td><td>Contractors Performing Private Security Functions Outside the United States</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts with private security functions performed outside the US</td></tr>
+          <tr><td class="col-num">52.226-4</td><td>Notice of Disaster or Emergency Area Set-Aside</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Set-asides for disaster or emergency areas</td></tr>
+          <tr><td class="col-num">52.226-5</td><td>Restrictions on Subcontracting Outside Disaster or Emergency Area</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Disaster/emergency set-asides with subcontracting restrictions</td></tr>
+          <tr class="common-row"><td class="col-num">52.226-8</td><td>Encouraging Contractor Policies to Ban Text Messaging While Driving</td><td><span class="source-badge eo">EO</span></td><td class="col-note">Contracts exceeding the micro-purchase threshold</td></tr>
+          <tr><td class="col-num">52.229-12</td><td>Tax on Certain Foreign Procurements</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Acquisitions from foreign persons when 2% tax applies</td></tr>
+          <tr><td class="col-num">52.232-29</td><td>Terms for Financing of Commercial Products and Commercial Services</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When Government financing is offered for commercial items</td></tr>
+          <tr><td class="col-num">52.232-30</td><td>Installment Payments of Commercial Products and Commercial Services</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When installment payment financing is used</td></tr>
+          <tr class="common-row"><td class="col-num">52.232-33</td><td>Payment by Electronic Funds Transfer-System for Award Management</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All contracts when payment by EFT through SAM (most contracts)</td></tr>
+          <tr><td class="col-num">52.232-34</td><td>Payment by Electronic Funds Transfer-Other than System for Award Management</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When EFT payment is required but not through SAM</td></tr>
+          <tr><td class="col-num">52.232-36</td><td>Payment by Third Party</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When using Government purchase card for payments</td></tr>
+          <tr><td class="col-num">52.232-40</td><td>Providing Accelerated Payments to Small Business Subcontractors</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts with subcontracting plans</td></tr>
+          <tr><td class="col-num">52.232-9X</td><td>Fast Payment Procedure</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When fast payment procedures apply per FAR 13.4</td></tr>
+          <tr class="common-row"><td class="col-num">52.233-3</td><td>Protest After Award</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All contracts</td></tr>
+          <tr class="common-row"><td class="col-num">52.233-4</td><td>Applicable Law for Breach of Contract Claim</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All contracts</td></tr>
+          <tr><td class="col-num">52.240-91</td><td>Security Prohibitions and Exclusions</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When security prohibitions apply (covered telecommunications, etc.)</td></tr>
+          <tr><td class="col-num">52.240-91 Alt I</td><td>Security Prohibitions and Exclusions, with Alternate I</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When waiver from security prohibition has been granted</td></tr>
+          <tr><td class="col-num">52.240-92</td><td>Security Requirements</td><td><span class="source-badge other">Other</span></td><td class="col-note">Contracts requiring access to classified information</td></tr>
+          <tr><td class="col-num">52.240-92 Alt II</td><td>Security Requirements with Alternate II</td><td><span class="source-badge other">Other</span></td><td class="col-note">Contracts requiring access to classified info with special safeguarding requirements</td></tr>
+          <tr class="common-row"><td class="col-num">52.240-93</td><td>Basic Safeguarding of Covered Contractor Information Systems</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts where contractor will process, store, or transmit Federal contract info</td></tr>
+          <tr class="common-row"><td class="col-num">52.244-6</td><td>Subcontracts for Commercial Products and Commercial Services</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts exceeding the SAT (flowdown of commercial subcontracting requirements)</td></tr>
+          <tr><td class="col-num">52.247-64</td><td>Preference for Privately Owned U.S.-Flag Commercial Vessels</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Contracts involving ocean transportation of supplies</td></tr>
+          <tr><td class="col-num">52.247-64 Alt I</td><td>Preference for Privately Owned U.S.-Flag Commercial Vessels, with Alternate I</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Construction contracts involving ocean transportation</td></tr>
+          <tr><td class="col-num">52.247-64 Alt II</td><td>Preference for Privately Owned U.S.-Flag Commercial Vessels, with Alternate II</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Time charter, voyage charter, or contract for ocean carriage</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Special Cases ── -->
+    <div class="special-section">
+      <h4>Special Cases: Clauses from Other FAR Parts</h4>
+      <p>The tables above cover FAR 12.205 prescriptions. But depending on your specific acquisition, you may also need clauses prescribed by other FAR parts. These are separate from Table 12-3 and require you to look at the specific part for the full prescription.</p>
+      <div class="special-grid">
+        <div class="special-card">
+          <strong>Part 16: Contract Types</strong>
+          <span>Clauses specific to certain contract types (T&amp;M, labor-hour, cost-type). See FAR 12.104.</span>
+        </div>
+        <div class="special-card">
+          <strong>Part 17: Options</strong>
+          <span>If your contract includes option years or quantities, you need options clauses (e.g., 52.217-8, 52.217-9). 52.212-4 does not give you the mechanism to exercise options.</span>
+        </div>
+        <div class="special-card">
+          <strong>Part 27: Data Rights</strong>
+          <span>When you need to delineate rights in technical data or computer software. See FAR 12.106.</span>
+        </div>
+        <div class="special-card">
+          <strong>Part 36: Construction</strong>
+          <span>Commercial construction contracts require additional clauses from Part 36 (Davis-Bacon, bonds, etc.).</span>
+        </div>
+        <div class="special-card">
+          <strong>Part 45: Government Property</strong>
+          <span>If the Government is furnishing property to the contractor for use in performance, you need Government property clauses.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Part 17: Options ── -->
+    <div class="matrix-section" id="optionsSection">
+      <h3>Part 17: Options Clauses</h3>
+      <p>If your contract includes option years or option quantities, you need these clauses. 52.212-4 does not give you the mechanism to exercise options. The evaluation provisions tell offerors whether options will be evaluated as part of the award decision.</p>
+      <table class="clause-table" id="optionsTable">
+        <thead>
+          <tr><th class="col-num">Number</th><th class="col-title">Title</th><th class="col-source">Source</th><th class="col-note">When Applicable</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="col-num">52.217-3</td><td>Evaluation Exclusive of Options</td><td><span class="source-badge other">Provision</span></td><td class="col-note">When the solicitation includes options but options will NOT be evaluated for award</td></tr>
+          <tr><td class="col-num">52.217-4</td><td>Evaluation of Options Exercised at Time of Contract Award</td><td><span class="source-badge other">Provision</span></td><td class="col-note">When options will be exercised at time of award and their cost evaluated for award</td></tr>
+          <tr><td class="col-num">52.217-5</td><td>Evaluation of Options</td><td><span class="source-badge other">Provision</span></td><td class="col-note">When options may be exercised after award and their cost will be evaluated for award</td></tr>
+          <tr class="common-row"><td class="col-num">52.217-6</td><td>Option for Increased Quantity</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When the Government wants to reserve the right to increase quantities at the same unit price</td></tr>
+          <tr><td class="col-num">52.217-7</td><td>Option for Increased Quantity - Separately Priced Line Item</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When option quantities are separately priced line items rather than extensions of base quantities</td></tr>
+          <tr class="common-row"><td class="col-num">52.217-8</td><td>Option to Extend Services</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Service contracts where the Government may need to extend services for up to 6 months (bridge while re-competing)</td></tr>
+          <tr class="common-row"><td class="col-num">52.217-9</td><td>Option to Extend the Term of the Contract</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When the contract includes option periods (option years). Fill in the total duration including options.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Part 36: Construction ── -->
+    <div class="matrix-section" id="constructionSection">
+      <h3>Part 36: Construction Clauses</h3>
+      <p>Commercial construction contracts require additional clauses from FAR Part 36 and the Davis-Bacon wage rate clauses from Part 22. If the contract exceeds the thresholds for performance and payment bonds, you need those too.</p>
+
+      <h4 style="font-family:'Rajdhani',sans-serif; font-size:1.1rem; font-weight:700; color:var(--accent); margin:1.5rem 0 0.75rem;">52.236 Series: Construction</h4>
+      <table class="clause-table" id="constructionTable">
+        <thead>
+          <tr><th class="col-num">Number</th><th class="col-title">Title</th><th class="col-source">Source</th><th class="col-note">When Applicable</th></tr>
+        </thead>
+        <tbody>
+          <tr class="common-row"><td class="col-num">52.236-1</td><td>Performance of Work by the Contractor</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All construction contracts. Fill in the percentage of work contractor must perform.</td></tr>
+          <tr class="common-row"><td class="col-num">52.236-2</td><td>Differing Site Conditions</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All construction contracts (fixed-price). Implements the differing site conditions doctrine.</td></tr>
+          <tr class="common-row"><td class="col-num">52.236-3</td><td>Site Investigation and Conditions Affecting the Work</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All construction contracts (fixed-price). Requires contractor to investigate site conditions.</td></tr>
+          <tr class="common-row"><td class="col-num">52.236-5</td><td>Material and Workmanship</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All construction contracts. Standards for materials and quality of work.</td></tr>
+          <tr class="common-row"><td class="col-num">52.236-6</td><td>Superintendence by the Contractor</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All construction contracts. Requires competent superintendent on site.</td></tr>
+          <tr class="common-row"><td class="col-num">52.236-7</td><td>Permits and Responsibilities</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All construction contracts. Contractor responsible for permits and compliance.</td></tr>
+          <tr class="common-row"><td class="col-num">52.236-8</td><td>Other Contracts</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All construction contracts. Requires coordination with other contractors on site.</td></tr>
+          <tr class="common-row"><td class="col-num">52.236-9</td><td>Protection of Existing Vegetation, Structures, Equipment, Utilities, and Improvements</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All construction contracts. Protect existing site features.</td></tr>
+          <tr class="common-row"><td class="col-num">52.236-10</td><td>Operations and Storage Areas</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All construction contracts. Confine operations to designated areas.</td></tr>
+          <tr><td class="col-num">52.236-11</td><td>Use and Possession Prior to Completion</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When the Government may need to occupy or use the project before final completion.</td></tr>
+          <tr class="common-row"><td class="col-num">52.236-12</td><td>Cleaning Up</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All construction contracts. Contractor must keep site clean during and after work.</td></tr>
+          <tr class="common-row"><td class="col-num">52.236-13</td><td>Accident Prevention</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All construction contracts. Safety requirements and accident prevention plan.</td></tr>
+          <tr><td class="col-num">52.236-14</td><td>Availability and Use of Utility Services</td><td><span class="source-badge other">Other</span></td><td class="col-note">When Government-furnished utilities are available at the construction site.</td></tr>
+          <tr class="common-row"><td class="col-num">52.236-15</td><td>Schedules for Construction Contracts</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All construction contracts. Requires submission of progress schedules.</td></tr>
+          <tr class="common-row"><td class="col-num">52.236-21</td><td>Specifications and Drawings for Construction</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All construction contracts. Governs specs, drawings, and shop drawing submittals.</td></tr>
+          <tr><td class="col-num">52.236-26</td><td>Preconstruction Conference</td><td><span class="source-badge other">Other</span></td><td class="col-note">When a preconstruction conference is planned. Establishes conference requirements.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="font-family:'Rajdhani',sans-serif; font-size:1.1rem; font-weight:700; color:var(--accent); margin:1.5rem 0 0.75rem;">Davis-Bacon Wage Rate Clauses (52.222 Series)</h4>
+      <table class="clause-table" id="davisBaconTable">
+        <thead>
+          <tr><th class="col-num">Number</th><th class="col-title">Title</th><th class="col-source">Source</th><th class="col-note">When Applicable</th></tr>
+        </thead>
+        <tbody>
+          <tr class="common-row"><td class="col-num">52.222-6</td><td>Construction Wage Rate Requirements</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Construction contracts exceeding $2,000. The core Davis-Bacon clause.</td></tr>
+          <tr class="common-row"><td class="col-num">52.222-7</td><td>Withholding of Funds</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All Davis-Bacon covered contracts. Allows withholding for wage violations.</td></tr>
+          <tr class="common-row"><td class="col-num">52.222-8</td><td>Payrolls and Basic Records</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All Davis-Bacon covered contracts. Certified payroll requirements.</td></tr>
+          <tr class="common-row"><td class="col-num">52.222-9</td><td>Apprentices and Trainees</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All Davis-Bacon covered contracts. Rules for apprentice wage rates.</td></tr>
+          <tr class="common-row"><td class="col-num">52.222-10</td><td>Compliance with Copeland Act Requirements</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All Davis-Bacon covered contracts. Anti-kickback provisions.</td></tr>
+          <tr class="common-row"><td class="col-num">52.222-11</td><td>Subcontracts (Labor Standards)</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All Davis-Bacon covered contracts. Flowdown of labor standards to subcontractors.</td></tr>
+          <tr class="common-row"><td class="col-num">52.222-12</td><td>Contract Termination - Debarment</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All Davis-Bacon covered contracts. Breach of labor standards may result in debarment.</td></tr>
+          <tr class="common-row"><td class="col-num">52.222-13</td><td>Compliance with Construction Wage Rate Requirements and Related Regulations</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All Davis-Bacon covered contracts. General compliance requirement.</td></tr>
+          <tr class="common-row"><td class="col-num">52.222-14</td><td>Disputes Concerning Labor Standards</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All Davis-Bacon covered contracts. Disputes go to DOL, not the CO.</td></tr>
+          <tr class="common-row"><td class="col-num">52.222-15</td><td>Certification of Eligibility</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">All Davis-Bacon covered contracts. Contractor certifies it is not debarred from DBA work.</td></tr>
+          <tr><td class="col-num">52.222-27</td><td>Affirmative Action Compliance Requirements for Construction</td><td><span class="source-badge eo">EO</span></td><td class="col-note">Construction contracts exceeding $10,000. EO 11246 affirmative action requirements.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="font-family:'Rajdhani',sans-serif; font-size:1.1rem; font-weight:700; color:var(--accent); margin:1.5rem 0 0.75rem;">Performance and Payment Bonds (52.228 Series)</h4>
+      <table class="clause-table" id="bondsTable">
+        <thead>
+          <tr><th class="col-num">Number</th><th class="col-title">Title</th><th class="col-source">Source</th><th class="col-note">When Applicable</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="col-num">52.228-1</td><td>Bid Guarantee</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Construction contracts using sealed bidding exceeding $150,000.</td></tr>
+          <tr><td class="col-num">52.228-2</td><td>Additional Bond Security</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">When a performance or payment bond surety becomes unacceptable during performance.</td></tr>
+          <tr class="common-row"><td class="col-num">52.228-15</td><td>Performance and Payment Bonds - Construction</td><td><span class="source-badge statute">Statute</span></td><td class="col-note">Construction contracts exceeding $150,000. Miller Act requirement.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── DFARS Note ── -->
+    <div class="dfars-note">
+      <h4>A Note on DFARS Clauses</h4>
+      <p>This training focuses on FAR clauses. DFARS clauses change frequently enough that listing them all here would risk being out of date by the time you read this. However, there is one DFARS clause you will use on virtually every DoD contract:</p>
+      <p><strong>252.232-7006, Wide Area WorkFlow Payment Instructions.</strong> This clause tells the contractor how to submit invoices through WAWF (now part of the Invoicing, Receipt, Acceptance and Property Transfer system, or iRAPT). If you are doing DoD contracting, do not forget this one.</p>
+      <p>More complex DFARS clauses exist, such as <strong>252.232-7007, Limitation of Government's Obligation (LOGO)</strong>, which applies to incrementally funded contracts. But that is a training for another time.</p>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="pcc-panel" style="max-width:900px;">
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR 12.205: Solicitation Provisions and Contract Clauses</h4>
+        <p>The prescription section that tells you which provisions and clauses go in commercial solicitations and contracts. Contains Tables 12-2 and 12-3.</p>
+        <a href="https://www.acquisition.gov/far/12.205" target="_blank" rel="noopener">Open FAR 12.205</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 52.212-1: Instructions to Offerors</h4>
+        <p>Solicitation provision. Tells offerors how to submit, late submission rules, acceptance period, and debriefing disclosures.</p>
+        <a href="https://www.acquisition.gov/far/52.212-1" target="_blank" rel="noopener">Open FAR 52.212-1</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 52.212-2: Evaluation</h4>
+        <p>Solicitation provision. Where you state your evaluation factors, their relative importance, and the basis for award.</p>
+        <a href="https://www.acquisition.gov/far/52.212-2" target="_blank" rel="noopener">Open FAR 52.212-2</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 52.212-4: Contract Terms and Conditions</h4>
+        <p>The foundation clause. Contains inspection, acceptance, payment, disputes, termination, and all core contract terms.</p>
+        <a href="https://www.acquisition.gov/far/52.212-4" target="_blank" rel="noopener">Open FAR 52.212-4</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Part 12: Commercial Acquisition</h4>
+        <p>The complete regulation governing commercial acquisitions after the FAR Overhaul.</p>
+        <a href="https://www.acquisition.gov/far/part-12" target="_blank" rel="noopener">Open FAR Part 12</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Part 12 RFO Deviation Guide</h4>
+        <p>How FAR Part 12 changed under the overhaul. Details on restructured provisions and clauses.</p>
+        <a href="https://acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12" target="_blank" rel="noopener">Open RFO Deviation Guide</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Part 12 Practitioner Album</h4>
+        <p>Multimedia resource from the FAR Overhaul team with flowcharts, decision trees, and Q&amp;A.</p>
+        <a href="https://acquisition.gov/sites/default/files/practitioner_albums/far-part-12-acquisition-of-commercial-products-and-commercial-services/content/index.html" target="_blank" rel="noopener">Open Part 12 Album</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* Tab switching */
+function showTab(tab) {
+  document.querySelectorAll('.pcc-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.pcc-tab').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('panel-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+/* Matrix search/filter */
+function filterMatrix() {
+  var query = document.getElementById('matrixFilter').value.toLowerCase().trim();
+  var tables = [document.getElementById('provTable'), document.getElementById('clauseTable'), document.getElementById('optionsTable'), document.getElementById('constructionTable'), document.getElementById('davisBaconTable'), document.getElementById('bondsTable')];
+  tables.forEach(function(table) {
+    var rows = table.querySelectorAll('tbody tr');
+    rows.forEach(function(row) {
+      var text = row.textContent.toLowerCase();
+      row.style.display = text.indexOf(query) !== -1 ? '' : 'none';
+    });
+  });
+}
+</script>
+</body>
+</html>

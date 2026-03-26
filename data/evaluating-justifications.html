@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how to evaluate brand name justifications and analyses. Understand what makes a sole source justification legitimate and spot red flags in weak J&As." />
+  <title>Evaluating Brand Name J&As | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .eja-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+    .eja-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .eja-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .eja-tab:hover { color: var(--white); }
+    .eja-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .eja-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .eja-panel.active { display: block; }
+    .eja-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .eja-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .eja-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .eja-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+    /* ── Document display ── */
+    .eja-outer { background: rgba(10,22,50,0.3); border-radius: 14px; padding: 1.5rem; overflow-x: auto; }
+    .eja-doc { min-width: 600px; border: 2px solid #000; background: #fff; color: #000; font-size: 12px; line-height: 1.6; font-family: 'Inter', 'Times New Roman', serif; padding: 2rem 2.5rem; }
+    .eja-doc h4 { font-size: 14px; font-weight: 700; text-transform: uppercase; text-align: center; margin-bottom: 0.25rem; letter-spacing: 1px; }
+    .eja-doc h5 { font-size: 11px; font-weight: 400; text-align: center; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #000; }
+    .eja-doc .doc-label { font-size: 11px; font-weight: 700; margin: 0.75rem 0 0.15rem; text-transform: uppercase; }
+    .eja-doc .doc-field { font-size: 12px; padding: 0.3rem 0; border-bottom: 1px solid #ccc; margin-bottom: 0.5rem; min-height: 1.2em; }
+    .eja-doc .doc-section-head { font-size: 12px; font-weight: 700; margin: 1.25rem 0 0.5rem; }
+    .eja-doc .doc-section-body { font-size: 12px; padding: 0.4rem 0; }
+    .eja-doc .doc-sig { margin-top: 1.5rem; border-top: 1px solid #000; padding-top: 0.3rem; font-size: 11px; }
+    .eja-doc .doc-footer { margin-top: 1.5rem; text-align: center; font-size: 10px; font-style: italic; color: #666; border-top: 1px solid #ccc; padding-top: 0.75rem; }
+    /* ── Clickable sections ── */
+    .eja-section { padding: 0.6rem 0.75rem; margin: 0.5rem 0; border-radius: 4px; cursor: pointer; transition: background 0.12s; border-left: 3px solid transparent; }
+    .eja-section:hover { background: #f0f4ff; }
+    .eja-section.active { background: #fff9db; }
+    .eja-section.eja-flag { border-left-color: #4a9eff; }
+    .eja-section.eja-problem { border-left-color: #dc2626; }
+    /* ── Toggle buttons ── */
+    .eja-toggle { display: flex; gap: 0; margin-bottom: 1.25rem; }
+    .eja-toggle-btn { flex: 1; padding: 0.75rem 1rem; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.2); background: rgba(10,22,50,0.5); color: var(--silver); cursor: pointer; transition: all 0.18s; font-family: inherit; }
+    .eja-toggle-btn:first-child { border-radius: 8px 0 0 8px; }
+    .eja-toggle-btn:last-child { border-radius: 0 8px 8px 0; }
+    .eja-toggle-btn.active { background: rgba(74,158,255,0.15); color: var(--accent); border-color: rgba(74,158,255,0.35); }
+    .eja-toggle-btn.bad { color: var(--silver); }
+    .eja-toggle-btn.bad.active { background: rgba(220,38,38,0.12); color: #fca5a5; border-color: rgba(220,38,38,0.35); }
+    /* ── Note popup ── */
+    .eja-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; padding: 1.5rem; }
+    .eja-overlay.visible { display: flex; }
+    .eja-note { background: #0d1a33; border: 1px solid rgba(74,158,255,0.3); border-radius: 14px; padding: 1.5rem 1.75rem; max-width: 520px; width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,0.5); animation: popIn 0.18s ease-out; position: relative; }
+    .eja-note.warn { border-color: rgba(220,38,38,0.4); }
+    .eja-note-title { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 0.6rem; padding-right: 2rem; }
+    .eja-note.warn .eja-note-title { color: #fca5a5; }
+    .eja-note-body { color: var(--silver); font-size: 0.9rem; line-height: 1.75; }
+    .eja-note-body strong { color: var(--white); }
+    .eja-note-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--silver); cursor: pointer; font-size: 1.4rem; line-height: 1; padding: 0; transition: color 0.12s; }
+    .eja-note-close:hover { color: var(--white); }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+    @media (max-width: 768px) {
+      .eja-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+      .eja-doc { min-width: 0; padding: 1rem; font-size: 11px; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+    /* ── Practice tab ── */
+    .eja-subtabs { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 2rem; }
+    .eja-subtab { padding: 0.65rem 1.3rem; font-size: 0.82rem; font-weight: 700; border-radius: 100px; border: 1px solid rgba(74,158,255,0.2); background: rgba(10,22,50,0.5); color: var(--silver); cursor: pointer; transition: all 0.18s; font-family: inherit; }
+    .eja-subtab:hover { color: var(--white); border-color: rgba(74,158,255,0.35); }
+    .eja-subtab.active { background: rgba(74,158,255,0.15); color: var(--accent); border-color: rgba(74,158,255,0.4); }
+    .eja-subpanel { display: none; }
+    .eja-subpanel.active { display: block; }
+    /* Quiz */
+    .eja-quiz-progress { text-align: center; color: var(--silver); font-size: 0.82rem; margin-bottom: 1rem; }
+    .eja-quiz-progress strong { color: var(--accent); }
+    .eja-quiz-card { background: rgba(10,22,50,0.6); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.75rem; max-width: 700px; margin: 0 auto 1.5rem; }
+    .eja-quiz-card .eja-quiz-q { color: var(--white); font-size: 1rem; line-height: 1.7; margin-bottom: 1.25rem; font-style: italic; }
+    .eja-quiz-card .eja-quiz-q::before { content: '\201C'; color: var(--accent); font-size: 1.4rem; margin-right: 0.15rem; }
+    .eja-quiz-card .eja-quiz-q::after { content: '\201D'; color: var(--accent); font-size: 1.4rem; margin-left: 0.15rem; }
+    .eja-quiz-btns { display: flex; gap: 0.75rem; justify-content: center; }
+    .eja-quiz-btn { padding: 0.7rem 2rem; font-size: 0.88rem; font-weight: 700; border-radius: 10px; border: 2px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; }
+    .eja-quiz-btn.legit { background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.3); color: #6ee7b7; }
+    .eja-quiz-btn.legit:hover { background: rgba(52,211,153,0.2); }
+    .eja-quiz-btn.flag { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.3); color: #fca5a5; }
+    .eja-quiz-btn.flag:hover { background: rgba(248,113,113,0.2); }
+    .eja-quiz-btn:disabled { opacity: 0.5; cursor: default; }
+    .eja-quiz-btn:disabled:hover { background: initial; }
+    .eja-quiz-btn.legit:disabled:hover { background: rgba(52,211,153,0.1); }
+    .eja-quiz-btn.flag:disabled:hover { background: rgba(248,113,113,0.1); }
+    .eja-quiz-feedback { margin-top: 1rem; padding: 1rem 1.25rem; border-radius: 10px; font-size: 0.88rem; line-height: 1.7; color: var(--silver); display: none; }
+    .eja-quiz-feedback.correct { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.25); }
+    .eja-quiz-feedback.wrong { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); }
+    .eja-quiz-feedback .fb-verdict { font-weight: 700; display: block; margin-bottom: 0.35rem; }
+    .eja-quiz-feedback .fb-verdict.correct { color: #6ee7b7; }
+    .eja-quiz-feedback .fb-verdict.wrong { color: #fca5a5; }
+    .eja-quiz-next { display: none; margin: 1rem auto 0; padding: 0.6rem 1.5rem; font-size: 0.85rem; font-weight: 700; border-radius: 8px; background: rgba(74,158,255,0.15); border: 1px solid rgba(74,158,255,0.3); color: var(--accent); cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .eja-quiz-next:hover { background: rgba(74,158,255,0.25); }
+    /* Score card */
+    .eja-score { text-align: center; max-width: 500px; margin: 0 auto; }
+    .eja-score-ring { width: 120px; height: 120px; margin: 0 auto 1rem; position: relative; }
+    .eja-score-ring svg { transform: rotate(-90deg); }
+    .eja-score-ring .ring-bg { fill: none; stroke: rgba(74,158,255,0.1); stroke-width: 8; }
+    .eja-score-ring .ring-fill { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 0.8s ease; }
+    .eja-score-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--white); }
+    .eja-score h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .eja-score p { color: var(--silver); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.25rem; }
+    .eja-replay { padding: 0.7rem 1.8rem; font-size: 0.88rem; font-weight: 700; border-radius: 10px; background: rgba(74,158,255,0.15); border: 1px solid rgba(74,158,255,0.3); color: var(--accent); cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .eja-replay:hover { background: rgba(74,158,255,0.25); }
+    /* Scenario */
+    .eja-scenario { background: rgba(10,22,50,0.5); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .eja-scenario-head { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+    .eja-scenario-badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    .eja-scenario-badge.easy { background: rgba(52,211,153,0.15); color: #6ee7b7; }
+    .eja-scenario-badge.medium { background: rgba(251,191,36,0.15); color: #fcd34d; }
+    .eja-scenario-badge.hard { background: rgba(248,113,113,0.15); color: #fca5a5; }
+    .eja-scenario-head h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--white); }
+    .eja-scenario-brief { color: var(--silver); font-size: 0.88rem; line-height: 1.7; margin-bottom: 1rem; }
+    .eja-scenario-brief strong { color: var(--white); }
+    .eja-scenario-choices { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .eja-scenario-btn { padding: 0.6rem 1.3rem; font-size: 0.82rem; font-weight: 700; border-radius: 8px; border: 1px solid rgba(74,158,255,0.2); background: rgba(10,22,50,0.7); color: var(--silver); cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .eja-scenario-btn:hover { color: var(--white); border-color: rgba(74,158,255,0.4); }
+    .eja-scenario-btn.selected.correct-choice { background: rgba(52,211,153,0.15); border-color: rgba(52,211,153,0.4); color: #6ee7b7; }
+    .eja-scenario-btn.selected.wrong-choice { background: rgba(248,113,113,0.15); border-color: rgba(248,113,113,0.4); color: #fca5a5; }
+    .eja-scenario-btn:disabled { opacity: 0.5; cursor: default; }
+    .eja-scenario-btn:disabled:hover { color: var(--silver); border-color: rgba(74,158,255,0.2); }
+    .eja-scenario-btn.selected:disabled { opacity: 1; }
+    .eja-scenario-reveal { display: none; margin-top: 1rem; padding: 1rem 1.25rem; border-radius: 10px; background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); color: var(--silver); font-size: 0.88rem; line-height: 1.7; }
+    .eja-scenario-reveal strong { color: var(--white); }
+    .eja-scenario-reveal .reveal-verdict { font-weight: 700; display: block; margin-bottom: 0.35rem; }
+    .eja-scenario-reveal .reveal-verdict.right { color: #6ee7b7; }
+    .eja-scenario-reveal .reveal-verdict.wrong { color: #fca5a5; }
+    @media (max-width: 768px) {
+      .eja-subtabs { flex-direction: column; align-items: stretch; }
+      .eja-quiz-btns { flex-direction: column; }
+      .eja-scenario-choices { flex-direction: column; }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 14</span>
+    <h1 class="page-hero-title">Evaluating Brand Name J&As</h1>
+    <p class="page-hero-sub">Your mission partners mean well, but that brand name justification they handed you probably needs some work. Learn what to look for, what questions to ask, and when a sole source actually makes sense.</p>
+  </div>
+</div>
+
+<div class="eja-bg">
+  <div class="eja-tabs">
+    <button class="eja-tab active" data-tab="learn">&#128218; Learn</button>
+    <button class="eja-tab" data-tab="examples">&#128203; J&A Examples</button>
+    <button class="eja-tab" data-tab="lookup">&#128269; Look It Up</button>
+    <button class="eja-tab" data-tab="practice">&#127919; Practice</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="eja-panel active">
+
+    <div class="eja-intro">
+      <span class="eja-intro-tag">The Basics</span>
+      <h2>Evaluating Brand Name Justifications</h2>
+      <p>Your job is not to rubber-stamp what the customer sends you. Your job is to evaluate whether the justification actually holds up. Here is how to do that.</p>
+    </div>
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> What You Are Actually Evaluating</h3>
+      <div class="learn-body">
+        <p>In operational contracting, you receive J&As with your packages regularly. Mission partners are domain experts who understand what they need. They have done the legwork, determined their requirements, and tried to justify a specific approach.</p>
+        <p>A brand name J&A says "we need this specific product from this specific manufacturer, and nothing else will work." That is a high bar to clear.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider">
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Walk Them Back</h3>
+      <div class="learn-body">
+        <p>The first thing you do when you receive a brand name J&A is walk the customer back through their reasoning.</p>
+        <p>How did they get to that determination? What market research did they do? Did they look at alternatives? Did they talk to other vendors?</p>
+        <p>Is this company really the only one who can supply this? Or did they just Google it, find one company, and call it a day?</p>
+        <p>Is it truly a brand name requirement, or is it a performance requirement that happens to be met by one brand they know about?</p>
+        <p>Many times the customer found one vendor that works and stopped looking. That is not a justification. That is convenience.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider">
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> When a Sole Source Actually Makes Sense</h3>
+      <div class="learn-body">
+        <p>There are legitimate reasons to restrict competition. The key is whether the justification actually supports the restriction.</p>
+        <p><strong>Substantial duplication of costs.</strong> If the Government has an existing system built around a specific manufacturer's components, and switching would require replacing the entire infrastructure, that is a real justification.</p>
+        <p><strong>Proprietary interfaces and data rights.</strong> If the manufacturer owns the technical data and nobody else can legally produce the item, competition is not possible.</p>
+        <p><strong>Safety and interoperability requirements.</strong> Genuine limitations that cannot be met by alternatives are legitimate grounds.</p>
+        <p>The justification needs to explain WHY, not just WHAT. "We need Brand X" is not a justification. "We need Brand X because our existing system uses proprietary connectors that only Brand X manufactures, and replacing the system would cost $2M with no operational benefit" is a justification.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider">
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Red Flags</h3>
+      <div class="learn-body">
+        <p><strong>"This is what we have always used"</strong> - not a justification.</p>
+        <p><strong>"The vendor is local"</strong> - not a justification.</p>
+        <p><strong>"We already have a relationship with them"</strong> - not a justification.</p>
+        <p><strong>No market research documented at all.</strong></p>
+        <p><strong>The J&A was clearly written by the vendor</strong> - you can tell.</p>
+        <p><strong>The justification describes a brand name but the actual requirement could be written as a performance specification.</strong></p>
+        <div class="highlight-box warn">
+          <strong>When you push back, you are not being difficult.</strong> You are doing your job. The customer may not like it, but competition saves the Government money and it is the law. Help them get to a better answer, not just the easy one.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider">
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> The AF Single Source Justification Template</h3>
+      <div class="learn-body">
+        <p>The Air Force uses a simplified single source justification form for acquisitions under the simplified acquisition threshold. This is the template you will see most often when customers bring you a brand name buy at the base level. It has five sections:</p>
+        <p><strong>Section A: General Contract Information.</strong> The basics: contracting activity, project name, PR number, and estimated cost. Nothing to evaluate here, just make sure it matches the package.</p>
+        <p><strong>Section B: Description of the Supplies/Services Required.</strong> What are they buying? This should be clear enough that someone unfamiliar with the requirement can understand it.</p>
+        <p><strong>Section C: Justification for Soliciting from a Single Source or Brand Name.</strong> This is where the real evaluation happens. The customer needs to explain WHY this specific source or brand name is necessary.</p>
+        <p><strong>Section D: Efforts to Obtain Competition.</strong> What did they do to look for alternatives? Did they check SAM.gov? Did they contact other vendors?</p>
+        <p><strong>Section E: Steps to Preclude Future Single Source or Brand Name Awards.</strong> What will they do differently next time to allow competition?</p>
+        <div class="highlight-box">
+          <strong>The form cites FAR 13.106-1(b)(1)</strong> as the authority for single source simplified acquisitions. This is separate from the Part 6 J&A process. Under simplified acquisition procedures, the contracting officer just needs to document the basis for soliciting from a single source.
+        </div>
+        <p>Check the <strong>J&A Examples</strong> tab to see how this looks on paper, and how it falls apart when done wrong.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ EXAMPLES ═══════════════ -->
+  <div id="panel-examples" class="eja-panel">
+
+    <div class="eja-intro">
+      <span class="eja-intro-tag">Interactive Tool</span>
+      <h2>J&A Examples</h2>
+      <p>Same scenario, two very different justifications. A maintenance shop needs replacement HEPA filters for an air handling unit. Click highlighted sections for coaching notes. <strong style="color:#4a9eff;">Blue borders</strong> highlight what makes a justification strong. <strong style="color:#dc2626;">Red borders</strong> flag problems.</p>
+    </div>
+
+    <div class="eja-toggle">
+      <button class="eja-toggle-btn active" data-example="good">&#9989; Well-Written J&A</button>
+      <button class="eja-toggle-btn bad" data-example="bad">&#10060; Poorly-Written J&A</button>
+    </div>
+
+    <!-- ── Good example ── -->
+    <div id="example-good" class="eja-outer">
+      <div class="eja-doc">
+        <h4>Single Source Justification</h4>
+        <h5>Simplified Acquisition Procedures / FAR 13.106-1(b)(1)</h5>
+
+        <div class="eja-section eja-flag" data-note="good-header">
+          <div class="doc-label">Section A: General Contract Information</div>
+          <div class="doc-field"><strong>Contracting Activity:</strong> 88 CONS/LGCA, Wright-Patterson AFB, OH</div>
+          <div class="doc-field"><strong>Project Name:</strong> PMEL HVAC Filter Replacement</div>
+          <div class="doc-field"><strong>PR Number:</strong> FD20260315-0042</div>
+          <div class="doc-field"><strong>Estimated Cost:</strong> $12,480.00</div>
+        </div>
+
+        <div class="eja-section eja-flag" data-note="good-desc">
+          <div class="doc-section-head">Section B: Description of the Supplies/Services Required</div>
+          <div class="doc-section-body">Replacement HEPA filters (24x24x12, 99.97% efficiency at 0.3 microns) for the Trane ClimaTuff air handling unit in Building 100, supporting clean room operations in the Precision Measurement Equipment Laboratory (PMEL). Quantity: 24 filters (12 per semi-annual replacement cycle). NSN: None (commercial item, proprietary dimensions).</div>
+        </div>
+
+        <div class="eja-section eja-flag" data-note="good-just">
+          <div class="doc-section-head">Section C: Justification for Soliciting from a Single Source or Brand Name</div>
+          <div class="doc-section-body">The Trane ClimaTuff AHU in Building 100 requires filters with proprietary frame dimensions (24.125 x 24.125 x 12.25 inches) that are specific to the Trane filter rack assembly. Standard 24x24x12 HEPA filters do not fit the proprietary mounting system without modification, which would compromise the clean room seal integrity required for PMEL calibration operations. Donaldson P/N DF-2412-HE is the only filter manufactured to Trane's proprietary specifications for this unit. Market research on SAM.gov and through GSA Advantage confirmed no other manufacturer produces a compatible filter with the required proprietary dimensions. Replacing the filter rack assembly to accept standard filter dimensions would cost approximately $45,000 and require 3 weeks of PMEL downtime, during which calibration services for the wing would be unavailable.</div>
+        </div>
+
+        <div class="eja-section eja-flag" data-note="good-effort">
+          <div class="doc-section-head">Section D: Efforts to Obtain Competition</div>
+          <div class="doc-section-body">Searched SAM.gov for HEPA filter suppliers (NAICS 333413) on 15 Jan 2026. Searched GSA Advantage for compatible replacement filters on 16 Jan 2026. Contacted two additional filter distributors (ABC Filtration, ph: 555-0142; XYZ Industrial Supply, ph: 555-0198) who both confirmed they cannot source a filter matching the proprietary Trane dimensions. See attached market research documentation.</div>
+        </div>
+
+        <div class="eja-section eja-flag" data-note="good-future">
+          <div class="doc-section-head">Section E: Steps to Preclude Future Single Source or Brand Name Awards</div>
+          <div class="doc-section-body">When the AHU is replaced at end of life (estimated FY28 per the Civil Engineer real property maintenance plan), the replacement specification will require standard HEPA filter dimensions to enable competitive sourcing of replacement filters going forward.</div>
+        </div>
+
+        <div class="doc-sig"><strong>Contracting Officer Determination:</strong> I have determined, in accordance with FAR 13.106-1(b)(1), that the circumstances of this contract action deem only a single source is reasonably available.</div>
+        <div class="doc-footer">TRAINING EXAMPLE | NOT AN OFFICIAL GOVERNMENT DOCUMENT</div>
+      </div>
+    </div>
+
+    <!-- ── Bad example ── -->
+    <div id="example-bad" class="eja-outer" style="display:none;">
+      <div class="eja-doc">
+        <h4>Single Source Justification</h4>
+        <h5>Simplified Acquisition Procedures / FAR 13.106-1(b)(1)</h5>
+
+        <div class="eja-section eja-problem" data-note="bad-header">
+          <div class="doc-label">Section A: General Contract Information</div>
+          <div class="doc-field"><strong>Contracting Activity:</strong> 88 CONS</div>
+          <div class="doc-field"><strong>Project Name:</strong> Filters</div>
+          <div class="doc-field"><strong>PR Number:</strong> FD20260315-0042</div>
+          <div class="doc-field"><strong>Estimated Cost:</strong> $12,480.00</div>
+        </div>
+
+        <div class="eja-section eja-problem" data-note="bad-desc">
+          <div class="doc-section-head">Section B: Description of the Supplies/Services Required</div>
+          <div class="doc-section-body">Filters for Building 100.</div>
+        </div>
+
+        <div class="eja-section eja-problem" data-note="bad-just">
+          <div class="doc-section-head">Section C: Justification for Soliciting from a Single Source or Brand Name</div>
+          <div class="doc-section-body">We need Donaldson filters because that is what we have always used. The vendor is local and can deliver quickly. These filters work well and we have not had any issues with them.</div>
+        </div>
+
+        <div class="eja-section eja-problem" data-note="bad-effort">
+          <div class="doc-section-head">Section D: Efforts to Obtain Competition</div>
+          <div class="doc-section-body">None. We always buy from this vendor.</div>
+        </div>
+
+        <div class="eja-section eja-problem" data-note="bad-future">
+          <div class="doc-section-head">Section E: Steps to Preclude Future Single Source or Brand Name Awards</div>
+          <div class="doc-section-body">N/A.</div>
+        </div>
+
+        <div class="doc-sig"><strong>Contracting Officer Determination:</strong> I have determined, in accordance with FAR 13.106-1(b)(1), that the circumstances of this contract action deem only a single source is reasonably available.</div>
+        <div class="doc-footer">TRAINING EXAMPLE | NOT AN OFFICIAL GOVERNMENT DOCUMENT</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="eja-panel">
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR 6.302-1</h4>
+        <p>Only One Responsible Source. The regulatory basis for sole source justifications and what you need to demonstrate.</p>
+        <a href="https://acquisition.gov/far/6.302-1" target="_blank" rel="noopener">Read on acquisition.gov</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 11.104</h4>
+        <p>Use of Brand Name or Equal. When you can mandate a brand name and how to structure those requirements properly.</p>
+        <a href="https://acquisition.gov/far/11.104" target="_blank" rel="noopener">Read on acquisition.gov</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 11.105</h4>
+        <p>Items Peculiar to One Manufacturer. Covers situations where only one vendor makes a particular item.</p>
+        <a href="https://acquisition.gov/far/11.105" target="_blank" rel="noopener">Read on acquisition.gov</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 10.002</h4>
+        <p>Market Research Procedures. The foundation for determining whether competition is actually possible and what you need to document.</p>
+        <a href="https://acquisition.gov/far/10.002" target="_blank" rel="noopener">Read on acquisition.gov</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ PRACTICE ═══════════════ -->
+  <div id="panel-practice" class="eja-panel">
+
+    <div class="eja-intro">
+      <span class="eja-intro-tag">Test Yourself</span>
+      <h2>Practice Evaluating Justifications</h2>
+      <p>Think you can spot a weak justification? Pick an activity below and find out.</p>
+    </div>
+
+    <div class="eja-subtabs">
+      <button class="eja-subtab active" data-subtab="quiz">Red Flag or Legit?</button>
+      <button class="eja-subtab" data-subtab="scenarios">You Be the CO</button>
+    </div>
+
+    <!-- ── Quiz ── -->
+    <div id="subpanel-quiz" class="eja-subpanel active">
+      <div id="quizArea">
+        <div class="eja-quiz-progress">Question <strong id="quizCurrent">1</strong> of <strong>12</strong></div>
+        <div class="eja-quiz-card">
+          <div class="eja-quiz-q" id="quizQuestion"></div>
+          <div class="eja-quiz-btns">
+            <button class="eja-quiz-btn legit" id="btnLegit">Legit</button>
+            <button class="eja-quiz-btn flag" id="btnFlag">Red Flag</button>
+          </div>
+          <div class="eja-quiz-feedback" id="quizFeedback">
+            <span class="fb-verdict" id="fbVerdict"></span>
+            <span id="fbExplain"></span>
+          </div>
+          <button class="eja-quiz-next" id="btnNext">Next Question &rarr;</button>
+        </div>
+      </div>
+      <div id="quizScore" class="eja-score" style="display:none;">
+        <div class="eja-score-ring">
+          <svg viewBox="0 0 120 120" width="120" height="120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-fill" id="scoreRing" cx="60" cy="60" r="52" stroke-dasharray="326.73" stroke-dashoffset="326.73"></circle>
+          </svg>
+          <div class="eja-score-num" id="scoreNum">0/12</div>
+        </div>
+        <h3 id="scoreTitle"></h3>
+        <p id="scoreMsg"></p>
+        <button class="eja-replay" id="btnReplay">Play Again</button>
+      </div>
+    </div>
+
+    <!-- ── Scenarios ── -->
+    <div id="subpanel-scenarios" class="eja-subpanel">
+
+      <!-- Scenario 1: Easy -->
+      <div class="eja-scenario" id="scenario-1">
+        <div class="eja-scenario-head">
+          <span class="eja-scenario-badge easy">Easy</span>
+          <h4>Motorola APX 8000 Portable Radios</h4>
+        </div>
+        <div class="eja-scenario-brief">
+          <p>A fire department sends you a single source justification for 15 Motorola APX 8000 portable radios at $6,800 each ($102,000 total). The justification states:</p>
+          <p><strong>Section C:</strong> "We need Motorola APX 8000 radios because they are the best radios on the market and our firefighters are already trained on them. Motorola is the industry standard for public safety communications."</p>
+          <p><strong>Section D:</strong> "We checked Motorola's website for pricing."</p>
+          <p><strong>Section E:</strong> "We will continue to purchase Motorola radios as they become available."</p>
+          <p>What do you do?</p>
+        </div>
+        <div class="eja-scenario-choices" id="choices-1">
+          <button class="eja-scenario-btn" data-answer="approve">Approve</button>
+          <button class="eja-scenario-btn" data-answer="return">Return for Revision</button>
+          <button class="eja-scenario-btn" data-answer="reject">Reject</button>
+        </div>
+        <div class="eja-scenario-reveal" id="reveal-1">
+          <span class="reveal-verdict" id="verdict-1"></span>
+          <span id="explain-1"><strong>Return for Revision.</strong> This justification has multiple problems. "Best on the market" is an opinion, not a technical justification. "Already trained on them" is convenience, not necessity. The market research only checked the manufacturer's own website, which is not a competitive analysis. And Section E says they plan to keep buying sole source forever, which defeats the purpose.<br><br>The underlying requirement might be legitimate. Motorola uses proprietary encryption protocols, and if the fire department's existing infrastructure runs on Motorola's ASTRO 25 system, there could be a real interoperability justification. But the customer did not write that. Send it back and help them articulate the actual technical basis, if one exists. If it does not, this needs to be competed.</span>
+        </div>
+      </div>
+
+      <!-- Scenario 2: Medium -->
+      <div class="eja-scenario" id="scenario-2">
+        <div class="eja-scenario-head">
+          <span class="eja-scenario-badge medium">Medium</span>
+          <h4>Fluke 80PK-27 SureGrip Temperature Probes</h4>
+        </div>
+        <div class="eja-scenario-brief">
+          <p>A calibration lab submits a single source justification for 30 Fluke 80PK-27 temperature probes at $89 each ($2,670 total). The justification states:</p>
+          <p><strong>Section C:</strong> "The Fluke 80PK-27 probe uses a proprietary SureGrip connector interface that mates directly with our Fluke 287 and Fluke 289 True-RMS multimeters. These multimeters use a banana plug/thermocouple socket combination unique to Fluke's design. Third-party K-type thermocouple probes require an adapter (Fluke P/N 80AK) that introduces measurement error of +/- 0.5 degrees C, which exceeds the 0.3 degree tolerance required by our PMEL calibration procedures (TO 33K-1-100-2)."</p>
+          <p><strong>Section D:</strong> "Searched SAM.gov on 3 Feb 2026. Searched GSA Advantage on 4 Feb 2026. Contacted Omega Engineering (555-0177) and Extech Instruments (555-0234), neither of whom manufactures a probe with the proprietary Fluke connector. See attached emails."</p>
+          <p><strong>Section E:</strong> "When the multimeters reach end of life (estimated FY29), replacement specifications will require standard K-type thermocouple interfaces to enable competitive probe sourcing."</p>
+          <p>What do you do?</p>
+        </div>
+        <div class="eja-scenario-choices" id="choices-2">
+          <button class="eja-scenario-btn" data-answer="approve">Approve</button>
+          <button class="eja-scenario-btn" data-answer="return">Return for Revision</button>
+          <button class="eja-scenario-btn" data-answer="reject">Reject</button>
+        </div>
+        <div class="eja-scenario-reveal" id="reveal-2">
+          <span class="reveal-verdict" id="verdict-2"></span>
+          <span id="explain-2"><strong>Approve.</strong> This is a well-written justification. The technical basis is specific: a proprietary connector that cannot be replicated, with a measurable accuracy penalty when using adapters that exceeds a documented calibration tolerance. The market research is thorough, with two alternative vendors contacted and dates recorded. The future plan is concrete and tied to a specific event. The dollar value is low, but the quality of the justification should be the same regardless of amount. This one clears the bar.</span>
+        </div>
+      </div>
+
+      <!-- Scenario 3: Hard -->
+      <div class="eja-scenario" id="scenario-3">
+        <div class="eja-scenario-head">
+          <span class="eja-scenario-badge hard">Hard</span>
+          <h4>Cisco Catalyst 9300 Network Switches</h4>
+        </div>
+        <div class="eja-scenario-brief">
+          <p>The communications squadron submits a single source justification for 8 Cisco Catalyst 9300 switches at $9,200 each ($73,600 total). The justification states:</p>
+          <p><strong>Section C:</strong> "Our network infrastructure is built on Cisco IOS-XE. All 47 existing switches are Cisco Catalyst series. Adding a different manufacturer's switches would require a separate management platform, separate training for network administrators, and separate spare parts inventory. Per the attached cost analysis, maintaining a dual-vendor environment would cost an additional $185,000 over three years in licensing, training, and support contracts versus $73,600 for Cisco replacements."</p>
+          <p><strong>Section D:</strong> "Searched SAM.gov and GSA Advantage on 10 Jan 2026. Contacted Juniper Networks (555-0312) and Aruba/HPE (555-0287) for compatibility assessments. Both confirmed their switches can operate in a Cisco environment but require additional management software. See attached correspondence."</p>
+          <p><strong>Section E:</strong> "The base network modernization project (programmed FY29) will evaluate open-standard network architectures that do not require single-vendor lock-in."</p>
+          <p>What do you do?</p>
+        </div>
+        <div class="eja-scenario-choices" id="choices-3">
+          <button class="eja-scenario-btn" data-answer="approve">Approve</button>
+          <button class="eja-scenario-btn" data-answer="return">Return for Revision</button>
+          <button class="eja-scenario-btn" data-answer="reject">Reject</button>
+        </div>
+        <div class="eja-scenario-reveal" id="reveal-3">
+          <span class="reveal-verdict" id="verdict-3"></span>
+          <span id="explain-3"><strong>Return for Revision.</strong> This is a tricky one because the justification is well-written and the cost analysis looks compelling. But there is a problem: the market research actually found that alternatives exist. Both Juniper and Aruba confirmed their switches CAN work in the Cisco environment, they just cost more.<br><br>That is a best-value argument, not a sole source justification. The fact that Cisco is cheaper than the alternative does not mean Cisco is the only source. It means Cisco might win a competitive evaluation. Those are different things.<br><br>The right approach here is to either: (1) compete it and let Cisco win on price/technical merit, which they probably will; or (2) rewrite the justification to focus on a genuinely proprietary element, like Cisco's DNA Center integration or specific security features that alternatives cannot replicate. The cost-avoidance argument alone does not meet the "only one responsible source" standard.</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ── Note overlay ── -->
+<div class="eja-overlay" id="noteOverlay">
+  <div class="eja-note" id="notePopup">
+    <button class="eja-note-close" id="noteCloseBtn">&times;</button>
+    <div class="eja-note-title" id="noteTitle"></div>
+    <div class="eja-note-body" id="noteBody"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ═══════ TABS ═══════ */
+document.querySelectorAll('.eja-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.eja-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.eja-panel').forEach(function(p) { p.classList.remove('active'); });
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ═══════ EXAMPLE TOGGLE ═══════ */
+document.querySelectorAll('.eja-toggle-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var which = btn.dataset.example;
+    document.querySelectorAll('.eja-toggle-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('example-good').style.display = (which === 'good') ? 'block' : 'none';
+    document.getElementById('example-bad').style.display = (which === 'bad') ? 'block' : 'none';
+    hideNote();
+  });
+});
+
+/* ═══════ COACHING NOTES ═══════ */
+var notes = {
+  'good-header': {
+    title: "Section A: Clean and Complete",
+    body: "Everything matches the package. The contracting activity includes the office symbol and location. The project name is descriptive enough to identify the requirement at a glance. The PR number is present. The estimated cost matches. Nothing fancy here, but a surprising number of J&As get returned because Section A does not match the purchase request.",
+    warn: false
+  },
+  'good-desc': {
+    title: "Section B: Specific and Identifiable",
+    body: "Compare this to \"filters for Building 100.\" This description tells you exactly what they need: HEPA filters at a specific size and efficiency rating, for a specific piece of equipment, in a specific location, supporting a specific mission. A reviewer who has never been to this building can understand the requirement.<br><br>The NSN notation (\"None - commercial item, proprietary dimensions\") is a nice touch. It tells the contracting officer this is not a standard supply item and explains why you will not find it in the Federal Supply System.",
+    warn: false
+  },
+  'good-just': {
+    title: "Section C: The Gold Standard",
+    body: "This is what a justification should look like. It walks through a logical chain:<br><br><strong>1.</strong> The equipment has proprietary dimensions (specific measurements given).<br><strong>2.</strong> Standard filters do not fit (explains why).<br><strong>3.</strong> Only one manufacturer makes a compatible filter (names the part number).<br><strong>4.</strong> Market research confirms no alternatives exist (names the sources checked).<br><strong>5.</strong> The alternative (replacing the rack) is cost-prohibitive and operationally disruptive (quantifies both).<br><br>Every sentence answers the question \"why can nobody else do this?\" There is no opinion, no preference, no convenience. Just facts and technical reality.",
+    warn: false
+  },
+  'good-effort': {
+    title: "Section D: Documented Market Research",
+    body: "Three different sources searched, with dates. Two additional vendors contacted by phone, with phone numbers documented for the file. Both confirmed they cannot source a compatible product. The attached market research documentation provides the paper trail.<br><br>This is what \"efforts to obtain competition\" looks like. You searched, you called, you documented. Nobody else can provide it. That is a fact, not an assertion.",
+    warn: false
+  },
+  'good-future': {
+    title: "Section E: A Real Plan",
+    body: "The customer identified a specific future event (AHU replacement in FY28) and a specific action (requiring standard dimensions in the replacement spec). This tells the contracting officer and the reviewer that the customer understands sole source should be temporary, and they have a concrete plan to enable competition when the opportunity arises.<br><br>Compare this to \"N/A.\" One shows awareness and forward thinking. The other shows indifference.",
+    warn: false
+  },
+  'bad-header': {
+    title: "\u26a0 Section A: Incomplete",
+    body: "\"88 CONS\" is missing the office symbol and location. \"Filters\" as a project name tells you nothing. Which filters? For what? Where? If this J&A ended up on the competition advocate's desk, they would have no idea what they are approving without digging through the entire package.<br><br>This is a small thing, but it signals that the rest of the document was probably filled out with the same level of care.",
+    warn: true
+  },
+  'bad-desc': {
+    title: "\u26a0 Section B: Completely Inadequate",
+    body: "\"Filters for Building 100\" could be anything. Air filters? Oil filters? Water filters? What kind? What size? What specification? For what equipment?<br><br>A contracting officer cannot evaluate a sole source justification if they do not understand what is being purchased. This gets returned to the customer with a request for a real description. Every time.",
+    warn: true
+  },
+  'bad-just': {
+    title: "\u26a0 Section C: Zero Justification",
+    body: "Three statements, three failures:<br><br><strong>\"That is what we have always used\"</strong> - Past practice is not a justification. The Government is not obligated to keep buying from the same vendor forever.<br><br><strong>\"The vendor is local and can deliver quickly\"</strong> - Convenience is not a justification. Delivery speed is a factor in source selection, not a basis for restricting competition.<br><br><strong>\"These filters work well\"</strong> - Satisfactory past performance does not mean no other vendor's product would also work. That is literally what competition determines.<br><br>None of these explain why this is the ONLY source. They explain why the customer PREFERS this source. Those are very different things.",
+    warn: true
+  },
+  'bad-effort': {
+    title: "\u26a0 Section D: No Market Research",
+    body: "\"None. We always buy from this vendor.\" This is the single biggest red flag in any J&A. The customer did not even try to find alternatives. They assumed this was the only source without checking.<br><br>FAR 10.002 requires market research for all acquisitions. Even if the customer believes only one source exists, they need to document how they verified that belief. Searching SAM.gov, checking GSA Advantage, calling other vendors - these are minimum efforts.<br><br>As the contracting officer, you cannot certify this J&A. Send it back and tell them to do the research.",
+    warn: true
+  },
+  'bad-future': {
+    title: "\u26a0 Section E: No Plan",
+    body: "\"N/A\" means the customer has no intention of ever competing this requirement. That should concern you. If a sole source is truly justified today, there should still be a plan - even a long-term one - to create conditions for competition in the future.<br><br>Maybe the answer is the same as the good example: \"When the equipment is replaced, we will spec standard dimensions.\" Maybe it is: \"We will conduct a broader market survey in FY27 to identify potential new entrants.\" Something. Anything. \"N/A\" is not acceptable.",
+    warn: true
+  }
+};
+
+function showNote(key) {
+  var n = notes[key];
+  if (!n) return;
+  document.querySelectorAll('.eja-section').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelectorAll('[data-note="' + key + '"]').forEach(function(el) { el.classList.add('active'); });
+  var popup = document.getElementById('notePopup');
+  popup.classList.toggle('warn', !!n.warn);
+  document.getElementById('noteTitle').textContent = n.title;
+  document.getElementById('noteBody').innerHTML = n.body;
+  document.getElementById('noteOverlay').classList.add('visible');
+}
+
+function hideNote() {
+  document.getElementById('noteOverlay').classList.remove('visible');
+  document.querySelectorAll('.eja-section').forEach(function(s) { s.classList.remove('active'); });
+}
+
+/* ═══════ OVERLAY LISTENERS ═══════ */
+document.getElementById('noteOverlay').addEventListener('click', hideNote);
+document.getElementById('notePopup').addEventListener('click', function(e) { e.stopPropagation(); });
+document.getElementById('noteCloseBtn').addEventListener('click', hideNote);
+document.querySelectorAll('.eja-section').forEach(function(sec) {
+  sec.addEventListener('click', function() {
+    var key = sec.getAttribute('data-note');
+    if (key) showNote(key);
+  });
+});
+
+/* ═══════ PRACTICE SUB-TABS ═══════ */
+document.querySelectorAll('.eja-subtab').forEach(function(st) {
+  st.addEventListener('click', function() {
+    document.querySelectorAll('.eja-subtab').forEach(function(s) { s.classList.remove('active'); });
+    document.querySelectorAll('.eja-subpanel').forEach(function(p) { p.classList.remove('active'); });
+    st.classList.add('active');
+    document.getElementById('subpanel-' + st.dataset.subtab).classList.add('active');
+  });
+});
+
+/* ═══════ RED FLAG OR LEGIT? QUIZ ═══════ */
+var quizQuestions = [
+  { text: "We need Brand X because our existing system uses proprietary connectors that only Brand X manufactures.", answer: "legit", explain: "Proprietary connectors that cannot be sourced elsewhere are a legitimate technical basis for restricting competition. The key is that the limitation is physical and verifiable, not just a preference." },
+  { text: "This is what we have always used and it works fine.", answer: "flag", explain: "Past practice is never a justification for sole source. The fact that something worked before does not mean no other product would also work. That is exactly what competition determines." },
+  { text: "The vendor is local and can deliver within 24 hours.", answer: "flag", explain: "Delivery speed and vendor location are source selection factors, not sole source justifications. Other vendors might also deliver quickly. You evaluate delivery in a competitive process, not use it to avoid one." },
+  { text: "Switching suppliers would require replacing $2M in infrastructure with no operational benefit.", answer: "legit", explain: "Substantial duplication of cost is a recognized basis for limiting competition. When switching would be significantly more expensive than the purchase itself with no added benefit, the economic argument supports sole source." },
+  { text: "The commander prefers this vendor because of their excellent customer service.", answer: "flag", explain: "Commander preference is not a legal basis for restricting competition, no matter how senior the official. The FAR does not include \"someone important likes them\" as a justification." },
+  { text: "Only this manufacturer holds the technical data rights needed to produce compatible replacement parts.", answer: "legit", explain: "Proprietary data rights are one of the strongest sole source justifications. If nobody else can legally manufacture the item, competition is not possible. Make sure the justification documents the specific data rights at issue." },
+  { text: "We searched SAM.gov and GSA Advantage and contacted three vendors. None could meet the proprietary specifications.", answer: "legit", explain: "This describes thorough market research with documented results. Three vendors contacted, two databases searched, and a specific finding that no alternatives exist. This is what Section D should look like." },
+  { text: "We did not check other sources because we know nobody else makes this.", answer: "flag", explain: "Assumptions are not market research. Even if the customer is right that nobody else makes it, they need to document how they verified that belief. The CO cannot certify a justification based on unverified assumptions." },
+  { text: "The item requires a proprietary interface that connects to our existing classified network architecture.", answer: "legit", explain: "Proprietary interfaces tied to classified systems are a strong justification. The classified environment adds an additional layer: alternatives cannot simply be tested or integrated without significant security implications." },
+  { text: "The vendor gave us a good price last time.", answer: "flag", explain: "A previous good price does not mean other vendors would not offer a better one. Price history with a single vendor is actually an argument FOR competition, not against it. Let the market prove what a good price really is." },
+  { text: "Market research identified two alternatives, but both failed independent lab testing for the required temperature tolerance.", answer: "legit", explain: "This is strong because it shows the customer actually tested alternatives and they did not meet the specifications. Independent lab testing is documented, objective evidence. This is market research done right." },
+  { text: "Our team is already trained on this product so training costs would be lower.", answer: "flag", explain: "Training convenience is not a sole source justification. If training costs were genuinely prohibitive, that might support a cost-duplication argument, but \"our team already knows it\" is a preference, not a technical limitation." }
+];
+
+var quizState = { order: [], current: 0, score: 0, answered: false };
+
+function shuffleArray(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = arr[i]; arr[i] = arr[j]; arr[j] = temp;
+  }
+  return arr;
+}
+
+function startQuiz() {
+  quizState.order = shuffleArray(Array.from({ length: quizQuestions.length }, function(_, i) { return i; }));
+  quizState.current = 0;
+  quizState.score = 0;
+  quizState.answered = false;
+  document.getElementById('quizArea').style.display = 'block';
+  document.getElementById('quizScore').style.display = 'none';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  var idx = quizState.order[quizState.current];
+  var q = quizQuestions[idx];
+  document.getElementById('quizCurrent').textContent = quizState.current + 1;
+  document.getElementById('quizQuestion').textContent = q.text;
+  document.getElementById('quizFeedback').style.display = 'none';
+  document.getElementById('btnNext').style.display = 'none';
+  document.getElementById('btnLegit').disabled = false;
+  document.getElementById('btnFlag').disabled = false;
+  quizState.answered = false;
+}
+
+function answerQuiz(choice) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  var idx = quizState.order[quizState.current];
+  var q = quizQuestions[idx];
+  var correct = (choice === q.answer);
+  if (correct) quizState.score++;
+
+  document.getElementById('btnLegit').disabled = true;
+  document.getElementById('btnFlag').disabled = true;
+
+  var fb = document.getElementById('quizFeedback');
+  var verdict = document.getElementById('fbVerdict');
+  var explain = document.getElementById('fbExplain');
+
+  fb.className = 'eja-quiz-feedback ' + (correct ? 'correct' : 'wrong');
+  verdict.className = 'fb-verdict ' + (correct ? 'correct' : 'wrong');
+  verdict.textContent = correct ? 'Correct!' : 'Not quite.';
+  explain.textContent = q.explain;
+  fb.style.display = 'block';
+
+  if (quizState.current < quizQuestions.length - 1) {
+    document.getElementById('btnNext').style.display = 'block';
+  } else {
+    var finishBtn = document.getElementById('btnNext');
+    finishBtn.textContent = 'See Your Score';
+    finishBtn.style.display = 'block';
+  }
+}
+
+function nextQuestion() {
+  quizState.current++;
+  if (quizState.current >= quizQuestions.length) {
+    showScore();
+  } else {
+    document.getElementById('btnNext').textContent = 'Next Question \u2192';
+    loadQuestion();
+  }
+}
+
+function showScore() {
+  document.getElementById('quizArea').style.display = 'none';
+  var scorePanel = document.getElementById('quizScore');
+  scorePanel.style.display = 'block';
+
+  var total = quizQuestions.length;
+  var pct = quizState.score / total;
+  var circumference = 326.73;
+  var ring = document.getElementById('scoreRing');
+  ring.style.strokeDashoffset = circumference;
+
+  var color;
+  if (pct >= 0.9) color = '#6ee7b7';
+  else if (pct >= 0.7) color = '#4a9eff';
+  else if (pct >= 0.5) color = '#fcd34d';
+  else color = '#fca5a5';
+  ring.style.stroke = color;
+
+  document.getElementById('scoreNum').textContent = quizState.score + '/' + total;
+
+  var title, msg;
+  if (pct === 1) { title = 'Perfect Score!'; msg = 'You caught every red flag and recognized every legitimate justification. You are ready to evaluate J&As.'; }
+  else if (pct >= 0.9) { title = 'Excellent!'; msg = 'You have a strong eye for evaluating justifications. Review the ones you missed and you will be in great shape.'; }
+  else if (pct >= 0.7) { title = 'Good Work'; msg = 'You are getting there. Some of the trickier statements tripped you up. Review the explanations and try again.'; }
+  else if (pct >= 0.5) { title = 'Keep Practicing'; msg = 'You got about half right. Go back through the Learn tab and focus on what separates a technical justification from a preference.'; }
+  else { title = 'Time to Study Up'; msg = 'Head back to the Learn tab and review the red flags section. The difference between legitimate and illegitimate justifications is about facts versus preferences.'; }
+
+  document.getElementById('scoreTitle').textContent = title;
+  document.getElementById('scoreMsg').textContent = msg;
+
+  setTimeout(function() {
+    ring.style.strokeDashoffset = circumference - (circumference * pct);
+  }, 100);
+}
+
+document.getElementById('btnLegit').addEventListener('click', function() { answerQuiz('legit'); });
+document.getElementById('btnFlag').addEventListener('click', function() { answerQuiz('flag'); });
+document.getElementById('btnNext').addEventListener('click', nextQuestion);
+document.getElementById('btnReplay').addEventListener('click', startQuiz);
+
+startQuiz();
+
+/* ═══════ YOU BE THE CO SCENARIOS ═══════ */
+var scenarioAnswers = { '1': 'return', '2': 'approve', '3': 'return' };
+
+document.querySelectorAll('.eja-scenario-choices').forEach(function(choiceGroup) {
+  var scenarioId = choiceGroup.id.replace('choices-', '');
+  choiceGroup.querySelectorAll('.eja-scenario-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var answer = btn.dataset.answer;
+      var correct = scenarioAnswers[scenarioId];
+      var isRight = (answer === correct);
+
+      choiceGroup.querySelectorAll('.eja-scenario-btn').forEach(function(b) {
+        b.disabled = true;
+        b.classList.remove('selected', 'correct-choice', 'wrong-choice');
+      });
+      btn.classList.add('selected');
+      btn.classList.add(isRight ? 'correct-choice' : 'wrong-choice');
+
+      var reveal = document.getElementById('reveal-' + scenarioId);
+      var verdict = document.getElementById('verdict-' + scenarioId);
+      verdict.className = 'reveal-verdict ' + (isRight ? 'right' : 'wrong');
+      verdict.textContent = isRight ? 'Good call!' : 'Not quite. Here is what you should consider:';
+      reveal.style.display = 'block';
+    });
+  });
+});
+</script>
+</body>
+</html>

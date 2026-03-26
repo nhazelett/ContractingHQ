@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn the difference between delivery orders and task orders, and when each one applies. Covers IDIQ contracts, requirements contracts, and FAR 16.5." />
+  <title>Delivery Orders vs. Task Orders | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .dto-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .dto-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .dto-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .dto-tab:hover { color: var(--white); }
+    .dto-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .dto-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .dto-panel.active { display: block; }
+
+    /* ── Intro ── */
+    .dto-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .dto-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .dto-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .dto-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── Comparison table ── */
+    .dto-compare { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.88rem; }
+    .dto-compare th { background: rgba(74,158,255,0.08); color: var(--accent); font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.9rem; text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(74,158,255,0.15); }
+    .dto-compare td { padding: 0.7rem 1rem; border-bottom: 1px solid rgba(74,158,255,0.06); color: var(--silver); vertical-align: top; }
+    .dto-compare tr:hover td { background: rgba(74,158,255,0.03); }
+
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .dto-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+      .dto-compare { font-size: 0.8rem; }
+      .dto-compare th, .dto-compare td { padding: 0.5rem 0.6rem; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 25</span>
+    <h1 class="page-hero-title">Delivery Orders vs. Task Orders</h1>
+    <p class="page-hero-sub">Two types of orders, two different purposes. If you are ordering a thing, it is a delivery order. If you are ordering work, it is a task order. That is it.</p>
+  </div>
+</div>
+
+<div class="dto-bg">
+
+  <div class="dto-intro">
+    <span class="dto-intro-tag">Training</span>
+    <h2>Orders Under Indefinite Delivery Contracts</h2>
+    <p>When you place an order against an existing contract vehicle, the type of order depends on what you are buying. Supplies get delivery orders. Services get task orders.</p>
+  </div>
+
+  <div class="dto-tabs">
+    <button class="dto-tab active" onclick="showTab('learn')">&#128218; Learn</button>
+    <button class="dto-tab" onclick="showTab('lookup')">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="dto-panel active">
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> The Short Version</h3>
+      <div class="learn-body">
+        <p>A <strong>delivery order</strong> is an order for supplies. A <strong>task order</strong> is an order for services. FAR 16.501-1 defines both, and the distinction really is that simple.</p>
+        <p>If you are buying parts, equipment, materials, or any tangible item, you issue a delivery order. If you are buying labor, consulting, maintenance, IT support, or any kind of work performed by people, you issue a task order. If the order has both supplies and services, it is typically categorized by whichever is the predominant portion.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Side by Side</h3>
+      <div class="learn-body">
+        <table class="dto-compare">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Delivery Order</th>
+              <th>Task Order</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>What you are buying</strong></td>
+              <td>Supplies (tangible items)</td>
+              <td>Services (work performed)</td>
+            </tr>
+            <tr>
+              <td><strong>Examples</strong></td>
+              <td>Office furniture, vehicle parts, IT hardware, uniforms</td>
+              <td>IT support, base maintenance, consulting, engineering studies</td>
+            </tr>
+            <tr>
+              <td><strong>FAR definition</strong></td>
+              <td>FAR 16.501-1</td>
+              <td>FAR 16.501-1</td>
+            </tr>
+            <tr>
+              <td><strong>Placed against</strong></td>
+              <td>IDIQs, requirements contracts, BPAs, GSA schedules</td>
+              <td>IDIQs, requirements contracts, BPAs, GSA schedules</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>The contract vehicle does not determine the order type. The order type is determined by what you are ordering.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Where Do These Orders Come From?</h3>
+      <div class="learn-body">
+        <p>Delivery orders and task orders are placed against existing contract vehicles. The two most common vehicles you will encounter are <strong>Indefinite Delivery, Indefinite Quantity (IDIQ) contracts</strong> and <strong>requirements contracts</strong>.</p>
+
+        <p><strong>IDIQ contracts</strong> (FAR 16.504) establish a contract with a minimum and maximum quantity or dollar value. The Government commits to ordering at least the minimum, and the contractor agrees to deliver up to the maximum. Individual orders are placed as needs arise during the ordering period. IDIQs can be single-award (one contractor) or multiple-award (several contractors compete for each order).</p>
+
+        <p><strong>Requirements contracts</strong> (FAR 16.503) are a little different. Instead of a minimum and maximum, the Government commits to filling all of its actual requirements for a given supply or service through that one contractor for the duration of the contract. There is no guaranteed minimum quantity, but the contractor gets exclusivity: if the Government needs it, it goes to them. The estimated quantities in a requirements contract are just that, estimates.</p>
+
+        <div class="highlight-box">
+          <strong>Key difference:</strong> An IDIQ has a guaranteed minimum. A requirements contract does not guarantee any specific quantity, but does guarantee the contractor will be the source for whatever the Government actually needs during the contract period.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Things to Remember</h3>
+      <div class="learn-body">
+        <p><strong>The order type follows the buy, not the vehicle.</strong> You can place a delivery order on the same IDIQ that someone else placed a task order on, if that IDIQ covers both supplies and services.</p>
+        <p><strong>Each order is its own action.</strong> An order placed against an IDIQ or requirements contract still needs its own documentation: a requirement, funding, a fair and reasonable price determination, and a file. The parent contract handles the terms and conditions, but you are still responsible for the order-level paperwork.</p>
+        <p><strong>Do not overthink this.</strong> New contracting officers sometimes get tripped up trying to figure out whether something is a delivery order or a task order. Look at what you are buying. If it is a thing, delivery order. If it is work, task order. Move on to the parts that actually matter, like making sure the price is fair and reasonable and the requirement is clearly defined.</p>
+
+        <div class="highlight-box tip">
+          <strong>Pro tip:</strong> When you hear "DO" in conversation, that is a delivery order. When you hear "TO," that is a task order. You will hear both constantly. Now you know what they mean.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="dto-panel">
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR 16.501-1: Definitions</h4>
+        <p>The official FAR definitions for delivery order and task order. Start here if you need the regulatory language.</p>
+        <a href="https://www.acquisition.gov/far/16.501-1" target="_blank" rel="noopener">Open FAR 16.501-1</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 16.503: Requirements Contracts</h4>
+        <p>Covers requirements contracts, including how they work, limitations, and the Government's obligation to order through the contractor.</p>
+        <a href="https://www.acquisition.gov/far/16.503" target="_blank" rel="noopener">Open FAR 16.503</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 16.504: Indefinite-Quantity Contracts</h4>
+        <p>The IDIQ regulation. Covers minimum and maximum quantities, ordering procedures, and single-award vs. multiple-award considerations.</p>
+        <a href="https://www.acquisition.gov/far/16.504" target="_blank" rel="noopener">Open FAR 16.504</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Subpart 16.5: Indefinite-Delivery Contracts</h4>
+        <p>The full subpart covering all indefinite-delivery contract types, ordering procedures, and fair opportunity requirements.</p>
+        <a href="https://www.acquisition.gov/far/subpart-16.5" target="_blank" rel="noopener">Open FAR Subpart 16.5</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ── Tab switching ── */
+function showTab(tab) {
+  document.querySelectorAll('.dto-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.dto-tab').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('panel-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="The KTHQ ContractingHQ community forum — where contracting officers discuss real acquisition issues, regulations, protests, and career topics." />
+
+  <title>Forum | ContractingHQ &mdash; KTHQ</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* ===== FORUM PAGE ===== */
+    .forum-layout { background: #040d1f; min-height: 60vh; padding-bottom: 5rem; }
+    /* Rule banner */
+    .forum-rule-banner { background: rgba(201, 162, 39, 0.07); border-bottom: 1px solid rgba(201, 162, 39, 0.18); padding: 0.65rem 1.5rem; text-align: center; }
+    .forum-rule-text { font-size: 0.84rem; color: rgba(201, 162, 39, 0.85); font-style: italic; line-height: 1.5; }
+    .forum-rule-text strong { font-style: normal; color: var(--accent-gold); }
+    /* Forum container */
+    .forum-container { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+    /* Top row */
+    .forum-top-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    /* Forum header bar */
+    .forum-header-bar { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid #2a2a3a; background:#12121e; }
+    .forum-title { font-size:1.2rem; font-weight:700; color:#e8e8f0; margin:0; }
+    .forum-header-right { display:flex; align-items:center; gap:12px; }
+    /* Section index */
+    .forum-index-table { width:100%; }
+    .forum-index-header { display:grid; grid-template-columns:1fr 80px 200px; padding:8px 20px; background:#1a1a2e; border-bottom:2px solid #2a2a3a; font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#6a6a9a; }
+    .forum-section-row { display:grid; grid-template-columns:1fr 80px 200px; padding:14px 20px; border-bottom:1px solid #1e1e30; cursor:pointer; transition:background .15s; align-items:center; }
+    .forum-section-row:hover { background:#1a1a2e; }
+    .section-icon { font-size:1.15rem; margin-right:12px; flex-shrink:0; }
+    .section-name-cell { display:flex; align-items:center; min-width:0; }
+    .section-name { font-size:.93rem; font-weight:600; color:#e8e8f0; }
+    .section-desc { font-size:.76rem; color:#6a6a8a; margin-top:2px; }
+    .section-count { font-size:.88rem; font-weight:600; color:#9a9aba; text-align:center; }
+    .section-latest { font-size:.76rem; color:#7a7a9a; min-width:0; overflow:hidden; }
+    .section-latest-title { color:#b0b0cc; font-weight:500; white-space:nowraw; overflow:hidden; text-overflow:ellipsis; }
+    .section-latest-meta { font-size:.7rem; color:#5a5a7a; margin-top:2px; }
+    /* Posts view header */
+    .forum-posts-header { display:flex; align-items:center; gap:14px; padding:12px 20px; border-bottom:1px solid #2a2a3a; background:#12121e; }
+    .forum-back-btn { background:none; border:1px solid #3a3a5a; color:#9a9aba; padding:5px 14px; border-radius:20px; cursor:pointer; font-size:.82rem; transition:all .15s; }
+    .forum-back-btn:hover { background:#1e1e35; border-color:#5a5aff; color:#b0b0ff; }
+    .forum-section-title { font-size:.98rem; font-weight:700; color:#e8e8f0; margin:0; }
+    /* New post button */
+    .btn-new-post { background:linear-gradient(135deg,#4a9eff,#7b5ea7); color:#fff; border:none; padding:8px 18px; border-radius:20px; cursor:pointer; font-size:.86rem; font-weight:600; transition:opacity .2s,box-shadow .2s; }
+    .btn-new-post:hover { opacity:.88; box-shadow:0 4px 16px rgba(74,158,255,.3); }
+    /* Post list */
+    .post-list { display: flex; flex-direction: column; gap: 0.65rem; }
+    /* Post card */
+    .post-card { background: rgba(10, 22, 50, 0.75); border: 1px solid rgba(74, 158, 255, 0.1); border-radius: 12px; overflow: hidden; transition: border-color 0.2s; }
+    .post-card:hover { border-color: rgba(74, 158, 255, 0.28); }
+    .post-card-top { padding: 1.1rem 1.4rem 0.85rem; cursor: pointer; user-select: none; }
+    .post-card-meta { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.45rem; flex-wrap: wrap; }
+    .post-cat-badge { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; padding: 0.13rem 0.55rem; border-radius: 999px; }
+    .pcb-beginners { background: rgba(134,239,172,0.1); color: #86efac; border:1px solid rgba(134,239,172,0.28); }
+    .pcb-rule-discussion{ background: rgba(74,158,255,0.14); color: #7dd3fc; border:1px solid rgba(74,158,255,0.28); }
+    .pcb-protest-corner { background: rgba(201,162,39,0.1); color: #fbbf24; border:1px solid rgba(201,162,39,0.28); }
+    .pcb-contract-admin { background: rgba(52,211,153,0.1); color: #6ee7b7; border:1px solid rgba(52,211,153,0.28); }
+    .pcb-career-certs { background: rgba(167,139,250,0.1); color: #c4b5fd; border:1px solid rgba(167,139,250,0.28); }
+    .pcb-debate-floor { background: rgba(239,68,68,0.1); color: #fca5a5; border:1px solid rgba(239,68,68,0.28); }
+    .pcb-bid-proposal { background: rgba(103,232,249,0.1); color: #67e8f9; border:1px solid rgba(103,232,249,0.28); }
+    .pcb-hot-takes { background: rgba(251,146,60,0.1); color: #fb923c; border:1px solid rgba(251,146,60,0.28); }
+    .pcb-war-stories { background: rgba(253,211,77,0.08); color: #fcd34d; border:1px solid rgba(253,211,77,0.22); }
+    .post-byline { font-size: 0.76rem; color: var(--silver); }
+    .post-byline span { color: var(--silver-light); font-weight: 500; }
+    .post-title { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.3rem; line-height: 1.25; }
+    .post-preview { font-size: 0.86rem; color: var(--text-muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    /* Post footer bar */
+    .post-card-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 1.4rem; border-top: 1px solid rgba(74,158,255,0.07); flex-wrap: wrap; gap: 0.5rem; }
+    /* ===== REACTION POPUP ===== */
+    .rxn-area { display: flex; align-items: center; gap: 0.5rem; }
+    .rxn-container { position: relative; display: inline-flex; align-items: center; gap: 0.4rem; }
+    .rxn-trigger {
+      display: flex; align-items: center; gap: 0.3rem;
+      padding: 0.28rem 0.65rem; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: var(--silver); font-size: 0.82rem; cursor: pointer;
+      transition: all 0.18s; font-family: inherit; white-space: nowraw;
+    }
+    .rxn-trigger:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.22); }
+    .rxn-trigger.rxn-has-up    { background: rgba(74,158,255,0.12); border-color: rgba(74,158,255,0.45); color: #7dd3fc; }
+    .rxn-trigger.rxn-has-down  { background: rgba(239,68,68,0.1);   border-color: rgba(239,68,68,0.4);  color: #fca5a5; }
+    .rxn-trigger.rxn-has-star  { background: rgba(201,162,39,0.13); border-color: rgba(201,162,39,0.5); color: #fbbf24; }
+    .rxn-popup {
+      display: none; position: absolute;
+      bottom: calc(100% + 10px); left: 0;
+      background: #1c1c30; border: 1px solid rgba(74,158,255,0.2);
+      border-radius: 50px; padding: 6px 8px;
+      gap: 2px; align-items: center;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.55);
+      z-index: 200; white-space: nowraw;
+    }
+    .rxn-popup.open { display: flex; }
+    .rxn-popup-btn {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 6px 12px; border-radius: 40px; border: 1px solid transparent;
+      background: none; cursor: pointer; transition: all 0.15s;
+      font-size: 1.35rem; line-height: 1;
+    }
+    .rxn-popup-btn:hover { background: rgba(255,255,255,0.1); transform: scale(1.25) translateY(-2px); }
+    .rxn-popup-btn.rxn-active { background: rgba(74,158,255,0.12); border-color: rgba(74,158,255,0.35); }
+    .rxn-popup-btn.rxn-active-down { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); }
+    .rxn-popup-btn.rxn-active-star { background: rgba(201,162,39,0.12); border-color: rgba(201,162,39,0.4); }
+    .rxn-popup-count { font-size: 0.68rem; color: #7a7a9a; margin-top: 3px; min-width: 10px; text-align: center; line-height: 1; font-family: inherit; }
+    .rxn-summary { display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; color: var(--silver); }
+    .rxn-sum-item { display: inline-flex; align-items: center; gap: 2px; }
+    /* Delete button */
+    .post-delete-btn { margin-left: auto; padding: 0.26rem 0.7rem; border-radius: 999px; border: 1px solid rgba(220,50,50,0.3); background: rgba(220,50,50,0.05); color: rgba(255,110,110,0.85); font-size: 0.78rem; cursor: pointer; font-family: inherit; transition: all 0.15s; flex-shrink: 0; }
+    .post-delete-btn:hover { background: rgba(220,50,50,0.25); border-color: rgba(220,50,50,0.7); }
+    .post-comment-link { display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; color: var(--silver); cursor: pointer; transition: color 0.15s; background: none; border: none; font-family: inherit; padding: 0; }
+    .post-comment-link:hover { color: var(--silver-light); }
+    /* Expanded body */
+    .post-body-panel { display: none; border-top: 1px solid rgba(74,158,255,0.07); }
+    .post-body-panel.open { display: block; }
+    .post-body-text { padding: 1.1rem 1.4rem 0; font-size: 0.93rem; color: var(--silver-light); line-height: 1.75; white-space: pre-wrap; word-break: break-word; }
+    /* Comments */
+    .comments-wrap { padding: 1rem 1.4rem 1.25rem; }
+    .comments-hdr { font-size: 0.75rem; font-weight: 700; color: var(--silver); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.85rem; }
+    .comment-item { padding: 0.8rem 0.95rem; background: rgba(255,255,255,0.025); border-radius: 8px; border: 1px solid rgba(255,255,255,0.045); margin-bottom: 0.55rem; }
+    .comment-item-meta { display: flex; align-items: center; gap: 0.55rem; margin-bottom: 0.3rem; }
+    .comment-author { font-size: 0.8rem; font-weight: 600; color: var(--accent); }
+    .comment-time { font-size: 0.73rem; color: var(--text-muted); }
+    .comment-body { font-size: 0.86rem; color: var(--silver-light); line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+    /* Comment input */
+    .comment-input-wrap { margin-top: 0.85rem; }
+    .comment-input-wrap textarea { width: 100%; background: rgba(10,30,66,0.65); border: 1px solid rgba(74,158,255,0.18); border-radius: 8px; color: var(--white); font-family: inherit; font-size: 0.875rem; padding: 0.65rem 0.9rem; resize: vertical; min-height: 72px; outline: none; transition: border-color 0.2s; line-height: 1.55; }
+    .comment-input-wrap textarea:focus { border-color: var(--accent); }
+    .comment-input-wrap textarea::placeholder { color: var(--text-muted); }
+    .comment-submit-row { display: flex; justify-content: flex-end; margin-top: 0.5rem; }
+    .btn-add-comment { background: var(--accent); color: var(--white); border: none; border-radius: 6px; padding: 0.45rem 1.1rem; font-size: 0.84rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.18s; }
+    .btn-add-comment:hover { background: #3a8eef; }
+    .btn-add-comment:disabled { opacity: 0.5; cursor: not-allowed; }
+    /* Auth prompt inline */
+    .inline-auth-prompt { text-align: center; padding: 0.85rem; font-size: 0.84rem; color: var(--text-muted); }
+    .inline-auth-prompt a { color: var(--accent); cursor: pointer; font-weight: 600; text-decoration: none; }
+    .inline-auth-prompt a:hover { text-decoration: underline; }
+    /* States */
+    .forum-loading { text-align: center; padding: 3.5rem 1rem; color: var(--text-muted); font-size: 0.9rem; }
+    .forum-empty { text-align: center; padding: 3.5rem 1rem; }
+    .forum-empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .forum-empty-msg { color: var(--text-muted); font-size: 0.9rem; }
+    /* ===== MODALS ===== */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.72); z-index: 2000; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(4px); }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: #0c1d3a; border: 1px solid rgba(74,158,255,0.18); border-radius: 16px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; }
+    .modal-hdr { display: flex; align-items: center; justify-content: space-between; padding: 1.4rem 1.6rem 0; }
+    .modal-title { font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--white); }
+    .modal-x { background: none; border: none; color: var(--silver); font-size: 1.4rem; cursor: pointer; padding: 0.1rem; line-height: 1; transition: color 0.18s; }
+    .modal-x:hover { color: var(--white); }
+    .modal-body { padding: 1.1rem 1.6rem 1.6rem; }
+    /* Form */
+    .fg { margin-bottom: 1rem; }
+    .flabel { display: block; font-size: 0.78rem; font-weight: 700; color: var(--silver-light); margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .finput, .fselect, .ftextarea { width: 100%; background: rgba(10,30,66,0.75); border: 1px solid rgba(74,158,255,0.18); border-radius: 8px; color: var(--white); font-family: inherit; font-size: 0.92rem; padding: 0.65rem 0.9rem; outline: none; transition: border-color 0.2s; }
+    .finput:focus, .fselect:focus, .ftextarea:focus { border-color: var(--accent); }
+    .finput::placeholder, .ftextarea::placeholder { color: rgba(90,106,126,0.8); }
+    .fselect { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a9bb0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.85rem center; padding-right: 2.4rem; }
+    .fselect option { background: #0c1d3a; color: var(--white); }
+    .ftextarea { resize: vertical; min-height: 130px; line-height: 1.6; }
+    .ferror { font-size: 0.78rem; color: #f87171; margin-top: 0.3rem; min-height: 1rem; }
+    .fsubmit { width: 100%; background: var(--accent); color: var(--white); border: none; border-radius: 8px; padding: 0.75rem; font-size: 0.92rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.18s; letter-spacing: 0.2px; }
+    .fsubmit:hover { background: #3a8eef; }
+    .fsubmit:disabled { opacity: 0.45; cursor: not-allowed; }
+    /* Auth tabs */
+    .auth-tabs { display: flex; border-bottom: 1px solid rgba(74,158,255,0.13); margin-bottom: 1.4rem; }
+    .auth-tab-btn { flex: 1; padding: 0.6rem; text-align: center; font-size: 0.875rem; font-weight: 600; color: var(--silver); cursor: pointer; background: none; border: none; border-bottom: 2px solid transparent; font-family: inherit; transition: all 0.18s; margin-bottom: -1px; }
+    .auth-tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .auth-pane { display: none; }
+    .auth-pane.active { display: block; }
+    /* User bar */
+    .user-bar { display: flex; align-items: center; gap: 0.65rem; }
+    .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; color: var(--white); flex-shrink: 0; }
+    .user-name { font-size: 0.84rem; font-weight: 600; color: var(--silver-light); }
+    .btn-signout { background: none; border: 1px solid rgba(255,255,255,0.1); color: var(--silver); border-radius: 6px; padding: 0.28rem 0.7rem; font-size: 0.76rem; cursor: pointer; transition: all 0.18s; font-family: inherit; }
+    .btn-signout:hover { border-color: rgba(255,255,255,0.22); color: var(--white); }
+    .btn-signin-cta { background: none; border: 1px solid rgba(74,158,255,0.28); color: var(--accent); border-radius: 6px; padding: 0.32rem 0.8rem; font-size: 0.8rem; cursor: pointer; transition: all 0.18s; font-family: inherit; font-weight: 600; }
+    .btn-signin-cta:hover { background: rgba(74,158,255,0.08); }
+    /* Toast */
+    .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px); background: #0d1f3d; border: 1px solid rgba(74,158,255,0.28); border-radius: 10px; padding: 0.7rem 1.2rem; font-size: 0.86rem; color: var(--silver-light); z-index: 3000; transition: transform 0.28s ease; white-space: nowrap; box-shadow: 0 8px 28px rgba(0,0,0,0.45); }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.t-ok { border-color: rgba(52,211,153,0.35); color: #6ee7b7; }
+    .toast.t-err { border-color: rgba(239,68,68,0.35); color: #fca5a5; }
+    /* Buy Me a Coffee */
+    .bmc-btn { display: inline-flex; align-items: center; gap: 0.4rem; background: #FFDD00; color: #000; border-radius: 8px; padding: 0.45rem 1rem; font-weight: 700; font-size: 0.83rem; text-decoration: none; transition: opacity 0.2s, transform 0.15s; margin-top: 0.75rem; }
+    .bmc-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    /* Responsive */
+    @media (max-width: 620px) {
+      .forum-top-row { flex-direction: column; align-items: flex-start; }
+      .forum-cats { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; width: 100%; }
+      .forum-cat-btn { white-space: nowrap; }
+      .modal-box { border-radius: 12px; }
+      .modal-hdr, .modal-body { padding-left: 1.15rem; padding-right: 1.15rem; }
+      .rxn-popup { bottom: auto; top: calc(100% + 8px); }
+    }
+      .cmt-del-btn{background:none;border:1px solid rgba(239,68,68,.35);color:#f87171;cursor:pointer;font-size:.72rem;padding:.12rem .4rem;border-radius:4px;margin-left:auto;transition:background .15s;}
+    .cmt-del-btn:hover{background:rgba(239,68,68,.15);}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html" class="active">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">KTHQ Community</span>
+    <h1 class="page-hero-title">ContractingHQ Forum</h1>
+    <p class="page-hero-sub">Real questions. Real answers. From people who've actually done it.</p>
+  </div>
+</div>
+
+<!-- RULE BANNER -->
+<div class="forum-rule-banner">
+  <p class="forum-rule-text">
+    <strong>The Only Rule:</strong> No assholes. That's it. We come here to get better, not put each other down. Nobody knows everything &mdash; and feedback is always welcome.
+  </p>
+</div>
+
+<!-- FORUM -->
+<div class="forum-layout">
+  <div class="forum-container">
+    <div class="forum-header-bar">
+      <h1 class="forum-title">ContractingHQ Forums</h1>
+      <div class="forum-header-right">
+        <div id="userBar"></div>
+        <button class="btn-new-post" id="btnNewPost">&#xFF0B; New Post</button>
+      </div>
+    </div>
+
+    <!-- Section index view -->
+    <div id="sectionIndex">
+      <div class="forum-index-table">
+        <div class="forum-index-header">
+          <span>Forum</span>
+          <span style="text-align:center">Posts</span>
+          <span>Latest Post</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Posts view (hidden until section clicked) -->
+    <div id="postsView" style="display:none">
+      <div class="forum-posts-header">
+        <button class="forum-back-btn" id="btnBackToIndex">&larr; All Sections</button>
+        <h2 class="forum-section-title" id="sectionTitle"></h2>
+      </div>
+      <div class="post-list" id="postList">
+        <div class="forum-loading">Loading discussions&hellip;</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- NEW POST MODAL -->
+<div class="modal-overlay" id="modalNewPost">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <span class="modal-title">Start a Discussion</span>
+      <button class="modal-x" id="closeNewPost">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg">
+        <label class="flabel">Category</label>
+        <select class="fselect" id="postCategory">
+          <option value="beginners">Beginner Corner</option>
+          <option value="rule-discussion">Rule &amp; Clause Discussion</option>
+          <option value="protest-corner">Protest Corner</option>
+          <option value="contract-admin">Contract Admin &amp; Performance</option>
+          <option value="career-certs">Career &amp; Certifications</option>
+          <option value="debate-floor">The Debate Floor</option>
+          <option value="bid-proposal">Bid &amp; Proposal Strategy</option>
+          <option value="hot-takes">Hot Takes / News</option>
+          <option value="war-stories">War Stories</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="flabel">Title</label>
+        <input class="finput" type="text" id="postTitle" placeholder="What do you want to discuss?" maxlength="200" />
+      </div>
+      <div class="fg">
+        <label class="flabel">Body</label>
+        <textarea class="ftextarea" id="postBody" placeholder="Share your question, experience, or insight&hellip;"></textarea>
+      </div>
+      <p class="ferror" id="newPostErr"></p>
+      <button class="fsubmit" id="btnSubmitPost">Post Discussion</button>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="modalAuth">
+  <div class="modal-box" style="max-width:400px">
+    <div class="modal-hdr">
+      <span class="modal-title">Join the Conversation</span>
+      <button class="modal-x" id="closeAuth">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" id="tabIn">Sign In</button>
+        <button class="auth-tab-btn" id="tabUp">Create Account</button>
+      </div>
+      <!-- Sign In -->
+      <div class="auth-pane active" id="paneIn">
+        <div class="fg">
+          <label class="flabel">Email</label>
+          <input class="finput" type="email" id="inEmail" placeholder="your@email.com" />
+        </div>
+        <div class="fg">
+          <label class="flabel">Password</label>
+          <input class="finput" type="password" id="inPassword" placeholder="Your password" />
+        </div>
+        <p class="ferror" id="inErr"></p>
+        <button class="fsubmit" id="btnSignIn">Sign In</button>
+      </div>
+      <!-- Sign Up -->
+      <div class="auth-pane" id="paneUp">
+        <div class="fg">
+          <label class="flabel">Username</label>
+          <input class="finput" type="text" id="upUsername" placeholder="How you'll appear to others" maxlength="30" />
+        </div>
+        <div class="fg">
+          <label class="flabel">Email</label>
+          <input class="finput" type="email" id="upEmail" placeholder="your@email.com" />
+        </div>
+        <div class="fg">
+          <label class="flabel">Password</label>
+          <input class="finput" type="password" id="upPassword" placeholder="At least 8 characters" />
+        </div>
+        <p class="ferror" id="upErr"></p>
+        <button class="fsubmit" id="btnSignUp">Create Account</button>
+        <p style="font-size:0.74rem;color:var(--text-muted);margin-top:0.65rem;text-align:center">
+          You'll get a confirmation email &mdash; check your inbox and spam folder.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ================================================================
+// CONFIG
+// ================================================================
+const SUPABASE_URL = 'https://zfynawqitbijwsswrbcy.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_X_gKjswzK0SPe9liTTsQ4g_5SPgPlNg';
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ================================================================
+// STATE
+// ================================================================
+let currentUser    = null;
+let currentProfile = null;
+let allPosts       = [];
+let activeCategory = 'all';
+let viewMode       = 'index'; // 'index' | 'section'
+let openPostIds    = new Set();
+let activeRxnPopup = null;   // post id of currently open reaction popup
+
+const CAT_LABELS = {
+  'beginners':        'Beginner Corner',
+  'rule-discussion':  'Rule & Clause',
+  'protest-corner':   'Protest Corner',
+  'contract-admin':   'Contract Admin',
+  'career-certs':     'Career & Certs',
+  'debate-floor':     'Debate Floor',
+  'bid-proposal':     'Bid & Proposal',
+  'hot-takes':        'Hot Takes',
+  'war-stories':      'War Stories',
+};
+
+// ================================================================
+// BOOTSTRAP
+// ================================================================
+document.addEventListener('DOMContentLoaded', async () => {
+  initNav();
+  bindUI();
+  // Close reaction popup on outside click
+  document.addEventListener('click', () => {
+    if (activeRxnPopup !== null) {
+      document.getElementById('rxn-popup-' + activeRxnPopup)?.classList.remove('open');
+      activeRxnPopup = null;
+    }
+  });
+
+  const { data: { session } } = await db.auth.getSession();
+  if (session?.user) {
+    currentUser = session.user;
+    await fetchProfile();
+  }
+  renderUserBar();
+  await fetchPosts();
+
+  db.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN') {
+      currentUser = session.user;
+      await fetchProfile();
+      renderUserBar();
+      await fetchPosts();
+    } else if (event === 'SIGNED_OUT') {
+      currentUser    = null;
+      currentProfile = null;
+      renderUserBar();
+      renderPosts();
+    }
+  });
+});
+
+// ================================================================
+// NAV
+// ================================================================
+function initNav() {
+  const navbar    = document.getElementById('navbar');
+  const navToggle = document.getElementById('navToggle');
+  const navLinks  = document.getElementById('navLinks');
+  window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', scrollY > 20));
+  navToggle?.addEventListener('click', () => navLinks.classList.toggle('open'));
+}
+
+// ================================================================
+// DATA
+// ================================================================
+async function fetchProfile() {
+  if (!currentUser) return;
+  const { data } = await db.from('profiles').select('*').eq('id', currentUser.id).single();
+  currentProfile = data;
+}
+
+async function fetchPosts() {
+  if (viewMode === 'index') {
+    updateSectionStats();
+    return;
+  }
+  const list = document.getElementById('postList');
+  list.innerHTML = '<div class="forum-loading">Loading discussions&hellip;</div>';
+  try {
+    const { data, error } = await db
+      .from('posts')
+      .select('*, profiles(username), comments(id), reactions(*)')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    allPosts = data || [];
+    renderPosts();
+  } catch {
+    list.innerHTML = '<div class="forum-loading">Could not load posts. Please refresh.</div>';
+  }
+}
+
+// ================================================================
+// RENDER POSTS
+// ================================================================
+function _timeAgo(iso) {
+  const diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (diff < 60)     return diff + 's ago';
+  if (diff < 3600)   return Math.floor(diff / 60)   + 'm ago';
+  if (diff < 86400)  return Math.floor(diff / 3600)  + 'h ago';
+  if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+  return new Date(iso).toLocaleDateString();
+}
+
+function showIndex() {
+  viewMode = 'index';
+  const si = document.getElementById('sectionIndex');
+  const pv = document.getElementById('postsView');
+  if (si) si.style.display = '';
+  if (pv) pv.style.display = 'none';
+  updateSectionStats();
+}
+
+function showSection(cat) {
+  viewMode       = 'section';
+  activeCategory = cat;
+  const si = document.getElementById('sectionIndex');
+  const pv = document.getElementById('postsView');
+  if (si) si.style.display = 'none';
+  if (pv) pv.style.display = '';
+  const title = (cat === 'all') ? 'All Posts' : (CAT_LABELS[cat] || cat);
+  const st = document.getElementById('sectionTitle');
+  if (st) st.textContent = title;
+  const pl = document.getElementById('postList');
+  if (pl) pl.innerHTML = '<div class="forum-loading">Loading&hellip;</div>';
+  fetchPosts();
+}
+
+async function updateSectionStats() {
+  const tbl    = document.querySelector('.forum-index-table');
+  if (!tbl) return;
+  const header = tbl.querySelector('.forum-index-header');
+  tbl.innerHTML = '';
+  if (header) tbl.appendChild(header);
+
+  const { data: posts } = await db.from('posts')
+    .select('id,title,category,created_at')
+    .order('created_at', { ascending: false });
+
+  const CAT_ICONS = {
+    'beginners':       '\u{1F393}',
+    'rule-discussion': '\u{1F4CB}',
+    'protest-corner':  '\u2696\uFE0F',
+    'contract-admin':  '\u{1F4C1}',
+    'career-certs':    '\u{1F3C6}',
+    'debate-floor':    '\u{1F5E3}\uFE0F',
+    'bid-proposal':    '\u{1F4DD}',
+    'hot-takes':       '\u{1F525}',
+    'war-stories':     '\u{1F396}\uFE0F',
+  };
+  const CAT_DESCS = {
+    'beginners':       'New to federal contracting? Start here.',
+    'rule-discussion': 'FAR, DFARS, and clause interpretation.',
+    'protest-corner':  'GAO, COFC, and agency-level protests.',
+    'contract-admin':  'Mods, claims, disputes, and performance.',
+    'career-certs':    'Career growth, CFCM, DAWIA, and more.',
+    'debate-floor':    'Hot-button issues and open debate.',
+    'bid-proposal':    'Proposal strategy, color reviews, and PWS.',
+    'hot-takes':       'Controversial opinions welcome.',
+    'war-stories':     'Tales from the contracting trenches.',
+  };
+
+  Object.keys(CAT_LABELS).forEach(cat => {
+    const catPosts = (posts || []).filter(p => p.category === cat);
+    const latest   = catPosts[0];
+    const row      = document.createElement('div');
+    row.className  = 'forum-section-row';
+    row.dataset.cat = cat;
+    const latestHTML = latest
+      ? '<div class="section-latest-title">' + latest.title.substring(0,48) + (latest.title.length > 48 ? '\u2026' : '') + '</div>'
+        + '<div class="section-latest-meta">' + _timeAgo(latest.created_at) + '</div>'
+      : '<div class="section-latest-meta" style="color:#3a3a5a">No posts yet</div>';
+    row.innerHTML =
+      '<div class="section-name-cell">'
+        + '<span class="section-icon">' + (CAT_ICONS[cat] || '\u{1F4AC}') + '</span>'
+        + '<div><div class="section-name">' + CAT_LABELS[cat] + '</div>'
+        + '<div class="section-desc">' + (CAT_DESCS[cat] || '') + '</div></div></div>'
+      + '<div class="section-count">' + catPosts.length + '</div>'
+      + '<div class="section-latest">' + latestHTML + '</div>';
+    row.addEventListener('click', () => showSection(cat));
+    tbl.appendChild(row);
+  });
+}
+
+function renderPosts() {
+  const list  = document.getElementById('postList');
+  const shown = activeCategory === 'all' ? allPosts : allPosts.filter(p => p.category === activeCategory);
+  if (!shown.length) {
+    list.innerHTML = `<div class="forum-empty">
+      <div class="forum-empty-icon">&#x1F4AC;</div>
+      <p class="forum-empty-msg">${activeCategory === 'all'
+        ? 'No posts yet &mdash; be the first to start a discussion!'
+        : 'No posts in this category yet.'}</p>
+    </div>`;
+    return;
+  }
+  list.innerHTML = shown.map(postCard).join('');
+
+  // Re-open any expanded posts
+  openPostIds.forEach(id => {
+    const panel = document.getElementById('panel-' + id);
+    if (panel) panel.classList.add('open');
+  });
+
+  // Bind events
+  shown.forEach(p => {
+    // Click header to expand
+    document.getElementById('ptop-' + p.id)?.addEventListener('click', () => togglePost(p.id));
+    // Comment count link
+    document.getElementById('cmtlink-' + p.id)?.addEventListener('click', e => {
+      e.stopPropagation();
+      togglePost(p.id);
+    });
+    // Reaction trigger (open popup)
+    document.getElementById('rxn-trigger-' + p.id)?.addEventListener('click', e => {
+      e.stopPropagation();
+      toggleRxnPopup(p.id);
+    });
+    // Reaction popup buttons
+    ['up','down','star'].forEach(type => {
+      document.getElementById('rxn-' + type + '-' + p.id)?.addEventListener('click', e => {
+        e.stopPropagation();
+        closeRxnPopup(p.id);
+        handleReact(p.id, type);
+      });
+    });
+    // Delete button
+    const delBtn = document.getElementById('del-' + p.id);
+    if (delBtn) delBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      deletePost(p.id);
+    });
+  });
+}
+
+async function deletePost(postId) {
+  if (!confirm('Delete this post and all its comments?')) return;
+  const { error } = await db.from('posts').delete().eq('id', postId);
+  if (error) { alert('Could not delete: ' + error.message); return; }
+  allPosts = allPosts.filter(p => p.id !== postId);
+  renderPosts();
+}
+
+function postCard(p) {
+  const rxns   = p.reactions || [];
+  const cmts   = p.comments  || [];
+  const upCt   = rxns.filter(r => r.type === 'thumbs_up').length;
+  const downCt = rxns.filter(r => r.type === 'thumbs_down').length;
+  const starCt = rxns.filter(r => r.type === 'gold_star').length;
+  const myUp   = currentUser && rxns.some(r => r.type === 'thumbs_up'   && r.user_id === currentUser.id);
+  const myDown = currentUser && rxns.some(r => r.type === 'thumbs_down' && r.user_id === currentUser.id);
+  const myStar = currentUser && rxns.some(r => r.type === 'gold_star'   && r.user_id === currentUser.id);
+  const myRxn  = myUp ? 'up' : myDown ? 'down' : myStar ? 'star' : null;
+
+  const rxnEmoji   = { up: '&#x1F44D;', down: '&#x1F44E;', star: '&#x2B50;' };
+  const rxnLabel   = { up: 'Liked', down: 'Disliked', star: 'Starred' };
+  const triggerTxt = myRxn
+    ? rxnEmoji[myRxn] + ' <span>' + rxnLabel[myRxn] + '</span>'
+    : '&#x1F44D; <span>React</span>';
+  const triggerCls = myRxn ? 'rxn-trigger rxn-has-' + myRxn : 'rxn-trigger';
+
+  // Reaction summary (counts that are > 0)
+  let rxnSummary = '';
+  if (upCt   > 0) rxnSummary += '<span class="rxn-sum-item">&#x1F44D;&nbsp;' + upCt   + '</span>';
+  if (downCt > 0) rxnSummary += '<span class="rxn-sum-item">&#x1F44E;&nbsp;' + downCt + '</span>';
+  if (starCt > 0) rxnSummary += '<span class="rxn-sum-item">&#x2B50;&nbsp;'  + starCt + '</span>';
+
+  const catClass  = 'pcb-' + (p.category || 'general');
+  const catLabel  = CAT_LABELS[p.category] || p.category;
+  const author    = p.profiles?.username || 'Anonymous';
+  const isAdmin   = currentProfile?.username === 'nhazelett';
+  const isOwner   = p.author_id === currentUser?.id;
+
+  return `
+    <div class="post-card" id="post-${p.id}">
+      <div class="post-card-top" id="ptop-${p.id}">
+        <div class="post-card-meta">
+          <span class="post-cat-badge ${catClass}">${esc(catLabel)}</span>
+          <span class="post-byline">by <span>${esc(author)}</span> &middot; ${ago(p.created_at)}</span>
+        </div>
+        <h3 class="post-title">${esc(p.title)}</h3>
+        <p class="post-preview">${esc(p.body)}</p>
+      </div>
+      <div class="post-card-bar">
+        <div class="rxn-area">
+          <div class="rxn-container">
+            <button class="${triggerCls}" id="rxn-trigger-${p.id}">${triggerTxt}</button>
+            <div class="rxn-popup" id="rxn-popup-${p.id}">
+              <button class="rxn-popup-btn${myUp   ? ' rxn-active'      : ''}" id="rxn-up-${p.id}"   title="Thumbs Up">&#x1F44D;<span class="rxn-popup-count">${upCt   || ''}</span></button>
+              <button class="rxn-popup-btn${myDown ? ' rxn-active-down' : ''}" id="rxn-down-${p.id}" title="Thumbs Down">&#x1F44E;<span class="rxn-popup-count">${downCt || ''}</span></button>
+              <button class="rxn-popup-btn${myStar ? ' rxn-active-star' : ''}" id="rxn-star-${p.id}" title="Gold Star">&#x2B50;<span class="rxn-popup-count">${starCt || ''}</span></button>
+            </div>
+          </div>
+          ${rxnSummary ? '<div class="rxn-summary">' + rxnSummary + '</div>' : ''}
+        </div>
+        <button class="post-comment-link" id="cmtlink-${p.id}">
+          &#x1F4AC; <span>${cmts.length} comment${cmts.length !== 1 ? 's' : ''}</span>
+        </button>
+        ${(currentUser && (isAdmin || isOwner))
+          ? '<button class="post-delete-btn" id="del-' + p.id + '" title="Delete post">&#x1F5D1; Delete</button>'
+          : ''}
+      </div>
+      <div class="post-body-panel" id="panel-${p.id}">
+        <div class="post-body-text">${esc(p.body)}</div>
+        <div class="comments-wrap" id="cmts-${p.id}">
+          <div class="forum-loading" style="padding:0.75rem 0;font-size:0.84rem">Loading comments&hellip;</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ================================================================
+// REACTION POPUP
+// ================================================================
+function toggleRxnPopup(postId) {
+  const popup = document.getElementById('rxn-popup-' + postId);
+  if (!popup) return;
+  // Close any other open popup
+  if (activeRxnPopup !== null && activeRxnPopup !== postId) {
+    document.getElementById('rxn-popup-' + activeRxnPopup)?.classList.remove('open');
+  }
+  const isOpen = popup.classList.toggle('open');
+  activeRxnPopup = isOpen ? postId : null;
+}
+
+function closeRxnPopup(postId) {
+  document.getElementById('rxn-popup-' + postId)?.classList.remove('open');
+  if (activeRxnPopup === postId) activeRxnPopup = null;
+}
+
+// ================================================================
+// EXPAND / COLLAPSE
+// ================================================================
+async function togglePost(id) {
+  const panel = document.getElementById('panel-' + id);
+  if (!panel) return;
+  if (openPostIds.has(id)) {
+    openPostIds.delete(id);
+    panel.classList.remove('open');
+  } else {
+    openPostIds.add(id);
+    panel.classList.add('open');
+    await loadComments(id);
+  }
+}
+
+// ================================================================
+// COMMENTS
+// ================================================================
+async function loadComments(postId) {
+  const wrap = document.getElementById('cmts-' + postId);
+  if (!wrap) return;
+  try {
+    const { data, error } = await db
+      .from('comments')
+      .select('*, profiles(username)')
+      .eq('post_id', postId)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+    renderComments(postId, data || []);
+  } catch {
+    wrap.innerHTML = '<p style="color:var(--text-muted);font-size:0.84rem">Could not load comments.</p>';
+  }
+}
+
+function renderComments(postId, list) {
+  const wrap = document.getElementById('cmts-' + postId);
+  if (!wrap) return;
+  const cmtHTML = list.length
+    ? list.map(c => `
+      <div class="comment-item">
+        <div class="comment-item-meta">
+          <span class="comment-author">${esc(c.profiles?.username || 'Anonymous')}</span>
+          <span class="comment-time">${ago(c.created_at)}</span>
+        </div>
+        <div class="comment-body">${esc(c.body)}</div>
+      </div>`).join('')
+    : `<p style="color:var(--text-muted);font-size:0.84rem;padding:0.25rem 0 0.5rem">No comments yet &mdash; be the first to respond.</p>`;
+
+  const inputHTML = currentUser
+    ? `<div class="comment-input-wrap">
+        <textarea id="cmtinput-${postId}" placeholder="Add your thoughts&hellip;"></textarea>
+        <div class="comment-submit-row">
+          <button class="btn-add-comment" id="cmtsubmit-${postId}">Post Comment</button>
+        </div>
+       </div>`
+    : `<div class="inline-auth-prompt"><a onclick="openAuth()">Sign in</a> to join the conversation.</div>`;
+
+  wrap.innerHTML = `<div class="comments-hdr">${list.length} Comment${list.length !== 1 ? 's' : ''}</div>${cmtHTML}${inputHTML}`;
+
+  if (currentUser?.username === 'nhazelett') {
+    wrap.querySelectorAll('.comment-item').forEach(function(el, i) {
+      var btn = document.createElement('button');
+      btn.className = 'cmt-del-btn';
+      btn.textContent = 'Delete';
+      var cId = list[i].id, pId = postId;
+      btn.addEventListener('click', function() { deleteComment(cId, pId); });
+      el.querySelector('.comment-item-meta').appendChild(btn);
+    });
+  }
+
+  if (currentUser) {
+    document.getElementById('cmtsubmit-' + postId)?.addEventListener('click', () => submitComment(postId));
+    document.getElementById('cmtinput-'  + postId)?.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && e.ctrlKey) submitComment(postId);
+    });
+  }
+}
+
+async function deleteComment(commentId, postId) {
+  if (!confirm('Delete this comment?')) return;
+  const { error } = await supabase.from('comments').delete().eq('id', commentId);
+  if (error) { toast('Could not delete comment.', true); return; }
+  await loadComments(postId);
+}
+
+async function submitComment(postId) {
+  const input = document.getElementById('cmtinput-' + postId);
+  const btn   = document.getElementById('cmtsubmit-' + postId);
+  const body  = input?.value.trim();
+  if (!body) return;
+  if (!currentUser) { openAuth(); return; }
+  btn.disabled    = true;
+  btn.textContent = 'Posting\u2026';
+  try {
+    const { error } = await db.from('comments').insert({ post_id: postId, body, author_id: currentUser.id });
+    if (error) throw error;
+    input.value = '';
+    const post = allPosts.find(p => p.id === postId);
+    if (post) post.comments.push({ id: 'tmp' });
+    renderPosts();
+    openPostIds.add(postId);
+    document.getElementById('panel-' + postId)?.classList.add('open');
+    await loadComments(postId);
+    toast('Comment posted!', 'ok');
+  } catch {
+    toast('Could not post comment. Try again.', 'err');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Post Comment'; }
+  }
+}
+
+// ================================================================
+// REACTIONS
+// ================================================================
+const RXN_TYPE = { up: 'thumbs_up', down: 'thumbs_down', star: 'gold_star' };
+
+async function handleReact(postId, shortType) {
+  if (!currentUser) { openAuth(); toast('Sign in to react to posts'); return; }
+  const type = RXN_TYPE[shortType];
+  const post = allPosts.find(p => p.id === postId);
+  if (!post) return;
+  const existing = (post.reactions || []).find(r => r.user_id === currentUser.id && r.type === type);
+  try {
+    if (existing) {
+      const { error } = await db.from('reactions').delete()
+        .eq('post_id', postId).eq('user_id', currentUser.id).eq('type', type);
+      if (error) throw error;
+      post.reactions = (post.reactions || []).filter(r => !(r.user_id === currentUser.id && r.type === type));
+    } else {
+      const { data, error } = await db.from('reactions')
+        .insert({ post_id: postId, user_id: currentUser.id, type }).select().single();
+      if (error) throw error;
+      if (!post.reactions) post.reactions = [];
+      post.reactions.push(data);
+    }
+    renderPosts();
+  } catch {
+    toast('Could not update reaction.', 'err');
+  }
+}
+
+// ================================================================
+// NEW POST
+// ================================================================
+async function submitPost() {
+  const title = document.getElementById('postTitle')?.value.trim();
+  const body  = document.getElementById('postBody')?.value.trim();
+  const cat   = document.getElementById('postCategory')?.value;
+  const errEl = document.getElementById('newPostErr');
+  const btn   = document.getElementById('btnSubmitPost');
+  errEl.textContent = '';
+  if (!title || title.length < 5) { errEl.textContent = 'Title must be at least 5 characters.'; return; }
+  if (!body  || body.length  < 10) { errEl.textContent = 'Body must be at least 10 characters.'; return; }
+  btn.disabled    = true;
+  btn.textContent = 'Posting\u2026';
+  try {
+    const { error } = await db.from('posts').insert({ title, body, category: cat, author_id: currentUser.id });
+    if (error) throw error;
+    closeModal('modalNewPost');
+    document.getElementById('postTitle').value = '';
+    document.getElementById('postBody').value  = '';
+    await fetchPosts();
+    toast('Discussion posted!', 'ok');
+  } catch (e) {
+    errEl.textContent = e.message || 'Could not post. Please try again.';
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Post Discussion'; }
+  }
+}
+
+// ================================================================
+// AUTH
+// ================================================================
+async function doSignIn() {
+  const email    = document.getElementById('inEmail')?.value.trim();
+  const password = document.getElementById('inPassword')?.value;
+  const errEl    = document.getElementById('inErr');
+  const btn      = document.getElementById('btnSignIn');
+  errEl.textContent = '';
+  if (!email || !password) { errEl.textContent = 'Please fill in all fields.'; return; }
+  btn.disabled    = true;
+  btn.textContent = 'Signing in\u2026';
+  try {
+    const { error } = await db.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    closeModal('modalAuth');
+    toast('Welcome back!', 'ok');
+  } catch (e) {
+    errEl.textContent = e.message || 'Sign in failed. Please try again.';
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Sign In'; }
+  }
+}
+
+async function doSignUp() {
+  const username = document.getElementById('upUsername')?.value.trim();
+  const email    = document.getElementById('upEmail')?.value.trim();
+  const password = document.getElementById('upPassword')?.value;
+  const errEl    = document.getElementById('upErr');
+  const btn      = document.getElementById('btnSignUp');
+  errEl.textContent = '';
+  if (!username || username.length < 2) { errEl.textContent = 'Username must be at least 2 characters.'; return; }
+  if (!email)                           { errEl.textContent = 'Please enter your email.'; return; }
+  if (!password || password.length < 8) { errEl.textContent = 'Password must be at least 8 characters.'; return; }
+  btn.disabled    = true;
+  btn.textContent = 'Creating account\u2026';
+  try {
+    const { data: existing } = await db.from('profiles').select('id').eq('username', username).maybeSingle();
+    if (existing) { errEl.textContent = 'Username already taken \u2014 choose another.'; return; }
+    const { data: { user }, error } = await db.auth.signUp({
+      email, password,
+      options: { data: { username }, emailRedirectTo: 'https://nhazelett.github.io/ContractingHQ/forum.html' }
+    });
+    if (error) throw error;
+    if (user) { await db.from('profiles').insert({ id: user.id, username }); }
+    closeModal('modalAuth');
+    toast('Account created! Check your email to confirm.', 'ok');
+  } catch (e) {
+    errEl.textContent = e.message || 'Sign up failed. Please try again.';
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Create Account'; }
+  }
+}
+
+async function doSignOut() {
+  await db.auth.signOut();
+  toast('Signed out.', 'ok');
+}
+
+// ================================================================
+// UI
+// ================================================================
+function renderUserBar() {
+  const bar = document.getElementById('userBar');
+  if (!bar) return;
+  if (currentUser && currentProfile) {
+    const init = currentProfile.username.charAt(0).toUpperCase();
+    bar.innerHTML = `
+      <div class="user-bar">
+        <div class="user-avatar">${init}</div>
+        <span class="user-name">${esc(currentProfile.username)}</span>
+        <button class="btn-signout" onclick="doSignOut()">Sign Out</button>
+      </div>`;
+  } else {
+    bar.innerHTML = `<button class="btn-signin-cta" onclick="openAuth()">Sign In</button>`;
+  }
+}
+
+function openAuth()        { document.getElementById('modalAuth').classList.add('open'); }
+function closeModal(id)    { document.getElementById(id)?.classList.remove('open'); }
+
+function toast(msg, type = '') {
+  const el     = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast ${type ? 't-' + type : ''}`;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 3200);
+}
+
+function esc(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function ago(dateStr) {
+  const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+  if (diff < 60)     return 'just now';
+  if (diff < 3600)   return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400)  return `${Math.floor(diff / 3600)}h ago`;
+  if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+// ================================================================
+// BIND UI EVENTS
+// ================================================================
+function bindUI() {
+  document.getElementById('btnBackToIndex')?.addEventListener('click', () => showIndex());
+  document.getElementById('btnNewPost')?.addEventListener('click', () => {
+    if (!currentUser) { openAuth(); toast('Sign in to start a discussion'); return; }
+    document.getElementById('modalNewPost').classList.add('open');
+  });
+  document.getElementById('btnSubmitPost')?.addEventListener('click', submitPost);
+  document.getElementById('closeNewPost')?.addEventListener('click', () => closeModal('modalNewPost'));
+  document.getElementById('closeAuth')?.addEventListener('click', () => closeModal('modalAuth'));
+  document.querySelectorAll('.modal-overlay').forEach(o => {
+    o.addEventListener('click', e => { if (e.target === o) closeModal(o.id); });
+  });
+  document.getElementById('tabIn')?.addEventListener('click', () => {
+    document.getElementById('tabIn').classList.add('active');
+    document.getElementById('tabUp').classList.remove('active');
+    document.getElementById('paneIn').classList.add('active');
+    document.getElementById('paneUp').classList.remove('active');
+  });
+  document.getElementById('tabUp')?.addEventListener('click', () => {
+    document.getElementById('tabUp').classList.add('active');
+    document.getElementById('tabIn').classList.remove('active');
+    document.getElementById('paneUp').classList.add('active');
+    document.getElementById('paneIn').classList.remove('active');
+  });
+  document.getElementById('btnSignIn')?.addEventListener('click', doSignIn);
+  document.getElementById('btnSignUp')?.addEventListener('click', doSignUp);
+  document.getElementById('inPassword')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') doSignIn();
+  });
+}
+</script>
+<script src="main.js"></script>
+</body>
+</html>

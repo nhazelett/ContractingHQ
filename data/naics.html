@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how to select NAICS codes for government contracts. Interactive decision aid, practitioner tips, and external lookup tools for contracting officers." />
+  <title>NAICS Codes | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .naics-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .naics-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .naics-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .naics-tab:hover { color: var(--white); }
+    .naics-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .naics-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .naics-panel.active { display: block; }
+
+    /* ── Intro badge ── */
+    .naics-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .naics-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .naics-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .naics-intro p { color: var(--silver); font-size: 0.9rem; max-width: 520px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn section ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-body .far-ref { color: var(--accent); font-weight: 600; font-size: 0.82rem; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.5px; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── Decision Aid ── */
+    .da-prompt { text-align: center; margin-bottom: 2rem; }
+    .da-prompt h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .da-prompt p { color: var(--silver); font-size: 0.9rem; }
+
+    .da-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .da-option { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; cursor: pointer; transition: all 0.2s; text-align: center; }
+    .da-option:hover { border-color: rgba(74,158,255,0.35); background: rgba(74,158,255,0.06); transform: translateY(-2px); }
+    .da-option.selected { border-color: var(--accent); background: rgba(74,158,255,0.1); box-shadow: 0 0 20px rgba(74,158,255,0.1); }
+    .da-option-icon { font-size: 2.5rem; margin-bottom: 0.75rem; display: block; }
+    .da-option-label { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--white); margin-bottom: 0.35rem; }
+    .da-option-sub { font-size: 0.8rem; color: var(--silver); line-height: 1.5; }
+
+    .da-result { display: none; background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.15); border-radius: 14px; padding: 2rem; animation: fadeSlideUp 0.35s ease-out; }
+    .da-result.visible { display: block; }
+    .da-result h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .da-result p { color: var(--silver); font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.75rem; }
+    .da-result strong { color: var(--white); }
+    .da-result .da-series { display: inline-block; background: rgba(74,158,255,0.12); color: var(--accent); font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.1rem; padding: 0.3rem 0.9rem; border-radius: 8px; margin: 0.5rem 0; }
+    .da-result .da-caution { background: rgba(248,113,113,0.05); border: 1px solid rgba(248,113,113,0.15); border-radius: 10px; padding: 0.85rem 1rem; margin-top: 1rem; font-size: 0.85rem; color: #fca5a5; line-height: 1.6; }
+    .da-result .da-caution strong { color: #fca5a5; }
+    .da-reset { display: none; margin-top: 1.5rem; text-align: center; }
+    .da-reset.visible { display: block; }
+    .da-reset button { padding: 0.55rem 1.4rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.25); background: rgba(74,158,255,0.08); color: var(--silver); cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .da-reset button:hover { background: rgba(74,158,255,0.18); color: var(--white); }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Lookup section ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    /* ── Quiz section ── */
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem; }
+    .quiz-score { font-size: 0.8rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; }
+    .quiz-progress-bar { width: 100%; height: 4px; background: rgba(74,158,255,0.1); border-radius: 99px; margin-bottom: 2rem; }
+    .quiz-progress-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.3s; }
+    .quiz-question { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.75rem; margin-bottom: 1.5rem; }
+    .quiz-q-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem; }
+    .quiz-q-text { font-size: 1rem; color: var(--white); line-height: 1.7; margin-bottom: 1rem; }
+    .quiz-choices { display: grid; gap: 0.65rem; }
+    .quiz-choice { padding: 0.85rem 1.2rem; border-radius: 10px; border: 1px solid rgba(74,158,255,0.15); background: rgba(10,22,50,0.6); color: var(--silver); font-size: 0.9rem; font-weight: 600; cursor: pointer; text-align: left; font-family: inherit; transition: all 0.18s; line-height: 1.35; }
+    .quiz-choice:hover:not(:disabled) { border-color: rgba(74,158,255,0.4); color: var(--white); background: rgba(74,158,255,0.08); }
+    .quiz-choice.correct { border-color: #34d399; background: rgba(52,211,153,0.1); color: #6ee7b7; }
+    .quiz-choice.wrong { border-color: #f87171; background: rgba(248,113,113,0.08); color: #fca5a5; }
+    .quiz-choice:disabled { cursor: default; }
+    .quiz-feedback { margin-top: 1rem; padding: 0.85rem 1.1rem; border-radius: 10px; font-size: 0.875rem; line-height: 1.55; display: none; }
+    .quiz-feedback.correct { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); color: #6ee7b7; }
+    .quiz-feedback.wrong { background: rgba(248,113,113,0.06); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; }
+    .quiz-feedback.visible { display: block; }
+    .quiz-next { margin-top: 1rem; display: none; }
+    .quiz-next.visible { display: block; }
+    .quiz-done { text-align: center; padding: 3rem 1rem; display: none; }
+    .quiz-done.visible { display: block; }
+    .quiz-done h2 { font-family: 'Rajdhani', sans-serif; font-size: 2.2rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .quiz-done .final-score { font-size: 4rem; font-weight: 800; color: var(--accent); line-height: 1; margin: 1rem 0; }
+    .quiz-done p { color: var(--silver); font-size: 0.95rem; margin-bottom: 1.5rem; }
+    .fc-btn { padding: 0.6rem 1.4rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.25); background: rgba(74,158,255,0.08); color: var(--silver); cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .fc-btn:hover { background: rgba(74,158,255,0.18); color: var(--white); }
+    .fc-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .fc-btn.primary:hover { background: #3a8eef; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .naics-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .da-options { grid-template-columns: 1fr; }
+      .lookup-grid { grid-template-columns: 1fr; }
+    }
+
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 3</span>
+    <h1 class="page-hero-title">NAICS Codes</h1>
+    <p class="page-hero-sub">Every solicitation needs one. Pick the wrong one and you'll hear about it. Here's how to get it right.</p>
+  </div>
+</div>
+
+<div class="naics-bg">
+  <div class="naics-tabs" role="tablist">
+    <button class="naics-tab active" data-tab="learn" role="tab">&#128218; Learn</button>
+    <button class="naics-tab" data-tab="decide" role="tab">&#129518; Decision Aid</button>
+    <button class="naics-tab" data-tab="quiz" role="tab">&#9889; Quiz</button>
+    <button class="naics-tab" data-tab="lookup" role="tab">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════════════════════════ LEARN ═══ -->
+  <div id="panel-learn" class="naics-panel active">
+    <div class="naics-intro">
+      <div class="naics-intro-tag">The Basics</div>
+      <h2>What You Need to Know</h2>
+      <p>NAICS selection isn't glamorous, but it directly affects who can compete for your contract. Get it wrong and you'll limit competition or face a protest.</p>
+    </div>
+
+    <!-- Section 1 -->
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> What is a NAICS Code?</h3>
+      <div class="learn-body">
+        <p>NAICS stands for the <strong>North American Industry Classification System</strong>. It's a six-digit code that classifies every business establishment by its primary activity. Think of it as the government's way of saying "this contract is for <em>this kind of work</em>."</p>
+        <p>Every solicitation you issue must include a NAICS code. It tells industry what you're buying and, critically, it determines the <strong>size standard</strong> &mdash; the threshold that decides whether a company qualifies as a small business for that particular contract.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Section 2 -->
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Why Does It Matter?</h3>
+      <div class="learn-body">
+        <p>Three reasons, and they all affect you directly:</p>
+
+        <div class="highlight-box warn">
+          <strong>It's protestable.</strong> An interested party can protest your NAICS selection to the SBA's Office of Hearings and Appeals. If they win, your solicitation gets delayed or re-issued. You need to be able to defend your choice.
+        </div>
+
+        <div class="highlight-box">
+          <strong>It sets the size standard.</strong> A company might be "small" under one NAICS code and "other than small" under another. Your NAICS selection literally determines which companies can compete as small businesses. That's a big deal when you're setting aside work for small business.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>It affects competition.</strong> The right NAICS code opens the door to the right pool of offerors. The wrong one either narrows the field unnecessarily or attracts companies that don't actually do what you need.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Section 3 -->
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> How to Pick the Right One</h3>
+      <div class="learn-body">
+        <p>Here's the practitioner framework. Two rules:</p>
+
+        <p><strong>Rule 1: Pick the code that most accurately reflects the requirement.</strong> What is the principal purpose of the acquisition? If you're buying janitorial services, don't use a general "facilities support" NAICS just because it's broader. Use the janitorial code.</p>
+
+        <p><strong>Rule 2: When two codes fit equally well, pick the one that invites more competition.</strong> More competition = better prices, more options, and a stronger defense if someone challenges your choice.</p>
+
+        <div class="highlight-box tip">
+          <strong>Pro tip for supplies:</strong> When buying a product, look for NAICS codes in the <strong>31&ndash;33 series</strong> (Manufacturing). For example, small arms ammunition falls under NAICS 322992. Using a manufacturing code for products helps keep your offeror pool in compliance with the <strong>Non-Manufacturer Rule</strong> <span class="far-ref">(FAR 19.108)</span>. The Non-Manufacturer Rule requires that small business offerors on supply contracts supply the product of a small business manufacturer &mdash; and selecting a manufacturing NAICS makes this cleaner to administer.
+        </div>
+
+        <p><strong>For services:</strong> NAICS codes for services span a wide range. Focus on what the contractor will actually <em>do</em>. IT services, janitorial, engineering, consulting &mdash; each has its own series. Search by the function, not by who you think should do the work.</p>
+
+        <p><strong>For construction:</strong> You're in the <strong>23 series</strong>. Construction NAICS codes are broken down by type (general, heavy/civil, specialty trades). Match the code to the type of construction work being performed.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Section 4 -->
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> The Size Standard Connection</h3>
+      <div class="learn-body">
+        <p>Every NAICS code has a corresponding <strong>SBA size standard</strong> &mdash; either a revenue cap (e.g., $16.5M in average annual receipts) or an employee count (e.g., 500 employees). This size standard determines the small business threshold for contracts assigned that NAICS code.</p>
+
+        <p>This is why NAICS selection matters beyond just classification. If you assign a NAICS code with a $9M size standard instead of one with a $30M standard, you've just changed which companies can compete as "small." Think about that when you're deciding between two codes that both seem to fit.</p>
+
+        <div class="highlight-box">
+          <strong>Bottom line:</strong> NAICS selection isn't an afterthought &mdash; it's a decision that shapes your competitive environment. Pick accurately, pick defensibly, and when in doubt, pick the code that opens the door wider.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Section 5 -->
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> How to Look Up a Company's NAICS</h3>
+      <div class="learn-body">
+        <p>Before you finalize your NAICS selection, you should know what NAICS codes your potential offerors actually claim. Here's how:</p>
+
+        <p>Go to <strong>SAM.gov</strong> and search for the company. In their entity registration, look for their <strong>Representations and Certifications</strong>. Under the provision <strong>52.219-1</strong> (Small Business Program Representations), you'll find the NAICS codes they've registered under and whether they represent themselves as small for each one.</p>
+
+        <div class="highlight-box tip">
+          <strong>Why this matters for market research:</strong> Looking up interested companies' NAICS reps and certs early gives you real data for your market research. You'll see exactly which NAICS codes potential offerors are claiming, what size standards apply, and whether they self-certify as small. This directly informs your determination of an appropriate NAICS code and helps you set a realistic competitive environment before you issue the solicitation.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Step by step:</strong> SAM.gov &rarr; Search for entity &rarr; Entity Registration &rarr; Representations &amp; Certifications &rarr; FAR 52.219-1 &rarr; Review their NAICS codes and small business representations.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ DECISION AID ═══ -->
+  <div id="panel-decide" class="naics-panel">
+    <div class="naics-intro">
+      <div class="naics-intro-tag">Interactive</div>
+      <h2>NAICS Decision Aid</h2>
+      <p>Answer one question and get tailored guidance for selecting the right NAICS code.</p>
+    </div>
+
+    <div class="da-prompt">
+      <h3>What are you buying?</h3>
+      <p>Select the category that best describes the principal purpose of your acquisition.</p>
+    </div>
+
+    <div class="da-options" id="daOptions">
+      <div class="da-option" data-type="product" tabindex="0" role="button">
+        <span class="da-option-icon">&#128230;</span>
+        <div class="da-option-label">A Product</div>
+        <div class="da-option-sub">Supplies, equipment, materials &mdash; something you receive and can hold</div>
+      </div>
+      <div class="da-option" data-type="service" tabindex="0" role="button">
+        <span class="da-option-icon">&#128736;</span>
+        <div class="da-option-label">A Service</div>
+        <div class="da-option-sub">Someone performing work &mdash; IT, janitorial, consulting, maintenance, etc.</div>
+      </div>
+      <div class="da-option" data-type="construction" tabindex="0" role="button">
+        <span class="da-option-icon">&#127959;</span>
+        <div class="da-option-label">Construction</div>
+        <div class="da-option-sub">Building, renovating, or repairing real property</div>
+      </div>
+    </div>
+
+    <!-- Product result -->
+    <div class="da-result" id="result-product">
+      <h4>&#128230; Buying a Product</h4>
+      <p>For supplies, your first stop should be the <strong>Manufacturing sector</strong>:</p>
+      <div class="da-series">NAICS 31&ndash;33 Series (Manufacturing)</div>
+      <p>Search for the code that describes <strong>what the product is</strong>, not who sells it. For example, if you're buying ammunition, look for the specific manufacturing code (e.g., 332992 &mdash; Small Arms Ammunition Manufacturing), not a general retail or wholesale code.</p>
+      <p><strong>Why manufacturing codes?</strong> Using a manufacturing NAICS for supply contracts keeps things cleaner under the <strong>Non-Manufacturer Rule</strong> <span class="far-ref">(FAR 19.108)</span>. This rule requires small business offerors on supply contracts to provide the product of a small business manufacturer. Selecting the manufacturing NAICS aligns your solicitation with this requirement from the start.</p>
+      <div class="da-caution">
+        <strong>Watch the size standard.</strong> Manufacturing NAICS codes typically use employee-based size standards (e.g., 500 or 1,000 employees). Check that the size standard for your chosen code makes sense for the market you're trying to reach. You can verify size standards on the SBA's table of size standards.
+      </div>
+    </div>
+
+    <!-- Service result -->
+    <div class="da-result" id="result-service">
+      <h4>&#128736; Buying a Service</h4>
+      <p>Services span a wide range of NAICS series. The key is to focus on <strong>what the contractor will actually do</strong>.</p>
+      <p>Common service NAICS series:</p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin:0.75rem 0 1rem;">
+        <span class="da-series">54 &mdash; Professional/Technical</span>
+        <span class="da-series">56 &mdash; Admin &amp; Support</span>
+        <span class="da-series">51 &mdash; Information/IT</span>
+        <span class="da-series">81 &mdash; Repair &amp; Maintenance</span>
+        <span class="da-series">61 &mdash; Education</span>
+        <span class="da-series">62 &mdash; Healthcare</span>
+      </div>
+      <p><strong>Don't default to a catch-all.</strong> "Administrative Management and General Management Consulting" (541611) is a popular pick, but if your requirement is really for IT help desk support, the right answer is probably in the 541500 range. Be specific to the work being performed.</p>
+      <p>If two codes seem to fit, apply the tiebreaker: <strong>pick the one that invites more competition.</strong></p>
+      <div class="da-caution">
+        <strong>Size standards vary widely for services.</strong> Revenue-based thresholds for service NAICS codes can range from $9M to $47M+. Make sure you understand the impact on your small business pool before you commit.
+      </div>
+    </div>
+
+    <!-- Construction result -->
+    <div class="da-result" id="result-construction">
+      <h4>&#127959; Construction</h4>
+      <p>Construction work lives in one place:</p>
+      <div class="da-series">NAICS 23 Series (Construction)</div>
+      <p>The 23 series breaks down into three main areas:</p>
+      <p><strong>236 &mdash; Construction of Buildings</strong> (residential and nonresidential building construction)</p>
+      <p><strong>237 &mdash; Heavy and Civil Engineering</strong> (highways, bridges, utilities, power lines)</p>
+      <p><strong>238 &mdash; Specialty Trade Contractors</strong> (electrical, plumbing, HVAC, roofing, concrete, etc.)</p>
+      <p>Match the code to the <strong>type of construction work</strong> being performed. If it's a renovation of an office building, that's 236. If it's re-roofing, that's more likely 238160 (Roofing Contractors).</p>
+      <div class="da-caution">
+        <strong>Construction size standards are revenue-based</strong> and tend to be relatively high ($39.5M+ for many general construction categories). Specialty trades often have lower thresholds. Verify before you issue.
+      </div>
+    </div>
+
+    <div class="da-reset" id="daReset">
+      <button onclick="resetDecisionAid()">&#8592; Start Over</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ QUIZ ═══ -->
+  <div id="panel-quiz" class="naics-panel">
+    <div class="naics-intro">
+      <div class="naics-intro-tag">Test Yourself</div>
+      <h2>NAICS Quick Quiz</h2>
+      <p>Seven scenarios. Pick the best answer. See if the training stuck.</p>
+    </div>
+
+    <div id="quizContainer">
+      <div class="quiz-header">
+        <span class="quiz-score" id="quizScore">Score: 0 / 0</span>
+        <span class="quiz-score" id="quizProgress">Question 1 of 6</span>
+      </div>
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizBar" style="width:0%"></div></div>
+      <div id="quizQuestion"></div>
+      <div class="quiz-choices" id="quizChoices"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <div class="quiz-next" id="quizNext">
+        <button class="fc-btn primary" onclick="nextQuestion()">Next Question &#8594;</button>
+      </div>
+    </div>
+    <div class="quiz-done" id="quizDone">
+      <h2>Quiz Complete</h2>
+      <div class="final-score" id="finalScore">0%</div>
+      <p id="finalMsg"></p>
+      <button class="fc-btn primary" onclick="restartQuiz()">Try Again</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ LOOK IT UP ═══ -->
+  <div id="panel-lookup" class="naics-panel">
+    <div class="naics-intro">
+      <div class="naics-intro-tag">External Resources</div>
+      <h2>Look It Up</h2>
+      <p>Use these tools to search for NAICS codes and verify size standards.</p>
+    </div>
+
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>NAICS Code Search</h4>
+        <p>Search NAICS codes by keyword or industry description. Find the six-digit code that matches your requirement.</p>
+        <a href="https://www.naics.com/search-naics-codes-by-industry/" target="_blank" rel="noopener">Search on NAICS.com</a>
+      </div>
+      <div class="lookup-card">
+        <h4>SBA Size Standards</h4>
+        <p>The official table of size standards. Look up any NAICS code to see its small business revenue cap or employee threshold.</p>
+        <a href="https://www.sba.gov/document/support-table-size-standards" target="_blank" rel="noopener">SBA Size Standards Table</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Census Bureau NAICS</h4>
+        <p>The official source for NAICS code definitions, hierarchies, and crosswalks. Useful when you need the precise scope of a code.</p>
+        <a href="https://www.census.gov/naics/" target="_blank" rel="noopener">Census.gov NAICS</a>
+      </div>
+      <div class="lookup-card">
+        <h4>NAICS to SIC Crosswalk</h4>
+        <p>Need to map between the older SIC system and NAICS? The Census Bureau maintains the official crosswalk.</p>
+        <a href="https://www.census.gov/naics/?68967" target="_blank" rel="noopener">NAICS-SIC Crosswalk</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 19.108</h4>
+        <p>The Non-Manufacturer Rule. Read the actual regulation that drives the preference for manufacturing NAICS codes on supply contracts.</p>
+        <a href="https://www.acquisition.gov/far/19.108" target="_blank" rel="noopener">Read FAR 19.108</a>
+      </div>
+      <div class="lookup-card">
+        <h4>NAICS Association Search</h4>
+        <p>Another solid keyword search tool for NAICS codes. Cross-reference with NAICS.com if you're not sure about a code.</p>
+        <a href="https://www.naics.com/naics-code-description/" target="_blank" rel="noopener">NAICS Code Descriptions</a>
+      </div>
+      <div class="lookup-card">
+        <h4>SAM.gov Entity Search</h4>
+        <p>Look up a company's NAICS codes and small business representations. Find their 52.219-1 reps &amp; certs to see which NAICS codes they claim and their size status under each.</p>
+        <a href="https://sam.gov/search/" target="_blank" rel="noopener">Search SAM.gov</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ═══════════════════════════════════ TABS ═══ */
+document.querySelectorAll('.naics-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.naics-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.naics-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ═══════════════════════════════════ DECISION AID ═══ */
+document.querySelectorAll('.da-option').forEach(opt => {
+  opt.addEventListener('click', () => selectCategory(opt.dataset.type));
+  opt.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectCategory(opt.dataset.type); } });
+});
+
+function selectCategory(type) {
+  // highlight selected
+  document.querySelectorAll('.da-option').forEach(o => o.classList.remove('selected'));
+  document.querySelector(`.da-option[data-type="${type}"]`).classList.add('selected');
+  // show result
+  document.querySelectorAll('.da-result').forEach(r => r.classList.remove('visible'));
+  document.getElementById('result-' + type).classList.add('visible');
+  document.getElementById('daReset').classList.add('visible');
+  // scroll to result
+  setTimeout(() => document.getElementById('result-' + type).scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+}
+
+function resetDecisionAid() {
+  document.querySelectorAll('.da-option').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('.da-result').forEach(r => r.classList.remove('visible'));
+  document.getElementById('daReset').classList.remove('visible');
+}
+
+/* ═══════════════════════════════════ QUIZ ═══ */
+const quizData = [
+  {
+    q: "You're buying 500 printer cartridges. Which NAICS series should you look at first?",
+    choices: ["54 — Professional Services", "31–33 — Manufacturing", "42 — Wholesale Trade", "56 — Administrative Support"],
+    correct: 1,
+    explanation: "For products (supplies), start with the 31–33 Manufacturing series. This aligns with the Non-Manufacturer Rule (FAR 19.108) and classifies the product by what it is, not who sells it."
+  },
+  {
+    q: "Two NAICS codes both accurately describe your requirement. One has a $9M size standard, the other has a $25M standard. What should you consider?",
+    choices: [
+      "Always pick the lower size standard — it helps small business",
+      "Pick whichever one you used last time",
+      "Consider which code invites more competition from qualified offerors",
+      "It doesn't matter — just pick one and move on"
+    ],
+    correct: 2,
+    explanation: "When two codes fit equally well, pick the one that invites more competition. A higher size standard doesn't automatically mean 'better' — but you should think about how your choice affects the competitive pool and whether it's defensible."
+  },
+  {
+    q: "A company protests your NAICS code selection. Where does that protest go?",
+    choices: [
+      "The Government Accountability Office (GAO)",
+      "The SBA's Office of Hearings and Appeals (OHA)",
+      "The contracting officer's chain of command",
+      "The Armed Services Board of Contract Appeals (ASBCA)"
+    ],
+    correct: 1,
+    explanation: "NAICS code protests go to the SBA's Office of Hearings and Appeals (OHA), not the GAO. This is a common mix-up. GAO handles bid protests — OHA handles NAICS and size standard appeals."
+  },
+  {
+    q: "You need to contract for a roof replacement on a government building. Which NAICS series applies?",
+    choices: ["31–33 — Manufacturing", "54 — Professional Services", "23 — Construction", "56 — Administrative Support"],
+    correct: 2,
+    explanation: "Construction is always in the 23 series. Roof replacement would fall under specialty trade contractors (238160 — Roofing Contractors)."
+  },
+  {
+    q: "What does the Non-Manufacturer Rule (FAR 19.108) require for small business set-aside supply contracts?",
+    choices: [
+      "Small businesses must manufacture the product themselves",
+      "Small business offerors must supply the product of a small business manufacturer",
+      "Only manufacturers can bid on supply contracts",
+      "The contracting officer must verify the manufacturer's size status"
+    ],
+    correct: 1,
+    explanation: "The Non-Manufacturer Rule requires that small business offerors on supply contracts provide the product of a small business manufacturer. This is why selecting a manufacturing NAICS code (31–33) for supply contracts makes administration cleaner."
+  },
+  {
+    q: "A company is classified as a small business under NAICS 541511 (Custom Computer Programming, $34M threshold) but NOT small under NAICS 541512 (Computer Systems Design, $34M threshold). What does this tell you?",
+    choices: [
+      "The NAICS codes must have different size standards",
+      "The company's revenue is between the two thresholds",
+      "Size standards can differ even between closely related codes, so NAICS selection directly impacts who qualifies as small",
+      "This situation isn't possible — adjacent codes always have the same standard"
+    ],
+    correct: 2,
+    explanation: "Even closely related NAICS codes can have different size standards. Some use revenue, others use employee count, and the thresholds vary. Your NAICS selection directly determines which companies qualify as small business — it's not just a labeling exercise."
+  },
+  {
+    q: "During market research, you want to verify what NAICS codes a potential offeror claims and whether they're small under each. Where do you look?",
+    choices: [
+      "The company's website 'About Us' page",
+      "Their representations and certifications (52.219-1) in SAM.gov",
+      "The Federal Procurement Data System (FPDS)",
+      "The SBA's Dynamic Small Business Search"
+    ],
+    correct: 1,
+    explanation: "A company's NAICS codes and small business representations are found in their SAM.gov entity registration under Representations and Certifications, specifically FAR 52.219-1. Checking this during market research helps you determine the right NAICS code and understand the competitive landscape before issuing your solicitation."
+  }
+];
+
+let currentQ = 0, score = 0, answered = false;
+
+function renderQuestion() {
+  if (currentQ >= quizData.length) { showResults(); return; }
+  const q = quizData[currentQ];
+  answered = false;
+  document.getElementById('quizQuestion').innerHTML = `<div class="quiz-question"><div class="quiz-q-label">Scenario ${currentQ + 1}</div><div class="quiz-q-text">${q.q}</div></div>`;
+  const choicesEl = document.getElementById('quizChoices');
+  choicesEl.innerHTML = q.choices.map((c, i) => `<button class="quiz-choice" data-idx="${i}">${c}</button>`).join('');
+  choicesEl.querySelectorAll('.quiz-choice').forEach(btn => btn.addEventListener('click', () => handleAnswer(parseInt(btn.dataset.idx))));
+  document.getElementById('quizFeedback').classList.remove('visible', 'correct', 'wrong');
+  document.getElementById('quizNext').classList.remove('visible');
+  document.getElementById('quizProgress').textContent = `Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById('quizBar').style.width = ((currentQ) / quizData.length * 100) + '%';
+  document.getElementById('quizScore').textContent = `Score: ${score} / ${currentQ}`;
+}
+
+function handleAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = quizData[currentQ];
+  const btns = document.querySelectorAll('#quizChoices .quiz-choice');
+  btns.forEach(b => { b.disabled = true; });
+  btns[q.correct].classList.add('correct');
+  const fb = document.getElementById('quizFeedback');
+  if (idx === q.correct) {
+    score++;
+    fb.className = 'quiz-feedback visible correct';
+    fb.textContent = '✓ Correct. ' + q.explanation;
+  } else {
+    btns[idx].classList.add('wrong');
+    fb.className = 'quiz-feedback visible wrong';
+    fb.textContent = '✗ Not quite. ' + q.explanation;
+  }
+  document.getElementById('quizScore').textContent = `Score: ${score} / ${currentQ + 1}`;
+  document.getElementById('quizBar').style.width = ((currentQ + 1) / quizData.length * 100) + '%';
+  document.getElementById('quizNext').classList.add('visible');
+}
+
+function nextQuestion() {
+  currentQ++;
+  renderQuestion();
+}
+
+function showResults() {
+  document.getElementById('quizContainer').style.display = 'none';
+  const pct = Math.round(score / quizData.length * 100);
+  document.getElementById('finalScore').textContent = pct + '%';
+  document.getElementById('finalMsg').textContent = pct === 100 ? "Perfect. You're ready to pick NAICS codes." : pct >= 67 ? "Solid foundation. Review the ones you missed." : "Worth another pass through the Learn tab before your first solicitation.";
+  document.getElementById('quizDone').classList.add('visible');
+}
+
+function restartQuiz() {
+  currentQ = 0; score = 0;
+  document.getElementById('quizContainer').style.display = 'block';
+  document.getElementById('quizDone').classList.remove('visible');
+  renderQuestion();
+}
+
+// Initialize quiz
+renderQuestion();
+</script>
+</body>
+</html>

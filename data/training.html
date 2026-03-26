@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Structured training for contracting officers — from day one on the job to advanced acquisition scenarios. Beginner, intermediate, and advanced tracks with videos and tools." />
+
+  <title>Training | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+
+    /* Training page styles */
+    .training-page { background: #040d1f; min-height: 100vh; }
+    .training-hero { padding: 6rem 1.5rem 3rem; text-align: center; }
+    .training-hero-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.3rem 1rem; border-radius: 100px; margin-bottom: 0.75rem; }
+    .training-hero h1 { font-family: 'Rajdhani', sans-serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; color: #e2e8f0; margin-bottom: 0.75rem; }
+    .training-hero p { color: var(--silver); font-size: 1.05rem; max-width: 620px; margin: 0 auto; line-height: 1.7; }
+
+    /* Track nav pills */
+    .track-nav { display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 3rem; padding: 0 1.5rem; }
+    .track-pill { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.4rem; border-radius: 100px; font-size: 0.88rem; font-weight: 700; text-decoration: none; transition: all 0.2s; border: 1.5px solid; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.5px; }
+    .track-pill:hover { transform: translateY(-2px); }
+    .pill-beginner { background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.3); color: #6ee7b7; }
+    .pill-beginner:hover { background: rgba(52,211,153,0.15); border-color: rgba(52,211,153,0.5); }
+    .pill-intermediate { background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.3); color: #fbbf24; }
+    .pill-intermediate:hover { background: rgba(251,191,36,0.15); border-color: rgba(251,191,36,0.5); }
+    .pill-advanced { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.3); color: #f87171; }
+    .pill-advanced:hover { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.5); }
+    .pill-resources { background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.3); color: #a78bfa; }
+    .pill-resources:hover { background: rgba(139,92,246,0.15); border-color: rgba(139,92,246,0.5); }
+
+    /* Track sections */
+    .track-section { max-width: 1100px; margin: 0 auto 4rem; padding: 0 1.5rem; }
+    .track-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; padding-bottom: 1rem; border-bottom: 2px solid; }
+    .track-icon { font-size: 1.75rem; }
+    .track-title { font-family: 'Rajdhani', sans-serif; font-size: 1.75rem; font-weight: 700; }
+    .track-subtitle { color: var(--silver); font-size: 0.92rem; margin-bottom: 2rem; line-height: 1.65; }
+    .track-beginner .track-header { border-color: rgba(52,211,153,0.4); }
+    .track-beginner .track-title { color: #6ee7b7; }
+    .track-intermediate .track-header { border-color: rgba(251,191,36,0.4); }
+    .track-intermediate .track-title { color: #fbbf24; }
+    .track-advanced .track-header { border-color: rgba(239,68,68,0.4); }
+    .track-advanced .track-title { color: #f87171; }
+    .track-resources .track-header { border-color: rgba(139,92,246,0.4); }
+    .track-resources .track-title { color: #a78bfa; }
+
+    /* Topic group */
+    .topic-group { margin-bottom: 2.5rem; }
+    .topic-group-title { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: #8a9bb0; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.85rem; padding-left: 0.25rem; }
+
+    /* Topic cards */
+    .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+    .topic-card { background: rgba(10,22,50,0.6); border: 1px solid rgba(74,158,255,0.1); border-radius: 12px; padding: 1.25rem 1.4rem; display: flex; align-items: center; gap: 1rem; transition: border-color 0.2s, background 0.2s, transform 0.18s; }
+    .topic-card:hover { border-color: rgba(74,158,255,0.3); background: rgba(10,22,50,0.85); transform: translateY(-2px); }
+    .topic-num { font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; font-weight: 700; color: rgba(74,158,255,0.35); min-width: 2rem; text-align: center; flex-shrink: 0; }
+    .topic-content { flex: 1; }
+    .topic-name { font-size: 0.92rem; font-weight: 600; color: #e2e8f0; margin-bottom: 0.2rem; }
+    .topic-meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .topic-badge { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 0.15rem 0.5rem; border-radius: 999px; }
+    .badge-coming { background: rgba(156,163,175,0.1); color: #9ca3af; border: 1px solid rgba(156,163,175,0.2); }
+    .badge-video { background: rgba(52,211,153,0.12); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.3); }
+    .badge-tool { background: rgba(74,158,255,0.12); color: #4a9eff; border: 1px solid rgba(74,158,255,0.3); }
+    .badge-live { background: rgba(52,211,153,0.12); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.3); }
+    a.topic-card { text-decoration: none; }
+    a.topic-card:hover { border-color: rgba(74,158,255,0.35); background: rgba(74,158,255,0.06); transform: translateY(-1px); }
+
+    /* Resources placeholder */
+    .resources-placeholder { background: rgba(139,92,246,0.04); border: 1px dashed rgba(139,92,246,0.25); border-radius: 14px; padding: 2.5rem 2rem; text-align: center; }
+    .resources-placeholder h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: #a78bfa; margin-bottom: 0.5rem; }
+    .resources-placeholder p { color: var(--silver); font-size: 0.9rem; line-height: 1.65; }
+
+    /* Responsive */
+    @media (max-width: 680px) {
+      .topic-grid { grid-template-columns: 1fr; }
+      .track-nav { gap: 0.5rem; }
+      .track-pill { font-size: 0.8rem; padding: 0.5rem 1rem; }
+    }
+  </style>
+</head>
+<body class="training-page">
+
+<!-- NAV -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="training-hero">
+  <div class="container">
+    <span class="training-hero-tag">Training</span>
+    <h1>Training</h1>
+    <p>Structured learning for contracting officers &mdash; from your first day on the job to the hardest problems in the field. Pick a track and start building.</p>
+  </div>
+</div>
+
+<!-- TRACK NAV -->
+<div class="track-nav">
+  <a href="#beginner" class="track-pill pill-beginner">&#127793; Beginner</a>
+  <a href="#intermediate" class="track-pill pill-intermediate">&#9889; Intermediate</a>
+  <a href="#advanced" class="track-pill pill-advanced">&#128640; Advanced</a>
+  <a href="#resources" class="track-pill pill-resources">&#128218; Resources</a>
+</div>
+
+<!-- ============================================================ -->
+<!--  BEGINNER TRACK                                               -->
+<!-- ============================================================ -->
+<div class="track-section track-beginner" id="beginner">
+  <div class="track-header">
+    <span class="track-icon">&#127793;</span>
+    <span class="track-title">Beginner Track</span>
+  </div>
+  <p class="track-subtitle">You just walked into the shop and someone handed you a desk. Start here. These topics align with 5-Level CFETP tasks &mdash; the foundational skills every contracting officer needs to earn their upgrade.</p>
+
+  <!-- Research & Market Intelligence -->
+  <div class="topic-group">
+    <div class="topic-group-title">Research &amp; Market Intelligence</div>
+    <div class="topic-grid">
+      <a href="far-research.html" class="topic-card" style="text-decoration:none;color:inherit;cursor:pointer;">
+        <span class="topic-num">01</span>
+        <div class="topic-content">
+          <div class="topic-name">Researching the FAR &amp; Supplements</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span><span class="topic-badge badge-tool">Interactive Tool</span></div>
+        </div>
+      </a>
+      <a href="market-research.html" class="topic-card">
+        <span class="topic-num">02</span>
+        <div class="topic-content">
+          <div class="topic-name">Market Research</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span><span class="topic-badge badge-tool">Interactive Tool</span></div>
+        </div>
+      </a>
+      <a href="naics.html" class="topic-card">
+        <span class="topic-num">03</span>
+        <div class="topic-content">
+          <div class="topic-name">NAICS Codes</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span><span class="topic-badge badge-tool">Interactive Tool</span></div>
+        </div>
+      </a>
+      <a href="fsc-codes.html" class="topic-card">
+        <span class="topic-num">04</span>
+        <div class="topic-content">
+          <div class="topic-name">PSC / FSC Codes</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span><span class="topic-badge badge-tool">Interactive Tool</span></div>
+        </div>
+      </a>
+      <a href="purchase-requests.html" class="topic-card">
+        <span class="topic-num">05</span>
+        <div class="topic-content">
+          <div class="topic-name">Evaluating Purchase Requests</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span><span class="topic-badge badge-tool">Interactive Tool</span></div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Requirements & Specifications -->
+  <div class="topic-group">
+    <div class="topic-group-title">Requirements &amp; Specifications</div>
+    <div class="topic-grid">
+      <a href="statements-of-work.html" class="topic-card">
+        <span class="topic-num">06</span>
+        <div class="topic-content">
+          <div class="topic-name">Statements of Work</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span><span class="topic-badge badge-tool">Interactive Tool</span></div>
+        </div>
+      </a>
+      <a href="performance-work-statements.html" class="topic-card">
+        <span class="topic-num">07</span>
+        <div class="topic-content">
+          <div class="topic-name">Performance Work Statements</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span><span class="topic-badge badge-tool">Interactive Tool</span></div>
+        </div>
+      </a>
+      <a href="statements-of-objectives.html" class="topic-card">
+        <span class="topic-num">08</span>
+        <div class="topic-content">
+          <div class="topic-name">Statements of Objectives</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span><span class="topic-badge badge-tool">Interactive Tool</span></div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Documentation & Reporting -->
+  <div class="topic-group">
+    <div class="topic-group-title">Documentation &amp; Reporting</div>
+    <div class="topic-grid">
+      <div class="topic-card">
+        <span class="topic-num">09</span>
+        <div class="topic-content">
+          <div class="topic-name">Preparing Contract Action Reports</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <a href="writing-mfrs.html" class="topic-card">
+        <span class="topic-num">10</span>
+        <div class="topic-content">
+          <div class="topic-name">Writing MFRs</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span></div>
+        </div>
+      </a>
+      <a href="contract-closeout.html" class="topic-card">
+        <span class="topic-num">11</span>
+        <div class="topic-content">
+          <div class="topic-name">Closeout of Contract Files</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span></div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Publications & Transparency -->
+  <div class="topic-group">
+    <div class="topic-group-title">Publications &amp; Transparency</div>
+    <div class="topic-grid">
+      <div class="topic-card">
+        <span class="topic-num">12</span>
+        <div class="topic-content">
+          <div class="topic-name">Publicizing Proposed Contract Actions (Synopsis)</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">13</span>
+        <div class="topic-content">
+          <div class="topic-name">Publicizing Awards</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Competition & Sole Source -->
+  <div class="topic-group">
+    <div class="topic-group-title">Competition &amp; Sole Source</div>
+    <div class="topic-grid">
+      <a href="evaluating-justifications.html" class="topic-card">
+        <span class="topic-num">14</span>
+        <div class="topic-content">
+          <div class="topic-name">Evaluating Brand Name J&amp;As</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span></div>
+        </div>
+      </a>
+      <a href="far-part6-competition.html" class="topic-card">
+        <span class="topic-num">15</span>
+        <div class="topic-content">
+          <div class="topic-name">Other Than Full &amp; Open Competition (FAR Part 6)</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span></div>
+        </div>
+      </a>
+      <a href="far-part8-limiting-sources.html" class="topic-card">
+        <span class="topic-num">16</span>
+        <div class="topic-content">
+          <div class="topic-name">Limiting Sources (FAR Part 8)</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span></div>
+        </div>
+      </a>
+      <a href="far-part16-fair-opportunity.html" class="topic-card">
+        <span class="topic-num">17</span>
+        <div class="topic-content">
+          <div class="topic-name">Exceptions to Fair Opportunity (FAR Part 16)</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span></div>
+        </div>
+      </a>
+      <a href="far-part12-restricting-competition.html" class="topic-card">
+        <span class="topic-num">18</span>
+        <div class="topic-content">
+          <div class="topic-name">Restricting Competition for Commercial Items (FAR Part 12)</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span></div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Commercial Items & Simplified Acquisition -->
+  <div class="topic-group">
+    <div class="topic-group-title">Commercial Items &amp; Simplified Acquisition</div>
+    <div class="topic-grid">
+      <a href="commercial-item-df.html" class="topic-card">
+        <span class="topic-num">19</span>
+        <div class="topic-content">
+          <div class="topic-name">Preparing a Commercial Item D&amp;F</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span><span class="topic-badge badge-tool">Interactive Tool</span></div>
+        </div>
+      </a>
+      <a href="provisions-clauses-commercial.html" class="topic-card">
+        <span class="topic-num">20</span>
+        <div class="topic-content">
+          <div class="topic-name">Selecting Provisions and Clauses for Commercial Items</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span><span class="topic-badge badge-tool">Interactive Tool</span></div>
+        </div>
+      </a>
+      <div class="topic-card">
+        <span class="topic-num">21</span>
+        <div class="topic-content">
+          <div class="topic-name">Simplified Solicitations for Commercial Items</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">22</span>
+        <div class="topic-content">
+          <div class="topic-name">Preparing an RFQ under FAR Part 13</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <a href="evaluating-quotations.html" class="topic-card">
+        <span class="topic-num">23</span>
+        <div class="topic-content">
+          <div class="topic-name">Evaluating Quotations</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span><span class="topic-badge badge-tool">Interactive Tool</span></div>
+        </div>
+      </a>
+      <a href="price-fair-reasonable.html" class="topic-card">
+        <span class="topic-num">24</span>
+        <div class="topic-content">
+          <div class="topic-name">Preparing a Price Fair and Reasonableness Document</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span></div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Orders & Vehicles -->
+  <div class="topic-group">
+    <div class="topic-group-title">Orders &amp; Contract Vehicles</div>
+    <div class="topic-grid">
+      <a href="delivery-orders-vs-task-orders.html" class="topic-card" style="text-decoration:none;color:inherit;">
+        <span class="topic-num">25</span>
+        <div class="topic-content">
+          <div class="topic-name">Delivery Orders vs. Task Orders</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span></div>
+        </div>
+      </a>
+      <div class="topic-card">
+        <span class="topic-num">26</span>
+        <div class="topic-content">
+          <div class="topic-name">GSA Delivery Orders under the SAT</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">27</span>
+        <div class="topic-content">
+          <div class="topic-name">GSA Orders above the SAT</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">28</span>
+        <div class="topic-content">
+          <div class="topic-name">BPAs (Preparing, Ordering, Administering)</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">29</span>
+        <div class="topic-content">
+          <div class="topic-name">IDIQ Task/Delivery Orders off Single Award IDIQs</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">30</span>
+        <div class="topic-content">
+          <div class="topic-name">IDIQ Task/Delivery Orders off Multiple Award IDIQs</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contract Administration & Pricing -->
+  <div class="topic-group">
+    <div class="topic-group-title">Contract Administration &amp; Pricing</div>
+    <div class="topic-grid">
+      <a href="government-purchase-cards.html" class="topic-card" style="text-decoration:none;color:inherit;">
+        <span class="topic-num">31</span>
+        <div class="topic-content">
+          <div class="topic-name">Government Purchase Cards</div>
+          <div class="topic-meta"><span class="topic-badge badge-live">Live</span></div>
+        </div>
+      </a>
+      <div class="topic-card">
+        <span class="topic-num">32</span>
+        <div class="topic-content">
+          <div class="topic-name">SF 30s for Modifications and Amendments</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">33</span>
+        <div class="topic-content">
+          <div class="topic-name">Price Negotiation Memorandums (PNMs)</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">34</span>
+        <div class="topic-content">
+          <div class="topic-name">Options</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">35</span>
+        <div class="topic-content">
+          <div class="topic-name">Unilateral vs. Bilateral Modifications</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compliance & Small Business -->
+  <div class="topic-group">
+    <div class="topic-group-title">Compliance &amp; Small Business</div>
+    <div class="topic-grid">
+      <div class="topic-card">
+        <span class="topic-num">36</span>
+        <div class="topic-content">
+          <div class="topic-name">2579s (Small Business Coordination Form)</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">37</span>
+        <div class="topic-content">
+          <div class="topic-name">Wage Determinations</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">38</span>
+        <div class="topic-content">
+          <div class="topic-name">Personal vs. Non-personal Services</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Oversight & Specialty -->
+  <div class="topic-group">
+    <div class="topic-group-title">Oversight &amp; Specialty</div>
+    <div class="topic-grid">
+      <div class="topic-card">
+        <span class="topic-num">39</span>
+        <div class="topic-content">
+          <div class="topic-name">COR Training for Type A Requirements</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">40</span>
+        <div class="topic-content">
+          <div class="topic-name">Executing Manual Contracts in a Deployed Environment</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!--  INTERMEDIATE TRACK                                           -->
+<!-- ============================================================ -->
+<div class="track-section track-intermediate" id="intermediate">
+  <div class="track-header">
+    <span class="track-icon">&#9889;</span>
+    <span class="track-title">Intermediate Track</span>
+  </div>
+  <p class="track-subtitle">You've got the basics down and you're starting to handle more complex actions. These topics align with 7-Level CFETP core tasks &mdash; oversight, negotiation, construction, and higher-dollar work.</p>
+
+  <!-- Negotiated Acquisitions (FAR Part 15) -->
+  <div class="topic-group">
+    <div class="topic-group-title">Negotiated Acquisitions (FAR Part 15)</div>
+    <div class="topic-grid">
+      <div class="topic-card">
+        <span class="topic-num">I-01</span>
+        <div class="topic-content">
+          <div class="topic-name">Preparing an RFP (C Type Contract)</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">I-02</span>
+        <div class="topic-content">
+          <div class="topic-name">Preparing an RFP (D Type Contract)</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">I-03</span>
+        <div class="topic-content">
+          <div class="topic-name">Evaluating Past Performance</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">I-04</span>
+        <div class="topic-content">
+          <div class="topic-name">Reviewing Technical Evaluations</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">I-05</span>
+        <div class="topic-content">
+          <div class="topic-name">Cost &amp; Price Analysis</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">I-06</span>
+        <div class="topic-content">
+          <div class="topic-name">Conducting Negotiations</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">I-07</span>
+        <div class="topic-content">
+          <div class="topic-name">Comparative Analysis</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">I-08</span>
+        <div class="topic-content">
+          <div class="topic-name">Award Decision Documents</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">I-09</span>
+        <div class="topic-content">
+          <div class="topic-name">Award Notice Letters</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">I-10</span>
+        <div class="topic-content">
+          <div class="topic-name">Debriefing Unsuccessful Offerors</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Construction Contracting (FAR Part 36) -->
+  <div class="topic-group">
+    <div class="topic-group-title">Construction Contracting (FAR Part 36)</div>
+    <div class="topic-grid">
+      <div class="topic-card">
+        <span class="topic-num">I-11</span>
+        <div class="topic-content">
+          <div class="topic-name">Notice to Proceed</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">I-12</span>
+        <div class="topic-content">
+          <div class="topic-name">Preconstruction Conferences</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">I-13</span>
+        <div class="topic-content">
+          <div class="topic-name">Material Submittals</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">I-14</span>
+        <div class="topic-content">
+          <div class="topic-name">Monitoring Contractor Progress</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contract Oversight -->
+  <div class="topic-group">
+    <div class="topic-group-title">Contract Oversight</div>
+    <div class="topic-grid">
+      <div class="topic-card">
+        <span class="topic-num">I-15</span>
+        <div class="topic-content">
+          <div class="topic-name">Contractor Performance Assessment Reports (CPARS)</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">I-16</span>
+        <div class="topic-content">
+          <div class="topic-name">Contract-Specific COR Training</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">I-17</span>
+        <div class="topic-content">
+          <div class="topic-name">Annual COR File Reviews</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Labor Standards & Services -->
+  <div class="topic-group">
+    <div class="topic-group-title">Labor Standards &amp; Services</div>
+    <div class="topic-grid">
+      <div class="topic-card">
+        <span class="topic-num">I-18</span>
+        <div class="topic-content">
+          <div class="topic-name">Evaluating Contract Labor Standards</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">I-19</span>
+        <div class="topic-content">
+          <div class="topic-name">Requirements Approval Documents (RADs)</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contract Remedies -->
+  <div class="topic-group">
+    <div class="topic-group-title">Contract Remedies</div>
+    <div class="topic-grid">
+      <div class="topic-card">
+        <span class="topic-num">I-20</span>
+        <div class="topic-content">
+          <div class="topic-name">Cure Notices</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+      <div class="topic-card">
+        <span class="topic-num">I-21</span>
+        <div class="topic-content">
+          <div class="topic-name">Show-Cause Letters</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Unauthorized Commitments -->
+  <div class="topic-group">
+    <div class="topic-group-title">Unauthorized Commitments</div>
+    <div class="topic-grid">
+      <div class="topic-card">
+        <span class="topic-num">I-22</span>
+        <div class="topic-content">
+          <div class="topic-name">Preparing Ratifications</div>
+          <div class="topic-meta"><span class="topic-badge badge-coming">Coming Soon</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!--  ADVANCED TRACK                                               -->
+<!-- ============================================================ -->
+<div class="track-section track-advanced" id="advanced">
+  <div class="track-header">
+    <span class="track-icon">&#128640;</span>
+    <span class="track-title">Advanced Track</span>
+  </div>
+  <p class="track-subtitle">The hard stuff. Complex negotiations, contingency operations, and the scenarios that separate experienced COs from everyone else.</p>
+
+  <div style="background:rgba(239,68,68,0.04);border:1px dashed rgba(239,68,68,0.2);border-radius:14px;padding:2rem;text-align:center;">
+    <p style="color:#f87171;font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:0.4rem;">Topics Coming</p>
+    <p style="color:var(--silver);font-size:0.88rem;line-height:1.65;">The advanced track is actively being developed. Check back as new topics are added.</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!--  RESOURCES                                                    -->
+<!-- ============================================================ -->
+<div class="track-section track-resources" id="resources">
+  <div class="track-header">
+    <span class="track-icon">&#128218;</span>
+    <span class="track-title">Additional Resources</span>
+  </div>
+  <p class="track-subtitle">Recommended courses, external training, and supplemental material to round out your learning.</p>
+
+  <div class="resources-placeholder">
+    <h3>Resources Coming Soon</h3>
+    <p>This section will include recommended WarU courses, JKO courses, and other curated resources to supplement the training tracks above.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

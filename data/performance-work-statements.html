@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how to read and evaluate Performance Work Statements. Interactive PWS examples for new contracting officers." />
+  <title>Performance Work Statements | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .pws-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    .pws-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .pws-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .pws-tab:hover { color: var(--white); }
+    .pws-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .pws-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .pws-panel.active { display: block; }
+
+    .pws-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .pws-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .pws-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .pws-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    .pws-outer { background: rgba(10,22,50,0.3); border-radius: 14px; padding: 1.5rem; overflow-x: auto; }
+    .pws-doc { min-width: 650px; border: 2px solid #000; background: #fff; color: #000; font-size: 12px; line-height: 1.6; font-family: 'Inter', 'Times New Roman', serif; padding: 2rem 2.5rem; }
+    .pws-doc h4 { font-size: 14px; font-weight: 700; text-transform: uppercase; text-align: center; margin-bottom: 1.5rem; letter-spacing: 1px; border-bottom: 2px solid #000; padding-bottom: 0.5rem; }
+    .pws-doc h5 { font-size: 12px; font-weight: 700; margin: 1.25rem 0 0.5rem; text-transform: uppercase; }
+    .pws-doc table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 11px; }
+    .pws-doc th { background: #f0f0f0; border: 1px solid #000; padding: 4px 6px; text-align: left; font-weight: 700; font-size: 10px; text-transform: uppercase; }
+    .pws-doc td { border: 1px solid #000; padding: 4px 6px; vertical-align: top; }
+
+    .pws-section { padding: 0.6rem 0.75rem; margin: 0.5rem 0; border-radius: 4px; cursor: pointer; transition: background 0.12s; border-left: 3px solid transparent; }
+    .pws-section:hover { background: #f0f4ff; }
+    .pws-section.active { background: #fff9db; }
+    .pws-section.pws-flag { border-left-color: #4a9eff; }
+    .pws-section.pws-problem { border-left-color: #dc2626; }
+
+    .pws-toggle { display: flex; gap: 0; margin-bottom: 1.25rem; }
+    .pws-toggle-btn { flex: 1; padding: 0.75rem 1rem; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.2); background: rgba(10,22,50,0.5); color: var(--silver); cursor: pointer; transition: all 0.18s; font-family: inherit; }
+    .pws-toggle-btn:first-child { border-radius: 8px 0 0 8px; }
+    .pws-toggle-btn:last-child { border-radius: 0 8px 8px 0; }
+    .pws-toggle-btn.active { background: rgba(74,158,255,0.15); color: var(--accent); border-color: rgba(74,158,255,0.4); }
+    .pws-toggle-btn.bad.active { background: rgba(220,38,38,0.12); color: #fca5a5; border-color: rgba(220,38,38,0.35); }
+
+    .pws-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; padding: 1.5rem; }
+    .pws-overlay.visible { display: flex; }
+    .pws-popup { background: #0d1a33; border: 1px solid rgba(74,158,255,0.3); border-radius: 14px; padding: 1.5rem 1.75rem; max-width: 520px; width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,0.5); animation: popIn 0.18s ease-out; position: relative; }
+    .pws-popup.warn { border-color: rgba(220,38,38,0.4); }
+    .pws-popup-title { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 0.6rem; padding-right: 2rem; }
+    .pws-popup.warn .pws-popup-title { color: #fca5a5; }
+    .pws-popup-body { color: var(--silver); font-size: 0.9rem; line-height: 1.75; }
+    .pws-popup-body strong { color: var(--white); }
+    .pws-popup-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--silver); cursor: pointer; font-size: 1.4rem; line-height: 1; padding: 0; transition: color 0.12s; }
+    .pws-popup-close:hover { color: var(--white); }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    /* Side-by-side comparison */
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .compare-col h3 { font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; text-align: center; padding: 0.6rem; border-radius: 8px 8px 0 0; margin: 0; }
+    .compare-col.col-sow h3 { background: rgba(74,158,255,0.12); color: var(--accent); }
+    .compare-col.col-pws h3 { background: rgba(52,211,153,0.12); color: #6ee7b7; }
+    .compare-doc { border: 2px solid #000; background: #fff; color: #000; font-size: 10.5px; line-height: 1.5; font-family: 'Inter', 'Times New Roman', serif; padding: 1.25rem 1rem; }
+    .compare-doc h5 { font-size: 10px; font-weight: 700; margin: 0.75rem 0 0.3rem; text-transform: uppercase; }
+    .compare-doc h5:first-child { margin-top: 0; }
+    .compare-row { padding: 0.4rem 0.5rem; margin: 0.3rem 0; border-radius: 3px; cursor: pointer; transition: background 0.12s; border-left: 3px solid transparent; }
+    .compare-row:hover { background: #f0f4ff; }
+    .compare-row.active { background: #fff9db; }
+    .compare-row.highlight { border-left-color: #f59e0b; }
+
+    .pws-toggle-btn.compare { border-radius: 0; }
+    .pws-toggle-btn.compare.active { background: rgba(251,191,36,0.12); color: #fbbf24; border-color: rgba(251,191,36,0.35); }
+
+    @media (max-width: 768px) {
+      .pws-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .pws-doc { padding: 1.25rem 1rem; min-width: auto; }
+      .compare-grid { grid-template-columns: 1fr; }
+      .lookup-grid { grid-template-columns: 1fr; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 7</span>
+    <h1 class="page-hero-title">Performance Work Statements</h1>
+    <p class="page-hero-sub">A PWS tells the contractor what you need, not how to do it. It's the most common work statement in operational contracting because it puts risk where the expertise is: on the contractor. Learn to read one, write measurable standards, and spot a SOW disguised as a PWS.</p>
+  </div>
+</div>
+
+<div class="pws-bg">
+  <div class="pws-tabs" role="tablist">
+    <button class="pws-tab active" data-tab="learn" role="tab">&#128218; Learn</button>
+    <button class="pws-tab" data-tab="examples" role="tab">&#128203; PWS Examples</button>
+    <button class="pws-tab" data-tab="lookup" role="tab">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════════════════════════ LEARN ═══ -->
+  <div id="panel-learn" class="pws-panel active">
+    <div class="pws-intro">
+      <div class="pws-intro-tag">The Basics</div>
+      <h2>What Is a Performance Work Statement?</h2>
+      <p>You define the outcome. The contractor figures out how to get there. That's the core idea behind a PWS, and it's the government's preferred approach for service contracts.</p>
+    </div>
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> Quick Refresher: PWS vs. SOW</h3>
+      <div class="learn-body">
+        <p>If you completed the <a href="statements-of-work.html" style="color:var(--accent);">Statements of Work training</a>, you already know the basics. Here's the short version:</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin:1.25rem 0;">
+          <div style="background:rgba(74,158,255,0.06); border:1px solid rgba(74,158,255,0.2); border-radius:10px; padding:1.25rem; text-align:center;">
+            <div style="font-weight:700; color:var(--accent); margin-bottom:0.5rem; font-family:'Rajdhani',sans-serif; font-size:1rem;">SOW: "Do it this way."</div>
+            <div style="font-size:0.85rem; color:var(--silver); line-height:1.6;">Government directs the method.<br>Government owns the risk.</div>
+          </div>
+          <div style="background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); border-radius:10px; padding:1.25rem; text-align:center;">
+            <div style="font-weight:700; color:#6ee7b7; margin-bottom:0.5rem; font-family:'Rajdhani',sans-serif; font-size:1rem;">PWS: "Get me this result."</div>
+            <div style="font-size:0.85rem; color:var(--silver); line-height:1.6;">Government defines the outcome.<br>Contractor owns the risk.</div>
+          </div>
+        </div>
+        <p>Most service contracts in operational contracting should be PWSs. If you're buying janitorial services, IT support, equipment maintenance, or consulting, you're almost certainly buying an outcome. You don't need to tell the janitor which mop to use. You need the floor clean.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> The Key Ingredient: Measurable Standards</h3>
+      <div class="learn-body">
+        <p>A PWS lives or dies on whether its performance standards are measurable. If you can't measure it, you can't enforce it. And if you can't enforce it, you don't have a contract. You have a suggestion.</p>
+        <div class="highlight-box tip">
+          <strong>Good:</strong> "Maintain 95% operational availability across all 12 HVAC units, measured monthly." You know exactly what success looks like, you know when to measure, and you can withhold payment or take action if the contractor misses the mark.
+        </div>
+        <div class="highlight-box warn">
+          <strong>Bad:</strong> "Ensure HVAC systems are maintained to a high standard." What's "high"? Who decides? This is unenforceable. When the contractor's performance slips and you try to issue a cure notice, they'll argue they met the standard because nobody defined it.
+        </div>
+        <p>Every performance requirement in the PWS should answer three questions: <strong>What</strong> is the standard? <strong>How</strong> do you measure it? <strong>What happens</strong> if the contractor doesn't meet it?</p>
+        <div class="highlight-box">
+          <strong>The "newspaper test."</strong> Could a reasonable third party read the requirement and know, without asking anyone, whether the contractor passed or failed? If the answer is no, the standard needs work.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Anatomy of a PWS</h3>
+      <div class="learn-body">
+        <p>A PWS follows a similar structure to a SOW, but the requirements section looks fundamentally different. Instead of step-by-step instructions, you'll see outcomes and standards.</p>
+        <div class="highlight-box">
+          <strong>1. Scope.</strong> Same as a SOW. Brief overview of the contract's purpose and boundaries.
+        </div>
+        <div class="highlight-box">
+          <strong>2. Applicable Documents.</strong> Standards, regulations, and references the contractor must follow. In a PWS, these tend to be performance standards rather than procedural manuals.
+        </div>
+        <div class="highlight-box">
+          <strong>3. Performance Requirements.</strong> This is where a PWS diverges from a SOW. Instead of telling the contractor how to do each task, you state the outcome you need and the standard it must meet. "Maintain 95% availability" instead of "Inspect coils quarterly using procedure TC-PM-04."
+        </div>
+        <div class="highlight-box">
+          <strong>4. Performance Standards Summary.</strong> Often presented as a table that maps each requirement to a measurable standard and an acceptable quality level (AQL). This is the backbone of contract administration. It tells the COR exactly what to inspect and what "passing" looks like.
+        </div>
+        <div class="highlight-box">
+          <strong>5. Deliverables.</strong> Reports, data, completed work orders. Same concept as a SOW, but in a PWS context the deliverables often tie back to proving the performance standards were met.
+        </div>
+        <div class="highlight-box">
+          <strong>6. Period &amp; Place of Performance.</strong> When and where. Same as a SOW.
+        </div>
+        <div class="highlight-box">
+          <strong>7. Government-Furnished Property / Information.</strong> What the government provides. Same concept. Just as important here.
+        </div>
+        <p>Check the <strong>PWS Examples</strong> tab to see how this looks on paper, and how it falls apart when done wrong.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Common Problems</h3>
+      <div class="learn-body">
+        <p>The same issues from SOWs show up in PWSs, plus a few unique ones:</p>
+        <div class="highlight-box warn">
+          <strong>The "SOW in disguise."</strong> The document says "Performance Work Statement" at the top, but every paragraph tells the contractor exactly how to do the work. If you're dictating the method, it's a SOW regardless of what you call it. The label matters because it signals how offerors should propose and how the government will evaluate.
+        </div>
+        <div class="highlight-box warn">
+          <strong>Unmeasurable performance standards.</strong> "Maintain equipment to industry standards" sounds professional, but it's useless. Which industry? Which standards? A COR can't inspect against "industry standards." Every standard needs a number, a percentage, a frequency, or some objective benchmark.
+        </div>
+        <div class="highlight-box warn">
+          <strong>Contract clauses in the PWS.</strong> Same issue as with SOWs. Termination language, payment terms, and dispute procedures belong in the contract clauses (52.249 series, 52.212-4), not in the work statement. When they show up in both places and say different things, you have a conflict that the contractor will use against you.
+        </div>
+        <div class="highlight-box warn">
+          <strong>No connection between requirements and standards.</strong> The PWS lists requirements in Section 3 and performance standards in Section 4, but they don't map to each other. Requirement 3.1 says "maintain HVAC systems" and the performance table measures "customer satisfaction." Those aren't the same thing. Every requirement needs a standard, and every standard needs to trace back to a requirement.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Why the Government Prefers PWSs</h3>
+      <div class="learn-body">
+        <p>FAR 37.6 establishes performance-based acquisition as the preferred method for services. That's not just policy preference. There are practical reasons:</p>
+        <div class="highlight-box tip">
+          <strong>Better outcomes.</strong> The contractor is the subject matter expert. When you define the "what" and let them handle the "how," they'll typically find more efficient methods than the government would prescribe. They do this work for a living. You don't.
+        </div>
+        <div class="highlight-box tip">
+          <strong>Less risk for the government.</strong> When you direct the method (SOW), you own the result. If the method fails, the contractor followed your instructions. When you define the outcome (PWS), the contractor owns the result. If they pick a bad approach, that's on them.
+        </div>
+        <div class="highlight-box tip">
+          <strong>Innovation.</strong> A PWS lets contractors compete on method, not just price. One offeror might propose a traditional approach, another might propose an innovative solution that saves time and money. You won't get that innovation if you've already dictated the method.
+        </div>
+        <div class="highlight-box">
+          <strong>The practical bottom line:</strong> If you find yourself writing step-by-step instructions for a service contractor, ask yourself whether you're solving a real problem or just creating extra work. Most of the time, the answer is to define the outcome, set a measurable standard, and let the contractor do what you're paying them to do.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ PWS EXAMPLES ═══ -->
+  <div id="panel-examples" class="pws-panel">
+    <div class="pws-intro">
+      <div class="pws-intro-tag">Interactive Tool</div>
+      <h2>PWS Examples</h2>
+      <p>Same HVAC scenario as the SOW training, written as a PWS. Click highlighted sections for coaching notes. <span style="color:var(--accent); font-weight:600;">Blue borders</span> highlight what makes this a PWS. <span style="color:#dc2626; font-weight:600;">Red borders</span> flag problems.</p>
+    </div>
+
+    <div class="pws-toggle">
+      <button class="pws-toggle-btn active" onclick="showExample('good')">&#9989; Well-Written PWS</button>
+      <button class="pws-toggle-btn compare" onclick="showExample('compare')">&#9878; SOW vs. PWS</button>
+      <button class="pws-toggle-btn bad" onclick="showExample('bad')">&#10060; Poorly-Written PWS</button>
+    </div>
+
+    <!-- ═══════ GOOD PWS ═══════ -->
+    <div id="example-good" class="pws-example">
+      <div class="pws-outer">
+        <div class="pws-doc">
+          <h4>Performance Work Statement<br><span style="font-size:11px; font-weight:400; letter-spacing:0;">HVAC Maintenance Services, Building 1240, Wright-Patterson AFB</span></h4>
+
+          <div class="pws-section pws-flag" data-note="good-scope" onclick="showNote('good-scope')">
+            <h5>1.0 Scope</h5>
+            <p>The contractor shall provide all personnel, equipment, materials, and supervision necessary to maintain twelve (12) commercial HVAC units in Building 1240, Wright-Patterson Air Force Base, Ohio. The objective is to ensure reliable heating, ventilation, and air conditioning for approximately 200 building occupants across four floors.</p>
+          </div>
+
+          <div class="pws-section" data-note="good-docs" onclick="showNote('good-docs')">
+            <h5>2.0 Applicable Documents</h5>
+            <p>2.1 ASHRAE Standard 55-2023, <em>Thermal Environmental Conditions for Human Occupancy</em>.<br>
+            2.2 ASHRAE Standard 62.1-2022, <em>Ventilation and Acceptable Indoor Air Quality</em>.<br>
+            2.3 EPA Clean Air Act, Section 608 (refrigerant handling).<br>
+            2.4 AFI 32-1001, <em>Operations Management</em>.</p>
+          </div>
+
+          <div class="pws-section pws-flag" data-note="good-reqs" onclick="showNote('good-reqs')">
+            <h5>3.0 Performance Requirements</h5>
+            <p><strong>3.1 Operational Availability.</strong> The contractor shall maintain a minimum 95% operational availability across all 12 HVAC units, measured monthly. A unit is considered "available" when it is capable of maintaining its designated zone within &plusmn;3&deg;F of the thermostat setpoint.</p>
+            <p><strong>3.2 Emergency Response.</strong> The contractor shall restore failed HVAC units to operational status within 4 hours of notification during duty hours (0700-1700, Mon-Fri) and within 8 hours during non-duty hours. Notification will be made via the Base Civil Engineer service desk.</p>
+            <p><strong>3.3 Indoor Air Quality.</strong> The contractor shall maintain indoor air quality in compliance with ASHRAE 62.1-2022 at all times. CO2 levels shall not exceed 1,000 ppm in occupied spaces during normal business hours.</p>
+            <p><strong>3.4 Preventive Maintenance.</strong> The contractor shall establish and execute a preventive maintenance program sufficient to meet the availability and air quality requirements above. The specific methods, schedule, and procedures are at the contractor's discretion.</p>
+          </div>
+
+          <div class="pws-section pws-flag" data-note="good-standards" onclick="showNote('good-standards')">
+            <h5>4.0 Performance Standards Summary</h5>
+            <table>
+              <tr>
+                <th>Requirement</th>
+                <th>Performance Standard</th>
+                <th>AQL</th>
+                <th>Method</th>
+              </tr>
+              <tr>
+                <td>3.1 Operational Availability</td>
+                <td>&ge; 95% monthly availability per unit</td>
+                <td>No more than 1 unit below 95% in any month</td>
+                <td>Monthly report review + random COR spot checks</td>
+              </tr>
+              <tr>
+                <td>3.2 Emergency Response</td>
+                <td>Restore within 4 hrs (duty) / 8 hrs (non-duty)</td>
+                <td>No more than 2 late responses per quarter</td>
+                <td>Service desk ticket timestamps</td>
+              </tr>
+              <tr>
+                <td>3.3 Indoor Air Quality</td>
+                <td>CO2 &le; 1,000 ppm during business hours</td>
+                <td>No more than 3 exceedances per quarter</td>
+                <td>Quarterly IAQ spot checks by COR</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="pws-section" data-note="good-deliverables" onclick="showNote('good-deliverables')">
+            <h5>5.0 Deliverables</h5>
+            <p>5.1 Monthly performance report showing availability percentage per unit, service calls received and resolved, and any corrective actions taken. Due within 10 business days after each month.<br>
+            5.2 Quarterly preventive maintenance summary documenting the contractor's PM program execution. Due within 15 business days after each quarter.</p>
+          </div>
+
+          <div class="pws-section" data-note="good-period" onclick="showNote('good-period')">
+            <h5>6.0 Period and Place of Performance</h5>
+            <p>Base period: 1 April 2026 through 31 March 2027. Option Period 1: 1 April 2027 through 31 March 2028. Option Period 2: 1 April 2028 through 31 March 2029. All work performed at Building 1240, Wright-Patterson AFB, OH 45433.</p>
+          </div>
+
+          <div class="pws-section" data-note="good-gfp" onclick="showNote('good-gfp')">
+            <h5>7.0 Government-Furnished Property and Information</h5>
+            <p>7.1 Access to Building 1240 (24/7 for emergency response; normal duty hours for routine work).<br>
+            7.2 Current HVAC unit inventory, model numbers, and location map (Attachment 1).<br>
+            7.3 Access to the Base Civil Engineer service desk for service call logging.</p>
+          </div>
+
+          <div style="margin-top:1rem; padding:0.5rem 0.75rem; font-size:9px; color:#999; border-top:1px solid #ccc; text-align:center;">
+            TRAINING EXAMPLE | NOT AN OFFICIAL GOVERNMENT DOCUMENT
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ BAD PWS ═══════ -->
+    <div id="example-bad" class="pws-example" style="display:none;">
+      <div class="pws-outer">
+        <div class="pws-doc">
+          <h4>Performance Work Statement<br><span style="font-size:11px; font-weight:400; letter-spacing:0;">HVAC Maintenance, Building 1240</span></h4>
+
+          <div class="pws-section pws-problem" data-note="bad-scope" onclick="showNote('bad-scope')">
+            <h5>1.0 Scope</h5>
+            <p>The contractor shall provide HVAC maintenance services for Building 1240. The contractor shall ensure occupant comfort at all times.</p>
+          </div>
+
+          <div class="pws-section pws-problem" data-note="bad-method" onclick="showNote('bad-method')">
+            <h5>2.0 Requirements</h5>
+            <p><strong>2.1</strong> The contractor shall inspect all HVAC filters monthly and replace with MERV-13 filters.</p>
+            <p><strong>2.2</strong> The contractor shall clean evaporator and condenser coils quarterly using the Carrier WeatherMaker 48TC maintenance procedure.</p>
+            <p><strong>2.3</strong> The contractor shall check refrigerant levels on each unit quarterly and recharge to manufacturer specifications.</p>
+            <p><strong>2.4</strong> The contractor shall lubricate all bearings and moving parts every 90 days per the attached lubrication schedule (Attachment A).</p>
+            <p><strong>2.5</strong> The contractor shall verify thermostat calibration quarterly within &plusmn;2&deg;F of setpoint.</p>
+          </div>
+
+          <div class="pws-section pws-problem" data-note="bad-standards" onclick="showNote('bad-standards')">
+            <h5>3.0 Performance Standards</h5>
+            <table>
+              <tr><th>Requirement</th><th>Standard</th><th>Method</th></tr>
+              <tr><td>Overall Service</td><td>Satisfactory</td><td>COR observation</td></tr>
+              <tr><td>Customer Satisfaction</td><td>Positive feedback</td><td>Informal surveys</td></tr>
+              <tr><td>Timeliness</td><td>Prompt response</td><td>COR judgment</td></tr>
+            </table>
+          </div>
+
+          <div class="pws-section pws-problem" data-note="bad-clauses" onclick="showNote('bad-clauses')">
+            <h5>4.0 Administration</h5>
+            <p><strong>4.1 Termination.</strong> The Government reserves the right to terminate this agreement for convenience at any time. The contractor will be compensated for work performed through the date of termination.</p>
+            <p><strong>4.2 Payment.</strong> Invoices shall be submitted monthly. The Government will process payment within 30 calendar days of receipt of a proper invoice.</p>
+            <p><strong>4.3 Warranty.</strong> The contractor shall warranty all repair work for a period of 90 days from completion.</p>
+          </div>
+
+          <div class="pws-section pws-problem" data-note="bad-personal" onclick="showNote('bad-personal')">
+            <h5>5.0 Contractor Personnel</h5>
+            <p><strong>5.1</strong> The contractor's lead technician shall check in with the Facility Manager each morning at 0730 to receive the day's priority list.</p>
+            <p><strong>5.2</strong> All contractor personnel shall attend the weekly Monday morning staff meeting with government Civil Engineer personnel at 0800.</p>
+            <p><strong>5.3</strong> The contractor shall not reassign or replace technicians without prior government approval of the replacement's qualifications.</p>
+          </div>
+
+          <div class="pws-section pws-problem" data-note="bad-deliverables" onclick="showNote('bad-deliverables')">
+            <h5>6.0 Deliverables</h5>
+            <p>The contractor shall keep the COR informed of all maintenance activities and provide reports as requested.</p>
+          </div>
+
+          <div style="margin-top:1rem; padding:0.5rem 0.75rem; font-size:9px; color:#999; border-top:1px solid #ccc; text-align:center;">
+            TRAINING EXAMPLE | NOT AN OFFICIAL GOVERNMENT DOCUMENT
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ SIDE-BY-SIDE COMPARISON ═══════ -->
+    <div id="example-compare" class="pws-example" style="display:none;">
+      <p style="color:var(--silver); font-size:0.88rem; text-align:center; margin-bottom:1.25rem; line-height:1.6;">Same requirement. Same building. Same HVAC units. Click any highlighted row to see the difference.</p>
+      <div class="compare-grid">
+
+        <!-- SOW Column -->
+        <div class="compare-col col-sow">
+          <h3>Statement of Work</h3>
+          <div class="compare-doc">
+            <div class="compare-row highlight" data-note="cmp-scope" onclick="showNote('cmp-scope')">
+              <h5>1.0 Scope</h5>
+              <p>The contractor shall perform preventive maintenance on twelve (12) commercial HVAC units in Building 1240, Wright-Patterson AFB, in accordance with the manufacturer's maintenance procedures.</p>
+            </div>
+
+            <div class="compare-row highlight" data-note="cmp-docs" onclick="showNote('cmp-docs')">
+              <h5>2.0 Applicable Documents</h5>
+              <p>Carrier Corp, <em>WeatherMaker 48TC Maintenance Manual</em>, Rev. 4. ASHRAE 180-2018.</p>
+            </div>
+
+            <div class="compare-row highlight" data-note="cmp-reqs" onclick="showNote('cmp-reqs')">
+              <h5>3.0 Requirements</h5>
+              <p><strong>3.1</strong> Inspect and replace filters (MERV-13 minimum) quarterly.<br>
+              <strong>3.2</strong> Clean coils per procedure TC-PM-04.<br>
+              <strong>3.3</strong> Check refrigerant levels; recharge to spec.<br>
+              <strong>3.4</strong> Inspect electrical connections.<br>
+              <strong>3.5</strong> Verify thermostat calibration within &plusmn;2&deg;F.<br>
+              <strong>3.6</strong> Lubricate all moving parts per manufacturer intervals.</p>
+            </div>
+
+            <div class="compare-row highlight" data-note="cmp-deliverables" onclick="showNote('cmp-deliverables')">
+              <h5>4.0 Deliverables</h5>
+              <p>Completed maintenance checklist (GFE template) per unit, within 5 business days of each visit.</p>
+            </div>
+
+            <div class="compare-row highlight" data-note="cmp-gfp" onclick="showNote('cmp-gfp')">
+              <h5>5.0 GFP/GFI</h5>
+              <p>Building access (duty hours). Maintenance checklist template. HVAC inventory/location map. Electrical power.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- PWS Column -->
+        <div class="compare-col col-pws">
+          <h3>Performance Work Statement</h3>
+          <div class="compare-doc">
+            <div class="compare-row highlight" data-note="cmp-scope" onclick="showNote('cmp-scope')">
+              <h5>1.0 Scope</h5>
+              <p>The contractor shall provide all personnel, equipment, materials, and supervision necessary to maintain twelve (12) HVAC units in Building 1240, Wright-Patterson AFB.</p>
+            </div>
+
+            <div class="compare-row highlight" data-note="cmp-docs" onclick="showNote('cmp-docs')">
+              <h5>2.0 Applicable Documents</h5>
+              <p>ASHRAE 55-2023 (thermal comfort). ASHRAE 62.1-2022 (air quality). EPA Section 608.</p>
+            </div>
+
+            <div class="compare-row highlight" data-note="cmp-reqs" onclick="showNote('cmp-reqs')">
+              <h5>3.0 Performance Requirements</h5>
+              <p><strong>3.1</strong> Maintain 95% operational availability, measured monthly.<br>
+              <strong>3.2</strong> Restore failed units within 4 hrs (duty) / 8 hrs (non-duty).<br>
+              <strong>3.3</strong> Maintain CO2 &le; 1,000 ppm during business hours.<br>
+              <strong>3.4</strong> Establish and execute a PM program. Methods at contractor's discretion.</p>
+            </div>
+
+            <div class="compare-row highlight" data-note="cmp-deliverables" onclick="showNote('cmp-deliverables')">
+              <h5>4.0 Deliverables</h5>
+              <p>Monthly performance report (availability, service calls, corrective actions). Quarterly PM summary.</p>
+            </div>
+
+            <div class="compare-row highlight" data-note="cmp-gfp" onclick="showNote('cmp-gfp')">
+              <h5>5.0 GFP/GFI</h5>
+              <p>Building access (24/7 for emergencies). HVAC inventory/location map. Service desk access.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Risk callout -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-top:1.25rem;">
+        <div style="background:rgba(74,158,255,0.06); border:1px solid rgba(74,158,255,0.2); border-radius:10px; padding:1rem; text-align:center;">
+          <div style="font-weight:700; color:var(--accent); font-family:'Rajdhani',sans-serif; font-size:0.95rem; margin-bottom:0.35rem;">Government owns more risk</div>
+          <div style="font-size:0.82rem; color:var(--silver); line-height:1.5;">You told them how. If the method fails, that's your problem.</div>
+        </div>
+        <div style="background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); border-radius:10px; padding:1rem; text-align:center;">
+          <div style="font-weight:700; color:#6ee7b7; font-family:'Rajdhani',sans-serif; font-size:0.95rem; margin-bottom:0.35rem;">Contractor owns more risk</div>
+          <div style="font-size:0.82rem; color:var(--silver); line-height:1.5;">You told them what. If their approach fails, that's their problem.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Popup overlay -->
+    <div class="pws-overlay" id="noteOverlay" onclick="if(event.target===this)hideNote()">
+      <div class="pws-popup" id="notePopup">
+        <button class="pws-popup-close" onclick="hideNote()">&times;</button>
+        <div class="pws-popup-title" id="noteTitle"></div>
+        <div class="pws-popup-body" id="noteBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ LOOK IT UP ═══ -->
+  <div id="panel-lookup" class="pws-panel">
+    <div class="pws-intro">
+      <div class="pws-intro-tag">References</div>
+      <h2>Look It Up</h2>
+      <p>Key references for writing and reviewing performance work statements.</p>
+    </div>
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR 37.6: Performance-Based Acquisition</h4>
+        <p>The FAR subpart that establishes performance-based contracting as the preferred method for services. Defines what a PWS is and when to use one.</p>
+        <a href="https://www.acquisition.gov/far/subpart-37.6" target="_blank" rel="noopener">Open FAR 37.6</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Part 37: Service Contracting</h4>
+        <p>The broader service contracting subpart. Covers personal services prohibitions, advisory services, and the general framework for buying services.</p>
+        <a href="https://www.acquisition.gov/far/part-37" target="_blank" rel="noopener">Open FAR Part 37</a>
+      </div>
+      <div class="lookup-card">
+        <h4>OFPP Seven Steps to Performance-Based Acquisition</h4>
+        <p>The Office of Federal Procurement Policy's guide to implementing performance-based service contracts. Practical, step-by-step, and still widely referenced despite its age.</p>
+        <a href="https://buy.gsa.gov/spba" target="_blank" rel="noopener">Open Seven Steps Guide (GSA)</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 46.4: Government Contract Quality Assurance</h4>
+        <p>How the government inspects and accepts contractor performance. The foundation for how a COR uses the performance standards in your PWS to actually hold the contractor accountable.</p>
+        <a href="https://www.acquisition.gov/far/subpart-46.4" target="_blank" rel="noopener">Open FAR 46.4</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Statements of Work Training</h4>
+        <p>Our SOW training uses the same HVAC scenario. Compare side by side to see how the same requirement looks when the government directs the method vs. defines the outcome.</p>
+        <a href="statements-of-work.html">Open SOW Training</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Market Research Training</h4>
+        <p>Your PWS drives your market research, and vice versa. Our training covers the full process from requirement to documentation.</p>
+        <a href="market-research.html">Open Training</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-brand">ContractingHQ</span>
+      <span class="footer-copy">&copy; 2025 ContractingHQ. Not an official DoD site.</span>
+    </div>
+  </div>
+</footer>
+<script src="main.js"></script>
+<script>
+/* ═══════ TABS ═══════ */
+document.querySelectorAll('.pws-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.pws-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.pws-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ═══════ EXAMPLE TOGGLE ═══════ */
+function showExample(which) {
+  document.querySelectorAll('.pws-toggle-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.pws-example').forEach(e => e.style.display = 'none');
+  if (which === 'good') {
+    document.querySelector('.pws-toggle-btn:first-child').classList.add('active');
+    document.getElementById('example-good').style.display = 'block';
+  } else if (which === 'compare') {
+    document.querySelector('.pws-toggle-btn.compare').classList.add('active');
+    document.getElementById('example-compare').style.display = 'block';
+  } else {
+    document.querySelector('.pws-toggle-btn.bad').classList.add('active');
+    document.getElementById('example-bad').style.display = 'block';
+  }
+  hideNote();
+}
+
+/* ═══════ NOTES ═══════ */
+const notes = {
+  'good-scope': {
+    title: "Scope: Outcome-Oriented",
+    body: "Notice the difference from the SOW version. This scope says the contractor provides <strong>all personnel, equipment, materials, and supervision</strong>. That's a key PWS signal. The government isn't providing tools or directing staffing. It's saying: here's the building, here are the units, here's the objective. You figure out what you need to get it done.<br><br>The objective (\"reliable heating, ventilation, and air conditioning for approximately 200 occupants\") frames the work in terms of the outcome the government cares about, not the process.",
+    warn: false
+  },
+  'good-docs': {
+    title: "Applicable Documents: Performance Standards",
+    body: "Compare these to the SOW's applicable documents. The SOW referenced a <em>manufacturer's maintenance manual</em> (procedural, tells you how to do the work). This PWS references <em>ASHRAE comfort and air quality standards</em> (performance-based, tells you what outcome to achieve).<br><br>The contractor still needs to know the equipment specs, but those details are the contractor's problem. The government cares about the result: comfortable occupants and clean air.",
+    warn: false
+  },
+  'good-reqs': {
+    title: "Performance Requirements: Outcomes, Not Methods",
+    body: "This is the heart of what makes it a PWS. Look at Requirement 3.1: <strong>95% operational availability</strong>. The government doesn't say how to achieve it. No specific filter types, no mandated procedures, no prescribed schedules. The contractor decides their own approach.<br><br>Requirement 3.4 makes this explicit: the contractor establishes their own PM program. The specific methods, schedule, and procedures are at the contractor's discretion. That's the deal. You hit the numbers, we don't care how you get there.<br><br>Compare to the SOW, which spelled out every step: inspect filters, clean coils per procedure TC-PM-04, check refrigerant levels. Same building, same units, completely different approach.",
+    warn: false
+  },
+  'good-standards': {
+    title: "Performance Standards Summary: The Accountability Table",
+    body: "This table is what separates a real PWS from wishful thinking. Every requirement maps to a <strong>measurable standard</strong>, an <strong>acceptable quality level (AQL)</strong>, and a <strong>surveillance method</strong>.<br><br>The AQL is important. It acknowledges that perfection isn't realistic. Instead of demanding 100% on-time response (which invites disputes over edge cases), it says \"no more than 2 late responses per quarter.\" That's enforceable and fair.<br><br>The surveillance methods are practical: report reviews, ticket timestamps, spot checks. The COR can actually do these without being embedded with the contractor 24/7.",
+    warn: false
+  },
+  'good-deliverables': {
+    title: "Deliverables: Tied to Performance Proof",
+    body: "Two deliverables, both with clear deadlines. Notice how they connect directly to the performance standards. The monthly report shows availability percentages (ties to Requirement 3.1) and service call resolution (ties to 3.2). The quarterly PM summary shows the contractor is executing their maintenance program (ties to 3.4).<br><br>These aren't just paperwork for the file. They're the evidence the COR uses to verify the contractor is meeting standards.",
+    warn: false
+  },
+  'good-period': {
+    title: "Period and Place: Clean and Complete",
+    body: "Same structure as any work statement. Base period plus two option years, specific location. Notice that unlike the SOW, there's no 14-day advance scheduling requirement. The contractor manages their own schedule to hit the performance targets. That's consistent with the PWS philosophy: define the outcome, let the contractor manage the execution.",
+    warn: false
+  },
+  'good-gfp': {
+    title: "GFP/GFI: What the Government Provides",
+    body: "Three items, all practical. Note that the government provides 24/7 access for emergency response. That makes sense because the contractor has a 4-hour/8-hour response requirement. If you impose response times but don't give building access, you've set the contractor up to fail.<br><br>Also note what's <em>not</em> here: no government-furnished tools, no government-furnished materials, no maintenance checklist template. The contractor brings everything. That's the PWS model.",
+    warn: false
+  },
+
+  'bad-scope': {
+    title: "\u26a0 Scope: Vague and Unbounded",
+    body: "\"Provide HVAC maintenance services\" could mean anything. Preventive maintenance? Emergency repairs? System replacement? All of the above?<br><br>\"Ensure occupant comfort at all times\" is an unmeasurable, 100% standard buried in the scope. What's \"comfort\"? Who decides? At what temperature does someone become \"uncomfortable\"? This invites disputes. The good PWS handled this by referencing ASHRAE 55 (thermal comfort standard) and defining specific temperature tolerances.",
+    warn: true
+  },
+  'bad-method': {
+    title: "\u26a0 SOW in Disguise",
+    body: "This is the single most common problem with PWSs in the real world. The document says \"Performance Work Statement\" at the top, but <strong>every single requirement directs the method</strong>:<br><br>\"Inspect filters monthly and replace with MERV-13\" = method.<br>\"Clean coils using the Carrier WeatherMaker procedure\" = method.<br>\"Check refrigerant levels quarterly\" = method.<br>\"Lubricate per the attached schedule\" = method.<br><br>This is a SOW. Not a bad SOW, actually. But it's labeled wrong. If you're going to tell the contractor exactly what to do, own it. Call it a SOW. The problem with mislabeling is that it signals to offerors they should propose innovative approaches, but then locks them into your procedures anyway.<br><br>A real PWS would say: \"Maintain 95% availability. Here are the standards. You figure out the maintenance approach.\"",
+    warn: true
+  },
+  'bad-standards': {
+    title: "\u26a0 Meaningless Performance Standards",
+    body: "This table is useless for contract administration:<br><br><strong>\"Satisfactory\"</strong> is not a standard. It's an opinion. Whose opinion? Measured how?<br><strong>\"Positive feedback\"</strong> from whom? How many people? What percentage counts as \"positive\"?<br><strong>\"Prompt response\"</strong> means nothing. 10 minutes? 4 hours? 3 days?<br><strong>\"COR observation\"</strong> and <strong>\"COR judgment\"</strong> make the entire evaluation subjective.<br><br>Compare to the good PWS: 95% availability (measured monthly), 4-hour response time (measured by ticket timestamps), CO2 below 1,000 ppm (measured by spot checks). Objective, specific, enforceable.",
+    warn: true
+  },
+  'bad-clauses': {
+    title: "\u26a0 Contract Clauses in the PWS",
+    body: "Termination, payment terms, and warranty provisions do not belong in the PWS. You already have contract clauses for all of these:<br><br><strong>Termination:</strong> FAR 52.249 series.<br><strong>Payment:</strong> FAR 52.232 series, 52.212-4 for commercial items.<br><strong>Warranty:</strong> FAR 52.246 series.<br><br>The 90-day warranty in Section 4.3 is especially dangerous. What if the FAR warranty clause in the contract says something different? Now you have two conflicting warranty provisions. The contractor will argue whichever one benefits them.<br><br>The PWS describes the work. The contract clauses govern the relationship. Keep them separate.",
+    warn: true
+  },
+  'bad-personal': {
+    title: "\u26a0 Personal Services Red Flags",
+    body: "Three red flags in three paragraphs:<br><br><strong>\"Check in with the Facility Manager each morning at 0730\"</strong>: The government is setting the contractor's daily schedule and requiring them to receive assignments from a government employee. That's supervision.<br><br><strong>\"Attend the weekly Monday morning staff meeting\"</strong>: Integrating contractor personnel into government staff meetings blurs the line between employee and contractor.<br><br><strong>\"Shall not reassign or replace technicians without prior government approval\"</strong>: The government is controlling the contractor's workforce decisions. A contractor manages their own people.<br><br>All three point toward a personal services arrangement, which is prohibited under FAR 37.104. In a proper PWS, you set performance standards and the contractor decides how to staff and schedule to meet them.",
+    warn: true
+  },
+  'bad-deliverables': {
+    title: "\u26a0 Deliverables: Undefined",
+    body: "\"Keep the COR informed\" and \"provide reports as requested\" is not a deliverable requirement. It's a placeholder that means nothing.<br><br>What reports? How often? What data should they contain? When are they due? Without specific deliverables, the COR has no structured way to verify performance. And if a dispute arises, the contractor can argue they provided exactly what was requested: nothing specific.<br><br>Compare to the good PWS: a monthly performance report (due within 10 business days) showing availability, service calls, and corrective actions, plus a quarterly PM summary (due within 15 business days). Named, defined, deadlined.",
+    warn: true
+  },
+
+  // ── Comparison notes ──
+  'cmp-scope': {
+    title: "Scope: Direction vs. Objective",
+    body: "<strong>SOW:</strong> \"Perform preventive maintenance... in accordance with the manufacturer's maintenance procedures.\" The government has already decided the approach. The contractor executes a prescribed plan.<br><br><strong>PWS:</strong> \"Provide all personnel, equipment, materials, and supervision necessary to maintain...\" The government states the objective. The contractor figures out what resources and approach they need to get there.<br><br>Notice the PWS puts the burden of figuring out staffing, tools, and methods on the contractor. The SOW takes that decision away from them.",
+    warn: false
+  },
+  'cmp-docs': {
+    title: "Applicable Documents: Procedures vs. Standards",
+    body: "<strong>SOW:</strong> References a <em>manufacturer's maintenance manual</em> and a <em>maintenance practices standard</em>. These are procedural documents that tell the contractor how to do the work.<br><br><strong>PWS:</strong> References <em>thermal comfort</em> and <em>air quality</em> standards. These define what the result should look like, not how to achieve it.<br><br>This is one of the fastest ways to tell a SOW from a PWS. Look at the applicable documents. If they're procedure manuals, it's a SOW. If they're outcome or performance standards, it's a PWS.",
+    warn: false
+  },
+  'cmp-reqs': {
+    title: "Requirements: The Core Difference",
+    body: "This is where the difference is most obvious.<br><br><strong>SOW:</strong> Six specific tasks. Inspect filters. Clean coils per procedure TC-PM-04. Check refrigerant. Inspect electrical. Calibrate thermostats. Lubricate parts. The government is telling the contractor exactly what to do, step by step.<br><br><strong>PWS:</strong> Four outcome-based requirements. 95% availability. 4-hour response time. CO2 below 1,000 ppm. Establish a PM program (methods at contractor's discretion). The government defines what \"success\" looks like and the contractor decides how to achieve it.<br><br>The PWS contractor might do all the same things the SOW contractor does. But they might also find a better approach the government never considered. That's the point.",
+    warn: false
+  },
+  'cmp-deliverables': {
+    title: "Deliverables: Proof of Process vs. Proof of Performance",
+    body: "<strong>SOW:</strong> Completed maintenance checklists. The government provides the template. The contractor fills it out after each visit. This proves the contractor followed the process.<br><br><strong>PWS:</strong> Monthly performance reports showing availability percentages, service call data, and corrective actions. Plus quarterly PM summaries. This proves the contractor achieved the outcome.<br><br>In a SOW, you verify the contractor did the steps. In a PWS, you verify the contractor hit the targets. Both are legitimate approaches, but they measure different things.",
+    warn: false
+  },
+  'cmp-gfp': {
+    title: "GFP/GFI: More or Less Government Support",
+    body: "<strong>SOW:</strong> The government provides building access (duty hours only), a maintenance checklist template, the unit inventory map, and electrical power. The government is more involved because it's directing the work.<br><br><strong>PWS:</strong> The government provides building access (24/7 for emergencies), the unit inventory map, and service desk access. No checklist template because the contractor designs their own process. No mention of electrical power at the work site because the contractor brings what they need.<br><br>The PWS gives 24/7 access because the contractor has emergency response requirements. The SOW limits access to duty hours because the government is scheduling the work. Each GFP section matches the philosophy of the document.",
+    warn: false
+  }
+};
+
+function showNote(key) {
+  const n = notes[key];
+  if (!n) return;
+  document.querySelectorAll('.pws-section, .compare-row').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('[data-note="' + key + '"]').forEach(el => el.classList.add('active'));
+  const popup = document.getElementById('notePopup');
+  popup.classList.toggle('warn', !!n.warn);
+  document.getElementById('noteTitle').textContent = n.title;
+  document.getElementById('noteBody').innerHTML = n.body;
+  document.getElementById('noteOverlay').classList.add('visible');
+}
+
+function hideNote() {
+  document.getElementById('noteOverlay').classList.remove('visible');
+  document.querySelectorAll('.pws-section, .compare-row').forEach(s => s.classList.remove('active'));
+}
+</script>
+</body>
+</html>

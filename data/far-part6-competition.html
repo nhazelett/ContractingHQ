@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn about the exceptions to full and open competition under FAR Part 6. Covers the seven statutory authorities, the IOU PAIN mnemonic, and when Part 6 applies." />
+  <title>FAR Part 6: Other Than Full & Open Competition | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .fp6-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+    .fp6-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .fp6-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .fp6-tab:hover { color: var(--white); }
+    .fp6-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .fp6-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .fp6-panel.active { display: block; }
+    .fp6-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .fp6-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .fp6-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .fp6-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+    /* ── Document display ── */
+    .fp6-outer { background: rgba(10,22,50,0.3); border-radius: 14px; padding: 1.5rem; overflow-x: auto; }
+    .fp6-doc { min-width: 600px; border: 2px solid #000; background: #fff; color: #000; font-size: 12px; line-height: 1.6; font-family: 'Inter', 'Times New Roman', serif; padding: 2rem 2.5rem; }
+    .fp6-doc h4 { font-size: 14px; font-weight: 700; text-transform: uppercase; text-align: center; margin-bottom: 0.25rem; letter-spacing: 1px; }
+    .fp6-doc h5 { font-size: 11px; font-weight: 400; text-align: center; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #000; }
+    .fp6-doc .doc-label { font-size: 11px; font-weight: 700; margin: 0.75rem 0 0.15rem; text-transform: uppercase; }
+    .fp6-doc .doc-field { font-size: 12px; padding: 0.3rem 0; border-bottom: 1px solid #ccc; margin-bottom: 0.5rem; min-height: 1.2em; }
+    .fp6-doc .doc-section-head { font-size: 12px; font-weight: 700; margin: 1.25rem 0 0.5rem; }
+    .fp6-doc .doc-section-body { font-size: 12px; padding: 0.4rem 0; }
+    .fp6-doc .doc-sig { margin-top: 1.5rem; border-top: 1px solid #000; padding-top: 0.3rem; font-size: 11px; }
+    .fp6-doc .doc-footer { margin-top: 1.5rem; text-align: center; font-size: 10px; font-style: italic; color: #666; border-top: 1px solid #ccc; padding-top: 0.75rem; }
+    /* ── Clickable sections ── */
+    .fp6-section { padding: 0.6rem 0.75rem; margin: 0.5rem 0; border-radius: 4px; cursor: pointer; transition: background 0.12s; border-left: 3px solid transparent; }
+    .fp6-section:hover { background: #f0f4ff; }
+    .fp6-section.active { background: #fff9db; }
+    .fp6-section.fp6-flag { border-left-color: #4a9eff; }
+    .fp6-section.fp6-problem { border-left-color: #dc2626; }
+    /* ── Toggle buttons ── */
+    .fp6-toggle { display: flex; gap: 0; margin-bottom: 1.25rem; }
+    .fp6-toggle-btn { flex: 1; padding: 0.75rem 1rem; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.2); background: rgba(10,22,50,0.5); color: var(--silver); cursor: pointer; transition: all 0.18s; font-family: inherit; }
+    .fp6-toggle-btn:first-child { border-radius: 8px 0 0 8px; }
+    .fp6-toggle-btn:last-child { border-radius: 0 8px 8px 0; }
+    .fp6-toggle-btn.active { background: rgba(74,158,255,0.15); color: var(--accent); border-color: rgba(74,158,255,0.35); }
+    .fp6-toggle-btn.bad { color: var(--silver); }
+    .fp6-toggle-btn.bad.active { background: rgba(220,38,38,0.12); color: #fca5a5; border-color: rgba(220,38,38,0.35); }
+    /* ── Note popup ── */
+    .fp6-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; padding: 1.5rem; }
+    .fp6-overlay.visible { display: flex; }
+    .fp6-note { background: #0d1a33; border: 1px solid rgba(74,158,255,0.3); border-radius: 14px; padding: 1.5rem 1.75rem; max-width: 520px; width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,0.5); animation: popIn 0.18s ease-out; position: relative; }
+    .fp6-note.warn { border-color: rgba(220,38,38,0.4); }
+    .fp6-note-title { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 0.6rem; padding-right: 2rem; }
+    .fp6-note.warn .fp6-note-title { color: #fca5a5; }
+    .fp6-note-body { color: var(--silver); font-size: 0.9rem; line-height: 1.75; }
+    .fp6-note-body strong { color: var(--white); }
+    .fp6-note-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--silver); cursor: pointer; font-size: 1.4rem; line-height: 1; padding: 0; transition: color 0.12s; }
+    .fp6-note-close:hover { color: var(--white); }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+    @media (max-width: 768px) {
+      .fp6-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+      .fp6-doc { min-width: 0; padding: 1rem; font-size: 11px; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 15</span>
+    <h1 class="page-hero-title">FAR Part 6: Other Than Full & Open Competition</h1>
+    <p class="page-hero-sub">FAR Part 6 governs when and how you can restrict competition on open market purchases over the simplified acquisition threshold. Most of the time it will not apply to you in operational contracting, but you need to know when it does.</p>
+  </div>
+</div>
+
+<div class="fp6-bg">
+  <div class="fp6-tabs">
+    <button class="fp6-tab active" data-tab="learn">📖 Learn</button>
+    <button class="fp6-tab" data-tab="examples">📄 J&A Examples</button>
+    <button class="fp6-tab" data-tab="lookup">🔍 Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="fp6-panel active">
+
+    <div class="fp6-intro">
+      <span class="fp6-intro-tag">The Basics</span>
+      <h2>Other Than Full & Open Competition</h2>
+      <p>The seven exceptions, when they apply, and why Part 6 matters less than you think in operational contracting.</p>
+    </div>
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> When Does Part 6 Even Apply?</h3>
+      <div class="learn-body">
+        <p>FAR Part 6 only applies to acquisitions that are BOTH over the simplified acquisition threshold AND on the open market (not on existing contracts like GSA schedules or IDIQs). If you are placing an order against an existing contract, Part 6 does not apply. If you are buying commercial items under $9M, Part 6 does not apply (FAR Part 12 has its own streamlined process). In operational contracting, most of your buys will be under the SAT or on existing contracts. So Part 6 applies less often than you might think. But when it does, you need to get it right.</p>
+        <div class="highlight-box">
+          <p>Each FAR Part has its own lane for restricting competition, and each lane has its own name for the sole source document:</p>
+          <p><strong>FAR Part 6:</strong> Justification and Approval (J&A). Non-commercial, open market procurements above the SAT.</p>
+          <p><strong>FAR Part 8:</strong> Limited Sources Justification. Orders from Federal Supply Schedules (GSA).</p>
+          <p><strong>FAR Part 12:</strong> Commercial Sole Source Justification. Commercial item buys using simplified procedures.</p>
+          <p><strong>FAR Part 16:</strong> Exception to Fair Opportunity. Task and delivery orders off IDIQ and requirements contracts.</p>
+          <p>People use "J&A" interchangeably for all of these. A sharp contracting officer hears "Part 6, non-commercial, open market" when someone says J&A.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider">
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> The Seven Exceptions (IOU PAIN)</h3>
+      <div class="learn-body">
+        <p>FAR 6.302 lists seven circumstances that allow other than full and open competition. The mnemonic is IOU PAIN:</p>
+        <div class="highlight-box">
+          <p><strong>I</strong> - Industrial Mobilization (FAR 6.302-3)</p>
+          <p><strong>O</strong> - Only One Responsible Source (FAR 6.302-1)</p>
+          <p><strong>U</strong> - Unusual and Compelling Urgency (FAR 6.302-2)</p>
+          <p><strong>P</strong> - Public Interest (FAR 6.302-7)</p>
+          <p><strong>A</strong> - Authorized by Statute (FAR 6.302-5)</p>
+          <p><strong>I</strong> - International Agreement (FAR 6.302-4)</p>
+          <p><strong>N</strong> - National Security (FAR 6.302-6)</p>
+        </div>
+        <p>In practice, the three you will encounter most often in operational contracting are Only One Responsible Source, Unusual and Compelling Urgency, and Authorized by Statute. The rest exist but come up rarely at the base level.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider">
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> The Ones You Will Actually Use</h3>
+      <div class="learn-body">
+        <p><strong>Only One Responsible Source (6.302-1):</strong> This is your standard sole source authority. The supplies or services required are available from only one responsible source and no other type of supplies or services will satisfy agency requirements. This is what brand name J&As typically cite. You need a written justification and approval (J&A) per FAR 6.303 and 6.304.</p>
+        <p><strong>Unusual and Compelling Urgency (6.302-2):</strong> The agency's need is of such an unusual and compelling urgency that the Government would be seriously injured unless the agency is permitted to limit the number of sources. This is not "we forgot to plan." This is genuine unforeseen urgency. The contracting officer must still request offers from as many potential sources as is practicable under the circumstances.</p>
+        <p><strong>Authorized by Statute (6.302-5):</strong> A statute authorizes or requires that the acquisition be made from a specified source. The most common example here is the 8(a) program. When you set aside a contract for an 8(a) firm, FAR 6.302-5 is your competition authority. You are not competing on the open market; you are using a statutory program.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider">
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> J&A Requirements</h3>
+      <div class="learn-body">
+        <p>When you use a Part 6 exception, you generally need a Justification and Approval (J&A) document per FAR 6.303. The J&A must include specific elements: a description of what you are buying, why full and open competition is not suitable, the specific statutory authority being cited, market research results, any actions to remove barriers to competition in future acquisitions, and the contracting officer's certification that the justification is accurate.</p>
+        <div class="highlight-box tip">
+          <strong>Approval thresholds go up with dollar value (FAR 6.304):</strong><br>
+          Up to $900K: Contracting officer's certification is the approval.<br>
+          $900K to $20M: Competition Advocate for the procuring activity (cannot be delegated).<br>
+          $20M to $90M ($150M for DoD, NASA, and Coast Guard): Head of the Procuring Activity or designee (general/flag officer or above GS-15).<br>
+          Over $90M ($150M for DoD/NASA/CG): Senior Procurement Executive. Generally cannot be delegated.<br>
+          Include the value of all options when determining the approval level.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider">
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> What Goes Into a J&A (FAR 6.303-2)</h3>
+      <div class="learn-body">
+        <p>FAR 6.303-2 lays out exactly what a Justification and Approval must contain. There are 13 required elements. Your agency template may organize them differently, but every one of these must be addressed somewhere in the document.</p>
+        <p><strong>Element 1: Identification.</strong> Name the agency, the contracting activity, and label the document as a "Justification for Other Than Full and Open Competition." Sounds obvious, but reviewers need to know who wrote it and what it is.</p>
+        <p><strong>Element 2: Nature and Description of the Action.</strong> Is this a new contract, a modification, a follow-on? Describe what you are doing and why.</p>
+        <p><strong>Element 3: Description of Supplies or Services.</strong> What is the Government buying, and what is the estimated value? Be specific enough that a reviewer who has never seen the requirement can understand it. Include technical specifics, part numbers, building locations, and applicable technical orders where relevant.</p>
+        <p><strong>Element 4: Statutory Authority.</strong> Identify which FAR 6.302 exception applies. This must match the facts in the rest of the document. If you cite 6.302-1 (only one responsible source), every paragraph that follows should prove that claim.</p>
+        <p><strong>Element 5: Demonstration That the Authority Applies.</strong> This is the heart of the J&A. You must demonstrate WHY the contractor's unique qualifications or the nature of the acquisition justifies using the authority you cited. If you cited 6.302-1, you need to prove no other source can do this work. If you cited 6.302-2 (urgency), you need to explain the specific urgency and why the Government would be seriously injured by delay.</p>
+        <p><strong>Element 6: Efforts to Solicit Offers.</strong> Describe what you did to get offers from as many sources as practicable. Even in a sole source, you should be soliciting to the extent possible. Also address whether you published a notice or what exception to the publication requirement applies.</p>
+        <p><strong>Element 7: Fair and Reasonable Price Determination.</strong> The contracting officer must determine that the anticipated cost is fair and reasonable. How will you make that determination? Prior pricing, independent government cost estimate, market comparisons?</p>
+        <p><strong>Element 8: Market Research.</strong> Describe the market research you conducted and what it showed. If you did not conduct market research, explain why not (this better be a very good reason).</p>
+        <p><strong>Element 9: Other Supporting Facts.</strong> Anything else that supports the case. This includes the status of technical data development, cost estimates for achieving competition, and any other relevant considerations.</p>
+        <p><strong>Element 10: Interested Sources.</strong> List any sources that expressed written interest in the acquisition. If you posted an RFI or sources-sought notice, document the responses.</p>
+        <p><strong>Element 11: Actions to Remove Barriers.</strong> What will the agency do to create conditions for competition in the future? Tie this to something concrete: a lifecycle event, a data rights negotiation, a market survey timeline.</p>
+        <p><strong>Element 12: Contracting Officer Certification.</strong> The CO certifies the justification is accurate and complete to the best of their knowledge and belief. This is your signature on the line. Make sure you believe what is in the document before you sign it.</p>
+        <p><strong>Element 13: Technical/Requirements Certification.</strong> Evidence that supporting data from technical or requirements personnel have been certified as complete and accurate. The people who generated the technical facts need to stand behind them.</p>
+        <div class="highlight-box">
+          <strong>The approval routing matters.</strong> After the CO certifies, the J&A routes through the approval chain per FAR 6.304. The approval authority depends on dollar value. Make sure the right people are on the routing before you send it up, and verify that Legal has reviewed it.
+        </div>
+        <p>Check the <strong>J&A Examples</strong> tab to see how this looks on paper, and how it falls apart when done wrong.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider">
+
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> The Seven Exceptions: A Deep Dive</h3>
+      <div class="learn-body">
+        <p>Section 2 gave you the mnemonic. Now let's walk through each exception in detail so you understand what it takes to use them, what you have to prove, and where people get it wrong.</p>
+
+        <div class="highlight-box">
+          <strong>FAR 6.302-1: Only One Responsible Source</strong><br>
+          This is the most common Part 6 authority at the base level. It covers several scenarios: supplies or services available from only one source, follow-on contracts where switching would cause unacceptable costs or delays, or situations where the agency head determines that only specific items will satisfy the requirement (brand name). There are also provisions for utilities, standardization, and items from Federal Prison Industries.<br><br>
+          <strong>What you must prove:</strong> That no other source can satisfy the requirement. Not that you prefer this source. Not that this source is the best. That this source is the ONLY one. Your demonstration must include verifiable facts: proprietary data rights, unique tooling, sole manufacturer status. Market research must document the search for alternatives and explain why each one fails.<br><br>
+          <strong>Common mistakes:</strong> Confusing "best source" with "only source." Asserting sole source status without market research. Citing past performance or familiarity instead of technical exclusivity.
+        </div>
+
+        <div class="highlight-box">
+          <strong>FAR 6.302-2: Unusual and Compelling Urgency</strong><br>
+          The agency's need is so urgent that the Government would be seriously injured unless it limits the number of sources. This is a high bar. The urgency must be unusual (not routine) and compelling (not just inconvenient).<br><br>
+          <strong>What you must prove:</strong> That the urgency is genuine and unforeseen. That full competition would cause serious injury to the Government (operational impact, safety risk, financial harm). You must still request offers from as many sources as practicable under the circumstances.<br><br>
+          <strong>The period of performance trap:</strong> This is where new COs get burned. You can only sole source for the period covered by the urgency itself, plus a reasonable transition period to get a competitive follow-on in place. If an oil spill creates an urgent need for cleanup services that will take four months, you cannot write a five-year contract off that urgency. The contract period must match the urgent need. Once the urgency passes, you compete. Contracts over $750K with a performance period exceeding 12 months also require a D&F (Determination and Findings).<br><br>
+          <strong>Common mistakes:</strong> Using urgency to cover poor planning. "We forgot to start the acquisition on time" is not urgency. Writing a multi-year contract off a short-term emergency. Failing to solicit from any other sources at all when other vendors were available and could have responded quickly. Not building a bridge to competition once the urgent period ends.
+        </div>
+
+        <div class="highlight-box">
+          <strong>FAR 6.302-3: Industrial Mobilization, Engineering, Developmental, or Research Capability, or Expert Services</strong><br>
+          This authority has three prongs, and the first one is the most interesting.<br><br>
+          <strong>Prong 1: Industrial mobilization.</strong> The government needs to keep certain manufacturers alive and capable even when there is no immediate need for their product. Think of a small company that makes a specialized component for missile guidance systems. The DoD does not need that component today, but if a conflict breaks out, they need that factory tooled up and ready to produce. If nobody buys from them during peacetime, they close up shop or pivot to purely commercial work. Then the emergency hits and the production capability is gone. It takes years to rebuild. So the government sole sources contracts to that manufacturer specifically to keep them in business as a defense supplier. You are not buying because they are the only source. You are buying because you need them to still BE a source when it matters.<br><br>
+          <strong>Prong 2: Research and development capability.</strong> This is about keeping essential R&D capabilities alive at specific institutions. Maybe MIT has the only wind tunnel in the country that can simulate hypersonic conditions, or Johns Hopkins APL has a unique radar testing facility. The government sole sources to that institution not because they are the cheapest option, but because the capability itself needs to exist and they are where it lives. This applies to educational institutions, nonprofits, and Federally Funded Research and Development Centers (FFRDCs).<br><br>
+          <strong>Prong 3: Expert services.</strong> Acquiring expert services for use in litigation or disputes. When the government needs a specific expert witness or technical consultant for a legal proceeding, this authority allows sole sourcing to that individual or firm.<br><br>
+          <strong>How often you will see it:</strong> You will not see this in operational contracting. Industrial mobilization is major command and depot-level territory. R&D capability lives at agencies funding FFRDCs. Expert services come up when legal gets involved at levels well above the base. Know it exists so you recognize the reference, but this is not one you will ever write.
+        </div>
+
+        <div class="highlight-box">
+          <strong>FAR 6.302-4: International Agreement</strong><br>
+          The terms of an international agreement or treaty between the United States and a foreign government or international organization require or restrict the use of other than competitive procedures. This shows up in Foreign Military Sales (FMS), NATO cooperative programs, and international partnerships where a treaty or agreement dictates who can perform the work or supply the goods.<br><br>
+          <strong>The IACR process:</strong> This is where it gets different from the other exceptions. Under DFARS 206.302-4, you do not write a standard J&A. Instead, the Head of the Contracting Activity (or a delegate no lower than the chief of the contracting office) prepares a document titled "International Agreement Competitive Restrictions" (IACR). The IACR describes the terms of the agreement, treaty, or Letter of Offer and Acceptance (LOA) that require non-competitive procedures. Because the restriction on competition comes from the agreement itself rather than from the contracting officer's judgment, the normal FAR 6.303 and 6.304 justification and approval requirements do not apply. The IACR replaces the J&A entirely. The contract file must include the IACR plus a copy of the associated LOA or other international agreement.<br><br>
+          <strong>Key detail:</strong> The IACR can be used even when the agreement does not name a specific source, as long as the agreement contains enough information to explain why competition is not possible. For example, a bilateral MOU might require that work be performed by companies from the two signatory nations, which restricts the competitive pool without naming a single vendor.<br><br>
+          <strong>How often you will see it:</strong> You will not. This is systems-level contracting. Program offices managing international cooperative development, FMS cases, and NATO agreements are the ones dealing with IACRs. It is not going to land on your desk in operational contracting.
+        </div>
+
+        <div class="highlight-box">
+          <strong>FAR 6.302-5: Authorized or Required by Statute</strong><br>
+          A statute expressly authorizes or requires the acquisition to be made through a specific source or from a specified source. The most common use in operational contracting is the 8(a) Business Development Program. When the SBA accepts a requirement for the 8(a) program, the acquisition is conducted under the authority of Section 8(a) of the Small Business Act, and FAR 6.302-5 is the competition authority. Other statutes may also qualify.<br><br>
+          <strong>What you must prove:</strong> That a statute specifically authorizes or requires the approach. For 8(a): that the SBA has accepted the requirement. The J&A for an 8(a) sole source is simpler because the statutory framework is well established, but you still need to document the basis.<br><br>
+          <strong>Common mistakes:</strong> Assuming 8(a) sole source means no documentation is required. You still need a J&A when the value is over $25M (or $100M for manufacturing). Failing to coordinate with the Small Business office before committing to a specific 8(a) firm.
+        </div>
+
+        <div class="highlight-box">
+          <strong>FAR 6.302-6: National Security</strong><br>
+          Disclosure of the agency's needs would compromise national security unless the acquisition is limited to a specific number of sources. This is about keeping the requirement itself classified or sensitive, not about the end item being classified.<br><br>
+          <strong>What you must prove:</strong> That disclosing the requirement through full and open competition procedures would compromise national security. The agency head must determine that this specific acquisition falls under this authority. This is a determination made at a very senior level.<br><br>
+          <strong>How often you will see it:</strong> You will not see this in operational contracting. This is intelligence community and special access program territory.
+        </div>
+
+        <div class="highlight-box">
+          <strong>FAR 6.302-7: Public Interest</strong><br>
+          The agency head determines that it is not in the public interest to compete the requirement. This is the most restrictive authority. It requires a written determination by the agency head (not a delegate), and Congress must be notified at least 30 days before contract award.<br><br>
+          <strong>What you must prove:</strong> That full and open competition is not in the public interest. The agency head makes this determination personally. This cannot be delegated.<br><br>
+          <strong>How often you will see it:</strong> Essentially never at the base level. This authority is used for extraordinary circumstances at the highest levels of the agency. If you ever encounter it, you will know because senior leadership and Congress are involved.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Bottom line for operational contracting:</strong> You will spend 95% of your time with 6.302-1 (only one source), 6.302-2 (urgency), and 6.302-5 (statutory authority like 8(a)). Know those three cold. Be aware the other four exist so you can recognize them if they come up, and know to get help when they do.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ EXAMPLES ═══════════════ -->
+  <div id="panel-examples" class="fp6-panel">
+
+    <div class="fp6-intro">
+      <span class="fp6-intro-tag">Interactive Tool</span>
+      <h2>J&A Examples</h2>
+      <p>Same scenario, two very different justifications. A base needs specialized aircraft engine test cell calibration services. Click highlighted sections for coaching notes. <strong style="color:#4a9eff;">Blue borders</strong> highlight what makes a justification strong. <strong style="color:#dc2626;">Red borders</strong> flag problems.</p>
+    </div>
+
+    <div class="fp6-toggle">
+      <button class="fp6-toggle-btn active" data-example="good">&#9989; Well-Written J&A</button>
+      <button class="fp6-toggle-btn bad" data-example="bad">&#10060; Poorly-Written J&A</button>
+    </div>
+
+    <!-- ── Good example ── -->
+    <div id="example-good" class="fp6-outer">
+      <div class="fp6-doc">
+        <h4>Justification for Other Than Full and Open Competition</h4>
+        <h5>FAR 6.303-2</h5>
+
+        <div class="fp6-section fp6-flag" data-note="good-header">
+          <div class="doc-label">Section I: Agency and Contracting Activity</div>
+          <div class="doc-field"><strong>Contracting Activity:</strong> 96 TW/PKC, Eglin Air Force Base, FL</div>
+          <div class="doc-field"><strong>Action Type:</strong> New Contract</div>
+          <div class="doc-field"><strong>Estimated Value:</strong> $485,000</div>
+        </div>
+
+        <div class="fp6-section fp6-flag" data-note="good-action">
+          <div class="doc-section-head">Section II: Nature and Description of the Action</div>
+          <div class="doc-section-body">New fixed-price contract for specialized calibration services. The requirement stems from the 96 Test Wing's continued operation of the F110-GE-129 engine test cell facility in Building 990, Test Cell 3. Annual recurring requirement with emergency on-call support capability.</div>
+        </div>
+
+        <div class="fp6-section fp6-flag" data-note="good-desc">
+          <div class="doc-section-head">Section III: Description of Supplies or Services</div>
+          <div class="doc-section-body">Specialized calibration services for the F110-GE-129 engine test cell data acquisition system located in Building 990, Test Cell 3, Eglin AFB. Scope includes: (1) Annual calibration cycle (two calendar events per fiscal year); (2) Emergency on-call calibration support (as requested); (3) All work must meet tolerances specified in T.O. 33-1-28 (Aircraft Engine Technical Order). Calibration must verify accuracy of pressure transducers, temperature sensors, and data logging interface across the full operating range of the test cell.</div>
+        </div>
+
+        <div class="fp6-section fp6-flag" data-note="good-authority">
+          <div class="doc-section-head">Authority</div>
+          <div class="doc-section-body"><strong>FAR 6.302-1, Only One Responsible Source</strong></div>
+        </div>
+
+        <div class="fp6-section fp6-flag" data-note="good-just">
+          <div class="doc-section-head">Section V: Demonstration of Unique Qualifications</div>
+          <div class="doc-section-body">The F110-GE-129 engine test cell uses a proprietary data acquisition system manufactured by Acme Calibration Services (ACS). Calibration of this system requires direct access to ACS's proprietary software algorithms and calibration reference standards, which ACS does not license to third parties. The Government does not own rights to this technical data. Contract FA8101-20-C-0001 (existing ACS calibration services contract) is governed by DFARS 252.227-7013, which specifies that rights to the technical data remain with the contractor. Without access to the proprietary software and calibration reference data, no other contractor can perform calibrations to the tolerances specified in T.O. 33-1-28. Replacing the entire data acquisition system to enable competition would cost approximately $2.3M and require 8 months of test cell downtime during which the 96 Test Wing could not conduct engine performance evaluations. This is not operationally acceptable.</div>
+        </div>
+
+        <div class="fp6-section fp6-flag" data-note="good-effort">
+          <div class="doc-section-head">Section VI: Market Research</div>
+          <div class="doc-section-body">Market research conducted January 2026 per FAR 10.002. Searched SAM.gov using NAICS 334515 (Instrument Manufacturing, Measuring and Testing). Also searched GSA Schedule 84 (IT Professional Services) for alternative calibration capabilities. Contacted two qualified calibration services firms: (1) Beta Test Services, phone 850-555-0142, confirmed they cannot access ACS's proprietary calibration system and cannot provide compatible services; (2) Gamma Precision LLC, phone 850-555-0198, confirmed same limitation. Both potential competitors explicitly stated they lack access to ACS's proprietary technical data. See attached market research summary and vendor contact documentation.</div>
+        </div>
+
+        <div class="fp6-section fp6-flag" data-note="good-future">
+          <div class="doc-section-head">Section VII: Actions to Remove Barriers to Competition</div>
+          <div class="doc-section-body">The F110-GE-129 test cell data acquisition system is planned for replacement in FY29 based on current equipment lifecycle projections. The replacement specification will require open-architecture data interfaces and Government ownership of technical data rights per DFARS requirements. This will enable future competition for calibration services. Additionally, the Air Force will explore alternative test cell configurations during the FY27-FY28 planning cycle that may reduce dependence on proprietary systems.</div>
+        </div>
+
+        <div class="doc-sig"><strong>Contracting Officer Certification:</strong> I have determined that only one responsible source exists for these specialized calibration services due to proprietary technical data restrictions. This determination is based on documented market research and the technical requirements of the existing test cell facility.</div>
+        <div class="doc-footer">TRAINING EXAMPLE | NOT AN OFFICIAL GOVERNMENT DOCUMENT</div>
+      </div>
+    </div>
+
+    <!-- ── Bad example ── -->
+    <div id="example-bad" class="fp6-outer" style="display:none;">
+      <div class="fp6-doc">
+        <h4>Justification for Other Than Full and Open Competition</h4>
+        <h5>FAR 6.303-2</h5>
+
+        <div class="fp6-section fp6-problem" data-note="bad-header">
+          <div class="doc-label">Section I: Agency and Contracting Activity</div>
+          <div class="doc-field"><strong>Contracting Activity:</strong> 96 TW</div>
+          <div class="doc-field"><strong>Action Type:</strong> Contract</div>
+          <div class="doc-field"><strong>Estimated Value:</strong> $485,000</div>
+        </div>
+
+        <div class="fp6-section fp6-problem" data-note="bad-action">
+          <div class="doc-section-head">Section II: Nature and Description of the Action</div>
+          <div class="doc-section-body">Sole source contract for test cell calibration services.</div>
+        </div>
+
+        <div class="fp6-section fp6-problem" data-note="bad-desc">
+          <div class="doc-section-head">Section III: Description of Supplies or Services</div>
+          <div class="doc-section-body">Calibration services for test cell equipment.</div>
+        </div>
+
+        <div class="fp6-section fp6-problem" data-note="bad-authority">
+          <div class="doc-section-head">Authority</div>
+          <div class="doc-section-body"><strong>FAR 6.302-1, Only One Responsible Source</strong></div>
+        </div>
+
+        <div class="fp6-section fp6-problem" data-note="bad-just">
+          <div class="doc-section-head">Section V: Demonstration of Unique Qualifications</div>
+          <div class="doc-section-body">Acme Calibration Services has been performing test cell calibrations at this installation for 10 years. They know our equipment and our processes. Switching to a new contractor would cause disruption and require a learning curve. Acme has always provided satisfactory service and we see no reason to change vendors.</div>
+        </div>
+
+        <div class="fp6-section fp6-problem" data-note="bad-effort">
+          <div class="doc-section-head">Section VI: Market Research</div>
+          <div class="doc-section-body">None. Acme is the only company that does this work.</div>
+        </div>
+
+        <div class="fp6-section fp6-problem" data-note="bad-future">
+          <div class="doc-section-head">Section VII: Actions to Remove Barriers to Competition</div>
+          <div class="doc-section-body">N/A.</div>
+        </div>
+
+        <div class="doc-sig"><strong>Contracting Officer Certification:</strong> I have determined that only one responsible source exists for these calibration services.</div>
+        <div class="doc-footer">TRAINING EXAMPLE | NOT AN OFFICIAL GOVERNMENT DOCUMENT</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="fp6-panel">
+
+    <div class="fp6-intro">
+      <span class="fp6-intro-tag">Reference</span>
+      <h2>Look It Up</h2>
+      <p>The regulations and guidance you need.</p>
+    </div>
+
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR Subpart 6.3</h4>
+        <p>Other Than Full and Open Competition. The complete regulatory framework for restricting competition on open market purchases.</p>
+        <a href="https://acquisition.gov/far/subpart-6.3" target="_blank" rel="noopener">Read on acquisition.gov</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 6.302</h4>
+        <p>Circumstances Permitting Other Than Full and Open Competition. All seven statutory exceptions in one place.</p>
+        <a href="https://acquisition.gov/far/6.302" target="_blank" rel="noopener">Read on acquisition.gov</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 6.303</h4>
+        <p>Justifications. What must be included in a J&A and how to document your basis for restricting competition.</p>
+        <a href="https://acquisition.gov/far/6.303" target="_blank" rel="noopener">Read on acquisition.gov</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 6.304</h4>
+        <p>Approval of the Justification. Who can approve J&As at each dollar threshold.</p>
+        <a href="https://acquisition.gov/far/6.304" target="_blank" rel="noopener">Read on acquisition.gov</a>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ── Note overlay ── -->
+<div class="fp6-overlay" id="noteOverlay">
+  <div class="fp6-note" id="notePopup">
+    <button class="fp6-note-close" id="noteCloseBtn">&times;</button>
+    <div class="fp6-note-title" id="noteTitle"></div>
+    <div class="fp6-note-body" id="noteBody"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ═══════ TABS ═══════ */
+document.querySelectorAll('.fp6-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.fp6-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.fp6-panel').forEach(function(p) { p.classList.remove('active'); });
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ═══════ EXAMPLE TOGGLE ═══════ */
+document.querySelectorAll('.fp6-toggle-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var which = btn.dataset.example;
+    document.querySelectorAll('.fp6-toggle-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('example-good').style.display = (which === 'good') ? 'block' : 'none';
+    document.getElementById('example-bad').style.display = (which === 'bad') ? 'block' : 'none';
+    hideNote();
+  });
+});
+
+/* ═══════ COACHING NOTES ═══════ */
+var notes = {
+  'good-header': {
+    title: "Section I: Complete Identification",
+    body: "Includes office symbol (96 TW/PKC), installation (Eglin Air Force Base), and state (FL). A reviewer or competition advocate receiving this document knows exactly which organization is requesting the sole source and where to direct follow-up questions.",
+    warn: false
+  },
+  'good-action': {
+    title: "Section II: Clear Action Description",
+    body: "States the action type (new contract), explains the requirement is recurring and annual, and mentions emergency support capability. This tells the reviewer whether this is a one-time buy or an ongoing need that might be handled differently in future years.",
+    warn: false
+  },
+  'good-desc': {
+    title: "Section III: Specific and Identifiable",
+    body: "Names the specific equipment (F110-GE-129 engine test cell), building (Building 990), test cell number (Test Cell 3), describes the annual frequency and emergency support, and cites the applicable technical order (T.O. 33-1-28). A reviewer unfamiliar with this program can understand exactly what is being purchased and what specifications apply.",
+    warn: false
+  },
+  'good-authority': {
+    title: "Authority: Correct Citation",
+    body: "Cites FAR 6.302-1, Only One Responsible Source. The entire J&A that follows is structured to support this specific authority. The facts presented must prove that only one responsible source exists.",
+    warn: false
+  },
+  'good-just': {
+    title: "Section V: Fact-Based Demonstration",
+    body: "Walks through a logical chain: (1) Proprietary system exists; (2) Calibration requires proprietary software; (3) Contractor does not license software to third parties; (4) Government does not own data rights (cites specific contract and DFARS clause); (5) No other vendor can perform the work; (6) Replacing the system would cost $2.3M and cause 8 months of downtime. Every assertion is verifiable. This is the gold standard.",
+    warn: false
+  },
+  'good-effort': {
+    title: "Section VI: Thorough Market Research",
+    body: "Searched SAM.gov with specific NAICS code, searched GSA Schedule specifically, contacted two qualified alternative vendors by phone, documented the phone numbers, and received explicit confirmation from both that they cannot access ACS's proprietary system. Included reference to attached market research documentation. This is what FAR 10.002 requires.",
+    warn: false
+  },
+  'good-future': {
+    title: "Section VII: Concrete Future Plan",
+    body: "Ties the competition barrier removal to a specific lifecycle event (system replacement in FY29) with a specific corrective action (open-architecture specification and Government data rights). Also mentions Air Force efforts to explore alternative configurations. This shows the customer understands sole source should not be permanent.",
+    warn: false
+  },
+  'bad-header': {
+    title: "\u26a0 Section I: Incomplete",
+    body: "\"96 TW\" is missing the office symbol (PKC) and installation location (Eglin AFB, FL). If this goes to the competition advocate, they have no idea which test wing submitted it or how to route questions. This is a small detail but signals the level of care that went into the rest of the document.",
+    warn: true
+  },
+  'bad-action': {
+    title: "\u26a0 Section II: Vague",
+    body: "\"Sole source contract for test cell calibration services\" is circular reasoning. It doesn't describe the nature of the action (new? modification?) or why this particular requirement is being procured. A reviewer cannot determine if the dollar value or urgency factors affect the justification.",
+    warn: true
+  },
+  'bad-desc': {
+    title: "\u26a0 Section III: Too Vague",
+    body: "\"Calibration services for test cell equipment\" could apply to dozens of different systems on base. Which equipment? Which test cell? What calibration frequency? What technical specifications? Without these details, a reviewer cannot evaluate whether a sole source is truly justified or whether the requirement could be rewritten as a performance specification that allows competition.",
+    warn: true
+  },
+  'bad-authority': {
+    title: "Authority: Cited But Not Supported",
+    body: "FAR 6.302-1 requires proving only one responsible source exists. But the justification that follows never proves this. It never addresses why Acme is the ONLY source, only why the customer PREFERS Acme.",
+    warn: true
+  },
+  'bad-just': {
+    title: "\u26a0 Section V: Familiarity, Not Necessity",
+    body: "Three statements, three failures. (1) \"10 years of service\" is past performance, not sole source justification. (2) \"They know our equipment\" confuses familiarity with technical necessity. (3) \"Learning curve\" and \"disruption\" are risk factors in source selection, not evidence that only one source can do the work. None of this explains why no other contractor can perform these calibrations. A reviewer will reject this immediately.",
+    warn: true
+  },
+  'bad-effort': {
+    title: "\u26a0 Section VI: No Market Research",
+    body: "\"None. Acme is the only company that does this work.\" This is the single biggest red flag. The customer did not even try to verify their assumption. FAR 10.002 requires documenting market research for all acquisitions. Even if the customer genuinely believes only one source exists, they must show how they determined that. Searching SAM.gov, checking GSA schedules, calling other vendors - these are minimum efforts. This J&A gets returned immediately.",
+    warn: true
+  },
+  'bad-future': {
+    title: "\u26a0 Section VII: No Plan",
+    body: "\"N/A\" means the customer has no intention of ever enabling competition. Even if the sole source is justified today, there should be a plan to create conditions for competition in the future. Maybe it is: \"When the test cell is replaced, specify open-architecture.\" Maybe it is: \"Conduct a market survey in FY27 to identify potential new vendors.\" Something. Anything other than \"N/A.\" This response signals indifference to the competition requirement.",
+    warn: true
+  }
+};
+
+function showNote(key) {
+  var n = notes[key];
+  if (!n) return;
+  document.querySelectorAll('.fp6-section').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelectorAll('[data-note="' + key + '"]').forEach(function(el) { el.classList.add('active'); });
+  var popup = document.getElementById('notePopup');
+  popup.classList.toggle('warn', !!n.warn);
+  document.getElementById('noteTitle').textContent = n.title;
+  document.getElementById('noteBody').innerHTML = n.body;
+  document.getElementById('noteOverlay').classList.add('visible');
+}
+
+function hideNote() {
+  document.getElementById('noteOverlay').classList.remove('visible');
+  document.querySelectorAll('.fp6-section').forEach(function(s) { s.classList.remove('active'); });
+}
+
+/* ═══════ OVERLAY & SECTION LISTENERS ═══════ */
+document.getElementById('noteOverlay').addEventListener('click', hideNote);
+document.getElementById('notePopup').addEventListener('click', function(e) { e.stopPropagation(); });
+document.getElementById('noteCloseBtn').addEventListener('click', hideNote);
+document.querySelectorAll('.fp6-section').forEach(function(sec) {
+  sec.addEventListener('click', function() {
+    var key = sec.getAttribute('data-note');
+    if (key) showNote(key);
+  });
+});
+</script>
+</body>
+</html>

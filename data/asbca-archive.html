@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Archive of all FAR and DFARS rulemaking digest summaries from ContractingHQ." />
+  <meta name="description" content="Archive of Armed Services Board of Contract Appeals (ASBCA) decision summaries from ContractingHQ." />
 
-  <title>Federal Register Digest Archive | ContractingHQ</title>
+  <title>ASBCA Decision Archive | ContractingHQ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -34,7 +34,7 @@
       <li><a href="links.html">Links</a></li>
       <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
         <ul class="nav-more-menu">
-          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="asbca.html" class="active">ASBCA</a></li>
           <li><a href="forum.html">Forum</a></li>
           <li><a href="far-overhaul.html">FAR Overhaul</a></li>
           <li><a href="about.html">About</a></li>
@@ -45,18 +45,27 @@
   </div>
 </nav>
 
-<!-- ARCHIVE -->
-<section class="section" id="fr-archive" style="padding-top:5rem;">
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">ASBCA</span>
+    <h1 class="page-hero-title">ASBCA Decision Archive</h1>
+    <p class="page-hero-sub">All tracked Armed Services Board of Contract Appeals decisions — organized by week, fully expanded.</p>
+  </div>
+</div>
+
+<!-- ARCHIVE CONTENT -->
+<section class="section" id="asbcaArchive">
   <div class="container">
     <div class="section-header">
-      <span class="section-tag">Federal Register Archive</span>
-      <h2>All Past Digests</h2>
-      <p class="section-desc">Every FAR &amp; DFARS rulemaking digest we have published, in reverse chronological order. Nothing gets deleted &mdash; digests stay here permanently. <a href="federal-register.html" class="archive-page-link">See the current digest &rarr;</a></p>
+      <span class="section-tag">Full Archive</span>
+      <h2>All ASBCA Decisions</h2>
+      <p class="section-desc">Every tracked decision since we started watching. Newest first.</p>
     </div>
-
-    <div id="frArchiveAll">
-      <!-- Populated by JS -->
-    </div>
+    <div id="archiveAllDecisions"></div>
+    <p style="text-align:center;margin-top:2rem;">
+      <a href="asbca.html" style="color:var(--accent);font-weight:600;text-decoration:none;">&larr; Back to current decisions</a>
+    </p>
   </div>
 </section>
 
@@ -71,7 +80,9 @@
       <a href="index.html">Home</a>
       <a href="training.html">Training</a>
       <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="asbca.html">ASBCA</a>
       <a href="tools.html">Tools</a>
+      <a href="links.html">Links</a>
       <a href="federal-register.html">FAR Updates</a>
       <a href="about.html">About</a>
     </nav>
@@ -80,30 +91,48 @@
   </div>
 </footer>
 
-<script src="data/federal-register-data.js"></script>
-<script src="data/federal-register-render.js"></script>
+<script src="data/asbca.js"></script>
 <script src="main.js"></script>
 <script>
-// Archive page: render all digests, current first, all expanded
-document.addEventListener('DOMContentLoaded', function () {
-  var container = document.getElementById('frArchiveAll');
-  if (!container || !window.FR_DIGESTS || FR_DIGESTS.length === 0) {
-    if (container) container.innerHTML = '<p class="fr-empty">No digests published yet.</p>';
-    return;
-  }
+  document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('archiveAllDecisions');
+    if (!container || !window.ASBCA_DECISIONS || ASBCA_DECISIONS.length === 0) {
+      if (container) container.innerHTML = '<p style="text-align:center;color:var(--text-muted);">No decisions recorded yet.</p>';
+      return;
+    }
 
-  container.innerHTML = FR_DIGESTS.map(function (digest, i) {
-    var isCurrent = (i === 0);
-    return '<div class="archive-item ' + (isCurrent ? 'archive-item-current' : '') + '">' +
-      '<div class="archive-week-header">' +
-        '<span class="fr-digest-label">Week of ' + digest.weekOf + '</span>' +
-        (isCurrent ? '<span class="fr-digest-date">Current</span>' : '') +
-      '</div>' +
-      (digest.intro ? '<p class="fr-digest-intro">' + digest.intro + '</p>' : '') +
-      '<div class="fr-cards">' + renderFrCards(digest.entries) + '</div>' +
-    '</div>';
-  }).join('');
-});
+    function renderCards(decisions) {
+      return decisions.map(function (d) {
+        return '<div class="gao-card">' +
+          '<div class="gao-card-header">' +
+            '<div>' +
+              '<div class="gao-case">' + d.caseName + '</div>' +
+              '<div class="gao-case-meta">' +
+                d.caseNumber + ' &middot; ' + d.date + ' &middot; Judge ' + d.judge +
+                (d.decisionType ? '<span class="asbca-type-tag">' + d.decisionType + '</span>' : '') +
+                (d.link ? '<a href="' + d.link + '" target="_blank" rel="noopener" class="gao-case-link">All Decisions &rarr;</a>' : '') +
+             '</div>' +
+            '</div>' +
+            '<span class="gao-outcome outcome-' + d.outcome + '">' + d.outcome + '</span>' +
+          '</div>' +
+          '<p class="gao-summary">' + d.summary + '</p>' +
+          (d.bottomLine ? '<div class="gao-bottom-line"><div class="gao-bl-label">Board's Holding</div><p>' + d.bottomLine + '</p></div>' : '') +
+        '</div>';
+      }).join('');
+    }
+
+    container.innerHTML = ASBCA_DECISIONS.map(function (week, i) {
+      var isCurrent = (i === 0);
+      return '<div class="archive-item" style="border:none;margin-bottom:3rem;padding-bottom:3rem;border-bottom:1px solid var(--border);">' +
+        '<div class="archive-week-header' + (isCurrent ? ' archive-item-current' : '') + '">' +
+          '<span class="gao-week-label">Decisions: ' + week.weekOf + '</span>' +
+          (isCurrent ? '<span class="gao-week-date">Most Recent</span>' : '') +
+        '</div>' +
+        '<div class="gao-cards">' + renderCards(week.decisions) + '</div>' +
+      '</div>';
+    }).join('');
+  });
 </script>
+
 </body>
 </html>

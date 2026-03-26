@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAR Part Templates — ContractingHQ</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{--bg:#0d1117;--surface:#161b22;--border:rgba(255,255,255,.08);--text:#e2e8f0;--muted:#8b949e;--accent:#4a9eff;}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;}
+  .section{padding:3rem 1.5rem;}
+  .container{max-width:1100px;margin:0 auto;}
+  .section-header{margin-bottom:2rem;}
+  .section-tag{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);display:block;margin-bottom:.5rem;}
+  .section-header h1{font-size:2rem;font-weight:800;color:var(--text);margin-bottom:.6rem;}
+  .section-desc{font-size:.95rem;color:var(--muted);line-height:1.6;max-width:680px;}
+  .breadcrumb{font-size:.82rem;color:var(--muted);margin-bottom:1.5rem;}
+  .breadcrumb a{color:var(--accent);text-decoration:none;}
+  .breadcrumb a:hover{text-decoration:underline;}
+
+  /* Filter bar */
+  .filter-bar{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:2rem;}
+  .filter-btn{background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--muted);border-radius:20px;padding:.35rem .9rem;font-size:.8rem;cursor:pointer;transition:all .15s;}
+  .filter-btn:hover,.filter-btn.active{background:rgba(74,158,255,.12);border-color:rgba(74,158,255,.35);color:var(--accent);}
+
+  /* Template grid */
+  .tmpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;}
+  .tmpl-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.4rem;display:flex;flex-direction:column;gap:.75rem;transition:border-color .15s,box-shadow .15s;position:relative;overflow:hidden;}
+  .tmpl-card:hover{border-color:rgba(74,158,255,.3);box-shadow:0 4px 20px rgba(0,0,0,.3);}
+  .tmpl-card.coming-soon{opacity:.65;cursor:default;}
+  .tmpl-card.coming-soon:hover{border-color:var(--border);box-shadow:none;}
+  .tmpl-top{display:flex;align-items:flex-start;gap:.75rem;}
+  .tmpl-icon{font-size:1.6rem;flex-shrink:0;}
+  .tmpl-meta{flex:1;}
+  .tmpl-part{font-size:.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem;}
+  .tmpl-name{font-size:1rem;font-weight:700;color:var(--text);line-height:1.3;}
+  .tmpl-badge{position:absolute;top:.85rem;right:.85rem;font-size:.62rem;font-weight:700;padding:.18rem .5rem;border-radius:3px;text-transform:uppercase;}
+  .badge-ready{background:rgba(74,158,255,.18);color:#4a9eff;}
+  .badge-soon{background:rgba(100,116,139,.18);color:#94a3b8;}
+  .badge-new{background:rgba(52,211,153,.18);color:#34d399;}
+  .tmpl-desc{font-size:.85rem;color:var(--muted);line-height:1.5;}
+  .tmpl-tags{display:flex;gap:.4rem;flex-wrap:wrap;}
+  .tmpl-tag{font-size:.68rem;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);border-radius:4px;padding:.15rem .45rem;}
+  .tmpl-footer{margin-top:auto;display:flex;align-items:center;gap:.6rem;}
+  .tmpl-dl-btn{display:inline-flex;align-items:center;gap:.35rem;background:var(--accent);color:#fff;border:none;border-radius:6px;padding:.4rem .9rem;font-size:.8rem;font-weight:600;cursor:pointer;text-decoration:none;transition:opacity .15s;}
+  .tmpl-dl-btn:hover{opacity:.85;}
+  .tmpl-dl-btn.disabled{background:rgba(100,116,139,.25);color:#94a3b8;cursor:not-allowed;pointer-events:none;}
+  .tmpl-note{font-size:.72rem;color:var(--muted);font-style:italic;}
+
+  /* Notice banner */
+  .wip-notice{background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:.9rem 1.2rem;font-size:.85rem;color:#fbbf24;margin-bottom:2rem;display:flex;align-items:flex-start;gap:.7rem;}
+  .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s;margin-top:.75rem;}
+  .bmc-btn:hover{opacity:.88;transform:translateY(-1px);}
+</style>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Acquisition document templates for contracting officers — organized by FAR part. Abstracts, price reasonableness memos, D&Fs, and more." />
+
+  <title>ContractingHQ | KTHQ &mdash; The One-Stop Resource for Contracting Officers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+<style>.bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#welcome">Welcome</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li><a href="index.html#gao">GAO Updates</a></li>
+      <li><a href="asbca.html">ASBCA</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="forum.html">Forum</a></li>
+    </ul>
+  </div>
+</nav>
+<main>
+  <section class="section">
+    <div class="container">
+      <div class="breadcrumb"><a href="index.html">Home</a> &rsaquo; <a href="tools.html">Tools</a> &rsaquo; FAR Part Templates</div>
+      <div class="section-header">
+        <span class="section-tag">Templates Library</span>
+        <h1>FAR Part Templates</h1>
+        <p class="section-desc">Ready-to-use acquisition document templates organized by FAR part. Designed for working contracting officers &mdash; practical, plain-language, and built for real-world use. More templates added regularly.</p>
+      </div>
+
+      <div class="wip-notice">
+        &#9888;&#65039; <div><strong>Under Construction</strong> &mdash; This library is actively being built. Templates marked &ldquo;Coming Soon&rdquo; are in development. Check back often or <a href="forum.html" style="color:#fbbf24;">post a request in the Forum</a>.</div>
+      </div>
+
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterCards('all', this)">All Templates</button>
+        <button class="filter-btn" onclick="filterCards('far1', this)">FAR Part 1&ndash;9</button>
+        <button class="filter-btn" onclick="filterCards('far10', this)">FAR Part 10&ndash;19</button>
+        <button class="filter-btn" onclick="filterCards('far30', this)">FAR Part 30&ndash;49</button>
+        <button class="filter-btn" onclick="filterCards('admin', this)">Admin &amp; General</button>
+        <button class="filter-btn" onclick="filterCards('ready', this)">Available Now</button>
+      </div>
+
+      <div class="tmpl-grid" id="tmplGrid">
+
+        <!-- Abstract of Offers -->
+        <div class="tmpl-card" data-cat="far10 admin">
+          <span class="tmpl-badge badge-soon">Coming Soon</span>
+          <div class="tmpl-top">
+            <div class="tmpl-icon">&#128203;</div>
+            <div class="tmpl-meta">
+              <div class="tmpl-part">FAR 15.4</div>
+              <div class="tmpl-name">Abstract of Offers</div>
+            </div>
+          </div>
+          <div class="tmpl-desc">Standard abstract of offers template for competitive negotiated acquisitions. Documents all offerors, proposed prices, and evaluation factors.</div>
+          <div class="tmpl-tags"><span class="tmpl-tag">Negotiated</span><span class="tmpl-tag">Source Selection</span><span class="tmpl-tag">FAR 15</span></div>
+          <div class="tmpl-footer"><a class="tmpl-dl-btn disabled">&#8595; Download .docx</a></div>
+        </div>
+
+        <!-- Price Fair and Reasonable Determination -->
+        <div class="tmpl-card" data-cat="far10 admin">
+          <span class="tmpl-badge badge-soon">Coming Soon</span>
+          <div class="tmpl-top">
+            <div class="tmpl-icon">&#128176;</div>
+            <div class="tmpl-meta">
+              <div class="tmpl-part">FAR 15.4 / FAR 13</div>
+              <div class="tmpl-name">Price Fair &amp; Reasonable Determination</div>
+            </div>
+          </div>
+          <div class="tmpl-desc">Price reasonableness determination memo for both simplified and negotiated acquisitions. Covers competition-based, market-based, and analysis-based determinations.</div>
+          <div class="tmpl-tags"><span class="tmpl-tag">Price Analysis</span><span class="tmpl-tag">FAR 15</span><span class="tmpl-tag">FAR 13</span></div>
+          <div class="tmpl-footer"><a class="tmpl-dl-btn disabled">&#8595; Download .docx</a></div>
+        </div>
+
+        <!-- Determination & Findings (D&F) -->
+        <div class="tmpl-card" data-cat="far1 admin">
+          <span class="tmpl-badge badge-soon">Coming Soon</span>
+          <div class="tmpl-top">
+            <div class="tmpl-icon">&#9878;&#65039;</div>
+            <div class="tmpl-meta">
+              <div class="tmpl-part">FAR 1.704</div>
+              <div class="tmpl-name">Determination &amp; Findings (D&amp;F)</div>
+            </div>
+          </div>
+          <div class="tmpl-desc">General-purpose D&amp;F template. Includes structures for other-than-full-and-open competition, unusual contract financing, and other regulatory requirements.</div>
+          <div class="tmpl-tags"><span class="tmpl-tag">D&amp;F</span><span class="tmpl-tag">FAR 6</span><span class="tmpl-tag">FAR 1</span></div>
+          <div class="tmpl-footer"><a class="tmpl-dl-btn disabled">&#8595; Download .docx</a></div>
+        </div>
+
+        <!-- Market Research Report -->
+        <div class="tmpl-card" data-cat="far10">
+          <span class="tmpl-badge badge-soon">Coming Soon</span>
+          <div class="tmpl-top">
+            <div class="tmpl-icon">&#128202;</div>
+            <div class="tmpl-meta">
+              <div class="tmpl-part">FAR 10</div>
+              <div class="tmpl-name">Market Research Report</div>
+            </div>
+          </div>
+          <div class="tmpl-desc">Structured market research report template documenting sources sought results, commercial item determinations, and competitive landscape analysis per FAR Part 10.</div>
+          <div class="tmpl-tags"><span class="tmpl-tag">FAR 10</span><span class="tmpl-tag">Market Research</span><span class="tmpl-tag">Sources Sought</span></div>
+          <div class="tmpl-footer"><a class="tmpl-dl-btn disabled">&#8595; Download .docx</a></div>
+        </div>
+
+        <!-- Sole Source J&A -->
+        <div class="tmpl-card" data-cat="far10 admin">
+          <span class="tmpl-badge badge-soon">Coming Soon</span>
+          <div class="tmpl-top">
+            <div class="tmpl-icon">&#128196;</div>
+            <div class="tmpl-meta">
+              <div class="tmpl-part">FAR 6.303</div>
+              <div class="tmpl-name">Justification &amp; Approval (J&amp;A)</div>
+            </div>
+          </div>
+          <div class="tmpl-desc">J&amp;A template for other-than-full-and-open competition under FAR 6.3. Covers all seven exceptions including sole source, follow-on, and brand name.</div>
+          <div class="tmpl-tags"><span class="tmpl-tag">J&amp;A</span><span class="tmpl-tag">Sole Source</span><span class="tmpl-tag">FAR 6</span></div>
+          <div class="tmpl-footer"><a class="tmpl-dl-btn disabled">&#8595; Download .docx</a></div>
+        </div>
+
+        <!-- IGCE Template -->
+        <div class="tmpl-card" data-cat="far10 admin">
+          <span class="tmpl-badge badge-soon">Coming Soon</span>
+          <div class="tmpl-top">
+            <div class="tmpl-icon">&#128184;</div>
+            <div class="tmpl-meta">
+              <div class="tmpl-part">FAR 36 / Policy</div>
+              <div class="tmpl-name">Independent Government Cost Estimate (IGCE)</div>
+            </div>
+          </div>
+          <div class="tmpl-desc">IGCE template with structured cost breakdown. Includes labor categories, materials, ODCs, and overhead estimates with supporting rationale documentation.</div>
+          <div class="tmpl-tags"><span class="tmpl-tag">IGCE</span><span class="tmpl-tag">Cost Estimate</span><span class="tmpl-tag">Pre-Award</span></div>
+          <div class="tmpl-footer"><a class="tmpl-dl-btn disabled">&#8595; Download .docx</a></div>
+        </div>
+
+        <!-- Post-Award Kickoff Meeting Agenda -->
+        <div class="tmpl-card" data-cat="far30 admin">
+          <span class="tmpl-badge badge-soon">Coming Soon</span>
+          <div class="tmpl-top">
+            <div class="tmpl-icon">&#128101;</div>
+            <div class="tmpl-meta">
+              <div class="tmpl-part">FAR 42</div>
+              <div class="tmpl-name">Post-Award Kickoff Meeting Agenda</div>
+            </div>
+          </div>
+          <div class="tmpl-desc">Standard post-award orientation conference agenda covering contract terms, reporting requirements, key personnel, invoicing, and deliverables.</div>
+          <div class="tmpl-tags"><span class="tmpl-tag">Post-Award</span><span class="tmpl-tag">FAR 42</span><span class="tmpl-tag">Contract Admin</span></div>
+          <div class="tmpl-footer"><a class="tmpl-dl-btn disabled">&#8595; Download .docx</a></div>
+        </div>
+
+        <!-- Request a Template -->
+        <div class="tmpl-card" style="border-style:dashed;border-color:rgba(74,158,255,.2);background:rgba(74,158,255,.03);" data-cat="admin">
+          <div class="tmpl-top">
+            <div class="tmpl-icon">&#43;</div>
+            <div class="tmpl-meta">
+              <div class="tmpl-part">Community</div>
+              <div class="tmpl-name">Request a Template</div>
+            </div>
+          </div>
+          <div class="tmpl-desc">Need a template that isn&rsquo;t here? Post a request in the Forum. Templates are prioritized based on community need.</div>
+          <div class="tmpl-footer"><a href="forum.html" class="tmpl-dl-btn" style="background:rgba(74,158,255,.15);color:#4a9eff;border:1px solid rgba(74,158,255,.25);">Go to Forum &rarr;</a></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html#welcome">Welcome</a>
+      <a href="training.html">Training</a>
+      <a href="index.html#gao">GAO Updates</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="data/gao.js"></script>
+<script src="data/far.js"></script>
+<script src="main.js"></script>
+<a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn">&#9749; Buy Me a Coffee</a>
+</body>
+</html>
+
+<script>
+function filterCards(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tmpl-card').forEach(card => {
+    if(cat === 'all' || cat === 'ready') {
+      if(cat === 'ready') {
+        card.style.display = card.querySelector('.badge-ready') ? '' : 'none';
+      } else {
+        card.style.display = '';
+      }
+    } else {
+      const cats = (card.dataset.cat || '').split(' ');
+      card.style.display = cats.includes(cat) ? '' : 'none';
+    }
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how PSC/FSC codes work in government contracting. Interactive decision aid, practice scenarios, and external lookup tools for contracting officers." />
+  <title>PSC / FSC Codes | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .fsc-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .fsc-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .fsc-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .fsc-tab:hover { color: var(--white); }
+    .fsc-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .fsc-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .fsc-panel.active { display: block; }
+
+    /* ── Intro badge ── */
+    .fsc-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .fsc-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .fsc-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .fsc-intro p { color: var(--silver); font-size: 0.9rem; max-width: 520px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn section ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-body .far-ref { color: var(--accent); font-weight: 600; font-size: 0.82rem; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.5px; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── Decision Aid ── */
+    .da-prompt { text-align: center; margin-bottom: 2rem; }
+    .da-prompt h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .da-prompt p { color: var(--silver); font-size: 0.9rem; }
+
+    .da-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .da-option { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; cursor: pointer; transition: all 0.2s; text-align: center; }
+    .da-option:hover { border-color: rgba(74,158,255,0.35); background: rgba(74,158,255,0.06); transform: translateY(-2px); }
+    .da-option.selected { border-color: var(--accent); background: rgba(74,158,255,0.1); box-shadow: 0 0 20px rgba(74,158,255,0.1); }
+    .da-option-icon { font-size: 2.5rem; margin-bottom: 0.75rem; display: block; }
+    .da-option-label { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--white); margin-bottom: 0.35rem; }
+    .da-option-sub { font-size: 0.8rem; color: var(--silver); line-height: 1.5; }
+
+    .da-result { display: none; background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.15); border-radius: 14px; padding: 2rem; animation: fadeSlideUp 0.35s ease-out; }
+    .da-result.visible { display: block; }
+    .da-result h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .da-result p { color: var(--silver); font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.75rem; }
+    .da-result strong { color: var(--white); }
+    .da-result .da-series { display: inline-block; background: rgba(74,158,255,0.12); color: var(--accent); font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.1rem; padding: 0.3rem 0.9rem; border-radius: 8px; margin: 0.5rem 0; }
+    .da-result .da-caution { background: rgba(248,113,113,0.05); border: 1px solid rgba(248,113,113,0.15); border-radius: 10px; padding: 0.85rem 1rem; margin-top: 1rem; font-size: 0.85rem; color: #fca5a5; line-height: 1.6; }
+    .da-result .da-caution strong { color: #fca5a5; }
+    .da-reset { display: none; margin-top: 1.5rem; text-align: center; }
+    .da-reset.visible { display: block; }
+    .da-reset button { padding: 0.55rem 1.4rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.25); background: rgba(74,158,255,0.08); color: var(--silver); cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .da-reset button:hover { background: rgba(74,158,255,0.18); color: var(--white); }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Lookup section ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    /* ── Quiz section ── */
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem; }
+    .quiz-score { font-size: 0.8rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; }
+    .quiz-progress-bar { width: 100%; height: 4px; background: rgba(74,158,255,0.1); border-radius: 99px; margin-bottom: 2rem; }
+    .quiz-progress-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.3s; }
+    .quiz-question { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.75rem; margin-bottom: 1.5rem; }
+    .quiz-q-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem; }
+    .quiz-q-text { font-size: 1rem; color: var(--white); line-height: 1.7; margin-bottom: 1rem; }
+    .quiz-choices { display: grid; gap: 0.65rem; }
+    .quiz-choice { padding: 0.85rem 1.2rem; border-radius: 10px; border: 1px solid rgba(74,158,255,0.15); background: rgba(10,22,50,0.6); color: var(--silver); font-size: 0.9rem; font-weight: 600; cursor: pointer; text-align: left; font-family: inherit; transition: all 0.18s; line-height: 1.35; }
+    .quiz-choice:hover:not(:disabled) { border-color: rgba(74,158,255,0.4); color: var(--white); background: rgba(74,158,255,0.08); }
+    .quiz-choice.correct { border-color: #34d399; background: rgba(52,211,153,0.1); color: #6ee7b7; }
+    .quiz-choice.wrong { border-color: #f87171; background: rgba(248,113,113,0.08); color: #fca5a5; }
+    .quiz-choice:disabled { cursor: default; }
+    .quiz-feedback { margin-top: 1rem; padding: 0.85rem 1.1rem; border-radius: 10px; font-size: 0.875rem; line-height: 1.55; display: none; }
+    .quiz-feedback.correct { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); color: #6ee7b7; }
+    .quiz-feedback.wrong { background: rgba(248,113,113,0.06); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; }
+    .quiz-feedback.visible { display: block; }
+    .quiz-next { margin-top: 1rem; display: none; }
+    .quiz-next.visible { display: block; }
+    .quiz-done { text-align: center; padding: 3rem 1rem; display: none; }
+    .quiz-done.visible { display: block; }
+    .quiz-done h2 { font-family: 'Rajdhani', sans-serif; font-size: 2.2rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .quiz-done .final-score { font-size: 4rem; font-weight: 800; color: var(--accent); line-height: 1; margin: 1rem 0; }
+    .quiz-done p { color: var(--silver); font-size: 0.95rem; margin-bottom: 1.5rem; }
+    .fc-btn { padding: 0.6rem 1.4rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.25); background: rgba(74,158,255,0.08); color: var(--silver); cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .fc-btn:hover { background: rgba(74,158,255,0.18); color: var(--white); }
+    .fc-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .fc-btn.primary:hover { background: #3a8eef; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .fsc-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .da-options { grid-template-columns: 1fr; }
+      .lookup-grid { grid-template-columns: 1fr; }
+    }
+
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 4</span>
+    <h1 class="page-hero-title">PSC / FSC Codes</h1>
+    <p class="page-hero-sub">PSC/FSC codes tell FPDS what the Government bought. They're simpler than NAICS &mdash; but you still need to pick the right one.</p>
+  </div>
+</div>
+
+<div class="fsc-bg">
+  <div class="fsc-tabs" role="tablist">
+    <button class="fsc-tab active" data-tab="learn" role="tab">&#128218; Learn</button>
+    <button class="fsc-tab" data-tab="decide" role="tab">&#129518; Decision Aid</button>
+    <button class="fsc-tab" data-tab="quiz" role="tab">&#9889; Quiz</button>
+    <button class="fsc-tab" data-tab="lookup" role="tab">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════════════════════════ LEARN ═══ -->
+  <div id="panel-learn" class="fsc-panel active">
+    <div class="fsc-intro">
+      <div class="fsc-intro-tag">The Basics</div>
+      <h2>What You Need to Know</h2>
+      <p>PSC/FSC codes are reporting codes &mdash; they classify what the Government bought so agencies can track spend, spot trends, and build smarter contract strategies.</p>
+    </div>
+
+    <!-- Section 1 -->
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> What is a PSC/FSC Code?</h3>
+      <div class="learn-body">
+        <p>At the simplest level, a PSC/FSC code tells FPDS <strong>what the Government bought</strong>. That's it.</p>
+        <p><strong>PSC</strong> stands for <strong>Product and Service Code</strong>. It's the four-character code reported in FPDS for products, services, and R&amp;D actions. <strong>FSC</strong> stands for <strong>Federal Supply Class</strong> &mdash; the product-side classification structure. In practice, people often say "FSC" when they mean products, but the field reported in FPDS is always the PSC field.</p>
+
+        <div class="highlight-box tip">
+          <strong>Easy distinction:</strong> NAICS describes the <em>industry</em>. PSC/FSC describes the <em>thing</em> the Government bought. They're different fields but they should tell a consistent story about the acquisition.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Section 2 -->
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Why Does It Matter?</h3>
+      <div class="learn-body">
+        <p>PSC/FSC matters because it helps the Government group similar purchases together for <strong>reporting and spend analysis</strong>. That data lets agencies see buying patterns across offices and across time.</p>
+
+        <div class="highlight-box">
+          <strong>Downstream impact:</strong> When the Government notices agencies buying the same thing over and over, that data can justify building better contract vehicles &mdash; IDIQs, BPAs, or requirements-type contracts. PSC/FSC doesn't drive your day-to-day work, but it feeds the analysis that drives acquisition strategy at the enterprise level.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>What it does NOT do:</strong> PSC/FSC does not replace NAICS, does not determine a small business size standard, and does not by itself decide whether something should be set aside. It's a reporting classification, not a competitive tool.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Section 3 -->
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> How the Codes Are Structured</h3>
+      <div class="learn-body">
+        <p>PSC codes are four characters. The first character tells you whether it's a product, service, or R&amp;D buy:</p>
+
+        <div class="highlight-box tip">
+          <strong>Products:</strong> First two digits are numeric (e.g., <strong>7110</strong> &mdash; Office Furniture, <strong>5510</strong> &mdash; Lumber). These come from the Federal Supply Classification system, which is why people call them FSC codes.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Services:</strong> First character is a letter (e.g., <strong>S201</strong> &mdash; Custodial-Janitorial, <strong>D302</strong> &mdash; IT Systems Development, <strong>R425</strong> &mdash; Engineering &amp; Technical Services). The letter groups them by service category.
+        </div>
+
+        <div class="highlight-box">
+          <strong>R&amp;D:</strong> Codes beginning with <strong>A</strong> through <strong>A</strong> series cover Research &amp; Development. These are further subdivided by scientific discipline and stage of development.
+        </div>
+
+        <p>You don't need to memorize the structure. You just need to know it exists so you can navigate the PSC Manual efficiently.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Section 4 -->
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> How to Pick the Right Code</h3>
+      <div class="learn-body">
+        <p>Use the same question every time: <strong>What is the principal thing the Government is buying?</strong> Start there. Don't start with the vendor. Don't start with the office asking for it. Start with the requirement.</p>
+
+        <div class="highlight-box">
+          <strong>Step 1: Separate product from service.</strong> If you're buying chairs, batteries, laptops, or parts &mdash; you're on the product side. If you're buying janitorial support, help desk support, or consulting &mdash; you're on the service side.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Step 2: Go with the predominant purpose.</strong> If the buy includes more than one thing, use the code that best represents the predominant dollars or principal purpose. A purchase order with $1,000 of lumber and $500 of pipe? Code it under lumber.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Step 3: Check alignment with NAICS.</strong> Your PSC/FSC and NAICS code are different fields, but they should not tell conflicting stories. If your NAICS says you're buying IT services but your PSC says you're buying office furniture, something is wrong.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>Step 4: Don't overthink it.</strong> It's important to pick a reasonable code, but you don't need to spend hours questioning whether you got the perfect PSC/FSC. Make a supportable call and keep the acquisition moving.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Section 5 -->
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> PSC vs. NAICS: The Quick Comparison</h3>
+      <div class="learn-body">
+        <p>New contracting officers sometimes confuse these two. Here's the simplest way to keep them straight:</p>
+
+        <div class="highlight-box">
+          <strong>NAICS</strong> answers: "What industry does the work?" It's six digits, set by SBA, and determines the small business size standard. NAICS is a competitive tool &mdash; it affects who can bid as small business.
+        </div>
+
+        <div class="highlight-box">
+          <strong>PSC/FSC</strong> answers: "What did the Government buy?" It's four characters, maintained by GSA, and is primarily used for FPDS reporting. PSC/FSC is a reporting tool &mdash; it helps agencies track and analyze their spend data.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Bottom line:</strong> NAICS selection is a bigger deal because it's protestable and drives set-asides. PSC/FSC selection is simpler &mdash; but still needs to accurately describe the purchase. Both should be consistent with each other and with the requirement.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ DECISION AID ═══ -->
+  <div id="panel-decide" class="fsc-panel">
+    <div class="fsc-intro">
+      <div class="fsc-intro-tag">Interactive</div>
+      <h2>PSC/FSC Decision Aid</h2>
+      <p>Tell us what you're buying and get guidance on which PSC category to start with.</p>
+    </div>
+
+    <div class="da-prompt">
+      <h3>What are you buying?</h3>
+      <p>Select the category that best describes the principal thing being purchased.</p>
+    </div>
+
+    <div class="da-options" id="daOptions">
+      <div class="da-option" data-type="product" tabindex="0" role="button">
+        <span class="da-option-icon">&#128230;</span>
+        <div class="da-option-label">A Product</div>
+        <div class="da-option-sub">Supplies, equipment, materials &mdash; something tangible that you receive</div>
+      </div>
+      <div class="da-option" data-type="service" tabindex="0" role="button">
+        <span class="da-option-icon">&#128736;</span>
+        <div class="da-option-label">A Service</div>
+        <div class="da-option-sub">Someone performing work &mdash; IT, janitorial, consulting, maintenance</div>
+      </div>
+      <div class="da-option" data-type="randd" tabindex="0" role="button">
+        <span class="da-option-icon">&#128300;</span>
+        <div class="da-option-label">R&amp;D</div>
+        <div class="da-option-sub">Research and development &mdash; basic research, applied research, or development</div>
+      </div>
+      <div class="da-option" data-type="mixed" tabindex="0" role="button">
+        <span class="da-option-icon">&#128260;</span>
+        <div class="da-option-label">Mixed Buy</div>
+        <div class="da-option-sub">Combination of products and services on the same action</div>
+      </div>
+    </div>
+
+    <!-- Product result -->
+    <div class="da-result" id="result-product">
+      <h4>&#128230; Buying a Product (Supply)</h4>
+      <p>Product PSC codes are <strong>four-digit numeric codes</strong> based on the Federal Supply Classification. The first two digits identify the commodity group.</p>
+      <p>Common product groups you'll see:</p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin:0.75rem 0 1rem;">
+        <span class="da-series">71xx &mdash; Furniture</span>
+        <span class="da-series">70xx &mdash; IT Equipment</span>
+        <span class="da-series">55xx &mdash; Lumber</span>
+        <span class="da-series">85xx &mdash; Toiletries</span>
+        <span class="da-series">13xx &mdash; Ammunition</span>
+        <span class="da-series">66xx &mdash; Instruments</span>
+      </div>
+      <p><strong>How to find yours:</strong> Open the PSC Manual, look up the Federal Supply Group that matches what you're buying, then narrow to the four-digit class that fits best.</p>
+      <div class="da-caution">
+        <strong>Don't use the customer's casual label.</strong> If someone calls their purchase "office support" but they're buying chairs, the PSC is 7110 (Office Furniture), not a services code. Code the thing being bought, not what someone called it.
+      </div>
+    </div>
+
+    <!-- Service result -->
+    <div class="da-result" id="result-service">
+      <h4>&#128736; Buying a Service</h4>
+      <p>Service PSC codes start with a <strong>letter</strong> followed by three digits. The letter tells you the service category.</p>
+      <p>Common service series:</p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin:0.75rem 0 1rem;">
+        <span class="da-series">D &mdash; IT &amp; Telecom</span>
+        <span class="da-series">R &mdash; Professional Services</span>
+        <span class="da-series">S &mdash; Utilities &amp; Housekeeping</span>
+        <span class="da-series">J &mdash; Maintenance &amp; Repair</span>
+        <span class="da-series">B &mdash; Special Studies</span>
+        <span class="da-series">Z &mdash; Construction (minor)</span>
+      </div>
+      <p><strong>Focus on the work being performed.</strong> If the contractor is cleaning a building, that's S201 (Custodial-Janitorial), even if the contract includes some cleaning supplies. The supplies are incidental &mdash; the principal purpose is the service.</p>
+      <div class="da-caution">
+        <strong>Watch for construction overlap.</strong> Minor construction, alteration, and repair work uses PSC codes in the Z series. Major construction projects use Y-series codes. Make sure you're in the right series for the scope of work.
+      </div>
+    </div>
+
+    <!-- R&D result -->
+    <div class="da-result" id="result-randd">
+      <h4>&#128300; Research &amp; Development</h4>
+      <p>R&amp;D PSC codes use the <strong>A series</strong>. They're organized by scientific discipline and development stage.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin:0.75rem 0 1rem;">
+        <span class="da-series">A &mdash; R&amp;D (all stages)</span>
+      </div>
+      <p>The second character of an R&amp;D PSC often identifies the development stage: basic research, applied research, advanced development, or operational systems development. The remaining digits specify the scientific or technical discipline.</p>
+      <p><strong>Key distinction:</strong> R&amp;D codes are for actual research and development activities. If you're buying IT services that support an R&amp;D program but the contractor is providing help desk support, that's still a D-series service code, not an A-series R&amp;D code.</p>
+      <div class="da-caution">
+        <strong>Match the work, not the program.</strong> Just because the funding comes from an R&amp;D budget doesn't mean the PSC should be R&amp;D. Code the nature of the work being performed.
+      </div>
+    </div>
+
+    <!-- Mixed result -->
+    <div class="da-result" id="result-mixed">
+      <h4>&#128260; Mixed Buy</h4>
+      <p>When a purchase includes both products and services, use the PSC that matches the <strong>predominant purpose</strong> of the acquisition.</p>
+      <p>Ask: <strong>Where are most of the dollars going?</strong> If 70% of the spend is on the service and 30% is on supplies that support the service, code it as a service. If 80% is a product purchase with some installation labor, code it as a product.</p>
+      <div class="da-caution">
+        <strong>Don't split the PSC.</strong> FPDS takes one PSC per contract action. You're picking the single code that best represents the principal purpose. When in doubt, go with the predominant dollar value.
+      </div>
+    </div>
+
+    <div class="da-reset" id="daReset">
+      <button onclick="resetDecisionAid()">&#8592; Start Over</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ QUIZ ═══ -->
+  <div id="panel-quiz" class="fsc-panel">
+    <div class="fsc-intro">
+      <div class="fsc-intro-tag">Test Yourself</div>
+      <h2>PSC/FSC Quick Quiz</h2>
+      <p>Seven scenarios. Pick the best answer. See if the training stuck.</p>
+    </div>
+
+    <div id="quizContainer">
+      <div class="quiz-header">
+        <span class="quiz-score" id="quizScore">Score: 0 / 0</span>
+        <span class="quiz-score" id="quizProgress">Question 1 of 7</span>
+      </div>
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizBar" style="width:0%"></div></div>
+      <div id="quizQuestion"></div>
+      <div class="quiz-choices" id="quizChoices"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <div class="quiz-next" id="quizNext">
+        <button class="fc-btn primary" onclick="nextQuestion()">Next Question &#8594;</button>
+      </div>
+    </div>
+    <div class="quiz-done" id="quizDone">
+      <h2>Quiz Complete</h2>
+      <div class="final-score" id="finalScore">0%</div>
+      <p id="finalMsg"></p>
+      <button class="fc-btn primary" onclick="restartQuiz()">Try Again</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ LOOK IT UP ═══ -->
+  <div id="panel-lookup" class="fsc-panel">
+    <div class="fsc-intro">
+      <div class="fsc-intro-tag">External Resources</div>
+      <h2>Look It Up</h2>
+      <p>Use these tools to find the right PSC/FSC code and verify your selection.</p>
+    </div>
+
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>PSC Manual</h4>
+        <p>The official source for current Product and Service Codes. This is your primary reference when you need the actual code list and descriptions.</p>
+        <a href="https://www.acquisition.gov/psc-manual" target="_blank" rel="noopener">Open the PSC Manual</a>
+      </div>
+      <div class="lookup-card">
+        <h4>PSC Tool</h4>
+        <p>A practical search tool that narrows PSC/FSC options based on keywords or the NAICS code you've already selected. Great for cross-referencing.</p>
+        <a href="https://psctool.us/home" target="_blank" rel="noopener">Open PSC Tool</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FPDS PSC Reference</h4>
+        <p>Useful when you want to understand how the code is reported in FPDS and see how other agencies have coded similar purchases.</p>
+        <a href="https://www.fpds.gov" target="_blank" rel="noopener">Open FPDS</a>
+      </div>
+      <div class="lookup-card">
+        <h4>GSA Federal Supply Classes</h4>
+        <p>The Federal Supply Classification system that underpins product-side PSC codes. Helpful when you need to navigate the commodity group structure.</p>
+        <a href="https://www.gsa.gov/buy-through-us/purchasing-programs/gsa-supply-operations" target="_blank" rel="noopener">GSA Supply Operations</a>
+      </div>
+      <div class="lookup-card">
+        <h4>SAM.gov Contract Data</h4>
+        <p>Search awarded contracts to see what PSC codes other contracting officers used for similar buys. Helpful when you're unsure between two codes.</p>
+        <a href="https://sam.gov/search/?index=opp" target="_blank" rel="noopener">Search SAM.gov</a>
+      </div>
+      <div class="lookup-card">
+        <h4>USAspending.gov</h4>
+        <p>Explore federal spending by PSC code. See how much agencies spend in each category and what contract vehicles they use. Great for market context.</p>
+        <a href="https://www.usaspending.gov" target="_blank" rel="noopener">Open USAspending</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ═══════════════════════════════════ TABS ═══ */
+document.querySelectorAll('.fsc-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.fsc-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.fsc-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ═══════════════════════════════════ DECISION AID ═══ */
+document.querySelectorAll('.da-option').forEach(opt => {
+  opt.addEventListener('click', () => selectCategory(opt.dataset.type));
+  opt.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectCategory(opt.dataset.type); } });
+});
+
+function selectCategory(type) {
+  document.querySelectorAll('.da-option').forEach(o => o.classList.remove('selected'));
+  document.querySelector(`.da-option[data-type="${type}"]`).classList.add('selected');
+  document.querySelectorAll('.da-result').forEach(r => r.classList.remove('visible'));
+  document.getElementById('result-' + type).classList.add('visible');
+  document.getElementById('daReset').classList.add('visible');
+  setTimeout(() => document.getElementById('result-' + type).scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+}
+
+function resetDecisionAid() {
+  document.querySelectorAll('.da-option').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('.da-result').forEach(r => r.classList.remove('visible'));
+  document.getElementById('daReset').classList.remove('visible');
+}
+
+/* ═══════════════════════════════════ QUIZ ═══ */
+const quizData = [
+  {
+    q: "Your office is buying 60 ergonomic desk chairs for an admin building. The customer keeps calling it an \"office support requirement.\" Which PSC code fits best?",
+    choices: ["S201 — Custodial-Janitorial", "7110 — Office Furniture", "D399 — Other IT Services", "R499 — Other Professional Services"],
+    correct: 1,
+    explanation: "The principal thing being purchased is furniture — regardless of what the customer casually calls the requirement. Code the thing being bought, not the label someone gave it. PSC 7110 covers Office Furniture."
+  },
+  {
+    q: "You're buying janitorial services for a clinic. The contract includes cleaning supplies, but the contractor's main job is performing recurring cleaning. Which PSC code fits best?",
+    choices: ["8520 — Toilet Soap & Cleaning Compounds", "S201 — Custodial-Janitorial", "7110 — Office Furniture", "It doesn't matter since both items are on the contract"],
+    correct: 1,
+    explanation: "The cleaning supplies are incidental. The principal purpose of the acquisition is the janitorial service — S201. Always code the predominant purpose, not the incidental items that support it."
+  },
+  {
+    q: "A purchase order includes $1,000 of lumber and $500 of pipe. How do you pick the PSC?",
+    choices: ["Use the PSC for lumber since it's the higher dollar value", "Use the PSC for pipe since it was listed second", "Use two PSC codes — one for each item", "It doesn't matter since both are products"],
+    correct: 0,
+    explanation: "FPDS takes one PSC per contract action. When more than one item is being bought, use the code that matches the predominant product by dollar value. Lumber at $1,000 is the predominant purchase here."
+  },
+  {
+    q: "What is the key difference between NAICS and PSC/FSC?",
+    choices: [
+      "NAICS is for services, PSC is for products",
+      "NAICS describes the industry; PSC/FSC describes what was bought",
+      "They're the same thing with different names",
+      "NAICS is reported in FPDS, PSC is not"
+    ],
+    correct: 1,
+    explanation: "NAICS classifies the industry performing the work. PSC/FSC classifies the thing the Government purchased. Both are reported in FPDS, both apply to products and services, and they're completely different classification systems that should tell a consistent story."
+  },
+  {
+    q: "Your requirement is for IT help desk support on a research lab contract. The funding comes from an R&D budget. How should you pick the PSC?",
+    choices: ["Use an R&D code since the funding is R&D", "Use an IT services code since the work being performed is help desk support", "Use a professional services code since it supports research", "It doesn't matter — any of these would be acceptable"],
+    correct: 1,
+    explanation: "Code the nature of the work being performed, not the funding source. The contractor is providing IT help desk support. Just because the money comes from an R&D program doesn't change what the contractor is actually doing."
+  },
+  {
+    q: "You're reporting a contract action in FPDS for a buy that includes both a product and installation labor. 80% of the cost is the product, 20% is installation. How do you handle the PSC?",
+    choices: [
+      "Use two PSC codes — one for the product, one for the service",
+      "Always use a service code when any labor is involved",
+      "Use the product PSC since it represents the predominant dollar value",
+      "Ask the customer which code they prefer"
+    ],
+    correct: 2,
+    explanation: "FPDS takes one PSC per contract action. Use the code that represents the predominant purpose — in this case, 80% of the spend is on the product. The installation labor is incidental to the principal purchase."
+  },
+  {
+    q: "You picked a NAICS code for IT services, but you're about to select a PSC code for office furniture. Is there a problem?",
+    choices: [
+      "No — NAICS and PSC are independent fields that don't need to align",
+      "Yes — your PSC and NAICS should tell a consistent story about what you're buying",
+      "No — PSC is just for reporting, so it doesn't matter what you pick",
+      "Yes — PSC and NAICS must always be identical codes"
+    ],
+    correct: 1,
+    explanation: "Your PSC and NAICS are different classification systems, but they should not tell conflicting stories. If your NAICS says IT services but your PSC says office furniture, something is wrong with one of your selections. They don't need to be identical, but they need to be consistent."
+  }
+];
+
+let currentQ = 0, score = 0, answered = false;
+
+function renderQuestion() {
+  if (currentQ >= quizData.length) { showResults(); return; }
+  const q = quizData[currentQ];
+  answered = false;
+  document.getElementById('quizQuestion').innerHTML = `<div class="quiz-question"><div class="quiz-q-label">Scenario ${currentQ + 1}</div><div class="quiz-q-text">${q.q}</div></div>`;
+  const choicesEl = document.getElementById('quizChoices');
+  choicesEl.innerHTML = q.choices.map((c, i) => `<button class="quiz-choice" data-idx="${i}">${c}</button>`).join('');
+  choicesEl.querySelectorAll('.quiz-choice').forEach(btn => btn.addEventListener('click', () => handleAnswer(parseInt(btn.dataset.idx))));
+  document.getElementById('quizFeedback').classList.remove('visible', 'correct', 'wrong');
+  document.getElementById('quizNext').classList.remove('visible');
+  document.getElementById('quizProgress').textContent = `Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById('quizBar').style.width = ((currentQ) / quizData.length * 100) + '%';
+  document.getElementById('quizScore').textContent = `Score: ${score} / ${currentQ}`;
+}
+
+function handleAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = quizData[currentQ];
+  const btns = document.querySelectorAll('#quizChoices .quiz-choice');
+  btns.forEach(b => { b.disabled = true; });
+  btns[q.correct].classList.add('correct');
+  const fb = document.getElementById('quizFeedback');
+  if (idx === q.correct) {
+    score++;
+    fb.className = 'quiz-feedback visible correct';
+    fb.textContent = '\u2713 Correct. ' + q.explanation;
+  } else {
+    btns[idx].classList.add('wrong');
+    fb.className = 'quiz-feedback visible wrong';
+    fb.textContent = '\u2717 Not quite. ' + q.explanation;
+  }
+  document.getElementById('quizScore').textContent = `Score: ${score} / ${currentQ + 1}`;
+  document.getElementById('quizBar').style.width = ((currentQ + 1) / quizData.length * 100) + '%';
+  document.getElementById('quizNext').classList.add('visible');
+}
+
+function nextQuestion() {
+  currentQ++;
+  renderQuestion();
+}
+
+function showResults() {
+  document.getElementById('quizContainer').style.display = 'none';
+  const pct = Math.round(score / quizData.length * 100);
+  document.getElementById('finalScore').textContent = pct + '%';
+  document.getElementById('finalMsg').textContent = pct === 100 ? "Perfect. You know your PSC codes." : pct >= 67 ? "Solid foundation. Review the ones you missed." : "Worth another pass through the Learn tab before reporting your next contract action.";
+  document.getElementById('quizDone').classList.add('visible');
+}
+
+function restartQuiz() {
+  currentQ = 0; score = 0;
+  document.getElementById('quizContainer').style.display = 'block';
+  document.getElementById('quizDone').classList.remove('visible');
+  renderQuestion();
+}
+
+// Initialize quiz
+renderQuestion();
+</script>
+</body>
+</html>

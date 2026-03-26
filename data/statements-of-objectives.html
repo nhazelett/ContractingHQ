@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how Statements of Objectives work in federal contracting. Interactive SOO examples for new contracting officers." />
+  <title>Statements of Objectives | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .soo-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    .soo-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .soo-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .soo-tab:hover { color: var(--white); }
+    .soo-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .soo-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .soo-panel.active { display: block; }
+
+    .soo-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .soo-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .soo-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .soo-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    .soo-outer { background: rgba(10,22,50,0.3); border-radius: 14px; padding: 1.5rem; overflow-x: auto; }
+    .soo-doc { min-width: 650px; border: 2px solid #000; background: #fff; color: #000; font-size: 12px; line-height: 1.6; font-family: 'Inter', 'Times New Roman', serif; padding: 2rem 2.5rem; }
+    .soo-doc h4 { font-size: 14px; font-weight: 700; text-transform: uppercase; text-align: center; margin-bottom: 1.5rem; letter-spacing: 1px; border-bottom: 2px solid #000; padding-bottom: 0.5rem; }
+    .soo-doc h5 { font-size: 12px; font-weight: 700; margin: 1.25rem 0 0.5rem; text-transform: uppercase; }
+
+    .soo-section { padding: 0.6rem 0.75rem; margin: 0.5rem 0; border-radius: 4px; cursor: pointer; transition: background 0.12s; border-left: 3px solid transparent; }
+    .soo-section:hover { background: #f0f4ff; }
+    .soo-section.active { background: #fff9db; }
+    .soo-section.soo-flag { border-left-color: #4a9eff; }
+    .soo-section.soo-problem { border-left-color: #dc2626; }
+
+    .soo-toggle { display: flex; gap: 0; margin-bottom: 1.25rem; }
+    .soo-toggle-btn { flex: 1; padding: 0.75rem 1rem; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.2); background: rgba(10,22,50,0.5); color: var(--silver); cursor: pointer; transition: all 0.18s; font-family: inherit; }
+    .soo-toggle-btn:first-child { border-radius: 8px 0 0 8px; }
+    .soo-toggle-btn:last-child { border-radius: 0 8px 8px 0; }
+    .soo-toggle-btn.active { background: rgba(74,158,255,0.15); color: var(--accent); border-color: rgba(74,158,255,0.4); }
+    .soo-toggle-btn.bad.active { background: rgba(220,38,38,0.12); color: #fca5a5; border-color: rgba(220,38,38,0.35); }
+
+    .soo-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; padding: 1.5rem; }
+    .soo-overlay.visible { display: flex; }
+    .soo-popup { background: #0d1a33; border: 1px solid rgba(74,158,255,0.3); border-radius: 14px; padding: 1.5rem 1.75rem; max-width: 520px; width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,0.5); animation: popIn 0.18s ease-out; position: relative; }
+    .soo-popup.warn { border-color: rgba(220,38,38,0.4); }
+    .soo-popup-title { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 0.6rem; padding-right: 2rem; }
+    .soo-popup.warn .soo-popup-title { color: #fca5a5; }
+    .soo-popup-body { color: var(--silver); font-size: 0.9rem; line-height: 1.75; }
+    .soo-popup-body strong { color: var(--white); }
+    .soo-popup-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--silver); cursor: pointer; font-size: 1.4rem; line-height: 1; padding: 0; transition: color 0.12s; }
+    .soo-popup-close:hover { color: var(--white); }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+    /* Flow diagram */
+    .flow-diagram { display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex-wrap: wrap; margin: 1.5rem 0; }
+    .flow-step { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.2); border-radius: 10px; padding: 0.75rem 1rem; text-align: center; min-width: 120px; }
+    .flow-step-label { font-size: 0.68rem; color: var(--silver); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem; }
+    .flow-step-text { font-size: 0.85rem; font-weight: 700; color: var(--white); }
+    .flow-step.active-step { border-color: rgba(52,211,153,0.4); background: rgba(52,211,153,0.08); }
+    .flow-step.active-step .flow-step-text { color: #6ee7b7; }
+    .flow-step.fade-step { opacity: 0.5; }
+    .flow-arrow { color: var(--accent); font-size: 1.2rem; flex-shrink: 0; }
+
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .soo-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .soo-doc { padding: 1.25rem 1rem; min-width: auto; }
+      .flow-diagram { gap: 0.35rem; }
+      .flow-step { min-width: 90px; padding: 0.5rem 0.6rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 8</span>
+    <h1 class="page-hero-title">Statements of Objectives</h1>
+    <p class="page-hero-sub">A Statement of Objectives tells industry what you need to accomplish and asks them to propose how. It's the least prescriptive work statement, the least common in operational contracting, and the one that changes your entire solicitation strategy.</p>
+  </div>
+</div>
+
+<div class="soo-bg">
+  <div class="soo-tabs" role="tablist">
+    <button class="soo-tab active" data-tab="learn" role="tab">&#128218; Learn</button>
+    <button class="soo-tab" data-tab="examples" role="tab">&#128203; SOO Examples</button>
+    <button class="soo-tab" data-tab="lookup" role="tab">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════════════════════════ LEARN ═══ -->
+  <div id="panel-learn" class="soo-panel active">
+    <div class="soo-intro">
+      <div class="soo-intro-tag">The Basics</div>
+      <h2>What Is a Statement of Objectives?</h2>
+      <p>You describe the problem. Industry proposes the solution. The winning contractor's proposed PWS becomes the contract's work statement.</p>
+    </div>
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> The SOO in Plain English</h3>
+      <div class="learn-body">
+        <p>A Statement of Objectives is the government saying: "Here's what we need to accomplish. We're not going to tell you how to do it, and we're not even going to define the performance standards. We want <em>you</em> to tell <em>us</em> how you'd solve this problem."</p>
+        <p>Per <strong>FAR 37.602</strong>, offerors use the SOO to develop a Performance Work Statement. The offeror proposes the PWS as part of their proposal, and the winning PWS gets incorporated into the contract. The SOO itself does <strong>not</strong> become part of the contract. It stays in the source selection file.</p>
+        <div class="highlight-box">
+          <strong>The FAR requires the SOO to include, at a minimum:</strong><br><br>
+          1. Purpose<br>
+          2. Scope or mission<br>
+          3. Period and place of performance<br>
+          4. Background<br>
+          5. Performance objectives (required results)<br>
+          6. Any operating constraints
+        </div>
+        <p>That's it. No step-by-step procedures (that's a SOW). No measurable performance standards (that's a PWS). Just objectives and constraints. The contractor fills in everything else.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> How It Changes Your Solicitation</h3>
+      <div class="learn-body">
+        <p>Using an SOO doesn't just change the work statement. It changes everything downstream.</p>
+        <div class="highlight-box warn">
+          <strong>Evaluation factors must account for the proposed PWS.</strong> If you're asking offerors to propose their own approach, you have to evaluate those proposed approaches. That means your evaluation criteria need a factor for "quality of the proposed PWS" or "technical approach." You can't ask for a technical solution and then ignore it in evaluation.
+        </div>
+        <div class="highlight-box warn">
+          <strong>This almost always means a tradeoff source selection.</strong> When every offeror is proposing a different PWS, the technical solutions won't be apples-to-apples. Lowest Price Technically Acceptable (LPTA) doesn't work well here because "technically acceptable" is hard to define when each proposal describes a different scope of work. You need evaluators who can assess the relative quality of different approaches and weigh them against price.
+        </div>
+        <div class="highlight-box">
+          <strong>The practical implication:</strong> An SOO means more work for the source selection team, more complexity in the evaluation, and a longer timeline. That's not bad. It's just a tradeoff you need to plan for.
+        </div>
+
+        <!-- Flow diagram -->
+        <p style="margin-top:1.5rem;">Here's the lifecycle:</p>
+        <div class="flow-diagram">
+          <div class="flow-step">
+            <div class="flow-step-label">Government Writes</div>
+            <div class="flow-step-text">SOO</div>
+          </div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-step">
+            <div class="flow-step-label">Included In</div>
+            <div class="flow-step-text">Solicitation</div>
+          </div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-step">
+            <div class="flow-step-label">Offerors Propose</div>
+            <div class="flow-step-text">PWS</div>
+          </div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-step active-step">
+            <div class="flow-step-label">Government Evaluates</div>
+            <div class="flow-step-text">Proposed PWSs</div>
+          </div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-step active-step">
+            <div class="flow-step-label">Winning PWS</div>
+            <div class="flow-step-text">Goes in Contract</div>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:0.75rem;">
+          <div class="flow-step fade-step" style="display:inline-block;">
+            <div class="flow-step-label">The SOO</div>
+            <div class="flow-step-text" style="color:var(--silver);">Stays in the File</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> SOO vs. PWS vs. SOW</h3>
+      <div class="learn-body">
+        <p>Where does the SOO fit relative to the other two? Think of it as a spectrum of government control:</p>
+        <div style="background:rgba(10,22,50,0.5); border:1px solid rgba(74,158,255,0.15); border-radius:12px; padding:1.5rem; margin:1.25rem 0;">
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; text-align:center;">
+            <div>
+              <div style="font-weight:700; color:var(--accent); font-family:'Rajdhani',sans-serif; font-size:0.95rem; margin-bottom:0.4rem;">SOW</div>
+              <div style="font-size:0.8rem; color:var(--silver); line-height:1.5;">Government writes the method.<br>Contractor executes.</div>
+              <div style="margin-top:0.5rem; font-size:0.72rem; color:var(--accent); font-weight:600;">MOST CONTROL</div>
+            </div>
+            <div>
+              <div style="font-weight:700; color:#6ee7b7; font-family:'Rajdhani',sans-serif; font-size:0.95rem; margin-bottom:0.4rem;">PWS</div>
+              <div style="font-size:0.8rem; color:var(--silver); line-height:1.5;">Government writes the standards.<br>Contractor chooses the method.</div>
+              <div style="margin-top:0.5rem; font-size:0.72rem; color:#6ee7b7; font-weight:600;">MODERATE CONTROL</div>
+            </div>
+            <div>
+              <div style="font-weight:700; color:#fbbf24; font-family:'Rajdhani',sans-serif; font-size:0.95rem; margin-bottom:0.4rem;">SOO</div>
+              <div style="font-size:0.8rem; color:var(--silver); line-height:1.5;">Government writes the objectives.<br>Contractor proposes everything.</div>
+              <div style="margin-top:0.5rem; font-size:0.72rem; color:#fbbf24; font-weight:600;">LEAST CONTROL</div>
+            </div>
+          </div>
+          <div style="margin-top:1rem; height:6px; border-radius:3px; background:linear-gradient(to right, rgba(74,158,255,0.4), rgba(52,211,153,0.4), rgba(251,191,36,0.4));"></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--silver); margin-top:0.35rem;">
+            <span>Government directs everything</span>
+            <span>Contractor proposes everything</span>
+          </div>
+        </div>
+        <p>As you move from SOW to SOO, risk shifts from the government to the contractor, but the government also gives up control over the approach. An SOO gives maximum flexibility to the contractor and maximum innovation potential, but it also means the government has to trust the evaluation process to select the right solution.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> When Would You Actually Use One?</h3>
+      <div class="learn-body">
+        <p>SOOs are rare in operational contracting for good reason. Most base-level requirements are well understood. You know what you need, and either you know the method (SOW) or you know the outcome (PWS). An SOO is for when you're not even sure about the best outcome to measure.</p>
+        <div class="highlight-box tip">
+          <strong>Complex IT modernization.</strong> "We need to modernize our network infrastructure across 6 buildings. We don't know what the right architecture looks like. Tell us what you'd propose." The government knows the problem but not the solution.
+        </div>
+        <div class="highlight-box tip">
+          <strong>New capability development.</strong> "We need a training system for a new weapons platform. No existing system does this. Propose your approach." The government knows what it needs to accomplish but has no baseline to write standards against.
+        </div>
+        <div class="highlight-box tip">
+          <strong>Broad organizational support.</strong> "We need to improve our supply chain efficiency. We've tried several approaches. Tell us what you'd do differently." The government has tried and wants fresh thinking from industry.
+        </div>
+        <div class="highlight-box">
+          <strong>The common thread:</strong> The government doesn't know enough about the solution to write a PWS. If you can write measurable performance standards, you should. If you can't because the problem is too novel or too complex, an SOO might be the right tool.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Common Pitfalls</h3>
+      <div class="learn-body">
+        <div class="highlight-box warn">
+          <strong>Using an SOO when a PWS would work.</strong> Don't use an SOO just because writing a PWS is harder. If you understand the requirement well enough to define outcomes and measurable standards, write a PWS. An SOO adds complexity to your solicitation, your evaluation, and your timeline. Only use it when you genuinely need industry to help define the approach.
+        </div>
+        <div class="highlight-box warn">
+          <strong>Writing a PWS and calling it an SOO.</strong> If your "SOO" includes measurable performance standards, specific deliverables with deadlines, and detailed technical requirements, it's not an SOO. It's a PWS. The label matters because it tells offerors what kind of proposal to write.
+        </div>
+        <div class="highlight-box warn">
+          <strong>Not adjusting your evaluation factors.</strong> If you issue an SOO but your evaluation criteria only look at price and past performance, you've defeated the purpose. The whole point is that offerors are proposing different technical approaches. You need evaluation factors that assess the quality of those proposals.
+        </div>
+        <div class="highlight-box warn">
+          <strong>Forgetting the SOO doesn't go in the contract.</strong> Per FAR 37.602(c), the SOO does not become part of the contract. The contractor's proposed PWS does. If you accidentally incorporate the SOO into the contract alongside the winning PWS, you may create ambiguity about which document governs.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ SOO EXAMPLES ═══ -->
+  <div id="panel-examples" class="soo-panel">
+    <div class="soo-intro">
+      <div class="soo-intro-tag">Interactive Tool</div>
+      <h2>SOO Examples</h2>
+      <p>Same HVAC scenario, written as an SOO. Click highlighted sections for coaching notes. <span style="color:var(--accent); font-weight:600;">Blue borders</span> highlight good SOO technique. <span style="color:#dc2626; font-weight:600;">Red borders</span> flag problems.</p>
+    </div>
+
+    <div class="soo-toggle">
+      <button class="soo-toggle-btn active" onclick="showExample('good')">&#9989; Well-Written SOO</button>
+      <button class="soo-toggle-btn bad" onclick="showExample('bad')">&#10060; Poorly-Written SOO</button>
+    </div>
+
+    <!-- ═══════ GOOD SOO ═══════ -->
+    <div id="example-good" class="soo-example">
+      <div class="soo-outer">
+        <div class="soo-doc">
+          <h4>Statement of Objectives<br><span style="font-size:11px; font-weight:400; letter-spacing:0;">HVAC Sustainment Services, Building 1240, Wright-Patterson AFB</span></h4>
+
+          <div class="soo-section soo-flag" data-note="good-purpose" onclick="showNote('good-purpose')">
+            <h5>1.0 Purpose</h5>
+            <p>The Government seeks contractor solutions to provide comprehensive HVAC sustainment for Building 1240 at Wright-Patterson Air Force Base, Ohio. This building houses approximately 200 personnel across four floors and requires reliable climate control year-round. The Government is interested in innovative approaches that maximize system reliability while minimizing lifecycle costs.</p>
+          </div>
+
+          <div class="soo-section soo-flag" data-note="good-scope" onclick="showNote('good-scope')">
+            <h5>2.0 Scope / Mission</h5>
+            <p>The scope encompasses all activities necessary to ensure the twelve (12) commercial HVAC units in Building 1240 provide reliable heating, ventilation, and air conditioning. This includes, but is not limited to, preventive maintenance, corrective maintenance, emergency response, and system performance monitoring. The contractor's proposed approach should address the full lifecycle of HVAC sustainment for the building.</p>
+          </div>
+
+          <div class="soo-section" data-note="good-period" onclick="showNote('good-period')">
+            <h5>3.0 Period and Place of Performance</h5>
+            <p>Base period of 12 months with two (2) 12-month option periods. All work shall be performed at Building 1240, Wright-Patterson AFB, OH 45433.</p>
+          </div>
+
+          <div class="soo-section soo-flag" data-note="good-background" onclick="showNote('good-background')">
+            <h5>4.0 Background</h5>
+            <p>Building 1240 was constructed in 2003 and houses administrative and operational functions for the 88th Air Base Wing. The current HVAC system consists of twelve Carrier WeatherMaker 48TC rooftop units installed in 2015. Over the past two fiscal years, the Government has experienced increasing maintenance costs and unplanned downtime, with availability dropping below 85% during peak summer and winter months. The current maintenance approach has been prescriptive (Government-directed preventive maintenance on a quarterly schedule), and the Government is interested in whether alternative approaches could improve reliability and reduce total cost of ownership.</p>
+          </div>
+
+          <div class="soo-section soo-flag" data-note="good-objectives" onclick="showNote('good-objectives')">
+            <h5>5.0 Performance Objectives</h5>
+            <p>The Government's objectives for this requirement are:</p>
+            <p style="padding-left:1rem;">
+              a) Reliable climate control for building occupants throughout the contract period.<br>
+              b) Timely restoration of failed HVAC units to minimize impact on mission operations.<br>
+              c) Cost-effective sustainment approach that reduces total lifecycle costs relative to the current maintenance model.<br>
+              d) Proactive identification of HVAC components approaching end of life, with recommendations for replacement or upgrade.
+            </p>
+            <p>Offerors shall propose measurable performance standards for each objective as part of their proposed Performance Work Statement.</p>
+          </div>
+
+          <div class="soo-section soo-flag" data-note="good-constraints" onclick="showNote('good-constraints')">
+            <h5>6.0 Operating Constraints</h5>
+            <p>a) All refrigerant handling must comply with EPA Clean Air Act, Section 608.<br>
+            b) Work inside the building during duty hours (0700-1700, Mon-Fri) must be coordinated with the Facility Manager to minimize disruption to occupants.<br>
+            c) The contractor shall not modify, replace, or upgrade any HVAC equipment without prior written approval from the Contracting Officer.<br>
+            d) All contractor personnel requiring unescorted access to the building must possess a valid Common Access Card (CAC) or visitor pass.</p>
+          </div>
+
+          <div style="margin-top:1rem; padding:0.5rem 0.75rem; font-size:9px; color:#999; border-top:1px solid #ccc; text-align:center;">
+            TRAINING EXAMPLE | NOT AN OFFICIAL GOVERNMENT DOCUMENT
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight-box tip" style="margin-top:1.25rem;">
+        <strong>What happens next?</strong> Offerors read this SOO and each propose their own PWS with measurable standards, a maintenance approach, deliverables, and staffing. One offeror might propose a traditional quarterly PM schedule. Another might propose a predictive maintenance approach using IoT sensors. The evaluation team assesses which proposed PWS best meets the objectives. The winning PWS goes into the contract. This SOO stays in the file.
+      </div>
+    </div>
+
+    <!-- ═══════ BAD SOO ═══════ -->
+    <div id="example-bad" class="soo-example" style="display:none;">
+      <div class="soo-outer">
+        <div class="soo-doc">
+          <h4>Statement of Objectives<br><span style="font-size:11px; font-weight:400; letter-spacing:0;">HVAC Maintenance, Building 1240</span></h4>
+
+          <div class="soo-section soo-problem" data-note="bad-purpose" onclick="showNote('bad-purpose')">
+            <h5>1.0 Purpose</h5>
+            <p>The Government needs HVAC maintenance for Building 1240.</p>
+          </div>
+
+          <div class="soo-section soo-problem" data-note="bad-reqs" onclick="showNote('bad-reqs')">
+            <h5>2.0 Requirements</h5>
+            <p><strong>2.1</strong> The contractor shall maintain 95% operational availability across all HVAC units, measured monthly.</p>
+            <p><strong>2.2</strong> The contractor shall respond to emergency service calls within 4 hours during duty hours and 8 hours during non-duty hours.</p>
+            <p><strong>2.3</strong> The contractor shall perform quarterly preventive maintenance on all units including filter replacement, coil cleaning, and refrigerant checks.</p>
+            <p><strong>2.4</strong> The contractor shall submit monthly performance reports within 10 business days showing availability per unit, service calls, and corrective actions.</p>
+          </div>
+
+          <div class="soo-section soo-problem" data-note="bad-standards" onclick="showNote('bad-standards')">
+            <h5>3.0 Performance Standards</h5>
+            <p><strong>3.1</strong> No more than 1 unit below 95% availability in any month.</p>
+            <p><strong>3.2</strong> No more than 2 late emergency responses per quarter.</p>
+            <p><strong>3.3</strong> Customer satisfaction rating of 4.0 or higher on a 5.0 scale.</p>
+          </div>
+
+          <div class="soo-section soo-problem" data-note="bad-missing" onclick="showNote('bad-missing')">
+            <h5>4.0 Period of Performance</h5>
+            <p>Base period: 1 April 2026 through 31 March 2027, with two 12-month options.</p>
+          </div>
+
+          <div class="soo-section soo-problem" data-note="bad-clauses" onclick="showNote('bad-clauses')">
+            <h5>5.0 Administration</h5>
+            <p><strong>5.1</strong> The Government may terminate this contract for convenience by providing 30 days written notice.</p>
+            <p><strong>5.2</strong> The contractor shall comply with all applicable federal, state, and local regulations.</p>
+          </div>
+
+          <div style="margin-top:1rem; padding:0.5rem 0.75rem; font-size:9px; color:#999; border-top:1px solid #ccc; text-align:center;">
+            TRAINING EXAMPLE | NOT AN OFFICIAL GOVERNMENT DOCUMENT
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Popup overlay -->
+    <div class="soo-overlay" id="noteOverlay" onclick="if(event.target===this)hideNote()">
+      <div class="soo-popup" id="notePopup">
+        <button class="soo-popup-close" onclick="hideNote()">&times;</button>
+        <div class="soo-popup-title" id="noteTitle"></div>
+        <div class="soo-popup-body" id="noteBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ LOOK IT UP ═══ -->
+  <div id="panel-lookup" class="soo-panel">
+    <div class="soo-intro">
+      <div class="soo-intro-tag">References</div>
+      <h2>Look It Up</h2>
+      <p>Key references for understanding and writing Statements of Objectives.</p>
+    </div>
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR 37.602: Performance Work Statement</h4>
+        <p>The FAR section that defines the SOO's role. Specifies that offerors use the SOO to develop a PWS, the SOO doesn't become part of the contract, and the minimum contents of an SOO.</p>
+        <a href="https://www.acquisition.gov/far/37.602" target="_blank" rel="noopener">Open FAR 37.602</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 37.6: Performance-Based Acquisition</h4>
+        <p>The broader subpart on performance-based contracting. Context for how SOOs fit into the government's preference for outcome-based acquisition.</p>
+        <a href="https://www.acquisition.gov/far/subpart-37.6" target="_blank" rel="noopener">Open FAR 37.6</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 15.304: Evaluation Factors</h4>
+        <p>When using an SOO, your evaluation factors must assess the proposed PWSs. This section covers the requirements for evaluation factors in negotiated acquisitions.</p>
+        <a href="https://www.acquisition.gov/far/15.304" target="_blank" rel="noopener">Open FAR 15.304</a>
+      </div>
+      <div class="lookup-card">
+        <h4>OFPP Seven Steps to Performance-Based Acquisition</h4>
+        <p>Includes guidance on when and how to use SOOs within performance-based acquisition. Covers the relationship between SOOs, PWSs, and evaluation criteria.</p>
+        <a href="https://buy.gsa.gov/spba" target="_blank" rel="noopener">Open Seven Steps Guide (GSA)</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Performance Work Statements Training</h4>
+        <p>Our PWS training. Since an SOO results in a contractor-proposed PWS, understanding what a good PWS looks like is essential for evaluating what offerors submit.</p>
+        <a href="performance-work-statements.html">Open PWS Training</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Statements of Work Training</h4>
+        <p>Our SOW training. Understand the full spectrum from SOW to PWS to SOO, and when each approach is appropriate.</p>
+        <a href="statements-of-work.html">Open SOW Training</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-brand">ContractingHQ</span>
+      <span class="footer-copy">&copy; 2025 ContractingHQ. Not an official DoD site.</span>
+    </div>
+  </div>
+</footer>
+<script src="main.js"></script>
+<script>
+/* ═══════ TABS ═══════ */
+document.querySelectorAll('.soo-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.soo-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.soo-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ═══════ EXAMPLE TOGGLE ═══════ */
+function showExample(which) {
+  document.querySelectorAll('.soo-toggle-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.soo-example').forEach(e => e.style.display = 'none');
+  if (which === 'good') {
+    document.querySelector('.soo-toggle-btn:first-child').classList.add('active');
+    document.getElementById('example-good').style.display = 'block';
+  } else {
+    document.querySelector('.soo-toggle-btn.bad').classList.add('active');
+    document.getElementById('example-bad').style.display = 'block';
+  }
+  hideNote();
+}
+
+/* ═══════ NOTES ═══════ */
+const notes = {
+  'good-purpose': {
+    title: "Purpose: Clear Problem Statement",
+    body: "The purpose does three things well. It identifies what the government needs (HVAC sustainment), where (Building 1240, WPAFB), and what it values (innovative approaches, reliability, lifecycle cost reduction).<br><br>That last part is important. By signaling interest in innovation and lifecycle costs, the government is telling offerors: don't just propose the same old quarterly PM schedule. Think creatively. Maybe that means predictive maintenance, maybe IoT monitoring, maybe a different approach entirely. The SOO leaves that door open.",
+    warn: false
+  },
+  'good-scope': {
+    title: "Scope: Broad but Bounded",
+    body: "The scope is intentionally broad: \"all activities necessary to ensure reliable HVAC.\" It doesn't list specific tasks because that's the offeror's job to propose. But it bounds the work by identifying the 12 units and the building.<br><br>\"Includes, but is not limited to\" is deliberate here. It tells offerors the government expects them to think beyond just PM. Emergency response, system monitoring, component lifecycle planning. The offeror decides what's in their proposed PWS.",
+    warn: false
+  },
+  'good-period': {
+    title: "Period and Place: Straightforward",
+    body: "This is one section that looks the same regardless of whether you're writing a SOW, PWS, or SOO. Base plus two options, specific location. The offeror needs this to price their proposal and plan resources.",
+    warn: false
+  },
+  'good-background': {
+    title: "Background: Context for Better Proposals",
+    body: "This is where the SOO separates from a SOW or PWS. The background gives offerors the context they need to propose a smart solution.<br><br>Key details here: the building age (2003), the equipment model and install year (Carrier 48TC, 2015), the problem (availability below 85% in peak months, increasing costs), and the current approach (prescriptive quarterly PM). That last point is critical. It tells offerors: \"We've been doing it this way and it's not working. Propose something better.\"<br><br>Without this background, offerors are guessing. With it, they can tailor their approach to the actual problem.",
+    warn: false
+  },
+  'good-objectives': {
+    title: "Performance Objectives: Results, Not Standards",
+    body: "This is the core of the SOO, and notice what it does <em>not</em> include: numbers. No \"95% availability.\" No \"4-hour response time.\" No specific metrics at all.<br><br>Instead, it states objectives: reliable climate control, timely restoration, cost-effective sustainment, proactive lifecycle management. These are results the government cares about, expressed broadly enough that each offeror can propose their own measurable standards.<br><br>The last line is key: \"Offerors shall propose measurable performance standards for each objective as part of their proposed PWS.\" That's the handoff. The government defined what matters. The contractor defines how to measure it. And the evaluation team decides whose proposed standards are the best.",
+    warn: false
+  },
+  'good-constraints': {
+    title: "Operating Constraints: Non-Negotiable Boundaries",
+    body: "Constraints are the guardrails. The SOO leaves the approach wide open, but these are things the contractor cannot work around regardless of what they propose.<br><br>EPA Section 608 compliance (legal requirement). Coordination with the Facility Manager during duty hours (operational necessity). No equipment modifications without CO approval (protects government property). CAC or visitor pass requirement (security).<br><br>Notice these are all practical limitations, not performance directions. They tell the offeror what they <em>can't</em> do, not what they <em>must</em> do. The approach is still theirs to define.",
+    warn: false
+  },
+
+  'bad-purpose': {
+    title: "\u26a0 Purpose: Too Thin",
+    body: "\"The Government needs HVAC maintenance for Building 1240.\" That's a sentence, not a purpose statement.<br><br>An offeror reading this has no idea what problem the government is trying to solve. Is current maintenance failing? Is it too expensive? Is the building mission-critical? Is the government looking for innovation or just a warm body to change filters?<br><br>Compare to the good SOO, which explains the situation, signals interest in innovation, and frames what the government values. Without that context, every offeror will propose the same generic approach.",
+    warn: true
+  },
+  'bad-reqs': {
+    title: "\u26a0 This Is a PWS, Not an SOO",
+    body: "This is the biggest problem with this document. Section 2 contains:<br><br>\u2022 95% availability, measured monthly (measurable standard)<br>\u2022 4-hour/8-hour response times (measurable standard)<br>\u2022 Quarterly PM with specific tasks (directed method)<br>\u2022 Monthly reports with specific content and deadlines (defined deliverables)<br><br>These are all PWS elements. The government has already defined the performance standards and deliverables. There's nothing left for the offeror to propose.<br><br>The whole point of an SOO is that the offeror develops the PWS. If you've already written the standards, you've written a PWS. Call it what it is.",
+    warn: true
+  },
+  'bad-standards': {
+    title: "\u26a0 Performance Standards in an SOO",
+    body: "An SOO should not contain performance standards. That's the offeror's job. Per FAR 37.602(c), the SOO includes \"performance objectives, i.e., required results.\" Results, not metrics.<br><br>\"Reliable climate control\" is an objective. \"95% availability with no more than 1 unit below standard\" is a performance standard. The SOO states objectives. The contractor proposes standards in their PWS. The evaluation team assesses whether those proposed standards are adequate.<br><br>By putting the standards in the SOO, the government has done the contractor's work for them and eliminated the competitive advantage of having offerors propose different approaches.",
+    warn: true
+  },
+  'bad-missing': {
+    title: "\u26a0 Missing Required SOO Elements",
+    body: "FAR 37.602(c) requires an SOO to include, at a minimum: purpose, scope or mission, period and place of performance, background, performance objectives, and operating constraints.<br><br>This document is missing:<br>\u2022 <strong>Background</strong> (no context about the building, equipment, or current challenges)<br>\u2022 <strong>Operating constraints</strong> (no security, regulatory, or access limitations)<br>\u2022 <strong>Scope/mission</strong> (the \"Requirements\" section replaced it with specific tasks)<br><br>Without background, offerors can't tailor their approach. Without constraints, they don't know what boundaries to work within. The FAR lists these minimums for a reason.",
+    warn: true
+  },
+  'bad-clauses': {
+    title: "\u26a0 Contract Clauses (Again)",
+    body: "Same problem that shows up in bad SOWs and bad PWSs. Termination provisions don't belong in any work statement. You have FAR 52.249 for that.<br><br>\"Comply with all applicable federal, state, and local regulations\" is meaningless boilerplate. Which regulations? If there are specific regulatory constraints (like EPA Section 608 for refrigerants), name them in the operating constraints section. \"All applicable regulations\" is not actionable and creates disputes about what was and wasn't required.",
+    warn: true
+  }
+};
+
+function showNote(key) {
+  const n = notes[key];
+  if (!n) return;
+  document.querySelectorAll('.soo-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('[data-note="' + key + '"]').forEach(el => el.classList.add('active'));
+  const popup = document.getElementById('notePopup');
+  popup.classList.toggle('warn', !!n.warn);
+  document.getElementById('noteTitle').textContent = n.title;
+  document.getElementById('noteBody').innerHTML = n.body;
+  document.getElementById('noteOverlay').classList.add('visible');
+}
+
+function hideNote() {
+  document.getElementById('noteOverlay').classList.remove('visible');
+  document.querySelectorAll('.soo-section').forEach(s => s.classList.remove('active'));
+}
+</script>
+</body>
+</html>

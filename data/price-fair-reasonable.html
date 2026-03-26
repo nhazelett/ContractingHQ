@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how to determine fair and reasonable pricing for commercial acquisitions under FAR 12.204. Practical techniques and documentation guidance for new contracting officers." />
+  <title>Price Fair &amp; Reasonable | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .pfr-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .pfr-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .pfr-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .pfr-tab:hover { color: var(--white); }
+    .pfr-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .pfr-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .pfr-panel.active { display: block; }
+
+    /* ── Intro ── */
+    .pfr-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .pfr-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .pfr-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .pfr-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+    .technique-list { list-style: none; padding: 0; margin: 1rem 0; }
+    .technique-list li { margin-bottom: 1.25rem; padding-left: 1.5rem; position: relative; }
+    .technique-list li strong { color: var(--white); }
+    .technique-list li:before { content: '\2022'; position: absolute; left: 0; color: var(--accent); }
+
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .pfr-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 24</span>
+    <h1 class="page-hero-title">Price Fair &amp; Reasonable</h1>
+    <p class="page-hero-sub">Every contract file needs a price fair and reasonable determination. Learn what that means, how to support it, and why "fair and reasonable" requires actual analysis behind it.</p>
+  </div>
+</div>
+
+<div class="pfr-bg">
+
+  <div class="pfr-intro">
+    <span class="pfr-intro-tag">Interactive Training</span>
+    <h2>Price Fair &amp; Reasonable Determinations</h2>
+    <p>How to analyze pricing, document your findings, and make sure your determination holds up to review.</p>
+  </div>
+
+  <div class="pfr-tabs">
+    <button class="pfr-tab active" onclick="showTab('learn')">&#128218; Learn</button>
+    <button class="pfr-tab" onclick="showTab('lookup')">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="pfr-panel active">
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> What Does "Fair and Reasonable" Mean?</h3>
+      <div class="learn-body">
+        <p>FAR 12.204(a) says the contracting officer must determine the price to be fair and reasonable. One quote or twenty, competed or sole source, the requirement is the same. You need to make this determination and document it in the file.</p>
+        <p><strong>Fair</strong> means the price is not too high. The Government is not overpaying.</p>
+        <p><strong>Reasonable</strong> means the price makes sense given the conditions. Prices move. A price that looks high compared to last year might be perfectly reasonable if material costs surged, if there is a labor shortage, or if the scope changed. Context matters. Reasonable means you can look at the price, look at the market, and say: yeah, that tracks.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Fair and Reasonable Is Not Price Realism</h3>
+      <div class="learn-body">
+        <p>New contracting officers sometimes confuse "reasonable" with "not too low." Those are different things. Evaluating whether a price is too low to perform has its own name: <strong>price realism</strong>.</p>
+        <p>Price realism asks: can this contractor actually do the job at this price, or are they going to run into trouble?</p>
+        <p><strong>On a firm-fixed-price contract, the contractor assumes the risk of underpricing.</strong> That is the whole point of FFP. The contractor agreed to deliver at that price. If they underpriced it, that is their problem. Generally, the Government does not care if a contractor bids low on a FFP. They chose to take on that risk.</p>
+        <p><strong>You cannot conduct a price realism analysis unless you told offerors you would.</strong> GAO has been clear on this. In <em>ERIMAX, Inc.</em> (B-410682, 2015), GAO held that agencies are neither required nor permitted to conduct a price realism analysis on a fixed-price contract unless the solicitation advised offerors that it would happen. If your solicitation did not say that, you cannot reject a quote for being unrealistically low.</p>
+
+        <div class="highlight-box warn">
+          <strong>Do not confuse these three concepts.</strong> Fair = the price is not too high. Reasonable = the price makes sense given the conditions. Realism = the price is not too low to perform. You are always required to determine fair and reasonable. You are only evaluating realism if your solicitation says so.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Pro tip:</strong> If you think price realism matters for your acquisition (complex services, performance risk), put it in the solicitation up front. State that you may evaluate whether prices are realistic for the work to be performed, and that unrealistically low prices may be grounds for rejection or may indicate a lack of understanding of the requirement. If you did not say it up front, you cannot use it later.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> FAR 12.204 Gives You Maximum Flexibility</h3>
+      <div class="learn-body">
+        <p>For commercial acquisitions, FAR 12.204(a) says to base price reasonableness on competitive quotations or offers "whenever possible." Beyond that, it does not mandate a specific technique, a particular form, or how many comparisons you need to make.</p>
+
+        <p>Commercial items are bought and sold in the commercial marketplace every day. The FAR trusts that market forces, competition, and your professional judgment are enough to determine whether a price makes sense. You have maximum flexibility in how you get there.</p>
+
+        <div class="highlight-box tip">
+          <strong>What this means in practice:</strong> None of the techniques below are mandatory. They are tools in your toolbox. Use what makes sense for your acquisition. The FAR does not prescribe a checklist. It says: determine the price is fair and reasonable. How you do that is up to you.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Things You Can Simply Do</h3>
+      <div class="learn-body">
+        <p>While there is no required process, here are practical techniques that work. FAR 15.404-1(b) lists several, but it explicitly says "including, but not limited to." You are not limited to what is on this list. Use one, use several, use whatever combination makes sense for what you are buying. The goal is to be able to explain to a reviewer why you believe the price is fair.</p>
+
+        <ul class="technique-list">
+          <li><strong>Compare competitive quotes.</strong> This is the preferred method per FAR 15.404-1(c), and for good reason. If you received three quotes and they cluster in the same ballpark, that is strong evidence of fair pricing. Document the range and where your awardee falls. If one quote is an outlier, look at why. The more quotes you have and the tighter they cluster, the easier your job is.</li>
+          <li><strong>Compare to historical prices.</strong> What did the Government (or other buyers) pay for the same or similar item? This is the other preferred method. Make sure the prior price is a valid basis for comparison: adjust for inflation, quantity changes, materially different terms, and market conditions. If there has been a significant time lapse or the terms are significantly different, the prior price may not be a valid comparison without adjustments.</li>
+          <li><strong>Use parametric estimating or rough yardsticks.</strong> Dollars per square foot, cost per pound, price per labor hour. These rough benchmarks can highlight significant inconsistencies that warrant further inquiry. If every HVAC contractor in town charges $8-12 per square foot for PM services and your quote comes in at $22, that inconsistency tells you something.</li>
+          <li><strong>Compare to published price lists, catalogs, or GSA schedules.</strong> Published market prices, discount arrangements, and catalog rates can be useful benchmarks. GSA has already negotiated their schedule prices, so those rates are generally considered fair. But remember: the fact that a price appears in a catalog does not, by itself, make it fair and reasonable.</li>
+          <li><strong>Compare to your Independent Government Cost Estimate (IGCE).</strong> Your IGCE is your independent estimate of what the work should cost. If the quote is way above or below the IGCE, that tells you something worth investigating.</li>
+          <li><strong>Compare to market research.</strong> What did your market research turn up? Pricing from vendor websites, industry publications, or conversations with other buyers? For common commercial items, the market itself is your evidence.</li>
+          <li><strong>Use other than certified cost or pricing data.</strong> You cannot require certified cost or pricing data for commercial items. But you can use other than certified cost or pricing data, which is exactly what it sounds like: cost and pricing data that is not certified. Vendors can provide commercial sales data, price history, discount structures, or other information that helps you understand their pricing.</li>
+          <li><strong>Ask the vendor.</strong> There is nothing wrong with asking a vendor to justify their pricing. Request commercial sales data, price history, or an explanation of what drives their cost. Vendors who sell commercially can often show you that other customers pay the same or similar rates.</li>
+        </ul>
+
+        <div class="highlight-box">
+          <strong>Pro tip:</strong> Using more than one technique strengthens your position. If competitive quotes all cluster near the same number AND that number aligns with your IGCE AND it matches the GSA schedule price, nobody is going to question your determination. But even a single well-documented technique can be sufficient if it is the right tool for the situation.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Beyond the List: Other Supporting Factors</h3>
+      <div class="learn-body">
+        <p>FAR 15.404-1(b) says "including, but not limited to." So the techniques above are a starting point, not the whole picture. Sometimes the circumstances of your acquisition tell you something about price all on their own.</p>
+
+        <p><strong>Reasonable expectation of competition.</strong> Consider this scenario: you posted a solicitation, multiple vendors downloaded it, and one submitted a quote. That vendor did not know they would be the only respondent. They prepared their quote believing they were competing against other offerors. When a vendor thinks they have competition, they have every incentive to sharpen their pencil and submit their best price. That expectation of competition is a meaningful factor. You would not rely on it alone, but it supports your determination alongside other techniques.</p>
+
+        <p><strong>Value analysis.</strong> FAR 15.404-1(d) calls this out separately. What is the item actually worth based on its function, utility, and performance? This is particularly useful for unique requirements or when you are evaluating whether the Government is getting adequate value for the price.</p>
+
+        <p><strong>Commercial market conditions.</strong> Is this a commodity with transparent market pricing? Are prices rising industrywide due to supply chain issues or material shortages? Market conditions can explain pricing and support your determination when the numbers alone might raise questions.</p>
+
+        <div class="highlight-box tip">
+          <strong>The point:</strong> Think creatively. The FAR gives you flexibility for a reason. If you can articulate a logical, supportable basis for why the price makes sense, that is a valid approach. Stack multiple factors together and your determination becomes even stronger.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> Sole Source and Single Quote Situations</h3>
+      <div class="learn-body">
+        <p>One quote or a sole source does not let you off the hook. You still need a price fair and reasonable determination. You just have to get more creative about supporting it.</p>
+        <p>Keep in mind: a sole source and a single quote are different situations. If you competed the requirement and only one vendor responded, that vendor prepared their quote believing they had competition. They had incentive to give you a good price. A sole source vendor knows from day one they are the only game in town. Both require a determination, but you may have more supporting factors available than you think.</p>
+        <p><strong>Things you can do:</strong> Compare to prior pricing (if this is a repeat buy). Pull published catalogs or commercial price lists. Use your market research. Compare to the IGCE. Apply parametric estimating or rough yardsticks. Ask the vendor for commercial sales data, discounts from list price, or price history. Note whether the vendor had a reasonable expectation of competition. Build your case from whatever sources are available.</p>
+        <p>For commercial items, you cannot require certified cost or pricing data. But you can request other than certified cost or pricing data to support your determination. Ask the vendor for commercial sales data, price history, or discount structures. The requirement to document fair and reasonable pricing still applies regardless.</p>
+        <p>A solid single-quote determination might read: "Although only one quote was received, the solicitation was posted publicly and downloaded by four vendors, creating a reasonable expectation of competition. The quoted price of $X was compared to (1) the prior contract price for the same services, adjusted for a 3.2% inflation rate; (2) published rates on the GSA schedule for comparable services; and (3) the independent Government cost estimate. All comparisons support the conclusion that the price is fair and reasonable."</p>
+
+        <div class="highlight-box warn">
+          <strong>One quote does not mean you skip the analysis.</strong> It means you need to be more creative about how you support your determination. Sole source and single-quote situations receive extra scrutiny in reviews and audits. Your documentation needs to show your work.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">7</span> Document Your Work</h3>
+      <div class="learn-body">
+        <p>This is where most people fall short. A one-liner in the file that says "price determined fair and reasonable" with nothing behind it does not hold up. Your documentation should include:</p>
+
+        <p><strong>What you are buying.</strong> A brief description of the requirement. What is the good or service? What are the key specifications? What is the delivery timeline?</p>
+        <p><strong>The price quoted.</strong> The actual dollar amount or rate offered by the awardee.</p>
+        <p><strong>What you compared it to.</strong> This is the critical part. Do not write "I compared prices." Write "The quote of $45,000 falls within the range of competitive quotes received ($43,200, $46,800, and $48,500) and aligns with the GSA contract price for identical services." Actual numbers matter. A reviewer needs to see your work, not just your answer.</p>
+        <p><strong>Your conclusion.</strong> Based on your analysis, is the price fair and reasonable? Why? What did your analysis show you?</p>
+
+        <div class="highlight-box warn">
+          <strong>Common mistake:</strong> Writing "Price is determined fair and reasonable based on adequate price competition" and nothing else. That is a conclusion with no analysis. How did the competition demonstrate fair pricing? What were the other quotes? What was the spread? A reviewer reading your file needs to see your thinking, not just your answer.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">8</span> Common Pitfalls</h3>
+      <div class="learn-body">
+        <p>Watch out for these:</p>
+
+        <p><strong>Circular reasoning.</strong> "The price is fair because it is within the IGCE." Who wrote the IGCE? If the IGCE was based on the vendor's prior pricing or on the vendor's own quote, you are comparing the vendor to themselves. Your IGCE should be your own estimate based on market knowledge and independent research.</p>
+        <p><strong>Assuming competition equals fairness.</strong> Competition helps, but two quotes that are both overpriced do not make each other fair. If both vendors quoted $100,000 for something the Government has historically paid $40,000 for, competition alone does not explain the jump.</p>
+        <p><strong>Not adjusting for changes.</strong> Comparing a price for 100 units to a prior price for 1,000 units without acknowledging economy of scale is not meaningful. Address what changed between the old price and the new quote.</p>
+        <p><strong>Ignoring market conditions.</strong> Prices change. Supply chain disruptions, inflation, labor markets. If you are comparing a current quote to a price from several years ago, acknowledge the difference and adjust.</p>
+        <p><strong>Failing to document.</strong> If it is not written down, it did not happen. Your price analysis work, your comparisons, your reasoning: all of it needs to be in the file.</p>
+
+        <div class="highlight-box tip">
+          <strong>Bottom line:</strong> A good price determination reads like a short story. Here is what we are buying. Here is what it costs. Here is how we know that is a fair price. Here is why. Keep it clear, keep it documented, and keep it in the file.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="pfr-panel">
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR 12.204: Award</h4>
+        <p>The governing regulation for commercial acquisitions. Paragraph (a) establishes the requirement to determine price fair and reasonable, with maximum flexibility in how you get there.</p>
+        <a href="https://www.acquisition.gov/far/12.204" target="_blank" rel="noopener">Open FAR 12.204</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 15.404-1: Proposal Analysis Techniques</h4>
+        <p>While not mandatory for commercial acquisitions, this section describes price analysis techniques (competitive quotes, prior pricing, IGCE comparison, value analysis) that are useful tools in your toolbox.</p>
+        <a href="https://www.acquisition.gov/far/15.404-1" target="_blank" rel="noopener">Open FAR 15.404-1</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 15.403-1: Exceptions to Cost or Pricing Data</h4>
+        <p>Covers the exceptions to certified cost or pricing data requirements, including commercial items. Explains when you can use other than certified cost or pricing data instead.</p>
+        <a href="https://www.acquisition.gov/far/15.403-1" target="_blank" rel="noopener">Open FAR 15.403-1</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Part 12: Commercial Acquisition</h4>
+        <p>The complete regulation governing commercial acquisitions after the FAR Overhaul. Start here for the full picture of how commercial buying works.</p>
+        <a href="https://www.acquisition.gov/far/part-12" target="_blank" rel="noopener">Open FAR Part 12</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Part 12 RFO Deviation Guide</h4>
+        <p>How FAR Part 12 changed under the overhaul. Useful context for understanding where price analysis fits in the restructured commercial acquisition process.</p>
+        <a href="https://acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12" target="_blank" rel="noopener">Open RFO Deviation Guide</a>
+      </div>
+      <div class="lookup-card">
+        <h4>GAO Bid Protest Decisions</h4>
+        <p>Real-world examples of how price analysis has been challenged in protests. See what reviewers look for and what documentation strengthens your position.</p>
+        <a href="https://www.gao.gov/legal/bid-protests" target="_blank" rel="noopener">Open GAO Bid Protests</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ── Tab switching ── */
+function showTab(tab) {
+  document.querySelectorAll('.pfr-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.pfr-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how to write a Determination and Findings (D&F) for commercial items. Understanding FAR 2.101 definitions, the RFO changes, and the mistakes everyone makes." />
+  <title>Preparing a Commercial Item D&F | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .cdf-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .cdf-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .cdf-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .cdf-tab:hover { color: var(--white); }
+    .cdf-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .cdf-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .cdf-panel.active { display: block; }
+
+    /* ── Intro ── */
+    .cdf-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .cdf-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .cdf-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .cdf-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-body ul { margin-left: 1.5rem; margin-bottom: 1rem; }
+    .learn-body li { margin-bottom: 0.5rem; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    /* ── Definition table ── */
+    .def-table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; }
+    .def-table th, .def-table td { padding: 0.75rem; border: 1px solid rgba(74,158,255,0.12); text-align: left; }
+    .def-table th { background: rgba(74,158,255,0.08); font-weight: 700; color: var(--white); }
+    .def-table td { color: var(--silver); font-size: 0.85rem; }
+
+    /* ── D&F Document styles ── */
+    .cdf-outer { background: rgba(10,22,50,0.3); border-radius: 14px; padding: 1.5rem; overflow-x: auto; }
+    .cdf-doc { min-width: 650px; border: 2px solid #000; background: #fff; color: #000; font-size: 12px; line-height: 1.6; font-family: 'Times New Roman', serif; padding: 2rem 2.5rem; }
+    .cdf-doc h4 { font-size: 14px; font-weight: 700; text-transform: uppercase; text-align: center; margin-bottom: 1.5rem; letter-spacing: 1px; border-bottom: 2px solid #000; padding-bottom: 0.5rem; }
+    .cdf-doc .doc-field { margin-bottom: 0.75rem; font-size: 12px; line-height: 1.8; }
+    .cdf-doc .doc-field strong { font-weight: 700; }
+    .cdf-doc .sig-block { margin-top: 2rem; font-size: 12px; line-height: 1.6; }
+
+    /* Clickable D&F sections */
+    .cdf-section { padding: 0.6rem 0.75rem; margin: 0.5rem 0; border-radius: 4px; cursor: pointer; transition: background 0.12s; border-left: 3px solid transparent; }
+    .cdf-section:hover { background: #f0f4ff; }
+    .cdf-section.active { background: #fff9db; }
+    .cdf-section.cdf-flag { border-left-color: #4a9eff; }
+    .cdf-section.cdf-problem { border-left-color: #dc2626; }
+
+    /* Example toggle */
+    .cdf-toggle { display: flex; gap: 0; margin-bottom: 1.25rem; }
+    .cdf-toggle-btn { flex: 1; padding: 0.75rem 1rem; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.2); background: rgba(10,22,50,0.5); color: var(--silver); cursor: pointer; transition: all 0.18s; font-family: inherit; }
+    .cdf-toggle-btn:first-child { border-radius: 8px 0 0 8px; }
+    .cdf-toggle-btn:last-child { border-radius: 0 8px 8px 0; }
+    .cdf-toggle-btn.active { background: rgba(74,158,255,0.15); color: var(--accent); border-color: rgba(74,158,255,0.4); }
+    .cdf-toggle-btn.bad.active { background: rgba(220,38,38,0.12); color: #fca5a5; border-color: rgba(220,38,38,0.35); }
+
+    /* Popup overlay */
+    .cdf-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; padding: 1.5rem; }
+    .cdf-overlay.visible { display: flex; }
+    .cdf-popup { background: #0d1a33; border: 1px solid rgba(74,158,255,0.3); border-radius: 14px; padding: 1.5rem 1.75rem; max-width: 520px; width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,0.5); animation: popIn 0.18s ease-out; position: relative; }
+    .cdf-popup.warn { border-color: rgba(220,38,38,0.4); }
+    .cdf-popup-title { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 0.6rem; padding-right: 2rem; }
+    .cdf-popup.warn .cdf-popup-title { color: #fca5a5; }
+    .cdf-popup-body { color: var(--silver); font-size: 0.9rem; line-height: 1.75; }
+    .cdf-popup-body strong { color: var(--white); }
+    .cdf-popup-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--silver); cursor: pointer; font-size: 1.4rem; line-height: 1; padding: 0; transition: color 0.12s; }
+    .cdf-popup-close:hover { color: var(--white); }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+    @media (max-width: 768px) {
+      .cdf-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .cdf-doc { padding: 1.25rem 1rem; min-width: auto; }
+      .lookup-grid { grid-template-columns: 1fr; }
+      .def-table { font-size: 0.8rem; }
+      .def-table th, .def-table td { padding: 0.5rem; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 19</span>
+    <h1 class="page-hero-title">Preparing a Commercial Item D&F</h1>
+    <p class="page-hero-sub">Your written proof that what you're buying actually qualifies as commercial. If your explanation is "because the template said so," you've got a problem.</p>
+  </div>
+</div>
+
+<div class="cdf-bg">
+
+  <div class="cdf-intro">
+    <span class="cdf-intro-tag">Interactive Training</span>
+    <h2>Commercial Item Determinations and Findings</h2>
+    <p>How to write a D&F that explains why your acquisition qualifies for commercial items procedures under FAR Part 12, and avoid the template trap that catches most contracting officers.</p>
+  </div>
+
+  <div class="cdf-tabs">
+    <button class="cdf-tab active" onclick="showTab('learn')">Learn</button>
+    <button class="cdf-tab" onclick="showTab('examples')">D&amp;F Examples</button>
+    <button class="cdf-tab" onclick="showTab('lookup')">Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="cdf-panel active">
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> What Is a Commercial Item D&F, and Why Does It Exist?</h3>
+      <div class="learn-body">
+        <p>A Determination and Findings (D&F) for commercial items is a written document that states the contracting officer has determined that what you are acquiring meets the definition of a "commercial product" or "commercial service" under FAR 2.101. It is required for acquisitions above the Simplified Acquisition Threshold (SAT) under DFARS 212.102.</p>
+        <p>But why does this determination matter? Why can't you just buy the thing?</p>
+        <p>The determination matters because <strong>the Government has certain rights when buying non-commercial items that it does not have when buying commercial ones.</strong> The Truth in Negotiations Act (TINA) kicks in for non-commercial acquisitions, the Government can require certified cost or pricing data, and the rules are written in a way that establishes fair negotiations with stronger government protections.</p>
+        <p>When you determine something is commercial, <strong>the Government gives up those rights.</strong> You revert to purchasing guidelines similar to what the commercial market uses. No certified cost or pricing data. Less visibility into the contractor's cost structure. Fewer negotiation levers.</p>
+        <p>Now put yourself in the contractor's shoes. Do you want to give the Government certified cost or pricing data if you don't have to? Absolutely not. It is expensive to obtain, it comes with legal risk (the data has to be accurate, current, and complete), and it gives the Government leverage in negotiations that the contractor would rather not hand over.</p>
+        <p>So the D&F exists because <strong>the Government is making a consequential decision.</strong> When you sign that determination, you are saying: we are giving up certain procurement protections because this item or service is available commercially and should be purchased under commercial rules. That decision also drives which clauses go into your contract (the 52.212 series instead of the full FAR clause set). It is not a formality. It changes the entire structure of your acquisition.</p>
+
+        <div class="highlight-box">
+          <strong>A note on the future:</strong> In the opinion of some practitioners, the default should be the other way around: acquisitions should be treated as commercial until proven otherwise, and the D&F requirement should not exist. Until that day comes, the D&F is required, and it is required precisely because the Government loses or gains certain rights based on that determination.
+        </div>
+
+        <p>The D&F answers a simple question: <strong>What makes this item or service commercial according to the FAR definition, and where is the evidence?</strong> If you cannot answer that question clearly, you do not have a valid D&F.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> The RFO Changed Things</h3>
+      <div class="learn-body">
+        <p>The FAR Overhaul (RFO) restructured how the FAR treats commercial acquisitions. This is important because the rules have shifted.</p>
+        <p><strong>Old way (before RFO):</strong> FAR Part 12 covered commercial items. FAR Part 13 (Simplified Acquisition Procedures) also covered commercial items. You had two pathways.</p>
+        <p><strong>New way (after RFO):</strong> FAR Part 12 governs commercial products and services. FAR Part 13 is now for non-commercial items only. If you are buying something commercial, you are in Part 12 territory, period.</p>
+        <p>This matters because if you're writing a commercial item D&F, you're justifying an acquisition under Part 12, not Part 13. The procedures are different. The authorities are different. And if your item is actually non-commercial, Part 13 is where your simplified procedures live now.</p>
+        <p>Worth noting: FAR Part 12 now has its own simplified procedures under FAR 12.201-1. So commercial acquisitions are not left without a streamlined path. The simplified procedures just live in a different part of the FAR than they used to.</p>
+
+        <div class="highlight-box tip">
+          <strong>Reference:</strong> See the <a href="https://acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12" target="_blank" rel="noopener" style="color: #6ee7b7;">FAR Part 12 RFO Deviation Guide</a> for details on how Part 12 changed under the overhaul.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> How to Actually Write One (The Common Mistake)</h3>
+      <div class="learn-body">
+        <p>You find a template. You open it. You see a few blank fields: "Item description," "Justification," "Approval." You fill in the item description (e.g., "commercial copier"), you write something like "This is a commercial item because it meets the definition of a commercial product in FAR 2.101," and you submit it for approval.</p>
+        <p>That D&F does not work. It does not explain anything. It tells nobody why this is commercial. It does not tell the reviewer where you looked for evidence or what you found.</p>
+
+        <div class="highlight-box warn">
+          <strong>The template trap:</strong> A template is a starting point, not a finish line. If your entire justification is a restatement of the FAR definition, you have not written a D&F. You have written a placeholder. Anyone reading your file should understand, in detail, why you concluded this item or service is commercial. If they cannot, your D&F is incomplete.
+        </div>
+
+        <p><strong>What a real D&F should contain:</strong></p>
+        <ul>
+          <li><strong>What you are buying.</strong> Be specific. Not "computer system." Say "Dell OptiPlex 7060 desktop workstations, Model 7060, with standard operating system and factory-installed software, to be delivered by [date]."</li>
+          <li><strong>Which FAR 2.101 definition paragraph it falls under.</strong> FAR 2.101 has six different definition paragraphs for commercial products and two for commercial services. Which one applies? Why that one and not another? (See the full definitions below.)</li>
+          <li><strong>Your evidence.</strong> This is the heart of it. Where did you look? What did you find? Did you contact vendors? What did they tell you? Did you check GSA Advantage or GSA Schedules? Did you review catalogs? Do they sell it to the commercial public? Are there published price lists?</li>
+        </ul>
+
+        <p>The D&F should tell the story. Someone reading it should follow your research, understand your findings, and agree with your conclusion. If they have questions about how you reached your determination, the answers should be in the document.</p>
+
+        <p><strong>The FAR 2.101 Definitions: Know Which One You're Using</strong></p>
+        <p>You cannot write a D&F without citing a specific definition paragraph. Here they are:</p>
+
+        <p style="color: var(--accent); font-weight: 700; margin-bottom: 0.5rem;">Commercial Product (6 definitions):</p>
+        <table class="def-table">
+          <tr><th style="width: 15%;">Paragraph</th><th>Definition</th></tr>
+          <tr><td><strong>(1)</strong></td><td>A product (other than real property) that is customarily used by the general public or non-governmental entities for non-governmental purposes, and has been <strong>sold, leased, or licensed</strong> (or offered for sale, lease, or license) <strong>to the general public.</strong></td></tr>
+          <tr><td><strong>(2)</strong></td><td>A product that <strong>evolved from a commercial product</strong> through technological or performance advances, and is not yet available commercially, but <strong>will be available</strong> in time to meet the Government's delivery requirements.</td></tr>
+          <tr><td><strong>(3)</strong></td><td>A product that would satisfy paragraph (1) or (2), except for <strong>modifications.</strong> Either modifications "customarily available in the commercial marketplace," or minor modifications not customarily available but made to meet Federal Government requirements, that <strong>do not significantly alter</strong> the product's function or purpose.</td></tr>
+          <tr><td><strong>(4)</strong></td><td>Any <strong>combination of products</strong> meeting paragraphs (1), (2), or (3) that are <strong>customarily combined and sold together</strong> to the general public.</td></tr>
+          <tr><td><strong>(5)</strong></td><td>A product or combination meeting (1) through (4), even when <strong>transferred between separate divisions, subsidiaries, or affiliates</strong> of a contractor.</td></tr>
+          <tr><td><strong>(6)</strong></td><td>A <strong>nondevelopmental item</strong> developed exclusively at private expense and sold in <strong>substantial quantities on a competitive basis</strong> to multiple State and local governments or multiple foreign governments.</td></tr>
+        </table>
+
+        <p style="color: var(--accent); font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem;">Commercial Service (2 definitions):</p>
+        <table class="def-table">
+          <tr><th style="width: 15%;">Paragraph</th><th>Definition</th></tr>
+          <tr><td><strong>(1)</strong></td><td>Installation, maintenance, repair, training, and other services <strong>procured to support a commercial product,</strong> where the services are provided by similar sources under comparable terms and conditions to the general public.</td></tr>
+          <tr><td><strong>(2)</strong></td><td>Services <strong>offered and sold competitively in substantial quantities</strong> in the commercial marketplace, based on established catalog or market prices for specific tasks or outcomes, under standard commercial terms.</td></tr>
+        </table>
+
+        <div class="highlight-box tip" style="margin-top: 1.25rem;">
+          <strong>Practical tip:</strong> Most routine commercial acquisitions fall under Product paragraph (1) or Service paragraph (1). If you're citing one of the other paragraphs, your D&F needs to explain more, and you may need one-level-above approval. See Section 4 below.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> When You Need Extra Approval</h3>
+      <div class="learn-body">
+        <p>Not all commercial item D&Fs require the same level of approval. Some need just your signature. Others need approval one level above you.</p>
+        <p><strong>One-level-above approval is required when using these FAR 2.101 definition paragraphs for commercial products:</strong></p>
+        <ul>
+          <li>Paragraph (1)(ii): Items sold in substantial quantities in the commercial marketplace where the buyer determines it is an item of a type offered and sold to the general public</li>
+          <li>Paragraph (3): Items of a type offered and sold to the general public or commercial users that require modification to meet the buyer's needs</li>
+          <li>Paragraph (4): Combination of items that are themselves commercial products or commercial services</li>
+          <li>Paragraph (6): Services offered and sold competitively in substantial quantities to the general public in the commercial marketplace</li>
+        </ul>
+        <p><strong>For commercial services, one-level-above approval is required for paragraph (2):</strong> Services offered and sold competitively in substantial quantities to the general public in the commercial marketplace.</p>
+        <p>Why the higher approval? These particular paragraphs involve more subjective judgment, especially the "of a type" determinations. They require more careful scrutiny because the connection between what you are buying and what is sold commercially might require interpretation.</p>
+
+        <div class="highlight-box">
+          <strong>"Of a type" explained simply:</strong> Imagine you need to buy a ruggedized laptop for field use. Nobody sells that exact laptop at Best Buy. But Dell, Panasonic, and others sell ruggedized laptops commercially to construction companies, utility workers, and first responders. The laptop you need is not identical to what's on the commercial shelf, but it is <strong>of a type</strong> that is sold commercially. The product category exists in the commercial market, even if your specific configuration doesn't.<br><br>That is what "of a type" means. The thing you're buying is close enough to something sold commercially that it should be treated as commercial. But "close enough" is where the judgment call happens, and that's why you need a higher approval authority to agree with your reasoning.<br><br>Your D&F for an "of a type" determination needs to do more work. You need to show: what is the commercial equivalent? Who sells it? How is your version different? Are those differences minor enough that commercial procedures still make sense? If you cannot draw a clear line from your item to a commercially available product, "of a type" probably does not apply.
+        </div>
+
+        <p><strong>Nontraditional defense contractor exception:</strong> If you are acquiring supplies or services from a nontraditional defense contractor, you do not need a formal commercial item D&F. The statute allows nontraditional contractors' supplies and services to be treated as commercial without the determination. But you should still document this in your file so the next person knows why no D&F is present.</p>
+
+        <div class="highlight-box">
+          <strong>What is a nontraditional defense contractor?</strong> It is a company that has not had any contract or subcontract with the Department of Defense for at least one year prior to the solicitation of a contract, OR a company that does not perform any contract or subcontract for DoD that is subject to full Cost Accounting Standards (CAS) coverage. In plain language: companies that are new to defense contracting, or companies that mostly work in the commercial world and are not set up for the full weight of DoD cost accounting requirements. The idea is to lower the barrier to entry so the Government can buy from innovative commercial companies without forcing them through a formal commercial determination process they were never designed for.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Prior Commercial Determinations</h3>
+      <div class="learn-body">
+        <p>If you have previously acquired this item or service under FAR Part 12 (as a commercial acquisition), that prior contract IS your prior determination. You do not have to repeat the analysis.</p>
+        <p>DFARS 212.102 allows you to reference a prior commercial item determination. If your organization bought this same thing two years ago under a Part 12 contract, you can cite that contract and say "the item was previously determined to be commercial and acquired under FAR Part 12 in contract [number], dated [date]." That satisfies the requirement.</p>
+        <p><strong>But there is a catch:</strong> The determination can be challenged. DFARS 212.102(d) provides that if the commercial determination is questioned, the Head of the Contracting Activity (HCA) will review it. The HCA has 30 days to complete the review and issue a written determination. If the HCA agrees with you, the acquisition proceeds. If not, you may need to restart the process or consider non-commercial procedures.</p>
+        <p>The lesson: document your prior determination carefully. If you're relying on a prior contract, keep that contract accessible in your file so that if anyone questions the determination later, the evidence is available.</p>
+
+        <div class="highlight-box">
+          <strong>Don't forget FAR Part 1.</strong> FAR 1.701 through 1.707 cover the general requirements for every D&F, not just commercial item determinations. If you have never written a D&F before, read FAR Part 1 Subpart 1.7 first. It tells you what every D&F must contain: a description of the action, a citation of the authority, the findings that support the determination, and the determination itself. The commercial item D&F is a specific application of that general framework.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Bottom line:</strong> A commercial item D&F is your documentation of the decision. It should be thorough, evidence-based, and clear enough that someone with no knowledge of the acquisition can read it and understand your reasoning. Grab a template if you need to, but do not stop there. Fill in the blanks with real analysis, real evidence, and real thought.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ EXAMPLES ═══════════════ -->
+  <div id="panel-examples" class="cdf-panel">
+    <div class="cdf-toggle">
+      <button class="cdf-toggle-btn active" onclick="toggleExample('good')">Good D&amp;F</button>
+      <button class="cdf-toggle-btn bad" onclick="toggleExample('bad')">Bad D&amp;F</button>
+    </div>
+
+    <p style="color: var(--silver); font-size: 0.85rem; margin-bottom: 1.25rem; text-align: center;">Click any highlighted section to see coaching notes.</p>
+
+    <!-- Good D&F -->
+    <div id="example-good" class="cdf-outer">
+      <div class="cdf-doc">
+        <h4>Determination and Findings<br>Commercial Product Determination</h4>
+
+        <div class="cdf-section cdf-flag" data-note="good-description" onclick="showNote('good-description')">
+          <div class="doc-field"><strong>Subject:</strong> Commercial Product Determination for HVAC Preventive Maintenance Services, Building 1240, Wright-Patterson AFB, OH</div>
+          <div class="doc-field"><strong>Contracting Activity:</strong> 88th Contracting Squadron (88 CONS/PKB)</div>
+          <div class="doc-field"><strong>Estimated Value:</strong> $142,000 (Base Year + 2 Option Years)</div>
+        </div>
+
+        <div class="cdf-section cdf-flag" data-note="good-findings" onclick="showNote('good-findings')">
+          <div class="doc-field"><strong>FINDINGS:</strong></div>
+          <div class="doc-field">1. The 88th Air Base Wing, Civil Engineering Squadron, requires preventive maintenance services for 12 Carrier WeatherMaker 48TC rooftop HVAC units installed in Building 1240 at Wright-Patterson Air Force Base. Services include quarterly filter replacement, coil cleaning, refrigerant checks, belt and bearing inspection, and seasonal startup/shutdown procedures per Carrier's published maintenance schedule (Carrier Technical Bulletin TB-PM-48TC-2022).</div>
+        </div>
+
+        <div class="cdf-section cdf-flag" data-note="good-market" onclick="showNote('good-market')">
+          <div class="doc-field">2. Market research conducted between 4-15 March 2026 identified multiple commercial sources providing identical HVAC preventive maintenance services to the general public. ABC Mechanical Services, Inc. (Dayton, OH) confirmed they provide quarterly PM services for Carrier rooftop units to commercial building owners, property management companies, and school districts throughout the Miami Valley region. Comfort Systems USA (Columbus, OH) stated they maintain over 200 commercial HVAC service contracts for private-sector clients in Ohio. Johnson Controls, Inc. provided a published commercial rate schedule for rooftop unit PM services (2026 Commercial Service Catalog, pp. 14-16). All three vendors confirmed that the services required for Building 1240 are the same services they perform daily for non-government customers.</div>
+        </div>
+
+        <div class="cdf-section cdf-flag" data-note="good-definition" onclick="showNote('good-definition')">
+          <div class="doc-field">3. The services described above meet the definition of "commercial service" under FAR 2.101, paragraph (1): installation, maintenance, repair, training, and other services procured to support a commercial product, where the services are provided by similar sources under comparable terms and conditions to the general public. The Carrier WeatherMaker 48TC is a commercial product sold and installed in commercial office buildings, retail facilities, and educational institutions nationwide. The maintenance services required are provided by the same vendors, using the same procedures, under the same terms, as they provide to their commercial clients.</div>
+        </div>
+
+        <div class="cdf-section cdf-flag" data-note="good-determination" onclick="showNote('good-determination')">
+          <div class="doc-field"><strong>DETERMINATION:</strong></div>
+          <div class="doc-field">Based on the findings above, I determine that HVAC preventive maintenance services for Building 1240 meet the definition of a commercial service under FAR 2.101, paragraph (1). This acquisition will be conducted under FAR Part 12 procedures.</div>
+        </div>
+
+        <div class="cdf-section cdf-flag" data-note="good-sig" onclick="showNote('good-sig')">
+          <div class="sig-block">
+            <br>
+            <div style="font-style: italic; color: #1a3a6b;">//SIGNED//</div>
+            <div>JANE M. SMITH, GS-13, DAF</div>
+            <div>Contracting Officer, 88 CONS/PKB</div>
+            <div>Date: 18 March 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bad D&F -->
+    <div id="example-bad" class="cdf-outer" style="display: none;">
+      <div class="cdf-doc">
+        <h4>Commercial Item Determination</h4>
+
+        <div class="cdf-section cdf-problem" data-note="bad-description" onclick="showNote('bad-description')">
+          <div class="doc-field"><strong>Item/Service:</strong> HVAC maintenance</div>
+        </div>
+
+        <div class="cdf-section cdf-problem" data-note="bad-findings" onclick="showNote('bad-findings')">
+          <div class="doc-field"><strong>Findings:</strong></div>
+          <div class="doc-field">The requiring activity has identified a need for HVAC maintenance services. HVAC maintenance is a service commonly available in the commercial marketplace. Multiple companies provide HVAC maintenance to both government and non-government customers.</div>
+        </div>
+
+        <div class="cdf-section cdf-problem" data-note="bad-definition" onclick="showNote('bad-definition')">
+          <div class="doc-field"><strong>Determination:</strong></div>
+          <div class="doc-field">Based on the above findings, I have determined that HVAC maintenance services meet the definition of a commercial service as defined in FAR 2.101. This acquisition will be conducted using FAR Part 12 procedures.</div>
+        </div>
+
+        <div class="cdf-section cdf-problem" data-note="bad-sig" onclick="showNote('bad-sig')">
+          <div class="sig-block">
+            <br>
+            <div>J. Doe</div>
+            <div>Contract Specialist</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="cdf-panel">
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR Subpart 1.7: Determinations and Findings</h4>
+        <p>The general requirements for every D&F in federal acquisition. Covers what a D&F must contain, who can approve them, and the required format. Read this before writing any D&F, not just commercial item determinations.</p>
+        <a href="https://www.acquisition.gov/far/subpart-1.7" target="_blank" rel="noopener">Open FAR Subpart 1.7</a>
+      </div>
+      <div class="lookup-card">
+        <h4>DFARS 212.1: Commercial Items</h4>
+        <p>The Defense Federal Acquisition Regulation Supplement guidance on commercial items procedures. DFARS 212.102 specifically covers the requirement for a commercial item determination and the approval authority needed.</p>
+        <a href="https://www.acquisition.gov/dfars/subpart-212.1-acquisition-commercial-products-and-commercial-services" target="_blank" rel="noopener">Open DFARS 212.1</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 2.101: Definitions</h4>
+        <p>The authoritative source for what the FAR considers a commercial product or commercial service. Six definition paragraphs for products, two for services. Your D&F must cite one of these definitions and explain which paragraph applies to your acquisition.</p>
+        <a href="https://www.acquisition.gov/far/2.101" target="_blank" rel="noopener">Open FAR 2.101</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Part 2 RFO Deviation Guide</h4>
+        <p>How the RFO changed the definitions in FAR Part 2. Side-by-side comparison of the old and new definitions for commercial products, commercial services, and related terms.</p>
+        <a href="https://acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-2" target="_blank" rel="noopener">Open RFO Part 2 Guide</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Part 12: Commercial Products and Services</h4>
+        <p>The complete regulation governing how federal agencies acquire commercial items. After the RFO, Part 12 is the primary authority for all commercial acquisitions. This is your roadmap for commercial acquisition procedures, requirements, and authorities.</p>
+        <a href="https://www.acquisition.gov/far/part-12" target="_blank" rel="noopener">Open FAR Part 12</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Part 12 RFO Deviation Guide</h4>
+        <p>A side-by-side comparison showing how FAR Part 12 changed under the FAR Overhaul. Understand the old rules versus the new rules, what was deleted, what was restructured, and why the agencies made these changes.</p>
+        <a href="https://acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12" target="_blank" rel="noopener">Open RFO Deviation Guide</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Part 12 Practitioner Album</h4>
+        <p>A multimedia resource from the FAR Overhaul team explaining how Part 12 works in practice. Includes flowcharts, decision trees, and Q&A covering commercial item determinations, competition requirements, and contract types.</p>
+        <a href="https://acquisition.gov/sites/default/files/practitioner_albums/far-part-12-acquisition-of-commercial-products-and-commercial-services/content/index.html" target="_blank" rel="noopener">Open Part 12 Album</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Popup overlay -->
+<div class="cdf-overlay" id="noteOverlay" onclick="if(event.target===this)hideNote()">
+  <div class="cdf-popup" id="notePopup">
+    <button class="cdf-popup-close" onclick="hideNote()">&times;</button>
+    <div class="cdf-popup-title" id="noteTitle"></div>
+    <div class="cdf-popup-body" id="noteBody"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <span class="footer-logo">ContractingHQ</span>
+        <p>Built for the contracting workforce. Tools, reference, and encyclopedic knowledge of federal acquisition.</p>
+        <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn">&#9749; Buy Me a Coffee</a>
+      </div>
+      <div class="footer-links-col">
+        <h4>Resources</h4>
+        <a href="tools.html">Tools</a>
+        <a href="gao-decisions.html">GAO Decisions</a>
+        <a href="federal-register.html">FAR Updates</a>
+        <a href="training.html">Training</a>
+      </div>
+      <div class="footer-links-col">
+        <h4>More</h4>
+        <a href="links.html">Links</a>
+        <a href="asbca.html">ASBCA</a>
+        <a href="forum.html">Forum</a>
+        <a href="about.html">About</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 ContractingHQ. Not affiliated with the U.S. Government.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ── Tab switching ── */
+function showTab(tab) {
+  document.querySelectorAll('.cdf-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.cdf-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+/* ── Example toggle ── */
+function toggleExample(which) {
+  document.querySelectorAll('.cdf-toggle-btn').forEach(b => b.classList.remove('active'));
+  if (which === 'good') {
+    document.getElementById('example-good').style.display = '';
+    document.getElementById('example-bad').style.display = 'none';
+    document.querySelectorAll('.cdf-toggle-btn')[0].classList.add('active');
+  } else {
+    document.getElementById('example-good').style.display = 'none';
+    document.getElementById('example-bad').style.display = '';
+    document.querySelectorAll('.cdf-toggle-btn')[1].classList.add('active');
+  }
+  hideNote();
+}
+
+/* ── Coaching notes ── */
+var notes = {
+  'good-description': {
+    title: "Specific Subject and Context",
+    body: "Right away, this D&F tells you exactly what it covers: HVAC preventive maintenance for a specific building at a specific base, with a dollar estimate. The reviewer knows the scope, the location, and the magnitude before they read a single finding.<br><br>Compare this to just writing \"HVAC maintenance.\" The specificity matters because different HVAC situations might lead to different determinations. Maintaining 12 commercial rooftop units is very different from maintaining a custom-built clean room air handling system.",
+    warn: false
+  },
+  'good-findings': {
+    title: "Detailed Requirement Description",
+    body: "This paragraph does more than name the item. It describes the <strong>specific equipment</strong> (Carrier WeatherMaker 48TC), the <strong>specific services</strong> (quarterly filter replacement, coil cleaning, refrigerant checks, belt and bearing inspection, seasonal procedures), and ties it to a <strong>published manufacturer maintenance schedule</strong> with a document number.<br><br>Why does this matter? Because the next question is \"is this commercial?\" and to answer that, the reviewer needs to know exactly what \"this\" is. A vague description leads to a vague determination.",
+    warn: false
+  },
+  'good-market': {
+    title: "Real Market Research, Real Evidence",
+    body: "This is the heart of the D&F. Three vendors, named specifically, confirmed they provide <strong>identical services to commercial customers.</strong> Not \"similar\" services. Not \"comparable\" services. The same services, to the same types of equipment, for non-government clients.<br><br>Notice the details: ABC Mechanical names their customer types (building owners, property managers, school districts). Comfort Systems gives a number (200+ commercial contracts). Johnson Controls points to a <strong>published commercial catalog with page numbers.</strong><br><br>This is what evidence looks like. Anyone reading this file can verify these claims. Anyone reviewing this determination can see where the CO looked and what they found.",
+    warn: false
+  },
+  'good-definition': {
+    title: "Cites the Specific FAR 2.101 Paragraph",
+    body: "The CO cites <strong>FAR 2.101, paragraph (1)</strong> for commercial services and explains <em>why</em> that paragraph applies. The Carrier 48TC is a commercial product. The maintenance services support that commercial product. The services are provided by similar sources under comparable terms to the general public.<br><br>This is not a restatement of the FAR definition. It is an application of the definition to the specific facts. The CO connects the dots between the evidence (three commercial vendors doing this work for non-government clients) and the regulatory definition (services procured to support a commercial product, provided under comparable terms).",
+    warn: false
+  },
+  'good-determination': {
+    title: "Clear Determination",
+    body: "Short, direct, and cites the specific paragraph again. The determination follows logically from the findings. There is no new information here, just the conclusion that the evidence supports.<br><br>This is how a D&F should end: the determination should feel inevitable after reading the findings. If the reader is surprised by the conclusion, the findings did not do their job.",
+    warn: false
+  },
+  'good-sig': {
+    title: "Proper Signature Block",
+    body: "Signed by the Contracting Officer (not the contract specialist), with name, grade, organization, title, and date. This matters because the CO is the one with the authority to make commercial determinations.<br><br>Since this D&F uses Service paragraph (1), it does not require one-level-above approval. If it cited paragraph (2) (services sold in substantial quantities in the commercial marketplace), the CO's supervisor would also need to sign.",
+    warn: false
+  },
+  'bad-description': {
+    title: "\u26a0 Vague Description",
+    body: "\"HVAC maintenance.\" That is the entire description of what is being acquired.<br><br>What building? What equipment? What kind of maintenance? Preventive? Emergency repair? System replacement? How much is it worth? There is nothing here for a reviewer to evaluate. Two words do not constitute a finding.",
+    warn: true
+  },
+  'bad-findings': {
+    title: "\u26a0 Restating the Obvious Is Not a Finding",
+    body: "Read these findings carefully. What do they actually say?<br><br>\"HVAC maintenance is a service commonly available in the commercial marketplace.\" That is a conclusion, not a finding. Where is the evidence? Who did you talk to? What did you find during market research? What vendors provide this commercially? To what customers?<br><br>\"Multiple companies provide HVAC maintenance.\" Which companies? How do you know? Did you contact them, or are you guessing?<br><br>This is the <strong>template trap</strong> in action. Someone filled in the blank with a generic statement that could apply to literally any HVAC maintenance requirement anywhere in the country. It tells the reviewer nothing about <em>this specific acquisition.</em>",
+    warn: true
+  },
+  'bad-definition': {
+    title: "\u26a0 No FAR 2.101 Paragraph Cited",
+    body: "\"Meets the definition of a commercial service as defined in FAR 2.101.\" <strong>Which definition?</strong> There are two paragraphs for commercial services. Paragraph (1) covers services supporting a commercial product. Paragraph (2) covers services sold competitively in substantial quantities.<br><br>These are different definitions with different implications (paragraph (2) requires one-level-above approval). By not citing a specific paragraph, the CO has not actually made a determination. They have made a vague gesture in the direction of the FAR.<br><br>A reviewer cannot evaluate whether the determination is correct if they do not know which definition the CO is claiming applies.",
+    warn: true
+  },
+  'bad-sig': {
+    title: "\u26a0 Incomplete Signature",
+    body: "\"J. Doe, Contract Specialist\" has two problems. First, there is no actual signature (digital or otherwise). Second, a <strong>contract specialist</strong> does not have the authority to sign a commercial item determination. That authority belongs to the <strong>contracting officer.</strong><br><br>There is also no date. When was this determination made? Timelines matter in contracting. If the determination was made six months before the solicitation and market conditions changed, it may no longer be valid.",
+    warn: true
+  }
+};
+
+function showNote(key) {
+  var n = notes[key];
+  if (!n) return;
+  document.querySelectorAll('.cdf-section').forEach(function(s) { s.classList.remove('active'); });
+  var clicked = document.querySelector('.cdf-section[data-note="' + key + '"]');
+  if (clicked) clicked.classList.add('active');
+  var popup = document.getElementById('notePopup');
+  popup.classList.toggle('warn', !!n.warn);
+  document.getElementById('noteTitle').textContent = n.title;
+  document.getElementById('noteBody').innerHTML = n.body;
+  document.getElementById('noteOverlay').classList.add('visible');
+}
+
+function hideNote() {
+  document.getElementById('noteOverlay').classList.remove('visible');
+  document.querySelectorAll('.cdf-section').forEach(function(s) { s.classList.remove('active'); });
+}
+</script>
+</body>
+</html>
