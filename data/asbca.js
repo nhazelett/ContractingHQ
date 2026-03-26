@@ -1,7 +1,39 @@
+/* ============================================================
+   ASBCA Decisions Digest
+   Updated: March 26, 2026
+   Pattern: newest digest at index 0, older digests pushed down.
+   Nothing is ever deleted — old digests stay for the archive.
+   ============================================================ */
+
 var ASBCA_DECISIONS = [
   {
-    weekOf: "February 24–27, 2026",
+    weekOf: "March 2026",
+    intro: "This month's ASBCA digest covers five decisions from February and March 2026 — including a constructive termination win for a contractor at Malmstrom AFB, a motion for reconsideration denied on a failed delivery case, and several jurisdictional rulings that remind COs how standing and claim requirements work at the Board.",
     decisions: [
+      {
+        caseNumber: "ASBCA No. 64008-ADR",
+        caseName: "Allserv, Inc.",
+        date: "March 2, 2026",
+        judge: "Cates-Harman",
+        outcome: "sustained",
+        decisionType: "Summary Binding Decision (ADR)",
+        link: "https://www.asbca.mil/Decisions/",
+        summary: "The Air Force awarded Allserv a commercial item contract for ground maintenance services at Malmstrom Air Force Base (contract FA4626-23-D-0002). Allserv claimed the government constructively terminated the contract and related task orders for convenience. The government argued the contractor waived its claim and that bilateral modifications constituted an accord and satisfaction. The Board found the government failed to meet its burden of proof on both defenses.",
+        bottomLine: "Appeal sustained. The Board held there was a constructive termination for convenience. Allserv is entitled to further compensation under FAR 52.212-4. The Board will resolve quantum in a separate proceeding.",
+        takeaway: "If a contractor is effectively pushed off a contract without a formal termination notice, that can be a constructive T4C — and the CO's office is on the hook for termination settlement costs. Make sure any actions that effectively end contract performance are documented and processed through proper termination channels. Also note: bilateral mods don't automatically create accord and satisfaction unless the language is airtight."
+      },
+      {
+        caseNumber: "ASBCA No. 64309",
+        caseName: "Paragon Defense Solutions, Inc.",
+        date: "March 2, 2026",
+        judge: "McIlmail",
+        outcome: "denied",
+        decisionType: "Motion for Reconsideration",
+        link: "https://www.asbca.mil/Decisions/",
+        summary: "Paragon Defense Solutions had a DLA contract (SPE7L1-23-P-1551) to deliver 225 locks. The company failed to deliver 150 of the 225 locks by the government's unilateral purchase order delivery date of May 5, 2023. The Board previously ruled under Board Rule 12.2 that no completed purchase and sale contract came into existence for those 150 locks. Paragon moved for reconsideration, essentially rearguing the same case it made before the original decision.",
+        bottomLine: "Motion for reconsideration denied. The Board found the appellant simply reargued its original position without presenting any new arguments or evidence warranting reconsideration.",
+        takeaway: "Once the Board rules, a motion for reconsideration is not a second bite at the apple — you need genuinely new arguments or evidence. For COs: if a vendor can't deliver by the contract date and there's no extension, the Board may find no contract existed for the undelivered items. Document delivery failures carefully and issue timely cure or show-cause notices."
+      },
       {
         caseNumber: "ASBCA No. 64165",
         caseName: "Racer Machinery International / Canadian Commercial Corporation",
@@ -10,8 +42,33 @@ var ASBCA_DECISIONS = [
         outcome: "procedural",
         decisionType: "Non-Dispositive (Jurisdictional)",
         link: "https://www.asbca.mil/Decisions/",
-        summary: "DLA awarded a contract to the Canadian Commercial Corporation (CCC) — a Canadian Crown corporation that acts as prime contractor when the U.S. government procures from Canadian suppliers — to provide CNC machines manufactured by Racer Machinery International. After Racer failed to deliver a complying product by the contract completion date, the government issued a show cause letter in October 2024 addressed to both Racer and CCC. Racer filed the appeal to ASBCA directly, raising a threshold jurisdictional question about who had standing to bring the appeal.",
-        bottomLine: "Racer Machinery International dismissed as appellant for lack of jurisdiction; Canadian Commercial Corporation substituted as appellant. Because CCC held the prime contract with the U.S. government under the Government-to-Government arrangement, Racer lacked privity of contract with the government and could not bring an independent appeal before the ASBCA."
+        summary: "DLA awarded a contract to the Canadian Commercial Corporation (CCC) — a Canadian Crown corporation that acts as prime contractor when the U.S. buys from Canadian suppliers — to provide CNC machines made by Racer Machinery International. After Racer failed to deliver a conforming product, the government issued a show-cause letter addressed to both Racer and CCC. Racer filed the appeal directly, raising a jurisdictional question about who had standing.",
+        bottomLine: "Racer Machinery International dismissed as appellant for lack of jurisdiction; Canadian Commercial Corporation substituted as appellant. Because CCC held the prime contract, Racer lacked privity of contract with the government and could not appeal independently.",
+        takeaway: "Only the entity with privity of contract with the U.S. government can file a CDA appeal. In government-to-government arrangements (like contracts through CCC for Canadian suppliers), the foreign subcontractor cannot appeal directly — only the prime (CCC) can. If you issue show-cause letters, be precise about who holds the contract and who is merely the supplier."
+      },
+      {
+        caseNumber: "ASBCA Nos. 61708-ADR, 61641-ADR, 61642-ADR",
+        caseName: "Penna Group, LLC",
+        date: "February 20, 2026",
+        judge: "Panel",
+        outcome: "dismissed",
+        decisionType: "Jurisdictional",
+        link: "https://www.asbca.mil/Decisions/",
+        summary: "After the Board dismissed this case based on a represented settlement, a court-appointed receiver challenged the settlement agreement, claiming the company's owner lacked authority to settle and had hidden the receivership from the Board. The receiver asked the Board to reopen the case.",
+        bottomLine: "Board determined it lacked jurisdiction over third-party challenges to settlements. State court holds exclusive jurisdiction over receivership issues and the validity of actions taken by the company's owner.",
+        takeaway: "Once a case is settled and dismissed at the Board, it's extremely difficult to reopen — even when a third party (like a receiver) claims the settlement was unauthorized. COs should verify that the person signing a settlement agreement actually has authority to bind the contractor. If the contractor is in receivership or bankruptcy, check with legal before finalizing any settlements."
+      },
+      {
+        caseNumber: "ASBCA No. 64346",
+        caseName: "Lift Up Trucking, LLC",
+        date: "January 27, 2026",
+        judge: "Panel",
+        outcome: "dismissed",
+        decisionType: "Jurisdictional",
+        link: "https://www.asbca.mil/Decisions/",
+        summary: "Lift Up Trucking requested specific performance from the Board regarding tick infestation remediation at a contract work site. The contractor admitted it had not performed the required services but still claimed entitlement to payment. The Board examined whether it had jurisdiction over the claim.",
+        bottomLine: "Dismissed for lack of jurisdiction. The Board found no sum certain in the claim and no entitlement to payment for work the contractor admitted it never performed. The Board cannot order specific performance.",
+        takeaway: "Two important reminders here: (1) The ASBCA cannot order specific performance — it can only award money damages. Contractors who want the government to do something (rather than pay something) need a different forum. (2) A CDA claim must state a sum certain — a specific dollar amount. If the contractor can't say exactly how much they're owed, the claim is jurisdictionally defective."
       },
       {
         caseNumber: "ASBCA Nos. 63933, 63934",
@@ -21,8 +78,9 @@ var ASBCA_DECISIONS = [
         outcome: "sustained",
         decisionType: "Consent Judgment",
         link: "https://www.asbca.mil/Decisions/",
-        summary: "Sierra Nevada Corporation appealed contract disputes to the ASBCA. The parties negotiated a resolution and jointly submitted a consent judgment to the Board for entry.",
-        bottomLine: "Appeals sustained. Board entered judgment in favor of Sierra Nevada Corporation in the amount of $53,288, inclusive of Contract Disputes Act interest."
+        summary: "Sierra Nevada Corporation appealed contract disputes to the ASBCA. Rather than litigate, the parties negotiated a resolution and jointly submitted a consent judgment for the Board to enter.",
+        bottomLine: "Appeals sustained by consent judgment in favor of Sierra Nevada Corporation in the amount of $53,288, inclusive of Contract Disputes Act interest.",
+        takeaway: "Not every Board case goes to trial. ADR and negotiated consent judgments are very common — in FY 2025, 100% of cases diverted to ADR at the ASBCA were successfully resolved. If you have a dispute heading to the Board, consider whether a negotiated resolution might be faster and cheaper than full litigation."
       }
     ]
   }
