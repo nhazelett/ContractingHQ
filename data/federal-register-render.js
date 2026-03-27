@@ -23,18 +23,19 @@ function renderFrCards(entries) {
         '</div>' +
       '</div>' +
       '<p class="fr-summary">' + e.summary + '</p>' +
-      '<div class="fr-impact">' +
+      (e.coImpact ? '<div class="fr-impact">' +
         '<div class="fr-impact-label">CO Impact</div>' +
         '<p>' + e.coImpact + '</p>' +
-      '</div>' +
+      '</div>' : '') +
     '</div>';
   }).join('');
 }
 
 /* Populate the current-week container on federal-register.html */
-document.addEventListener('DOMContentLoaded', function () {
+function initFrCurrentDigest() {
   var container = document.getElementById('frCurrentDigest');
   if (!container || !window.FR_DIGESTS || FR_DIGESTS.length === 0) return;
+  if (container.innerHTML.trim() !== '') return;
 
   var digest = FR_DIGESTS[0];
   container.innerHTML =
@@ -44,10 +45,10 @@ document.addEventListener('DOMContentLoaded', function () {
     '</div>' +
     (digest.intro ? '<p class="fr-digest-intro">' + digest.intro + '</p>' : '') +
     '<div class="fr-cards">' + renderFrCards(digest.entries) + '</div>';
+}
 
-  /* Also keep the live API feed below if it exists */
-  var liveFeed = document.getElementById('farFeed');
-  if (liveFeed) {
-    /* Feed is populated by its own inline script — leave it alone */
-  }
-});
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initFrCurrentDigest);
+} else {
+  initFrCurrentDigest();
+}

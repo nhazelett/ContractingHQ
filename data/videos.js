@@ -1,32 +1,55 @@
-// ContractingHQ — FAR Updates Data
-// Status options: "Final Rule" | "Proposed Rule" | "Interim Rule"
+// ContractingHQ — Training Videos Data
+// To add a video: copy a block below and fill in the details.
+// For YouTube videos, set youtubeId to the video ID (e.g., "dQw4w9WgXcQ")
+// Leave youtubeId as null for "Coming Soon" cards.
 
-const FAR_UPDATES = [
+var VIDEOS = [
   {
     id: 1,
-    date: "March 2025",
-    title: "FAR Rewrite — Simplified Structure Proposed",
-    status: "Proposed Rule",
-    farCase: "FAR Case 2024-001",
-    summary: "The FAC has proposed a comprehensive rewrite of the FAR structure, consolidating redundant provisions and modernizing language throughout Parts 1–53. The goal is to reduce the regulatory burden on small businesses and streamline the acquisition process. Public comment period closes April 30, 2025.",
-    practitionerNote: "This is the most significant proposed change to the FAR framework in decades. Pay attention to proposed changes in Parts 12 and 15 — commercial item contracting and source selection procedures are both in scope. Submit comments if your organization has strong equities here."
+    category: "Foundations",
+    title: "Introduction to Government Contracting",
+    description: "The big picture: what government contracting is, who the players are, and how the process flows from requirement to award.",
+    youtubeId: null,
+    comingSoon: true
   },
   {
     id: 2,
-    date: "February 2025",
-    title: "Cybersecurity Maturity Model Certification (CMMC) — Final Rule",
-    status: "Final Rule",
-    farCase: "DFARS Case 2019-D041",
-    summary: "The CMMC 2.0 final rule is now in effect. Defense contractors handling Controlled Unclassified Information (CUI) must meet specified CMMC levels. Level 1 is self-assessed; Levels 2 and 3 require third-party or government assessment.",
-    practitionerNote: "If you're acquiring anything that touches CUI — even peripherally — CMMC requirements belong in your solicitation. Work with your program office early to determine the right CMMC level. Getting this wrong at solicitation means a mod later, or worse, a protest."
+    category: "Foundations",
+    title: "Understanding the FAR",
+    description: "How to navigate the Federal Acquisition Regulation — where to find what you need and how to read it like a practitioner.",
+    youtubeId: null,
+    comingSoon: true
   },
   {
     id: 3,
-    date: "January 2025",
-    title: "Inflation Adjustments to Acquisition Thresholds",
-    status: "Final Rule",
-    farCase: "FAR Case 2023-010",
-    summary: "Effective January 2025, several key acquisition thresholds have been adjusted for inflation per statutory requirements. The micro-purchase threshold remains at $10,000; the simplified acquisition threshold remains at $250,000; the Truth in Negotiations Act threshold increases to $2.5M.",
-    practitionerNote: "The TINA threshold change is the one to bookmark. Verify current thresholds any time you're drafting a solicitation above $1M — these change periodically and the consequences of using the wrong threshold (especially for certified cost or pricing data requirements) can be significant."
+    category: "Acquisition Planning",
+    title: "Writing a Solid Requirements Package",
+    description: "What a good requirement looks like, what to watch for, and how to push back when something isn't ready.",
+    youtubeId: null,
+    comingSoon: true
+  },
+  {
+    id: 4,
+    category: "Source Selection",
+    title: "Simplified Acquisition Procedures",
+    description: "SAP in practice — when to use it, how to document it, and common mistakes that lead to protests.",
+    youtubeId: null,
+    comingSoon: true
+  },
+  {
+    id: 5,
+    category: "Contract Administration",
+    title: "Modifications: The Basics",
+    description: "Types of mods, when you need one, and how to process them correctly without creating problems down the road.",
+    youtubeId: null,
+    comingSoon: true
+  },
+  {
+    id: 6,
+    category: "Compliance",
+    title: "Documentation That Protects You",
+    description: "What your contract file needs to tell the story — the audit-proof approach to documentation every new CO should know.",
+    youtubeId: null,
+    comingSoon: true
   }
 ];

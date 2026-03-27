@@ -1,48 +1,33 @@
-// ContractingHQ — GAO Decision Data
-// Updated weekly. Most recent week is index 0.
-// Outcome options: "Sustained" | "Denied" | "Dismissed"
+// ContractingHQ — FAR Updates Data
+// To add an update: copy a block below and fill in the details.
+// status options: "final", "proposed", "interim"
 
-const GAO_UPDATES = [
+var FAR_UPDATES = [
   {
-    weekOf: "March 17, 2025",
-    decisions: [
-      {
-        caseNumber: "B-422891",
-        caseName: "Acme Defense Solutions, LLC",
-        date: "March 14, 2025",
-        outcome: "Sustained",
-        summary: "GAO sustained a protest challenging an agency's evaluation of the awardee's technical proposal. The agency failed to document its rationale for assigning strengths, leaving the record insufficient to support its source selection decision.",
-        takeaway: "Your source selection documentation needs to explain the *why* behind every strength and weakness assigned. A bare conclusion isn't enough — evaluators must connect specific proposal features to evaluation criteria. If you can't explain it in writing, your decision won't survive scrutiny."
-      },
-      {
-        caseNumber: "B-423105.2",
-        caseName: "Reliable Logistics Partners",
-        date: "March 12, 2025",
-        outcome: "Denied",
-        summary: "Protester argued the awardee's past performance rating was unreasonably high given a prior contract termination for default. GAO found the agency was aware of the termination and reasonably determined it was not indicative of future performance given mitigating circumstances.",
-        takeaway: "Agencies have discretion in past performance evaluations. Document any mitigating factors considered — GAO defers to reasonable agency judgments when the record shows the agency actually considered the issue."
-      }
-    ]
+    id: 1,
+    date: "February 2026",
+    title: "FAR Overhaul — First Wave of Changes Now in Effect",
+    status: "interim",
+    farCase: "EO 14275 / FAR Deviations",
+    summary: "The first wave of the Revolutionary FAR Overhaul (Executive Order 14275, signed April 2025) took effect February 1, 2026. The overhaul is restructuring the FAR from a prescriptive, rule-based system to a principles-based framework that gives contracting officers greater discretion. 38 FAR parts are currently subject to deviations, with rolling updates continuing through June 30, 2026. Formal notice-and-comment rulemaking is expected to begin spring 2026.",
+    practitionerNote: "This is the most significant change to the FAR since its 1984 rewrite. The rules you learned may already have changed. Before relying on any FAR provision, check acquisition.gov/far-overhaul for the latest class deviations. Agency-specific interim guidance is where the action is right now."
   },
   {
-    weekOf: "March 10, 2025",
-    decisions: [
-      {
-        caseNumber: "B-422644",
-        caseName: "Pinnacle Technology Group",
-        date: "March 7, 2025",
-        outcome: "Dismissed",
-        summary: "Protest dismissed as untimely. Protester filed more than 10 days after it knew or should have known the basis for protest. Agency's detailed debriefing provided sufficient information to trigger the filing clock.",
-        takeaway: "The 10-day protest clock runs from when a protester *knew or should have known* the basis — not just when they confirmed suspicions. Make sure your debriefings are complete and timely; a good debriefing actually reduces protest exposure by starting that clock."
-      },
-      {
-        caseNumber: "B-422988",
-        caseName: "BlueStar Systems Inc.",
-        date: "March 5, 2025",
-        outcome: "Sustained",
-        summary: "Agency conducted discussions with the awardee but not the protester, despite the protester being in the competitive range. GAO found the unequal discussions violated FAR 15.306.",
-        takeaway: "Once you establish a competitive range and open discussions, you must conduct meaningful discussions with all offerors in the competitive range. Skipping or shortchanging a competitive offeror on discussions is a fast track to a sustained protest."
-      }
-    ]
+    id: 2,
+    date: "November 2025",
+    title: "CMMC 2.0 Final Rule — Mandatory for DoD Contracts",
+    status: "final",
+    farCase: "DFARS Case 2025-D001",
+    summary: "The Cybersecurity Maturity Model Certification (CMMC) 2.0 became enforceable under DFARS effective November 10, 2025. Phase 1 (November 2025 through November 2026) requires CMMC Level 1 self-attestation and Level 2 assessments in select DoD solicitations. All contractors handling Controlled Unclassified Information (CUI) must meet applicable CMMC level requirements. Third-party assessment organizations (C3PAOs) are required for Level 2+ certifications starting Phase 2 in November 2026.",
+    practitionerNote: "If you’re writing or awarding DoD contracts involving CUI, CMMC clauses are now required. Verify contractor CMMC status in SPRS before award. Level 1 contractors can self-attest, but Level 2+ need documented assessments. Missing this is a significant liability at award."
+  },
+  {
+    id: 3,
+    date: "March 2026",
+    title: "Trade Agreements Thresholds Updated — FAC 2026-01",
+    status: "final",
+    farCase: "FAC 2026-01",
+    summary: "Federal Acquisition Circular 2026-01 (published March 13, 2026) updated WTO Government Procurement Agreement and Free Trade Agreement procurement thresholds under FAR Subpart 25.4. The new thresholds reflect updated figures published by the U.S. Trade Representative and affect which acquisitions require international competitive procedures and country-of-origin analysis.",
+    practitionerNote: "If you’re running a competitive acquisition above the simplified acquisition threshold, verify whether Trade Agreements Act requirements apply under the new thresholds. This is a routine but commonly missed update — especially on requirements near the boundary values. Check FAR 25.402 for the current figures."
   }
 ];

@@ -18,22 +18,23 @@ function renderGaoCards(decisions) {
         '<span class="gao-outcome ' + outcomeClass + '">' + outcomeLabel + '</span>' +
       '</div>' +
       '<p class="gao-summary">' + d.summary + '</p>' +
-      '<div class="gao-bottom-line">' +
+      (d.bottomLine ? '<div class="gao-bottom-line">' +
         '<div class="gao-bl-label">Bottom Line (GAO\'s Words)</div>' +
         '<p>' + d.bottomLine + '</p>' +
-      '</div>' +
-      '<div class="gao-takeaway">' +
+      '</div>' : '') +
+      (d.takeaway ? '<div class="gao-takeaway">' +
         '<div class="gao-takeaway-label">CO Takeaway</div>' +
         '<p>' + d.takeaway + '</p>' +
-      '</div>' +
+      '</div>' : '') +
     '</div>';
   }).join('');
 }
 
 // Render the current week on gao-decisions.html
-document.addEventListener('DOMContentLoaded', function () {
+function initGaoCurrentWeek() {
   var container = document.getElementById('gaoCurrentWeek');
   if (!container || !window.GAO_UPDATES || GAO_UPDATES.length === 0) return;
+  if (container.innerHTML.trim() !== '') return; // already rendered
 
   var week = GAO_UPDATES[0];
   container.innerHTML =
@@ -42,4 +43,11 @@ document.addEventListener('DOMContentLoaded', function () {
       '<span class="gao-week-date">Current</span>' +
     '</div>' +
     '<div class="gao-cards">' + renderGaoCards(week.decisions) + '</div>';
-});
+}
+
+// Run on DOMContentLoaded, or immediately if DOM is already ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initGaoCurrentWeek);
+} else {
+  initGaoCurrentWeek();
+}

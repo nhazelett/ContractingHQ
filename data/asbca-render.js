@@ -32,9 +32,10 @@ function renderAsbcaCards(decisions) {
 }
 
 /* Populate the current-month container on asbca.html */
-document.addEventListener('DOMContentLoaded', function () {
+function initAsbcaCurrentWeek() {
   var container = document.getElementById('asbcaCurrentWeek');
   if (!container || !window.ASBCA_DECISIONS || ASBCA_DECISIONS.length === 0) return;
+  if (container.innerHTML.trim() !== '') return;
 
   var period = ASBCA_DECISIONS[0];
   container.innerHTML =
@@ -44,4 +45,10 @@ document.addEventListener('DOMContentLoaded', function () {
     '</div>' +
     (period.intro ? '<p class="fr-digest-intro">' + period.intro + '</p>' : '') +
     '<div class="gao-cards">' + renderAsbcaCards(period.decisions) + '</div>';
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAsbcaCurrentWeek);
+} else {
+  initAsbcaCurrentWeek();
+}
