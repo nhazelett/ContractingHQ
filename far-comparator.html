@@ -187,38 +187,74 @@
   </div>
 </footer>
 
-<!-- DATA FILE: all 53 FAR parts stored locally -->
-<script src="far-comparator-data.js"></script>
+<!-- Part data loaded on demand from data/far-parts/part-N.json -->
 <script src="main.js"></script>
 <script>
-/* ── Populate dropdown from FAR_DATA ── */
+/* ── Part index (titles only — actual text lazy-loaded) ── */
+var FAR_INDEX = {
+  1:"Federal Acquisition Regulations System",2:"Definitions of Words and Terms",3:"Improper Business Practices and Personal Conflicts of Interest",4:"Administrative and Information Matters",5:"Publicizing Contract Actions",6:"Competition Requirements",7:"Acquisition Planning",8:"Required Sources of Supplies and Services",9:"Contractor Qualifications",10:"Market Research",11:"Describing Agency Needs",12:"Acquisition of Commercial Products and Commercial Services",13:"Simplified Acquisition Procedures",14:"Sealed Bidding",15:"Contracting by Negotiation",16:"Types of Contracts",17:"Special Contracting Methods",18:"Emergency Acquisitions",19:"Small Business Programs",20:"[Reserved]",21:"[Reserved]",22:"Application of Labor Laws to Government Acquisitions",23:"Environment, Energy and Water Efficiency, Renewable Energy Technologies, Occupational Safety, and Drug-Free Workplace",24:"Protection of Privacy and Freedom of Information",25:"Foreign Acquisition",26:"Other Socioeconomic Programs",27:"Patents, Data, and Copyrights",28:"Bonds and Insurance",29:"Taxes",30:"Cost Accounting Standards Administration",31:"Contract Cost Principles and Procedures",32:"Contract Financing",33:"Protests, Disputes, and Appeals",34:"Major System Acquisition",35:"Research and Development Contracting",36:"Construction and Architect-Engineer Contracts",37:"Service Contracting",38:"Federal Supply Schedule Contracting",39:"Acquisition of Information Technology",40:"[Reserved]",41:"Acquisition of Utility Services",42:"Contract Administration and Audit Services",43:"Contract Modifications",44:"Subcontracting Policies and Procedures",45:"Government Property",46:"Quality Assurance",47:"Transportation",48:"Value Engineering",49:"Termination of Contracts",50:"Extraordinary Contractual Actions and the Safety Act",51:"Use of Government Sources by Contractors",52:"Solicitation Provisions and Contract Clauses",53:"Forms"
+};
+
+/* ── Cache for loaded parts ── */
+var FAR_CACHE = {};
+
+/* ── Populate dropdown ── */
 (function() {
   var select = document.getElementById('partSelect');
-  if (typeof FAR_DATA !== 'undefined') {
-    var parts = Object.keys(FAR_DATA).sort(function(a, b) { return parseInt(a) - parseInt(b); });
-    for (var i = 0; i < parts.length; i++) {
-      var p = parts[i];
-      var opt = document.createElement('option');
-      opt.value = p;
-      opt.textContent = 'Part ' + p + ' \u2014 ' + (FAR_DATA[p].title || '');
-      select.appendChild(opt);
-    }
+  for (var p = 1; p <= 53; p++) {
+    var opt = document.createElement('option');
+    opt.value = p;
+    opt.textContent = 'Part ' + p + ' \u2014 ' + (FAR_INDEX[p] || '');
+    select.appendChild(opt);
   }
 })();
 
-/* ── Load comparison text ── */
+/* ── Load comparison text (lazy from JSON files) ── */
 function loadComparison() {
   var part = document.getElementById('partSelect').value;
   var leftBody = document.getElementById('leftBody');
   var rightBody = document.getElementById('rightBody');
 
-  if (!part || typeof FAR_DATA === 'undefined' || !FAR_DATA[part]) {
+  if (!part) {
     leftBody.innerHTML = '<div class="fc-empty"><div class="fc-empty-icon">&#9878;&#65039;</div><div class="fc-empty-msg"><strong>Select a FAR Part above</strong> to compare the RFO deviation guide text against the prior FAR.</div></div>';
     rightBody.innerHTML = '<div class="fc-empty"><div class="fc-empty-icon">&#128214;</div><div class="fc-empty-msg"><strong>The prior FAR text</strong> will appear here for side-by-side comparison.</div></div>';
     return;
   }
 
-  var data = FAR_DATA[part];
+  /* If already cached, render immediately */
+  if (FAR_CACHE[part]) {
+    renderPart(FAR_CACHE[part]);
+    return;
+  }
+
+  /* Show loading state */
+  leftBody.innerHTML = '<div class="fc-empty"><div class="fc-empty-icon">&#9203;</div><div class="fc-empty-msg">Loading Part ' + part + '...</div></div>';
+  rightBody.innerHTML = '<div class="fc-empty"><div class="fc-empty-icon">&#9203;</div><div class="fc-empty-msg">Loading Part ' + part + '...</div></div>';
+
+  /* Fetch the part JSON file */
+  fetch('data/far-parts/part-' + part + '.json')
+    .then(function(resp) {
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      return resp.json();
+    })
+    .then(function(data) {
+      FAR_CACHE[part] = data;
+      /* Only render if this part is still selected */
+      if (document.getElementById('partSelect').value === part) {
+        renderPart(data);
+      }
+    })
+    .catch(function(err) {
+      if (document.getElementById('partSelect').value === part) {
+        leftBody.innerHTML = '<div class="fc-empty"><div class="fc-empty-icon">&#9888;&#65039;</div><div class="fc-empty-msg">Could not load Part ' + part + '. <br><small>' + err.message + '</small></div></div>';
+        rightBody.innerHTML = leftBody.innerHTML;
+      }
+    });
+}
+
+function renderPart(data) {
+  var leftBody = document.getElementById('leftBody');
+  var rightBody = document.getElementById('rightBody');
   leftBody.innerHTML = renderText(data.newText || 'Text not yet available for this part.');
   rightBody.innerHTML = renderText(data.oldText || 'Text not yet available for this part.');
   leftBody.scrollTop = 0;
@@ -229,24 +265,28 @@ function loadComparison() {
   document.getElementById('countRight').textContent = '';
 }
 
-/* ── Markdown-ish to HTML ── */
+/* ── Plain text to HTML (regulation text, not markdown) ── */
 function renderText(text) {
-  var html = text
-    .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
-    .replace(/^### (.+)$/gm, '<h4>$1</h4>')
-    .replace(/^## (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^# (.+)$/gm, '<h2>$1</h2>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\[Reserved\]/gi, '<span class="fc-reserved">[Reserved]</span>');
+  /* Escape HTML entities */
+  var div = document.createElement('div');
+  div.textContent = text;
+  var escaped = div.innerHTML;
 
-  var lines = html.split('\n');
+  /* Wrap lines into paragraphs, preserving section structure */
+  var lines = escaped.split('\n');
   var result = [];
   var inP = false;
   for (var i = 0; i < lines.length; i++) {
     var line = lines[i].trim();
     if (!line) { if (inP) { result.push('</p>'); inP = false; } continue; }
-    if (line.match(/^<h[234]/)) { if (inP) { result.push('</p>'); inP = false; } result.push(line); }
-    else { if (!inP) { result.push('<p>'); inP = true; } else { result.push('<br>'); } result.push(line); }
+    /* Detect section headings (e.g. "2.101 Definitions." or "Subpart 2.1 - Definitions") */
+    if (line.match(/^(Part \d|Subpart \d|\d+\.\d+[\s\-])/i) && line.length < 200) {
+      if (inP) { result.push('</p>'); inP = false; }
+      result.push('<h3>' + line + '</h3>');
+    } else {
+      if (!inP) { result.push('<p>'); inP = true; } else { result.push('<br>'); }
+      result.push(line);
+    }
   }
   if (inP) result.push('</p>');
   return result.join('\n');
