@@ -414,9 +414,11 @@ function renderText(text) {
       escaped = escaped.replace(markerRe, '<span class="fc-para-marker">$1</span>');
     }
 
-    /* Bold definition terms: "Term means ..." or "Term has the meaning ..."
-       Handles multi-word terms and optional parenthetical acronyms like (AAC) */
-    escaped = escaped.replace(/^((?:[A-Z][a-z]+(?:[,\s\-]+(?:and |or |of |for |the |a |an |in |to |by |on |at |with )?)*[A-Za-z]+(?:\s*\([A-Z]+\))?)( (?:means |has the meaning ))/, '<strong class="fc-def-term">$1</strong>$2');
+    /* Bold definition terms: "Term means ..." or "Term has the meaning ..." */
+    var defMatch = escaped.match(/^(.+?)( means | has the meaning )/);
+    if (defMatch && /^[A-Z]/.test(defMatch[1]) && defMatch[1].length < 120) {
+      escaped = '<strong class="fc-def-term">' + defMatch[1] + '</strong>' + defMatch[2] + escaped.substring(defMatch[0].length);
+    }
 
     html.push('<p' + indent + '>' + escaped + '</p>');
   }
