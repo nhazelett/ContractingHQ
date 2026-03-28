@@ -47,10 +47,17 @@
     .fc-pane-body h2:first-child { margin-top: 0; }
     .fc-pane-body h3 { font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; color: var(--accent, #4a9eff); margin: 1.25rem 0 0.4rem; }
     .fc-pane-body h4 { font-size: 0.9rem; font-weight: 700; color: var(--white, #fff); margin: 1rem 0 0.3rem; }
-    .fc-pane-body p { margin-bottom: 0.75rem; }
+    .fc-pane-body p { margin-bottom: 0.65rem; }
     .fc-pane-body strong { color: var(--white, #fff); font-weight: 600; }
     .fc-pane-body .fc-reserved { color: rgba(74,158,255,0.4); font-style: italic; }
     .fc-highlight { background: rgba(251,191,36,0.3); color: #fff; padding: 0 1px; border-radius: 2px; }
+    .fc-pane-body .fc-toc { margin-bottom: 1.2rem; padding: 0.8rem 1rem; background: rgba(74,158,255,0.04); border: 1px solid rgba(74,158,255,0.08); border-radius: 6px; font-size: 0.82rem; line-height: 1.9; color: rgba(139,148,158,0.7); }
+    .fc-pane-body .fc-toc-title { font-weight: 700; color: var(--silver, #8b949e); margin-bottom: 0.3rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .fc-pane-body .fc-indent-1 { padding-left: 1.5em; } /* (a) (b) (c) */
+    .fc-pane-body .fc-indent-2 { padding-left: 3em; }   /* (1) (2) (3) */
+    .fc-pane-body .fc-indent-3 { padding-left: 4.5em; } /* (i) (ii) (iii) */
+    .fc-pane-body .fc-indent-4 { padding-left: 6em; }   /* (A) (B) (C) */
+    .fc-pane-body .fc-para-marker { color: var(--accent, #4a9eff); font-weight: 600; }
 
     .fc-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; text-align: center; flex: 1; }
     .fc-empty-icon { font-size: 2.5rem; margin-bottom: 1rem; }
@@ -265,31 +272,110 @@ function renderPart(data) {
   document.getElementById('countRight').textContent = '';
 }
 
-/* ── Plain text to HTML (regulation text, not markdown) ── */
+/* ── Plain text to HTML with FAR-aware formatting ── */
 function renderText(text) {
-  /* Escape HTML entities */
-  var div = document.createElement('div');
-  div.textContent = text;
-  var escaped = div.innerHTML;
+  /* 1. Normalize whitespace: collapse runs of spaces/tabs, trim */
+  var s = text.replace(/[\t ]+/g, ' ').trim();
 
-  /* Wrap lines into paragraphs, preserving section structure */
-  var lines = escaped.split('\n');
-  var result = [];
-  var inP = false;
+  /* 2. Helper: HTML-escape a string */
+  function esc(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  /* 3. Insert markers (\n) before structural patterns so we can split.
+     Order matters — longest/most-specific patterns first. */
+
+  /* Section numbers like "2.101 " or "52.212-4 " (FAR section references).
+     Break before them when preceded by sentence-end or closing paren. */
+  s = s.replace(/(?<=[.;:\)\-]) ?(\d{1,2}\.\d{2,4}(?:-\d+)?[\s\u00a0]+[A-Z])/g, '\n$1');
+
+  /* "Subpart N.N - Title" */
+  s = s.replace(/(?<=.)[\s]?(Subpart \d)/g, '\n$1');
+
+  /* "Part N - Title" (but not "part 12" mid-sentence) */
+  s = s.replace(/(?<=.)[\s]?(Part \d{1,2} -)/g, '\n$1');
+
+  /* "Parent topic:" separator (artifact from acquisition.gov) */
+  s = s.replace(/ ?Parent topic:[^\n]*/g, '\n');
+
+  /* Paragraph/sub-paragraph markers.
+     Lookbehind: sentence-end punctuation, closing paren, or dashes (incl em/en dash).
+     Roman numerals MUST be checked before lowercase letters since (i)-(x) overlap. */
+  var lb = '(?<=[.;:\\)\\-\\u2014\\u2013:])';
+
+  /* Roman numeral sub-paragraphs: (i), (ii), (iii), (iv), (v)... (xii) etc */
+  s = s.replace(new RegExp(lb + ' ?(\\((?:x{0,3}(?:i{1,3}|iv|v(?:i{0,3})?|ix))\\) )', 'gi'), '\n$1');
+
+  /* Upper-case sub-sub-paragraphs: (A), (B), (C)... */
+  s = s.replace(new RegExp(lb + ' ?(\\([A-Z]\\) )', 'g'), '\n$1');
+
+  /* Numbered sub-paragraphs: (1), (2) ... */
+  s = s.replace(new RegExp(lb + ' ?(\\(\\d{1,2}\\) )', 'g'), '\n$1');
+
+  /* Paragraph markers: (a), (b) ... (lowercase letters) */
+  s = s.replace(new RegExp(lb + ' ?(\\([a-z]\\) )', 'g'), '\n$1');
+
+  /* Non-regulatory / Caveat boilerplate blocks */
+  s = s.replace(/ ?(Non-regulatory Resources)/g, '\n$1');
+  s = s.replace(/ ?(Caveat(?:The| ))/g, '\n$1');
+
+  /* 4. Split into lines and classify each */
+  var lines = s.split('\n');
+  var html = [];
+
   for (var i = 0; i < lines.length; i++) {
     var line = lines[i].trim();
-    if (!line) { if (inP) { result.push('</p>'); inP = false; } continue; }
-    /* Detect section headings (e.g. "2.101 Definitions." or "Subpart 2.1 - Definitions") */
-    if (line.match(/^(Part \d|Subpart \d|\d+\.\d+[\s\-])/i) && line.length < 200) {
-      if (inP) { result.push('</p>'); inP = false; }
-      result.push('<h3>' + line + '</h3>');
-    } else {
-      if (!inP) { result.push('<p>'); inP = true; } else { result.push('<br>'); }
-      result.push(line);
+    if (!line) continue;
+
+    var escaped = esc(line);
+
+    /* Part title */
+    if (/^Part \d{1,2}\s*-\s*.+/.test(line) && line.length < 200) {
+      html.push('<h2>' + escaped + '</h2>');
+      continue;
     }
+
+    /* Subpart title */
+    if (/^Subpart \d{1,2}\.\d/.test(line) && line.length < 200) {
+      html.push('<h3>' + escaped + '</h3>');
+      continue;
+    }
+
+    /* Section heading: "2.101 Definitions." or "52.212-4 Contract Terms..." */
+    if (/^\d{1,2}\.\d{2,4}(?:-\d+)?\s/.test(line) && line.length < 300) {
+      /* Bold the section number */
+      escaped = escaped.replace(/^(\d{1,2}\.\d{2,4}(?:-\d+)?)/, '<strong>$1</strong>');
+      html.push('<h4>' + escaped + '</h4>');
+      continue;
+    }
+
+    /* Detect indent level from paragraph marker.
+       Roman numerals checked BEFORE lowercase to avoid (i)-(v)(ix)(x) being treated as (a)-(z). */
+    var indent = '';
+    var markerRe;
+    if (/^\((?:x{0,3}(?:i{1,3}|iv|v(?:i{0,3})?|ix))\)\s/i.test(line)) {
+      indent = ' class="fc-indent-3"';
+      markerRe = /^(\([ivxIVX]+\))/;
+    } else if (/^\([A-Z]\)\s/.test(line)) {
+      indent = ' class="fc-indent-4"';
+      markerRe = /^(\([A-Z]\))/;
+    } else if (/^\([a-z]\)\s/.test(line)) {
+      indent = ' class="fc-indent-1"';
+      markerRe = /^(\([a-z]\))/;
+    } else if (/^\(\d{1,2}\)\s/.test(line)) {
+      indent = ' class="fc-indent-2"';
+      markerRe = /^(\(\d{1,2}\))/;
+    }
+
+    /* Highlight the paragraph marker */
+    if (markerRe) {
+      escaped = escaped.replace(markerRe, '<span class="fc-para-marker">$1</span>');
+    }
+
+    html.push('<p' + indent + '>' + escaped + '</p>');
   }
-  if (inP) result.push('</p>');
-  return result.join('\n');
+
+  return html.join('');
 }
 
 /* ── Search within a pane ── */
