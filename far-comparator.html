@@ -1,66 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FAR Comparator — ContractingHQ</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
-<style>
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  :root{--bg:#0d1117;--surface:#161b22;--border:rgba(255,255,255,.08);--text:#e2e8f0;--muted:#8b949e;--accent:#4a9eff;}
-  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
-  /* Reuse site nav styles */
-  .comparator-shell{display:flex;flex-direction:column;flex:1;overflow:hidden;}
-  .comp-header{background:var(--surface);border-bottom:1px solid var(--border);padding:.75rem 1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
-  .comp-title{font-size:1rem;font-weight:700;color:var(--text);}
-  .comp-subtitle{font-size:.8rem;color:var(--muted);}
-  .comp-nav{display:flex;align-items:center;gap:.6rem;flex:1;flex-wrap:wrap;}
-  .part-label{font-size:.78rem;color:var(--muted);white-space:nowrap;}
-  .part-select{background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:.35rem .65rem;font-size:.82rem;cursor:pointer;min-width:200px;}
-  .part-select:focus{outline:none;border-color:var(--accent);}
-  .comp-go-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:.38rem .9rem;font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;}
-  .comp-go-btn:hover{opacity:.88;}
-  .comp-links{display:flex;gap:.5rem;margin-left:auto;}
-  .comp-link{font-size:.75rem;color:var(--accent);text-decoration:none;padding:.25rem .5rem;border:1px solid rgba(74,158,255,.25);border-radius:4px;white-space:nowrap;}
-  .comp-link:hover{background:rgba(74,158,255,.08);}
-  .comp-panes{display:grid;grid-template-columns:1fr 1fr;flex:1;min-height:0;gap:0;}
-  .comp-pane{display:flex;flex-direction:column;border-right:1px solid var(--border);}
-  .comp-pane:last-child{border-right:none;}
-  .pane-header{background:var(--surface);border-bottom:1px solid var(--border);padding:.5rem 1rem;display:flex;align-items:center;gap:.75rem;}
-  .pane-label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
-  .pane-badge{font-size:.65rem;font-weight:700;padding:.18rem .5rem;border-radius:3px;text-transform:uppercase;}
-  .badge-new{background:rgba(74,158,255,.18);color:#4a9eff;}
-  .badge-old{background:rgba(255,200,50,.12);color:#fbbf24;}
-  .pane-url{font-size:.7rem;color:var(--muted);margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px;}
-  .pane-iframe{flex:1;border:none;width:100%;background:#fff;}
-  .pane-blocked{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;text-align:center;background:var(--bg);flex:1;}
-  .pane-blocked-icon{font-size:2.5rem;}
-  .pane-blocked-msg{font-size:.9rem;color:var(--muted);line-height:1.6;max-width:360px;}
-  .pane-blocked-link{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.2rem;background:var(--accent);color:#fff;border-radius:7px;font-weight:600;font-size:.88rem;text-decoration:none;}
-  .pane-blocked-link:hover{opacity:.88;}
-  .comp-divider{width:5px;background:var(--border);cursor:col-resize;transition:background .15s;position:relative;}
-  .comp-divider:hover,.comp-divider.dragging{background:var(--accent);}
-  .comp-divider::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:3px;height:40px;border-radius:2px;background:rgba(255,255,255,.15);}
-  .comp-bottom{background:var(--surface);border-top:1px solid var(--border);padding:.5rem 1.25rem;display:flex;align-items:center;gap:1rem;font-size:.75rem;color:var(--muted);}
-  .comp-bottom a{color:var(--accent);}
-  @media(max-width:700px){.comp-panes{grid-template-columns:1fr;}.comp-pane:first-child{height:50vh;}.comp-pane:last-child{height:50vh;}}
-</style>
-</head>
-<body>
-<!DOCTYPE html>
-<html lang="en">
-<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Side-by-side comparison of the Revolutionary FAR Overhaul deviation guide vs. the prior Federal Acquisition Regulation. Navigate by part." />
-
-  <title>ContractingHQ | KTHQ &mdash; The One-Stop Resource for Contracting Officers</title>
+  <meta name="description" content="Side-by-side comparison of the Revolutionary FAR Overhaul text vs. the prior Federal Acquisition Regulation. All text stored locally for durability." />
+  <title>FAR Comparator | ContractingHQ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
-<style>.bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}</style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s;margin-top:.75rem}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+
+    /* FAR Comparator styles — fc- prefix */
+    .fc-bg { background: #040d1f; min-height: 80vh; }
+    .fc-header { background: rgba(10,22,50,0.95); border-bottom: 1px solid rgba(74,158,255,0.12); padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; position: sticky; top: 0; z-index: 80; backdrop-filter: blur(8px); }
+    .fc-header-title { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white, #fff); white-space: nowrap; }
+    .fc-header-sub { font-size: 0.78rem; color: var(--silver, #8b949e); }
+    .fc-nav { display: flex; align-items: center; gap: 0.6rem; margin-left: 1rem; }
+    .fc-label { font-size: 0.78rem; color: var(--silver, #8b949e); white-space: nowrap; }
+    .fc-select { background: rgba(4,13,31,0.9); color: var(--text-primary, #e2e8f0); border: 1px solid rgba(74,158,255,0.2); border-radius: 6px; padding: 0.38rem 0.65rem; font-size: 0.82rem; font-family: inherit; cursor: pointer; min-width: 280px; }
+    .fc-select:focus { outline: none; border-color: var(--accent, #4a9eff); }
+    .fc-go { background: var(--accent, #4a9eff); color: #fff; border: none; border-radius: 6px; padding: 0.38rem 0.9rem; font-size: 0.82rem; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; }
+    .fc-go:hover { opacity: 0.88; }
+    .fc-links { display: flex; gap: 0.5rem; margin-left: auto; }
+    .fc-ext { font-size: 0.72rem; color: var(--accent, #4a9eff); text-decoration: none; padding: 0.25rem 0.5rem; border: 1px solid rgba(74,158,255,0.2); border-radius: 4px; white-space: nowrap; }
+    .fc-ext:hover { background: rgba(74,158,255,0.08); }
+
+    .fc-panes { display: grid; grid-template-columns: 1fr 5px 1fr; min-height: calc(100vh - 200px); }
+    .fc-pane { display: flex; flex-direction: column; overflow: hidden; }
+    .fc-pane-head { background: rgba(10,22,50,0.7); border-bottom: 1px solid rgba(74,158,255,0.1); padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; }
+    .fc-pane-label { font-size: 0.75rem; font-weight: 700; color: var(--silver, #8b949e); text-transform: uppercase; letter-spacing: 0.05em; }
+    .fc-badge { font-size: 0.62rem; font-weight: 700; padding: 0.18rem 0.5rem; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .fc-badge-new { background: rgba(74,158,255,0.15); color: #4a9eff; }
+    .fc-badge-old { background: rgba(251,191,36,0.12); color: #fbbf24; }
+
+    .fc-search { display: flex; gap: 0.5rem; padding: 0.5rem 1rem; background: rgba(4,13,31,0.5); border-bottom: 1px solid rgba(74,158,255,0.08); }
+    .fc-search-input { flex: 1; background: rgba(4,13,31,0.9); color: var(--text-primary, #e2e8f0); border: 1px solid rgba(74,158,255,0.15); border-radius: 4px; padding: 0.3rem 0.6rem; font-size: 0.78rem; font-family: inherit; }
+    .fc-search-input:focus { outline: none; border-color: var(--accent, #4a9eff); }
+    .fc-search-input::placeholder { color: rgba(139,148,158,0.5); }
+    .fc-search-count { font-size: 0.7rem; color: var(--silver, #8b949e); align-self: center; min-width: 3rem; text-align: right; }
+
+    .fc-pane-body { flex: 1; overflow-y: auto; padding: 1.5rem; color: var(--silver, #8b949e); font-size: 0.88rem; line-height: 1.8; }
+    .fc-pane-body h2 { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--white, #fff); margin: 1.5rem 0 0.5rem; padding-bottom: 0.3rem; border-bottom: 1px solid rgba(74,158,255,0.1); }
+    .fc-pane-body h2:first-child { margin-top: 0; }
+    .fc-pane-body h3 { font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; color: var(--accent, #4a9eff); margin: 1.25rem 0 0.4rem; }
+    .fc-pane-body h4 { font-size: 0.9rem; font-weight: 700; color: var(--white, #fff); margin: 1rem 0 0.3rem; }
+    .fc-pane-body p { margin-bottom: 0.75rem; }
+    .fc-pane-body strong { color: var(--white, #fff); font-weight: 600; }
+    .fc-pane-body .fc-reserved { color: rgba(74,158,255,0.4); font-style: italic; }
+    .fc-highlight { background: rgba(251,191,36,0.3); color: #fff; padding: 0 1px; border-radius: 2px; }
+
+    .fc-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; text-align: center; flex: 1; }
+    .fc-empty-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .fc-empty-msg { color: var(--silver, #8b949e); font-size: 0.9rem; line-height: 1.7; max-width: 400px; }
+    .fc-empty-msg strong { color: var(--white, #fff); }
+
+    .fc-divider { background: rgba(74,158,255,0.1); cursor: col-resize; transition: background 0.15s; position: relative; }
+    .fc-divider:hover, .fc-divider.dragging { background: var(--accent, #4a9eff); }
+    .fc-divider::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 3px; height: 40px; border-radius: 2px; background: rgba(255,255,255,0.1); }
+
+    .fc-bottom { background: rgba(10,22,50,0.95); border-top: 1px solid rgba(74,158,255,0.12); padding: 0.5rem 1.5rem; display: flex; align-items: center; font-size: 0.75rem; color: var(--silver, #8b949e); flex-wrap: wrap; gap: 0.5rem; }
+    .fc-bottom a { color: var(--accent, #4a9eff); text-decoration: none; }
+    .fc-bottom a:hover { text-decoration: underline; }
+
+    @media (max-width: 768px) {
+      .fc-panes { grid-template-columns: 1fr; min-height: auto; }
+      .fc-divider { display: none; }
+      .fc-pane { min-height: 50vh; }
+      .fc-nav { margin-left: 0; flex-wrap: wrap; }
+      .fc-select { min-width: 180px; }
+      .fc-header { flex-direction: column; align-items: flex-start; }
+      .fc-links { margin-left: 0; }
+    }
+  </style>
 </head>
 <body>
 
@@ -85,172 +99,248 @@
     </ul>
   </div>
 </nav>
-<div class="comparator-shell">
-  <div class="comp-header">
+
+<!-- COMPARATOR -->
+<div class="fc-bg">
+  <div class="fc-header">
     <div>
-      <div class="comp-title">&#9878;&#65039; FAR Comparator</div>
-      <div class="comp-subtitle">Revolutionary FAR Overhaul &mdash; New vs. Prior</div>
+      <div class="fc-header-title">&#9878;&#65039; FAR Comparator</div>
+      <div class="fc-header-sub">Revolutionary FAR Overhaul &mdash; New vs. Prior (stored locally)</div>
     </div>
-    <div class="comp-nav">
-      <span class="part-label">Jump to FAR Part:</span>
-      <select class="part-select" id="partSelect">
+    <div class="fc-nav">
+      <span class="fc-label">FAR Part:</span>
+      <select class="fc-select" id="partSelect">
         <option value="">-- Select a Part --</option>
-        <option value="1">Part 1 &mdash; Federal Acquisition Regulations System</option>
-        <option value="2">Part 2 &mdash; Definitions</option>
-        <option value="3">Part 3 &mdash; Improper Business Practices</option>
-        <option value="4">Part 4 &mdash; Administrative Matters</option>
-        <option value="5">Part 5 &mdash; Publicizing Contract Actions</option>
-        <option value="6">Part 6 &mdash; Competition Requirements</option>
-        <option value="7">Part 7 &mdash; Acquisition Planning</option>
-        <option value="8">Part 8 &mdash; Required Sources</option>
-        <option value="9">Part 9 &mdash; Contractor Qualifications</option>
-        <option value="10">Part 10 &mdash; Market Research</option>
-        <option value="11">Part 11 &mdash; Describing Agency Needs</option>
-        <option value="12">Part 12 &mdash; Commercial Products &amp; Services</option>
-        <option value="13">Part 13 &mdash; Simplified Acquisition</option>
-        <option value="14">Part 14 &mdash; Sealed Bidding</option>
-        <option value="15">Part 15 &mdash; Contracting by Negotiation</option>
-        <option value="16">Part 16 &mdash; Contract Types</option>
-        <option value="17">Part 17 &mdash; Special Contracting Methods</option>
-        <option value="18">Part 18 &mdash; Emergency Acquisitions</option>
-        <option value="19">Part 19 &mdash; Small Business Programs</option>
-        <option value="22">Part 22 &mdash; Labor Standards</option>
-        <option value="25">Part 25 &mdash; Foreign Acquisition</option>
-        <option value="27">Part 27 &mdash; Patents, Data &amp; Copyrights</option>
-        <option value="28">Part 28 &mdash; Bonds &amp; Insurance</option>
-        <option value="31">Part 31 &mdash; Contract Cost Principles</option>
-        <option value="32">Part 32 &mdash; Contract Financing</option>
-        <option value="33">Part 33 &mdash; Protests &amp; Disputes</option>
-        <option value="36">Part 36 &mdash; Construction</option>
-        <option value="37">Part 37 &mdash; Service Contracting</option>
-        <option value="42">Part 42 &mdash; Contract Administration</option>
-        <option value="43">Part 43 &mdash; Contract Modifications</option>
-        <option value="44">Part 44 &mdash; Subcontracting</option>
-        <option value="45">Part 45 &mdash; Government Property</option>
-        <option value="46">Part 46 &mdash; Quality Assurance</option>
-        <option value="47">Part 47 &mdash; Transportation</option>
-        <option value="49">Part 49 &mdash; Terminations</option>
-        <option value="52">Part 52 &mdash; Solicitation Provisions &amp; Contract Clauses</option>
       </select>
-      <button class="comp-go-btn" id="goBtn" onclick="navigateParts()">Go</button>
+      <button class="fc-go" id="goBtn">Compare</button>
     </div>
-    <div class="comp-links">
-      <a href="https://acquisition.gov/far-overhaul/far-part-deviation-guide" target="_blank" rel="noopener" class="comp-link">&#8599; New FAR</a>
-      <a href="https://acquisition.gov/browse/index/far" target="_blank" rel="noopener" class="comp-link">&#8599; Prior FAR</a>
-    </div>
-  </div>
-
-  <div class="comp-panes" id="compPanes">
-    <div class="comp-pane" id="leftPane">
-      <div class="pane-header">
-        <span class="pane-label">New FAR</span>
-        <span class="pane-badge badge-new">Overhaul Deviation Guide</span>
-        <span class="pane-url" id="leftUrl">acquisition.gov/far-overhaul/far-part-deviation-guide</span>
-      </div>
-      <div id="leftContent" style="flex:1;display:flex;flex-direction:column;"></div>
-    </div>
-
-    <div class="comp-divider" id="divider"></div>
-
-    <div class="comp-pane" id="rightPane">
-      <div class="pane-header">
-        <span class="pane-label">Prior FAR</span>
-        <span class="pane-badge badge-old">Pre-Overhaul Text</span>
-        <span class="pane-url" id="rightUrl">acquisition.gov/browse/index/far</span>
-      </div>
-      <div id="rightContent" style="flex:1;display:flex;flex-direction:column;"></div>
+    <div class="fc-links">
+      <a href="https://acquisition.gov/far-overhaul/far-part-deviation-guide" target="_blank" rel="noopener" class="fc-ext">&#8599; RFO Deviation Guide</a>
+      <a href="https://acquisition.gov/browse/index/far" target="_blank" rel="noopener" class="fc-ext">&#8599; Prior FAR</a>
     </div>
   </div>
 
-  <div class="comp-bottom">
-    <span>&#9888; acquisition.gov may block iframe embedding. If panes are blank, use the &#8599; links above to open each side in a new tab.</span>
+  <div class="fc-panes" id="fcPanes">
+    <!-- LEFT PANE: New FAR -->
+    <div class="fc-pane">
+      <div class="fc-pane-head">
+        <span class="fc-pane-label">New FAR</span>
+        <span class="fc-badge fc-badge-new">RFO Deviation Guide</span>
+      </div>
+      <div class="fc-search">
+        <input type="text" class="fc-search-input" id="searchLeft" placeholder="Search new text..." />
+        <span class="fc-search-count" id="countLeft"></span>
+      </div>
+      <div class="fc-pane-body" id="leftBody">
+        <div class="fc-empty">
+          <div class="fc-empty-icon">&#9878;&#65039;</div>
+          <div class="fc-empty-msg"><strong>Select a FAR Part above</strong> to compare the RFO deviation guide text against the prior FAR.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIVIDER -->
+    <div class="fc-divider" id="fcDivider"></div>
+
+    <!-- RIGHT PANE: Prior FAR -->
+    <div class="fc-pane">
+      <div class="fc-pane-head">
+        <span class="fc-pane-label">Prior FAR</span>
+        <span class="fc-badge fc-badge-old">Pre-Overhaul Text</span>
+      </div>
+      <div class="fc-search">
+        <input type="text" class="fc-search-input" id="searchRight" placeholder="Search prior text..." />
+        <span class="fc-search-count" id="countRight"></span>
+      </div>
+      <div class="fc-pane-body" id="rightBody">
+        <div class="fc-empty">
+          <div class="fc-empty-icon">&#128214;</div>
+          <div class="fc-empty-msg"><strong>The prior FAR text</strong> will appear here for side-by-side comparison.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc-bottom">
+    <span>All FAR text stored locally &mdash; last updated March 2026. FAR text is public domain federal regulation.</span>
     <span style="margin-left:auto;">Sources: <a href="https://acquisition.gov/far-overhaul/far-part-deviation-guide" target="_blank" rel="noopener">FAR Overhaul Deviation Guide</a> &bull; <a href="https://acquisition.gov/browse/index/far" target="_blank" rel="noopener">Prior FAR (acquisition.gov)</a></span>
   </div>
 </div>
 
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- DATA FILE: all 53 FAR parts stored locally -->
+<script src="far-comparator-data.js"></script>
+<script src="main.js"></script>
 <script>
-const NEW_FAR_BASE = 'https://acquisition.gov/far-overhaul/far-part-deviation-guide';
-const OLD_FAR_BASE = 'https://acquisition.gov/browse/index/far';
-const NEW_FAR_PART = p => 'https://acquisition.gov/far-overhaul/far-part-deviation-guide#far_part_' + p;
-const OLD_FAR_PART = p => 'https://acquisition.gov/browse/index/far#far_part_' + p;
-
-function loadPane(containerId, url, urlLabelId) {
-  const el = document.getElementById(containerId);
-  const lbl = document.getElementById(urlLabelId);
-  if(lbl) lbl.textContent = url.replace('https://','');
-  el.innerHTML = '';
-  const iframe = document.createElement('iframe');
-  iframe.src = url;
-  iframe.style.cssText = 'flex:1;border:none;width:100%;min-height:100%;';
-  iframe.allow = 'fullscreen';
-  iframe.onload = function() {
-    try {
-      // If we can access contentDocument it loaded
-      if(iframe.contentDocument) return;
-    } catch(e) {
-      // Cross-origin = loaded (just can't inspect) — show anyway
+/* ── Populate dropdown from FAR_DATA ── */
+(function() {
+  var select = document.getElementById('partSelect');
+  if (typeof FAR_DATA !== 'undefined') {
+    var parts = Object.keys(FAR_DATA).sort(function(a, b) { return parseInt(a) - parseInt(b); });
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i];
+      var opt = document.createElement('option');
+      opt.value = p;
+      opt.textContent = 'Part ' + p + ' \u2014 ' + (FAR_DATA[p].title || '');
+      select.appendChild(opt);
     }
-  };
-  iframe.onerror = function() { showBlocked(el, url); };
-  el.appendChild(iframe);
-  // Check for X-Frame-Options block after 3s
-  setTimeout(function() {
-    try {
-      var h = iframe.contentDocument?.location?.href;
-      if(!h) showBlocked(el, url);
-    } catch(e) { /* cross-origin is normal, do nothing */ }
-  }, 3500);
-}
+  }
+})();
 
-function showBlocked(container, url) {
-  container.innerHTML = '<div class="pane-blocked"><div class="pane-blocked-icon">&#128683;</div><div class="pane-blocked-msg">This site does not allow embedding in iframes.<br>Click below to open it in a new tab and use side-by-side browser windows for comparison.</div><a href="' + url + '" target="_blank" rel="noopener" class="pane-blocked-link">&#8599; Open in New Tab</a></div>';
-}
+/* ── Load comparison text ── */
+function loadComparison() {
+  var part = document.getElementById('partSelect').value;
+  var leftBody = document.getElementById('leftBody');
+  var rightBody = document.getElementById('rightBody');
 
-function navigateParts() {
-  const part = document.getElementById('partSelect').value;
-  if(!part) {
-    loadPane('leftContent', NEW_FAR_BASE, 'leftUrl');
-    loadPane('rightContent', OLD_FAR_BASE, 'rightUrl');
+  if (!part || typeof FAR_DATA === 'undefined' || !FAR_DATA[part]) {
+    leftBody.innerHTML = '<div class="fc-empty"><div class="fc-empty-icon">&#9878;&#65039;</div><div class="fc-empty-msg"><strong>Select a FAR Part above</strong> to compare the RFO deviation guide text against the prior FAR.</div></div>';
+    rightBody.innerHTML = '<div class="fc-empty"><div class="fc-empty-icon">&#128214;</div><div class="fc-empty-msg"><strong>The prior FAR text</strong> will appear here for side-by-side comparison.</div></div>';
     return;
   }
-  loadPane('leftContent', NEW_FAR_PART(part), 'leftUrl');
-  loadPane('rightContent', OLD_FAR_PART(part), 'rightUrl');
+
+  var data = FAR_DATA[part];
+  leftBody.innerHTML = renderText(data.newText || 'Text not yet available for this part.');
+  rightBody.innerHTML = renderText(data.oldText || 'Text not yet available for this part.');
+  leftBody.scrollTop = 0;
+  rightBody.scrollTop = 0;
+  document.getElementById('searchLeft').value = '';
+  document.getElementById('searchRight').value = '';
+  document.getElementById('countLeft').textContent = '';
+  document.getElementById('countRight').textContent = '';
 }
 
-// Draggable divider
+/* ── Markdown-ish to HTML ── */
+function renderText(text) {
+  var html = text
+    .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
+    .replace(/^### (.+)$/gm, '<h4>$1</h4>')
+    .replace(/^## (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^# (.+)$/gm, '<h2>$1</h2>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\[Reserved\]/gi, '<span class="fc-reserved">[Reserved]</span>');
+
+  var lines = html.split('\n');
+  var result = [];
+  var inP = false;
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].trim();
+    if (!line) { if (inP) { result.push('</p>'); inP = false; } continue; }
+    if (line.match(/^<h[234]/)) { if (inP) { result.push('</p>'); inP = false; } result.push(line); }
+    else { if (!inP) { result.push('<p>'); inP = true; } else { result.push('<br>'); } result.push(line); }
+  }
+  if (inP) result.push('</p>');
+  return result.join('\n');
+}
+
+/* ── Search within a pane ── */
+function highlightPane(inputId, bodyId, countId) {
+  var term = document.getElementById(inputId).value.trim();
+  var body = document.getElementById(bodyId);
+  var countEl = document.getElementById(countId);
+
+  // Remove old highlights
+  var marks = body.querySelectorAll('.fc-highlight');
+  for (var i = marks.length - 1; i >= 0; i--) {
+    var parent = marks[i].parentNode;
+    parent.replaceChild(document.createTextNode(marks[i].textContent), marks[i]);
+    parent.normalize();
+  }
+
+  if (!term) { countEl.textContent = ''; return; }
+
+  var count = 0;
+  var walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT, null, false);
+  var nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+
+  var regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+  for (var j = 0; j < nodes.length; j++) {
+    var node = nodes[j];
+    if (!regex.test(node.textContent)) continue;
+    var frag = document.createDocumentFragment();
+    var parts = node.textContent.split(regex);
+    for (var k = 0; k < parts.length; k++) {
+      if (regex.test(parts[k])) {
+        var mark = document.createElement('span');
+        mark.className = 'fc-highlight';
+        mark.textContent = parts[k];
+        frag.appendChild(mark);
+        count++;
+      } else {
+        frag.appendChild(document.createTextNode(parts[k]));
+      }
+      regex.lastIndex = 0;
+    }
+    node.parentNode.replaceChild(frag, node);
+  }
+
+  countEl.textContent = count + ' found';
+
+  // Scroll to first match
+  var first = body.querySelector('.fc-highlight');
+  if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/* ── Event listeners (no inline onclick) ── */
+document.getElementById('goBtn').addEventListener('click', loadComparison);
+document.getElementById('partSelect').addEventListener('change', loadComparison);
+
+var searchLeftTimer, searchRightTimer;
+document.getElementById('searchLeft').addEventListener('input', function() {
+  clearTimeout(searchLeftTimer);
+  searchLeftTimer = setTimeout(function() { highlightPane('searchLeft', 'leftBody', 'countLeft'); }, 300);
+});
+document.getElementById('searchRight').addEventListener('input', function() {
+  clearTimeout(searchRightTimer);
+  searchRightTimer = setTimeout(function() { highlightPane('searchRight', 'rightBody', 'countRight'); }, 300);
+});
+
+/* ── Draggable divider ── */
 (function() {
-  const div = document.getElementById('divider');
-  const panes = document.getElementById('compPanes');
-  let dragging = false, startX = 0, startLeft = 0;
+  var div = document.getElementById('fcDivider');
+  var panes = document.getElementById('fcPanes');
+  var dragging = false;
   div.addEventListener('mousedown', function(e) {
-    dragging = true; startX = e.clientX;
-    const rect = panes.getBoundingClientRect();
-    const leftPane = document.getElementById('leftPane');
-    startLeft = leftPane.getBoundingClientRect().width / rect.width * 100;
+    dragging = true;
     div.classList.add('dragging');
     document.body.style.userSelect = 'none';
     document.body.style.cursor = 'col-resize';
+    e.preventDefault();
   });
   document.addEventListener('mousemove', function(e) {
-    if(!dragging) return;
-    const rect = panes.getBoundingClientRect();
-    const pct = Math.max(20, Math.min(80, (e.clientX - rect.left) / rect.width * 100));
+    if (!dragging) return;
+    var rect = panes.getBoundingClientRect();
+    var pct = Math.max(20, Math.min(80, (e.clientX - rect.left) / rect.width * 100));
     panes.style.gridTemplateColumns = pct + '% 5px 1fr';
   });
   document.addEventListener('mouseup', function() {
-    if(!dragging) return;
+    if (!dragging) return;
     dragging = false;
     div.classList.remove('dragging');
     document.body.style.userSelect = '';
     document.body.style.cursor = '';
   });
 })();
-
-// Load defaults on page load
-window.addEventListener('DOMContentLoaded', function() {
-  loadPane('leftContent', NEW_FAR_BASE, 'leftUrl');
-  loadPane('rightContent', OLD_FAR_BASE, 'rightUrl');
-});
 </script>
 <script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
