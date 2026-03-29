@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Interactive solicitation builder for commercial products and services under FAR Part 12. Build, customize, and export your combined synopsis/solicitation as a Word document." />
+  <meta name="description" content="Interactive solicitation builder for commercial products and services under FAR Part 12. Build, customize, and export your combined synopsis/solicitation as a Word or PDF document." />
   <title>Solicitation Builder | ContractingHQ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -82,11 +82,63 @@
     /* ── Hidden sections ── */
     .sb-hidden { display: none !important; }
 
+    /* ══════════════════════════════════════════════
+       PREVIEW DOCUMENT STYLES
+    ══════════════════════════════════════════════ */
+    #preview-wrapper { display: none; }
+    #preview-wrapper.active { display: block; }
+
+    .pv-toolbar { position: sticky; top: 60px; z-index: 90; background: rgba(4,13,31,0.96); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(74,158,255,0.15); padding: 0.75rem 0; margin-bottom: 1.5rem; }
+    .pv-toolbar-inner { max-width: 860px; margin: 0 auto; padding: 0 1.5rem; display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+    .pv-toolbar-label { color: var(--silver); font-size: 0.78rem; font-weight: 600; margin-right: auto; }
+    .pv-btn { padding: 0.5rem 1.1rem; border-radius: 6px; font-weight: 700; font-size: 0.8rem; cursor: pointer; font-family: inherit; border: none; transition: all 0.15s; }
+    .pv-btn-back { background: transparent; color: var(--silver); border: 1px solid rgba(255,255,255,0.15); }
+    .pv-btn-back:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
+    .pv-btn-word { background: #2b5797; color: #fff; }
+    .pv-btn-word:hover { background: #3a6ab0; }
+    .pv-btn-pdf { background: #c0392b; color: #fff; }
+    .pv-btn-pdf:hover { background: #d44637; }
+
+    /* The document itself */
+    .pv-page-area { max-width: 860px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+    .pv-page { background: #fff; color: #1a1a1a; font-family: 'Times New Roman', 'Georgia', serif; font-size: 12pt; line-height: 1.6; padding: 60px 72px; border-radius: 4px; box-shadow: 0 4px 40px rgba(0,0,0,0.5); min-height: 800px; }
+
+    .pv-page h1 { font-family: Arial, Helvetica, sans-serif; font-size: 16pt; font-weight: bold; color: #1B3A5C; margin: 28px 0 12px; border-bottom: 2px solid #2E75B6; padding-bottom: 4px; }
+    .pv-page h2 { font-family: Arial, Helvetica, sans-serif; font-size: 13pt; font-weight: bold; color: #2E75B6; margin: 20px 0 8px; }
+    .pv-page p { margin: 0 0 10px; }
+    .pv-page .pv-bold { font-weight: bold; }
+    .pv-page .pv-italic { font-style: italic; }
+
+    /* Editable spans get a subtle highlight on hover */
+    .pv-page [contenteditable="true"] { outline: none; border-bottom: 1px dashed transparent; transition: border-color 0.15s, background 0.15s; border-radius: 2px; }
+    .pv-page [contenteditable="true"]:hover { border-bottom-color: #2E75B6; background: rgba(46,117,182,0.06); }
+    .pv-page [contenteditable="true"]:focus { border-bottom-color: #2E75B6; background: rgba(46,117,182,0.1); }
+
+    /* Tables in preview */
+    .pv-table { width: 100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 11pt; }
+    .pv-table th { background: #F0F5FF; color: #1B3A5C; font-weight: bold; text-align: left; padding: 6px 10px; border: 1px solid #ccc; }
+    .pv-table td { padding: 5px 10px; border: 1px solid #ccc; vertical-align: top; }
+    .pv-table .pv-th-dark { background: #1B3A5C; color: #fff; }
+
+    .pv-end { text-align: center; font-weight: bold; color: #1B3A5C; margin-top: 30px; font-family: Arial, sans-serif; font-size: 13pt; }
+
+    .pv-tip { text-align: center; color: var(--silver); font-size: 0.78rem; margin-bottom: 1rem; opacity: 0.7; }
+
+    /* ── Print styles (for PDF via browser print) ── */
+    @media print {
+      body * { visibility: hidden; }
+      .pv-page, .pv-page * { visibility: visible; }
+      .pv-page { position: absolute; left: 0; top: 0; width: 100%; padding: 0.5in 0.75in; box-shadow: none; border-radius: 0; }
+      .pv-page [contenteditable="true"] { border-bottom: none !important; background: none !important; }
+      .navbar, .sb-bg, .pv-toolbar, .pv-tip, #builder-form { display: none !important; }
+    }
+
     /* ── Responsive ── */
     @media (max-width: 640px) {
       .sb-row { flex-direction: column; }
       .sb-label { min-width: 0; padding-top: 0; margin-bottom: 0.15rem; }
       .sb-export-bar { flex-wrap: wrap; }
+      .pv-page { padding: 30px 24px; }
     }
   </style>
 </head>
@@ -107,12 +159,12 @@
   </div>
 </nav>
 
-<!-- ═══════ BUILDER ═══════ -->
-<div class="sb-bg">
+<!-- ═══════ BUILDER FORM ═══════ -->
+<div class="sb-bg" id="builder-form">
 
   <div class="sb-header">
     <h1>Solicitation Builder</h1>
-    <p>Build a combined synopsis/solicitation for commercial products and services under FAR Part 12. Customize, then export as a Word document.</p>
+    <p>Build a combined synopsis/solicitation for commercial products and services under FAR Part 12. Fill in your details, preview, edit, and export.</p>
   </div>
 
   <div class="sb-container">
@@ -120,7 +172,7 @@
     <!-- Export bar -->
     <div class="sb-export-bar">
       <button class="sb-reset-btn" onclick="resetBuilder()">Reset All</button>
-      <button class="sb-export-btn" onclick="exportDocx()">Download as Word (.docx)</button>
+      <button class="sb-export-btn" onclick="generatePreview()">Preview Document &rarr;</button>
     </div>
 
     <!-- ═══════ SECTION 1: HEADER BLOCK ═══════ -->
@@ -398,7 +450,25 @@
     </div>
 
   </div><!-- /sb-container -->
-</div><!-- /sb-bg -->
+</div><!-- /builder-form -->
+
+<!-- ═══════ PREVIEW DOCUMENT ═══════ -->
+<div id="preview-wrapper" class="sb-bg">
+  <div class="pv-toolbar">
+    <div class="pv-toolbar-inner">
+      <span class="pv-toolbar-label">Click any text below to edit it before exporting.</span>
+      <button class="pv-btn pv-btn-back" onclick="backToBuilder()">&larr; Back to Builder</button>
+      <button class="pv-btn pv-btn-pdf" onclick="downloadPdf()">Download PDF</button>
+      <button class="pv-btn pv-btn-word" onclick="downloadWord()">Download Word (.docx)</button>
+    </div>
+  </div>
+  <div class="pv-page-area">
+    <p class="pv-tip">All text is editable. Click any section to make changes, then download.</p>
+    <div class="pv-page" id="pv-doc">
+      <!-- Generated dynamically -->
+    </div>
+  </div>
+</div>
 
 <script src="main.js"></script>
 <script>
@@ -406,18 +476,18 @@
 // EVAL FACTOR LANGUAGE (from training page)
 // ══════════════════════════════════════════════
 const FACTOR_LANGUAGE = {
-  "Technical Acceptability": `Quotations will be evaluated on an acceptable/unacceptable basis. To be rated acceptable, the offeror must demonstrate that the proposed [product/service] meets or exceeds all requirements stated in [the Description of Supplies or Services / the PWS]. Quotations rated unacceptable will not be considered for award.`,
-  "Technical Approach": `The Government will evaluate the offeror's proposed approach to performing the requirements described in the PWS. The evaluation will consider the feasibility and completeness of the proposed approach, the proposed staffing plan, quality control procedures, and approach to handling [specific challenge]. Proposals that demonstrate a clear understanding of the requirements and a realistic, executable plan will be evaluated more favorably.`,
-  "Past Performance": `The Government will evaluate the offeror's record of recent and relevant past performance to assess the likelihood of successful performance. "Recent" is defined as work performed within the last [3/5] years. "Relevant" is defined as [work of similar scope, complexity, and magnitude]. The Government may use references provided by the offeror, data from CPARS/PPIRS, and any other available past performance information. Offerors without relevant past performance will receive a neutral rating.`,
-  "Price": `The total evaluated price will be [the offeror's quoted firm, fixed price for all CLINs / the sum of all base and option period CLINs]. Price will be evaluated for reasonableness.\n\n(Optional) The Government may evaluate prices for realism if, as determined by the Contracting Officer, prices are so low as to cause performance concerns. If no concerns arise, a price realism evaluation will not be conducted.`,
-  "Delivery Schedule": `The Government will evaluate the offeror's proposed delivery schedule. Earlier delivery dates will be evaluated more favorably. Offerors must propose delivery no later than [X] calendar days after contract award.`,
-  "Warranty": `The Government will evaluate the offeror's proposed warranty terms, including duration of coverage, scope of coverage (parts, labor, on-site vs. depot repair), and response time for warranty service. Warranty terms that exceed the minimum [X]-year requirement will be evaluated more favorably.`,
-  "Key Personnel": `The Government will evaluate the qualifications and experience of the offeror's proposed key personnel, specifically [the Project Manager / Lead Technician / (identify positions)]. The evaluation will consider relevant experience, education, certifications, and demonstrated ability to perform work of similar scope and complexity.`,
-  "Small Business Participation": `The Government will evaluate the offeror's proposed approach to utilizing small business concerns, including small disadvantaged businesses, women-owned small businesses, HUBZone small businesses, veteran-owned small businesses, and service-disabled veteran-owned small businesses.`,
+  "Technical Acceptability": "Quotations will be evaluated on an acceptable/unacceptable basis. To be rated acceptable, the offeror must demonstrate that the proposed [product/service] meets or exceeds all requirements stated in [the Description of Supplies or Services / the PWS]. Quotations rated unacceptable will not be considered for award.",
+  "Technical Approach": "The Government will evaluate the offeror\u2019s proposed approach to performing the requirements described in the PWS. The evaluation will consider the feasibility and completeness of the proposed approach, the proposed staffing plan, quality control procedures, and approach to handling [specific challenge]. Proposals that demonstrate a clear understanding of the requirements and a realistic, executable plan will be evaluated more favorably.",
+  "Past Performance": "The Government will evaluate the offeror\u2019s record of recent and relevant past performance to assess the likelihood of successful performance. \u201cRecent\u201d is defined as work performed within the last [3/5] years. \u201cRelevant\u201d is defined as [work of similar scope, complexity, and magnitude]. The Government may use references provided by the offeror, data from CPARS/PPIRS, and any other available past performance information. Offerors without relevant past performance will receive a neutral rating.",
+  "Price": "The total evaluated price will be [the offeror\u2019s quoted firm, fixed price for all CLINs / the sum of all base and option period CLINs]. Price will be evaluated for reasonableness.\n\n(Optional) The Government may evaluate prices for realism if, as determined by the Contracting Officer, prices are so low as to cause performance concerns. If no concerns arise, a price realism evaluation will not be conducted.",
+  "Delivery Schedule": "The Government will evaluate the offeror\u2019s proposed delivery schedule. Earlier delivery dates will be evaluated more favorably. Offerors must propose delivery no later than [X] calendar days after contract award.",
+  "Warranty": "The Government will evaluate the offeror\u2019s proposed warranty terms, including duration of coverage, scope of coverage (parts, labor, on-site vs. depot repair), and response time for warranty service. Warranty terms that exceed the minimum [X]-year requirement will be evaluated more favorably.",
+  "Key Personnel": "The Government will evaluate the qualifications and experience of the offeror\u2019s proposed key personnel, specifically [the Project Manager / Lead Technician / (identify positions)]. The evaluation will consider relevant experience, education, certifications, and demonstrated ability to perform work of similar scope and complexity.",
+  "Small Business Participation": "The Government will evaluate the offeror\u2019s proposed approach to utilizing small business concerns, including small disadvantaged businesses, women-owned small businesses, HUBZone small businesses, veteran-owned small businesses, and service-disabled veteran-owned small businesses.",
 };
 
 // ══════════════════════════════════════════════
-// DYNAMIC: Acquisition type → boilerplate echo
+// DYNAMIC: Acquisition type -> boilerplate echo
 // ══════════════════════════════════════════════
 document.getElementById('acq_type').addEventListener('change', function() {
   const val = this.value || 'commercial products and commercial services';
@@ -448,7 +518,7 @@ function addClin() {
 
 function removeClin(btn) {
   const tbody = document.getElementById('clin-body');
-  if (tbody.rows.length <= 1) return; // Keep at least one
+  if (tbody.rows.length <= 1) return;
   btn.closest('tr').remove();
   renumberClins();
 }
@@ -595,249 +665,258 @@ function resetBuilder() {
 }
 
 // ══════════════════════════════════════════════
-// EXPORT AS DOCX
+// GENERATE PREVIEW
 // ══════════════════════════════════════════════
-async function exportDocx() {
-  const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
-          Footer, AlignmentType, HeadingLevel, BorderStyle, WidthType,
-          ShadingType, PageNumber, PageBreak } = docx;
+function generatePreview() {
+  const v = id => document.getElementById(id)?.value || '';
+  const vd = (id, def) => document.getElementById(id)?.value || def;
 
-  const NAVY_HEX = "1B3A5C";
-  const ACCENT_HEX = "2E75B6";
-  const WHITE_HEX = "FFFFFF";
+  const solNum = vd('sol_number', '[Insert]');
+  const acqType = vd('acq_type', 'commercial products and commercial services');
+  const postedDate = vd('posted_date', '[Insert]');
+  const responseDate = vd('response_date', '[Insert]');
+  const pscCode = vd('psc_code', '[Insert]');
+  const naicsCode = vd('naics_code', '[Insert]');
+  const setAside = vd('set_aside', '[Insert]');
+  const conOffice = vd('con_office', '[Insert]');
+  const pocName = vd('poc_name', '[Insert]');
+  const pocPhone = vd('poc_phone', '[Insert]');
+  const pocEmail = vd('poc_email', '[Insert]');
+  const description = vd('description', '[Insert description of supplies or services]');
 
-  const thinBorder = { style: BorderStyle.SINGLE, size: 1, color: "BBBBBB" };
-  const accentBorder = { style: BorderStyle.SINGLE, size: 1, color: ACCENT_HEX };
-  const noBorder = { style: BorderStyle.NONE, size: 0, color: WHITE_HEX };
-  const borders = { top: thinBorder, bottom: thinBorder, left: thinBorder, right: thinBorder };
-  const cellMargins = { top: 60, bottom: 60, left: 100, right: 100 };
+  // Helper: editable span
+  const e = (text) => `<span contenteditable="true">${text}</span>`;
 
-  // Gather data
-  const solNum = document.getElementById('sol_number').value || '[Insert]';
-  const acqType = document.getElementById('acq_type').value || 'commercial products and commercial services';
-  const postedDate = document.getElementById('posted_date').value || '[Insert]';
-  const responseDate = document.getElementById('response_date').value || '[Insert]';
-  const pscCode = document.getElementById('psc_code').value || '[Insert]';
-  const naicsCode = document.getElementById('naics_code').value || '[Insert]';
-  const setAside = document.getElementById('set_aside').value || '[Insert]';
-  const conOffice = document.getElementById('con_office').value || '[Insert]';
-  const pocName = document.getElementById('poc_name').value || '[Insert]';
-  const pocPhone = document.getElementById('poc_phone').value || '[Insert]';
-  const pocEmail = document.getElementById('poc_email').value || '[Insert]';
-  const description = document.getElementById('description').value || '[Insert description]';
+  let html = '';
 
-  const children = [];
+  // Section 1: Header
+  html += `<h1>1. Header Block</h1>`;
+  html += `<table class="pv-table">
+    <tr><th style="width:200px;">Solicitation Number</th><td>${e(solNum)}</td></tr>
+    <tr><th>Posted Date</th><td>${e(postedDate)}</td></tr>
+    <tr><th>Response Date/Time</th><td>${e(responseDate)}</td></tr>
+    <tr><th>Classification Code (PSC)</th><td>${e(pscCode)}</td></tr>
+    <tr><th>NAICS Code</th><td>${e(naicsCode)}</td></tr>
+    <tr><th>Set-Aside</th><td>${e(setAside)}</td></tr>
+    <tr><th>Contracting Office</th><td>${e(conOffice)}</td></tr>
+    <tr><th>Point of Contact</th><td>${e(pocName + ' | ' + pocPhone + ' | ' + pocEmail)}</td></tr>
+  </table>`;
+  html += `<p><em contenteditable="true">This is a combined synopsis/solicitation for ${acqType} prepared in accordance with FAR Part 12. This announcement constitutes the only solicitation; proposals are being requested and a separate written solicitation will not be issued.</em></p>`;
 
-  // ── Helper functions ──
-  function heading(text) {
-    return new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun({ text, font: "Arial" })] });
-  }
-  function subheading(text) {
-    return new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun({ text, font: "Arial" })] });
-  }
-  function body(text, opts = {}) {
-    return new Paragraph({
-      spacing: { after: 100, line: 276 },
-      children: [new TextRun({ text, font: "Arial", size: 22, bold: opts.bold || false, italics: opts.italic || false })]
-    });
-  }
-  function boldBody(label, rest) {
-    return new Paragraph({
-      spacing: { after: 100, line: 276 },
-      children: [
-        new TextRun({ text: label, bold: true, font: "Arial", size: 22 }),
-        new TextRun({ text: rest, font: "Arial", size: 22 })
-      ]
-    });
-  }
+  // Section 2: Description
+  html += `<h1>2. Description of Supplies or Services</h1>`;
+  html += `<p contenteditable="true">${description.replace(/\n/g, '<br>')}</p>`;
 
-  // ── Section 1: Header synopsis ──
-  children.push(heading("1. Header Block"));
-
-  // Header table
-  const hdrRows = [
-    ["Solicitation Number", solNum],
-    ["Posted Date", postedDate],
-    ["Response Date/Time", responseDate],
-    ["PSC Code", pscCode],
-    ["NAICS Code", naicsCode],
-    ["Set-Aside", setAside],
-    ["Contracting Office", conOffice],
-    ["Point of Contact", `${pocName} | ${pocPhone} | ${pocEmail}`],
-  ];
-
-  children.push(new Table({
-    width: { size: 9360, type: WidthType.DXA },
-    columnWidths: [2800, 6560],
-    rows: hdrRows.map(([label, val]) => new TableRow({
-      children: [
-        new TableCell({
-          borders, width: { size: 2800, type: WidthType.DXA },
-          shading: { fill: "F0F5FF", type: ShadingType.CLEAR },
-          margins: cellMargins,
-          children: [new Paragraph({ spacing: { after: 0 }, children: [new TextRun({ text: label, bold: true, font: "Arial", size: 22, color: NAVY_HEX })] })]
-        }),
-        new TableCell({
-          borders, width: { size: 6560, type: WidthType.DXA },
-          margins: cellMargins,
-          children: [new Paragraph({ spacing: { after: 0 }, children: [new TextRun({ text: val, font: "Arial", size: 22 })] })]
-        }),
-      ]
-    }))
-  }));
-
-  children.push(body(`This is a combined synopsis/solicitation for ${acqType} prepared in accordance with FAR Part 12. This announcement constitutes the only solicitation; proposals are being requested and a separate written solicitation will not be issued.`, { italic: true }));
-
-  // ── Section 2: Description ──
-  children.push(heading("2. Description of Supplies or Services"));
-  children.push(body(description));
-
-  // ── Section 3: Delivery ──
-  children.push(heading("3. Delivery / Performance Schedule"));
+  // Section 3: Delivery
+  html += `<h1>3. Delivery / Performance Schedule</h1>`;
 
   if (!document.getElementById('subsec-supplies').classList.contains('sb-hidden')) {
-    children.push(subheading("For Supplies:"));
-    children.push(boldBody("Delivery: ", document.getElementById('del_timeline').value || '[Insert]'));
-    children.push(boldBody("Delivery Location: ", document.getElementById('del_location').value || '[Insert]'));
-    children.push(boldBody("FOB Point: ", document.getElementById('del_fob').value || 'Destination'));
+    html += `<h2>For Supplies:</h2>`;
+    html += `<p><span class="pv-bold">Delivery: </span>${e(vd('del_timeline', '[Insert]'))}</p>`;
+    html += `<p><span class="pv-bold">Delivery Location: </span>${e(vd('del_location', '[Insert]'))}</p>`;
+    html += `<p><span class="pv-bold">FOB Point: </span>${e(vd('del_fob', 'Destination'))}</p>`;
   }
 
   if (!document.getElementById('subsec-services').classList.contains('sb-hidden')) {
-    children.push(subheading("For Services:"));
-    children.push(boldBody("Base Period: ", document.getElementById('svc_base').value || '[Insert]'));
+    html += `<h2>For Services:</h2>`;
+    html += `<p><span class="pv-bold">Base Period: </span>${e(vd('svc_base', '[Insert]'))}</p>`;
     document.querySelectorAll('.option-period').forEach(p => {
       const label = p.querySelector('.sb-label').textContent;
       const val = p.querySelector('.sb-input').value || '[Insert]';
-      children.push(boldBody(label + ": ", val));
+      html += `<p><span class="pv-bold">${label}: </span>${e(val)}</p>`;
     });
-    children.push(boldBody("Place of Performance: ", document.getElementById('svc_pop').value || '[Insert]'));
+    html += `<p><span class="pv-bold">Place of Performance: </span>${e(vd('svc_pop', '[Insert]'))}</p>`;
   }
 
-  // ── Section 4: 52.212-1 ──
-  children.push(heading("4. FAR 52.212-1 — Instructions to Offerors (Tailored)"));
-  children.push(body("FAR 52.212-1, Instructions to Offerors — Commercial Products and Commercial Services, applies to this acquisition with the following addenda:"));
+  // Section 4: Instructions
+  html += `<h1>4. FAR 52.212-1 \u2014 Instructions to Offerors (Tailored)</h1>`;
+  html += `<p contenteditable="true">FAR 52.212-1, Instructions to Offerors \u2014 Commercial Products and Commercial Services, applies to this acquisition with the following addenda:</p>`;
 
-  children.push(subheading("(a) Technical Submission"));
-  children.push(body(document.getElementById('tech_instructions').value || '[Insert technical submission requirements]'));
+  html += `<h2>(a) Technical Submission</h2>`;
+  html += `<p contenteditable="true">${(v('tech_instructions') || '[Insert technical submission requirements]').replace(/\n/g, '<br>')}</p>`;
 
-  children.push(subheading("(b) Price Submission"));
-  children.push(body("Provide a firm, fixed price for the following:"));
+  html += `<h2>(b) Price Submission</h2>`;
+  html += `<p contenteditable="true">Provide a firm, fixed price for the following:</p>`;
 
   // CLIN table
-  const clinRows = [];
-  clinRows.push(new TableRow({
-    children: ["CLIN", "Description", "Qty", "Unit", "Unit Price", "Total Price"].map((h, idx) => {
-      const widths = [700, 3360, 700, 700, 1400, 1500];
-      return new TableCell({
-        borders, width: { size: widths[idx], type: WidthType.DXA },
-        shading: { fill: NAVY_HEX, type: ShadingType.CLEAR },
-        margins: { top: 40, bottom: 40, left: 60, right: 60 },
-        children: [new Paragraph({ spacing: { after: 0 }, children: [new TextRun({ text: h, bold: true, font: "Arial", size: 20, color: WHITE_HEX })] })]
-      });
-    })
-  }));
-
+  html += `<table class="pv-table"><tr><th class="pv-th-dark">CLIN</th><th class="pv-th-dark">Description</th><th class="pv-th-dark">Qty</th><th class="pv-th-dark">Unit</th><th class="pv-th-dark">Unit Price</th><th class="pv-th-dark">Total Price</th></tr>`;
   document.querySelectorAll('#clin-body tr').forEach(row => {
     const cells = row.querySelectorAll('input');
     const num = row.querySelector('.clin-num').textContent;
-    const vals = [num, cells[0]?.value || '', cells[1]?.value || '', cells[2]?.value || '', cells[3]?.value || '', cells[4]?.value || ''];
-    clinRows.push(new TableRow({
-      children: vals.map((v, idx) => {
-        const widths = [700, 3360, 700, 700, 1400, 1500];
-        return new TableCell({
-          borders, width: { size: widths[idx], type: WidthType.DXA },
-          margins: { top: 40, bottom: 40, left: 60, right: 60 },
-          children: [new Paragraph({ spacing: { after: 0 }, children: [new TextRun({ text: v, font: "Arial", size: 22 })] })]
-        });
-      })
-    }));
+    html += `<tr>
+      <td>${e(num)}</td>
+      <td>${e(cells[0]?.value || '')}</td>
+      <td>${e(cells[1]?.value || '')}</td>
+      <td>${e(cells[2]?.value || '')}</td>
+      <td>${e(cells[3]?.value || '')}</td>
+      <td>${e(cells[4]?.value || '')}</td>
+    </tr>`;
   });
-
-  children.push(new Table({
-    width: { size: 9360, type: WidthType.DXA },
-    columnWidths: [700, 3360, 700, 700, 1400, 1500],
-    rows: clinRows
-  }));
+  html += `</table>`;
 
   // Additional requirements
   const addReqEl = document.getElementById('subsec-additional-req');
-  if (addReqEl && !addReqEl.classList.contains('sb-hidden')) {
-    const addReqVal = document.getElementById('additional_req').value;
-    if (addReqVal) {
-      children.push(subheading("(c) Additional Submission Requirements"));
-      children.push(body(addReqVal));
-    }
+  if (addReqEl && !addReqEl.classList.contains('sb-hidden') && v('additional_req')) {
+    html += `<h2>(c) Additional Submission Requirements</h2>`;
+    html += `<p contenteditable="true">${v('additional_req').replace(/\n/g, '<br>')}</p>`;
   }
 
-  const submitTo = document.getElementById('submit_to').value;
-  const deadline = document.getElementById('submit_deadline').value;
-  const questionsDue = document.getElementById('questions_due').value;
-  if (submitTo) children.push(boldBody("Submission Instructions: ", `Proposals shall be submitted via ${submitTo} no later than ${deadline || '[Insert]'}. Late submissions will not be considered.`));
-  if (questionsDue) children.push(boldBody("Questions: ", `Questions shall be submitted in writing to ${submitTo} no later than ${questionsDue}.`));
+  const submitTo = v('submit_to');
+  const deadline = v('submit_deadline');
+  const questionsDue = v('questions_due');
+  if (submitTo) {
+    html += `<p><span class="pv-bold">Submission Instructions: </span><span contenteditable="true">Proposals shall be submitted via ${submitTo} no later than ${deadline || '[Insert]'}. Late submissions will not be considered.</span></p>`;
+  }
+  if (questionsDue) {
+    html += `<p><span class="pv-bold">Questions: </span><span contenteditable="true">Questions shall be submitted in writing to ${submitTo} no later than ${questionsDue}.</span></p>`;
+  }
 
-  // ── Section 5: 52.212-2 ──
-  children.push(heading("5. FAR 52.212-2 — Evaluation Criteria"));
-  children.push(body("FAR 52.212-2, Evaluation — Commercial Products and Commercial Services, applies to this acquisition."));
-  children.push(body("The Government will evaluate proposals based on the following factors:"));
+  // Section 5: Eval
+  html += `<h1>5. FAR 52.212-2 \u2014 Evaluation Criteria</h1>`;
+  html += `<p contenteditable="true">FAR 52.212-2, Evaluation \u2014 Commercial Products and Commercial Services, applies to this acquisition.</p>`;
+  html += `<p contenteditable="true">The Government will evaluate proposals based on the following factors:</p>`;
 
   document.querySelectorAll('.sb-factor').forEach((f, i) => {
     const select = f.querySelector('select');
     const textarea = f.querySelector('textarea');
     const factorName = select.value === 'custom' ? 'Custom' : (select.value || `Factor ${i + 1}`);
     const factorText = textarea.value || '[Insert evaluation language]';
-    children.push(boldBody(`Factor ${i + 1}: ${factorName}. `, factorText));
+    html += `<p><span class="pv-bold">Factor ${i + 1}: ${factorName}. </span><span contenteditable="true">${factorText.replace(/\n/g, '<br>')}</span></p>`;
   });
 
-  children.push(boldBody("Basis for Award: ", document.getElementById('basis_for_award').value));
+  html += `<p><span class="pv-bold">Basis for Award: </span><span contenteditable="true">${v('basis_for_award')}</span></p>`;
 
-  // ── Section 6: Clauses ──
-  children.push(heading("6. FAR 52.212-4 & Additional Clauses"));
-  children.push(boldBody("52.212-4: ", `Contract Terms and Conditions — Commercial Products and Commercial Services (FAR 52.212-4) applies to this acquisition. ${document.getElementById('clause_addenda').value}`));
-  children.push(boldBody("Additional Clauses: ", "The provisions and clauses identified in Attachment 1, Additional Provisions and Clauses, are incorporated into this solicitation and any resulting contract."));
+  // Section 6: Clauses
+  html += `<h1>6. FAR 52.212-4 &amp; Additional Clauses</h1>`;
+  html += `<p><span class="pv-bold">52.212-4: </span><span contenteditable="true">Contract Terms and Conditions \u2014 Commercial Products and Commercial Services (FAR 52.212-4) applies to this acquisition. ${v('clause_addenda')}</span></p>`;
+  html += `<p><span class="pv-bold">Additional Clauses: </span><span contenteditable="true">The provisions and clauses identified in Attachment 1, Additional Provisions and Clauses, are incorporated into this solicitation and any resulting contract.</span></p>`;
 
-  // ── Section 7: Attachments ──
-  children.push(heading("7. Attachments"));
-
-  const attRows = [];
-  attRows.push(new TableRow({
-    children: ["No.", "Description"].map((h, idx) => new TableCell({
-      borders, width: { size: idx === 0 ? 1600 : 7760, type: WidthType.DXA },
-      shading: { fill: NAVY_HEX, type: ShadingType.CLEAR },
-      margins: cellMargins,
-      children: [new Paragraph({ spacing: { after: 0 }, children: [new TextRun({ text: h, bold: true, font: "Arial", size: 20, color: WHITE_HEX })] })]
-    }))
-  }));
-
+  // Section 7: Attachments
+  html += `<h1>7. Attachments</h1>`;
+  html += `<table class="pv-table"><tr><th class="pv-th-dark" style="width:130px;">No.</th><th class="pv-th-dark">Description</th></tr>`;
   document.querySelectorAll('#att-body tr').forEach(row => {
     const num = row.cells[0].textContent;
     const desc = row.classList.contains('att-fixed') ? row.cells[1].textContent : (row.querySelector('input')?.value || '');
-    attRows.push(new TableRow({
-      children: [
-        new TableCell({ borders, width: { size: 1600, type: WidthType.DXA }, margins: cellMargins,
-          children: [new Paragraph({ spacing: { after: 0 }, children: [new TextRun({ text: num, bold: true, font: "Arial", size: 22 })] })] }),
-        new TableCell({ borders, width: { size: 7760, type: WidthType.DXA }, margins: cellMargins,
-          children: [new Paragraph({ spacing: { after: 0 }, children: [new TextRun({ text: desc, font: "Arial", size: 22 })] })] }),
-      ]
-    }));
+    html += `<tr><td><strong>${e(num)}</strong></td><td>${e(desc)}</td></tr>`;
+  });
+  html += `</table>`;
+
+  html += `<p class="pv-end">END OF SOLICITATION</p>`;
+
+  // Inject and show
+  document.getElementById('pv-doc').innerHTML = html;
+  document.getElementById('builder-form').style.display = 'none';
+  document.getElementById('preview-wrapper').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══════════════════════════════════════════════
+// BACK TO BUILDER
+// ══════════════════════════════════════════════
+function backToBuilder() {
+  document.getElementById('preview-wrapper').classList.remove('active');
+  document.getElementById('builder-form').style.display = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══════════════════════════════════════════════
+// DOWNLOAD PDF (via browser print)
+// ══════════════════════════════════════════════
+function downloadPdf() {
+  window.print();
+}
+
+// ══════════════════════════════════════════════
+// DOWNLOAD WORD (.docx) — reads from preview
+// ══════════════════════════════════════════════
+async function downloadWord() {
+  const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+          Footer, AlignmentType, HeadingLevel, BorderStyle, WidthType,
+          ShadingType, PageNumber } = docx;
+
+  const NAVY = "1B3A5C";
+  const ACCENT = "2E75B6";
+  const WHITE = "FFFFFF";
+  const thinBorder = { style: BorderStyle.SINGLE, size: 1, color: "BBBBBB" };
+  const borders = { top: thinBorder, bottom: thinBorder, left: thinBorder, right: thinBorder };
+  const pad = { top: 60, bottom: 60, left: 100, right: 100 };
+
+  const doc = document.getElementById('pv-doc');
+  const children = [];
+
+  // Walk through preview DOM and build docx paragraphs
+  doc.querySelectorAll(':scope > *').forEach(el => {
+    if (el.tagName === 'H1') {
+      children.push(new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun({ text: el.textContent, font: "Arial" })] }));
+    } else if (el.tagName === 'H2') {
+      children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun({ text: el.textContent, font: "Arial" })] }));
+    } else if (el.tagName === 'P' && el.classList.contains('pv-end')) {
+      children.push(new Paragraph({
+        alignment: AlignmentType.CENTER, spacing: { before: 400 },
+        children: [new TextRun({ text: el.textContent, bold: true, font: "Arial", size: 24, color: NAVY })]
+      }));
+    } else if (el.tagName === 'P') {
+      const runs = [];
+      el.childNodes.forEach(node => {
+        if (node.nodeType === 3) {
+          runs.push(new TextRun({ text: node.textContent, font: "Arial", size: 22 }));
+        } else if (node.tagName === 'EM') {
+          runs.push(new TextRun({ text: node.textContent, font: "Arial", size: 22, italics: true }));
+        } else if (node.tagName === 'SPAN' && node.classList.contains('pv-bold')) {
+          runs.push(new TextRun({ text: node.textContent, font: "Arial", size: 22, bold: true }));
+        } else if (node.tagName === 'SPAN' || node.tagName === 'STRONG') {
+          const isBold = node.tagName === 'STRONG' || node.classList.contains('pv-bold');
+          // Handle <br> inside contenteditable spans
+          let text = '';
+          node.childNodes.forEach(cn => {
+            if (cn.tagName === 'BR') text += '\n';
+            else text += cn.textContent;
+          });
+          runs.push(new TextRun({ text, font: "Arial", size: 22, bold: isBold }));
+        } else {
+          runs.push(new TextRun({ text: node.textContent, font: "Arial", size: 22 }));
+        }
+      });
+      if (runs.length) {
+        children.push(new Paragraph({ spacing: { after: 100, line: 276 }, children: runs }));
+      }
+    } else if (el.tagName === 'TABLE') {
+      const rows = [];
+      el.querySelectorAll('tr').forEach((tr, ri) => {
+        const cells = [];
+        tr.querySelectorAll('th, td').forEach(td => {
+          const isHeader = td.tagName === 'TH';
+          const isDark = td.classList.contains('pv-th-dark');
+          cells.push(new TableCell({
+            borders,
+            shading: isDark ? { fill: NAVY, type: ShadingType.CLEAR } : isHeader ? { fill: "F0F5FF", type: ShadingType.CLEAR } : undefined,
+            margins: pad,
+            children: [new Paragraph({
+              spacing: { after: 0 },
+              children: [new TextRun({
+                text: td.textContent.trim(),
+                bold: isHeader || td.querySelector('strong'),
+                font: "Arial", size: isHeader ? 20 : 22,
+                color: isDark ? WHITE : isHeader ? NAVY : undefined
+              })]
+            })]
+          }));
+        });
+        if (cells.length) rows.push(new TableRow({ children: cells }));
+      });
+      if (rows.length) children.push(new Table({ width: { size: 9360, type: WidthType.DXA }, rows }));
+    }
   });
 
-  children.push(new Table({ width: { size: 9360, type: WidthType.DXA }, columnWidths: [1600, 7760], rows: attRows }));
-
-  children.push(new Paragraph({
-    alignment: AlignmentType.CENTER, spacing: { before: 400 },
-    children: [new TextRun({ text: "END OF SOLICITATION", bold: true, font: "Arial", size: 24, color: NAVY_HEX })]
-  }));
-
-  // Build document
-  const doc = new Document({
+  const docFile = new Document({
     styles: {
       default: { document: { run: { font: "Arial", size: 22 } } },
       paragraphStyles: [
         { id: "Heading1", name: "Heading 1", basedOn: "Normal", next: "Normal", quickFormat: true,
-          run: { size: 32, bold: true, font: "Arial", color: NAVY_HEX },
+          run: { size: 32, bold: true, font: "Arial", color: NAVY },
           paragraph: { spacing: { before: 360, after: 200 } } },
         { id: "Heading2", name: "Heading 2", basedOn: "Normal", next: "Normal", quickFormat: true,
-          run: { size: 26, bold: true, font: "Arial", color: ACCENT_HEX },
+          run: { size: 26, bold: true, font: "Arial", color: ACCENT },
           paragraph: { spacing: { before: 240, after: 160 } } },
       ]
     },
@@ -860,11 +939,13 @@ async function exportDocx() {
     }]
   });
 
-  const blob = await Packer.toBlob(doc);
+  const blob = await Packer.toBlob(docFile);
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
+  const a = window.document.createElement('a');
   a.href = url;
-  a.download = solNum && solNum !== '[Insert]' ? `Solicitation-${solNum}.docx` : 'Combined-Synopsis-Solicitation.docx';
+  // Try to get sol number from preview
+  const solText = doc.querySelector('table td span')?.textContent || '';
+  a.download = solText && solText !== '[Insert]' ? `Solicitation-${solText}.docx` : 'Combined-Synopsis-Solicitation.docx';
   a.click();
   URL.revokeObjectURL(url);
 }
