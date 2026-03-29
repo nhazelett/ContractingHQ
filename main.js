@@ -121,3 +121,70 @@
   var top = document.getElementById("training-nav-top");
   if (top) top.innerHTML = navHTML;
 })();
+
+
+// ══════════════════════════════════════════════
+// BOTTOM TAB BAR — clone top tabs to bottom
+// ══════════════════════════════════════════════
+// Automatically duplicates the tab bar at the bottom of the content area
+// so users can switch tabs without scrolling back up. Zero per-page config.
+(function () {
+  var topTabs = document.querySelector('[role="tablist"]');
+  if (!topTabs) return;
+
+  // Clone the tab bar
+  var bottomTabs = topTabs.cloneNode(true);
+  bottomTabs.removeAttribute('id');
+  bottomTabs.classList.add('tablist-bottom');
+  bottomTabs.setAttribute('aria-label', 'Tab navigation (bottom)');
+
+  // Find the content bg wrapper (parent of the top tabs) and append clone at end
+  var bgWrapper = topTabs.parentElement;
+  if (bgWrapper) bgWrapper.appendChild(bottomTabs);
+
+  // Get all tab buttons from both bars
+  var topButtons = topTabs.querySelectorAll('[data-tab]');
+  var bottomButtons = bottomTabs.querySelectorAll('[data-tab]');
+
+  // Sync: clicking a bottom tab activates the matching top tab and scrolls up
+  bottomButtons.forEach(function (btn, i) {
+    // Remove any cloned event listeners by replacing with clean clone
+    var clean = btn.cloneNode(true);
+    btn.parentNode.replaceChild(clean, btn);
+    bottomButtons[i] = clean;
+
+    clean.addEventListener('click', function () {
+      // Trigger the top tab's click (which handles panel switching)
+      if (topButtons[i]) topButtons[i].click();
+
+      // Scroll the top tabs into view
+      topTabs.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Sync active state on bottom bar
+      syncBottom();
+    });
+  });
+
+  // Keep bottom bar in sync whenever a top tab is clicked
+  topButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      syncBottom();
+    });
+  });
+
+  function syncBottom() {
+    // Short delay to let the top tab handler finish
+    setTimeout(function () {
+      topButtons.forEach(function (tb, j) {
+        if (tb.classList.contains('active')) {
+          bottomButtons[j].classList.add('active');
+        } else {
+          bottomButtons[j].classList.remove('active');
+        }
+      });
+    }, 10);
+  }
+
+  // Initial sync
+  syncBottom();
+})();
