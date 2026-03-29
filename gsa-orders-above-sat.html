@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how to place delivery orders against GSA schedules for purchases above the Simplified Acquisition Threshold. Covers GSAM 538.7103-3 procedures, competition requirements, sole source justifications, and documentation." />
+  <title>GSA Orders above the SAT | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .gsa-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .gsa-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .gsa-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .gsa-tab:hover { color: var(--white); }
+    .gsa-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .gsa-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .gsa-panel.active { display: block; }
+
+    /* ── Intro ── */
+    .gsa-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .gsa-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .gsa-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .gsa-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── Scenario box ── */
+    .scenario-box { background: rgba(251,191,36,0.04); border: 1px solid rgba(251,191,36,0.2); border-radius: 14px; padding: 1.5rem; margin: 1.5rem 0; }
+    .scenario-box .scenario-label { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #fbbf24; margin-bottom: 0.5rem; }
+    .scenario-box p { color: var(--silver); font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.5rem; }
+    .scenario-box p:last-child { margin-bottom: 0; }
+    .scenario-box strong { color: #fde68a; }
+    .scenario-box ol { color: var(--silver); font-size: 0.9rem; line-height: 1.7; margin: 0.75rem 0 0 1.5rem; padding: 0; }
+    .scenario-box li { margin-bottom: 0.5rem; }
+
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    /* ── Checklist ── */
+    .fc-btn { padding: 0.6rem 1.4rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.25); background: rgba(74,158,255,0.08); color: var(--silver); cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .fc-btn:hover { background: rgba(74,158,255,0.18); color: var(--white); }
+
+    @media (max-width: 768px) {
+      .gsa-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Intermediate Track &bull; Topic 27</span>
+    <h1 class="page-hero-title">GSA Orders above the SAT</h1>
+    <p class="page-hero-sub">Ordering from GSA schedules when the value exceeds the Simplified Acquisition Threshold. More competition, more documentation, and sole source rules you need to know.</p>
+  </div>
+</div>
+
+
+<div class="training-nav-band training-nav-band-top"><div id="training-nav-top" class="training-nav training-nav-top"></div></div>
+
+<div class="gsa-bg">
+
+  <div class="gsa-intro">
+    <span class="gsa-intro-tag">Training</span>
+    <h2>GSA Orders Exceeding the SAT</h2>
+    <p>Above the SAT, GSA ordering gets more formal. GSAM 538.7103-3 requires broader competition, more structured RFQs, and written sole source justifications if you can't compete. Here's what changes.</p>
+  </div>
+
+  <div class="gsa-tabs" role="tablist">
+    <button class="gsa-tab active" data-tab="learn" role="tab">📖 Learn</button>
+    <button class="gsa-tab" data-tab="checklist" role="tab">📋 File Checklist</button>
+    <button class="gsa-tab" data-tab="lookup" role="tab">🔍 Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="gsa-panel active">
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> What Changes above the SAT?</h3>
+      <div class="learn-body">
+        <p>If you completed the previous training on GSA orders under the SAT, you already know the basics: GSA schedules are pre-competed contracts, and GSAM 538.71 contains the ordering procedures. Everything you learned still applies — but above the SAT ($350,000), the rules tighten up.</p>
+        <p>The key differences at this level:</p>
+        <ul style="color: var(--silver); font-size: 0.92rem; line-height: 1.75; margin: 1rem 0 0 1.5rem; padding: 0;">
+          <li><strong>Broader competition.</strong> You must solicit as many FSS contractors as practicable, not just three.</li>
+          <li><strong>Formal RFQ required.</strong> Your RFQ must describe the work and explain the basis for selection.</li>
+          <li><strong>Sole source justifications.</strong> If you can't compete, you need a written justification under GSAM 538.7104-3 — with public posting requirements.</li>
+          <li><strong>Documentation if fewer than three quotes.</strong> If you receive fewer than three quotations, you must document your efforts to find additional contractors.</li>
+        </ul>
+        <div class="highlight-box">
+          <strong>Still true above the SAT:</strong> Quotations are not offers. You don't need evaluation plans, scoring sheets, or competitive ranges. Award to the contractor representing best value based on the criteria in your RFQ.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Competition Requirements (GSAM 538.7103-3)</h3>
+      <div class="learn-body">
+        <p>For orders above the SAT, you have two competition methods. Unless you have a sole source justification under 538.7104-3(b), you must use one of these:</p>
+
+        <p><strong>Option 1: Publish an RFQ on GSA eBuy.</strong> This is the most common approach for above-SAT orders. Posting on eBuy gives visibility to all schedule contractors in the relevant category.</p>
+
+        <p><strong>Option 2: Issue an RFQ directly to as many FSS contractors as practicable.</strong> The goal is to reasonably ensure you receive quotations from at least three contractors. If you go this route and get fewer than three quotes, you must document what you did to try to find more.</p>
+
+        <p>In either case, your RFQ must describe the requirement and explain how you will select the awardee — the basis for award.</p>
+
+        <div class="highlight-box tip">
+          <strong>Practical tip:</strong> eBuy is usually the easier path for above-SAT orders. It broadcasts your RFQ to all applicable contractors so you don't have to manually identify and solicit them. It also gives you built-in documentation that the requirement was competed.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>No more GSA Advantage surveys.</strong> Unlike under-SAT orders where you can simply screenshot three prices on GSA Advantage, above-SAT orders require an actual RFQ with a described basis for selection. The survey-and-screenshot approach doesn't cut it here.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Writing the RFQ</h3>
+      <div class="learn-body">
+        <p>Your RFQ for an above-SAT GSA order needs two things the under-SAT version didn't require:</p>
+        <p><strong>1. A description of the work.</strong> This can be a statement of work, statement of objectives, specifications, or a clear written description of what you're buying. The format doesn't matter as long as contractors understand what you need.</p>
+        <p><strong>2. The basis for selection.</strong> Tell contractors how you'll pick the winner. This doesn't need to be a formal evaluation plan — remember, quotations are not offers and this is not a source selection. But you do need to state what matters to you: price, delivery, technical capability, past performance, or some combination.</p>
+
+        <div class="highlight-box">
+          <strong>Keep it proportional.</strong> A $400,000 order for clearly defined supplies doesn't need the same level of RFQ detail as a $2 million complex services requirement. Scale the RFQ to the complexity and risk of what you're buying.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Sole Source Justifications (GSAM 538.7104-3)</h3>
+      <div class="learn-body">
+        <p>Sometimes you can't compete an above-SAT GSA order. GSAM 538.7104-3(b) provides five statutory exceptions:</p>
+        <ol style="color: var(--silver); font-size: 0.92rem; line-height: 1.75; margin: 1rem 0 0 1.5rem; padding: 0;">
+          <li><strong>Unusual urgency</strong> — the need is so urgent that following standard competition procedures would cause unacceptable delay</li>
+          <li><strong>Only one source</strong> — only one contractor can provide the required level of quality or service</li>
+          <li><strong>Logical follow-on</strong> — the order is a logical follow-on to a prior competitive FSS order</li>
+          <li><strong>Minimum guarantee</strong> — the order satisfies an FSS BPA minimum guarantee</li>
+          <li><strong>Statutory requirement</strong> — a law requires a specific source</li>
+        </ol>
+
+        <p style="margin-top: 1rem;">The justification must be <strong>in writing</strong> with sufficient detail and supporting rationale. It also has to be <strong>publicly posted within 14 days</strong> of award (30 days for urgency exceptions), after screening for FOIA-exempt information.</p>
+
+        <div class="highlight-box warn">
+          <strong>This is a real justification.</strong> Don't treat this like a formality. If your justification doesn't hold up, you're exposed to a GAO protest. Make sure the rationale is specific and documented — not boilerplate.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Evaluation and Award</h3>
+      <div class="learn-body">
+        <p>Once you receive quotations, evaluate them fairly against the basis for selection you stated in the RFQ. Award to the contractor representing <strong>best value</strong>.</p>
+        <p>After award, <strong>notify unsuccessful quoters</strong>. If any contractor requests it within 3 days, you must provide a brief explanation of the basis for the award decision. This isn't a formal debriefing — just a short explanation of why they didn't win.</p>
+        <p>Before award, check <strong>SAM.gov</strong> to confirm the contractor isn't excluded or debarred.</p>
+
+        <div class="highlight-box tip">
+          <strong>Remember:</strong> Even above the SAT, FSS quotation procedures are not source selections or negotiations. You evaluate and award — you don't establish competitive ranges or conduct discussions. Keep it straightforward.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> Common Mistakes</h3>
+      <div class="learn-body">
+        <ul style="color: var(--silver); font-size: 0.92rem; line-height: 1.75; margin: 1rem 0 0 1.5rem; padding: 0;">
+          <li><strong>Using the under-SAT procedures.</strong> Above the SAT, you can't just survey GSA Advantage and screenshot prices. You need an actual RFQ with a described basis for selection.</li>
+          <li><strong>Not posting on eBuy.</strong> eBuy is the easiest way to demonstrate broad competition for above-SAT orders. If you're issuing RFQs directly instead, make sure you're reaching as many contractors as practicable.</li>
+          <li><strong>Weak sole source justifications.</strong> "We've always used this contractor" or "they're the only one we know" won't hold up. The justification needs to address one of the five statutory exceptions with real supporting rationale.</li>
+          <li><strong>Forgetting to post the sole source justification.</strong> It must be publicly posted within 14 days of award. Missing this is a compliance failure.</li>
+          <li><strong>Not documenting fewer-than-three quotes.</strong> If you receive fewer than three quotations, you must document your efforts to identify additional qualified contractors. No documentation = audit finding.</li>
+          <li><strong>Overcomplicating the evaluation.</strong> You don't need scoring matrices or competitive ranges. State your basis for selection, evaluate fairly, pick the best value, and document your rationale.</li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="scenario-box">
+      <div class="scenario-label">Walkthrough Scenario</div>
+      <p><strong>Your organization needs a 12-month help desk support contract. The estimated cost is $500,000.</strong></p>
+      <p>This exceeds the SAT ($350,000), so you need GSAM 538.7103-3 procedures. It's a services requirement, so you'll need a statement of work. Here's how:</p>
+      <ol>
+        <li>Write a statement of work describing the help desk support — hours of operation, number of expected tickets, required response times, qualifications for support staff.</li>
+        <li>Draft an RFQ that includes the SOW and states your basis for selection (e.g., best value considering technical approach, staffing plan, past performance, and price).</li>
+        <li>Post the RFQ on GSA eBuy. This ensures broad visibility to all FSS contractors in the relevant category.</li>
+        <li>Evaluate quotations against your stated basis for selection. Check SAM.gov to confirm the apparent awardee isn't excluded.</li>
+        <li>Award to the contractor representing best value. Notify unsuccessful quoters.</li>
+        <li>Document your file: funding, requirement (SOW), RFQ, all quotations received, your evaluation and selection rationale, SAM.gov check, and the delivery/task order.</li>
+      </ol>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ FILE CHECKLIST ═══════════════ -->
+  <div id="panel-checklist" class="gsa-panel">
+    <div style="max-width: 700px; margin: 0 auto;">
+      <h3 style="font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.4rem;">Contract File Checklist</h3>
+      <p style="color: var(--silver); font-size: 0.9rem; line-height: 1.6; margin-bottom: 2rem;">What you should have in your file for an above-SAT GSA schedule order. More documentation than under-SAT — check them off as you go.</p>
+
+      <div id="checklist" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+
+      <div id="checklistStatus" style="margin-top: 2rem; padding: 1rem 1.25rem; border-radius: 10px; background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); color: var(--silver); font-size: 0.88rem; text-align: center;"></div>
+
+      <div style="text-align: center; margin-top: 1.5rem;">
+        <button class="fc-btn" onclick="resetChecklist()">Reset Checklist</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="gsa-panel">
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>GSAM 538.71 — FSS Ordering Procedures</h4>
+        <p>The ordering procedures for GSA Federal Supply Schedules — including 538.7103-3 for above-SAT orders and 538.7104-3 for sole source justifications.</p>
+        <a href="https://acquisition.gov/fss-ordering-procedures" target="_blank" rel="noopener">Open GSAM 538.71</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 8.4 — Federal Supply Schedules</h4>
+        <p>The FAR subpart on GSA schedules. Post-RFO, it directs you to GSAM 538.71 for ordering procedures.</p>
+        <a href="https://www.acquisition.gov/far/subpart-8.4" target="_blank" rel="noopener">Open FAR 8.4</a>
+      </div>
+      <div class="lookup-card">
+        <h4>GSA eBuy</h4>
+        <p>Post RFQs to FSS contractors. The primary competition method for above-SAT GSA orders.</p>
+        <a href="https://www.ebuy.gsa.gov" target="_blank" rel="noopener">Visit GSA eBuy</a>
+      </div>
+      <div class="lookup-card">
+        <h4>GSA Advantage</h4>
+        <p>Search for FSS contractors with active schedules. Useful for market research even when eBuy is your competition vehicle.</p>
+        <a href="https://www.gsaadvantage.gov" target="_blank" rel="noopener">Visit GSA Advantage</a>
+      </div>
+      <div class="lookup-card">
+        <h4>GSA eLibrary</h4>
+        <p>Search GSA schedule contracts by contractor or product category. Verify schedules are current.</p>
+        <a href="https://www.gsaelibrary.gsa.gov" target="_blank" rel="noopener">Visit GSA eLibrary</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Part 8 Deviation Guide (RFO)</h4>
+        <p>The official RFO deviation guide explaining what changed in FAR Part 8 and where the ordering procedures moved.</p>
+        <a href="https://acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-8" target="_blank" rel="noopener">Open Part 8 Deviation Guide</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="training-nav-band"><div id="training-nav" class="training-nav"></div></div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ═══════════════════════════════════ TABS ═══ */
+document.querySelectorAll('.gsa-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.gsa-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.gsa-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ═══════════════════════════════════ FILE CHECKLIST ═══ */
+const checklistItems = [
+  { label: "Funding Document", desc: "PR&C, MIPR, or other funding authorization showing funds are available and certified." },
+  { label: "Requirement Description", desc: "Statement of work, statement of objectives, specifications, or clear written description of the requirement." },
+  { label: "Market Research", desc: "Evidence the item/service is available on GSA schedules and that the contractor's schedule is active." },
+  { label: "RFQ with Basis for Selection", desc: "Your RFQ describing the requirement and stating how you will evaluate and select the awardee." },
+  { label: "Quotes / Pricing Documentation", desc: "All quotations received. If fewer than three, include documentation of your efforts to find additional contractors." },
+  { label: "Sole Source Justification (if applicable)", desc: "Written justification under GSAM 538.7104-3(b) if the order was not competed. Must be publicly posted within 14 days of award." },
+  { label: "SAM.gov Exclusion Check", desc: "Screenshot or printout confirming the awardee is not excluded or debarred." },
+  { label: "Abstract / Award Documentation", desc: "Your best value rationale — why you selected this contractor over others, based on the criteria in your RFQ." },
+  { label: "Unsuccessful Quoter Notifications", desc: "Evidence you notified contractors that were not selected for award." },
+  { label: "Delivery Order / Task Order", desc: "The actual order document referencing the schedule contract number." }
+];
+
+function buildChecklist() {
+  var el = document.getElementById('checklist');
+  el.innerHTML = checklistItems.map(function(item, i) {
+    return '<label style="display:flex;gap:1rem;align-items:flex-start;padding:1.1rem 1.25rem;background:rgba(10,22,50,0.7);border:1px solid rgba(74,158,255,0.12);border-radius:12px;cursor:pointer;transition:all 0.18s;" onmouseenter="this.style.borderColor=\'rgba(74,158,255,0.3)\'" onmouseleave="this.style.borderColor=this.querySelector(\'input\').checked?\'rgba(52,211,153,0.35)\':\'rgba(74,158,255,0.12)\'">' +
+      '<input type="checkbox" data-idx="' + i + '" style="margin-top:3px;width:18px;height:18px;accent-color:#34d399;flex-shrink:0;cursor:pointer;" onchange="updateChecklist()">' +
+      '<div><strong style="color:var(--white);font-size:0.95rem;">' + item.label + '</strong><div style="color:var(--silver);font-size:0.84rem;line-height:1.55;margin-top:0.25rem;">' + item.desc + '</div></div>' +
+    '</label>';
+  }).join('');
+  updateChecklist();
+}
+
+function updateChecklist() {
+  var boxes = document.querySelectorAll('#checklist input[type="checkbox"]');
+  var checked = 0;
+  boxes.forEach(function(b) {
+    var card = b.closest('label');
+    if (b.checked) {
+      checked++;
+      card.style.borderColor = 'rgba(52,211,153,0.35)';
+      card.style.background = 'rgba(52,211,153,0.04)';
+    } else {
+      card.style.borderColor = 'rgba(74,158,255,0.12)';
+      card.style.background = 'rgba(10,22,50,0.7)';
+    }
+  });
+  var status = document.getElementById('checklistStatus');
+  if (checked === 0) {
+    status.innerHTML = '<span style="color:var(--silver);">' + checklistItems.length + ' items remaining</span>';
+  } else if (checked < checklistItems.length) {
+    status.innerHTML = '<span style="color:#6ee7b7;">' + checked + ' of ' + checklistItems.length + ' complete</span>';
+  } else {
+    status.innerHTML = '<span style="color:#6ee7b7;font-weight:700;">File complete. Ready for review.</span>';
+  }
+}
+
+function resetChecklist() {
+  document.querySelectorAll('#checklist input[type="checkbox"]').forEach(function(b) { b.checked = false; });
+  updateChecklist();
+}
+
+buildChecklist();
+</script>
+<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
