@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Interactive solicitation builder for commercial products and services under FAR Part 12. Build, customize, and export your combined synopsis/solicitation as a Word document." />
+  <title>Solicitation Builder | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/9.1.1/docx.min.js"></script>
+  <style>
+    /* ── Builder Shell ── */
+    .sb-bg { background: #040d1f; min-height: 100vh; padding-bottom: 4rem; }
+
+    .sb-header { text-align: center; padding: 2.5rem 1.5rem 1.5rem; }
+    .sb-header h1 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.5rem, 3vw, 2rem); color: var(--white); margin: 0 0 0.3rem; }
+    .sb-header p { color: var(--silver); font-size: 0.88rem; margin: 0; }
+
+    .sb-container { max-width: 860px; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* ── Export bar ── */
+    .sb-export-bar { display: flex; gap: 0.75rem; justify-content: flex-end; margin-bottom: 1.5rem; position: sticky; top: 60px; z-index: 80; background: rgba(4,13,31,0.92); backdrop-filter: blur(8px); padding: 0.75rem 0; border-bottom: 1px solid rgba(74,158,255,0.1); }
+    .sb-export-btn { background: var(--accent); color: #fff; border: none; padding: 0.6rem 1.4rem; border-radius: 6px; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+    .sb-export-btn:hover { background: #3a8eff; }
+    .sb-reset-btn { background: transparent; color: var(--silver); border: 1px solid rgba(255,255,255,0.15); padding: 0.6rem 1.2rem; border-radius: 6px; font-size: 0.82rem; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+    .sb-reset-btn:hover { color: #ff6b6b; border-color: #ff6b6b; }
+
+    /* ── Section cards ── */
+    .sb-section { background: rgba(255,255,255,0.03); border: 1px solid rgba(74,158,255,0.1); border-radius: 10px; padding: 1.5rem; margin-bottom: 1.25rem; position: relative; }
+    .sb-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .sb-section-title { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--accent); margin: 0; }
+    .sb-section-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.75rem; font-weight: 700; margin-right: 0.5rem; }
+    .sb-delete-section { background: none; border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; font-size: 0.72rem; padding: 0.3rem 0.7rem; border-radius: 4px; cursor: pointer; font-family: inherit; transition: all 0.15s; font-weight: 600; }
+    .sb-delete-section:hover { background: rgba(255,107,107,0.1); border-color: #ff6b6b; }
+
+    /* ── Form elements ── */
+    .sb-row { display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.65rem; flex-wrap: wrap; }
+    .sb-label { color: var(--silver); font-size: 0.8rem; font-weight: 600; min-width: 140px; padding-top: 0.45rem; flex-shrink: 0; }
+    .sb-input, .sb-select, .sb-textarea { background: rgba(255,255,255,0.06); border: 1px solid rgba(74,158,255,0.2); color: var(--white); font-size: 0.85rem; padding: 0.45rem 0.65rem; border-radius: 5px; font-family: inherit; flex: 1; min-width: 0; transition: border-color 0.15s; }
+    .sb-input:focus, .sb-select:focus, .sb-textarea:focus { outline: none; border-color: var(--accent); background: rgba(74,158,255,0.06); }
+    .sb-input::placeholder, .sb-textarea::placeholder { color: rgba(255,255,255,0.25); }
+    .sb-select { cursor: pointer; }
+    .sb-select option { background: #0a1628; color: #fff; }
+    .sb-textarea { resize: vertical; min-height: 60px; line-height: 1.5; }
+    .sb-input-short { max-width: 200px; }
+
+    /* ── Subsection ── */
+    .sb-subsection { border-left: 2px solid rgba(74,158,255,0.15); padding-left: 1rem; margin: 0.75rem 0; }
+    .sb-subsection-title { color: var(--accent); font-size: 0.82rem; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+
+    /* ── CLIN Table ── */
+    .sb-clin-table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; }
+    .sb-clin-table th { background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.5rem 0.4rem; text-align: left; border-bottom: 1px solid rgba(74,158,255,0.2); }
+    .sb-clin-table td { padding: 0.3rem 0.2rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .sb-clin-table .sb-input { font-size: 0.8rem; padding: 0.35rem 0.45rem; }
+    .sb-clin-table .clin-num { color: var(--silver); font-size: 0.82rem; font-weight: 600; padding-left: 0.4rem; width: 55px; }
+    .sb-clin-delete { background: none; border: none; color: rgba(255,107,107,0.5); cursor: pointer; font-size: 1rem; padding: 0.2rem; transition: color 0.15s; }
+    .sb-clin-delete:hover { color: #ff6b6b; }
+
+    .sb-add-btn { background: none; border: 1px dashed rgba(74,158,255,0.3); color: var(--accent); font-size: 0.78rem; padding: 0.4rem 0.9rem; border-radius: 5px; cursor: pointer; font-family: inherit; font-weight: 600; transition: all 0.15s; margin-top: 0.5rem; }
+    .sb-add-btn:hover { background: rgba(74,158,255,0.08); border-color: var(--accent); }
+
+    /* ── Eval factors ── */
+    .sb-factor { background: rgba(255,255,255,0.02); border: 1px solid rgba(74,158,255,0.08); border-radius: 8px; padding: 0.85rem; margin-bottom: 0.65rem; position: relative; }
+    .sb-factor-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+    .sb-factor-num { color: var(--accent); font-weight: 700; font-size: 0.85rem; }
+    .sb-factor-delete { position: absolute; top: 0.6rem; right: 0.6rem; background: none; border: none; color: rgba(255,107,107,0.4); cursor: pointer; font-size: 0.9rem; transition: color 0.15s; }
+    .sb-factor-delete:hover { color: #ff6b6b; }
+
+    /* ── Attachment table ── */
+    .sb-att-table { width: 100%; border-collapse: collapse; }
+    .sb-att-table th { background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; padding: 0.5rem; text-align: left; }
+    .sb-att-table td { padding: 0.35rem 0.3rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .sb-att-fixed { color: var(--silver); font-size: 0.82rem; }
+
+    /* ── Info text ── */
+    .sb-info { color: rgba(255,255,255,0.35); font-size: 0.75rem; font-style: italic; margin-top: 0.3rem; }
+    .sb-boilerplate { background: rgba(74,158,255,0.05); border-left: 3px solid rgba(74,158,255,0.2); padding: 0.6rem 0.8rem; margin: 0.5rem 0; color: var(--silver); font-size: 0.82rem; line-height: 1.5; border-radius: 0 5px 5px 0; }
+
+    /* ── Hidden sections ── */
+    .sb-hidden { display: none !important; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .sb-row { flex-direction: column; }
+      .sb-label { min-width: 0; padding-top: 0; margin-bottom: 0.15rem; }
+      .sb-export-bar { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════ NAVBAR ═══════ -->
+<nav class="navbar" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-accent">KTHQ</span><small>ContractingHQ</small></a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="tools.html">Tools</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="training.html">Training</a>
+      <a href="links.html">Links</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════ BUILDER ═══════ -->
+<div class="sb-bg">
+
+  <div class="sb-header">
+    <h1>Solicitation Builder</h1>
+    <p>Build a combined synopsis/solicitation for commercial products and services under FAR Part 12. Customize, then export as a Word document.</p>
+  </div>
+
+  <div class="sb-container">
+
+    <!-- Export bar -->
+    <div class="sb-export-bar">
+      <button class="sb-reset-btn" onclick="resetBuilder()">Reset All</button>
+      <button class="sb-export-btn" onclick="exportDocx()">Download as Word (.docx)</button>
+    </div>
+
+    <!-- ═══════ SECTION 1: HEADER BLOCK ═══════ -->
+    <div class="sb-section" id="sec-header">
+      <div class="sb-section-header">
+        <h3 class="sb-section-title"><span class="sb-section-num">1</span> Header Block</h3>
+      </div>
+
+      <div class="sb-row">
+        <label class="sb-label">Solicitation No.</label>
+        <input class="sb-input" id="sol_number" placeholder="e.g., FA862625Q0042" />
+      </div>
+      <div class="sb-row">
+        <label class="sb-label">Acquisition Type</label>
+        <select class="sb-select" id="acq_type">
+          <option value="">-- Select --</option>
+          <option value="commercial products">Commercial Products</option>
+          <option value="commercial services">Commercial Services</option>
+          <option value="commercial products and commercial services">Commercial Products and Commercial Services</option>
+        </select>
+      </div>
+      <div class="sb-row">
+        <label class="sb-label">Posted Date</label>
+        <input class="sb-input sb-input-short" id="posted_date" type="date" />
+      </div>
+      <div class="sb-row">
+        <label class="sb-label">Response Date/Time</label>
+        <input class="sb-input" id="response_date" placeholder="e.g., 15 Apr 2026, 2:00 PM CST" />
+      </div>
+      <div class="sb-row">
+        <label class="sb-label">PSC Code</label>
+        <input class="sb-input" id="psc_code" placeholder="Code and description" />
+      </div>
+      <div class="sb-row">
+        <label class="sb-label">NAICS Code</label>
+        <input class="sb-input" id="naics_code" placeholder="Code, description, and size standard" />
+      </div>
+      <div class="sb-row">
+        <label class="sb-label">Set-Aside</label>
+        <select class="sb-select" id="set_aside">
+          <option value="">-- Select --</option>
+          <option>Total Small Business Set-Aside</option>
+          <option>Partial Small Business Set-Aside</option>
+          <option>8(a) Sole Source</option>
+          <option>8(a) Competitive</option>
+          <option>HUBZone Set-Aside</option>
+          <option>HUBZone Sole Source</option>
+          <option>SDVOSB Set-Aside</option>
+          <option>SDVOSB Sole Source</option>
+          <option>WOSB Set-Aside</option>
+          <option>EDWOSB Set-Aside</option>
+          <option>Unrestricted</option>
+        </select>
+      </div>
+      <div class="sb-row">
+        <label class="sb-label">Contracting Office</label>
+        <input class="sb-input" id="con_office" placeholder="Office name and mailing address" />
+      </div>
+      <div class="sb-row">
+        <label class="sb-label">POC Name</label>
+        <input class="sb-input" id="poc_name" />
+      </div>
+      <div class="sb-row">
+        <label class="sb-label">POC Phone</label>
+        <input class="sb-input sb-input-short" id="poc_phone" />
+      </div>
+      <div class="sb-row">
+        <label class="sb-label">POC Email</label>
+        <input class="sb-input" id="poc_email" />
+      </div>
+
+      <div class="sb-boilerplate" id="synopsis_boilerplate">
+        This is a combined synopsis/solicitation for <span id="acq_type_echo">commercial products and commercial services</span> prepared in accordance with FAR Part 12. This announcement constitutes the only solicitation; <span id="doc_type_echo">proposals</span> are being requested and a separate written solicitation will not be issued.
+      </div>
+    </div>
+
+    <!-- ═══════ SECTION 2: DESCRIPTION ═══════ -->
+    <div class="sb-section" id="sec-description">
+      <div class="sb-section-header">
+        <h3 class="sb-section-title"><span class="sb-section-num">2</span> Description of Supplies or Services</h3>
+      </div>
+      <textarea class="sb-textarea" id="description" rows="4" placeholder="Describe the supplies or services. For supplies, provide specs and quantities. For services, reference the attached PWS/SOW and summarize scope."></textarea>
+    </div>
+
+    <!-- ═══════ SECTION 3: DELIVERY / PERFORMANCE ═══════ -->
+    <div class="sb-section" id="sec-delivery">
+      <div class="sb-section-header">
+        <h3 class="sb-section-title"><span class="sb-section-num">3</span> Delivery / Performance Schedule</h3>
+      </div>
+
+      <!-- Supplies subsection -->
+      <div class="sb-subsection" id="subsec-supplies">
+        <div class="sb-subsection-title">
+          For Supplies
+          <button class="sb-delete-section" onclick="toggleSubsection('subsec-supplies')">Remove</button>
+        </div>
+        <div class="sb-row">
+          <label class="sb-label">Delivery</label>
+          <input class="sb-input" id="del_timeline" placeholder="Within ___ calendar days after contract award" />
+        </div>
+        <div class="sb-row">
+          <label class="sb-label">Delivery Location</label>
+          <input class="sb-input" id="del_location" />
+        </div>
+        <div class="sb-row">
+          <label class="sb-label">FOB Point</label>
+          <input class="sb-input sb-input-short" id="del_fob" value="Destination" />
+        </div>
+      </div>
+
+      <!-- Services subsection -->
+      <div class="sb-subsection" id="subsec-services">
+        <div class="sb-subsection-title">
+          For Services
+          <button class="sb-delete-section" onclick="toggleSubsection('subsec-services')">Remove</button>
+        </div>
+        <div id="option-periods-container">
+          <div class="sb-row">
+            <label class="sb-label">Base Period</label>
+            <input class="sb-input" id="svc_base" placeholder="Start date - End date" />
+          </div>
+          <div class="sb-row option-period" data-period="1">
+            <label class="sb-label">Option Period 1</label>
+            <input class="sb-input" placeholder="Start date - End date" />
+            <button class="sb-clin-delete" onclick="removeOptionPeriod(this)" title="Remove">&times;</button>
+          </div>
+        </div>
+        <button class="sb-add-btn" onclick="addOptionPeriod()">+ Add Option Period</button>
+        <div class="sb-row" style="margin-top:0.5rem;">
+          <label class="sb-label">Place of Performance</label>
+          <input class="sb-input" id="svc_pop" />
+        </div>
+      </div>
+
+      <button class="sb-add-btn" id="restore-supplies" style="display:none;" onclick="restoreSubsection('subsec-supplies')">+ Restore Supplies Section</button>
+      <button class="sb-add-btn" id="restore-services" style="display:none;" onclick="restoreSubsection('subsec-services')">+ Restore Services Section</button>
+    </div>
+
+    <!-- ═══════ SECTION 4: 52.212-1 ═══════ -->
+    <div class="sb-section" id="sec-instructions">
+      <div class="sb-section-header">
+        <h3 class="sb-section-title"><span class="sb-section-num">4</span> FAR 52.212-1 — Instructions to Offerors</h3>
+      </div>
+
+      <div class="sb-boilerplate">
+        FAR 52.212-1, Instructions to Offerors — Commercial Products and Commercial Services, applies to this acquisition with the following addenda:
+      </div>
+
+      <div class="sb-subsection">
+        <div class="sb-subsection-title">(a) Technical Submission</div>
+        <textarea class="sb-textarea" id="tech_instructions" rows="3" placeholder="Offerors shall submit [quotations / proposals] that include [product spec sheet / technical approach / staffing plan / compliance matrix] demonstrating the ability to meet the requirements stated in [the Description / the PWS]."></textarea>
+      </div>
+
+      <div class="sb-subsection">
+        <div class="sb-subsection-title">(b) Price Submission</div>
+        <p style="color:var(--silver);font-size:0.82rem;margin:0 0 0.5rem;">Provide a firm, fixed price for the following:</p>
+
+        <table class="sb-clin-table">
+          <thead>
+            <tr>
+              <th style="width:55px;">CLIN</th>
+              <th>Description</th>
+              <th style="width:60px;">Qty</th>
+              <th style="width:65px;">Unit</th>
+              <th style="width:85px;">Unit Price</th>
+              <th style="width:85px;">Total Price</th>
+              <th style="width:30px;"></th>
+            </tr>
+          </thead>
+          <tbody id="clin-body">
+            <tr>
+              <td class="clin-num">0001</td>
+              <td><input class="sb-input" placeholder="Description" /></td>
+              <td><input class="sb-input" placeholder="Qty" /></td>
+              <td><input class="sb-input" value="EA" /></td>
+              <td><input class="sb-input" placeholder="$" /></td>
+              <td><input class="sb-input" placeholder="$" /></td>
+              <td><button class="sb-clin-delete" onclick="removeClin(this)" title="Remove">&times;</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <button class="sb-add-btn" onclick="addClin()">+ Add CLIN</button>
+      </div>
+
+      <div class="sb-subsection" id="subsec-additional-req">
+        <div class="sb-subsection-title">
+          (c) Additional Submission Requirements
+          <button class="sb-delete-section" onclick="toggleSubsection('subsec-additional-req')">Remove</button>
+        </div>
+        <textarea class="sb-textarea" id="additional_req" rows="2" placeholder="Offerors shall also submit [past performance references / delivery schedule / warranty terms / certifications]."></textarea>
+      </div>
+      <button class="sb-add-btn sb-hidden" id="restore-additional-req" onclick="restoreSubsection('subsec-additional-req')">+ Restore Additional Requirements</button>
+
+      <div class="sb-row" style="margin-top:0.75rem;">
+        <label class="sb-label">Submit To</label>
+        <input class="sb-input" id="submit_to" placeholder="Email address or SAM.gov" />
+      </div>
+      <div class="sb-row">
+        <label class="sb-label">Deadline</label>
+        <input class="sb-input" id="submit_deadline" placeholder="Date / time / time zone" />
+      </div>
+      <div class="sb-row">
+        <label class="sb-label">Questions Due</label>
+        <input class="sb-input" id="questions_due" placeholder="Date — submit to [email]" />
+      </div>
+    </div>
+
+    <!-- ═══════ SECTION 5: 52.212-2 ═══════ -->
+    <div class="sb-section" id="sec-eval">
+      <div class="sb-section-header">
+        <h3 class="sb-section-title"><span class="sb-section-num">5</span> FAR 52.212-2 — Evaluation Criteria</h3>
+      </div>
+
+      <div class="sb-boilerplate">
+        FAR 52.212-2, Evaluation — Commercial Products and Commercial Services, applies to this acquisition. The Government will evaluate <span id="eval_doc_type">proposals</span> based on the following factors:
+      </div>
+
+      <div id="factors-container">
+        <!-- Factors added dynamically -->
+      </div>
+      <button class="sb-add-btn" onclick="addFactor()">+ Add Evaluation Factor</button>
+
+      <div style="margin-top:1rem;">
+        <div class="sb-row">
+          <label class="sb-label" style="font-weight:700;color:var(--accent);">Basis for Award</label>
+        </div>
+        <textarea class="sb-textarea" id="basis_for_award" rows="3">The Government will award a contract resulting from this solicitation to the responsible offeror whose offer conforming to the solicitation will be most advantageous to the Government, price and other factors considered.</textarea>
+      </div>
+    </div>
+
+    <!-- ═══════ SECTION 6: CLAUSES ═══════ -->
+    <div class="sb-section" id="sec-clauses">
+      <div class="sb-section-header">
+        <h3 class="sb-section-title"><span class="sb-section-num">6</span> FAR 52.212-4 & Additional Clauses</h3>
+      </div>
+
+      <div class="sb-boilerplate">
+        52.212-4: Contract Terms and Conditions — Commercial Products and Commercial Services (FAR 52.212-4) applies to this acquisition.
+      </div>
+
+      <div class="sb-row" style="margin-top:0.5rem;">
+        <label class="sb-label">52.212-4 Addenda</label>
+        <input class="sb-input" id="clause_addenda" value="No addenda." />
+      </div>
+
+      <div class="sb-boilerplate" style="margin-top:0.75rem;">
+        <strong>Additional Clauses:</strong> The provisions and clauses identified in Attachment 1, Additional Provisions and Clauses, are incorporated into this solicitation and any resulting contract.
+      </div>
+    </div>
+
+    <!-- ═══════ SECTION 7: ATTACHMENTS ═══════ -->
+    <div class="sb-section" id="sec-attachments">
+      <div class="sb-section-header">
+        <h3 class="sb-section-title"><span class="sb-section-num">7</span> Attachments</h3>
+      </div>
+
+      <table class="sb-att-table">
+        <thead>
+          <tr><th style="width:100px;">No.</th><th>Description</th><th style="width:30px;"></th></tr>
+        </thead>
+        <tbody id="att-body">
+          <tr class="att-fixed">
+            <td class="sb-att-fixed" style="font-weight:700;">Attachment 1</td>
+            <td class="sb-att-fixed">Additional Provisions and Clauses</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="sb-att-fixed" style="font-weight:700;">Attachment 2</td>
+            <td><input class="sb-input" placeholder="e.g., Performance Work Statement" /></td>
+            <td><button class="sb-clin-delete" onclick="removeAttachment(this)" title="Remove">&times;</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="sb-add-btn" onclick="addAttachment()">+ Add Attachment</button>
+    </div>
+
+  </div><!-- /sb-container -->
+</div><!-- /sb-bg -->
+
+<script src="main.js"></script>
+<script>
+// ══════════════════════════════════════════════
+// EVAL FACTOR LANGUAGE (from training page)
+// ══════════════════════════════════════════════
+const FACTOR_LANGUAGE = {
+  "Technical Acceptability": `Quotations will be evaluated on an acceptable/unacceptable basis. To be rated acceptable, the offeror must demonstrate that the proposed [product/service] meets or exceeds all requirements stated in [the Description of Supplies or Services / the PWS]. Quotations rated unacceptable will not be considered for award.`,
+  "Technical Approach": `The Government will evaluate the offeror's proposed approach to performing the requirements described in the PWS. The evaluation will consider the feasibility and completeness of the proposed approach, the proposed staffing plan, quality control procedures, and approach to handling [specific challenge]. Proposals that demonstrate a clear understanding of the requirements and a realistic, executable plan will be evaluated more favorably.`,
+  "Past Performance": `The Government will evaluate the offeror's record of recent and relevant past performance to assess the likelihood of successful performance. "Recent" is defined as work performed within the last [3/5] years. "Relevant" is defined as [work of similar scope, complexity, and magnitude]. The Government may use references provided by the offeror, data from CPARS/PPIRS, and any other available past performance information. Offerors without relevant past performance will receive a neutral rating.`,
+  "Price": `The total evaluated price will be [the offeror's quoted firm, fixed price for all CLINs / the sum of all base and option period CLINs]. Price will be evaluated for reasonableness.\n\n(Optional) The Government may evaluate prices for realism if, as determined by the Contracting Officer, prices are so low as to cause performance concerns. If no concerns arise, a price realism evaluation will not be conducted.`,
+  "Delivery Schedule": `The Government will evaluate the offeror's proposed delivery schedule. Earlier delivery dates will be evaluated more favorably. Offerors must propose delivery no later than [X] calendar days after contract award.`,
+  "Warranty": `The Government will evaluate the offeror's proposed warranty terms, including duration of coverage, scope of coverage (parts, labor, on-site vs. depot repair), and response time for warranty service. Warranty terms that exceed the minimum [X]-year requirement will be evaluated more favorably.`,
+  "Key Personnel": `The Government will evaluate the qualifications and experience of the offeror's proposed key personnel, specifically [the Project Manager / Lead Technician / (identify positions)]. The evaluation will consider relevant experience, education, certifications, and demonstrated ability to perform work of similar scope and complexity.`,
+  "Small Business Participation": `The Government will evaluate the offeror's proposed approach to utilizing small business concerns, including small disadvantaged businesses, women-owned small businesses, HUBZone small businesses, veteran-owned small businesses, and service-disabled veteran-owned small businesses.`,
+};
+
+// ══════════════════════════════════════════════
+// DYNAMIC: Acquisition type → boilerplate echo
+// ══════════════════════════════════════════════
+document.getElementById('acq_type').addEventListener('change', function() {
+  const val = this.value || 'commercial products and commercial services';
+  document.getElementById('acq_type_echo').textContent = val;
+});
+
+// ══════════════════════════════════════════════
+// CLIN Management
+// ══════════════════════════════════════════════
+let clinCount = 1;
+
+function addClin() {
+  clinCount++;
+  const num = String(clinCount).padStart(4, '0');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="clin-num">${num}</td>
+    <td><input class="sb-input" placeholder="Description" /></td>
+    <td><input class="sb-input" placeholder="Qty" /></td>
+    <td><input class="sb-input" value="EA" /></td>
+    <td><input class="sb-input" placeholder="$" /></td>
+    <td><input class="sb-input" placeholder="$" /></td>
+    <td><button class="sb-clin-delete" onclick="removeClin(this)" title="Remove">&times;</button></td>
+  `;
+  document.getElementById('clin-body').appendChild(tr);
+  renumberClins();
+}
+
+function removeClin(btn) {
+  const tbody = document.getElementById('clin-body');
+  if (tbody.rows.length <= 1) return; // Keep at least one
+  btn.closest('tr').remove();
+  renumberClins();
+}
+
+function renumberClins() {
+  const rows = document.getElementById('clin-body').rows;
+  for (let i = 0; i < rows.length; i++) {
+    rows[i].querySelector('.clin-num').textContent = String(i + 1).padStart(4, '0');
+  }
+  clinCount = rows.length;
+}
+
+// ══════════════════════════════════════════════
+// Option Period Management
+// ══════════════════════════════════════════════
+let optionCount = 1;
+
+function addOptionPeriod() {
+  optionCount++;
+  const div = document.createElement('div');
+  div.className = 'sb-row option-period';
+  div.dataset.period = optionCount;
+  div.innerHTML = `
+    <label class="sb-label">Option Period ${optionCount}</label>
+    <input class="sb-input" placeholder="Start date - End date" />
+    <button class="sb-clin-delete" onclick="removeOptionPeriod(this)" title="Remove">&times;</button>
+  `;
+  document.getElementById('option-periods-container').appendChild(div);
+}
+
+function removeOptionPeriod(btn) {
+  btn.closest('.option-period').remove();
+  renumberOptionPeriods();
+}
+
+function renumberOptionPeriods() {
+  const periods = document.querySelectorAll('.option-period');
+  periods.forEach((p, i) => {
+    p.querySelector('.sb-label').textContent = `Option Period ${i + 1}`;
+    p.dataset.period = i + 1;
+  });
+  optionCount = periods.length;
+}
+
+// ══════════════════════════════════════════════
+// Section Toggle (remove / restore)
+// ══════════════════════════════════════════════
+function toggleSubsection(id) {
+  document.getElementById(id).classList.add('sb-hidden');
+  document.getElementById('restore-' + id.replace('subsec-', '')).style.display = '';
+}
+
+function restoreSubsection(id) {
+  document.getElementById(id).classList.remove('sb-hidden');
+  document.getElementById('restore-' + id.replace('subsec-', '')).style.display = 'none';
+}
+
+// ══════════════════════════════════════════════
+// Eval Factor Management
+// ══════════════════════════════════════════════
+let factorCount = 0;
+
+function addFactor() {
+  factorCount++;
+  const container = document.getElementById('factors-container');
+  const div = document.createElement('div');
+  div.className = 'sb-factor';
+  div.dataset.factorId = factorCount;
+
+  const optionsHtml = Object.keys(FACTOR_LANGUAGE).map(k => `<option value="${k}">${k}</option>`).join('');
+
+  div.innerHTML = `
+    <button class="sb-factor-delete" onclick="removeFactor(this)" title="Remove factor">&times;</button>
+    <div class="sb-factor-header">
+      <span class="sb-factor-num">Factor ${container.children.length + 1}:</span>
+      <select class="sb-select" style="max-width:260px;" onchange="populateFactorText(this)">
+        <option value="">-- Select Factor --</option>
+        ${optionsHtml}
+        <option value="custom">Custom</option>
+      </select>
+    </div>
+    <textarea class="sb-textarea" rows="4" placeholder="Select a factor above to auto-populate, or type custom language here."></textarea>
+  `;
+
+  container.appendChild(div);
+  renumberFactors();
+}
+
+function removeFactor(btn) {
+  btn.closest('.sb-factor').remove();
+  renumberFactors();
+}
+
+function renumberFactors() {
+  const factors = document.querySelectorAll('.sb-factor');
+  factors.forEach((f, i) => {
+    f.querySelector('.sb-factor-num').textContent = `Factor ${i + 1}:`;
+  });
+}
+
+function populateFactorText(select) {
+  const textarea = select.closest('.sb-factor').querySelector('textarea');
+  const val = select.value;
+  if (FACTOR_LANGUAGE[val]) {
+    textarea.value = FACTOR_LANGUAGE[val];
+  }
+}
+
+// ══════════════════════════════════════════════
+// Attachment Management
+// ══════════════════════════════════════════════
+function addAttachment() {
+  const tbody = document.getElementById('att-body');
+  const num = tbody.rows.length + 1;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="sb-att-fixed" style="font-weight:700;">Attachment ${num}</td>
+    <td><input class="sb-input" placeholder="Description" /></td>
+    <td><button class="sb-clin-delete" onclick="removeAttachment(this)" title="Remove">&times;</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function removeAttachment(btn) {
+  const row = btn.closest('tr');
+  if (row.classList.contains('att-fixed')) return;
+  row.remove();
+  renumberAttachments();
+}
+
+function renumberAttachments() {
+  const rows = document.getElementById('att-body').rows;
+  for (let i = 0; i < rows.length; i++) {
+    rows[i].cells[0].textContent = `Attachment ${i + 1}`;
+  }
+}
+
+// ══════════════════════════════════════════════
+// Reset
+// ══════════════════════════════════════════════
+function resetBuilder() {
+  if (!confirm('Reset all fields? This cannot be undone.')) return;
+  location.reload();
+}
+
+// ══════════════════════════════════════════════
+// EXPORT AS DOCX
+// ══════════════════════════════════════════════
+async function exportDocx() {
+  const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+          Footer, AlignmentType, HeadingLevel, BorderStyle, WidthType,
+          ShadingType, PageNumber, PageBreak } = docx;
+
+  const NAVY_HEX = "1B3A5C";
+  const ACCENT_HEX = "2E75B6";
+  const WHITE_HEX = "FFFFFF";
+
+  const thinBorder = { style: BorderStyle.SINGLE, size: 1, color: "BBBBBB" };
+  const accentBorder = { style: BorderStyle.SINGLE, size: 1, color: ACCENT_HEX };
+  const noBorder = { style: BorderStyle.NONE, size: 0, color: WHITE_HEX };
+  const borders = { top: thinBorder, bottom: thinBorder, left: thinBorder, right: thinBorder };
+  const cellMargins = { top: 60, bottom: 60, left: 100, right: 100 };
+
+  // Gather data
+  const solNum = document.getElementById('sol_number').value || '[Insert]';
+  const acqType = document.getElementById('acq_type').value || 'commercial products and commercial services';
+  const postedDate = document.getElementById('posted_date').value || '[Insert]';
+  const responseDate = document.getElementById('response_date').value || '[Insert]';
+  const pscCode = document.getElementById('psc_code').value || '[Insert]';
+  const naicsCode = document.getElementById('naics_code').value || '[Insert]';
+  const setAside = document.getElementById('set_aside').value || '[Insert]';
+  const conOffice = document.getElementById('con_office').value || '[Insert]';
+  const pocName = document.getElementById('poc_name').value || '[Insert]';
+  const pocPhone = document.getElementById('poc_phone').value || '[Insert]';
+  const pocEmail = document.getElementById('poc_email').value || '[Insert]';
+  const description = document.getElementById('description').value || '[Insert description]';
+
+  const children = [];
+
+  // ── Helper functions ──
+  function heading(text) {
+    return new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun({ text, font: "Arial" })] });
+  }
+  function subheading(text) {
+    return new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun({ text, font: "Arial" })] });
+  }
+  function body(text, opts = {}) {
+    return new Paragraph({
+      spacing: { after: 100, line: 276 },
+      children: [new TextRun({ text, font: "Arial", size: 22, bold: opts.bold || false, italics: opts.italic || false })]
+    });
+  }
+  function boldBody(label, rest) {
+    return new Paragraph({
+      spacing: { after: 100, line: 276 },
+      children: [
+        new TextRun({ text: label, bold: true, font: "Arial", size: 22 }),
+        new TextRun({ text: rest, font: "Arial", size: 22 })
+      ]
+    });
+  }
+
+  // ── Section 1: Header synopsis ──
+  children.push(heading("1. Header Block"));
+
+  // Header table
+  const hdrRows = [
+    ["Solicitation Number", solNum],
+    ["Posted Date", postedDate],
+    ["Response Date/Time", responseDate],
+    ["PSC Code", pscCode],
+    ["NAICS Code", naicsCode],
+    ["Set-Aside", setAside],
+    ["Contracting Office", conOffice],
+    ["Point of Contact", `${pocName} | ${pocPhone} | ${pocEmail}`],
+  ];
+
+  children.push(new Table({
+    width: { size: 9360, type: WidthType.DXA },
+    columnWidths: [2800, 6560],
+    rows: hdrRows.map(([label, val]) => new TableRow({
+      children: [
+        new TableCell({
+          borders, width: { size: 2800, type: WidthType.DXA },
+          shading: { fill: "F0F5FF", type: ShadingType.CLEAR },
+          margins: cellMargins,
+          children: [new Paragraph({ spacing: { after: 0 }, children: [new TextRun({ text: label, bold: true, font: "Arial", size: 22, color: NAVY_HEX })] })]
+        }),
+        new TableCell({
+          borders, width: { size: 6560, type: WidthType.DXA },
+          margins: cellMargins,
+          children: [new Paragraph({ spacing: { after: 0 }, children: [new TextRun({ text: val, font: "Arial", size: 22 })] })]
+        }),
+      ]
+    }))
+  }));
+
+  children.push(body(`This is a combined synopsis/solicitation for ${acqType} prepared in accordance with FAR Part 12. This announcement constitutes the only solicitation; proposals are being requested and a separate written solicitation will not be issued.`, { italic: true }));
+
+  // ── Section 2: Description ──
+  children.push(heading("2. Description of Supplies or Services"));
+  children.push(body(description));
+
+  // ── Section 3: Delivery ──
+  children.push(heading("3. Delivery / Performance Schedule"));
+
+  if (!document.getElementById('subsec-supplies').classList.contains('sb-hidden')) {
+    children.push(subheading("For Supplies:"));
+    children.push(boldBody("Delivery: ", document.getElementById('del_timeline').value || '[Insert]'));
+    children.push(boldBody("Delivery Location: ", document.getElementById('del_location').value || '[Insert]'));
+    children.push(boldBody("FOB Point: ", document.getElementById('del_fob').value || 'Destination'));
+  }
+
+  if (!document.getElementById('subsec-services').classList.contains('sb-hidden')) {
+    children.push(subheading("For Services:"));
+    children.push(boldBody("Base Period: ", document.getElementById('svc_base').value || '[Insert]'));
+    document.querySelectorAll('.option-period').forEach(p => {
+      const label = p.querySelector('.sb-label').textContent;
+      const val = p.querySelector('.sb-input').value || '[Insert]';
+      children.push(boldBody(label + ": ", val));
+    });
+    children.push(boldBody("Place of Performance: ", document.getElementById('svc_pop').value || '[Insert]'));
+  }
+
+  // ── Section 4: 52.212-1 ──
+  children.push(heading("4. FAR 52.212-1 — Instructions to Offerors (Tailored)"));
+  children.push(body("FAR 52.212-1, Instructions to Offerors — Commercial Products and Commercial Services, applies to this acquisition with the following addenda:"));
+
+  children.push(subheading("(a) Technical Submission"));
+  children.push(body(document.getElementById('tech_instructions').value || '[Insert technical submission requirements]'));
+
+  children.push(subheading("(b) Price Submission"));
+  children.push(body("Provide a firm, fixed price for the following:"));
+
+  // CLIN table
+  const clinRows = [];
+  clinRows.push(new TableRow({
+    children: ["CLIN", "Description", "Qty", "Unit", "Unit Price", "Total Price"].map((h, idx) => {
+      const widths = [700, 3360, 700, 700, 1400, 1500];
+      return new TableCell({
+        borders, width: { size: widths[idx], type: WidthType.DXA },
+        shading: { fill: NAVY_HEX, type: ShadingType.CLEAR },
+        margins: { top: 40, bottom: 40, left: 60, right: 60 },
+        children: [new Paragraph({ spacing: { after: 0 }, children: [new TextRun({ text: h, bold: true, font: "Arial", size: 20, color: WHITE_HEX })] })]
+      });
+    })
+  }));
+
+  document.querySelectorAll('#clin-body tr').forEach(row => {
+    const cells = row.querySelectorAll('input');
+    const num = row.querySelector('.clin-num').textContent;
+    const vals = [num, cells[0]?.value || '', cells[1]?.value || '', cells[2]?.value || '', cells[3]?.value || '', cells[4]?.value || ''];
+    clinRows.push(new TableRow({
+      children: vals.map((v, idx) => {
+        const widths = [700, 3360, 700, 700, 1400, 1500];
+        return new TableCell({
+          borders, width: { size: widths[idx], type: WidthType.DXA },
+          margins: { top: 40, bottom: 40, left: 60, right: 60 },
+          children: [new Paragraph({ spacing: { after: 0 }, children: [new TextRun({ text: v, font: "Arial", size: 22 })] })]
+        });
+      })
+    }));
+  });
+
+  children.push(new Table({
+    width: { size: 9360, type: WidthType.DXA },
+    columnWidths: [700, 3360, 700, 700, 1400, 1500],
+    rows: clinRows
+  }));
+
+  // Additional requirements
+  const addReqEl = document.getElementById('subsec-additional-req');
+  if (addReqEl && !addReqEl.classList.contains('sb-hidden')) {
+    const addReqVal = document.getElementById('additional_req').value;
+    if (addReqVal) {
+      children.push(subheading("(c) Additional Submission Requirements"));
+      children.push(body(addReqVal));
+    }
+  }
+
+  const submitTo = document.getElementById('submit_to').value;
+  const deadline = document.getElementById('submit_deadline').value;
+  const questionsDue = document.getElementById('questions_due').value;
+  if (submitTo) children.push(boldBody("Submission Instructions: ", `Proposals shall be submitted via ${submitTo} no later than ${deadline || '[Insert]'}. Late submissions will not be considered.`));
+  if (questionsDue) children.push(boldBody("Questions: ", `Questions shall be submitted in writing to ${submitTo} no later than ${questionsDue}.`));
+
+  // ── Section 5: 52.212-2 ──
+  children.push(heading("5. FAR 52.212-2 — Evaluation Criteria"));
+  children.push(body("FAR 52.212-2, Evaluation — Commercial Products and Commercial Services, applies to this acquisition."));
+  children.push(body("The Government will evaluate proposals based on the following factors:"));
+
+  document.querySelectorAll('.sb-factor').forEach((f, i) => {
+    const select = f.querySelector('select');
+    const textarea = f.querySelector('textarea');
+    const factorName = select.value === 'custom' ? 'Custom' : (select.value || `Factor ${i + 1}`);
+    const factorText = textarea.value || '[Insert evaluation language]';
+    children.push(boldBody(`Factor ${i + 1}: ${factorName}. `, factorText));
+  });
+
+  children.push(boldBody("Basis for Award: ", document.getElementById('basis_for_award').value));
+
+  // ── Section 6: Clauses ──
+  children.push(heading("6. FAR 52.212-4 & Additional Clauses"));
+  children.push(boldBody("52.212-4: ", `Contract Terms and Conditions — Commercial Products and Commercial Services (FAR 52.212-4) applies to this acquisition. ${document.getElementById('clause_addenda').value}`));
+  children.push(boldBody("Additional Clauses: ", "The provisions and clauses identified in Attachment 1, Additional Provisions and Clauses, are incorporated into this solicitation and any resulting contract."));
+
+  // ── Section 7: Attachments ──
+  children.push(heading("7. Attachments"));
+
+  const attRows = [];
+  attRows.push(new TableRow({
+    children: ["No.", "Description"].map((h, idx) => new TableCell({
+      borders, width: { size: idx === 0 ? 1600 : 7760, type: WidthType.DXA },
+      shading: { fill: NAVY_HEX, type: ShadingType.CLEAR },
+      margins: cellMargins,
+      children: [new Paragraph({ spacing: { after: 0 }, children: [new TextRun({ text: h, bold: true, font: "Arial", size: 20, color: WHITE_HEX })] })]
+    }))
+  }));
+
+  document.querySelectorAll('#att-body tr').forEach(row => {
+    const num = row.cells[0].textContent;
+    const desc = row.classList.contains('att-fixed') ? row.cells[1].textContent : (row.querySelector('input')?.value || '');
+    attRows.push(new TableRow({
+      children: [
+        new TableCell({ borders, width: { size: 1600, type: WidthType.DXA }, margins: cellMargins,
+          children: [new Paragraph({ spacing: { after: 0 }, children: [new TextRun({ text: num, bold: true, font: "Arial", size: 22 })] })] }),
+        new TableCell({ borders, width: { size: 7760, type: WidthType.DXA }, margins: cellMargins,
+          children: [new Paragraph({ spacing: { after: 0 }, children: [new TextRun({ text: desc, font: "Arial", size: 22 })] })] }),
+      ]
+    }));
+  });
+
+  children.push(new Table({ width: { size: 9360, type: WidthType.DXA }, columnWidths: [1600, 7760], rows: attRows }));
+
+  children.push(new Paragraph({
+    alignment: AlignmentType.CENTER, spacing: { before: 400 },
+    children: [new TextRun({ text: "END OF SOLICITATION", bold: true, font: "Arial", size: 24, color: NAVY_HEX })]
+  }));
+
+  // Build document
+  const doc = new Document({
+    styles: {
+      default: { document: { run: { font: "Arial", size: 22 } } },
+      paragraphStyles: [
+        { id: "Heading1", name: "Heading 1", basedOn: "Normal", next: "Normal", quickFormat: true,
+          run: { size: 32, bold: true, font: "Arial", color: NAVY_HEX },
+          paragraph: { spacing: { before: 360, after: 200 } } },
+        { id: "Heading2", name: "Heading 2", basedOn: "Normal", next: "Normal", quickFormat: true,
+          run: { size: 26, bold: true, font: "Arial", color: ACCENT_HEX },
+          paragraph: { spacing: { before: 240, after: 160 } } },
+      ]
+    },
+    sections: [{
+      properties: {
+        page: { size: { width: 12240, height: 15840 }, margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 } }
+      },
+      footers: {
+        default: new Footer({
+          children: [new Paragraph({
+            alignment: AlignmentType.CENTER,
+            children: [
+              new TextRun({ text: "Page ", font: "Arial", size: 16, color: "555555" }),
+              new TextRun({ children: [PageNumber.CURRENT], font: "Arial", size: 16, color: "555555" }),
+            ]
+          })]
+        })
+      },
+      children
+    }]
+  });
+
+  const blob = await Packer.toBlob(doc);
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = solNum && solNum !== '[Insert]' ? `Solicitation-${solNum}.docx` : 'Combined-Synopsis-Solicitation.docx';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ══════════════════════════════════════════════
+// INIT: Add one default factor on page load
+// ══════════════════════════════════════════════
+addFactor();
+</script>
+
+</body>
+</html>
