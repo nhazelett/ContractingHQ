@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Step-by-step guide to building a simplified solicitation for commercial items under FAR Part 12. Includes a downloadable GOAT template, 52.212-1 tailoring, 52.212-2 evaluation criteria, and practical scenarios for supplies and services." />
+  <title>Simplified Solicitations for Commercial Items | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .sol-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .sol-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .sol-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .sol-tab:hover { color: var(--white); }
+    .sol-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .sol-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .sol-panel.active { display: block; }
+
+    /* ── Intro ── */
+    .sol-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .sol-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .sol-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .sol-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-body .highlight-box.svc { background: rgba(168,130,255,0.05); border-color: rgba(168,130,255,0.2); }
+    .learn-body .highlight-box.svc strong { color: #c4b5fd; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── Scenario banner ── */
+    .scenario-banner { background: linear-gradient(135deg, rgba(74,158,255,0.08), rgba(52,211,153,0.05)); border: 1px solid rgba(74,158,255,0.2); border-radius: 14px; padding: 1.5rem; margin: 1.5rem 0; }
+    .scenario-banner h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; color: var(--white); margin-bottom: 0.5rem; }
+    .scenario-banner p { color: var(--silver); font-size: 0.88rem; line-height: 1.6; margin-bottom: 0.5rem; }
+    .scenario-banner .scenario-detail { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.75rem; }
+    .scenario-banner .detail-chip { background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.15); border-radius: 8px; padding: 0.3rem 0.7rem; font-size: 0.75rem; color: var(--accent); font-weight: 600; }
+
+    /* ── Example block ── */
+    .example-block { background: rgba(10,22,50,0.6); border: 1px solid rgba(74,158,255,0.12); border-radius: 12px; padding: 1.25rem; margin: 1rem 0; font-size: 0.85rem; line-height: 1.7; color: var(--silver); }
+    .example-block .ex-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 0.5rem; display: block; }
+    .example-block p { margin-bottom: 0.5rem; }
+
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .sol-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+      .scenario-banner .scenario-detail { flex-direction: column; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 21</span>
+    <h1 class="page-hero-title">Simplified Solicitations for Commercial Items</h1>
+    <p class="page-hero-sub">Build a solicitation from scratch. We'll walk through it step by step with a real scenario, explain why everything is there, and give you a template you can use forever.</p>
+  </div>
+</div>
+
+<div class="sol-bg">
+
+  <div class="sol-intro">
+    <span class="sol-intro-tag">Interactive Training</span>
+    <h2>Building Your Solicitation</h2>
+    <p>A combined synopsis/solicitation for commercial products and commercial services under FAR Part 12. One document, posted once, and you're off to the races.</p>
+  </div>
+
+  <div class="sol-tabs" role="tablist">
+    <button class="sol-tab active" data-tab="learn" role="tab">&#128218; Learn</button>
+    <button class="sol-tab" data-tab="eval-factors" role="tab">&#9878; Eval Factors</button>
+    <button class="sol-tab" data-tab="template" role="tab">&#128196; The Template</button>
+    <button class="sol-tab" data-tab="lookup" role="tab">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="sol-panel active">
+
+    <!-- ── 1. What is this? ── -->
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> What Is a Simplified Solicitation for Commercial Items?</h3>
+      <div class="learn-body">
+        <p>It's a single document you post to SAM.gov that tells industry: here's what we need, here's how to respond, and here's how we'll evaluate your response. For commercial products and commercial services, <strong>FAR Part 12</strong> is your home base. It streamlines the entire process into a combined synopsis/solicitation &mdash; one posting that serves as both the public notice and the request for quotes or proposals.</p>
+        <p>The beauty of commercial item procedures is simplicity. The FAR already built the framework for you through key provisions and clauses:</p>
+        <p><strong>52.212-1</strong> &mdash; Instructions to Offerors. This is your "Section L." It tells vendors what to submit, how to submit it, and when it's due. You tailor this to your requirement.</p>
+        <p><strong>52.212-2</strong> &mdash; Evaluation Criteria. This is your "Section M." It tells vendors how you'll evaluate their responses. You build this to match what you asked for in 52.212-1.</p>
+        <p><strong>52.212-4</strong> &mdash; Contract Terms and Conditions. The standard commercial item contract clauses. You can add agency-specific clauses, but you generally don't remove these.</p>
+        <p>Beyond the 52.212 series, <strong>FAR 12.205</strong> prescribes a list of additional provisions and clauses that may apply based on your specific acquisition &mdash; things like small business set-aside clauses, options clauses for services, wage determination clauses, and more. We'll cover that in Section 8.</p>
+
+        <div class="highlight-box tip">
+          <strong>The mental model:</strong> 52.212-1 tells them what to give you. 52.212-2 tells them how you'll judge it. 52.212-4 handles the contract terms. Then FAR 12.205 tells you what other clauses to include. That's the entire solicitation framework. Everything else is just filling in the details.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ── 2. The Scenario ── -->
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> The Scenario</h3>
+      <div class="learn-body">
+        <p>We're going to build a solicitation from scratch. Here's the setup:</p>
+
+        <div class="scenario-banner">
+          <h4>Scenario A: Supply (Primary Walkthrough)</h4>
+          <p>Your maintenance shop needs a <strong>CNC milling machine</strong>. The requirement came through as a purchase request. You've done your market research, determined it's a commercial product, and the estimated value is around <strong>$300,000</strong>. You have the specs from the customer, you know the NAICS code (333517 &mdash; Machine Tool Manufacturing), and your commercial item determination is signed. Time to write the solicitation.</p>
+          <div class="scenario-detail">
+            <span class="detail-chip">Commercial Product</span>
+            <span class="detail-chip">~$300K</span>
+            <span class="detail-chip">FAR Part 12</span>
+            <span class="detail-chip">Combined Synopsis/Solicitation</span>
+          </div>
+        </div>
+
+        <div class="scenario-banner" style="border-color: rgba(168,130,255,0.2);">
+          <h4>Scenario B: Service (Side-by-Side Callouts)</h4>
+          <p>Your base needs <strong>janitorial services</strong> for three buildings. Commercial service, estimated at <strong>$400,000</strong> over a base year plus four option years. NAICS 561720 (Janitorial Services). Along the way, we'll call out how the solicitation differs when you're buying a service instead of a supply.</p>
+          <div class="scenario-detail">
+            <span class="detail-chip">Commercial Service</span>
+            <span class="detail-chip">~$400K</span>
+            <span class="detail-chip">Base + 4 Options</span>
+            <span class="detail-chip">PWS Required</span>
+          </div>
+        </div>
+
+        <p>Let's build it.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ── 3. The Header ── -->
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> The Header Block</h3>
+      <div class="learn-body">
+        <p>Every solicitation starts with the basics. Whether you're using an SF 1449 or a plain-text combined synopsis/solicitation format, the header needs to answer four questions immediately: who are you, what is this, when are responses due, and how do they respond?</p>
+
+        <div class="example-block">
+          <span class="ex-label">Example &mdash; Header Block</span>
+          <p><strong>Combined Synopsis/Solicitation</strong></p>
+          <p><strong>Solicitation Number:</strong> FA862625Q0042</p>
+          <p><strong>Posted Date:</strong> [Date]</p>
+          <p><strong>Response Date/Time:</strong> [Date], 2:00 PM Central Time</p>
+          <p><strong>Classification Code:</strong> 3417 &mdash; Machine Tools</p>
+          <p><strong>NAICS Code:</strong> 333517 &mdash; Machine Tool Manufacturing ($1,000 employee size standard)</p>
+          <p><strong>Set-Aside:</strong> [Total Small Business / Unrestricted &mdash; per your market research]</p>
+          <p><strong>Contracting Office:</strong> [Your office name and address]</p>
+          <p><strong>Point of Contact:</strong> [Your name, phone, email]</p>
+          <p><strong>This is a combined synopsis/solicitation for commercial products prepared in accordance with FAR Part 12. This announcement constitutes the only solicitation; quotes are being requested and a separate written solicitation will not be issued.</strong></p>
+        </div>
+
+        <p>That last bolded paragraph is important. It tells industry this is the real deal &mdash; there's no separate solicitation coming later. If they want to compete, they respond to this.</p>
+
+        <div class="highlight-box svc">
+          <strong>Service difference:</strong> For janitorial services, your PSC would be a service code (S201 &mdash; Custodial Janitorial), your NAICS would be 561720, and you'd state "commercial services" instead of "commercial products." The header format is otherwise identical.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ── 4. Description ── -->
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Description of Supplies or Services</h3>
+      <div class="learn-body">
+        <p>This is where you tell industry exactly what you need. For a supply, that means specifications. For a service, that means a Performance Work Statement (PWS) or Statement of Work (SOW).</p>
+        <p>For our milling machine, keep it focused on <strong>what it needs to do</strong>, not a specific brand or model (unless you have an approved brand-name J&amp;A). State the functional requirements, capacity, physical constraints, and any must-have features.</p>
+
+        <div class="example-block">
+          <span class="ex-label">Example &mdash; Description (Supply)</span>
+          <p>The contractor shall provide one (1) CNC vertical milling machine meeting the following minimum specifications:</p>
+          <p>&bull; Table size: minimum 50" x 20" work surface<br/>
+          &bull; Spindle speed: 8,000 RPM minimum<br/>
+          &bull; Axis travel: X: 40", Y: 20", Z: 20" minimum<br/>
+          &bull; Spindle taper: CAT 40<br/>
+          &bull; Automatic tool changer: 20-tool minimum<br/>
+          &bull; CNC controller compatible with G-code/M-code programming<br/>
+          &bull; Coolant system included<br/>
+          &bull; Must operate on 220V/3-phase power<br/>
+          &bull; Delivery to include installation, leveling, and operational verification at [building/location]</p>
+          <p>The machine must be new (not refurbished or remanufactured). Warranty: minimum 1 year parts and labor from date of acceptance.</p>
+        </div>
+
+        <p>Notice we didn't say "Haas VF-2" or "DMG MORI." We described what the machine needs to do. This lets any manufacturer compete. If your customer insists on a specific brand, that's a brand-name justification conversation &mdash; see <a href="evaluating-justifications.html" style="color:var(--accent);">Topic 14</a>.</p>
+
+        <div class="highlight-box svc">
+          <strong>Service difference:</strong> For janitorial services, this section would be your PWS. Define the buildings, square footage, frequency of service (daily, weekly, monthly tasks), performance standards, and quality metrics. The PWS is typically an attachment to the solicitation, referenced here. Services training is covered in <a href="performance-work-statements.html" style="color:#c4b5fd;">Topic 07</a>.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ── 5. Delivery / Performance ── -->
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Delivery or Performance Schedule</h3>
+      <div class="learn-body">
+        <p>When do you need it, and where?</p>
+
+        <div class="example-block">
+          <span class="ex-label">Example &mdash; Delivery Schedule (Supply)</span>
+          <p><strong>Delivery:</strong> Within 90 calendar days after contract award.</p>
+          <p><strong>Delivery Location:</strong> Building 1240, Machine Shop, [Base Name], [Address]</p>
+          <p><strong>Installation:</strong> Contractor shall deliver, uncrate, install, level, and perform operational verification. Government will provide forklift access for offloading.</p>
+          <p><strong>FOB Point:</strong> Destination</p>
+        </div>
+
+        <p><strong>FOB Destination</strong> means the contractor is responsible for the item until it arrives at your door. That's what you want for almost everything. FOB Origin means risk transfers to the government when the contractor ships it &mdash; you generally don't want that unless there's a specific reason.</p>
+
+        <div class="highlight-box svc">
+          <strong>Service difference:</strong> For janitorial services, you'd specify the period of performance: "Base Period: 1 Oct 2025 &ndash; 30 Sep 2026, with four (4) one-year option periods." Services don't have FOB points &mdash; they have a place of performance (the buildings being cleaned).
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ── 6. 52.212-1 ── -->
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> FAR 52.212-1: Instructions to Offerors (Your "Section L")</h3>
+      <div class="learn-body">
+        <p>This is the most important clause you'll tailor. FAR 52.212-1 is a standard provision that tells offerors what to include in their response. The base clause is written broadly &mdash; your job is to <strong>tailor it to tell vendors exactly what you need from them</strong>.</p>
+        <p>Think of it this way: 52.212-1 is the question, and 52.212-2 is how you'll grade the answer. They need to match. If you ask for technical capability information in 52.212-1, you better evaluate technical capability in 52.212-2. If you don't ask for it, you can't evaluate it.</p>
+
+        <div class="highlight-box warn">
+          <strong>The golden rule:</strong> Only ask for what you're going to evaluate. Every piece of information you request adds burden to the vendor and work for you. If you ask for past performance references but you're only evaluating price, you've wasted everyone's time and may create a protest risk.
+        </div>
+
+        <p>Here's how to tailor it for our milling machine:</p>
+
+        <div class="example-block">
+          <span class="ex-label">Example &mdash; 52.212-1 Tailoring (Supply)</span>
+          <p><strong>FAR 52.212-1, Instructions to Offerors &mdash; Commercial Products and Commercial Services, applies to this acquisition with the following addenda:</strong></p>
+          <p>Offerors shall submit quotations that include the following:</p>
+          <p><strong>(a) Technical Quotation.</strong> Provide a product description or specification sheet (manufacturer's cut sheet) demonstrating that the offered CNC milling machine meets or exceeds every specification listed in the Description of Supplies. Clearly identify the manufacturer, model number, and how each minimum requirement is met. If the offered machine exceeds a stated minimum, identify the actual capability.</p>
+          <p><strong>(b) Price Quotation.</strong> Provide a firm, fixed price for the following line items:</p>
+          <p>&nbsp;&nbsp;&nbsp;CLIN 0001: CNC Vertical Milling Machine, Qty 1 &mdash; $_____<br/>
+          &nbsp;&nbsp;&nbsp;CLIN 0002: Delivery, Installation, and Operational Verification &mdash; $_____<br/>
+          &nbsp;&nbsp;&nbsp;CLIN 0003: Training (operator training, if offered) &mdash; $_____<br/>
+          &nbsp;&nbsp;&nbsp;<strong>Total Price: $_____</strong></p>
+          <p><strong>(c) Delivery.</strong> State your proposed delivery timeline in calendar days after contract award.</p>
+          <p><strong>(d) Warranty.</strong> Describe the warranty coverage included with the offered machine (minimum 1 year parts and labor required).</p>
+          <p><strong>Submission Instructions:</strong> Quotations shall be submitted via email to [CO email] no later than [date/time]. Late submissions will not be considered. Questions shall be submitted in writing to [CO email] no later than [date &mdash; typically 5-7 days before close].</p>
+        </div>
+
+        <p>Notice what we did there. We asked for exactly four things: a tech sheet proving they meet specs, a price broken into CLINs, a delivery timeline, and warranty info. That's it. No 50-page proposal, no elaborate past performance narratives, no management approach. For a commercial milling machine, the manufacturer's spec sheet tells you everything you need to know about technical capability.</p>
+
+        <div class="highlight-box tip">
+          <strong>Keep it proportional.</strong> The complexity of what you ask for should match the complexity of what you're buying. A commercial supply with published specs? A cut sheet and a price is usually enough. A complex service with performance standards? You might need a staffing plan and relevant experience. Scale your 52.212-1 to the requirement, not to some imaginary template that asks for everything under the sun.
+        </div>
+
+        <div class="highlight-box svc">
+          <strong>Service difference:</strong> For janitorial services, you'd ask for more. A technical approach or staffing plan showing how they'd meet the PWS requirements, evidence of relevant experience (maybe 2-3 similar contracts with contact information), and a price breakdown by period (base year, each option year). You might also ask them to acknowledge any specific certifications or licenses required for handling cleaning chemicals on a government installation.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ── 7. 52.212-2 ── -->
+    <div class="learn-section">
+      <h3><span class="section-num">7</span> FAR 52.212-2: Evaluation Criteria (Your "Section M")</h3>
+      <div class="learn-body">
+        <p>This is where you tell vendors how you'll pick the winner. FAR 52.212-2 is the clause you fill in with your evaluation criteria. It must align directly with what you asked for in 52.212-1 &mdash; if you asked for it, evaluate it. If you didn't ask for it, don't evaluate it.</p>
+        <p>For commercial items, you have flexibility in how you structure your evaluation. The key is to state your factors, their relative importance, and how they relate to each other.</p>
+
+        <div class="example-block">
+          <span class="ex-label">Example &mdash; 52.212-2 (Supply)</span>
+          <p><strong>FAR 52.212-2, Evaluation &mdash; Commercial Products and Commercial Services, applies to this acquisition.</strong></p>
+          <p>The Government will evaluate quotations based on the following factors:</p>
+          <p><strong>Factor 1: Technical Acceptability.</strong> The offered product must meet or exceed all minimum specifications listed in the Description of Supplies. Quotations that do not demonstrate compliance with every stated requirement will be considered technically unacceptable and will not be evaluated further.</p>
+          <p><strong>Factor 2: Price.</strong> The total evaluated price (sum of all CLINs) will be evaluated for reasonableness and compared among technically acceptable quotations.</p>
+          <p><strong>Factor 3: Delivery.</strong> Proposed delivery schedule will be evaluated. Shorter delivery timelines are preferred.</p>
+          <p><strong>Basis for award:</strong> Award will be made to the responsible offeror whose quotation is technically acceptable and represents the best value to the Government, considering price and delivery. Price is significantly more important than delivery.</p>
+        </div>
+
+        <p>Let's break down what happened there. We set up a simple structure: first, the machine has to meet specs (that's a go/no-go gate). If it does, we look at price and delivery. We told vendors that price matters more than delivery. That gives us the flexibility to pick the lowest-priced offer even if someone else offers faster delivery, but it also lets us pick a slightly higher price if the delivery advantage is worth it.</p>
+
+        <div class="highlight-box">
+          <strong>Why state relative importance?</strong> Because the FAR requires it, and because it protects you. If you don't say how factors relate to each other, a losing offeror can argue you applied an unstated evaluation criterion. Be explicit. "Price is significantly more important than delivery." "Technical and price are approximately equal in importance." Whatever fits your requirement &mdash; just say it.
+        </div>
+
+        <div class="highlight-box svc">
+          <strong>Service difference:</strong> For janitorial services, you'd likely add a "Relevant Experience" factor or a "Technical Approach" factor. Something like: "Factor 1: Technical Approach &mdash; the extent to which the offeror's proposed staffing plan and methodology demonstrate the ability to meet PWS requirements. Factor 2: Relevant Experience &mdash; demonstrated performance on similar-scope janitorial contracts. Factor 3: Price." For services, non-price factors are often more important because you care about <em>how</em> they'll perform, not just <em>what</em> they'll deliver.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>Match your 52.212-1 to your 52.212-2.</strong> If your evaluation criteria say you'll evaluate past performance but your instructions to offerors never asked for past performance references, you have a problem. These two clauses are two sides of the same coin. Write them together.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ── 8. Clauses ── -->
+    <div class="learn-section">
+      <h3><span class="section-num">8</span> Clauses: 52.212-4 and Beyond</h3>
+      <div class="learn-body">
+        <p><strong>52.212-4: Contract Terms and Conditions &mdash; Commercial Products and Commercial Services.</strong> This is the standard set of contract clauses for commercial buys. Think of it as the "terms and conditions" section of your contract. It covers inspection, acceptance, assignment, disputes, payment, risk of loss, taxes, and more. You include it as-is and can add agency-specific addenda if needed. Don't remove paragraphs unless you have a very good reason and legal review supports it.</p>
+
+        <p>But 52.212-4 is just the starting point. <strong>FAR 12.205</strong> prescribes a whole list of additional provisions and clauses that may apply depending on your specific acquisition. These include things like small business set-aside clauses, options clauses for services, wage determination clauses, Buy American provisions, insurance requirements, and more. The specific mix depends on your dollar value, type of work, socioeconomic set-aside, and other factors unique to your buy.</p>
+
+        <div class="highlight-box warn">
+          <strong>This is where most mistakes happen.</strong> New COs either include too few clauses (missing required ones) or blindly copy from the last solicitation without checking applicability. There is no shortcut here &mdash; you need to go through FAR 12.205 and determine what applies to <em>this</em> requirement.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>Don't duplicate what 52.212-4 already covers.</strong> Study 52.212-4 carefully. Terminations? Already in there &mdash; you don't need a 52.249-series clause. Disputes? Already in there &mdash; skip the 52.233 disputes clause. Changes? Already in there &mdash; and you really should <em>not</em> add a separate changes clause, because it can directly contradict your 52.212-4. This is one of the most common errors: including clauses from other FAR parts that conflict with what 52.212-4 already provides. The result is a contract that contradicts itself, which is a legal mess and a protest risk.
+        </div>
+
+        <p><strong>Stay in your lane.</strong> FAR Part 12 tells you exactly where to look for additional clauses &mdash; it points you to specific parts like Part 16 (types of contracts), Part 17 (special contracting methods), and Part 36 (construction). Follow those breadcrumbs. Don't go wandering into Part 49 (termination), Part 33 (protests/disputes), or other general FAR parts on your own. If Part 12 doesn't send you there, you probably don't belong there for a commercial buy.</p>
+
+        <p><strong>Build your own clause matrix.</strong> The best contracting offices maintain a clause determination matrix &mdash; a spreadsheet or checklist that walks you through each potentially applicable clause, with decision logic ("If acquisition exceeds $X, include Y" or "If services, include Z"). If your office doesn't have one, build one. It saves enormous time on your second, third, and hundredth solicitation, and it dramatically reduces errors.</p>
+
+        <div class="highlight-box tip">
+          <strong>Pro tip: Attach your clauses, don't embed them.</strong> Nobody wants to read a 50-page solicitation for a simple commercial buy. Best practice is to include 52.212-4 by reference in the solicitation body and attach your full clause list (with all the FAR 12.205 additional clauses) as a separate attachment. Keep the solicitation itself clean and readable. The clause attachment is where the detail lives.
+        </div>
+
+        <div class="highlight-box svc">
+          <strong>Service difference:</strong> Services typically require a longer clause list than supplies. You'll likely need option clauses (52.217-8 and 52.217-9 for option to extend services and option to extend the term), Service Contract Act wage determination clauses if applicable, key personnel clauses, insurance requirements, and potentially organizational conflict of interest clauses. The base + option year structure also means your clause attachment needs to address each period.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Construction note:</strong> Commercial construction has its own unique clause requirements (bonding, Davis-Bacon wage rates, safety, etc.). That's a separate training &mdash; don't try to apply this supply/service template to construction.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ── 9. Attachments ── -->
+    <div class="learn-section">
+      <h3><span class="section-num">9</span> Attachments</h3>
+      <div class="learn-body">
+        <p>Include anything the offeror needs to prepare their response that doesn't fit neatly in the body of the solicitation:</p>
+        <p>For our milling machine, that might be a site plan or floor layout showing where the machine will be installed (so they can plan delivery logistics), or a list of government-furnished items if the government is providing tooling or fixtures.</p>
+
+        <div class="highlight-box svc">
+          <strong>Service difference:</strong> For janitorial services, your attachments would typically include the PWS as Attachment 1, a building list with square footage as Attachment 2, a price schedule or CLIN matrix for the base and option years, and possibly a Quality Assurance Surveillance Plan (QASP) if you've drafted one. You might also include wage determinations if the Service Contract Act applies (it will for janitorial services &mdash; look them up at sam.gov/content/wage-determinations).
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ── 10. Posting ── -->
+    <div class="learn-section">
+      <h3><span class="section-num">10</span> Posting to SAM.gov</h3>
+      <div class="learn-body">
+        <p>Once your solicitation is reviewed and approved through your office's workflow, you post it to SAM.gov as a combined synopsis/solicitation. This is both your public notice (the synopsis) and the actual request for quotes/proposals in one action.</p>
+        <p>When you post, make sure the solicitation document is attached, your response deadline gives vendors adequate time, the set-aside and NAICS code are correct, and the POC information is accurate so vendors can reach you with questions.</p>
+
+        <div class="highlight-box tip">
+          <strong>Response time:</strong> Give vendors enough time to respond. There's no hard minimum for commercial items under the combined synopsis/solicitation, but be reasonable. A commercial off-the-shelf supply with published specs? 15-30 days is usually fine. A complex service requiring a staffing plan and technical approach? 30 days or more. If your response time is too short, you'll get fewer quotes, weaker competition, and potentially a protest.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ── 11. Putting it all together ── -->
+    <div class="learn-section">
+      <h3><span class="section-num">11</span> The Whole Solicitation at a Glance</h3>
+      <div class="learn-body">
+        <p>Here's what you just built, in order:</p>
+        <p><strong>1. Header Block</strong> &mdash; solicitation number, posted date, response deadline, NAICS, set-aside, POC, and the "this is a combined synopsis/solicitation" statement.</p>
+        <p><strong>2. Description of Supplies or Services</strong> &mdash; what you're buying, specs for supplies or a PWS for services.</p>
+        <p><strong>3. Delivery / Performance Schedule</strong> &mdash; when, where, FOB terms (supply) or period of performance (service).</p>
+        <p><strong>4. FAR 52.212-1 (tailored)</strong> &mdash; what to submit, how, and when. Your "Section L."</p>
+        <p><strong>5. FAR 52.212-2 (filled in)</strong> &mdash; how you'll evaluate. Your "Section M."</p>
+        <p><strong>6. FAR 52.212-4</strong> &mdash; contract terms and conditions, plus any addenda.</p>
+        <p><strong>7. Additional Clauses (Attachment)</strong> &mdash; FAR 12.205 clauses, agency supplements, and any other applicable provisions. Attach separately to keep the solicitation readable.</p>
+        <p><strong>8. Attachments</strong> &mdash; clause attachment, PWS, wage determinations, site plans, anything supplemental.</p>
+
+        <p>That's a complete solicitation. It's not complicated. The 52.212 framework does the heavy lifting &mdash; your job is to tailor 52.212-1 and 52.212-2 to fit your specific requirement, build the right clause package per FAR 12.205, and attach everything the offeror needs.</p>
+
+        <div class="highlight-box">
+          <strong>The GOAT template:</strong> We've built a reusable template that mirrors this structure. It's designed to scale &mdash; shrink it for a simple supply buy, expand it for a complex service. Check the <strong>Template</strong> tab for the interactive version, or download it as a Word doc.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ EVAL FACTORS ═══════════════ -->
+  <div id="panel-eval-factors" class="sol-panel">
+
+    <div class="learn-body" style="margin-bottom:1.5rem;">
+      <p>Your 52.212-2 is where you tell offerors how you'll decide who wins. Under FAR Part 12, you're not boxed into rigid evaluation frameworks &mdash; you pick the factors that make sense for <em>your</em> requirement, state them clearly, and evaluate accordingly.</p>
+      <p>This tab is split into two parts: first, the individual factors you can choose from (pick what fits), then a few assembled examples showing what a complete 52.212-2 looks like when you put them together.</p>
+      <div class="highlight-box">
+        <strong>Golden rule:</strong> Your 52.212-1 (instructions) must ask for everything your 52.212-2 (evaluation) says you'll evaluate. If you evaluate it, you asked for it. If you didn't ask for it, you can't evaluate it.
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ── PART 1: Individual Factors ── -->
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> The Menu: Individual Evaluation Factors</h3>
+      <div class="learn-body">
+        <p>Think of these as building blocks. Not every solicitation needs every factor. Pick the ones that match your requirement, and leave the rest alone.</p>
+      </div>
+    </div>
+
+    <!-- Factor: Technical Acceptability -->
+    <div class="learn-section">
+      <h3 style="font-size:1.15rem;"><span class="section-num" style="background:rgba(52,211,153,0.12);color:#6ee7b7;">A</span> Technical Acceptability (Pass/Fail)</h3>
+      <div class="learn-body">
+        <p><strong>What it is:</strong> Does the offered product or service meet your stated requirements? Yes or no. No gray area, no scoring &mdash; it either passes or it doesn't.</p>
+        <p><strong>When to use:</strong> The specs are clear and well-defined. You don't need to differentiate between "good enough" and "exceptional" &mdash; you just need to confirm the offeror can deliver what you asked for.</p>
+        <p><strong>Good for:</strong> Equipment with published specifications, commodity supplies, straightforward services with a well-written PWS.</p>
+
+        <div class="example-block">
+          <span class="ex-label">Example Language</span>
+          <p><strong>Technical Acceptability.</strong> Quotations will be evaluated on an acceptable/unacceptable basis. To be rated <em>acceptable</em>, the offeror must demonstrate that the proposed [product/service] meets or exceeds all requirements stated in [the Description of Supplies or Services / the PWS]. Quotations rated <em>unacceptable</em> will not be considered for award.</p>
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>52.212-1 match:</strong> Ask for spec sheets, product literature, or a point-by-point compliance matrix. You need something to evaluate against.
+        </div>
+      </div>
+    </div>
+
+    <!-- Factor: Technical Approach -->
+    <div class="learn-section">
+      <h3 style="font-size:1.15rem;"><span class="section-num" style="background:rgba(52,211,153,0.12);color:#6ee7b7;">B</span> Technical Approach</h3>
+      <div class="learn-body">
+        <p><strong>What it is:</strong> <em>How</em> the offeror plans to do the work. Not just "can they," but "how well." This factor lets you differentiate between offerors based on the quality, feasibility, and creativity of their proposed approach.</p>
+        <p><strong>When to use:</strong> The work is complex enough that the approach matters. Two vendors could both be "acceptable," but one has a stronger staffing plan, better quality controls, or a more realistic schedule.</p>
+        <p><strong>Good for:</strong> Services with a PWS, complex requirements where execution quality varies, anything where you want to evaluate the "how."</p>
+
+        <div class="example-block">
+          <span class="ex-label">Example Language</span>
+          <p><strong>Technical Approach.</strong> The Government will evaluate the offeror's proposed approach to performing the requirements described in the PWS. The evaluation will consider [the feasibility and completeness of the proposed approach / the proposed staffing plan, including number, qualifications, and scheduling of personnel / quality control procedures / approach to handling [specific challenge relevant to your requirement]]. Proposals that demonstrate a clear understanding of the requirements and a realistic, executable plan will be evaluated more favorably.</p>
+        </div>
+
+        <div class="highlight-box">
+          <strong>Be specific.</strong> "Technical approach will be evaluated" is useless. Tell offerers <em>exactly</em> what aspects of their approach you care about. If it's staffing, say so. If it's quality control, say so. If it's their transition plan, say so.
+        </div>
+      </div>
+    </div>
+
+    <!-- Factor: Past Performance -->
+    <div class="learn-section">
+      <h3 style="font-size:1.15rem;"><span class="section-num" style="background:rgba(52,211,153,0.12);color:#6ee7b7;">C</span> Past Performance</h3>
+      <div class="learn-body">
+        <p><strong>What it is:</strong> The offeror's track record on similar work. Has this company done this kind of thing before, and did they do it well?</p>
+        <p><strong>When to use:</strong> The requirement is significant enough that you want confidence the offeror can actually perform. Prior experience is a meaningful predictor of future results.</p>
+        <p><strong>Good for:</strong> Recurring services, complex requirements, higher-dollar buys where performance risk matters.</p>
+
+        <div class="example-block">
+          <span class="ex-label">Example Language</span>
+          <p><strong>Past Performance.</strong> The Government will evaluate the offeror's record of recent and relevant past performance to assess the likelihood of successful performance. "Recent" is defined as work performed within the last [3 / 5] years. "Relevant" is defined as [work of similar scope, complexity, and magnitude / (describe what makes work relevant to your specific requirement)]. The Government may use references provided by the offeror, data from CPARS/PPIRS, and any other available past performance information. Offerors without relevant past performance will receive a neutral rating, which will neither favor nor penalize the offeror.</p>
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>52.212-1 match:</strong> Tell offerors exactly what to provide: number of references (typically 3&ndash;5), contract numbers, dollar values, brief description of the work, and POC information with current phone/email. Define "recent" and "relevant" here too, so it matches your 52.212-2.
+        </div>
+      </div>
+    </div>
+
+    <!-- Factor: Price -->
+    <div class="learn-section">
+      <h3 style="font-size:1.15rem;"><span class="section-num" style="background:rgba(52,211,153,0.12);color:#6ee7b7;">D</span> Price</h3>
+      <div class="learn-body">
+        <p><strong>What it is:</strong> How much it costs. Price is almost always a factor &mdash; the question is whether it's the <em>only</em> deciding factor or one of several.</p>
+        <p><strong>When to use:</strong> Always. The question is how much weight it carries relative to your other factors.</p>
+
+        <div class="example-block">
+          <span class="ex-label">Example Language</span>
+          <p><strong>Price.</strong> The total evaluated price will be [the offeror's quoted firm, fixed price for all CLINs / the sum of all base and option period CLINs / evaluated for reasonableness]. <em>[For services with options, add: "Option prices will be evaluated but options will not be exercised at time of award."]</em></p>
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Pro tip &mdash; Price Realism (CYA language):</strong> Even on a firm, fixed-price commercial buy, you can reserve the right to look twice at a price that seems too good to be true. Add this to your price factor language: <em>"The Government may evaluate prices for realism if, as determined by the Contracting Officer, prices are so low as to cause performance concerns. If no concerns arise, a price realism evaluation will not be conducted."</em> This gives you the discretion to question a suspiciously low price without committing you to a full price realism analysis on every quotation.
+        </div>
+      </div>
+    </div>
+
+    <!-- Factor: Delivery Schedule -->
+    <div class="learn-section">
+      <h3 style="font-size:1.15rem;"><span class="section-num" style="background:rgba(52,211,153,0.12);color:#6ee7b7;">E</span> Delivery Schedule</h3>
+      <div class="learn-body">
+        <p><strong>What it is:</strong> When the offeror can deliver. Use this when timing matters enough that you'd give preference to a faster delivery, or when you need to confirm the offeror can meet a hard deadline.</p>
+        <p><strong>When to use:</strong> The mission has a real timeline. Equipment needed before a deployment, services that must start by a specific date, or situations where faster delivery has tangible operational value.</p>
+        <p><strong>Good for:</strong> Supplies with urgent need, equipment with installation/setup lead times, time-sensitive service starts.</p>
+
+        <div class="example-block">
+          <span class="ex-label">Example Language (pass/fail)</span>
+          <p><strong>Delivery.</strong> The offeror must confirm the ability to deliver within [X] calendar days after contract award. Quotations that cannot meet the required delivery schedule will be rated unacceptable.</p>
+        </div>
+        <div class="example-block">
+          <span class="ex-label">Example Language (evaluated)</span>
+          <p><strong>Delivery.</strong> The Government will evaluate the offeror's proposed delivery schedule. Earlier delivery dates will be evaluated more favorably. Offerors must propose delivery no later than [X] calendar days after contract award.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Factor: Warranty -->
+    <div class="learn-section">
+      <h3 style="font-size:1.15rem;"><span class="section-num" style="background:rgba(52,211,153,0.12);color:#6ee7b7;">F</span> Warranty</h3>
+      <div class="learn-body">
+        <p><strong>What it is:</strong> What the offeror guarantees about their product after delivery. Length of coverage, what's included, response time for repairs.</p>
+        <p><strong>When to use:</strong> You're buying equipment or products where post-delivery support matters. Particularly relevant for machinery, electronics, or anything with maintenance requirements.</p>
+        <p><strong>Good for:</strong> Equipment purchases, vehicles, IT hardware, anything with a significant lifecycle.</p>
+
+        <div class="example-block">
+          <span class="ex-label">Example Language</span>
+          <p><strong>Warranty.</strong> The Government will evaluate the offeror's proposed warranty terms, including duration of coverage, scope of coverage (parts, labor, on-site vs. depot repair), and response time for warranty service. Warranty terms that exceed the minimum [X]-year requirement will be evaluated more favorably.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Factor: Key Personnel -->
+    <div class="learn-section">
+      <h3 style="font-size:1.15rem;"><span class="section-num" style="background:rgba(52,211,153,0.12);color:#6ee7b7;">G</span> Key Personnel</h3>
+      <div class="learn-body">
+        <p><strong>What it is:</strong> The qualifications and experience of the specific people who will perform the work. Not the company &mdash; the individuals.</p>
+        <p><strong>When to use:</strong> The work requires specialized skills or certifications, and the quality of the people matters as much as (or more than) the company's approach. Common for professional services, technical services, and anything where you're buying expertise.</p>
+        <p><strong>Good for:</strong> IT services, engineering support, advisory/consulting, maintenance requiring specific certifications.</p>
+
+        <div class="example-block">
+          <span class="ex-label">Example Language</span>
+          <p><strong>Key Personnel.</strong> The Government will evaluate the qualifications and experience of the offeror's proposed key personnel, specifically [the Project Manager / Lead Technician / (identify positions)]. The evaluation will consider relevant experience, education, certifications, and demonstrated ability to perform work of similar scope and complexity. Proposals that present highly qualified key personnel with directly relevant experience will be evaluated more favorably.</p>
+        </div>
+
+        <div class="highlight-box">
+          <strong>If you evaluate key personnel, name the positions.</strong> Don't evaluate "all proposed staff." Identify the 1&ndash;3 positions that actually drive performance and focus there.
+        </div>
+      </div>
+    </div>
+
+    <!-- Factor: Small Business Participation -->
+    <div class="learn-section">
+      <h3 style="font-size:1.15rem;"><span class="section-num" style="background:rgba(52,211,153,0.12);color:#6ee7b7;">H</span> Small Business Participation</h3>
+      <div class="learn-body">
+        <p><strong>What it is:</strong> The extent to which the offeror will use small businesses (including subcontractors) to perform the work. Only relevant for unrestricted (full and open) acquisitions where large businesses can compete.</p>
+        <p><strong>When to use:</strong> The acquisition is unrestricted, above the simplified acquisition threshold, and you want to encourage meaningful small business involvement.</p>
+
+        <div class="example-block">
+          <span class="ex-label">Example Language</span>
+          <p><strong>Small Business Participation.</strong> The Government will evaluate the offeror's proposed approach to utilizing small business concerns, including small disadvantaged businesses, women-owned small businesses, HUBZone small businesses, veteran-owned small businesses, and service-disabled veteran-owned small businesses. The evaluation will consider the extent and specificity of proposed small business involvement.</p>
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>Don't use this on a small business set-aside.</strong> If the solicitation is set aside for small business, every offeror is already small. This factor only makes sense on unrestricted buys.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ── PART 2: Assembled Examples ── -->
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Assembled: What a Complete 52.212-2 Looks Like</h3>
+      <div class="learn-body">
+        <p>Now that you know the individual factors, here's how they come together in a full evaluation clause. These are three common patterns you'll see in operational contracting.</p>
+      </div>
+    </div>
+
+    <!-- Assembled 1: Simple supply -->
+    <div class="learn-section">
+      <h3 style="font-size:1.15rem;">Example A: Simple Supply (Milling Machine)</h3>
+      <div class="learn-body">
+        <p>Factors used: <strong>Technical Acceptability (pass/fail) + Price</strong></p>
+        <p>The specs are published, the requirement is clear, and any machine that meets them will do the job. You don't need to score technical approaches &mdash; you just need to confirm the product meets specs, then pick the lowest price.</p>
+
+        <div class="example-block">
+          <span class="ex-label">Complete 52.212-2</span>
+          <p>FAR 52.212-2, Evaluation &mdash; Commercial Products and Commercial Services, applies to this acquisition.</p>
+          <p>The Government will evaluate quotations based on the following factors:</p>
+          <p><strong>Factor 1: Technical Acceptability.</strong> Quotations will be evaluated on an acceptable/unacceptable basis against the technical requirements stated in the Description of Supplies or Services. To be rated <em>acceptable</em>, the offeror must demonstrate that the proposed milling machine meets or exceeds all stated specifications. Quotations rated <em>unacceptable</em> will not be considered for award.</p>
+          <p><strong>Factor 2: Price.</strong> The total evaluated price will be the offeror's quoted firm, fixed price for all CLINs.</p>
+          <p><strong>Basis for Award:</strong> The Government will award a contract resulting from this solicitation to the responsible offeror whose offer conforming to the solicitation will be most advantageous to the Government, price and other factors considered. The Government intends to evaluate quotations and award without discussions.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assembled 2: Service with approach -->
+    <div class="learn-section">
+      <h3 style="font-size:1.15rem;">Example B: Service (Janitorial, Base + Options)</h3>
+      <div class="learn-body">
+        <p>Factors used: <strong>Technical Approach + Past Performance + Price</strong></p>
+        <p>Janitorial is a recurring service where <em>how</em> the contractor performs matters. You want to evaluate their staffing plan, their track record, and their price &mdash; and you care more about the first two than the last one.</p>
+
+        <div class="example-block">
+          <span class="ex-label">Complete 52.212-2</span>
+          <p>FAR 52.212-2, Evaluation &mdash; Commercial Products and Commercial Services, applies to this acquisition.</p>
+          <p>The Government will evaluate proposals based on the following factors:</p>
+          <p><strong>Factor 1: Technical Approach.</strong> The Government will evaluate the offeror's proposed approach to performing the requirements in the PWS, including the proposed staffing plan (number, qualifications, and scheduling of personnel), quality control procedures, and approach to handling after-hours and surge cleaning requirements. Proposals that demonstrate a clear understanding of the requirements and a realistic, executable plan will be evaluated more favorably.</p>
+          <p><strong>Factor 2: Past Performance.</strong> The Government will evaluate the offeror's record of recent and relevant past performance. "Recent" is defined as work performed within the last 5 years. "Relevant" is defined as janitorial or facilities maintenance services of similar scope and magnitude. The Government may use references provided by the offeror, CPARS/PPIRS data, and any other available information. Offerors without relevant past performance will receive a neutral rating.</p>
+          <p><strong>Factor 3: Price.</strong> The total evaluated price will be the sum of all base and option period CLINs. Option prices will be evaluated but options will not be exercised at time of award. Price will be evaluated for reasonableness.</p>
+          <p><strong>Basis for Award:</strong> The Government will award a contract resulting from this solicitation to the responsible offeror whose offer conforming to the solicitation will be most advantageous to the Government, price and other factors considered. The Government intends to evaluate proposals and award without discussions.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assembled 3: Equipment with delivery and warranty -->
+    <div class="learn-section">
+      <h3 style="font-size:1.15rem;">Example C: Equipment with Delivery &amp; Warranty</h3>
+      <div class="learn-body">
+        <p>Factors used: <strong>Technical Acceptability (pass/fail) + Delivery + Warranty + Price</strong></p>
+        <p>You need the equipment to meet specs, but you also care about how fast it arrives and what warranty comes with it. Delivery and warranty add meaningful value beyond just meeting the minimum.</p>
+
+        <div class="example-block">
+          <span class="ex-label">Complete 52.212-2</span>
+          <p>FAR 52.212-2, Evaluation &mdash; Commercial Products and Commercial Services, applies to this acquisition.</p>
+          <p>The Government will evaluate quotations based on the following factors:</p>
+          <p><strong>Factor 1: Technical Acceptability.</strong> Quotations will be evaluated on an acceptable/unacceptable basis against the technical requirements stated in the Description of Supplies or Services. Quotations rated <em>unacceptable</em> will not be considered for award.</p>
+          <p><strong>Factor 2: Delivery.</strong> The Government will evaluate the offeror's proposed delivery schedule. Earlier delivery will be evaluated more favorably. Delivery must be no later than [X] calendar days after contract award.</p>
+          <p><strong>Factor 3: Warranty.</strong> The Government will evaluate the offeror's proposed warranty, including duration, scope of coverage, and response time for warranty service. Warranty terms exceeding the minimum [1]-year requirement will be evaluated more favorably.</p>
+          <p><strong>Factor 4: Price.</strong> The total evaluated price will be the offeror's quoted firm, fixed price for all CLINs.</p>
+          <p><strong>Basis for Award:</strong> The Government will award a contract resulting from this solicitation to the responsible offeror whose offer conforming to the solicitation will be most advantageous to the Government, price and other factors considered. The Government intends to evaluate quotations and award without discussions.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Tips -->
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Tips for Writing Strong Evaluation Criteria</h3>
+      <div class="learn-body">
+        <p><strong>Be specific about what "better" looks like.</strong> Don't just list factors &mdash; explain what distinguishes a strong response from a marginal one. "Technical approach will be evaluated" tells the offeror nothing. "The Government will evaluate the feasibility and completeness of the proposed staffing plan" tells them exactly what to focus on.</p>
+
+        <p><strong>Don't create factors you can't evaluate.</strong> If you list "management approach" as a factor but your evaluation team doesn't have the time or expertise to meaningfully differentiate between management plans, you've created busy work for offerors and risk for yourself.</p>
+
+        <p><strong>Relative importance is a commitment.</strong> If you say non-price factors are "significantly more important" than price, you need to be prepared to pay more for a stronger non-price offer. If you know price will drive your decision regardless, structure your evaluation accordingly &mdash; don't promise one thing and do another.</p>
+
+        <p><strong>Keep it proportional.</strong> A $50K commodity supply does not need three non-price factors. A $400K multi-year service with key personnel might. Scale your evaluation scheme to match the complexity and risk of what you're buying.</p>
+
+        <div class="highlight-box tip">
+          <strong>The test:</strong> Before you finalize your 52.212-2, read it from the offeror's perspective. "If I were a vendor reading this, would I know exactly what to submit and exactly how I'll be judged?" If the answer is no, rewrite it.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ TEMPLATE ═══════════════ -->
+  <div id="panel-template" class="sol-panel">
+
+    <div class="learn-body" style="margin-bottom:1.5rem;">
+      <p>This is the GOAT template &mdash; a reusable combined synopsis/solicitation for commercial products and commercial services under FAR Part 12. It's designed to scale up or down depending on your requirement. Delete what you don't need, expand what you do.</p>
+      <p style="margin-bottom:0.5rem;"><strong>Download:</strong></p>
+      <p><a href="GOAT-Solicitation-Template.docx" style="color:var(--accent);font-weight:700;text-decoration:none;">Download Word Template (.docx)</a></p>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> Header Block</h3>
+      <div class="learn-body">
+        <div class="example-block">
+          <p><strong>COMBINED SYNOPSIS/SOLICITATION</strong></p>
+          <p><strong>Solicitation Number:</strong> [Insert]</p>
+          <p><strong>Posted Date:</strong> [Insert]</p>
+          <p><strong>Response Date/Time:</strong> [Insert date and local time with time zone]</p>
+          <p><strong>Classification Code (PSC):</strong> [Insert code and description]</p>
+          <p><strong>NAICS Code:</strong> [Insert code, description, and size standard]</p>
+          <p><strong>Set-Aside:</strong> [Total Small Business Set-Aside / Unrestricted / etc.]</p>
+          <p><strong>Contracting Office:</strong> [Office name and mailing address]</p>
+          <p><strong>Point of Contact:</strong> [Name, phone, email]</p>
+          <p style="margin-top:0.75rem;"><em>This is a combined synopsis/solicitation for commercial [products / services / products and services] prepared in accordance with FAR Part 12. This announcement constitutes the only solicitation; [quotations / proposals] are being requested and a separate written solicitation will not be issued.</em></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Description of Supplies or Services</h3>
+      <div class="learn-body">
+        <div class="example-block">
+          <p><em>[For supplies: Provide specifications, functional requirements, quantities, and any "must-have" features. Be specific enough to define the requirement but general enough to allow competition.]</em></p>
+          <p><em>[For services: Reference the attached Performance Work Statement (PWS) or Statement of Work (SOW). Briefly summarize the scope here.]</em></p>
+          <p><em>[State whether items must be new, remanufactured acceptable, etc.]</em></p>
+          <p><em>[State warranty requirements if applicable.]</em></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Delivery / Performance Schedule</h3>
+      <div class="learn-body">
+        <div class="example-block">
+          <p><em>[For supplies:]</em></p>
+          <p><strong>Delivery:</strong> [Within __ calendar days after contract award]</p>
+          <p><strong>Delivery Location:</strong> [Building, base, address]</p>
+          <p><strong>FOB Point:</strong> Destination</p>
+          <p><em>[Include installation/setup requirements if applicable.]</em></p>
+          <p style="margin-top:0.75rem;"><em>[For services:]</em></p>
+          <p><strong>Base Period:</strong> [Start date] &ndash; [End date]</p>
+          <p><strong>Option Period 1:</strong> [Start date] &ndash; [End date]</p>
+          <p><em>[Continue for each option period.]</em></p>
+          <p><strong>Place of Performance:</strong> [Location(s)]</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> FAR 52.212-1 &mdash; Instructions to Offerors (Tailored)</h3>
+      <div class="learn-body">
+        <div class="example-block">
+          <p>FAR 52.212-1, Instructions to Offerors &mdash; Commercial Products and Commercial Services, applies to this acquisition with the following addenda:</p>
+          <p>Offerors shall submit [quotations / proposals] that include the following:</p>
+          <p><strong>(a) Technical [Quotation / Proposal].</strong> <em>[Describe what technical information you need. Scale to the requirement: product spec sheet for supplies, technical approach/staffing plan for services. Only ask for what you will evaluate.]</em></p>
+          <p><strong>(b) Price [Quotation / Proposal].</strong> Provide a firm, fixed price for the following:</p>
+          <p>&nbsp;&nbsp;&nbsp;CLIN 0001: [Description] &mdash; $_____<br/>
+          &nbsp;&nbsp;&nbsp;CLIN 0002: [Description] &mdash; $_____<br/>
+          &nbsp;&nbsp;&nbsp;<em>[Add CLINs as needed. For services with options, include a CLIN for each period.]</em><br/>
+          &nbsp;&nbsp;&nbsp;<strong>Total Price: $_____</strong></p>
+          <p><em>[Add additional submission requirements as needed: delivery schedule, past performance references, warranty information, certifications, etc. Only include what your 52.212-2 will evaluate.]</em></p>
+          <p><strong>Submission Instructions:</strong> [Quotations / Proposals] shall be submitted via [email / SAM.gov / other method] to [address/email] no later than [date/time/time zone]. Late submissions will not be considered.</p>
+          <p><strong>Questions:</strong> Questions shall be submitted in writing to [email] no later than [date].</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> FAR 52.212-2 &mdash; Evaluation Criteria</h3>
+      <div class="learn-body">
+        <div class="example-block">
+          <p>FAR 52.212-2, Evaluation &mdash; Commercial Products and Commercial Services, applies to this acquisition.</p>
+          <p>The Government will evaluate [quotations / proposals] based on the following factors:</p>
+          <p><strong>Factor 1:</strong> <em>[e.g., Technical Acceptability / Technical Approach / Relevant Experience]</em></p>
+          <p><em>[Describe what you're evaluating and how. For a go/no-go factor, state that clearly. For a qualitative factor, describe what "better" looks like.]</em></p>
+          <p><strong>Factor 2:</strong> <em>[e.g., Price]</em></p>
+          <p><em>[State how price will be evaluated: total price, price per period, price realism for cost-type, etc.]</em></p>
+          <p><em>[Add additional factors as needed. Only evaluate what you asked for in 52.212-1.]</em></p>
+          <p><strong>Basis for Award:</strong> The Government will award a contract resulting from this solicitation to the responsible offeror whose offer conforming to the solicitation will be most advantageous to the Government, price and other factors considered.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> FAR 52.212-4 &amp; Additional Clauses</h3>
+      <div class="learn-body">
+        <div class="example-block">
+          <p><strong>52.212-4:</strong> Contract Terms and Conditions &mdash; Commercial Products and Commercial Services (FAR 52.212-4) applies to this acquisition. <em>[Add any addenda here, or state "No addenda."]</em></p>
+          <p style="margin-top:0.75rem;"><strong>Additional Clauses:</strong> The provisions and clauses identified in Attachment [X], Applicable Clauses and Provisions, are incorporated into this solicitation and any resulting contract. <em>[Build your clause attachment per FAR 12.205. Include all applicable provisions, clauses, and agency supplements.]</em></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="learn-section">
+      <h3><span class="section-num">7</span> Attachments</h3>
+      <div class="learn-body">
+        <div class="example-block">
+          <p><em>[List all attachments. Examples:]</em></p>
+          <p>Attachment 1: <em>[Performance Work Statement / Specifications / Drawings]</em></p>
+          <p>Attachment 2: <em>[Price Schedule / CLIN Matrix]</em></p>
+          <p>Attachment 3: <em>[Wage Determination (if SCA applies)]</em></p>
+          <p>Attachment 4: <em>[Site Plan / Floor Layout / Building List]</em></p>
+          <p><em>[Delete or add attachments as needed for your requirement.]</em></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="sol-panel">
+
+    <div class="learn-body" style="margin-bottom:1rem;">
+      <p>Quick-reference resources for building commercial solicitations.</p>
+    </div>
+
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR Part 12 &mdash; Commercial Products &amp; Services</h4>
+        <p>Your home base for commercial acquisitions. Covers the combined synopsis/solicitation format, the 52.212 clause family, and commercial item procedures.</p>
+        <a href="https://www.acquisition.gov/far/part-12" target="_blank" rel="noopener">Open FAR Part 12</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 52.212-1 &mdash; Instructions to Offerors</h4>
+        <p>The full text of the standard provision. Read the base clause, then tailor it for each solicitation. This is your "Section L."</p>
+        <a href="https://www.acquisition.gov/far/52.212-1" target="_blank" rel="noopener">Open 52.212-1</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 52.212-2 &mdash; Evaluation Criteria</h4>
+        <p>The evaluation clause you fill in. Must align with what you asked for in 52.212-1. This is your "Section M."</p>
+        <a href="https://www.acquisition.gov/far/52.212-2" target="_blank" rel="noopener">Open 52.212-2</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 12.205 &mdash; Additional Provisions &amp; Clauses</h4>
+        <p>The list of additional provisions and clauses that may apply to your commercial acquisition beyond the 52.212 series. Your go-to reference when building your clause attachment.</p>
+        <a href="https://www.acquisition.gov/far/12.205" target="_blank" rel="noopener">Open FAR 12.205</a>
+      </div>
+      <div class="lookup-card">
+        <h4>SAM.gov &mdash; Contract Opportunities</h4>
+        <p>Where you post the combined synopsis/solicitation. Also where vendors search for opportunities and maintain their reps and certs.</p>
+        <a href="https://sam.gov/content/opportunities" target="_blank" rel="noopener">Open SAM.gov</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Provisions &amp; Clauses Tool (Topic 20)</h4>
+        <p>Our interactive tool for selecting the right provisions and clauses for commercial items. Helps you build your clause attachment per FAR 12.205.</p>
+        <a href="provisions-clauses-commercial.html">Open Tool</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <span class="footer-logo">ContractingHQ</span>
+        <p>Built for the contracting workforce. Tools, reference, and encyclopedic encyclopedias of encyclopedias.</p>
+        <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn">&#9749; Buy Me a Coffee</a>
+      </div>
+      <div class="footer-links-col">
+        <h4>Resources</h4>
+        <a href="tools.html">Tools</a>
+        <a href="gao-decisions.html">GAO Decisions</a>
+        <a href="federal-register.html">FAR Updates</a>
+        <a href="training.html">Training</a>
+      </div>
+      <div class="footer-links-col">
+        <h4>More</h4>
+        <a href="links.html">Links</a>
+        <a href="asbca.html">ASBCA</a>
+        <a href="about.html">About</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 ContractingHQ. Not affiliated with the U.S. Government.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ── Tab switching ── */
+document.querySelectorAll('.sol-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    var target = this.getAttribute('data-tab');
+    document.querySelectorAll('.sol-panel').forEach(function(p) { p.classList.remove('active'); });
+    document.querySelectorAll('.sol-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.getElementById('panel-' + target).classList.add('active');
+    this.classList.add('active');
+  });
+});
+</script>
+<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
