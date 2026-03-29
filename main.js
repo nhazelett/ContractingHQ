@@ -36,3 +36,68 @@
     }
   });
 })();
+
+// ══════════════════════════════════════════════
+// TRAINING NAV — prev / next between topics
+// ══════════════════════════════════════════════
+// Add new topics here in order. That's it — pages auto-render.
+(function () {
+  var TRAINING_CHAIN = [
+    ["far-research.html", "Researching the FAR"],
+    ["market-research.html", "Market Research"],
+    ["naics.html", "NAICS Codes"],
+    ["fsc-codes.html", "PSC / FSC Codes"],
+    ["purchase-requests.html", "Evaluating Purchase Requests"],
+    ["statements-of-work.html", "Statements of Work"],
+    ["performance-work-statements.html", "Performance Work Statements"],
+    ["statements-of-objectives.html", "Statements of Objectives"],
+    ["contract-action-reports.html", "Contract Action Reports"],
+    ["writing-mfrs.html", "Writing MFRs"],
+    ["contract-closeout.html", "Closeout of Contract Files"],
+    ["publicizing-contract-actions.html", "Publicizing Contract Actions"],
+    ["publicizing-awards.html", "Publicizing Awards"],
+    ["evaluating-justifications.html", "Evaluating Brand Name J&As"],
+    ["far-part6-competition.html", "Other Than Full & Open (FAR 6)"],
+    ["far-part8-limiting-sources.html", "Limiting Sources (FAR 8)"],
+    ["far-part16-fair-opportunity.html", "Fair Opportunity (FAR 16)"],
+    ["far-part12-restricting-competition.html", "Restricting Competition (FAR 12)"],
+    ["commercial-item-df.html", "Commercial Item D&F"],
+    ["provisions-clauses-commercial.html", "Provisions & Clauses"],
+    ["simplified-solicitations-commercial.html", "Simplified Solicitations"],
+    ["evaluating-quotations.html", "Evaluating Quotations"],
+    ["price-fair-reasonable.html", "Price Fair & Reasonable"],
+    ["delivery-orders-vs-task-orders.html", "Delivery Orders vs Task Orders"],
+    ["government-purchase-cards.html", "Government Purchase Cards"]
+  ];
+
+  var container = document.getElementById("training-nav");
+  if (!container) return;
+
+  var page = location.pathname.split("/").pop() || "";
+  var idx = -1;
+  for (var i = 0; i < TRAINING_CHAIN.length; i++) {
+    if (TRAINING_CHAIN[i][0] === page) { idx = i; break; }
+  }
+  if (idx === -1) return;
+
+  function esc(s) { return s.replace(/&/g, "&amp;"); }
+
+  var prev = idx > 0 ? TRAINING_CHAIN[idx - 1] : null;
+  var next = idx < TRAINING_CHAIN.length - 1 ? TRAINING_CHAIN[idx + 1] : null;
+
+  var html = "";
+
+  if (prev) {
+    html += '<a href="' + prev[0] + '" class="tn-prev"><span class="tn-arrow">&larr;</span><span><span class="tn-label">Previous</span><span class="tn-title">' + esc(prev[1]) + '</span></span></a>';
+  } else {
+    html += '<a href="training.html" class="tn-prev"><span class="tn-arrow">&larr;</span><span><span class="tn-label">Back to</span><span class="tn-title">Training Home</span></span></a>';
+  }
+
+  if (next) {
+    html += '<a href="' + next[0] + '" class="tn-next"><span><span class="tn-label">Next Training</span><span class="tn-title">' + esc(next[1]) + '</span></span><span class="tn-arrow">&rarr;</span></a>';
+  } else {
+    html += '<a href="training.html" class="tn-next"><span><span class="tn-label">Complete!</span><span class="tn-title">Training Home</span></span><span class="tn-arrow">&rarr;</span></a>';
+  }
+
+  container.innerHTML = html;
+})();
