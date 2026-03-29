@@ -70,9 +70,7 @@
     ["government-purchase-cards.html", "Government Purchase Cards"]
   ];
 
-  var container = document.getElementById("training-nav");
-  if (!container) return;
-
+  // Find current page in chain
   var page = location.pathname.split("/").pop() || "";
   var idx = -1;
   for (var i = 0; i < TRAINING_CHAIN.length; i++) {
@@ -85,19 +83,41 @@
   var prev = idx > 0 ? TRAINING_CHAIN[idx - 1] : null;
   var next = idx < TRAINING_CHAIN.length - 1 ? TRAINING_CHAIN[idx + 1] : null;
 
-  var html = "";
-
-  if (prev) {
-    html += '<a href="' + prev[0] + '" class="tn-prev"><span class="tn-arrow">&larr;</span><span><span class="tn-label">Previous</span><span class="tn-title">' + esc(prev[1]) + '</span></span></a>';
-  } else {
-    html += '<a href="training.html" class="tn-prev"><span class="tn-arrow">&larr;</span><span><span class="tn-label">Back to</span><span class="tn-title">Training Home</span></span></a>';
+  // Build nav HTML (shared by top and bottom)
+  function buildNav() {
+    var html = "";
+    if (prev) {
+      html += '<a href="' + prev[0] + '" class="tn-prev">'
+            + '<span class="tn-arrow">&larr;</span>'
+            + '<span class="tn-text"><span class="tn-label">Previous</span>'
+            + '<span class="tn-title">' + esc(prev[1]) + '</span></span></a>';
+    } else {
+      html += '<a href="training.html" class="tn-prev">'
+            + '<span class="tn-arrow">&larr;</span>'
+            + '<span class="tn-text"><span class="tn-label">Back to</span>'
+            + '<span class="tn-title">Training Home</span></span></a>';
+    }
+    if (next) {
+      html += '<a href="' + next[0] + '" class="tn-next">'
+            + '<span class="tn-text"><span class="tn-label">Next Training</span>'
+            + '<span class="tn-title">' + esc(next[1]) + '</span></span>'
+            + '<span class="tn-arrow">&rarr;</span></a>';
+    } else {
+      html += '<a href="training.html" class="tn-next">'
+            + '<span class="tn-text"><span class="tn-label">Complete!</span>'
+            + '<span class="tn-title">Training Home</span></span>'
+            + '<span class="tn-arrow">&rarr;</span></a>';
+    }
+    return html;
   }
 
-  if (next) {
-    html += '<a href="' + next[0] + '" class="tn-next"><span><span class="tn-label">Next Training</span><span class="tn-title">' + esc(next[1]) + '</span></span><span class="tn-arrow">&rarr;</span></a>';
-  } else {
-    html += '<a href="training.html" class="tn-next"><span><span class="tn-label">Complete!</span><span class="tn-title">Training Home</span></span><span class="tn-arrow">&rarr;</span></a>';
-  }
+  var navHTML = buildNav();
 
-  container.innerHTML = html;
+  // Render into bottom nav
+  var bottom = document.getElementById("training-nav");
+  if (bottom) bottom.innerHTML = navHTML;
+
+  // Render into top nav
+  var top = document.getElementById("training-nav-top");
+  if (top) top.innerHTML = navHTML;
 })();
