@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how to prepare Contract Action Reports (CARs) in FPDS-NG. Field-by-field CAR walkthrough and quick-reference cheat sheet for new contracting officers." />
+  <title>Contract Action Reports | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .car-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .car-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .car-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .car-tab:hover { color: var(--white); }
+    .car-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .car-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .car-panel.active { display: block; }
+
+    /* ── Intro ── */
+    .car-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .car-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .car-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .car-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── FPDS Form Replica ── */
+    .fpds-form { background: #e8eef4; border: 2px solid #4a6a8a; border-radius: 4px; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 0.78rem; max-width: 920px; margin: 0 auto; }
+    .fpds-toolbar { background: linear-gradient(180deg, #d0dae8 0%, #b8c8dc 100%); border-bottom: 1px solid #8a9ab0; padding: 4px 8px; display: flex; gap: 3px; flex-wrap: wrap; }
+    .fpds-toolbar-btn { background: linear-gradient(180deg, #f0f4f8 0%, #d8e0ec 100%); border: 1px solid #8a9ab0; border-radius: 3px; padding: 3px 10px; font-size: 0.7rem; font-weight: 600; color: #2a3a5a; cursor: default; white-space: nowrap; }
+    .fpds-section-hdr { background: linear-gradient(180deg, #1a3a6a 0%, #0d2850 100%); color: #fff; font-weight: 700; font-size: 0.78rem; padding: 4px 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; user-select: none; border-top: 1px solid #2a5a9a; }
+    .fpds-section-hdr:hover { background: linear-gradient(180deg, #254a7a 0%, #153060 100%); }
+    .fpds-section-hdr .fpds-chevron { transition: transform 0.2s; font-size: 0.65rem; opacity: 0.7; }
+    .fpds-section-hdr.collapsed .fpds-chevron { transform: rotate(-90deg); }
+    .fpds-section-body { background: #f0f4f8; border-bottom: 1px solid #c0c8d4; }
+    .fpds-section-body.hidden { display: none; }
+    .fpds-row { display: flex; flex-wrap: wrap; border-bottom: 1px solid #d8dce4; min-height: 28px; }
+    .fpds-row:last-child { border-bottom: none; }
+    .fpds-cell { display: flex; align-items: center; padding: 3px 6px; min-height: 26px; }
+    .fpds-lbl { color: #1a2a4a; font-weight: 600; font-size: 0.72rem; white-space: nowrap; min-width: 120px; flex-shrink: 0; }
+    .fpds-lbl.required::after { content: ' *'; color: #c00; font-weight: 700; }
+    .fpds-val { background: #fff; border: 1px solid #a0b0c4; padding: 2px 6px; font-size: 0.72rem; color: #2a3a5a; min-width: 100px; min-height: 20px; cursor: pointer; transition: all 0.15s; position: relative; flex: 1; }
+    .fpds-val:hover { border-color: #4a7ab8; background: #f0f6ff; box-shadow: 0 0 0 2px rgba(74,122,184,0.2); }
+    .fpds-val.dropdown::after { content: '\25BC'; font-size: 0.55rem; color: #6a7a90; position: absolute; right: 4px; top: 50%; transform: translateY(-50%); }
+    .fpds-val.lookup::after { content: '\2026'; font-weight: 900; font-size: 0.9rem; color: #6a7a90; position: absolute; right: 4px; top: 50%; transform: translateY(-50%); background: linear-gradient(180deg,#f0f4f8,#d8e0ec); border: 1px solid #a0b0c4; border-radius: 2px; padding: 0 4px; line-height: 1; }
+    .fpds-val-static { font-size: 0.72rem; color: #2a3a5a; padding: 2px 6px; }
+    .fpds-divider { width: 1px; background: #d0d8e0; margin: 2px 0; }
+    .fpds-pair { display: flex; align-items: center; gap: 2px; flex: 1; min-width: 200px; }
+    .fpds-half { display: flex; flex: 1; min-width: 0; }
+
+    /* ── Popup / Tooltip ── */
+    .fpds-popup-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; padding: 1rem; }
+    .fpds-popup-overlay.active { display: flex; }
+    .fpds-popup { background: #0a1632; border: 1px solid rgba(74,158,255,0.25); border-radius: 12px; padding: 1.5rem; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+    .fpds-popup-title { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+    .fpds-popup-body { color: #b0bec5; font-size: 0.88rem; line-height: 1.7; }
+    .fpds-popup-body .tip { color: #6ee7b7; font-weight: 600; }
+    .fpds-popup-body .warn { color: #fca5a5; font-weight: 600; }
+    .fpds-popup-close { background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.2); border-radius: 8px; color: var(--accent); font-size: 0.8rem; font-weight: 700; padding: 0.4rem 1.2rem; cursor: pointer; margin-top: 1rem; display: inline-block; transition: all 0.15s; }
+    .fpds-popup-close:hover { background: rgba(74,158,255,0.2); }
+    .fpds-hint { text-align: center; color: var(--silver); font-size: 0.82rem; margin-bottom: 1rem; opacity: 0.7; }
+    .fpds-hint em { color: var(--accent); font-style: normal; }
+    .fpds-toolbar-btn.highlight { background: linear-gradient(180deg, #fff3cd 0%, #ffc107 100%); border-color: #e0a800; color: #664d03; animation: pulse-btn 2s ease-in-out infinite; cursor: pointer; position: relative; }
+    @keyframes pulse-btn { 0%,100% { box-shadow: 0 0 0 0 rgba(255,193,7,0.4); } 50% { box-shadow: 0 0 0 6px rgba(255,193,7,0); } }
+    .fpds-training-note { background: rgba(74,158,255,0.06); border: 1px solid rgba(74,158,255,0.18); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; color: var(--silver); font-size: 0.88rem; line-height: 1.7; }
+    .fpds-training-note strong { color: var(--white); }
+    .fpds-training-note .warn { color: #fca5a5; font-weight: 600; }
+    .fpds-training-note .tip { color: #6ee7b7; font-weight: 600; }
+
+    @media (max-width: 768px) {
+      .fpds-row { flex-direction: column; }
+      .fpds-pair { min-width: 100%; }
+      .fpds-lbl { min-width: 80px; font-size: 0.68rem; }
+      .fpds-val { min-width: 60px; font-size: 0.68rem; }
+      .fpds-popup { max-width: 95%; padding: 1rem; }
+    }
+
+    /* ── Lookup cards ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    /* ── Cheat sheet ── */
+    .cheat-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.82rem; }
+    .cheat-table th { background: rgba(74,158,255,0.08); color: var(--accent); font-weight: 700; text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(74,158,255,0.15); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .cheat-table td { padding: 0.45rem 0.75rem; border-bottom: 1px solid rgba(74,158,255,0.05); color: var(--silver); }
+    .cheat-table tr:hover td { background: rgba(74,158,255,0.03); }
+    .cheat-table .cheat-field { color: var(--white); font-weight: 600; }
+
+    @media (max-width: 768px) {
+      .car-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 09</span>
+    <h1 class="page-hero-title">Preparing Contract Action Reports</h1>
+    <p class="page-hero-sub">Every contract action you award gets reported to Congress through FPDS. Here's how the process works, field by field.</p>
+  </div>
+</div>
+
+<div class="car-bg">
+
+  <div class="car-intro">
+    <span class="car-intro-tag">Interactive Training</span>
+    <h2>Contract Action Reports (CARs)</h2>
+    <p>What they are, why they exist, and a plain-English walkthrough of every field in FPDS-NG.</p>
+  </div>
+
+  <div class="car-tabs" role="tablist">
+    <button class="car-tab active" data-tab="learn" role="tab">&#128218; Learn</button>
+    <button class="car-tab" data-tab="walkthrough" role="tab">&#128203; CAR Walkthrough</button>
+    <button class="car-tab" data-tab="lookup" role="tab">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="car-panel active">
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> What Is a CAR?</h3>
+      <div class="learn-body">
+        <p>A Contract Action Report (CAR) is a data record you submit in FPDS-NG every time you complete a contract action. That includes new awards, modifications, task orders, delivery orders, and purchase orders. It's how the federal government tracks what it buys, from whom, for how much, and under what conditions.</p>
+        <p>This data rolls up into aggregate reports that go to Congress, GAO, OMB, and the public. When a senator asks "how much did DoD spend on IT services last year?" the answer comes from the CARs that contracting officers entered into FPDS. When USASpending.gov shows the public where their tax dollars went, that data started with a CAR.</p>
+        <p>Here's the good news: <strong>most of this data is used in aggregate, not to scrutinize your individual buy.</strong> Nobody in Congress is pulling up your specific $30K office supply order. The data matters because it feeds the big picture. So don't stress about CARs like it's a pass/fail exam &mdash; just take it seriously enough to get it right. When thousands of COs each get a few fields wrong, the aggregate data gets unreliable. The point of this training is to help you fill one out accurately and confidently so you don't have to overthink it.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> When Do You File One?</h3>
+      <div class="learn-body">
+        <p>FAR 4.604 says you report contract actions that exceed the micro-purchase threshold within <strong>3 business days of award.</strong> In practice, your contract writing system handles this for you. When you complete an action in CON-IT, SPS, or whatever system your office uses, the system will push the CAR to FPDS-NG automatically. You'll typically get flagged until it goes through.</p>
+        <p>The catch is that <strong>the push doesn't always work.</strong> System outages, data validation errors, connectivity issues &mdash; there are a dozen reasons a CAR can fail to post. When that happens, make a note of it and circle back when the system is fixed. Don't just forget about it. Unreleased CARs can cause problems downstream, especially when you try to process modifications. When a mod can't find its base CAR in FPDS, you either need IT help or you're creating the record manually in FPDS-NG &mdash; and nobody wants to do that.</p>
+
+        <div class="highlight-box tip">
+          <strong>Practical advice:</strong> Keep a running list of failed CARs. Check it weekly. Most system issues resolve in a day or two, and knocking out your backlog takes five minutes if you stay on top of it.
+        </div>
+
+        <p>Some things are excluded from reporting: micro-purchases made with a GPC on the open market, classified contracts, and orders against certain agency-managed vehicles where the managing agency does the reporting (like USTRANSCOM). Check FAR 4.606(c) for the full exclusions list.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> How FPDS-NG Works</h3>
+      <div class="learn-body">
+        <p>FPDS-NG (Federal Procurement Data System &ndash; Next Generation) is a web-based system maintained by GSA. You access it at <strong>FPDS.gov</strong>, which now redirects through <strong>SAM.gov</strong>. Most of the time your contract writing system pushes CARs there for you automatically. The system auto-populates the majority of fields &mdash; probably 80-90% of the data comes from within your contract writing system, which pulls from SAM.gov, your office profile, and the data you already entered during the acquisition.</p>
+        <p>Your job is to make sure the data that posted is correct. Sometimes the system maps a field wrong, or a dropdown defaults to the wrong value, or a SAM record is stale. A quick spot-check after the CAR posts can catch those issues before they compound.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> The Sections of a CAR</h3>
+      <div class="learn-body">
+        <p>A CAR in FPDS-NG is organized into 13 sections that appear top-to-bottom on the screen. Here's a quick map of what you'll see. The <strong>CAR Walkthrough</strong> tab covers every individual field.</p>
+        <p><strong>1. Transaction Information</strong> &mdash; system-generated header showing award type, status, and who prepared it.</p>
+        <p><strong>2. Document Information</strong> &mdash; contract number (PIID), referenced IDV (if it's an order), modification number, solicitation ID, and treasury account.</p>
+        <p><strong>3. Dates</strong> &mdash; date signed, period of performance start, completion date, and ultimate completion date.</p>
+        <p><strong>4. Amounts</strong> &mdash; action obligation, base and exercised options value, total contract value, and IDV fee.</p>
+        <p><strong>5. Purchaser Information</strong> &mdash; your contracting office, funding agency, and funding office codes.</p>
+        <p><strong>6. Entity Information</strong> &mdash; the contractor's UEI, name, address, and CAGE code, pulled from SAM.gov.</p>
+        <p><strong>7. Business Category</strong> &mdash; organization type, business types, and incorporation details from SAM.</p>
+        <p><strong>8. Contract Data</strong> &mdash; contract type, pricing data, cost accounting standards, performance-based flags, and more.</p>
+        <p><strong>9. Legislative Mandates</strong> &mdash; flags for Clinger-Cohen, Service Contract Act, Davis-Bacon, Walsh-Healey, and interagency authority.</p>
+        <p><strong>10. Principal Place of Performance</strong> &mdash; where the work happens: state, city, ZIP, congressional district.</p>
+        <p><strong>11. Product or Service Information</strong> &mdash; PSC code, NAICS code, country of origin, and the description of requirement.</p>
+        <p><strong>12. Competition Information</strong> &mdash; how the requirement was competed (or why it wasn't), number of offers, set-asides, and commercial procedures.</p>
+        <p><strong>13. Preference Programs / Other Data</strong> &mdash; business size selection, subcontracting plan, and price evaluation preferences.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Common Gotchas</h3>
+      <div class="learn-body">
+        <p>Most CAR errors come from the same handful of fields:</p>
+        <p><strong>Dollar amounts on modifications.</strong> The Action Obligation field is the <em>net change</em> in funding, not the cumulative total. On a new award they're the same number. On a mod, they're not. On a deobligation, it's negative.</p>
+        <p><strong>Exercised vs. All Options Value.</strong> "Exercised" means what you've actually put on contract right now. "All" means the total ceiling including options you haven't exercised yet. New buyers often make these the same number and forget to update when options get exercised.</p>
+        <p><strong>Competition codes.</strong> If you got three offers on a full and open competition, make sure the system didn't default to something else. The competition fields are among the most scrutinized in FPDS.</p>
+        <p><strong>Stale contractor data.</strong> If a contractor's SAM registration lapsed or their UEI changed, the CAR may reject or pull old information. Quick SAM check before award prevents headaches.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ CAR WALKTHROUGH ═══════════════ -->
+  <div id="panel-walkthrough" class="car-panel">
+
+    <div class="fpds-training-note">
+      <strong>Before you start:</strong> Most of this data auto-populates from your contract writing system. The intent of this training is to give you a visual so you know what you're looking at. Your CAR will look different depending on the type of contract action &mdash; a task order CAR looks different from a standalone contract, and a modification looks different from a base award.
+    </div>
+
+    <div class="fpds-training-note">
+      <span class="tip">Pro tip:</span> The first thing you should do when you open a CAR is <strong>click the Validate button</strong>. It highlights everything you still need to fill in. Some people might not love that advice, but it's better than trying to guess the most important fields &mdash; you're going to hit Validate at the end anyway before you can approve it, so you might as well let the system show you what's missing up front.
+    </div>
+
+    <p class="fpds-hint">This is a replica of the FPDS-NG data entry form. <em>Click any field</em> to learn what goes there.</p>
+
+    <div class="fpds-form">
+
+      <!-- Toolbar -->
+      <div class="fpds-toolbar">
+        <span class="fpds-toolbar-btn">New</span>
+        <span class="fpds-toolbar-btn">Save Draft</span>
+        <span class="fpds-toolbar-btn highlight" data-field="Validate" data-info="Click this first! Validate highlights every field that still needs data. People might not love this advice, but it&rsquo;s better than guessing which fields matter &mdash; you&rsquo;re going to hit Validate at the end anyway before you can approve the CAR, so let the system tell you what&rsquo;s missing up front.">Validate</span>
+        <span class="fpds-toolbar-btn">Approve</span>
+        <span class="fpds-toolbar-btn">Correct</span>
+        <span class="fpds-toolbar-btn">Modify</span>
+        <span class="fpds-toolbar-btn">Save Tmplt</span>
+        <span class="fpds-toolbar-btn">Delete</span>
+        <span class="fpds-toolbar-btn">Print</span>
+      </div>
+
+      <!-- 1. Transaction Information -->
+      <div class="fpds-section-hdr" data-section="s1">Transaction Information <span class="fpds-chevron">&#9660;</span></div>
+      <div class="fpds-section-body" id="s1">
+        <div class="fpds-row">
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Award Type:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Award Type" data-info="Delivery/Task Order, Purchase Order, Definitive Contract, BPA Call, etc. You select this when you create the CAR &mdash; it determines which form FPDS opens.">Delivery/Task Order</span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Prepared Date:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Prepared Date" data-info="System-generated. Shows the date and time the record was created. You don't enter this &mdash; it fills automatically.">01/15/2025 09:15:01</span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Prepared User:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Prepared User" data-info="System-generated. Shows the user ID of whoever created this CAR record."></span></div></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Award Status:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Award Status" data-info="Starts as &quot;Draft&quot; or &quot;NEW&quot; when created. Changes to &quot;Final&quot; after you Save Draft, Validate, and Approve. &lt;span class='warn'&gt;CARs left in Draft or Error status are NOT considered complete.&lt;/span&gt;">NEW</span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Last Modified Date:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Last Modified Date" data-info="System-generated. Updates automatically any time the record is changed."></span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Last Modified User:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Last Modified User" data-info="System-generated. Shows who last touched the record."></span></div></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Closed Status:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Closed Status" data-info="Whether the award has been closed out in FPDS. Separate from contract closeout &mdash; you update this when performance ends and final payment is made."></span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Closed Status Date:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Closed Status Date" data-info="Date the award was marked as closed in FPDS. System-generated when you close the record."></span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Closed By:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Closed By" data-info="The user ID who closed the record."></span></div></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Approved Date:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Approved Date" data-info="Date the CAR was approved (moved to Final status). System-generated when you click Approve."></span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Approved By:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Approved By" data-info="The user ID who approved the CAR. Depending on your office's privileges, this may be you or your office administrator."></span></div></div>
+        </div>
+      </div>
+
+      <!-- 2. Document Information -->
+      <div class="fpds-section-hdr" data-section="s2">Document Information <span class="fpds-chevron">&#9660;</span></div>
+      <div class="fpds-section-body" id="s2">
+        <div class="fpds-row" style="background:#e0e8f0;padding:2px 6px;">
+          <div class="fpds-cell" style="min-width:80px;"></div>
+          <div class="fpds-cell"><span class="fpds-lbl" style="font-size:0.68rem;color:#4a6a8a;">Agency</span></div>
+          <div class="fpds-cell" style="flex:2;"><span class="fpds-lbl" style="font-size:0.68rem;color:#4a6a8a;">Procurement Identifier</span></div>
+          <div class="fpds-cell"><span class="fpds-lbl" style="font-size:0.68rem;color:#4a6a8a;">Modification No</span></div>
+          <div class="fpds-cell"><span class="fpds-lbl" style="font-size:0.68rem;color:#4a6a8a;">Trans No</span></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-cell"><span class="fpds-lbl required">Award ID:</span></div>
+          <div class="fpds-cell"><span class="fpds-val lookup" data-field="Award ID &mdash; Agency Code" data-info="Your agency's 4-digit code (e.g. 9700 = DoD, 5700 = Air Force, 1700 = Navy). Pre-populated from your user profile.">9700</span></div>
+          <div class="fpds-cell" style="flex:2;"><span class="fpds-val lookup" data-field="Procurement Identifier (PIID)" data-info="Your contract number (PIID). 13 characters: first 6 are your office code, positions 7-8 are the fiscal year, position 9 is the instrument type, and 10-13 are the sequence number. Usually auto-generated by your contract writing system."></span></div>
+          <div class="fpds-cell"><span class="fpds-val" data-field="Modification Number" data-info="For base awards this is 0. Each subsequent mod increments from there (P00001, P00002, etc.).">0</span></div>
+          <div class="fpds-cell"><span class="fpds-val" data-field="Transaction Number" data-info="Usually 0. Used for split reporting in rare cases where a single action generates multiple transaction records.">0</span></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-cell"><span class="fpds-lbl required" style="color:#c00;">Referenced IDV ID:</span></div>
+          <div class="fpds-cell"><span class="fpds-val lookup" data-field="Referenced IDV &mdash; Agency" data-info="The agency code for the parent IDV. Usually the same as your Award ID agency, but can differ on interagency vehicles."></span></div>
+          <div class="fpds-cell" style="flex:2;"><span class="fpds-val lookup" data-field="Referenced IDV PIID" data-info="If this is a task or delivery order, enter the parent IDV number (IDIQ, BPA, BOA, etc.) here. Blank for standalone contracts."></span></div>
+          <div class="fpds-cell" colspan="2"><span class="fpds-val lookup" data-field="Referenced IDV Mod" data-info="The modification number of the referenced IDV, if applicable."></span></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-cell"><span class="fpds-lbl">Reason For Modification:</span></div>
+          <div class="fpds-cell" style="flex:3;"><span class="fpds-val dropdown lookup" style="min-width:300px;" data-field="Reason for Modification" data-info="Required on mods. Select from the dropdown: Funding Only, Exercise Option, Change Order, Supplemental Agreement, Close Out, Novation, Vendor DUNS or Name Change, etc."></span></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-cell"><span class="fpds-lbl">Solicitation ID:</span></div>
+          <div class="fpds-cell" style="flex:3;"><span class="fpds-val" data-field="Solicitation ID" data-info="Your solicitation number from the RFP, RFQ, or other solicitation document. Required for competed actions. Should match what was posted on SAM.gov Contract Opportunities."></span></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-cell"><span class="fpds-lbl">Treasury Account Symbol:</span></div>
+          <div class="fpds-cell"><span class="fpds-val" data-field="TAS &mdash; Agency" data-info="First part of the Treasury Account Symbol: the agency identifier code. Your finance office provides this."></span></div>
+          <div class="fpds-cell"><span class="fpds-lbl" style="min-width:auto;font-size:0.68rem;">Main<br/>Identifier</span><span class="fpds-val" data-field="TAS &mdash; Main Account" data-info="The main account identifier of the Treasury Account Symbol. Identifies the specific appropriation."></span></div>
+          <div class="fpds-cell"><span class="fpds-lbl" style="min-width:auto;font-size:0.68rem;">Sub<br/>Account</span><span class="fpds-val" data-field="TAS &mdash; Sub Account" data-info="The sub-account code. Not always required &mdash; depends on how your agency structures appropriations."></span></div>
+          <div class="fpds-cell" style="margin-left:auto;"><span class="fpds-lbl">Initiative</span><span class="fpds-val dropdown" data-field="Initiative" data-info="Optional dropdown for special initiatives. Usually &quot;Select One&quot; unless your action ties to a specific government initiative.">Select One</span></div>
+        </div>
+      </div>
+
+      <!-- 3. Dates  |  4. Amounts (side by side in real FPDS) -->
+      <div style="display:flex;flex-wrap:wrap;">
+        <div style="flex:1;min-width:280px;">
+          <div class="fpds-section-hdr" data-section="s3">Dates <span class="fpds-chevron">&#9660;</span></div>
+          <div class="fpds-section-body" id="s3">
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl required">Date Signed (mm/dd/yyyy):</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Date Signed" data-info="The date the contracting officer signed the award. Your 3-business-day reporting clock starts here."></span></div></div>
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl required">Period of Performance Start Date:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Period of Performance Start Date" data-info="When work begins. Usually the same as Date Signed, but can differ on mods or actions with a future start date."></span></div></div>
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl required">Completion Date:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Completion Date" data-info="End date for the current period of performance. Update this when you exercise options."></span></div></div>
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl required">Est. Ultimate Completion Date:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Est. Ultimate Completion Date" data-info="The latest possible end date if all options are exercised. Stays the same unless you modify the contract to extend it beyond the original ceiling."></span></div></div>
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Solicitation Date (mm/dd/yyyy):</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Solicitation Date" data-info="Date the solicitation was issued. Not always required, but good to populate for traceability."></span></div></div>
+          </div>
+        </div>
+        <div style="flex:1;min-width:280px;">
+          <div class="fpds-section-hdr" data-section="s4">Amounts <span class="fpds-chevron">&#9660;</span></div>
+          <div class="fpds-section-body" id="s4">
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl required">Action Obligation:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Action Obligation" data-info="The &lt;strong&gt;net&lt;/strong&gt; dollar amount obligated on this specific action. For new awards, it&rsquo;s your total obligation. For mods, it&rsquo;s the change &mdash; positive for additional funding, negative for deobligations, zero for admin mods. &lt;span class='warn'&gt;This is the most common field to get wrong on modifications.&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;span class='tip'&gt;Sanity check:&lt;/span&gt; Make sure these numbers make sense with what&rsquo;s in your contract. If they don&rsquo;t, go back and look at your CLINs, your funding, and figure out HOW this data is pulled from your writing system.">$0.00</span></div></div>
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl required">Base And Exercised Options Value:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Base and Exercised Options Value" data-info="Total value of the base contract plus any options you&rsquo;ve actually exercised so far. Goes up when you exercise an option.&lt;br/&gt;&lt;br/&gt;&lt;span class='tip'&gt;Sanity check:&lt;/span&gt; This should align with what&rsquo;s actually on contract right now. If this number doesn&rsquo;t match your contract documents, trace it back to your CLINs and funding.">$0.00</span></div></div>
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl required">Base and All Options Value (Total Contract Value):</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Base and All Options Value" data-info="Total potential ceiling including all unexercised options. Only changes if you modify the contract ceiling itself, not when you exercise an existing option.&lt;br/&gt;&lt;br/&gt;&lt;span class='tip'&gt;Sanity check:&lt;/span&gt; This is your max ceiling. If these dollar amounts don&rsquo;t make sense compared to your contract, go back and look at your CLINs and funding to understand how the data pulls from your writing system.">$0.00</span></div></div>
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl required">Fee Paid for Use of IDV:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Fee Paid for Use of IDV" data-info="If you're placing an order against a GWAC or other fee-based IDV, enter the fee amount here. Zero for most orders.">$0.00</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Purchaser Information -->
+      <div class="fpds-section-hdr" data-section="s5">Purchaser Information <span class="fpds-chevron">&#9660;</span></div>
+      <div class="fpds-section-body" id="s5">
+        <div class="fpds-row">
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl required">Contracting Office Agency ID:</span></div><div class="fpds-cell"><span class="fpds-val lookup" data-field="Contracting Office Agency ID" data-info="Your agency's code. Identifies who awarded the contract. Pre-populated from your system profile.">5700</span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Contracting Office Agency Name:</span></div><div class="fpds-cell"><span class="fpds-val-static">DEPT OF THE AIR FORCE</span></div></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl required">Contracting Office ID:</span></div><div class="fpds-cell"><span class="fpds-val lookup" data-field="Contracting Office ID" data-info="Your specific contracting office code (DoDAAC or AAC). Pre-populated from your user profile. This is the 6-character code that forms the first part of every PIID your office generates.">FA8626</span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Contracting Office Name:</span></div><div class="fpds-cell"><span class="fpds-val-static">FA8626 AFLCMC WN/LP</span></div></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl required">Funding Agency ID:</span></div><div class="fpds-cell"><span class="fpds-val lookup" data-field="Funding Agency ID" data-info="The agency providing the funds. Same as your contracting agency if you're buying for yourself. Different for cross-service or assisted acquisitions.">5700</span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Funding Agency Name:</span></div><div class="fpds-cell"><span class="fpds-val-static">DEPT OF THE AIR FORCE</span></div></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl required">Funding Office ID:</span></div><div class="fpds-cell"><span class="fpds-val lookup" data-field="Funding Office ID" data-info="The specific office providing the funds (the requiring activity's code). If the customer provides a different fund cite on a mod, make sure this updates too.">F4FDCJ</span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Funding Office Name:</span></div><div class="fpds-cell"><span class="fpds-val-static">F4FDCJ AFLCMC LPF</span></div></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-cell"><span class="fpds-lbl required">Foreign Funding:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Foreign Funding" data-info="Is the funding from a foreign government? Most actions are &quot;Not Applicable.&quot; If this involves Foreign Military Sales, flag it here.">Not Applicable</span></div>
+        </div>
+      </div>
+
+      <!-- 6. Entity Information -->
+      <div class="fpds-section-hdr" data-section="s6">Entity Information <span class="fpds-chevron">&#9660;</span></div>
+      <div class="fpds-section-body" id="s6">
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">FAR 4.1102</span></div><div class="fpds-cell" style="flex:1;"></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Exception:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="FAR 4.1102 Exception" data-info="Most awards don't have an exception. If the contractor doesn't need to be registered in SAM under one of the FAR 4.1102 exceptions, leave blank. Exceptions include actions at or below the micro-purchase threshold, classified awards, and others."></span></div></div>
+        <div class="fpds-row">
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Unique Entity ID:</span></div><div class="fpds-cell"><span class="fpds-val lookup" data-field="Unique Entity ID (UEI)" data-info="The 12-character alphanumeric ID from SAM.gov (replaced the DUNS number). Enter the UEI and FPDS pulls the rest of the entity data. Verify the contractor's SAM registration is active before award.">J1T1FEN3PWX6</span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Street:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Contractor Street Address" data-info="Auto-populated from SAM.gov based on UEI. Verify it matches your award document.">1 NEUMANN WAY</span></div></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Legal Business Name:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Legal Business Name" data-info="The contractor's legal name from SAM.gov. Must match the name on your award. If it doesn't, the SAM record may be stale.">GENERAL ELECTRIC COMPANY</span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">City:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Contractor City" data-info="Auto-populated from SAM.gov based on UEI.">CINCINNATI</span></div></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">DBAN:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="DBAN (Doing Business As Name)" data-info="The contractor's &quot;Doing Business As&quot; name, if different from the legal name. Pulled from SAM.">GE AVIATION</span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">State:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Contractor State" data-info="Auto-populated from SAM.gov.">OH</span></div><div class="fpds-cell"><span class="fpds-lbl" style="min-width:auto;">Zip:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Contractor ZIP" data-info="Auto-populated from SAM.gov.">45215</span></div></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">CAGE Code:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="CAGE Code" data-info="The Commercial and Government Entity (CAGE) code. 5-character identifier assigned by DLA. Pulled from SAM.">07482</span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Country:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Contractor Country" data-info="Auto-populated from SAM.gov based on UEI.">UNITED STATES</span></div></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-pair"><div class="fpds-cell"></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Congressional District:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Contractor Congressional District" data-info="System-generated from the contractor's address. This is how Congress tracks spending in their districts.">OHIO 01</span></div></div>
+        </div>
+      </div>
+
+      <!-- 7. Business Category -->
+      <div class="fpds-section-hdr" data-section="s7">Business Category <span class="fpds-chevron">&#9660;</span></div>
+      <div class="fpds-section-body" id="s7">
+        <div class="fpds-row">
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Organization Type:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Organization Type" data-info="Corporate entity, sole proprietor, partnership, etc. System-populated from SAM.gov.">CORPORATE NOT TAX EXEMPT</span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Business Types</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Business Types" data-info="Expanded from SAM: tax-exempt status, manufacturer of goods, line of business, relationship with federal government, and organization factors. This is a multi-value field that pulls all the business type flags from the contractor's SAM registration." style="min-height:40px;font-size:0.65rem;line-height:1.3;">Corporate Entity, Not Tax Exempt<br/>Manufacturer of Goods<br/>All Awards<br/>For Profit Organization</span></div></div>
+        </div>
+        <div class="fpds-row">
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">State of Incorporation:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="State of Incorporation" data-info="Where the business is legally incorporated. Auto-populated from SAM.">NY</span></div></div>
+          <div class="fpds-pair"><div class="fpds-cell"><span class="fpds-lbl">Country of Incorporation:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Country of Incorporation" data-info="Country of legal incorporation. Auto-populated from SAM.">USA</span></div></div>
+        </div>
+      </div>
+
+      <!-- 8. Contract Data -->
+      <div class="fpds-section-hdr" data-section="s8">Contract Data <span class="fpds-chevron">&#9660;</span></div>
+      <div class="fpds-section-body" id="s8">
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Type of Contract:</span></div><div class="fpds-cell" style="flex:1;"><span class="fpds-val dropdown" data-field="Type of Contract" data-info="Firm Fixed Price, CPFF, CPAF, CPIF, T&amp;M, LH, FPI, etc. Must match your contract document. &quot;Combination&quot; is rare &mdash; only use it when the same award genuinely has multiple contract types.">Firm Fixed Price</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Inherently Governmental Functions:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Inherently Governmental Functions" data-info="Does this contract involve closely associated inherently governmental functions? Usually &quot;No.&quot;"></span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Multiyear Contract:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Multiyear Contract" data-info="Is this a true multi-year contract under FAR 17.1?&lt;br/&gt;&lt;br/&gt;There are two types people confuse:&lt;br/&gt;&lt;strong&gt;Multi-year contract (FAR 17.1):&lt;/strong&gt; The contract extends across multiple years &lt;em&gt;without&lt;/em&gt; options. It has cancellation ceilings instead of option periods. These are relatively rare and require specific authorization.&lt;br/&gt;&lt;strong&gt;Contract with option years:&lt;/strong&gt; A base period plus option years that you exercise one at a time. This is the common setup &mdash; and it is &lt;em&gt;not&lt;/em&gt; a multi-year contract.&lt;br/&gt;&lt;br/&gt;Most contracts are &amp;quot;No.&amp;quot;">No</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Major Program:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Major Program" data-info="If this supports a major program, enter it here. Usually blank for routine buys."></span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">National Interest Action:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="National Interest Action" data-info="Is this action tied to a specific national interest event (hurricane relief, COVID, etc.)? Usually &quot;None.&quot;">None</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Cost Or Pricing Data:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Cost or Pricing Data" data-info="Did the contractor submit certified cost or pricing data per FAR 15.403? Options include: Yes, No (adequate price competition), No (commercial item), No (price set by law), Waiver, etc.">No</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Purchase Card Used As Payment Method:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Purchase Card as Payment Method" data-info="Is the GPC being used as the payment method (not the purchasing method)? Common on small purchases where the contract is the instrument but the GPC pays the invoice.">No</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Undefinitized Action:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Undefinitized Action" data-info="Is this a letter contract or UCA? Most actions are &quot;No.&quot; If yes, remember to update this field when the action gets definitized."></span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Performance Based Service Acquisition:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Performance-Based Service Acquisition" data-info="Is this a PBSA? Select &quot;Yes&quot; if your PWS uses measurable performance standards and a QASP.">Not Applicable</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Contingency Humanitarian Peacekeeping Operation:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Contingency Humanitarian Peacekeeping" data-info="Is this tied to a contingency or humanitarian operation? Usually &quot;Not Applicable.&quot;">Not Applicable</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Contract Financing:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Contract Financing" data-info="Are you providing contract financing (progress payments, performance-based payments, etc.)? &quot;No&quot; for most actions."></span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Cost Accounting Standards Clause:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Cost Accounting Standards Clause" data-info="Does the contract include CAS clauses? Usually &quot;Not Applicable&quot; for contracts under the CAS threshold ($2M) or for commercial items. &lt;span class='tip'&gt;If your Base and All Options Value is under $2M, this must be &quot;Not Applicable &ndash; Exempt from CAS.&quot;&lt;/span&gt;">Select One</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Consolidated Contract:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Consolidated Contract" data-info="Was this contract consolidated from multiple smaller requirements per FAR 7.107? If your market research said no consolidation, select &quot;No.&quot;">No</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Number Of Actions:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Number of Actions" data-info="Usually &quot;1.&quot; Indicates how many contract actions are represented by this single CAR record.">1</span></div></div>
+      </div>
+
+      <!-- 9. Legislative Mandates  |  10. Place of Performance (side by side in real FPDS) -->
+      <div style="display:flex;flex-wrap:wrap;">
+        <div style="flex:1;min-width:280px;">
+          <div class="fpds-section-hdr" data-section="s9">Legislative Mandates <span class="fpds-chevron">&#9660;</span></div>
+          <div class="fpds-section-body" id="s9">
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Clinger-Cohen Act:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Clinger-Cohen Act" data-info="Does this IT acquisition comply with the Clinger-Cohen Act? Select &quot;Yes,&quot; &quot;No,&quot; or &quot;Not Applicable&quot; for non-IT buys.">No</span></div></div>
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Service Contract Act:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Service Contract Act" data-info="Does the Service Contract Labor Standards statute (formerly SCA) apply? Required for service contracts over $2,500 where services are performed by service employees.">Not Applicable</span></div></div>
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Walsh-Healey Act:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Walsh-Healey Act" data-info="Does the Walsh-Healey Public Contracts Act apply? Applies to supply contracts over $15,000.">Not Applicable</span></div></div>
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Davis Bacon Act:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Davis-Bacon Act" data-info="Do construction wage rate requirements apply? Required for construction contracts over $2,000 on federal property.">Not Applicable</span></div></div>
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Interagency Contracting Authority:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Interagency Contracting Authority" data-info="If this is an interagency acquisition, what authority are you using? Economy Act, Franchise Fund, GWAC, etc."></span></div></div>
+          </div>
+        </div>
+        <div style="flex:1;min-width:280px;">
+          <div class="fpds-section-hdr" data-section="s10">Principal Place of Performance <span class="fpds-chevron">&#9660;</span></div>
+          <div class="fpds-section-body" id="s10">
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Place Of Performance Code:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Place of Performance Code" data-info="The state abbreviation code for the principal place of performance.">GA</span></div><div class="fpds-cell"><span class="fpds-lbl" style="min-width:auto;">Country</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Place of Performance Country" data-info="Country where the work is primarily performed. &quot;USA&quot; for domestic work.">USA</span></div></div>
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">County Name:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Place of Performance County" data-info="The county where work is primarily performed. System-derived from the address.">COBB</span></div></div>
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">City Name:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Place of Performance City" data-info="Where the work is primarily done. For services, it's where the work is performed. For supplies, where they're manufactured.">KENNESAW</span></div></div>
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Congressional District:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Place of Performance Congressional District" data-info="System-derived from the place of performance address. Used for congressional spending reports.">11</span></div></div>
+            <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Zip Code(+4):</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Place of Performance ZIP" data-info="The ZIP+4 for the principal place of performance.">30144 - 7802</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 11. Product or Service Information -->
+      <div class="fpds-section-hdr" data-section="s11">Product Or Service Information <span class="fpds-chevron">&#9660;</span></div>
+      <div class="fpds-section-body" id="s11">
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Product/Service Code:</span></div><div class="fpds-cell"><span class="fpds-val lookup" data-field="Product/Service Code (PSC)" data-info="A 4-character code for what you're buying. Services start with a letter (R = Professional, D = IT, S = Utilities). Supplies are numeric. Look them up at acquisition.gov/psc-manual.">6830</span></div><div class="fpds-cell"><span class="fpds-lbl" style="min-width:auto;">Description:</span></div><div class="fpds-cell"><span class="fpds-val-static" style="font-size:0.65rem;">GASES: COMPRESSED AND LIQUEFIED</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Principal NAICS Code:</span></div><div class="fpds-cell"><span class="fpds-val lookup" data-field="Principal NAICS Code" data-info="The 6-digit industry classification code that determines the small business size standard. Must match what was in your solicitation.">325120</span></div><div class="fpds-cell"><span class="fpds-lbl" style="min-width:auto;">Description:</span></div><div class="fpds-cell"><span class="fpds-val-static" style="font-size:0.65rem;">INDUSTRIAL GAS MANUFACTURING</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Bundled Contract:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Bundled Contract" data-info="Was this a bundled requirement? Usually &quot;Not a bundled requirement.&quot; Different from consolidated.">Not a bundled requirement</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">DOD Acquisition Program:</span></div><div class="fpds-cell"><span class="fpds-val lookup" data-field="DOD Acquisition Program" data-info="For DoD, the ACAT program code if applicable. &quot;000&quot; for non-program buys.">000</span></div><div class="fpds-cell"><span class="fpds-val-static" style="font-size:0.65rem;">Description: NONE</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Country of Product or Service Origin:</span></div><div class="fpds-cell"><span class="fpds-val lookup" data-field="Country of Product or Service Origin" data-info="Where the product originates or where the service is performed. Important for Buy American Act and Trade Agreements Act tracking.">USA</span></div><div class="fpds-cell"><span class="fpds-val-static" style="font-size:0.65rem;">UNITED STATES</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Place of Manufacture:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Place of Manufacture" data-info="For supplies: manufactured in the US, a designated country, or other? Tracks domestic preference law compliance.">Mfg in U.S.</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Domestic or Foreign Entity:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Domestic or Foreign Entity" data-info="Is this a U.S.-owned business, foreign-owned but U.S.-located, or foreign entity? Pulled from SAM.">U.S. Owned Business</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Recovered Materials/Sustainability:</span></div><div class="fpds-cell" style="flex:2;"><span class="fpds-val dropdown" data-field="Recovered Materials / Sustainability" data-info="Does the action include sustainability or recovered materials clauses per OMB policy? Options range from &quot;No clauses included&quot; to various sustainability inclusion levels.">No Clauses Included and No Sustainability Included</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Information Technology Commercial Category:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="IT Commercial Category" data-info="For IT buys: is this commercial IT products, services, or not IT? Helps track commercial IT spending.">Not IT Products or Services</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Claimant Program Code:</span></div><div class="fpds-cell"><span class="fpds-val lookup" data-field="Claimant Program Code" data-info="A code that categorizes the type of supplies or services. Used for DoD reporting. Your system usually populates this.">A8B</span></div><div class="fpds-cell"><span class="fpds-val-static" style="font-size:0.65rem;">Description: OTHER FUELS AND LUBRICANTS</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Description Of Requirement<br/><span style="font-size:0.6rem;color:#8a9ab0;">(4000 characters)</span>:</span></div><div class="fpds-cell" style="flex:2;"><span class="fpds-val" data-field="Description of Requirement" data-info="A free-text description of what you&rsquo;re buying (up to 4,000 characters). &lt;br/&gt;&lt;br/&gt;&lt;span class='warn'&gt;COMMON ERROR:&lt;/span&gt; Many people copy/paste the contract description straight from the SOW or PWS. Don&rsquo;t do that. This data isn&rsquo;t for technical experts &mdash; it&rsquo;s for the public and for Congress. Write it in &lt;strong&gt;layman&rsquo;s terms&lt;/strong&gt;. Anyone reading this should immediately understand what you&rsquo;re buying without needing a technical background." style="min-height:36px;">85004237871Nitrogen</span></div></div>
+      </div>
+
+      <!-- 12. Competition Information -->
+      <div class="fpds-section-hdr" data-section="s12">Competition Information <span class="fpds-chevron">&#9660;</span></div>
+      <div class="fpds-section-body" id="s12">
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Extent Competed For Referenced IDV:</span></div><div class="fpds-cell" style="flex:1;"><span class="fpds-val" data-field="Extent Competed for Referenced IDV" data-info="For orders: how was the parent IDV competed? This field is read-only &mdash; it propagates from the referenced IDV record.">Full and Open Competition</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Extent Competed:</span></div><div class="fpds-cell" style="flex:1;"><span class="fpds-val dropdown" data-field="Extent Competed" data-info="How was this competed? Full and Open, Full and Open After Exclusion of Sources, Not Competed, Follow-On, Not Available for Competition, etc. Make sure it accurately reflects your acquisition strategy.">Full and Open Competition</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Solicitation Procedures:</span></div><div class="fpds-cell" style="flex:1;"><span class="fpds-val dropdown" data-field="Solicitation Procedures" data-info="How did you solicit? Negotiated Proposal/Quote, Sealed Bid, Simplified Acquisition, Subject to Multiple Award Fair Opportunity, etc.">Negotiated Proposal/Quote</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Type Of Set Aside:</span></div><div class="fpds-cell" style="flex:1;"><span class="fpds-val dropdown" data-field="Type of Set-Aside" data-info="Was this set aside for small business, 8(a), HUBZone, SDVOSB, WOSB, or EDWOSB? Select &quot;No set aside used&quot; if full and open without restriction.">No set aside used.</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Evaluated Preference:</span></div><div class="fpds-cell" style="flex:1;"><span class="fpds-val dropdown" data-field="Evaluated Preference" data-info="Was an evaluation preference applied (e.g., HUBZone price evaluation preference)? Usually &quot;No Preference used.&quot;">No Preference used</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">SBIR/STTR:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="SBIR/STTR" data-info="Is this a Small Business Innovation Research or Small Business Technology Transfer award? Select the applicable phase or &quot;Neither.&quot;">Select One</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Fair Opportunity/Limited Sources:</span></div><div class="fpds-cell" style="flex:1;"><span class="fpds-val dropdown" data-field="Fair Opportunity / Limited Sources" data-info="For orders against multiple-award IDVs: did all awardees get a fair opportunity to compete, or was the order directed? If limited, select the applicable exception.">Select One</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Other Than Full And Open Competition:</span></div><div class="fpds-cell" style="flex:1;"><span class="fpds-val dropdown" data-field="Other Than Full and Open Competition" data-info="If not competed, select the FAR 6.302 authority: Only One Responsible Source, Unusual and Compelling Urgency, Industrial Mobilization, International Agreement, Authorized by Statute, or National Security.">Select One</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Contract Opportunities Notice:</span></div><div class="fpds-cell"><span class="fpds-val dropdown" data-field="Contract Opportunities Notice" data-info="Was the action posted on SAM.gov (Contract Opportunities)? If not, select the applicable exception.">No</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Commercial Products and Services Acquisition Procedures:</span></div><div class="fpds-cell" style="flex:1;"><span class="fpds-val dropdown" data-field="Commercial Acquisition Procedures" data-info="Did you use FAR Part 12 commercial procedures? Options include &quot;Commercial Item,&quot; &quot;Commercial Services/Products,&quot; and the DoD Section 803 CSO Procedures.">Commercial Item</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Number Of Offers Received:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Number of Offers Received" data-info="How many offers/quotes/bids did you actually receive (not how many you solicited)? Count all offers, even technically unacceptable ones.">5</span></div></div>
+      </div>
+
+      <!-- 13. Preference Programs / Other Data -->
+      <div class="fpds-section-hdr" data-section="s13">Preference Programs / Other Data <span class="fpds-chevron">&#9660;</span></div>
+      <div class="fpds-section-body" id="s13">
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Contracting Officer's Business Size Selection:</span></div><div class="fpds-cell" style="flex:1;"><span class="fpds-val dropdown" data-field="CO Business Size Selection" data-info="Small business or other than small business? This is your determination as the CO based on the NAICS code size standard. Drives small business reporting metrics.">Other than Small Business</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Subcontract Plan:</span></div><div class="fpds-cell" style="flex:1;"><span class="fpds-val dropdown" data-field="Subcontract Plan" data-info="Required for contracts over $750K ($1.5M for construction) awarded to other-than-small businesses. Options: Plan Required, Plan Not Required, Plan Not Included (Commercial Items).">Select One</span></div></div>
+        <div class="fpds-row"><div class="fpds-cell"><span class="fpds-lbl">Price Evaluation Percent Difference:</span></div><div class="fpds-cell"><span class="fpds-val" data-field="Price Evaluation Percent Difference" data-info="If a price evaluation adjustment was applied (e.g., HUBZone 10% preference), enter the percentage here.">%</span></div></div>
+      </div>
+
+    </div><!-- end .fpds-form -->
+
+    <div class="fpds-training-note" style="margin-top:1.25rem;">
+      <strong>A few things to keep in mind:</strong> FPDS data input fields change over time. What we've presented here likely isn't a one-for-one match to the CAR you'll see in front of you, but the most important details are here. This training isn't a replacement for pulling up your actual CAR and researching the data that goes into it &mdash; but it's a good resource to start getting comfortable with them. You'll do a million of these, so get used to it.
+    </div>
+
+    <div class="fpds-training-note" style="margin-top:0.75rem;">
+      <span class="warn">Critical for deployments:</span> This becomes especially important when you do <strong>manual contracts</strong>. When you do a contract manually (while deployed, for example) you'll fill in <strong>every detail by hand</strong> in FPDS-NG. You can't rely on auto-populated data when there's no contract writing system pushing it for you. Knowing what goes in each field ahead of time will save you a lot of headaches downrange.
+    </div>
+
+    <!-- Popup overlay -->
+    <div class="fpds-popup-overlay" id="fpdsPopup">
+      <div class="fpds-popup">
+        <div class="fpds-popup-title" id="fpdsPopupTitle"></div>
+        <div class="fpds-popup-body" id="fpdsPopupBody"></div>
+        <button class="fpds-popup-close" id="fpdsPopupClose">Got it</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="car-panel">
+
+    <div class="learn-body" style="margin-bottom:1rem;">
+      <p>Quick-reference resources for CAR reporting.</p>
+    </div>
+
+    <!-- ── Cheat Sheet ── -->
+    <div class="learn-section">
+      <h3><span class="section-num">&#9889;</span> Quick-Reference Cheat Sheet</h3>
+      <div class="learn-body">
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Question</th><th>Answer</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="cheat-field">When do I file?</td><td>Within 3 business days of award (FAR 4.604(b)), but your system usually pushes automatically</td></tr>
+            <tr><td class="cheat-field">What system?</td><td>FPDS-NG &mdash; access via FPDS.gov (redirects through SAM.gov) or your contract writing system</td></tr>
+            <tr><td class="cheat-field">Do I report micro-purchases?</td><td>No, unless a GPC is used as payment on a contract/order</td></tr>
+            <tr><td class="cheat-field">Do I report $0 mods?</td><td>Yes &mdash; admin mods still get reported</td></tr>
+            <tr><td class="cheat-field">Action Obligation on a deob?</td><td>Negative dollar amount (the net change)</td></tr>
+            <tr><td class="cheat-field">Contractor ID?</td><td>UEI (Unique Entity ID) from SAM.gov, 12 characters</td></tr>
+            <tr><td class="cheat-field">Where do I find PSC codes?</td><td>acquisition.gov/psc-manual</td></tr>
+            <tr><td class="cheat-field">Do I report task orders?</td><td>Yes, regardless of dollar value</td></tr>
+            <tr><td class="cheat-field">Who reports IDV orders?</td><td>The ordering office (you), unless the managing agency reports them</td></tr>
+            <tr><td class="cheat-field">"Exercised" vs "All" options?</td><td>"Exercised" = what's on contract now. "All" = max ceiling if every option is exercised.</td></tr>
+            <tr><td class="cheat-field">My CAR failed to post?</td><td>Note it, circle back when the system is fixed. Unreleased CARs cause mod problems downstream.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ── Reference Cards ── -->
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR Subpart 4.6 &mdash; Contract Reporting</h4>
+        <p>The governing regulation. Covers who reports, what gets reported, timelines, thresholds, and exclusions. Start here for any "do I report this?" question.</p>
+        <a href="https://www.acquisition.gov/far/subpart-4.6" target="_blank" rel="noopener">Open FAR 4.6</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FPDS-NG Website</h4>
+        <p>The system itself. Log in to enter CARs, run reports, and access the Data Dictionary and User Manual. FPDS.gov now redirects through SAM.gov for authentication.</p>
+        <a href="https://www.fpds.gov" target="_blank" rel="noopener">Open FPDS.gov</a>
+      </div>
+      <div class="lookup-card">
+        <h4>PSC Manual</h4>
+        <p>The Product and Service Codes Manual. Look up the correct 4-character PSC for what you're buying.</p>
+        <a href="https://www.acquisition.gov/psc-manual" target="_blank" rel="noopener">Open PSC Manual</a>
+      </div>
+      <div class="lookup-card">
+        <h4>SAM.gov Entity Search</h4>
+        <p>Verify contractor registration, look up UEI numbers, check business size, and confirm socioeconomic certifications.</p>
+        <a href="https://sam.gov/content/entity-information" target="_blank" rel="noopener">Open SAM.gov</a>
+      </div>
+      <div class="lookup-card">
+        <h4>NAICS Code Lookup</h4>
+        <p>Find the correct 6-digit NAICS code for your requirement. The NAICS code determines the small business size standard.</p>
+        <a href="https://www.census.gov/naics/" target="_blank" rel="noopener">Open NAICS Search</a>
+      </div>
+      <div class="lookup-card">
+        <h4>PGI 204.606 &mdash; Reporting Data (DoD)</h4>
+        <p>DoD-specific FPDS reporting guidance. Covers express reporting, FMS transactions, and special situations unique to defense contracts.</p>
+        <a href="https://www.acquisition.gov/dfarspgi/pgi-204.606-reporting-data." target="_blank" rel="noopener">Open PGI 204.606</a>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <span class="footer-logo">ContractingHQ</span>
+        <p>Built for the contracting workforce. Tools, reference, and encyclopedic encyclopedias of encyclopedias.</p>
+        <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn">&#9749; Buy Me a Coffee</a>
+      </div>
+      <div class="footer-links-col">
+        <h4>Resources</h4>
+        <a href="tools.html">Tools</a>
+        <a href="gao-decisions.html">GAO Decisions</a>
+        <a href="federal-register.html">FAR Updates</a>
+        <a href="training.html">Training</a>
+      </div>
+      <div class="footer-links-col">
+        <h4>More</h4>
+        <a href="links.html">Links</a>
+        <a href="asbca.html">ASBCA</a>
+        <a href="about.html">About</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 ContractingHQ. Not affiliated with the U.S. Government.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ── Tab switching ── */
+document.querySelectorAll('.car-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    var target = this.getAttribute('data-tab');
+    document.querySelectorAll('.car-panel').forEach(function(p) { p.classList.remove('active'); });
+    document.querySelectorAll('.car-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.getElementById('panel-' + target).classList.add('active');
+    this.classList.add('active');
+  });
+});
+
+/* ── FPDS Form: field popup ── */
+var fpdsOverlay = document.getElementById('fpdsPopup');
+var fpdsTitle = document.getElementById('fpdsPopupTitle');
+var fpdsBody = document.getElementById('fpdsPopupBody');
+var fpdsClose = document.getElementById('fpdsPopupClose');
+
+document.querySelectorAll('.fpds-val[data-field], .fpds-toolbar-btn[data-field]').forEach(function(field) {
+  field.addEventListener('click', function() {
+    fpdsTitle.textContent = this.getAttribute('data-field');
+    fpdsBody.innerHTML = this.getAttribute('data-info') || 'No additional info available.';
+    fpdsOverlay.classList.add('active');
+  });
+});
+
+if (fpdsClose) {
+  fpdsClose.addEventListener('click', function() {
+    fpdsOverlay.classList.remove('active');
+  });
+}
+
+if (fpdsOverlay) {
+  fpdsOverlay.addEventListener('click', function(e) {
+    if (e.target === fpdsOverlay) {
+      fpdsOverlay.classList.remove('active');
+    }
+  });
+}
+
+/* ── FPDS Form: collapsible sections ── */
+document.querySelectorAll('.fpds-section-hdr').forEach(function(hdr) {
+  hdr.addEventListener('click', function() {
+    this.classList.toggle('collapsed');
+    var body = this.nextElementSibling;
+    if (body && body.classList.contains('fpds-section-body')) {
+      body.classList.toggle('hidden');
+    }
+  });
+});
+</script>
+<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
