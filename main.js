@@ -67,7 +67,8 @@
     ["evaluating-quotations.html", "Evaluating Quotations"],
     ["price-fair-reasonable.html", "Price Fair & Reasonable"],
     ["delivery-orders-vs-task-orders.html", "Delivery Orders vs Task Orders"],
-    ["government-purchase-cards.html", "Government Purchase Cards"]
+    ["government-purchase-cards.html", "Government Purchase Cards"],
+    ["gsa-orders-sat.html", "GSA Orders under the SAT"]
   ];
 
   // Find current page in chain
