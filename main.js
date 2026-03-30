@@ -69,7 +69,8 @@
     ["delivery-orders-vs-task-orders.html", "Delivery Orders vs Task Orders"],
     ["government-purchase-cards.html", "Government Purchase Cards"],
     ["gsa-orders-sat.html", "GSA Orders under the SAT"],
-    ["gsa-orders-above-sat.html", "GSA Orders above the SAT"]
+    ["gsa-orders-above-sat.html", "GSA Orders above the SAT"],
+    ["wage-determinations.html", "Wage Determinations"]
   ];
 
   // Find current page in chain

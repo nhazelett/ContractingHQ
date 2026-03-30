@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="How to find and use wage determinations on SAM.gov. Covers DBA (construction) and SCA (services), searching by location, and three practical use cases for contracting officers." />
+  <title>Wage Determinations | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .wd-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .wd-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .wd-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .wd-tab:hover { color: var(--white); }
+    .wd-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .wd-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .wd-panel.active { display: block; }
+
+    /* ── Intro ── */
+    .wd-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .wd-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .wd-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .wd-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── Screenshot placeholder ── */
+    .screenshot-box { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.18); border-radius: 14px; padding: 1.5rem; margin: 1.25rem 0; text-align: center; }
+    .screenshot-box img { max-width: 100%; border-radius: 10px; border: 1px solid rgba(74,158,255,0.12); }
+    .screenshot-box .ss-caption { color: var(--silver); font-size: 0.78rem; margin-top: 0.65rem; font-style: italic; }
+
+    /* ── Step cards ── */
+    .step-cards { display: grid; gap: 1rem; margin: 1.25rem 0; }
+    .step-card { display: flex; gap: 1rem; align-items: flex-start; background: rgba(10,22,50,0.5); border: 1px solid rgba(74,158,255,0.1); border-radius: 12px; padding: 1.15rem 1.25rem; }
+    .step-card .step-icon { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; border-radius: 10px; background: rgba(74,158,255,0.1); color: var(--accent); font-weight: 800; font-size: 0.9rem; flex-shrink: 0; }
+    .step-card .step-text { color: var(--silver); font-size: 0.88rem; line-height: 1.65; }
+    .step-card .step-text strong { color: var(--white); }
+
+    /* ── Use-case cards ── */
+    .use-case { background: rgba(10,22,50,0.6); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.25rem; }
+    .use-case .uc-num { font-family: 'Rajdhani', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 0.35rem; }
+    .use-case h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--white); margin-bottom: 0.6rem; }
+    .use-case p { color: var(--silver); font-size: 0.88rem; line-height: 1.7; margin-bottom: 0.6rem; }
+    .use-case p:last-child { margin-bottom: 0; }
+
+    /* ── Scenario box ── */
+    .scenario-box { background: rgba(251,191,36,0.04); border: 1px solid rgba(251,191,36,0.2); border-radius: 14px; padding: 1.5rem; margin: 1.5rem 0; }
+    .scenario-box .scenario-label { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #fbbf24; margin-bottom: 0.5rem; }
+    .scenario-box p { color: var(--silver); font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.5rem; }
+    .scenario-box p:last-child { margin-bottom: 0; }
+    .scenario-box strong { color: #fde68a; }
+
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .wd-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 37</span>
+    <h1 class="page-hero-title">Wage Determinations</h1>
+    <p class="page-hero-sub">How to find, read, and use wage determinations from SAM.gov. Covers both DBA (construction) and SCA (services), and why they matter for pricing, fair &amp; reasonable determinations, and contract adjustments.</p>
+  </div>
+</div>
+
+<div class="training-nav-band training-nav-band-top"><div id="training-nav-top" class="training-nav training-nav-top"></div></div>
+
+<div class="wd-bg">
+
+  <div class="wd-intro">
+    <span class="wd-intro-tag">Training</span>
+    <h2>Wage Determinations on SAM.gov</h2>
+    <p>Wage determinations set the minimum wages contractors must pay their workers on government contracts. Knowing how to find them — and what to do with them — is a core contracting skill.</p>
+  </div>
+
+  <div class="wd-tabs" role="tablist">
+    <button class="wd-tab active" data-tab="learn" role="tab">&#128214; Learn</button>
+    <button class="wd-tab" data-tab="lookup" role="tab">&#128270; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="wd-panel active">
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> What Are Wage Determinations?</h3>
+      <div class="learn-body">
+        <p>Wage determinations (WDs) are documents issued by the Department of Labor that establish <strong>minimum hourly wage rates and fringe benefits</strong> that contractors must pay their employees working on government contracts. They exist to protect workers on federally funded projects from being underpaid.</p>
+        <p>There are two types, and which one applies depends on what you're buying:</p>
+        <div class="highlight-box">
+          <strong>DBA — Davis-Bacon Act</strong> — applies to <strong>construction</strong> contracts. These set prevailing wages for laborers and mechanics on federal construction projects over $2,000. If your contract involves building, altering, or repairing a public building or public work, DBA applies.
+        </div>
+        <div class="highlight-box">
+          <strong>SCA — Service Contract Act</strong> — applies to <strong>service</strong> contracts. These set minimum wage rates and fringe benefits for service workers on federal contracts over $2,500. Janitorial, security, IT support, food service — if you're buying a service performed by workers, SCA likely applies.
+        </div>
+        <p>Both types of wage determinations are now housed in one place: <strong>SAM.gov</strong>.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Finding Wage Determinations on SAM.gov</h3>
+      <div class="learn-body">
+        <p>All wage determinations are available at <strong>sam.gov/wage-determinations</strong>. Normally you won't know your WD number ahead of time, so you'll look them up manually using filters.</p>
+
+        <p><strong>Step 1 — Choose DBA or SCA.</strong> When you land on the wage determination search page, you'll see two categories: <strong>DBA</strong> (Davis-Bacon Act) for construction and <strong>SCA</strong> (Service Contract Act) for services. Select the one that matches your requirement.</p>
+
+        <div class="screenshot-box">
+          <img src="img/wd-sam-search.png" alt="SAM.gov Wage Determinations search page showing DBA and SCA categories" loading="lazy" />
+          <div class="ss-caption">The main search page — select DBA for construction or SCA for services.</div>
+        </div>
+
+        <p><strong>Step 2 — Apply your filters.</strong> You'll need to fill in filters for your specific location and situation. For SCA, you'll select the <strong>state</strong>, <strong>county</strong>, whether the service was <strong>previously performed</strong> under a federal contract, and the <strong>status</strong> (active). For DBA, you'll filter by state and county as well, plus the type of construction.</p>
+
+        <div class="screenshot-box">
+          <img src="img/wd-sam-filters.png" alt="SAM.gov filter sidebar showing State, County, Previously Performed, and Status fields" loading="lazy" style="max-width:340px;" />
+          <div class="ss-caption">Fill in every filter — state, county, and status at minimum. Select "Active" status to get the current determination.</div>
+        </div>
+
+        <p><strong>Step 3 — Select your result.</strong> After applying your filters, SAM.gov will return the applicable wage determination(s). Click the result to open it.</p>
+
+        <div class="screenshot-box">
+          <img src="img/wd-sam-results.png" alt="SAM.gov search results showing SCA wage determinations for Ohio" loading="lazy" />
+          <div class="ss-caption">Click the result to view the full wage determination with all labor categories and rates.</div>
+        </div>
+
+        <p>Once you open it, you'll see a table of labor categories with their minimum hourly wage rates and fringe benefit amounts. That's your wage determination.</p>
+
+        <div class="highlight-box tip">
+          <strong>Tip:</strong> Bookmark the direct link — <a href="https://sam.gov/wage-determinations" target="_blank" rel="noopener" style="color:#6ee7b7;text-decoration:underline;">sam.gov/wage-determinations</a>. You'll use it more often than you think.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Why Wage Determinations Matter</h3>
+      <div class="learn-body">
+        <p>Wage determinations aren't just paperwork to include in your contract. They directly affect pricing, evaluation, and contract administration. Here are the three main ways you'll use them:</p>
+
+        <div class="use-case">
+          <div class="uc-num">Use Case 1</div>
+          <h4>Setting Pricing Expectations for Offerors</h4>
+          <p>When you include a wage determination in your solicitation, you're telling potential offerors <strong>the minimum wages they must pay their workers in your location</strong>. This helps them build their pricing. If the WD says a janitor in your county must be paid at least $17.75/hr plus $4.22 in fringe, the offeror knows their labor floor before they even start estimating.</p>
+          <p>This transparency leads to <strong>more accurate, comparable pricing</strong> across offerors — everyone is working from the same baseline.</p>
+        </div>
+
+        <div class="use-case">
+          <div class="uc-num">Use Case 2</div>
+          <h4>Determining Price to Be Fair and Reasonable</h4>
+          <p>If you have a breakdown of the wage rates in a contractor's proposal, the wage determination gives you a <strong>direct comparison point</strong>. You can see whether the proposed labor rates are at, above, or wildly above the WD minimums. This is especially useful when evaluating service contracts where labor is the primary cost driver.</p>
+          <div class="highlight-box warn">
+            <strong>Important caveat:</strong> SCA rates can be <strong>considerably lower</strong> than what the market actually pays in your location. If companies are coming in higher than the WD rates, that doesn't automatically mean their prices are unfair or unreasonable — it means the market for those positions might be more competitive than the WD reflects. Use the WD as a floor, not as a ceiling. Consider other pricing techniques alongside it.
+          </div>
+        </div>
+
+        <div class="use-case">
+          <div class="uc-num">Use Case 3</div>
+          <h4>Handling Wage Rate Adjustments During Performance</h4>
+          <p>When the Department of Labor updates a wage determination and the new rates are higher, <strong>the contractor will request a price adjustment</strong> to cover the increased labor costs. This is legitimate — the government is mandating higher wages, so the government also has to foot the bill.</p>
+          <p><strong>However</strong>, if the contractor is <strong>already paying above the required rates</strong>, they are <strong>not entitled to an adjustment</strong>. The adjustment only covers the difference between what the WD previously required and what it now requires. If a contractor was voluntarily paying $25/hr when the WD only required $18/hr, and the new WD raises the minimum to $19/hr, the contractor's actual costs haven't gone up — so there's no adjustment.</p>
+          <div class="highlight-box tip">
+            <strong>Bottom line:</strong> The contractor gets an adjustment only when the new WD rates actually increase their costs. If they were already paying above the old minimum, the new minimum doesn't change what they owe their employees — and therefore doesn't change what the government owes them.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Including Wage Determinations in Your Contract</h3>
+      <div class="learn-body">
+        <p>The applicable wage determination must be <strong>incorporated into the solicitation and resulting contract</strong>. For SCA, include the clause at <strong>FAR 52.222-41</strong> (Service Contract Labor Standards) along with the wage determination itself. For DBA, include the clause at <strong>FAR 52.222-6</strong> (Construction Wage Rate Requirements) along with the applicable WD.</p>
+        <p>Make sure you pull the WD close to the time you issue the solicitation — rates can be updated. If a new WD is issued between solicitation and award, you may need to incorporate the updated version.</p>
+        <div class="highlight-box">
+          <strong>Lock-in rule:</strong> For DBA, the wage determination incorporated at the time of award generally locks in for the life of the contract. For SCA, wage determinations can be updated during performance — which is exactly why Use Case 3 (adjustments) comes up so often.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Common Mistakes</h3>
+      <div class="learn-body">
+        <p><strong>Forgetting to include the WD entirely.</strong> It happens. If your contract requires SCA or DBA coverage and you didn't include the wage determination, you have a problem. Always check whether your requirement triggers either act.</p>
+        <p><strong>Using an outdated WD.</strong> Wage determinations are revised periodically. If you pulled yours six months ago and never checked again before award, you might be incorporating stale rates. Always verify close to the time of award.</p>
+        <p><strong>Assuming SCA rates = market rates.</strong> As mentioned above, SCA minimums can be significantly below what the local market demands. Don't reject a proposal as unreasonable solely because it's higher than the WD floor.</p>
+        <p><strong>Granting adjustments without verification.</strong> When a contractor requests a price adjustment for a WD revision, verify that the new rates actually affect their costs. If they're already paying above the old minimums, the revision may not entitle them to anything.</p>
+        <p><strong>Applying the wrong WD type.</strong> Construction work gets DBA. Services get SCA. A contract that mixes both (say, building maintenance with some renovation work) may require both types of WDs for different labor categories. Know what you're buying.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="scenario-box">
+      <div class="scenario-label">Scenario Walkthrough</div>
+      <p>You're putting together a solicitation for <strong>janitorial services</strong> at a government facility in <strong>Oklahoma City, OK</strong>. This is a service contract, so SCA applies.</p>
+      <p><strong>Step 1:</strong> Go to <a href="https://sam.gov/wage-determinations" target="_blank" rel="noopener" style="color:#fbbf24;text-decoration:underline;">sam.gov/wage-determinations</a> and select <strong>SCA</strong>.</p>
+      <p><strong>Step 2:</strong> Filter by State: <strong>Oklahoma</strong>, County: <strong>Oklahoma</strong>, and Status: <strong>Active</strong>. If the service was previously performed under a federal contract at this location, select "Yes" for Previously Performed.</p>
+      <p><strong>Step 3:</strong> Open the result. You see janitor listed at $16.50/hr with a $4.22 health &amp; welfare fringe. That's the floor your contractor must pay.</p>
+      <p><strong>Step 4:</strong> Include this wage determination in your solicitation along with <strong>FAR 52.222-41</strong>. Offerors now know the minimum labor cost they're building from.</p>
+      <p><strong>Step 5:</strong> Later, during performance, the DOL revises the WD and raises the janitor rate to $17.25/hr. Your contractor was paying exactly $16.50 — so they request an adjustment of $0.75/hr. That's a valid adjustment. You process it. If they'd already been paying $20/hr, no adjustment would be warranted.</p>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="wd-panel">
+    <h3 style="font-family:'Rajdhani',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);margin-bottom:0.5rem;">Quick Reference Links</h3>
+    <p style="color:var(--silver);font-size:0.9rem;margin-bottom:1rem;line-height:1.6;">Everything you need for wage determinations — search tools, applicable FAR clauses, and DOL resources.</p>
+
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>SAM.gov Wage Determinations</h4>
+        <p>The official source for all DBA and SCA wage determinations. Search by state, county, and type.</p>
+        <a href="https://sam.gov/wage-determinations" target="_blank" rel="noopener">Search Wage Determinations</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 22.4 — Labor Standards for Construction</h4>
+        <p>Davis-Bacon Act requirements for construction contracts, including when WDs apply and how to incorporate them.</p>
+        <a href="https://www.acquisition.gov/far/subpart-22.4" target="_blank" rel="noopener">Read FAR 22.4</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 22.10 — Service Contract Labor Standards</h4>
+        <p>SCA requirements for service contracts, including thresholds, exemptions, and wage determination incorporation.</p>
+        <a href="https://www.acquisition.gov/far/subpart-22.10" target="_blank" rel="noopener">Read FAR 22.10</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 52.222-41 — SCA Clause</h4>
+        <p>The contract clause for Service Contract Labor Standards. Required in most service contracts above $2,500.</p>
+        <a href="https://www.acquisition.gov/far/52.222-41" target="_blank" rel="noopener">Read the Clause</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 52.222-6 — DBA Clause</h4>
+        <p>The contract clause for Construction Wage Rate Requirements. Required in construction contracts over $2,000.</p>
+        <a href="https://www.acquisition.gov/far/52.222-6" target="_blank" rel="noopener">Read the Clause</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Department of Labor — Wage &amp; Hour Division</h4>
+        <p>The agency that issues and maintains wage determinations. Useful for interpretive guidance and compliance questions.</p>
+        <a href="https://www.dol.gov/agencies/whd" target="_blank" rel="noopener">Visit DOL WHD</a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /wd-bg -->
+
+<div class="training-nav-band"><div id="training-nav" class="training-nav"></div></div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2025 ContractingHQ &mdash; Built for the contracting workforce.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+// ── Tab switching ──
+(function () {
+  var tabs = document.querySelectorAll('.wd-tab[data-tab]');
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      tabs.forEach(function (t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      document.querySelectorAll('.wd-panel').forEach(function (p) { p.classList.remove('active'); });
+      var target = document.getElementById('panel-' + tab.getAttribute('data-tab'));
+      if (target) target.classList.add('active');
+    });
+  });
+})();
+</script>
+</body>
+</html>
