@@ -70,7 +70,8 @@
     ["government-purchase-cards.html", "Government Purchase Cards"],
     ["gsa-orders-sat.html", "GSA Orders under the SAT"],
     ["gsa-orders-above-sat.html", "GSA Orders above the SAT"],
-    ["wage-determinations.html", "Wage Determinations"]
+    ["wage-determinations.html", "Wage Determinations"],
+    ["blanket-purchase-agreements.html", "Blanket Purchase Agreements"]
   ];
 
   // Find current page in chain

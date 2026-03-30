@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Blanket Purchase Agreements (BPAs) - what they are, how they differ from IDIQs, when to use single vs. multiple award, how to establish and administer them. Covers FAR Part 12 BPA procedures under the RFO." />
+  <title>Blanket Purchase Agreements | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .bpa-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .bpa-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .bpa-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .bpa-tab:hover { color: var(--white); }
+    .bpa-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .bpa-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .bpa-panel.active { display: block; }
+
+    /* ── Intro ── */
+    .bpa-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .bpa-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .bpa-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .bpa-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── Comparison table ── */
+    .compare-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 1.25rem 0; border-radius: 12px; overflow: hidden; border: 1px solid rgba(74,158,255,0.15); font-size: 0.85rem; }
+    .compare-table th { background: rgba(74,158,255,0.1); color: var(--accent); font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 700; padding: 0.85rem 1rem; text-align: left; border-bottom: 1px solid rgba(74,158,255,0.15); }
+    .compare-table td { padding: 0.75rem 1rem; color: var(--silver); border-bottom: 1px solid rgba(74,158,255,0.07); vertical-align: top; line-height: 1.55; }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table td:first-child { color: var(--white); font-weight: 600; white-space: nowrap; }
+
+    /* ── Scenario box ── */
+    .scenario-box { background: rgba(251,191,36,0.04); border: 1px solid rgba(251,191,36,0.2); border-radius: 14px; padding: 1.5rem; margin: 1.5rem 0; }
+    .scenario-box .scenario-label { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #fbbf24; margin-bottom: 0.5rem; }
+    .scenario-box p { color: var(--silver); font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.5rem; }
+    .scenario-box p:last-child { margin-bottom: 0; }
+    .scenario-box strong { color: #fde68a; }
+
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    /* ── Checklist ── */
+    .fc-btn { padding: 0.6rem 1.4rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.25); background: rgba(74,158,255,0.08); color: var(--silver); cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .fc-btn:hover { background: rgba(74,158,255,0.18); color: var(--white); }
+    .fc-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .fc-btn.primary:hover { background: #3a8eef; }
+
+    /* ── Wizard ── */
+    .wiz-progress { display: flex; gap: 0; margin-bottom: 2rem; overflow-x: auto; }
+    .wiz-step-dot { flex: 1; text-align: center; padding: 0.6rem 0.4rem; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: rgba(148,163,184,0.5); border-bottom: 3px solid rgba(74,158,255,0.08); cursor: pointer; transition: all 0.2s; white-space: nowrap; min-width: 0; }
+    .wiz-step-dot:hover { color: var(--silver); }
+    .wiz-step-dot.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .wiz-step-dot.done { color: #34d399; border-bottom-color: rgba(52,211,153,0.4); }
+    .wiz-card { background: rgba(10,22,50,0.5); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.75rem; margin-bottom: 1.5rem; }
+    .wiz-card h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--white); margin-bottom: 0.25rem; }
+    .wiz-card .wiz-subtitle { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1.25rem; }
+    .wiz-field { margin-bottom: 1.25rem; }
+    .wiz-field label { display: block; color: var(--white); font-size: 0.82rem; font-weight: 600; margin-bottom: 0.35rem; }
+    .wiz-field .wiz-hint { color: rgba(148,163,184,0.7); font-size: 0.78rem; margin-bottom: 0.4rem; line-height: 1.5; }
+    .wiz-field input[type="text"], .wiz-field textarea, .wiz-field select { width: 100%; background: rgba(4,13,31,0.8); border: 1px solid rgba(74,158,255,0.15); border-radius: 8px; padding: 0.65rem 0.85rem; color: var(--white); font-size: 0.88rem; font-family: inherit; transition: border-color 0.2s; box-sizing: border-box; }
+    .wiz-field input:focus, .wiz-field textarea:focus, .wiz-field select:focus { outline: none; border-color: var(--accent); }
+    .wiz-field textarea { resize: vertical; min-height: 70px; line-height: 1.6; }
+    .wiz-field select { cursor: pointer; }
+    .wiz-field select option { background: #0a1632; color: var(--white); }
+    .wiz-radio-group { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .wiz-radio { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.85rem 1rem; background: rgba(4,13,31,0.6); border: 1px solid rgba(74,158,255,0.12); border-radius: 10px; cursor: pointer; transition: all 0.18s; flex: 1; min-width: 200px; }
+    .wiz-radio:hover { border-color: rgba(74,158,255,0.3); }
+    .wiz-radio.selected { border-color: var(--accent); background: rgba(74,158,255,0.06); }
+    .wiz-radio input[type="radio"] { accent-color: var(--accent); margin-top: 2px; flex-shrink: 0; }
+    .wiz-radio-label { font-size: 0.88rem; font-weight: 600; color: var(--white); }
+    .wiz-radio-desc { font-size: 0.8rem; color: var(--silver); line-height: 1.5; margin-top: 0.15rem; }
+    .wiz-rationale { margin-top: 0.75rem; }
+    .wiz-rationale label { color: #fbbf24; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.5px; }
+    .wiz-rationale textarea { min-height: 55px; border-color: rgba(251,191,36,0.15); }
+    .wiz-rationale textarea:focus { border-color: #fbbf24; }
+    .wiz-sample-toggle { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.85rem; border-radius: 8px; font-size: 0.78rem; font-weight: 700; color: #fbbf24; background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.2); cursor: pointer; transition: all 0.18s; margin-bottom: 1rem; }
+    .wiz-sample-toggle:hover { background: rgba(251,191,36,0.12); }
+    .wiz-sample-box { background: rgba(251,191,36,0.04); border: 1px solid rgba(251,191,36,0.15); border-radius: 10px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; font-size: 0.84rem; color: var(--silver); line-height: 1.65; display: none; }
+    .wiz-sample-box.visible { display: block; }
+    .wiz-sample-box strong { color: #fde68a; }
+    .wiz-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1rem; }
+    .wiz-btn { padding: 0.65rem 1.6rem; border-radius: 8px; font-size: 0.88rem; font-weight: 700; border: none; cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .wiz-btn-back { background: rgba(74,158,255,0.08); border: 1px solid rgba(74,158,255,0.2); color: var(--silver); }
+    .wiz-btn-back:hover { color: var(--white); background: rgba(74,158,255,0.15); }
+    .wiz-btn-next { background: var(--accent); color: #fff; }
+    .wiz-btn-next:hover { background: #3a8eef; }
+    .wiz-btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Sub-tabs ── */
+    .est-subtabs { display: flex; gap: 0; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(74,158,255,0.12); }
+    .est-subtab { padding: 0.55rem 1.2rem; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.5px; color: var(--silver); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .est-subtab:hover { color: var(--white); }
+    .est-subtab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .est-mode { display: none; }
+    .est-mode.active { display: block; }
+
+    /* ── Do mode ── */
+    .do-section { background: rgba(10,22,50,0.5); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.25rem; }
+    .do-section h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; }
+    .do-row { margin-bottom: 1rem; }
+    .do-row label { display: block; color: var(--white); font-size: 0.82rem; font-weight: 600; margin-bottom: 0.3rem; }
+    .do-row input, .do-row textarea { width: 100%; box-sizing: border-box; background: rgba(4,13,31,0.8); border: 1px solid rgba(74,158,255,0.15); border-radius: 8px; padding: 0.6rem 0.85rem; color: var(--white); font-size: 0.88rem; font-family: inherit; }
+    .do-row input:focus, .do-row textarea:focus { outline: none; border-color: var(--accent); }
+    .do-row textarea { resize: vertical; min-height: 60px; line-height: 1.6; }
+    .do-row .do-hint { color: rgba(148,163,184,0.6); font-size: 0.76rem; margin-bottom: 0.3rem; }
+
+    /* ── Signature block ── */
+    .sig-block { text-align: right; margin-top: 2.5rem; padding-top: 1rem; }
+    .sig-line { display: inline-block; width: 280px; border-bottom: 1px solid var(--silver); margin-bottom: 0.3rem; }
+    .sig-label { font-size: 0.82rem; color: var(--silver); }
+
+    /* ── Generated document ── */
+    .og-doc { background: rgba(255,255,255,0.03); border: 1px solid rgba(74,158,255,0.15); border-radius: 14px; padding: 2rem 2.25rem; font-size: 0.9rem; color: var(--silver); line-height: 1.75; }
+    .og-doc h2 { font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--white); text-align: center; margin-bottom: 0.25rem; }
+    .og-doc .og-subtitle { text-align: center; font-size: 0.85rem; color: var(--silver); margin-bottom: 1.5rem; }
+    .og-doc h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.5rem; border-bottom: 1px solid rgba(74,158,255,0.1); padding-bottom: 0.3rem; }
+    .og-doc p { margin-bottom: 0.75rem; }
+    .og-doc strong { color: var(--white); }
+    .og-doc .og-table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.85rem; }
+    .og-doc .og-table th { background: rgba(74,158,255,0.08); color: var(--accent); text-align: left; padding: 0.5rem 0.75rem; border: 1px solid rgba(74,158,255,0.12); font-weight: 700; }
+    .og-doc .og-table td { padding: 0.5rem 0.75rem; border: 1px solid rgba(74,158,255,0.08); color: var(--silver); }
+    .og-doc .og-warning { background: rgba(248,113,113,0.05); border-left: 3px solid rgba(248,113,113,0.3); padding: 0.6rem 0.85rem; border-radius: 0 8px 8px 0; margin: 0.75rem 0; font-size: 0.85rem; }
+    .og-doc .og-warning strong { color: #fca5a5; }
+
+    /* ── Print summary ── */
+    .wiz-summary { display: none; }
+    .wiz-summary.visible { display: block; }
+    .wiz-summary-section { background: rgba(10,22,50,0.5); border: 1px solid rgba(74,158,255,0.12); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+    .wiz-summary-section h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem; }
+    .wiz-summary-row { display: flex; gap: 0.5rem; margin-bottom: 0.4rem; font-size: 0.85rem; }
+    .wiz-summary-label { color: var(--white); font-weight: 600; min-width: 140px; flex-shrink: 0; }
+    .wiz-summary-value { color: var(--silver); line-height: 1.55; }
+    .wiz-summary-rationale { margin-top: 0.5rem; padding: 0.6rem 0.85rem; background: rgba(251,191,36,0.04); border-left: 3px solid rgba(251,191,36,0.3); border-radius: 0 8px 8px 0; font-size: 0.82rem; color: var(--silver); line-height: 1.55; }
+    .wiz-summary-rationale strong { color: #fbbf24; font-size: 0.75rem; letter-spacing: 0.5px; }
+
+    @media print {
+      .navbar, .bpa-tabs, .bpa-intro, .training-nav-band, .footer, .wiz-progress, .wiz-nav, .wiz-sample-toggle, .wiz-sample-box, .bmc-btn, .est-subtabs, .do-section, #do-form, #og-inputs, #rev-form, .wiz-btn { display: none !important; }
+      .bpa-bg { background: #fff !important; padding: 0 !important; }
+      .bpa-panel { display: block !important; max-width: 100% !important; }
+      .est-mode { display: block !important; }
+      .wiz-summary { display: block !important; }
+      .wiz-summary-section, .do-print-section { border-color: #ccc !important; background: #fff !important; border: 1px solid #ccc !important; border-radius: 8px !important; padding: 1rem !important; margin-bottom: 0.75rem !important; }
+      .wiz-summary-section h4, .do-print-section h4 { color: #1a56db !important; }
+      .wiz-summary-label, .do-print-label { color: #111 !important; }
+      .wiz-summary-value, .do-print-value { color: #333 !important; }
+      .sig-block { text-align: right !important; margin-top: 2rem !important; }
+      .sig-line { border-bottom-color: #111 !important; }
+      .sig-label { color: #333 !important; }
+      .og-doc { background: #fff !important; border-color: #ccc !important; color: #111 !important; }
+      .og-doc h2 { color: #111 !important; }
+      .og-doc h3 { color: #1a56db !important; border-bottom-color: #ccc !important; }
+      .og-doc strong { color: #111 !important; }
+      .og-doc .og-subtitle { color: #333 !important; }
+      .og-doc p { color: #333 !important; }
+      .og-doc .og-table th { background: #f0f4ff !important; color: #1a56db !important; border-color: #ccc !important; }
+      .og-doc .og-table td { color: #333 !important; border-color: #ccc !important; }
+      .og-doc .og-warning { border-left-color: #dc2626 !important; background: #fef2f2 !important; }
+      .og-doc .og-warning strong { color: #dc2626 !important; }
+      body { background: #fff !important; color: #111 !important; }
+    }
+
+    @media (max-width: 768px) {
+      .bpa-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+      .compare-table { font-size: 0.78rem; }
+      .compare-table td:first-child { white-space: normal; }
+      .wiz-radio-group { flex-direction: column; }
+      .wiz-radio { min-width: 0; }
+      .wiz-step-dot { font-size: 0.6rem; padding: 0.5rem 0.2rem; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 28</span>
+    <h1 class="page-hero-title">Blanket Purchase Agreements</h1>
+    <p class="page-hero-sub">BPAs are one of the simplest and most powerful tools in your kit. They let you establish "charge accounts" with qualified vendors so your end users can buy what they need without generating a full contract file every time.</p>
+  </div>
+</div>
+
+<div class="training-nav-band training-nav-band-top"><div id="training-nav-top" class="training-nav training-nav-top"></div></div>
+
+<div class="bpa-bg">
+
+  <div class="bpa-intro">
+    <span class="bpa-intro-tag">Training</span>
+    <h2>Preparing, Ordering, &amp; Administering BPAs</h2>
+    <p>BPAs aren't contracts. They're charge accounts. Understand the difference and you'll see why they exist - and why they're one of the easiest ways to decentralize purchasing for your mission partners.</p>
+  </div>
+
+  <div class="bpa-tabs" role="tablist">
+    <button class="bpa-tab active" data-tab="learn" role="tab">&#128214; Learn</button>
+    <button class="bpa-tab" data-tab="checklist" role="tab">&#128203; File Checklist</button>
+    <button class="bpa-tab" data-tab="lookup" role="tab">&#128270; Look It Up</button>
+    <button class="bpa-tab" data-tab="establish" role="tab">&#128736; Establish a BPA</button>
+    <button class="bpa-tab" data-tab="review" role="tab">&#128203; BPA Review</button>
+    <button class="bpa-tab" data-tab="orderguide" role="tab">&#128220; Ordering Guide</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="bpa-panel active">
+
+    <!-- Section 1 -->
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> What Is a BPA?</h3>
+      <div class="learn-body">
+        <p>A <strong>Blanket Purchase Agreement (BPA)</strong> is a method of filling anticipated repetitive needs for supplies or services by establishing "charge accounts" with qualified sources of supply. That's it. It's not a contract. It's not an IDIQ. It's a simplified agreement that says: <em>if and when we need something you sell, we'll call you, and here are the terms.</em></p>
+        <p>The government is <strong>only obligated to the extent that authorized orders are actually placed</strong> under the BPA. No orders placed? No obligation. No minimum guarantee. The vendor agrees to provide supplies or services described in general terms, if and when requested by authorized individuals, during a specified period.</p>
+        <p>Under the Revolutionary FAR Overhaul (RFO), <strong>BPA procedures now fall under FAR Part 12</strong>, which governs commercial item acquisitions. This makes sense - BPAs are almost always used for commercial products and services, and simplifying them under Part 12 streamlines the process.</p>
+        <div class="highlight-box">
+          <strong>The key concept:</strong> A BPA is not a contract. It's a pre-arranged agreement that makes future purchases faster and simpler. Think of it like setting up a corporate account at a supplier - the account itself isn't a purchase, but it makes every future purchase frictionless.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Section 2 -->
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> BPAs vs. IDIQs - Why People Get Confused</h3>
+      <div class="learn-body">
+        <p>This is the question everyone struggles with. Both BPAs and IDIQ contracts involve placing orders over time against an existing agreement. Both can be single-award or multiple-award. Both are used for recurring needs. So what's the difference?</p>
+        <p>The core difference is <strong>what you're establishing</strong>. An IDIQ is a <strong>contract</strong> - a binding legal instrument with a minimum guarantee, a ceiling, defined deliverables, and full FAR compliance. A BPA is a <strong>simplified ordering arrangement</strong> - there's no minimum, no ceiling requirement, and the terms are lighter because you're operating under simplified procedures.</p>
+
+        <table class="compare-table">
+          <thead>
+            <tr><th></th><th>BPA</th><th>IDIQ Contract</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Legal status</td><td>Not a contract - a charge account</td><td>A binding contract with legal obligations</td></tr>
+            <tr><td>Minimum guarantee</td><td>None. Government only pays for what it orders.</td><td>Required. Must obligate a minimum quantity or dollar amount.</td></tr>
+            <tr><td>Ceiling</td><td>No ceiling required (and you shouldn't set one)</td><td>Has a defined ceiling that cannot be exceeded without modification</td></tr>
+            <tr><td>Complexity to establish</td><td>Lightweight - can be established with price quotes and a simple agreement</td><td>Full source selection, solicitation, evaluation, and contract award</td></tr>
+            <tr><td>Who can order</td><td>Authorized individuals (including GPC cardholders above the MPT)</td><td>Contracting officers, unless the ordering guide permits otherwise</td></tr>
+            <tr><td>Dollar threshold</td><td>Individual orders at or below the SAT</td><td>No inherent limit - can be any dollar value</td></tr>
+            <tr><td>Best for</td><td>Recurring, predictable, commercial needs that mission partners can buy themselves</td><td>Complex, high-value, or long-term requirements needing contractual protection</td></tr>
+          </tbody>
+        </table>
+
+        <div class="highlight-box tip">
+          <strong>The practical test:</strong> If you're trying to let your end users buy their own stuff with a purchase card, you want a BPA. If you need contractual protections, performance guarantees, or the dollar values exceed the SAT per order, you need an IDIQ or requirements contract.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Section 3 -->
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Why Establish a BPA?</h3>
+      <div class="learn-body">
+        <p>Here's the real reason BPAs exist: <strong>to decentralize purchasing</strong>.</p>
+        <p>If you're a contracting officer and you're getting the same purchase request over and over - toner cartridges, janitorial supplies, IT peripherals, vehicle parts - you have two options. You can process each one individually: receive the request, solicit quotes, evaluate, award a purchase order, file the documentation. Repeat forever. Or you can establish a BPA, hand the ordering authority to your mission partners, and let them buy what they need when they need it.</p>
+        <p>This is where BPAs get powerful. Under DAFI 64-117 (for Air Force), <strong>cardholders can exceed the micro-purchase threshold</strong> when purchasing against pre-priced contractual agreements - and BPAs qualify. That means a cardholder with the right authority can place orders up to the SAT against an established BPA using their Government Purchase Card. Swipe the card, call it a day. No massive contract file. No re-doing paperwork every single time.</p>
+        <div class="highlight-box">
+          <strong>The value proposition:</strong> A BPA transforms a contracting officer's recurring workload into a one-time setup. You do the work once - establish the agreement, set the terms, authorize the users - and then your mission partners handle the individual purchases themselves. You move from executing transactions to enabling the mission.
+        </div>
+        <p>Can you centralize BPA ordering through the contracting office? Sure. But the whole point is that you <em>don't have to</em>. BPAs are designed to push purchasing authority closer to the people who actually need the goods and services.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Section 4 -->
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Single Award vs. Multiple Award BPAs</h3>
+      <div class="learn-body">
+        <p>You can establish a BPA with one vendor (single award) or with multiple vendors for the same type of supplies or services (multiple award). Each approach has advantages, and the choice depends on the nature of your requirement.</p>
+
+        <p><strong>Single award BPAs</strong> work particularly well when the government's needs are highly integrated or sequential - where one task naturally flows into or depends upon another. They're also well-suited when standardization or scalability is critical, like when you need consistent processes, systems, or methodologies across all orders. Consider the value of relationship continuity: some requirements benefit significantly from a single vendor developing deep institutional knowledge or rapid delivery capabilities over time.</p>
+
+        <p><strong>Multiple award BPAs</strong> are better when requirements can be logically segmented into distinct categories. Multiple BPAs provide access to varied approaches and innovations, which can be particularly valuable for complex or evolving requirements. When surge capacity or broad geographic coverage matters, multiple vendors provide flexibility and redundancy - especially if they're awarded based on specialization areas or geographic regions.</p>
+
+        <div class="highlight-box">
+          <strong>The FAR says:</strong> BPAs may be established with more than one supplier for supplies or services of the same type to provide maximum practicable competition, or with a single firm from which numerous individual purchases at or below the SAT will likely be made in a given period.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>Competition still matters:</strong> If you have a single BPA and a particular purchase exceeds the micro-purchase threshold, but you don't have enough BPAs to ensure competition, you need to solicit quotations from other sources. The existence of a BPA does not justify soliciting from only one source or avoiding small business set-asides.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Section 5 -->
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> How to Establish a BPA</h3>
+      <div class="learn-body">
+        <p>Establishing a BPA is simpler than most people think. There's no requirement to post it on SAM.gov. However, you do need to think about competition.</p>
+
+        <p><strong>For a single award BPA:</strong> Post the requirement, evaluate competitive pricing and whatever other evaluation factors apply, and award the BPA to the best value source. This looks a lot like a simplified acquisition - because it is. You're just awarding an agreement instead of a one-time purchase order.</p>
+
+        <p><strong>For multiple award BPAs:</strong> Establish BPAs with companies who have a proven track record of providing the commodities and services your agency needs. You're building a pool of qualified vendors. Each individual order above the micro-purchase threshold will be competed among your BPA holders, so the competition happens at the order level rather than the agreement level.</p>
+
+        <p><strong>What the BPA document must include:</strong></p>
+        <p>1. <strong>A statement</strong> that the supplier will furnish supplies or services, described in general terms, if and when requested by authorized individuals during a specified period and within a stipulated aggregate amount, if any.</p>
+        <p>2. <strong>A statement</strong> that the Government is obligated only to the extent of authorized purchases actually made under the BPA.</p>
+        <p>3. <strong>The dollar limitation</strong> for each individual purchase under the BPA (may not exceed the SAT).</p>
+        <p>4. <strong>A list of individuals</strong> authorized to place orders or make purchases under the BPA.</p>
+        <p>5. <strong>Delivery/shipment documentation</strong> requirements.</p>
+        <p>6. <strong>Invoicing instructions</strong> (e.g., process for periodic billings).</p>
+        <p>7. <strong>Any applicable clauses</strong> per FAR 12.205(b).</p>
+
+        <div class="highlight-box warn">
+          <strong>Do not specify a ceiling.</strong> There is no requirement to set a ceiling on a BPA, and doing so creates an artificial constraint that defeats the purpose of the agreement. The BPA should state the estimated value, but a ceiling is unnecessary. If you hit your estimate, you review and adjust - you don't stop buying what the mission needs because you capped yourself.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Section 6 -->
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> Ordering Against a BPA</h3>
+      <div class="learn-body">
+        <p>Once the BPA is established, ordering is straightforward. Authorized individuals - which can include GPC cardholders, not just contracting officers - place orders as needs arise.</p>
+        <p><strong>Orders at or below the MPT:</strong> The authorized individual can place the order directly. No additional competition is required at the micro-purchase level.</p>
+        <p><strong>Orders above the MPT:</strong> If you have multiple BPAs, compare pricing among your BPA holders and select the best value. If you only have a single BPA and the order exceeds the MPT, you should still be seeking quotes from other sources if competition is practicable. The BPA doesn't exempt you from competition - it just simplifies the vehicle.</p>
+        <p>Each order must stay within the individual order dollar limitation specified in the BPA (which cannot exceed the SAT). If a single need would exceed that limit, the BPA is the wrong vehicle - you need a contract.</p>
+        <div class="highlight-box tip">
+          <strong>GPC advantage:</strong> Because a BPA is a pre-priced contractual agreement, cardholders authorized under DAFI 64-117 can use their Government Purchase Card for orders above the MPT, up to the SAT. This is the single biggest operational advantage of a BPA - your mission partners can self-serve without generating a contract action for every purchase.
+        </div>
+        <div class="highlight-box warn">
+          <strong>Write an ordering guide.</strong> This is non-negotiable. Your BPA is only as good as the instructions you give the people ordering against it. The ordering guide should include: which vendors are on the BPA, what's covered, dollar limits per order, when and how to compete among BPA holders, what documentation the cardholder needs to retain, and escalation procedures for issues. Hand this to every authorized purchaser. If they can't follow your guide and place a proper order without calling you, rewrite the guide.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Section 7 -->
+    <div class="learn-section">
+      <h3><span class="section-num">7</span> Administering and Reviewing BPAs</h3>
+      <div class="learn-body">
+        <p>BPAs require <strong>annual review</strong> at minimum. During the review, you should:</p>
+        <p><strong>Verify the BPA still represents best value.</strong> Market conditions change. New vendors enter the space. Existing vendors' pricing may no longer be competitive. Don't let a BPA run on autopilot.</p>
+        <p><strong>Check the accuracy of estimated quantities and amounts.</strong> If actual ordering volume is significantly different from your original estimate, the estimated value may need adjustment. This doesn't mean you need a ceiling - it means your planning assumption needs to be realistic.</p>
+        <p><strong>Ensure ordering procedures are being followed.</strong> Are authorized individuals actually following the ordering guide? Are purchases staying within the per-order dollar limit? Is competition happening for orders above the MPT?</p>
+        <p><strong>Consider if additional price discounts or concessions can be obtained.</strong> If ordering volume has been high, you may have leverage to negotiate better pricing. Use it.</p>
+        <div class="highlight-box">
+          <strong>Maintain awareness</strong> of changes in market conditions, sources of supply, and other pertinent factors that may warrant making new agreements with different suppliers or modifying existing agreements. A BPA is a living arrangement, not a set-and-forget document.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Section 8 -->
+    <div class="learn-section">
+      <h3><span class="section-num">8</span> Common Mistakes</h3>
+      <div class="learn-body">
+        <p><strong>Confusing your BPAs with FAR Part 8 BPAs.</strong> FAR Part 8 discusses BPAs, but those are BPAs established <em>by GSA</em> under the Federal Supply Schedule program. When you order off a GSA BPA, you're using pre-established terms that someone else set up. When you establish your own BPA under FAR Part 12, <em>you</em> define the ordering procedures - and you need to write an ordering guide so your authorized users know how to use them. These are completely different animals. Don't cite FAR Part 8 as authority for your locally-developed BPAs.</p>
+        <p><strong>Not writing an ordering guide.</strong> You've spent time establishing the BPA and identifying authorized purchasers. Now what? If you don't give those people clear, written ordering procedures, they won't order correctly - or they won't order at all. Write an ordering guide that spells out exactly how to place an order, what documentation to keep, dollar thresholds, competition requirements, and who to call when things go sideways. The ordering guide <em>is</em> the bridge between your BPA and the mission partner actually using it.</p>
+        <p><strong>Setting a ceiling.</strong> There is no FAR requirement to cap a BPA at a specific dollar amount. People do this because they confuse BPAs with IDIQs. An IDIQ needs a ceiling because it's a contract. A BPA is a charge account - state the estimated value, review annually, and adjust as needed.</p>
+        <p><strong>Treating a BPA like a contract.</strong> A BPA doesn't require the same level of documentation as a contract award. It's established under simplified procedures. Don't over-engineer it with full-blown source selection documentation, elaborate evaluation criteria, or contract-level deliverables. Keep it proportionate to the value and complexity.</p>
+        <p><strong>Forgetting competition at the order level.</strong> Having a BPA doesn't mean you can sole-source every order. For orders above the MPT, you need to ensure maximum practicable competition - either by competing among your multiple BPA holders or by supplementing with additional quotes if you only have one BPA.</p>
+        <p><strong>Not reviewing annually.</strong> BPAs go stale. Pricing drifts. Vendors close. New and better sources appear. The annual review isn't optional - it's how you ensure the BPA still makes sense.</p>
+        <p><strong>Centralizing what should be decentralized.</strong> If you're running every BPA order through the contracting office, you've eliminated the primary advantage of having a BPA in the first place. The whole point is to empower authorized individuals to make their own purchases. Set it up, delegate it, and oversee it. Don't operate it.</p>
+        <div class="highlight-box">
+          <strong>Writer's opinion:</strong> If you're going to keep a BPA centralized (meaning every order still routes through contracting), ask yourself whether you actually need a BPA at all. Standing price quotations might serve you better. Get three quotes and have the vendors hold their pricing for a few weeks or months. You get the same competitive pricing, you skip the BPA establishment process, and you don't have the annual review and administration overhead. A centralized BPA is just a standing price quotation with extra steps. BPAs earn their keep when you <em>decentralize</em> the ordering.
+        </div>
+        <p><strong>Using a BPA when you need a contract.</strong> If individual orders will routinely exceed the SAT, if you need performance guarantees, or if the requirement demands contractual protections, a BPA is the wrong tool. Use an IDIQ or requirements contract instead.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Scenario -->
+    <div class="scenario-box">
+      <div class="scenario-label">Scenario Walkthrough</div>
+      <p>Your base civil engineering squadron keeps submitting purchase requests for <strong>plumbing supplies</strong> - pipes, fittings, valves, sealants. You've processed a dozen individual purchases in the last three months, all from the same two or three local suppliers. Each one is under the SAT, and most are under $10,000. The paperwork is eating your time and the requestors are frustrated by the turnaround.</p>
+      <p><strong>The play:</strong> Establish multiple BPAs with qualified local plumbing suppliers. Contact three or four vendors who have a track record of providing these commodities. Get their catalogs or price lists. Set up the BPA documents - general scope (plumbing supplies and materials), ordering period (one year), authorized purchasers (the CE squadron's GPC cardholders), per-order limit (SAT), and invoicing instructions.</p>
+      <p><strong>The result:</strong> The CE squadron's cardholders can now order plumbing supplies directly from the BPA vendors using their GPCs. Orders above the MPT get competed among the BPA holders - the cardholder checks pricing from all three vendors and buys from the best value source. No PR routed to contracting. No purchase order generated for every box of fittings. You review the BPAs annually to ensure the pricing is still competitive and the vendors are still performing.</p>
+      <p><strong>What you eliminated:</strong> A dozen+ individual contract actions per quarter, replaced by a one-time BPA setup and annual review. Your CE squadron gets their supplies faster, and you get your time back for the work that actually requires a contracting officer.</p>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Interactive Tools -->
+    <div class="highlight-box" style="text-align:center; padding:1.5rem;">
+      <strong style="font-size:1rem;">Interactive Tools</strong>
+      <p style="margin-top:0.5rem;">Use the tabs above: <strong>Establish a BPA</strong> walks you through the setup process. <strong>BPA Review</strong> gives you a printable annual review checklist. <strong>Ordering Guide</strong> generates a ready-to-hand-out ordering guide for your authorized purchasers.</p>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ FILE CHECKLIST ═══════════════ -->
+  <div id="panel-checklist" class="bpa-panel">
+    <h3 style="font-family:'Rajdhani',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);margin-bottom:0.25rem;">BPA Contract File Checklist</h3>
+    <p style="color:var(--silver);font-size:0.88rem;line-height:1.6;margin-bottom:1.5rem;">Track what you need in your file to establish a BPA. Check items off as you complete them.</p>
+    <div id="checklist" style="display:grid;gap:0.85rem;"></div>
+    <div style="display:flex;gap:0.75rem;margin-top:1.5rem;flex-wrap:wrap;align-items:center;">
+      <button class="fc-btn primary" onclick="resetChecklist()">Reset All</button>
+      <span id="fc-progress" style="color:var(--silver);font-size:0.82rem;font-weight:600;"></span>
+    </div>
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="bpa-panel">
+    <h3 style="font-family:'Rajdhani',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);margin-bottom:0.5rem;">Quick Reference Links</h3>
+    <p style="color:var(--silver);font-size:0.9rem;margin-bottom:1rem;line-height:1.6;">BPA-related FAR references, ordering guidance, and related tools.</p>
+
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR 12.2 - Simplified Procedures for Commercial Items</h4>
+        <p>Under the RFO, BPA procedures are now found in FAR Part 12. This subpart covers simplified acquisition of commercial products and services, including BPA establishment and ordering.</p>
+        <a href="https://www.acquisition.gov/far/subpart-12.2" target="_blank" rel="noopener">Read FAR 12.2</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Part 12 Deviation Guide (RFO)</h4>
+        <p>The official RFO deviation guide for FAR Part 12. Explains what changed and where BPA procedures moved from the old FAR 13.303.</p>
+        <a href="https://acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12" target="_blank" rel="noopener">Open Part 12 Deviation Guide</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Government Purchase Cards Training</h4>
+        <p>Our training on GPCs - the primary tool for placing BPA orders. Covers authorities, thresholds, and the connection between BPAs and card purchases above the MPT.</p>
+        <a href="government-purchase-cards.html">View GPC Training</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Delivery Orders vs. Task Orders</h4>
+        <p>Understand the difference between delivery orders (supplies) and task orders (services) - the two types of orders you'll place against a BPA.</p>
+        <a href="delivery-orders-vs-task-orders.html">View Training</a>
+      </div>
+      <div class="lookup-card">
+        <h4>SAM.gov - Entity Search</h4>
+        <p>Verify vendor registrations and check for exclusions before establishing a BPA. Every BPA vendor should have an active SAM registration.</p>
+        <a href="https://sam.gov/search" target="_blank" rel="noopener">Search SAM.gov</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Small Business Set-Asides</h4>
+        <p>The existence of a BPA does not justify avoiding small business set-asides. Small business requirements apply to each order under the BPA.</p>
+        <a href="https://www.acquisition.gov/far/part-19" target="_blank" rel="noopener">Read FAR Part 19</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ ESTABLISH A BPA WIZARD ═══════════════ -->
+  <div id="panel-establish" class="bpa-panel">
+    <h3 style="font-family:'Rajdhani',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);margin-bottom:0.25rem;">Establish a BPA</h3>
+    <p style="color:var(--silver);font-size:0.88rem;line-height:1.6;margin-bottom:1rem;">Use <strong>Learn</strong> to walk through the BPA establishment process with guided selections. Switch to <strong>Do</strong> when you're ready to document a real BPA for your contract file.</p>
+
+    <!-- Sub-tabs -->
+    <div class="est-subtabs">
+      <button class="est-subtab active" data-mode="learn" onclick="estMode(this)">Learn</button>
+      <button class="est-subtab" data-mode="do" onclick="estMode(this)">Do</button>
+    </div>
+
+    <!-- LEARN mode -->
+    <div id="est-learn" class="est-mode active">
+      <div class="wiz-progress" id="wiz-progress"></div>
+      <div id="wiz-steps"></div>
+      <div id="wiz-summary-area" class="wiz-summary"></div>
+    </div>
+
+    <!-- DO mode -->
+    <div id="est-do" class="est-mode">
+      <div id="do-form"></div>
+      <div id="do-output" class="wiz-summary"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ BPA REVIEW ═══════════════ -->
+  <div id="panel-review" class="bpa-panel">
+    <h3 style="font-family:'Rajdhani',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);margin-bottom:0.25rem;">BPA Annual Review Checklist</h3>
+    <p style="color:var(--silver);font-size:0.88rem;line-height:1.6;margin-bottom:1.25rem;">Complete this checklist during your annual BPA review. Print the completed form for your contract file.</p>
+
+    <div id="rev-form">
+      <!-- Header info -->
+      <div class="do-section">
+        <h4>BPA Identification</h4>
+        <div class="do-row"><label>BPA Number</label><input type="text" id="rev_number" placeholder="e.g., FA1234-26-A-0001"></div>
+        <div class="do-row"><label>BPA Title / Description</label><input type="text" id="rev_title" placeholder="e.g., Plumbing Supplies - ABC Plumbing Supply"></div>
+        <div class="do-row"><label>Vendor Name</label><input type="text" id="rev_vendor" placeholder="Full legal business name"></div>
+        <div class="do-row"><label>Date of Review</label><input type="text" id="rev_date" placeholder="e.g., 30 Mar 2026"></div>
+        <div class="do-row"><label>Reviewer Name / Title</label><input type="text" id="rev_reviewer" placeholder="e.g., SSgt Smith, Contract Specialist"></div>
+        <div class="do-row"><label>Review Period Covered</label><input type="text" id="rev_period" placeholder="e.g., 1 Apr 2025 - 31 Mar 2026"></div>
+      </div>
+
+      <!-- Review checklist -->
+      <div class="do-section">
+        <h4>Review Items</h4>
+        <div id="rev-checklist" style="display:grid;gap:0.75rem;"></div>
+      </div>
+
+      <!-- Findings -->
+      <div class="do-section">
+        <h4>Findings and Recommendations</h4>
+        <div class="do-row"><label>Overall assessment</label>
+          <div style="display:flex;gap:0.6rem;flex-wrap:wrap;" id="rev-assess">
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 1rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="continue" style="display:none;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">Continue BPA as-is</span>
+            </label>
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 1rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="modify" style="display:none;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">Continue with modifications</span>
+            </label>
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 1rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="discontinue" style="display:none;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">Discontinue BPA</span>
+            </label>
+          </div>
+        </div>
+        <div class="do-row"><label>Notes / action items</label><textarea id="rev_notes" rows="4" placeholder="Document any findings, corrective actions needed, or recommendations for the next review period."></textarea></div>
+      </div>
+
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;">
+        <button class="wiz-btn wiz-btn-next" onclick="revGenerate()">Generate Review Record</button>
+        <button class="wiz-btn wiz-btn-back" onclick="revClear()">Clear All</button>
+      </div>
+    </div>
+
+    <div id="rev-output" class="wiz-summary"></div>
+  </div>
+
+  <!-- ═══════════════ ORDERING GUIDE CREATOR ═══════════════ -->
+  <div id="panel-orderguide" class="bpa-panel">
+    <h3 style="font-family:'Rajdhani',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);margin-bottom:0.25rem;">Ordering Guide Creator</h3>
+    <p style="color:var(--silver);font-size:0.88rem;line-height:1.6;margin-bottom:1.25rem;">Build an ordering guide to hand to your authorized purchasers. Make your selections, fill in the details, and generate a ready-to-use document.</p>
+
+    <div id="og-inputs">
+      <!-- Section 1: BPA Info -->
+      <div class="do-section">
+        <h4>1. BPA Information</h4>
+        <div class="do-row"><label>BPA Title</label><input type="text" id="og_title" placeholder="e.g., Plumbing Supplies BPA"></div>
+        <div class="do-row"><label>BPA Number(s)</label><textarea id="og_numbers" rows="2" placeholder="List all BPA numbers, one per line. For multiple award, list each vendor's BPA number."></textarea></div>
+        <div class="do-row"><label>Ordering Period</label><input type="text" id="og_period" placeholder="e.g., 1 Apr 2026 - 31 Mar 2027"></div>
+        <div class="do-row"><label>General Scope</label><input type="text" id="og_scope" placeholder="e.g., Plumbing supplies, materials, and related hardware"></div>
+      </div>
+
+      <!-- Section 2: Award Type -->
+      <div class="do-section">
+        <h4>2. Award Structure</h4>
+        <div class="do-row"><label>Award type</label>
+          <div class="wiz-radio-group" data-field="og_award" style="flex-wrap:wrap;">
+            <div class="wiz-radio" data-value="single" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">Single Award</span></div>
+            <div class="wiz-radio" data-value="multiple" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">Multiple Award</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Vendors -->
+      <div class="do-section">
+        <h4>3. BPA Vendors</h4>
+        <p style="color:var(--silver);font-size:0.82rem;margin-bottom:0.75rem;">List each vendor on the BPA. Add rows as needed.</p>
+        <div id="og-vendor-list" style="display:grid;gap:0.5rem;"></div>
+        <button class="fc-btn" onclick="ogAddVendor()" style="margin-top:0.75rem;font-size:0.8rem;">+ Add Vendor</button>
+      </div>
+
+      <!-- Section 4: Who Can Order -->
+      <div class="do-section">
+        <h4>4. Authorized Purchasers</h4>
+        <div class="do-row"><label>Who is authorized to order?</label>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;" data-field="og_who">
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 0.9rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="gpc" style="display:none;"><span class="wiz-radio-label" style="font-size:0.82rem;">GPC Cardholders</span></label>
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 0.9rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="co" style="display:none;"><span class="wiz-radio-label" style="font-size:0.82rem;">Contracting Officers</span></label>
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 0.9rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="oo" style="display:none;"><span class="wiz-radio-label" style="font-size:0.82rem;">Ordering Officers</span></label>
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 0.9rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="unit" style="display:none;"><span class="wiz-radio-label" style="font-size:0.82rem;">Designated Unit Personnel</span></label>
+          </div>
+        </div>
+        <div class="do-row"><label>Authorized purchaser list location</label>
+          <div class="wiz-radio-group" data-field="og_list_loc" style="flex-wrap:wrap;">
+            <div class="wiz-radio" data-value="attached" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">Attached to this guide</span></div>
+            <div class="wiz-radio" data-value="bpa" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">In the BPA document</span></div>
+            <div class="wiz-radio" data-value="separate" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">Maintained separately by CO</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5: How to Order -->
+      <div class="do-section">
+        <h4>5. Ordering Method</h4>
+        <div class="do-row"><label>How are orders placed?</label>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;" data-field="og_how">
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 0.9rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="gpc" style="display:none;"><span class="wiz-radio-label" style="font-size:0.82rem;">GPC at point of sale</span></label>
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 0.9rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="phone" style="display:none;"><span class="wiz-radio-label" style="font-size:0.82rem;">Phone</span></label>
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 0.9rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="email" style="display:none;"><span class="wiz-radio-label" style="font-size:0.82rem;">Email</span></label>
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 0.9rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="portal" style="display:none;"><span class="wiz-radio-label" style="font-size:0.82rem;">Vendor website/portal</span></label>
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 0.9rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="walkin" style="display:none;"><span class="wiz-radio-label" style="font-size:0.82rem;">Walk-in / in person</span></label>
+          </div>
+        </div>
+        <div class="do-row"><label>Payment method</label>
+          <div class="wiz-radio-group" data-field="og_payment" style="flex-wrap:wrap;">
+            <div class="wiz-radio" data-value="gpc" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">GPC only</span></div>
+            <div class="wiz-radio" data-value="gpc_invoice" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">GPC or vendor invoice</span></div>
+            <div class="wiz-radio" data-value="invoice" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">Vendor invoice only</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 6: Thresholds -->
+      <div class="do-section">
+        <h4>6. Dollar Thresholds</h4>
+        <div class="do-row"><label>Per-order dollar limit</label>
+          <div class="wiz-radio-group" data-field="og_limit" style="flex-wrap:wrap;">
+            <div class="wiz-radio" data-value="mpt" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">MPT</span></div>
+            <div class="wiz-radio" data-value="25k" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">$25,000</span></div>
+            <div class="wiz-radio" data-value="50k" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">$50,000</span></div>
+            <div class="wiz-radio" data-value="100k" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">$100,000</span></div>
+            <div class="wiz-radio" data-value="sat" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">SAT ($250,000)</span></div>
+          </div>
+        </div>
+        <div class="do-row"><label>Competition approach for orders above the MPT</label>
+          <div class="wiz-radio-group" data-field="og_comp" style="flex-wrap:wrap;">
+            <div class="wiz-radio" data-value="compare" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">Compare pricing among BPA vendors</span></div>
+            <div class="wiz-radio" data-value="rotate" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">Rotate among BPA vendors with periodic price checks</span></div>
+            <div class="wiz-radio" data-value="additional" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">
+              <span class="wiz-radio-label" style="font-size:0.84rem;">Seek additional quotes beyond BPA vendors</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 7: Documentation -->
+      <div class="do-section">
+        <h4>7. Documentation Requirements</h4>
+        <div class="do-row"><label>What must the purchaser document for each order?</label>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;" data-field="og_docs">
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 0.9rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="log" style="display:none;"><span class="wiz-radio-label" style="font-size:0.82rem;">Order log entry</span></label>
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 0.9rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="receipt" style="display:none;"><span class="wiz-radio-label" style="font-size:0.82rem;">Receipt / transaction record</span></label>
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 0.9rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="comp" style="display:none;"><span class="wiz-radio-label" style="font-size:0.82rem;">Competition record (above MPT)</span></label>
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 0.9rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="delivery" style="display:none;"><span class="wiz-radio-label" style="font-size:0.82rem;">Delivery confirmation</span></label>
+            <label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 0.9rem;cursor:pointer;" onclick="wizCheck(this)">
+              <input type="checkbox" value="invoice" style="display:none;"><span class="wiz-radio-label" style="font-size:0.82rem;">Invoice copy</span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 8: POCs -->
+      <div class="do-section">
+        <h4>8. Points of Contact</h4>
+        <div class="do-row"><label>Contracting Officer</label><input type="text" id="og_co" placeholder="Name, phone, email"></div>
+        <div class="do-row"><label>Contracting Specialist (if different)</label><input type="text" id="og_cs" placeholder="Name, phone, email"></div>
+        <div class="do-row"><label>Unit Point of Contact</label><input type="text" id="og_unit_poc" placeholder="Name, phone, email"></div>
+      </div>
+
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;">
+        <button class="wiz-btn wiz-btn-next" onclick="ogGenerate()">Generate Ordering Guide</button>
+        <button class="wiz-btn wiz-btn-back" onclick="ogClear()">Clear All</button>
+      </div>
+    </div>
+
+    <div id="og-output" class="wiz-summary"></div>
+  </div>
+
+</div><!-- /bpa-bg -->
+
+<div class="training-nav-band"><div id="training-nav" class="training-nav"></div></div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ - Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ═══════════════════════════════════ TABS ═══ */
+document.querySelectorAll('.bpa-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.bpa-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.bpa-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ═══════════════════════════════════ FILE CHECKLIST ═══ */
+const checklistItems = [
+  { label: "Market Research / Vendor Identification", desc: "Evidence you identified qualified sources - vendor catalogs, price lists, past purchase history, or SAM.gov searches confirming active registrations." },
+  { label: "Competition Documentation", desc: "For single award: evaluation of competitive pricing. For multiple award: rationale for selected vendors and how order-level competition will be ensured." },
+  { label: "BPA Agreement Document", desc: "The actual BPA - includes scope description, ordering period, per-order dollar limit, authorized purchasers, invoicing instructions, and applicable clauses." },
+  { label: "Statement of Government Obligation", desc: "Language stating the Government is obligated only to the extent of authorized purchases actually made under the BPA." },
+  { label: "List of Authorized Individuals", desc: "Names and contact info for everyone authorized to place orders or make purchases under this BPA. Include their dollar authority limits." },
+  { label: "Ordering Procedures", desc: "How orders are placed - phone, email, online portal. Include any limitations, required approvals, or documentation requirements for each order." },
+  { label: "Applicable Clauses", desc: "Clauses required under FAR 12.205(b) for commercial item acquisitions. Attach as a separate document if needed." },
+  { label: "Estimated Value", desc: "The anticipated total ordering volume for the BPA period. This is an estimate for planning purposes - not a ceiling." },
+  { label: "Small Business Considerations", desc: "Documentation that small business set-aside requirements were considered. BPA existence does not exempt you from small business obligations." },
+  { label: "Annual Review Schedule", desc: "Note the date for the first annual review. Set a calendar reminder - BPAs must be reviewed at least annually to ensure procedures are followed and pricing remains competitive." }
+];
+
+function buildChecklist() {
+  var el = document.getElementById('checklist');
+  el.innerHTML = checklistItems.map(function(item, i) {
+    return '<label style="display:flex;gap:1rem;align-items:flex-start;padding:1.1rem 1.25rem;background:rgba(10,22,50,0.7);border:1px solid rgba(74,158,255,0.12);border-radius:12px;cursor:pointer;transition:all 0.18s;" onmouseenter="this.style.borderColor=\'rgba(74,158,255,0.3)\'" onmouseleave="this.style.borderColor=this.querySelector(\'input\').checked?\'rgba(52,211,153,0.35)\':\'rgba(74,158,255,0.12)\'">' +
+      '<input type="checkbox" data-idx="' + i + '" style="margin-top:3px;width:18px;height:18px;accent-color:#34d399;flex-shrink:0;cursor:pointer;" onchange="updateChecklist()">' +
+      '<div><strong style="color:var(--white);font-size:0.95rem;">' + item.label + '</strong><div style="color:var(--silver);font-size:0.84rem;line-height:1.55;margin-top:0.25rem;">' + item.desc + '</div></div>' +
+    '</label>';
+  }).join('');
+  updateChecklist();
+}
+
+function updateChecklist() {
+  var boxes = document.querySelectorAll('#checklist input[type=checkbox]');
+  var done = 0;
+  boxes.forEach(function(b) {
+    if (b.checked) { done++; b.closest('label').style.borderColor = 'rgba(52,211,153,0.35)'; }
+    else { b.closest('label').style.borderColor = 'rgba(74,158,255,0.12)'; }
+  });
+  var prog = document.getElementById('fc-progress');
+  if (prog) prog.textContent = done + ' / ' + boxes.length + ' complete';
+}
+
+function resetChecklist() {
+  document.querySelectorAll('#checklist input[type=checkbox]').forEach(function(b) { b.checked = false; });
+  updateChecklist();
+}
+
+buildChecklist();
+
+/* ═══════════════════════════════════ ESTABLISH A BPA WIZARD ═══ */
+(function() {
+  /* ── Step definitions ── */
+  var STEPS = [
+    { id:'need', label:'1. Need', title:'What Are You Buying?',
+      desc:'Pick the category that best describes your recurring need. BPAs work best for commercial supplies and services you buy over and over.',
+      fields:[
+        { id:'category', label:'Supply/service category', type:'pick', options:[
+          'Office supplies & equipment','IT peripherals & accessories','Maintenance & repair supplies','Janitorial & custodial supplies',
+          'Vehicle parts & maintenance','Building materials & hardware','Plumbing supplies','Electrical supplies',
+          'Printing & reproduction','Grounds maintenance services','Pest control services','Equipment rental',
+          'Training & education services','Medical & dental supplies','Fuels & lubricants','Other (describe below)']},
+        { id:'category_other', label:'If "Other," describe briefly:', type:'text', showIf:function(d){return d.category==='Other (describe below)';} },
+        { id:'frequency', label:'How often do you buy this?', type:'pick', options:[
+          'Multiple times per week','Weekly','A few times per month','Monthly','A few times per quarter','Quarterly or less']},
+        { id:'current_method', label:'How are you buying it now?', type:'pick', options:[
+          'Individual purchase orders through contracting','GPC micro-purchases only','Mix of POs and GPC','Standing price quotations','No established method']},
+        { id:'why_bpa', label:'What problem does the BPA solve?', type:'check', options:[
+          'Contracting office is a bottleneck for routine buys','Requestors frustrated by turnaround time',
+          'Same vendors keep winning individual competitions','Want to empower end users to buy with GPC',
+          'Need to consolidate volume for better pricing','Too many individual contract actions per quarter']}
+      ]
+    },
+    { id:'strategy', label:'2. Strategy', title:'Single or Multiple Award?',
+      desc:'This determines how you structure competition. Pick your approach and the tool will tailor the rest of the walkthrough.',
+      fields:[
+        { id:'award_type', label:'Award approach', type:'pick2', options:[
+          { value:'single', label:'Single Award', desc:'One BPA, one vendor. Best for integrated needs, standardization, or when one vendor clearly dominates.' },
+          { value:'multiple', label:'Multiple Award', desc:'BPAs with several vendors. Orders above the MPT get competed among BPA holders. Best for commodities.' }]},
+        { id:'vendor_count', label:'How many vendors?', type:'pick', options:['1','2','3','4','5','6+'],
+          showIf:function(d){return d.award_type==='multiple';}},
+        { id:'competition_approach', label:'Competition approach', type:'pick2', options:[
+          { value:'bpa_level', label:'Competed at BPA level', desc:'Post the requirement, evaluate, and award to best value. Good for single award.' },
+          { value:'order_level', label:'Competed at order level', desc:'Establish BPAs with qualified vendors, then compete individual orders above the MPT among BPA holders.' },
+          { value:'both', label:'Both', desc:'Compete the BPA establishment AND compete individual orders among holders.' }]}
+      ]
+    },
+    { id:'research', label:'3. Research', title:'Market Research',
+      desc:'How did you find your vendors? Check everything that applies.',
+      fields:[
+        { id:'research_methods', label:'Research methods used', type:'check', options:[
+          'SAM.gov entity search','Reviewed past purchase history','Obtained vendor catalogs or price lists',
+          'Industry outreach / sources sought','Checked GSA Advantage','Consulted other contracting offices',
+          'Online market research','Vendor site visits','Trade publications or industry events']},
+        { id:'sb_status', label:'Small business mix', type:'pick', options:[
+          'All small business','Majority small business','Mix of small and large','All large business','Not yet determined']},
+        { id:'sb_categories', label:'Socioeconomic categories represented (check all that apply)', type:'check', options:[
+          'Small Business','Small Disadvantaged Business (SDB)','Women-Owned Small Business (WOSB)',
+          'HUBZone','Service-Disabled Veteran-Owned (SDVOSB)','8(a)','None / Not applicable'],
+          showIf:function(d){return d.sb_status && d.sb_status!=='All large business' && d.sb_status!=='Not yet determined';}}
+      ]
+    },
+    { id:'terms', label:'4. Terms', title:'BPA Agreement Terms',
+      desc:'Set the key terms for your BPA document. Remember: no ceiling, no options. The BPA stays active as long as it serves the mission.',
+      fields:[
+        { id:'scope', label:'General scope (short description)', type:'text', placeholder:'e.g., Plumbing supplies, materials, and related hardware for facility maintenance' },
+        { id:'period', label:'Ordering period', type:'pick', options:['6 months','1 year','2 years','3 years','5 years']},
+        { id:'order_limit', label:'Per-order dollar limit', type:'pick', options:[
+          'Micro-purchase threshold (MPT)','$25,000','$50,000','$100,000','$250,000 (SAT)']},
+        { id:'est_annual', label:'Estimated annual value', type:'pick', options:[
+          'Under $10,000','$10,000 - $25,000','$25,000 - $50,000','$50,000 - $100,000',
+          '$100,000 - $250,000','Over $250,000']},
+        { id:'invoicing', label:'Invoicing method', type:'pick', options:[
+          'Per order','Weekly consolidated','Monthly consolidated','Quarterly consolidated']},
+        { id:'delivery', label:'Primary delivery method', type:'pick', options:[
+          'Vendor delivers to location','Customer picks up','Shipped via carrier','Electronic delivery','Mix of methods']}
+      ]
+    },
+    { id:'ordering', label:'5. Ordering', title:'Who Orders and How?',
+      desc:'Define who can place orders and what they need to do. This is the heart of making the BPA work.',
+      fields:[
+        { id:'who_orders', label:'Who will place orders?', type:'check', options:[
+          'GPC cardholders','Contracting officers','Ordering officers (with warrant)','Designated unit personnel','CORs / program managers']},
+        { id:'order_method', label:'How are orders placed?', type:'check', options:[
+          'Government Purchase Card (GPC)','Phone call to vendor','Email to vendor','Vendor website/portal',
+          'In-person / walk-in','Purchase order (SF 1449 or equivalent)']},
+        { id:'above_mpt', label:'For orders above the MPT, how is competition handled?', type:'pick2', options:[
+          { value:'compare_bpa', label:'Compare among BPA holders', desc:'Get pricing from multiple BPA vendors and select best value. Standard for multiple award BPAs.' },
+          { value:'additional_quotes', label:'Seek additional quotes', desc:'If single BPA, solicit quotes from other sources to ensure competition.' },
+          { value:'rotating', label:'Rotate among BPA holders', desc:'Distribute orders among vendors, with periodic price checks.' }],
+          showIf:function(d){return d.award_type==='multiple' || d.competition_approach==='order_level' || d.competition_approach==='both';}},
+        { id:'docs_required', label:'Documentation each orderer must keep', type:'check', options:[
+          'Order log (date, vendor, items, amount)','GPC transaction receipt','Competition record (above MPT)',
+          'Delivery confirmation','Vendor invoice copy','None beyond normal GPC records']}
+      ]
+    },
+    { id:'admin', label:'6. Review', title:'Ongoing Administration',
+      desc:'BPAs need at least an annual review. Set up your review plan.',
+      fields:[
+        { id:'review_freq', label:'Review frequency', type:'pick', options:['Quarterly','Semi-annually','Annually (minimum required)']},
+        { id:'review_items', label:'What to check during review', type:'check', options:[
+          'Pricing still competitive vs. current market','Ordering volume vs. estimates',
+          'Authorized purchasers following procedures','Vendor performance and delivery times',
+          'Small business goals being met','Need to add or remove vendors',
+          'Ordering guide still accurate','Any unauthorized purchases or misuse']},
+        { id:'oversight', label:'Who oversees the BPA day-to-day?', type:'pick', options:[
+          'Assigned contracting officer','Contracting specialist','Unit resource advisor',
+          'Squadron superintendent / first sergeant','Shared responsibility (CO + unit POC)']},
+        { id:'notes', label:'Additional notes (optional)', type:'textarea', placeholder:'Anything else relevant to your BPA setup.' }
+      ]
+    }
+  ];
+
+  var currentStep = 0;
+  var wizData = {};
+
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  function shouldShow(field) {
+    if (!field.showIf) return true;
+    return field.showIf(wizData);
+  }
+
+  function saveStep() {
+    var step = STEPS[currentStep];
+    if (!step) return;
+    step.fields.forEach(function(f) {
+      if (!shouldShow(f)) return;
+      if (f.type === 'check') {
+        var checked = [];
+        document.querySelectorAll('[data-field="'+f.id+'"] input:checked').forEach(function(cb) { checked.push(cb.value); });
+        wizData[f.id] = checked;
+      } else if (f.type === 'pick' || f.type === 'pick2') {
+        var sel = document.querySelector('[data-field="'+f.id+'"] .wiz-radio.selected');
+        wizData[f.id] = sel ? sel.dataset.value : (wizData[f.id] || '');
+      } else {
+        var el = document.getElementById('wiz-'+f.id);
+        if (el) wizData[f.id] = el.value;
+      }
+    });
+  }
+
+  function render() {
+    var area = document.getElementById('wiz-steps');
+    var sumArea = document.getElementById('wiz-summary-area');
+    sumArea.classList.remove('visible');
+    sumArea.innerHTML = '';
+
+    // Progress bar
+    var prog = document.getElementById('wiz-progress');
+    prog.innerHTML = STEPS.map(function(s,i) {
+      var cls = 'wiz-step-dot';
+      if (i === currentStep) cls += ' active';
+      else if (i < currentStep) cls += ' done';
+      return '<div class="'+cls+'" data-idx="'+i+'">'+s.label+'</div>';
+    }).join('');
+    prog.querySelectorAll('.wiz-step-dot').forEach(function(dot) {
+      dot.addEventListener('click', function() {
+        var t = parseInt(dot.dataset.idx);
+        if (t <= currentStep) { saveStep(); currentStep = t; render(); }
+      });
+    });
+
+    if (currentStep >= STEPS.length) { area.innerHTML = ''; renderSummary(); return; }
+
+    var step = STEPS[currentStep];
+    var h = '<div class="wiz-card"><h3>'+step.title+'</h3><p class="wiz-subtitle">'+step.desc+'</p>';
+
+    step.fields.forEach(function(f) {
+      if (!shouldShow(f)) return;
+      h += '<div class="wiz-field" data-field="'+f.id+'">';
+      h += '<label>'+f.label+'</label>';
+
+      if (f.type === 'pick') {
+        h += '<div class="wiz-radio-group" style="flex-wrap:wrap;">';
+        f.options.forEach(function(opt) {
+          var sel = wizData[f.id] === opt;
+          h += '<div class="wiz-radio'+(sel?' selected':'')+'" data-value="'+esc(opt)+'" onclick="wizPick(this)" style="min-width:auto;flex:0 1 auto;padding:0.6rem 1rem;">';
+          h += '<span class="wiz-radio-label" style="font-size:0.84rem;">'+esc(opt)+'</span></div>';
+        });
+        h += '</div>';
+      }
+      else if (f.type === 'pick2') {
+        h += '<div class="wiz-radio-group">';
+        f.options.forEach(function(opt) {
+          var sel = wizData[f.id] === opt.value;
+          h += '<div class="wiz-radio'+(sel?' selected':'')+'" data-value="'+esc(opt.value)+'" onclick="wizPick(this)">';
+          h += '<div><div class="wiz-radio-label">'+opt.label+'</div><div class="wiz-radio-desc">'+opt.desc+'</div></div></div>';
+        });
+        h += '</div>';
+      }
+      else if (f.type === 'check') {
+        h += '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;">';
+        var cur = wizData[f.id] || [];
+        f.options.forEach(function(opt) {
+          var chk = cur.indexOf(opt) !== -1;
+          h += '<label class="wiz-radio" style="min-width:auto;flex:0 1 auto;padding:0.55rem 0.9rem;cursor:pointer;'+(chk?'border-color:var(--accent);background:rgba(74,158,255,0.06);':'')+'" onclick="wizCheck(this)">';
+          h += '<input type="checkbox" value="'+esc(opt)+'" style="display:none;"'+(chk?' checked':'')+'>';
+          h += '<span class="wiz-radio-label" style="font-size:0.82rem;">'+esc(opt)+'</span></label>';
+        });
+        h += '</div>';
+      }
+      else if (f.type === 'textarea') {
+        h += '<textarea id="wiz-'+f.id+'" rows="3" placeholder="'+(f.placeholder?esc(f.placeholder):'')+'">'+(wizData[f.id]||'')+'</textarea>';
+      }
+      else {
+        h += '<input type="text" id="wiz-'+f.id+'" value="'+esc(wizData[f.id]||'')+'" placeholder="'+(f.placeholder?esc(f.placeholder):'')+'">';
+      }
+      h += '</div>';
+    });
+
+    h += '<div class="wiz-nav">';
+    h += currentStep > 0 ? '<button class="wiz-btn wiz-btn-back" onclick="wizGo(-1)">Back</button>' : '<span></span>';
+    h += '<button class="wiz-btn wiz-btn-next" onclick="wizGo(1)">'+(currentStep===STEPS.length-1?'View Summary':'Next Step')+'</button>';
+    h += '</div></div>';
+
+    area.innerHTML = h;
+  }
+
+  function renderSummary() {
+    var el = document.getElementById('wiz-summary-area');
+    var h = '<div class="wiz-card">';
+    h += '<h3>BPA Establishment Summary</h3>';
+    h += '<p class="wiz-subtitle">Review your selections below. Print or save as PDF for your contract file.</p>';
+    h += '<div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;">';
+    h += '<button class="wiz-btn wiz-btn-next" onclick="window.print()">Print / Save as PDF</button>';
+    h += '<button class="wiz-btn wiz-btn-back" onclick="wizGo(-99)">Edit Responses</button>';
+    h += '<button class="wiz-btn wiz-btn-back" onclick="wizDoReset()" style="border-color:rgba(248,113,113,0.3);color:#fca5a5;">Start Over</button>';
+    h += '</div>';
+
+    STEPS.forEach(function(step) {
+      h += '<div class="wiz-summary-section"><h4>'+step.title+'</h4>';
+      step.fields.forEach(function(f) {
+        if (!shouldShow(f)) return;
+        var val = wizData[f.id];
+        var display = '';
+        if (Array.isArray(val) && val.length) display = val.join(', ');
+        else if (f.type === 'pick2' && val) {
+          var match = f.options.find(function(o){return o.value===val;});
+          display = match ? match.label : val;
+        }
+        else if (val) display = esc(val);
+        else display = '<span style="color:rgba(248,113,113,0.7);font-style:italic;">Not selected</span>';
+
+        h += '<div class="wiz-summary-row"><span class="wiz-summary-label">'+f.label+'</span><span class="wiz-summary-value">'+display+'</span></div>';
+      });
+      h += '</div>';
+    });
+    h += '</div>';
+    el.innerHTML = h;
+    el.classList.add('visible');
+    document.querySelectorAll('.wiz-step-dot').forEach(function(d){d.classList.remove('active');d.classList.add('done');});
+  }
+
+  window.wizPick = function(el) {
+    var group = el.parentElement;
+    group.querySelectorAll('.wiz-radio').forEach(function(r){r.classList.remove('selected');});
+    el.classList.add('selected');
+    // Save immediately so conditional fields update
+    var fieldDiv = el.closest('[data-field]');
+    if (fieldDiv) {
+      wizData[fieldDiv.dataset.field] = el.dataset.value;
+      // Re-render to show/hide conditional fields
+      saveStep();
+      render();
+    }
+  };
+
+  window.wizCheck = function(lbl) {
+    var cb = lbl.querySelector('input');
+    // Toggle happens naturally, style it
+    setTimeout(function() {
+      if (cb.checked) {
+        lbl.style.borderColor = 'var(--accent)';
+        lbl.style.background = 'rgba(74,158,255,0.06)';
+      } else {
+        lbl.style.borderColor = 'rgba(74,158,255,0.12)';
+        lbl.style.background = 'rgba(4,13,31,0.6)';
+      }
+    }, 10);
+  };
+
+  window.wizGo = function(dir) {
+    saveStep();
+    if (dir === -99) { currentStep = 0; }
+    else { currentStep += dir; }
+    if (currentStep < 0) currentStep = 0;
+    if (currentStep > STEPS.length) currentStep = STEPS.length;
+    render();
+    window.scrollTo({top: document.getElementById('wiz-progress').offsetTop - 60, behavior:'smooth'});
+  };
+
+  window.wizDoReset = function() {
+    if (!confirm('Start over? This clears all selections.')) return;
+    wizData = {};
+    currentStep = 0;
+    render();
+  };
+
+  // Init on tab show
+  var inited = false;
+  var p = document.getElementById('panel-establish');
+  if (p) {
+    new MutationObserver(function(){
+      if (p.classList.contains('active') && !inited) { inited=true; render(); }
+    }).observe(p, {attributes:true, attributeFilter:['class']});
+    if (p.classList.contains('active')) { inited=true; render(); }
+  }
+})();
+
+/* ═══════════════════════════════════ SUB-TAB TOGGLE ═══ */
+window.estMode = function(btn) {
+  document.querySelectorAll('.est-subtab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.est-mode').forEach(function(m){m.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('est-'+btn.dataset.mode).classList.add('active');
+  if (btn.dataset.mode === 'do' && !window._doInited) {
+    window._doInited = true;
+    buildDoForm();
+  }
+};
+
+/* ═══════════════════════════════════ DO MODE ═══ */
+(function() {
+  var DO_FIELDS = [
+    { section:'BPA Identification', fields:[
+      { id:'do_title', label:'BPA Title', placeholder:'e.g., BPA for Plumbing Supplies - ABC Plumbing Supply' },
+      { id:'do_number', label:'BPA Number', placeholder:'e.g., FA1234-26-A-0001' },
+      { id:'do_vendor', label:'Vendor Name', placeholder:'Full legal business name' },
+      { id:'do_cage', label:'CAGE Code', placeholder:'e.g., 1ABC2' },
+      { id:'do_duns', label:'UEI Number', placeholder:'12-character UEI from SAM.gov' }
+    ]},
+    { section:'Scope and Terms', fields:[
+      { id:'do_scope', label:'General Scope Description', type:'textarea', placeholder:'Describe in general terms the supplies/services the vendor will furnish.' },
+      { id:'do_period', label:'Ordering Period', placeholder:'e.g., 1 year from date of establishment' },
+      { id:'do_limit', label:'Per-Order Dollar Limitation', placeholder:'e.g., $250,000 (SAT)', hint:'Cannot exceed the SAT.' },
+      { id:'do_estimate', label:'Estimated Annual Value', placeholder:'e.g., $35,000 - $50,000', hint:'This is a planning estimate, not a ceiling.' }
+    ]},
+    { section:'Ordering Procedures', fields:[
+      { id:'do_authorized', label:'Authorized Individuals', type:'textarea', placeholder:'List names, roles, and dollar authority of individuals authorized to place orders.', hint:'Include GPC cardholders if applicable.' },
+      { id:'do_ordering', label:'How Orders Are Placed', type:'textarea', placeholder:'Describe the ordering process: phone, email, GPC, vendor portal, etc.' },
+      { id:'do_above_mpt', label:'Competition Procedures (Orders Above MPT)', type:'textarea', placeholder:'How competition is handled for orders above the micro-purchase threshold.' },
+      { id:'do_docs', label:'Documentation Requirements', type:'textarea', placeholder:'What documentation must each orderer retain? Order logs, receipts, competition records, etc.' }
+    ]},
+    { section:'Invoicing and Delivery', fields:[
+      { id:'do_invoicing', label:'Invoicing Instructions', type:'textarea', placeholder:'How and when the vendor invoices. Include billing office address or email.' },
+      { id:'do_delivery', label:'Delivery/Shipment Requirements', placeholder:'e.g., Deliver to Bldg 100 Warehouse, M-F 0700-1600' }
+    ]},
+    { section:'Government Obligation', fields:[
+      { id:'do_obligation', label:'Statement of Government Obligation', type:'textarea',
+        placeholder:'The Government is obligated only to the extent of authorized purchases actually made under this BPA.',
+        prefill:'The Government is obligated only to the extent of authorized purchases actually made under this BPA. No minimum quantity or dollar amount is guaranteed. This BPA does not obligate any funds.' }
+    ]},
+    { section:'Applicable Clauses', fields:[
+      { id:'do_clauses', label:'Applicable Clauses (FAR 12.205(b))', type:'textarea', placeholder:'List applicable clauses or reference an attachment.', hint:'Clauses may be included as a separate attachment.' }
+    ]},
+    { section:'Administration', fields:[
+      { id:'do_review', label:'Review Schedule', placeholder:'e.g., Annual review on BPA anniversary date' },
+      { id:'do_co', label:'Contracting Officer', placeholder:'Name, phone, email' },
+      { id:'do_poc', label:'Unit Point of Contact', placeholder:'Name, phone, email' },
+      { id:'do_sb', label:'Small Business Considerations', type:'textarea', placeholder:'Note small business status of vendor, any set-aside considerations.' }
+    ]}
+  ];
+
+  window.buildDoForm = function() {
+    var form = document.getElementById('do-form');
+    var h = '';
+
+    DO_FIELDS.forEach(function(sec) {
+      h += '<div class="do-section"><h4>'+sec.section+'</h4>';
+      sec.fields.forEach(function(f) {
+        h += '<div class="do-row">';
+        h += '<label for="'+f.id+'">'+f.label+'</label>';
+        if (f.hint) h += '<div class="do-hint">'+f.hint+'</div>';
+        if (f.type === 'textarea') {
+          h += '<textarea id="'+f.id+'" rows="3" placeholder="'+(f.placeholder||'')+'">'+(f.prefill||'')+'</textarea>';
+        } else {
+          h += '<input type="text" id="'+f.id+'" placeholder="'+(f.placeholder||'')+'" value="'+(f.prefill||'')+'">';
+        }
+        h += '</div>';
+      });
+      h += '</div>';
+    });
+
+    h += '<div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;">';
+    h += '<button class="wiz-btn wiz-btn-next" onclick="doGenerate()">Generate Summary</button>';
+    h += '<button class="wiz-btn wiz-btn-back" onclick="doClear()">Clear All</button>';
+    h += '</div>';
+
+    form.innerHTML = h;
+  };
+
+  window.doGenerate = function() {
+    var out = document.getElementById('do-output');
+    var h = '<div class="wiz-card">';
+    h += '<h3 style="text-align:center;margin-bottom:0.25rem;">BPA Establishment Record</h3>';
+    h += '<p style="text-align:center;color:var(--silver);font-size:0.82rem;margin-bottom:1.5rem;">For inclusion in the contract file. Print or save as PDF.</p>';
+    h += '<div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;justify-content:center;">';
+    h += '<button class="wiz-btn wiz-btn-next" onclick="window.print()">Print / Save as PDF</button>';
+    h += '</div>';
+
+    DO_FIELDS.forEach(function(sec) {
+      h += '<div class="wiz-summary-section do-print-section"><h4>'+sec.section+'</h4>';
+      sec.fields.forEach(function(f) {
+        var el = document.getElementById(f.id);
+        var val = el ? el.value.trim() : '';
+        var display = val ? val.replace(/\n/g,'<br>') : '<span style="color:rgba(148,163,184,0.4);font-style:italic;">(blank)</span>';
+        h += '<div class="wiz-summary-row"><span class="wiz-summary-label do-print-label">'+f.label+'</span><span class="wiz-summary-value do-print-value">'+display+'</span></div>';
+      });
+      h += '</div>';
+    });
+
+    // Signature block
+    h += '<div class="sig-block">';
+    h += '<div class="sig-line">&nbsp;</div><br>';
+    h += '<div class="sig-label">Contracting Officer Signature</div><br><br>';
+    h += '<div class="sig-line">&nbsp;</div><br>';
+    h += '<div class="sig-label">Date</div><br><br>';
+    h += '<div class="sig-line">&nbsp;</div><br>';
+    h += '<div class="sig-label">Printed Name / Title</div>';
+    h += '</div>';
+
+    h += '</div>';
+    out.innerHTML = h;
+    out.classList.add('visible');
+    out.scrollIntoView({behavior:'smooth'});
+  };
+
+  window.doClear = function() {
+    if (!confirm('Clear all fields?')) return;
+    DO_FIELDS.forEach(function(sec) {
+      sec.fields.forEach(function(f) {
+        var el = document.getElementById(f.id);
+        if (el) el.value = f.prefill || '';
+      });
+    });
+    document.getElementById('do-output').classList.remove('visible');
+    document.getElementById('do-output').innerHTML = '';
+  };
+})();
+
+/* ═══════════════════════════════════ BPA REVIEW ═══ */
+(function() {
+  var REV_ITEMS = [
+    { label:'Pricing is still competitive', hint:'Compare current BPA pricing against current market rates. Have prices increased? Are better deals available elsewhere?' },
+    { label:'Estimated quantities/amounts are still accurate', hint:'Compare actual ordering volume against original estimates. Adjust the estimate if significantly different.' },
+    { label:'Ordering procedures are being followed', hint:'Are authorized individuals following the ordering guide? Are purchases staying within per-order limits?' },
+    { label:'Competition requirements are being met', hint:'For orders above the MPT, is competition happening among BPA holders or through additional quotes?' },
+    { label:'Vendor performance is satisfactory', hint:'Delivery times, quality of goods/services, responsiveness to issues. Any complaints from end users?' },
+    { label:'Vendor SAM registration is current', hint:'Verify the vendor still has an active SAM.gov registration with no exclusions.' },
+    { label:'Authorized purchaser list is current', hint:'Have any cardholders PCS\'d, separated, or had their authority revoked? Are new personnel added who should be?' },
+    { label:'Small business goals are being considered', hint:'Are small business vendors getting a fair share of orders? Any opportunities to add small business BPA holders?' },
+    { label:'No unauthorized purchases or misuse identified', hint:'Review order logs for any purchases outside the BPA scope, above dollar limits, or by unauthorized individuals.' },
+    { label:'Ordering guide is still accurate and distributed', hint:'Does the ordering guide reflect current vendors, pricing, procedures, and points of contact?' }
+  ];
+
+  function buildRevChecklist() {
+    var el = document.getElementById('rev-checklist');
+    if (!el) return;
+    el.innerHTML = REV_ITEMS.map(function(item, i) {
+      return '<div style="display:flex;gap:0.75rem;align-items:flex-start;padding:1rem 1.15rem;background:rgba(10,22,50,0.7);border:1px solid rgba(74,158,255,0.12);border-radius:12px;">' +
+        '<div style="display:flex;gap:0.5rem;align-items:center;flex-shrink:0;margin-top:2px;">' +
+          '<label style="cursor:pointer;display:flex;align-items:center;gap:0.3rem;"><input type="radio" name="rev_'+i+'" value="yes" style="accent-color:#34d399;cursor:pointer;"><span style="color:#34d399;font-size:0.78rem;font-weight:700;">Yes</span></label>' +
+          '<label style="cursor:pointer;display:flex;align-items:center;gap:0.3rem;"><input type="radio" name="rev_'+i+'" value="no" style="accent-color:#f87171;cursor:pointer;"><span style="color:#f87171;font-size:0.78rem;font-weight:700;">No</span></label>' +
+          '<label style="cursor:pointer;display:flex;align-items:center;gap:0.3rem;"><input type="radio" name="rev_'+i+'" value="na" style="accent-color:var(--silver);cursor:pointer;"><span style="color:var(--silver);font-size:0.78rem;font-weight:700;">N/A</span></label>' +
+        '</div>' +
+        '<div><strong style="color:var(--white);font-size:0.9rem;">'+item.label+'</strong>' +
+          '<div style="color:rgba(148,163,184,0.6);font-size:0.78rem;line-height:1.5;margin-top:0.15rem;">'+item.hint+'</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  window.revGenerate = function() {
+    var out = document.getElementById('rev-output');
+    var h = '<div class="wiz-card">';
+    h += '<h3 style="text-align:center;margin-bottom:0.25rem;">BPA Annual Review Record</h3>';
+    h += '<p style="text-align:center;color:var(--silver);font-size:0.82rem;margin-bottom:1.5rem;">For inclusion in the contract file. Print or save as PDF.</p>';
+    h += '<div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;justify-content:center;">';
+    h += '<button class="wiz-btn wiz-btn-next" onclick="window.print()">Print / Save as PDF</button>';
+    h += '</div>';
+
+    // Header fields
+    h += '<div class="wiz-summary-section do-print-section"><h4>BPA Identification</h4>';
+    ['rev_number','rev_title','rev_vendor','rev_date','rev_reviewer','rev_period'].forEach(function(id) {
+      var el = document.getElementById(id);
+      var lbl = el ? el.closest('.do-row').querySelector('label').textContent : '';
+      var val = el ? el.value.trim() : '';
+      h += '<div class="wiz-summary-row"><span class="wiz-summary-label do-print-label">'+lbl+'</span><span class="wiz-summary-value do-print-value">'+(val||'<span style="color:rgba(148,163,184,0.4);font-style:italic;">(blank)</span>')+'</span></div>';
+    });
+    h += '</div>';
+
+    // Checklist results
+    h += '<div class="wiz-summary-section do-print-section"><h4>Review Checklist</h4>';
+    REV_ITEMS.forEach(function(item, i) {
+      var checked = document.querySelector('input[name="rev_'+i+'"]:checked');
+      var val = checked ? checked.value.toUpperCase() : 'NOT ANSWERED';
+      var color = val==='YES'?'#34d399':val==='NO'?'#f87171':val==='N/A'?'var(--silver)':'rgba(248,113,113,0.7)';
+      h += '<div class="wiz-summary-row"><span class="wiz-summary-label do-print-label" style="min-width:60px;flex:0 0 60px;"><span style="color:'+color+';font-weight:700;">'+val+'</span></span><span class="wiz-summary-value do-print-value">'+item.label+'</span></div>';
+    });
+    h += '</div>';
+
+    // Assessment
+    h += '<div class="wiz-summary-section do-print-section"><h4>Findings and Recommendations</h4>';
+    var assessChecked = [];
+    document.querySelectorAll('#rev-assess input:checked').forEach(function(cb){ assessChecked.push(cb.value); });
+    var assessLabels = {continue:'Continue BPA as-is', modify:'Continue with modifications', discontinue:'Discontinue BPA'};
+    var assessDisplay = assessChecked.map(function(v){return assessLabels[v]||v;}).join(', ') || '<span style="color:rgba(148,163,184,0.4);font-style:italic;">Not selected</span>';
+    h += '<div class="wiz-summary-row"><span class="wiz-summary-label do-print-label">Assessment</span><span class="wiz-summary-value do-print-value">'+assessDisplay+'</span></div>';
+    var notes = document.getElementById('rev_notes');
+    if (notes && notes.value.trim()) {
+      h += '<div class="wiz-summary-row"><span class="wiz-summary-label do-print-label">Notes</span><span class="wiz-summary-value do-print-value">'+notes.value.trim().replace(/\n/g,'<br>')+'</span></div>';
+    }
+    h += '</div>';
+
+    // Signature block
+    h += '<div class="sig-block">';
+    h += '<div class="sig-line">&nbsp;</div><br>';
+    h += '<div class="sig-label">Reviewing Official Signature</div><br><br>';
+    h += '<div class="sig-line">&nbsp;</div><br>';
+    h += '<div class="sig-label">Date</div><br><br>';
+    h += '<div class="sig-line">&nbsp;</div><br>';
+    h += '<div class="sig-label">Printed Name / Title</div>';
+    h += '</div>';
+
+    h += '</div>';
+    out.innerHTML = h;
+    out.classList.add('visible');
+    out.scrollIntoView({behavior:'smooth'});
+  };
+
+  window.revClear = function() {
+    if (!confirm('Clear all review fields?')) return;
+    ['rev_number','rev_title','rev_vendor','rev_date','rev_reviewer','rev_period','rev_notes'].forEach(function(id) {
+      var el = document.getElementById(id); if (el) el.value = '';
+    });
+    document.querySelectorAll('#rev-checklist input[type=radio]').forEach(function(r){r.checked=false;});
+    document.querySelectorAll('#rev-assess input').forEach(function(cb){
+      cb.checked=false;
+      var lbl = cb.closest('label');
+      if (lbl) { lbl.style.borderColor='rgba(74,158,255,0.12)'; lbl.style.background='rgba(4,13,31,0.6)'; }
+    });
+    document.getElementById('rev-output').classList.remove('visible');
+    document.getElementById('rev-output').innerHTML = '';
+  };
+
+  // Init checklist when tab is shown
+  var revInited = false;
+  var rp = document.getElementById('panel-review');
+  if (rp) {
+    new MutationObserver(function(){
+      if (rp.classList.contains('active') && !revInited) { revInited=true; buildRevChecklist(); }
+    }).observe(rp, {attributes:true, attributeFilter:['class']});
+  }
+})();
+
+/* ═══════════════════════════════════ ORDERING GUIDE CREATOR ═══ */
+(function() {
+  var vendorCount = 0;
+
+  window.ogAddVendor = function() {
+    vendorCount++;
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:0.5rem;align-items:center;';
+    row.innerHTML =
+      '<input type="text" class="og-vname" placeholder="Vendor name" style="flex:2;background:rgba(4,13,31,0.8);border:1px solid rgba(74,158,255,0.15);border-radius:8px;padding:0.5rem 0.75rem;color:var(--white);font-size:0.85rem;font-family:inherit;">' +
+      '<input type="text" class="og-vphone" placeholder="Phone" style="flex:1;background:rgba(4,13,31,0.8);border:1px solid rgba(74,158,255,0.15);border-radius:8px;padding:0.5rem 0.75rem;color:var(--white);font-size:0.85rem;font-family:inherit;">' +
+      '<input type="text" class="og-vemail" placeholder="Email / website" style="flex:1.5;background:rgba(4,13,31,0.8);border:1px solid rgba(74,158,255,0.15);border-radius:8px;padding:0.5rem 0.75rem;color:var(--white);font-size:0.85rem;font-family:inherit;">' +
+      '<button onclick="this.parentElement.remove()" style="background:none;border:none;color:#f87171;cursor:pointer;font-size:1.1rem;padding:0.25rem;">&times;</button>';
+    document.getElementById('og-vendor-list').appendChild(row);
+  };
+
+  function getVendors() {
+    var vendors = [];
+    document.querySelectorAll('#og-vendor-list > div').forEach(function(row) {
+      var name = row.querySelector('.og-vname').value.trim();
+      var phone = row.querySelector('.og-vphone').value.trim();
+      var email = row.querySelector('.og-vemail').value.trim();
+      if (name) vendors.push({name:name, phone:phone, email:email});
+    });
+    return vendors;
+  }
+
+  function getChecked(selector) {
+    var vals = [];
+    document.querySelectorAll(selector+' input:checked').forEach(function(cb){ vals.push(cb.value); });
+    return vals;
+  }
+
+  function getPick(selector) {
+    var sel = document.querySelector(selector+' .wiz-radio.selected');
+    return sel ? sel.dataset.value : '';
+  }
+
+  function v(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+  function tbd(val, fallback) { return val || '<strong style="color:#f87171;">' + fallback + '</strong>'; }
+
+  var LIMIT_LABELS = {mpt:'the micro-purchase threshold (MPT)',  '25k':'$25,000', '50k':'$50,000', '100k':'$100,000', sat:'the simplified acquisition threshold (SAT, currently $250,000)'};
+  var WHO_LABELS = {gpc:'Government Purchase Card (GPC) cardholders', co:'Contracting Officers', oo:'Ordering Officers (with warrant)', unit:'Designated unit personnel'};
+  var HOW_LABELS = {gpc:'Government Purchase Card at point of sale', phone:'phone call to the vendor', email:'email to the vendor', portal:'the vendor\'s website or ordering portal', walkin:'walk-in or in-person pickup'};
+  var DOC_LABELS = {log:'an order log entry (date, vendor, items, dollar amount, BPA number referenced)',
+    receipt:'a transaction receipt or GPC statement record',
+    comp:'a competition record documenting pricing obtained from other BPA vendors (required for orders above the MPT)',
+    delivery:'delivery confirmation or proof of receipt',
+    invoice:'a copy of the vendor invoice'};
+  var PAY_LABELS = {gpc:'All payments are made via Government Purchase Card (GPC) at the time of purchase.',
+    gpc_invoice:'Payment may be made via GPC at the time of purchase or via vendor invoice submitted to the billing office.',
+    invoice:'Payment is made via vendor invoice submitted to the billing office after delivery.'};
+  var COMP_LABELS = {compare:'the purchaser must obtain pricing from at least two other BPA vendors and select the best value source. Document the pricing comparison and rationale for selection.',
+    rotate:'orders are distributed among BPA vendors on a rotating basis, with periodic price checks to verify pricing remains competitive.',
+    additional:'the purchaser must seek at least two additional quotes from sources outside the BPA to ensure competition. Document quotes received and basis for selection.'};
+
+  window.ogGenerate = function() {
+    var D = {
+      title: v('og_title'),
+      numbers: v('og_numbers'),
+      period: v('og_period'),
+      scope: v('og_scope'),
+      award: getPick('[data-field="og_award"]'),
+      vendors: getVendors(),
+      who: getChecked('[data-field="og_who"]'),
+      listLoc: getPick('[data-field="og_list_loc"]'),
+      how: getChecked('[data-field="og_how"]'),
+      payment: getPick('[data-field="og_payment"]'),
+      limit: getPick('[data-field="og_limit"]'),
+      comp: getPick('[data-field="og_comp"]'),
+      docs: getChecked('[data-field="og_docs"]'),
+      co: v('og_co'),
+      cs: v('og_cs'),
+      unitPoc: v('og_unit_poc')
+    };
+
+    // Build the document
+    var html = '<div class="og-doc" contenteditable="true">';
+
+    // Header
+    html += '<h2>ORDERING GUIDE</h2>';
+    html += '<p class="og-subtitle">' + tbd(D.title, '[BPA TITLE]') + '</p>';
+
+    // Section 1: Purpose
+    html += '<h3>1. Purpose</h3>';
+    html += '<p>This ordering guide provides instructions for placing orders under ' + tbd(D.title, '[BPA TITLE]') +
+      '. It is intended for all individuals authorized to place orders against ' +
+      (D.award==='multiple' ? 'the BPAs listed below' : 'this BPA') +
+      '. Follow these procedures for every order. If you have questions, contact the Contracting Officer listed in Section 8.</p>';
+
+    // Section 2: BPA Information
+    html += '<h3>2. BPA Information</h3>';
+    html += '<table class="og-table"><tr><th>Item</th><th>Details</th></tr>';
+    html += '<tr><td><strong>BPA Number(s)</strong></td><td>' + tbd(D.numbers, '[BPA NUMBER(S)]').replace(/\n/g, '<br>') + '</td></tr>';
+    html += '<tr><td><strong>Scope</strong></td><td>' + tbd(D.scope, '[GENERAL SCOPE]') + '</td></tr>';
+    html += '<tr><td><strong>Ordering Period</strong></td><td>' + tbd(D.period, '[ORDERING PERIOD]') + '</td></tr>';
+    html += '<tr><td><strong>Per-Order Limit</strong></td><td>No single order may exceed ' + (LIMIT_LABELS[D.limit] || tbd('','[PER-ORDER LIMIT]')) + '.</td></tr>';
+    html += '<tr><td><strong>Award Type</strong></td><td>' + (D.award==='single'?'Single Award BPA':'Multiple Award BPAs') + '</td></tr>';
+    html += '</table>';
+
+    // Section 3: Authorized Purchasers
+    html += '<h3>3. Who Can Order</h3>';
+    if (D.who.length) {
+      html += '<p>The following individuals are authorized to place orders under this BPA: ' +
+        D.who.map(function(w){return WHO_LABELS[w]||w;}).join(', ') + '.</p>';
+    } else {
+      html += '<p>' + tbd('','[AUTHORIZED PURCHASERS]') + '</p>';
+    }
+    var locText = {attached:'The current list of authorized purchasers is attached to this guide.',
+      bpa:'The current list of authorized purchasers is maintained in the BPA agreement document.',
+      separate:'The Contracting Officer maintains the current list of authorized purchasers. Contact the CO to verify authorization or request additions.'};
+    html += '<p>' + (locText[D.listLoc] || '') + '</p>';
+    html += '<div class="og-warning"><strong>Important:</strong> Only individuals on the authorized purchaser list may place orders. Unauthorized purchases are a violation of procurement regulations and may result in a ratification action.</div>';
+
+    // Section 4: Vendor List
+    html += '<h3>4. BPA Vendors</h3>';
+    if (D.vendors.length) {
+      html += '<table class="og-table"><tr><th>Vendor</th><th>Phone</th><th>Email / Website</th></tr>';
+      D.vendors.forEach(function(ven) {
+        html += '<tr><td>'+ven.name+'</td><td>'+(ven.phone||'-')+'</td><td>'+(ven.email||'-')+'</td></tr>';
+      });
+      html += '</table>';
+    } else {
+      html += '<p>' + tbd('','[VENDOR LIST]') + '</p>';
+    }
+
+    // Section 5: How to Place an Order
+    html += '<h3>5. How to Place an Order</h3>';
+    html += '<p><strong>Step 1: Identify the need.</strong> Confirm the item or service falls within the BPA scope described in Section 2. If it does not, this BPA cannot be used.</p>';
+
+    if (D.award === 'multiple' && D.vendors.length > 1) {
+      html += '<p><strong>Step 2: Check the dollar amount.</strong></p>';
+      html += '<p>If the order is <strong>at or below the MPT</strong>: You may place the order with any BPA vendor listed in Section 4. No additional competition is required.</p>';
+      html += '<p>If the order is <strong>above the MPT</strong>: ' + (COMP_LABELS[D.comp] || 'Ensure competition among BPA vendors.') + '</p>';
+    } else {
+      html += '<p><strong>Step 2: Check the dollar amount.</strong> Ensure the order does not exceed the per-order limit in Section 2. If the order is above the MPT, ' +
+        (COMP_LABELS[D.comp] || 'ensure competition requirements are met.') + '</p>';
+    }
+
+    html += '<p><strong>Step 3: Place the order.</strong> Contact the vendor ';
+    if (D.how.length) {
+      html += 'via ' + D.how.map(function(h){return HOW_LABELS[h]||h;}).join(', or ') + '. ';
+    }
+    html += 'Reference the BPA number when placing the order. Confirm pricing, delivery timeline, and any special instructions.</p>';
+
+    html += '<p><strong>Step 4: Pay.</strong> ' + (PAY_LABELS[D.payment] || tbd('','[PAYMENT METHOD]')) + '</p>';
+
+    html += '<p><strong>Step 5: Document.</strong> Retain the required documentation listed in Section 6.</p>';
+
+    // Section 6: Documentation
+    html += '<h3>6. Documentation Requirements</h3>';
+    html += '<p>For every order, the purchaser must retain:</p>';
+    if (D.docs.length) {
+      html += '<ul style="margin:0.5rem 0 0.75rem 1.5rem;">';
+      D.docs.forEach(function(d) { html += '<li>' + (DOC_LABELS[d]||d) + '</li>'; });
+      html += '</ul>';
+    } else {
+      html += '<p>' + tbd('','[DOCUMENTATION REQUIREMENTS]') + '</p>';
+    }
+    html += '<p>Maintain these records for the duration of the BPA plus the applicable records retention period. These records are subject to review during GPC audits and annual BPA reviews.</p>';
+
+    // Section 7: What NOT to Do
+    html += '<h3>7. Common Mistakes to Avoid</h3>';
+    html += '<p><strong>Do not split orders</strong> to stay under a dollar threshold. If a single need exceeds the per-order limit, contact the Contracting Officer.</p>';
+    html += '<p><strong>Do not order outside the scope.</strong> If the item or service is not covered by the BPA, you cannot use it. Contact the Contracting Officer for guidance.</p>';
+    html += '<p><strong>Do not skip competition.</strong> For orders above the MPT, competition documentation is required. An order placed without competition is a procurement deficiency.</p>';
+    html += '<p><strong>Do not let someone else use your card or authority.</strong> Only you are authorized to place orders under your name. Lending your GPC or allowing others to order on your behalf is a violation.</p>';
+
+    // Section 8: Points of Contact
+    html += '<h3>8. Points of Contact</h3>';
+    html += '<table class="og-table"><tr><th>Role</th><th>Contact</th></tr>';
+    html += '<tr><td><strong>Contracting Officer</strong></td><td>' + tbd(D.co,'[CO NAME, PHONE, EMAIL]') + '</td></tr>';
+    if (D.cs) html += '<tr><td><strong>Contracting Specialist</strong></td><td>' + D.cs + '</td></tr>';
+    html += '<tr><td><strong>Unit POC</strong></td><td>' + tbd(D.unitPoc,'[UNIT POC NAME, PHONE, EMAIL]') + '</td></tr>';
+    html += '</table>';
+    html += '<p>Contact the Contracting Officer for any questions about BPA scope, authorized purchasers, competition requirements, or dollar thresholds. Contact the Unit POC for day-to-day ordering issues, vendor complaints, or delivery problems.</p>';
+
+    html += '</div>';
+
+    // Wrap with action buttons
+    var out = document.getElementById('og-output');
+    out.innerHTML = '<div class="wiz-card">' +
+      '<div style="display:flex;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap;">' +
+        '<button class="wiz-btn wiz-btn-next" onclick="window.print()">Print / Save as PDF</button>' +
+        '<button class="wiz-btn wiz-btn-back" onclick="ogCopyText()">Copy as Text</button>' +
+      '</div>' +
+      '<p style="color:var(--silver);font-size:0.78rem;margin-bottom:1rem;">The document below is editable. Click into it to make changes before printing. Red bracketed items are placeholders that need your input.</p>' +
+      html + '</div>';
+    out.classList.add('visible');
+    out.scrollIntoView({behavior:'smooth'});
+  };
+
+  window.ogCopyText = function() {
+    var doc = document.querySelector('#og-output .og-doc');
+    if (!doc) return;
+    var text = doc.innerText;
+    navigator.clipboard.writeText(text).then(function(){
+      alert('Ordering guide copied to clipboard.');
+    });
+  };
+
+  window.ogClear = function() {
+    if (!confirm('Clear all fields?')) return;
+    ['og_title','og_numbers','og_period','og_scope','og_co','og_cs','og_unit_poc'].forEach(function(id){
+      var el = document.getElementById(id); if (el) el.value = '';
+    });
+    document.getElementById('og-vendor-list').innerHTML = '';
+    vendorCount = 0;
+    document.querySelectorAll('#og-inputs .wiz-radio.selected').forEach(function(r){r.classList.remove('selected');});
+    document.querySelectorAll('#og-inputs input[type=checkbox]').forEach(function(cb){
+      cb.checked = false;
+      var lbl = cb.closest('label');
+      if (lbl){lbl.style.borderColor='rgba(74,158,255,0.12)';lbl.style.background='rgba(4,13,31,0.6)';}
+    });
+    document.getElementById('og-output').classList.remove('visible');
+    document.getElementById('og-output').innerHTML = '';
+  };
+
+  // Pre-add 3 vendor rows on first tab show
+  var ogInited = false;
+  var op = document.getElementById('panel-orderguide');
+  if (op) {
+    new MutationObserver(function(){
+      if (op.classList.contains('active') && !ogInited) {
+        ogInited = true;
+        ogAddVendor(); ogAddVendor(); ogAddVendor();
+      }
+    }).observe(op, {attributes:true, attributeFilter:['class']});
+  }
+})();
+</script>
+</body>
+</html>
