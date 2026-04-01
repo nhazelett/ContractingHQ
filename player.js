@@ -101,7 +101,14 @@
   aud.addEventListener('play',   function () { isPlaying = true;  updatePlayBtns(); });
   aud.addEventListener('pause',  function () { isPlaying = false; updatePlayBtns(); saveState(); });
   aud.addEventListener('ended',  nextTrack);
-  aud.addEventListener('timeupdate', function () { state.time = aud.currentTime; updateProgress(); });
+  var lastSave = 0;
+  aud.addEventListener('timeupdate', function () {
+    state.time = aud.currentTime;
+    updateProgress();
+    // Save to localStorage every 5 seconds so navigation never loses more than 5s
+    var now = Date.now();
+    if (now - lastSave > 5000) { saveState(); lastSave = now; }
+  });
   aud.addEventListener('error',  function () { setTimeout(nextTrack, 1200); });
 
   window.addEventListener('beforeunload', function () { state.time = aud.currentTime; state.wasPlaying = isPlaying; saveState(); });
@@ -232,9 +239,10 @@ input[type=range].cfm-vol-slider {
   -webkit-appearance: none; appearance: none;
   width: 70px; height: 3px; border-radius: 3px;
   background: rgba(255,255,255,0.12); outline: none; cursor: pointer;
+  touch-action: pan-y;
 }
 input[type=range].cfm-vol-slider::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%;
+  -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
   background: #fff; cursor: pointer;
 }
 input[type=range].cfm-vol-slider::-moz-range-thumb {
@@ -412,9 +420,10 @@ input[type=range].cfm-sb-vol-slider {
   -webkit-appearance: none; appearance: none; flex: 1;
   height: 3px; border-radius: 3px;
   background: rgba(255,255,255,0.12); outline: none; cursor: pointer;
+  touch-action: pan-y;
 }
 input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 11px; height: 11px;
+  -webkit-appearance: none; width: 16px; height: 16px;
   border-radius: 50%; background: #fff; cursor: pointer;
 }
 .cfm-sb-playlist {
@@ -823,12 +832,13 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
 
   // ── INIT ─────────────────────────────────────────────────────────
   function resumeAudio() {
+    var targetTime = state.time;
+    var shouldPlay = state.wasPlaying;
     aud.src = trackUrl(state.idx);
     aud.load();
-    aud.addEventListener('canplay', function resume() {
-      aud.removeEventListener('canplay', resume);
-      aud.currentTime = state.time || 0;
-      if (state.wasPlaying) {
+    aud.addEventListener('loadedmetadata', function () {
+      if (targetTime > 0) aud.currentTime = targetTime;
+      if (shouldPlay) {
         aud.play().catch(function () {});
         playerReady = true;
       }
