@@ -17,7 +17,7 @@
 
   // ── STATE ────────────────────────────────────────────────────────
   var SK = 'cfm_v1';
-  var state = { idx: 0, time: 0, vol: 0.75, shuffle: false, favs: [], wasPlaying: false };
+  var state = { idx: 0, time: 0, vol: 0.5, shuffle: false, favs: [], wasPlaying: false };
 
   function loadState() {
     try {
@@ -25,7 +25,7 @@
       if (s) {
         if (typeof s.idx === 'number')   state.idx     = Math.min(s.idx, TRACKS.length - 1);
         if (typeof s.time === 'number')  state.time    = s.time;
-        if (typeof s.vol === 'number')   state.vol     = s.vol;
+        // vol intentionally not restored - always starts at 0.5 to avoid surprising the user
         if (typeof s.shuffle === 'boolean') state.shuffle = s.shuffle;
         if (Array.isArray(s.favs))       state.favs    = s.favs;
         if (typeof s.wasPlaying === 'boolean') state.wasPlaying = s.wasPlaying;
@@ -239,7 +239,6 @@ input[type=range].cfm-vol-slider {
   -webkit-appearance: none; appearance: none;
   width: 70px; height: 3px; border-radius: 3px;
   background: rgba(255,255,255,0.12); outline: none; cursor: pointer;
-  touch-action: pan-y;
 }
 input[type=range].cfm-vol-slider::-webkit-slider-thumb {
   -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
@@ -420,7 +419,6 @@ input[type=range].cfm-sb-vol-slider {
   -webkit-appearance: none; appearance: none; flex: 1;
   height: 3px; border-radius: 3px;
   background: rgba(255,255,255,0.12); outline: none; cursor: pointer;
-  touch-action: pan-y;
 }
 input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   -webkit-appearance: none; width: 16px; height: 16px;
@@ -571,7 +569,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     fVol.addEventListener('input', function () {
       state.vol = parseFloat(this.value); aud.volume = state.vol; saveState(); updateVolIcon();
     });
-    bindTouchSlider(fVol, function (v) { state.vol = v; aud.volume = v; saveState(); updateVolIcon(); });
+    bindPointerSlider(fVol, function (v) { state.vol = v; aud.volume = v; saveState(); updateVolIcon(); });
     document.getElementById('cfm-bar').addEventListener('click', function (e) {
       var rect = this.getBoundingClientRect();
       var pct = (e.clientX - rect.left) / rect.width;
@@ -722,21 +720,25 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     });
   }
 
-  // Touch handler for range sliders - bypasses iOS native range bug
-  function bindTouchSlider(el, onChange) {
+  // Pointer event slider - works reliably on iOS, Android, and desktop
+  function bindPointerSlider(el, onChange) {
     if (!el) return;
-    function calc(touch) {
+    var active = false;
+    function calc(e) {
       var rect = el.getBoundingClientRect();
-      return Math.max(0, Math.min(1, (touch.clientX - rect.left) / rect.width));
+      return Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     }
-    el.addEventListener('touchstart', function (e) {
-      e.preventDefault();
-      var v = calc(e.touches[0]); el.value = v; onChange(v);
-    }, { passive: false });
-    el.addEventListener('touchmove', function (e) {
-      e.preventDefault();
-      var v = calc(e.touches[0]); el.value = v; onChange(v);
-    }, { passive: false });
+    el.addEventListener('pointerdown', function (e) {
+      active = true;
+      el.setPointerCapture(e.pointerId);
+      var v = calc(e); el.value = v; onChange(v);
+    });
+    el.addEventListener('pointermove', function (e) {
+      if (!active) return;
+      var v = calc(e); el.value = v; onChange(v);
+    });
+    el.addEventListener('pointerup',     function () { active = false; });
+    el.addEventListener('pointercancel', function () { active = false; });
   }
 
   function bindHome() {
@@ -756,7 +758,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     sbVol.addEventListener('input', function () {
       state.vol = parseFloat(this.value); aud.volume = state.vol; saveState();
     });
-    bindTouchSlider(sbVol, function (v) { state.vol = v; aud.volume = v; saveState(); });
+    bindPointerSlider(sbVol, function (v) { state.vol = v; aud.volume = v; saveState(); });
     document.getElementById('cfm-sb-bar').addEventListener('click', function (e) {
       var rect = this.getBoundingClientRect();
       var pct = (e.clientX - rect.left) / rect.width;
