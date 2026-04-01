@@ -72,7 +72,7 @@
     return TRACKS.map(function (_, i) { return i; });
   }
 
-  function nextTrack() {
+  function nextTrack(force) {
     var pool = getPool();
     var cur = pool.indexOf(state.idx);
     var next;
@@ -82,7 +82,7 @@
     } else {
       next = pool[(cur + 1) % pool.length];
     }
-    loadTrack(next, isPlaying);
+    loadTrack(next, force || isPlaying);
   }
 
   function prevTrack() {
@@ -110,7 +110,7 @@
   // Audio event listeners
   aud.addEventListener('play',   function () { isPlaying = true;  updatePlayBtns(); });
   aud.addEventListener('pause',  function () { isPlaying = false; updatePlayBtns(); saveState(); });
-  aud.addEventListener('ended',  nextTrack);
+  aud.addEventListener('ended',  function () { nextTrack(true); });
   var lastSave = 0;
   aud.addEventListener('timeupdate', function () {
     state.time = aud.currentTime;
@@ -160,6 +160,11 @@
   background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3);
   border-radius: 3px; padding: 0.1rem 0.35rem;
   animation: cfm-pulse 2s ease-in-out infinite;
+  transition: color 0.3s, background 0.3s, border-color 0.3s;
+}
+.cfm-on-air.off-air {
+  color: #445; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1);
+  animation: none;
 }
 @keyframes cfm-pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
 
@@ -822,6 +827,10 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     var dot = document.getElementById('cfm-sb-np-dot');
     if (ar)  { if (isPlaying) ar.classList.add('playing');    else ar.classList.remove('playing'); }
     if (dot) { if (isPlaying) dot.classList.remove('paused'); else dot.classList.add('paused'); }
+    document.querySelectorAll('.cfm-on-air').forEach(function (el) {
+      el.textContent = isPlaying ? 'On Air' : 'Off Air';
+      el.classList.toggle('off-air', !isPlaying);
+    });
   }
 
   function updateShuffleBtns() {
