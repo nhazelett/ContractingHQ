@@ -891,10 +891,15 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   }
 
   function init() {
-    // If nothing was actively playing, start on a random track
-    if (!state.wasPlaying) {
+    // sessionStorage lives only for the current tab session.
+    // If it's empty, this is a brand new visit - pick a random track.
+    // If it has the key, we're just navigating between pages - resume normally.
+    var freshVisit = !sessionStorage.getItem('cfm_session');
+    if (freshVisit) {
+      sessionStorage.setItem('cfm_session', '1');
       state.idx = Math.floor(Math.random() * TRACKS.length);
       state.time = 0;
+      state.wasPlaying = false;
     }
     if (isHome) {
       buildHome();
