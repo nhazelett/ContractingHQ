@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="How to place task and delivery orders against single award IDIQ contracts. Covers the ordering process, minimum and maximum quantities, funding, scope, and common mistakes for new contracting officers." />
+  <title>IDIQ Orders: Single Award | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .sai-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .sai-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .sai-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .sai-tab:hover { color: var(--white); }
+    .sai-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .sai-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .sai-panel.active { display: block; }
+
+    /* ── Intro badge ── */
+    .sai-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .sai-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .sai-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .sai-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn section ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-body .far-ref { color: var(--accent); font-weight: 600; font-size: 0.82rem; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.5px; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── Scenario box ── */
+    .scenario-box { background: rgba(251,191,36,0.04); border: 1px solid rgba(251,191,36,0.2); border-radius: 14px; padding: 1.5rem; margin: 1.5rem 0; }
+    .scenario-box .scenario-label { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #fbbf24; margin-bottom: 0.5rem; }
+    .scenario-box p { color: var(--silver); font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.5rem; }
+    .scenario-box p:last-child { margin-bottom: 0; }
+    .scenario-box strong { color: #fde68a; }
+
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; padding: 0; margin: 0.75rem 0; }
+    .checklist li { padding: 0.4rem 0 0.4rem 1.5rem; position: relative; font-size: 0.88rem; line-height: 1.6; }
+    .checklist li:before { content: '\2610'; position: absolute; left: 0; color: var(--accent); font-size: 1rem; }
+
+    @media (max-width: 768px) {
+      .sai-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s;margin-top:.75rem}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="dfars.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="federal-register.html">Federal Register</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 29</span>
+    <h1 class="page-hero-title">IDIQ Orders: Single Award</h1>
+    <p class="page-hero-sub">A single award IDIQ means you have one contractor and a defined scope. Your job is to order within that scope, stay within the minimum and maximum, and document the order properly. There is no competition at the order level because there is only one contractor. That simplicity is a feature, not a shortcut.</p>
+  </div>
+</div>
+
+<div class="sai-bg">
+
+  <div class="sai-intro">
+    <span class="sai-intro-tag">Training</span>
+    <h2>Ordering off Single Award IDIQs</h2>
+    <p>How to place task and delivery orders against a contract with one awardee. Governed by FAR 16.5 and the ordering procedures in the base contract.</p>
+  </div>
+
+  <div class="sai-tabs">
+    <button class="sai-tab active" data-tab="learn">&#128218; Learn</button>
+    <button class="sai-tab" data-tab="lookup">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="sai-panel active">
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> What Is a Single Award IDIQ?</h3>
+      <div class="learn-body">
+        <p>An Indefinite Delivery, Indefinite Quantity (IDIQ) contract establishes a framework for ordering supplies or services over a defined period. The contract sets a ceiling (maximum quantity or dollar value), a floor (minimum guaranteed amount), and the terms under which individual orders will be placed. The competition happened at the contract level. Once awarded, the ordering process is about executing within those pre-competed terms.</p>
+        <p>A <strong>single award</strong> IDIQ means the Government competed the requirement and awarded the contract to one contractor. This is a <strong>pre-competed</strong> vehicle - the contractor earned the award through a competitive source selection. There is no pool of awardees and no fair opportunity process at the order level because there is only one winner. When you need something within the contract's scope, you place an order directly with that contractor. This makes single award IDIQs the simplest ordering vehicle to work with.</p>
+        <p>Do not confuse a single award IDIQ with a sole source contract. A sole source means the Government did not compete the requirement at all - it went to one contractor without competition, justified under FAR Subpart 6.3. A single award IDIQ was competed; the Government simply determined that a single award best met the requirement. The contracting officer evaluated this under <span class="far-ref">FAR 16.504(c)</span>, which establishes a preference for multiple awards but allows single awards when the contracting officer documents why only one award is appropriate.</p>
+        <p>Single award IDIQs are common for requirements that are well-defined in scope but uncertain in timing or quantity - facility maintenance where the volume of work orders fluctuates, IT support where the number of tickets varies month to month, or lab testing where the number of samples depends on the mission tempo. They also make sense when the work is so tightly integrated that splitting it among multiple contractors would create coordination problems, duplication, or risk.</p>
+
+        <div class="highlight-box">
+          <strong>Single award vs. multiple award:</strong> The key difference is competition at the order level. Single award = one contractor, no order-level competition. Multiple award = multiple contractors, fair opportunity competition for each order (see <a href="idiq-multiple-award.html" style="color:var(--accent);">Topic 30</a>). Both types were competed at the contract level. The single award determination justified why one awardee is sufficient, so individual orders do not need to be competed again.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>FAR Overhaul note - $150M Single-Award Ceiling:</strong> The Revolutionary FAR Overhaul added FAR 16.504-3(a)(4), which establishes a <strong>$150 million ceiling</strong> for single award indefinite-quantity contracts. Awards exceeding $150M require a written determination by the agency head addressing one of several grounds: that the supplies or services are so integrally related that only a single source can efficiently perform the work, that the requirement can only be met by a firm-fixed-price contract, that only one source is qualified, or that exceptional circumstances in the public interest justify it. Public interest determinations require congressional notification within 30 days. If you are working a single award IDIQ that might exceed $150M, flag this early - the approval is at the agency head level, not the contracting officer level.
+        </div>
+
+        <div class="highlight-box">
+          <strong>DFARS note:</strong> For DoD, <span class="far-ref">DFARS 216.504</span> provides that the senior procurement executive makes the determination when orders are "so integrally related that only a single source can efficiently perform the work." Congressional notification is not required for DoD single award determinations. Additionally, no determination is needed if the contracting officer has already executed a justification under FAR Subpart 6.3.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Requirements Contracts: The Close Cousin</h3>
+      <div class="learn-body">
+        <p>Before going deeper on IDIQ ordering, it is worth understanding the other single-contractor indefinite-delivery vehicle you will encounter: the <strong>requirements contract</strong> (<span class="far-ref">FAR 16.503</span>). A requirements contract and a single award IDIQ are both pre-competed, both go to one contractor, and both involve placing orders over time. But they work differently in ways that matter.</p>
+        <p><strong>A requirements contract obligates the Government to fill all of its actual needs for specified supplies or services from the contractor</strong> during the contract period. If the Government needs it and it falls within the contract's scope, it must order from this contractor. There is no going to a different vendor. In return, the contractor agrees to fill whatever volume the Government actually needs, even though that volume is uncertain at the time of award.</p>
+        <p>An IDIQ contract, by contrast, only guarantees a minimum and sets a maximum. The Government is not required to order everything from the IDIQ contractor - it is only required to order the guaranteed minimum. Above that minimum and below the ceiling, the Government has discretion on whether to use the IDIQ vehicle or fulfill the need another way.</p>
+
+        <div class="highlight-box">
+          <strong>When do you see requirements contracts?</strong> Requirements contracts work best when the Government wants to consolidate all of a particular need with one contractor - think base-wide refuse collection, dining facility operations, or medical supply distribution. The Government knows it will have a recurring need but cannot predict the exact volume. The requirements contract says "whatever we need, you provide it." IDIQs are more common when the Government wants flexibility in how much it orders and from whom.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>The exclusivity trap.</strong> Because a requirements contract commits the Government to ordering <em>all</em> actual requirements from one contractor, ordering the same supplies or services from a different source during the contract period is a breach. This is a sharper commitment than an IDIQ, where the Government only owes the minimum. If your requirements change significantly or the contractor performs poorly, you have less flexibility to go elsewhere without modifying or terminating the contract.
+        </div>
+
+        <p>Requirements contracts do not have a guaranteed minimum in the same way IDIQs do - the Government's obligation is to order its actual requirements, whatever those turn out to be. However, the estimated quantity in the solicitation must be a realistic estimate of anticipated needs. If the Government dramatically underestimates or overestimates, the contractor may have a claim for equitable adjustment. The ordering process itself is similar to a single award IDIQ: confirm the need is within scope, prepare the order, fund it, and issue it.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> The Minimum and Maximum</h3>
+      <div class="learn-body">
+        <p>Every IDIQ contract has a minimum and a maximum. Understanding these is fundamental to ordering correctly.</p>
+        <p><strong>The minimum</strong> is the Government's guaranteed obligation. This is the amount the Government promised to order over the life of the contract. If the Government does not order at least this much, the contractor has a claim for the difference. The minimum must be more than a nominal amount - it needs to be a realistic estimate that reflects actual anticipated needs. Courts and boards have found that unrealistically low minimums can be challenged.</p>
+        <p><strong>The maximum</strong> is the ceiling. The Government cannot order beyond this amount without modifying the contract. Once you hit the ceiling, you are done ordering under that vehicle - any additional need requires a new contract action or a modification to increase the ceiling (which may require additional competition justification).</p>
+
+        <div class="highlight-box warn">
+          <strong>Track your spend.</strong> As you place orders, track the cumulative total against both the minimum and the maximum. You need to know when you are approaching the ceiling so you can plan the follow-on. You also need to know if you are trending below the minimum so you can either place orders to meet the guarantee or work with legal to understand the implications.
+        </div>
+
+        <p>The contract will specify whether the minimum and maximum are expressed in dollars, units, or both. For a services IDIQ, it is usually dollars. For a supplies IDIQ, it might be units (e.g., minimum 500 widgets, maximum 10,000 widgets).</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> The Ordering Process</h3>
+      <div class="learn-body">
+        <p>The base IDIQ contract will contain ordering procedures - usually in a section titled "Ordering" or as a separate attachment. Read these before you place your first order. They tell you what information is required, what format the order should take, and what approvals are needed.</p>
+        <p>At a high level, placing an order on a single award IDIQ follows this flow:</p>
+
+        <ul class="checklist">
+          <li><strong>Confirm the requirement is within scope.</strong> The order must fall within the scope of the base contract. If the IDIQ is for IT support services and you need janitorial services, that is out of scope - you need a different vehicle.</li>
+          <li><strong>Confirm funds are available.</strong> Each order is funded individually. Work with your Resource Advisor to secure the right type of funds for the order (O&M, RDT&E, MILCON, etc.) and ensure the fiscal year and bona fide need match.</li>
+          <li><strong>Prepare the order.</strong> The order document (typically an SF 1449 or a DD 1155, depending on your agency) identifies the specific supplies or services, the quantity, the delivery schedule, the place of performance, and the price. The price should be consistent with the contract's pricing structure (fixed rates, labor categories, unit prices, etc.).</li>
+          <li><strong>Check against the ceiling.</strong> Before issuing the order, verify that adding this order's value to the cumulative total does not exceed the contract maximum.</li>
+          <li><strong>Issue the order.</strong> The contracting officer signs and distributes the order. The contractor is obligated to perform because they already agreed to the terms at the contract level.</li>
+          <li><strong>Fund and obligate.</strong> The order obligates the funds. Record it in your contract writing system.</li>
+        </ul>
+
+        <div class="highlight-box tip">
+          <strong>The order is not a new contract.</strong> You are not negotiating terms, evaluating proposals, or making award decisions. The terms were negotiated at the contract level. The order is an execution document that says "we need X amount of the thing you already agreed to provide at the price you already agreed to." Keep it simple.
+        </div>
+
+        <div class="highlight-box">
+          <strong>DFARS note - DD Form 1155 and SPRS:</strong> For DoD orders, <span class="far-ref">DFARS 216.505(a)</span> directs the use of <strong>DD Form 1155</strong> (Order for Supplies or Services) as the order document. Additionally, DoD contracting officers must consider <strong>Supplier Performance Risk System (SPRS)</strong> assessments when making award decisions on orders. SPRS provides price risk and supplier risk scores - check these before issuing the order. If you are placing orders against a non-DoD contract that exceeds the simplified acquisition threshold, you also need to comply with <span class="far-ref">DFARS 217.7</span> review and approval procedures.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Scope: Staying Inside the Lines</h3>
+      <div class="learn-body">
+        <p>Scope is the single most important concept in IDIQ ordering. Every order must be within the scope of the base contract. If it is not, you do not have authority to place the order under that vehicle - full stop.</p>
+        <p>Scope is defined by the base contract's statement of work, performance work statement, or statement of objectives, combined with the contract's CLIN structure and any ordering limitations. If the contract was competed for "information technology support services at Base X," an order for "construction of a new server room" is probably out of scope even though it is IT-related. The scope question is: could a reasonable offeror have anticipated this order based on what was in the solicitation?</p>
+
+        <div class="scenario-box">
+          <div class="scenario-label">Scope Example</div>
+          <p>An IDIQ for base civil engineering services covers "routine facility maintenance, minor repairs, and preventive maintenance." A task order comes in for a $2M renovation of the fitness center. Is that within scope? Probably not. A renovation is not routine maintenance or a minor repair. That order needs its own contract action. If you force it onto the IDIQ, you are creating a scope issue that could be challenged by other contractors who would have competed for the renovation work.</p>
+        </div>
+
+        <p>When in doubt about scope, read the original solicitation - not just the contract. The solicitation describes what offerors competed against. If the order would have materially changed the competition, it is likely outside scope.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> Pricing on Orders</h3>
+      <div class="learn-body">
+        <p>The pricing structure is established in the base contract. For a services IDIQ, this is usually a set of labor categories with fixed hourly or annual rates. For a supplies IDIQ, it is unit prices. When you place an order, the price is calculated using those pre-established rates applied to the quantity or level of effort in the order.</p>
+        <p>You do not renegotiate pricing at the order level on a single award IDIQ. The rates were competed and agreed upon at award. If the contractor proposes a price for an order that does not match the contract rates, push back - the contract controls.</p>
+        <p>That said, some IDIQ contracts include provisions for pricing new or unanticipated work that falls within scope but was not specifically priced at the CLIN level. These provisions typically require a cost or price proposal from the contractor for the new work, which the contracting officer evaluates for reasonableness before issuing the order. Read your contract to understand what mechanism is available.</p>
+
+        <div class="highlight-box">
+          <strong>Economic price adjustments:</strong> Some IDIQ contracts include an economic price adjustment (EPA) clause that allows rates to be adjusted based on an index (like the BLS Employment Cost Index) at option exercise or at defined intervals. If your contract has an EPA clause, apply it correctly when calculating order prices for the adjusted period.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">7</span> Funding Considerations</h3>
+      <div class="learn-body">
+        <p>Each order is funded separately. The base IDIQ contract is not fully funded at award - it is funded order by order as requirements materialize. This means every order needs its own funding document from the Resource Advisor with the correct appropriation, fiscal year, and amount.</p>
+        <p><strong>Severable vs. non-severable matters.</strong> If the order is for severable services (services that can be divided into separate time periods - think monthly maintenance), you can use current-year funds even if the order crosses fiscal years, as long as the order does not exceed 12 months. If the order is for non-severable services (a single deliverable like a study or report), you must use funds from the fiscal year in which the bona fide need arose, and the service period can cross fiscal years without the 12-month limit.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">8</span> Order Documentation</h3>
+      <div class="learn-body">
+        <p>Every order should have a file that includes the requirement document (SOW, PWS, or SOO for the specific order), the funding document, the order itself, any contractor proposals or quotes (if applicable for new work within scope), and the contracting officer's signature.</p>
+        <p><strong>You already determined prices fair and reasonable at the IDIQ level.</strong> When placing orders against pre-priced CLINs at established rates, you do not need to re-determine price fair and reasonable at the order level. Those rates were evaluated and determined fair and reasonable during the competitive source selection. You are simply applying contracted rates to a specific quantity or level of effort. The order documentation should reference the base contract's pricing and confirm the order uses the established rates - that is sufficient. If the order involves new work within scope that was not specifically priced at the CLIN level, then you would need a price analysis for that new work.</p>
+
+        <div class="highlight-box tip">
+          <strong>Keep it proportional.</strong> The documentation for a $5,000 order against pre-priced CLINs does not need to be the same as the documentation for a $500,000 order for new scope. Scale your documentation to the complexity and risk of the order.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">9</span> Common Mistakes</h3>
+      <div class="learn-body">
+        <p><strong>Ordering outside the scope.</strong> This is the number one problem. If the work does not fit within the four corners of the base contract, it does not belong on the IDIQ. Forcing out-of-scope work onto an existing vehicle to avoid doing a new procurement is a shortcut that creates protest risk and legal exposure.</p>
+        <p><strong>Exceeding the ceiling.</strong> Placing orders that push the cumulative total past the contract maximum. Once you exceed the ceiling, you have an unauthorized commitment for the overage. Track your spend.</p>
+        <p><strong>Ignoring the minimum.</strong> If you are not going to meet the guaranteed minimum, that is a conversation to have with legal and the contractor early - not a surprise at the end of the contract. The contractor relied on the minimum when they priced the contract.</p>
+        <p><strong>Treating the IDIQ like a blank check.</strong> An IDIQ is not a substitute for requirements definition. Each order still needs a defined requirement, a fair and reasonable price, and appropriate funding. The IDIQ streamlines the process, but it does not eliminate it.</p>
+        <p><strong>Not reading the ordering procedures.</strong> Every IDIQ has specific ordering procedures. Some require a written task order request from the requiring activity. Some have ordering officer limitations. Some require COR appointment at the order level. Read the contract before you place orders.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="sai-panel">
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR Subpart 16.5: Indefinite-Delivery Contracts</h4>
+        <p>The governing subpart for IDIQ contracts, including requirements contracts, definite-quantity contracts, and indefinite-quantity contracts.</p>
+        <a href="https://www.acquisition.gov/far/subpart-16.5" target="_blank" rel="noopener">Open FAR 16.5</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 16.503: Requirements Contracts</h4>
+        <p>The governing section for requirements contracts - the close cousin of the single award IDIQ. Covers the Government's obligation to fill all actual requirements from one contractor.</p>
+        <a href="https://www.acquisition.gov/far/16.503" target="_blank" rel="noopener">Open FAR 16.503</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 16.504: Indefinite-Quantity Contracts</h4>
+        <p>Specific rules for IDIQ contracts, including minimum/maximum requirements, ordering limitations, and the preference for multiple award.</p>
+        <a href="https://www.acquisition.gov/far/16.504" target="_blank" rel="noopener">Open FAR 16.504</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 16.505: Ordering</h4>
+        <p>Procedures for placing orders under indefinite-delivery contracts, including fair opportunity requirements for multiple award contracts and protest procedures.</p>
+        <a href="https://www.acquisition.gov/far/16.505" target="_blank" rel="noopener">Open FAR 16.505</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 52.216-18: Ordering</h4>
+        <p>The standard ordering clause for indefinite-delivery contracts. Specifies the ordering period, minimum order limitations, and order issuance procedures.</p>
+        <a href="https://www.acquisition.gov/far/52.216-18" target="_blank" rel="noopener">Open FAR 52.216-18</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 52.216-22: Indefinite Quantity</h4>
+        <p>The clause that establishes the minimum and maximum quantities and the Government's obligation to order at least the minimum.</p>
+        <a href="https://www.acquisition.gov/far/52.216-22" target="_blank" rel="noopener">Open FAR 52.216-22</a>
+      </div>
+      <div class="lookup-card">
+        <h4>DFARS Part 216: Types of Contracts</h4>
+        <p>DoD-specific supplements to FAR Part 16, including DD Form 1155 ordering requirements, SPRS assessment requirements, and cross-service ordering review procedures.</p>
+        <a href="https://www.acquisition.gov/dfars/part-216-types-contracts" target="_blank" rel="noopener">Open DFARS 216</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Overhaul - Part 16</h4>
+        <p>The Revolutionary FAR Overhaul changes to Part 16, including the $150M single-award ceiling, section renumbering, and streamlined ordering procedures.</p>
+        <a href="https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16" target="_blank" rel="noopener">Open RFO Part 16</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Multiple Award IDIQ Orders (Topic 30)</h4>
+        <p>When the IDIQ has more than one awardee, fair opportunity applies. Learn how ordering changes with multiple contractors.</p>
+        <a href="idiq-multiple-award.html">Open Topic 30</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="dfars.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+document.querySelectorAll('.sai-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.sai-panel').forEach(function(p) { p.classList.remove('active'); });
+    document.querySelectorAll('.sai-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.getElementById('panel-' + tab.getAttribute('data-tab')).classList.add('active');
+    tab.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

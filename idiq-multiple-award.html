@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="How to place task and delivery orders against multiple award IDIQ contracts. Covers fair opportunity, exceptions, order-level protests, enhanced competition, and common mistakes for new contracting officers." />
+  <title>IDIQ Orders: Multiple Award | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .mai-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .mai-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .mai-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .mai-tab:hover { color: var(--white); }
+    .mai-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .mai-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .mai-panel.active { display: block; }
+
+    /* ── Intro badge ── */
+    .mai-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .mai-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .mai-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .mai-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn section ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-body .far-ref { color: var(--accent); font-weight: 600; font-size: 0.82rem; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.5px; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── Scenario box ── */
+    .scenario-box { background: rgba(251,191,36,0.04); border: 1px solid rgba(251,191,36,0.2); border-radius: 14px; padding: 1.5rem; margin: 1.5rem 0; }
+    .scenario-box .scenario-label { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #fbbf24; margin-bottom: 0.5rem; }
+    .scenario-box p { color: var(--silver); font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.5rem; }
+    .scenario-box p:last-child { margin-bottom: 0; }
+    .scenario-box strong { color: #fde68a; }
+
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; padding: 0; margin: 0.75rem 0; }
+    .checklist li { padding: 0.4rem 0 0.4rem 1.5rem; position: relative; font-size: 0.88rem; line-height: 1.6; }
+    .checklist li:before { content: '\2610'; position: absolute; left: 0; color: var(--accent); font-size: 1rem; }
+
+    /* ── Exception cards ── */
+    .exception-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 1rem 0; }
+    .exception-card { background: rgba(10,22,50,0.5); border: 1px solid rgba(74,158,255,0.1); border-radius: 12px; padding: 1.1rem 1.25rem; }
+    .exception-card .exc-num { display: inline-block; background: rgba(248,113,113,0.12); color: #fca5a5; font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; padding: 0.15rem 0.6rem; border-radius: 6px; margin-bottom: 0.5rem; }
+    .exception-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .exception-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.65; margin: 0; }
+
+    @media (max-width: 768px) {
+      .mai-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s;margin-top:.75rem}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="dfars.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="federal-register.html">Federal Register</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 30</span>
+    <h1 class="page-hero-title">IDIQ Orders: Multiple Award</h1>
+    <p class="page-hero-sub">Multiple award IDIQs add a layer that single award IDIQs do not have: competition at the order level. In operational contracting you will see these as MACCs, MATOCs, or government-wide vehicles like GSA OASIS. Every order must go through a fair opportunity process unless a statutory exception applies. This is where most new contracting officers trip up - not on the ordering itself, but on the fair opportunity documentation.</p>
+  </div>
+</div>
+
+<div class="mai-bg">
+
+  <div class="mai-intro">
+    <span class="mai-intro-tag">Training</span>
+    <h2>Ordering off Multiple Award IDIQs</h2>
+    <p>How to place task and delivery orders when more than one contractor holds the same IDIQ. Governed by FAR 16.505(b) and the ordering procedures in the base contract.</p>
+  </div>
+
+  <div class="mai-tabs">
+    <button class="mai-tab active" data-tab="learn">&#128218; Learn</button>
+    <button class="mai-tab" data-tab="lookup">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="mai-panel active">
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> What Is a Multiple Award IDIQ?</h3>
+      <div class="learn-body">
+        <p>A multiple award IDIQ is an indefinite-delivery, indefinite-quantity contract awarded to two or more contractors for the same or similar requirements. The Government competed the base contract once, selected multiple awardees, and now has a pool of pre-qualified contractors to choose from when placing individual orders.</p>
+        <p>The FAR has a preference for multiple awards. <span class="far-ref">FAR 16.504(c)</span> states that the contracting officer must determine whether multiple awards are appropriate, and must justify a single award when the requirement supports multiple awardees. The logic is simple: maintaining competition at the order level keeps prices competitive and gives the Government more flexibility.</p>
+        <p>Common examples include agency-wide IT services contracts (like GSA Alliant or SEWP), professional services vehicles at major commands, and large logistics support contracts where multiple vendors can provide the same categories of supplies. Government-wide Acquisition Contracts (GWACs), Multi-Agency Contracts (MACs), and agency-specific multiple award vehicles all work the same way at the ordering level.</p>
+
+        <div class="highlight-box">
+          <strong>Single award vs. multiple award:</strong> With a single award IDIQ, you place orders directly - no order-level competition because there is only one contractor (see <a href="idiq-single-award.html" style="color:var(--accent);">Topic 29</a>). With a multiple award IDIQ, you must provide each awardee a <strong>fair opportunity</strong> to be considered for each order, unless an exception applies. This is the fundamental difference.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>FAR Overhaul note - On-Ramps and Off-Ramps:</strong> The Revolutionary FAR Overhaul added <span class="far-ref">FAR 16.504-4</span>, which formally authorizes <strong>on-ramps and off-ramps</strong> in multiple award IDIQ solicitations. The contractor pool is no longer static. Solicitations may now authorize: adding contractors during open seasons (on-ramps), removing underperforming contractors, removing contractors with insufficient participation, and contractor-requested removals (off-ramps). Additionally, for ordering periods exceeding five years, solicitations <strong>must include on-ramp provisions</strong> unless the contracting officer documents that on-ramps are not in the best interests of the Government. This is a significant shift - it means the competitive pool can evolve over the life of the contract.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>FAR Overhaul note - Pricing Deferral:</strong> <span class="far-ref">FAR 16.501-2(b)(2)</span> now allows DoD, NASA, and Coast Guard to <strong>skip price/cost as an evaluation factor at contract award</strong> for multiple award IDIQs when the solicitation states intent to award to all qualifying offerors. Instead, price competition moves entirely to the order level. This means some newer multiple award IDIQs may have all qualifying offerors on the vehicle with no price evaluation at the base contract level - the real price competition happens during fair opportunity on each order.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Real-World Vehicles: MACCs, MATOCs, and OASIS</h3>
+      <div class="learn-body">
+        <p>The theory of multiple award IDIQs becomes very concrete once you are in an operational contracting job. Two vehicle types dominate the landscape for most contracting officers.</p>
+        <p><strong>MACCs and MATOCs.</strong> In operational contracting - at bases, installations, and field units - you will primarily encounter <strong>MACCs</strong> (Multiple Award Construction Contracts) for construction work and <strong>MATOCs</strong> (Multiple Award Task Order Contracts) for services. Some offices use these terms interchangeably; others use MATOC as the broader category and MACC specifically for construction. Either way, the concept is the same: a pool of pre-qualified contractors on the same vehicle, competing for individual task orders. A base civil engineer contracting office might have a MACC with 6 to 10 construction firms. When a new project comes in, they run fair opportunity among those awardees, evaluate proposals, and award a task order.</p>
+        <p><strong>GSA OASIS.</strong> For professional services, the big government-wide vehicle is <strong>GSA OASIS</strong> (One Acquisition Solution for Integrated Services). OASIS covers a broad range of professional, technical, and management services - program management, logistics, engineering, financial management, IT services, and more. Agencies across the government use OASIS to place service task orders without running a full open-market procurement. GSA also has OASIS+, the next generation of the vehicle with updated terms and a broader scope.</p>
+
+        <div class="highlight-box">
+          <strong>Centralized vs. decentralized - this matters.</strong> MACCs and MATOCs are typically <strong>centralized</strong>: the contracting office that awarded the vehicle is also the office that places orders against it. The ordering procedures are internal, you know the PCO, and questions are easy to resolve. GSA OASIS is <strong>decentralized</strong>: GSA awarded and administers the base contract, but ordering activities at dozens of agencies place task orders independently. The agency CO placing orders is not the same CO who negotiated the base contract terms.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>For decentralized IDIQs: read the ordering guide before you do anything else.</strong> Every major government-wide or multi-agency vehicle has an ordering guide. OASIS has one. SEWP has one. Alliant has one. These guides tell you exactly how fair opportunity works on that specific vehicle - the portal you use, the minimum response times, what goes in the order request, how to document selection decisions, what approvals are required, and what fees apply. The FAR gives you the framework; the ordering guide gives you the vehicle-specific procedures you actually have to follow. If you skip the ordering guide and do it "the FAR way," you may still be wrong for that particular contract.
+        </div>
+
+        <p>For decentralized contracts, also reach out to the <strong>contract-holding office</strong> (the agency that awarded and administers the base contract) before you place your first order. They can answer vehicle-specific questions, confirm your requirement is within scope, and point you to current ordering guides and any updates to procedures. For OASIS, that is GSA's OASIS Program Management Office. Getting a quick answer from the source is far better than discovering after award that you ran the wrong process.</p>
+
+        <div class="scenario-box">
+          <div class="scenario-label">Centralized vs. Decentralized in Practice</div>
+          <p><strong>Centralized (MATOC at Base X):</strong> The 772d CONS awarded the MATOC and places all task orders. When the civil engineer office needs a service, they submit a requirement to the contracting office, which runs fair opportunity among the 8 awardees and issues the task order - all within the same contracting office.</p>
+          <p><strong>Decentralized (GSA OASIS):</strong> Your agency wants to award a program management support task order. GSA holds the OASIS contract. Your agency's CO is the ordering contracting officer. You log into the OASIS ordering portal, follow GSA's ordering guide procedures, run fair opportunity among the OASIS awardees in the relevant pool, and issue the task order - but the base contract terms were set by GSA, not you.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Fair Opportunity</h3>
+      <div class="learn-body">
+        <p><span class="far-ref">FAR 16.505(b)(1)</span> requires that each awardee be given a fair opportunity to be considered for each order exceeding the simplified acquisition threshold (currently $250,000). For orders at or below the simplified acquisition threshold, the contracting officer has broader discretion on procedures, but still must treat awardees fairly.</p>
+        <p>Fair opportunity is not the same as full and open competition under FAR Part 6. You are not going back to the street. You are competing among the contractors who already hold the contract. The process is typically faster and less formal than a new procurement, but it still requires structure and documentation.</p>
+        <p>At its core, fair opportunity means: you notify all awardees of the requirement, give them a reasonable chance to respond, and select the awardee whose response represents the best value to the Government based on the evaluation criteria stated in the order request. You cannot pre-select a contractor and then go through the motions of fair opportunity just to check a box.</p>
+
+        <div class="highlight-box warn">
+          <strong>Fair opportunity is not optional.</strong> Skipping fair opportunity on a multiple award IDIQ is one of the most protestable actions in federal contracting. If you do not provide fair opportunity (and no exception applies), the losing contractors can protest the order - and they frequently do.
+        </div>
+
+        <p>The base contract should describe the ordering procedures, including how fair opportunity will be conducted. Some contracts prescribe a specific process (submit proposals through a portal, respond within 10 business days, etc.). Others leave more flexibility to the ordering contracting officer. Either way, read the ordering procedures before you start.</p>
+
+        <div class="highlight-box warn">
+          <strong>FAR Overhaul note - Section Renumbering and Innovative Ordering:</strong> The RFO reorganized much of the ordering content. Fair opportunity procedures formerly in FAR 16.505 are now at <span class="far-ref">FAR 16.507-2</span>. The new <span class="far-ref">FAR 16.507-2(a)(2)</span> explicitly encourages ordering activities to use <strong>innovative approaches when placing orders</strong>, commensurate with risk and complexity. It references a "Periodic Table of Acquisition Innovations" as a resource. The emphasis is on reducing administrative burden while maintaining fair treatment of awardees.
+        </div>
+
+        <div class="highlight-box">
+          <strong>DFARS note - LPTA Restrictions and Reverse Auction Prohibitions:</strong> For DoD, <span class="far-ref">DFARS 216.505(b)</span> points to <span class="far-ref">DFARS 215.101-2-70</span> for limitations on using the <strong>lowest price technically acceptable (LPTA)</strong> source selection process at the order level. LPTA is restricted for certain acquisitions - know when you cannot use it. Additionally, reverse auctions are prohibited for personal protective equipment and aviation critical safety items under <span class="far-ref">DFARS 217.7801</span>. These restrictions apply at the order level, not just at the contract level.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> The Fair Opportunity Process</h3>
+      <div class="learn-body">
+        <p>While the specifics vary by contract, the typical fair opportunity process follows this general flow:</p>
+
+        <ul class="checklist">
+          <li><strong>Define the requirement.</strong> Write a statement of work, performance work statement, or statement of objectives for the specific order. Include the evaluation criteria you will use to select the awardee. Common criteria include technical approach, relevant experience, past performance, and price.</li>
+          <li><strong>Notify all awardees.</strong> Send the order request (sometimes called a Request for Task Order Proposal or RTOP) to every contractor on the IDIQ. Give them a reasonable response time - what is reasonable depends on the complexity of the order, but 10 to 15 business days is common for services orders.</li>
+          <li><strong>Receive and evaluate responses.</strong> Evaluate each contractor's proposal against the stated criteria. This is a comparative evaluation - you are determining which response offers the best value.</li>
+          <li><strong>Select the awardee and document the decision.</strong> Select the contractor whose proposal represents the best value based on the evaluation. Document why that contractor was selected and why the others were not. This documentation is your defense if the order is protested.</li>
+          <li><strong>Issue the order.</strong> Award the order to the selected contractor. Notify unsuccessful offerors of the award and, if the order exceeds $6 million (for DoD, NASA, and Coast Guard) or $6 million (for civilian agencies), provide a brief explanation of the basis for selection if requested.</li>
+        </ul>
+
+        <div class="highlight-box tip">
+          <strong>Streamlined procedures for lower-value orders.</strong> For orders at or below the simplified acquisition threshold, the contracting officer does not need to conduct a full evaluation. The ordering procedures may allow oral quotes, rotating among awardees, or other streamlined approaches. The key is that every awardee gets a fair shot - even if the process is informal.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Exceptions to Fair Opportunity</h3>
+      <div class="learn-body">
+        <p>There are situations where the contracting officer can place an order with a specific contractor without providing fair opportunity to the others. <span class="far-ref">FAR 16.505(b)(2)</span> identifies four statutory exceptions. These are narrow, and each requires written justification and approval before the order is placed.</p>
+
+        <div class="exception-grid">
+          <div class="exception-card">
+            <span class="exc-num">Exception 1</span>
+            <h4>Urgent Need</h4>
+            <p>The agency need is so urgent that providing fair opportunity would result in unacceptable delays. This is not "the program office waited too long to submit the requirement." This is genuine urgency - a natural disaster, a safety issue, or a time-critical mission need that cannot wait for the fair opportunity process.</p>
+          </div>
+          <div class="exception-card">
+            <span class="exc-num">Exception 2</span>
+            <h4>Only One Capable Source</h4>
+            <p>Only one awardee is capable of providing the required supplies or services at the level of quality required because the supplies or services are unique or highly specialized. Remember, you are only looking at the contractors who already hold the IDIQ, not the entire market. If only one of the awardees can do this particular work, that is your justification.</p>
+          </div>
+          <div class="exception-card">
+            <span class="exc-num">Exception 3</span>
+            <h4>Logical Follow-On</h4>
+            <p>The order is a logical follow-on to an order already issued under the contract, and only the original awardee can reasonably perform the work. This applies when switching contractors mid-effort would be impractical or would significantly increase cost or risk - for example, a contractor already has the security clearances, institutional knowledge, and infrastructure in place for an ongoing project.</p>
+          </div>
+          <div class="exception-card">
+            <span class="exc-num">Exception 4</span>
+            <h4>Minimum Guarantee</h4>
+            <p>The order is necessary to satisfy the minimum guarantee to a particular contractor. If an awardee is approaching the end of the ordering period and the Government has not yet met the guaranteed minimum, you can direct an order to that contractor to fulfill the obligation. This prevents a breach of contract claim.</p>
+          </div>
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>Document the justification before you place the order.</strong> Each exception requires a written justification that explains why fair opportunity was not provided and why the selected contractor was chosen. The justification must be approved at the appropriate level - check your agency's delegation of authority. Do not place the order first and write the justification later. That is backwards and creates legal risk.
+        </div>
+
+        <div class="highlight-box">
+          <strong>DFARS note - Follow-On Exception Procedures:</strong> For DoD, <span class="far-ref">DFARS 216.505(b)(2)</span> requires specific procedures when citing the follow-on or only-one-capable-source exceptions (FAR 16.505(b)(2)(i)(B) or (C)) for orders exceeding the simplified acquisition threshold. Follow the procedures at DFARS 216.505(b)(2) - this is an additional documentation layer beyond the FAR requirement. Make sure your justification addresses the DFARS-specific elements, not just the FAR requirements.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> Enhanced Competition</h3>
+      <div class="learn-body">
+        <p>For DoD, NASA, and the Coast Guard, orders exceeding $6 million have additional requirements under <span class="far-ref">FAR 16.505(b)(1)(iv)</span>. These enhanced competition requirements push the ordering process closer to a formal source selection:</p>
+        <p><strong>A formal evaluation.</strong> The contracting officer must provide a notice to all awardees, allow a reasonable response period, evaluate proposals using the criteria in the order request, and document the rationale for the selection decision. For orders over $6 million, this documentation needs to be more robust than a simple best value memorandum - it should read like a source selection decision document.</p>
+        <p><strong>Post-award notifications.</strong> If an awardee requests it, the contracting officer must provide a brief explanation of the basis for the selection within 3 business days. This is analogous to a debriefing in a traditional source selection, though more limited in scope.</p>
+
+        <div class="highlight-box">
+          <strong>The dollar threshold matters for protests too.</strong> For DoD, NASA, and Coast Guard orders exceeding $25 million, or for civilian agency orders exceeding $10 million, the protest forum includes the U.S. Court of Federal Claims in addition to GAO. More on protests in Section 7.
+        </div>
+
+        <div class="highlight-box">
+          <strong>DFARS note - $15M Debriefing Requirement:</strong> <span class="far-ref">DFARS 216.505</span> requires <strong>postaward debriefings for task and delivery orders valued at $15 million or more</strong> (per 10 U.S.C. Section 818). Both successful and unsuccessful awardees are entitled to a written or oral debriefing following the procedures in <span class="far-ref">DFARS 215.506</span> and <span class="far-ref">DFARS 215.506-70</span>. This is a more robust debriefing requirement than the standard FAR post-award notification - it mirrors the debriefing procedures for traditional source selections. The clause at <span class="far-ref">DFARS 252.216-7010</span> (Postaward Debriefings for Task Orders and Delivery Orders) must be included in competitive negotiated solicitations when multiple award contracts are contemplated and orders may reach $15 million.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>FAR Overhaul note - Task-Order Ombudsman:</strong> The RFO added <span class="far-ref">FAR 16.507-2(b)</span>, which requires agency heads to designate a <strong>task-order ombudsman</strong> - a senior agency official independent of the contracting officer - to review contractor complaints and ensure fair opportunity compliance. If a contractor believes the fair opportunity process was not followed, they can raise the issue with the ombudsman before pursuing a formal protest. The new clause <span class="far-ref">FAR 52.216-32</span> (Task-Order and Delivery-Order Ombudsman) must be included in the contract. Alternate I applies for multi-agency contracts.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">7</span> Scope, Pricing, and Funding</h3>
+      <div class="learn-body">
+        <p>The scope, pricing, and funding rules from single award IDIQs apply here too - every order must be within the scope of the base contract, the pricing must be consistent with the contract terms, and each order must be properly funded. But multiple award IDIQs add a wrinkle: you are evaluating price proposals from multiple contractors, which means you need to compare them.</p>
+        <p><strong>Scope is still paramount.</strong> All the same scope rules from <a href="idiq-single-award.html" style="color:var(--accent);">Topic 29</a> apply. The order must be within the scope of the base contract as competed. Out-of-scope orders on a multiple award IDIQ are arguably even more problematic because the other awardees can protest that they were denied a fair opportunity to compete for work that should have been a separate procurement.</p>
+        <p><strong>Price evaluation.</strong> When evaluating fair opportunity responses, you compare prices across the proposals received. The base contract rates provide a ceiling, but contractors can offer lower prices on individual orders to win the work. Evaluate whether proposed prices are fair and reasonable by comparing among the competitors and against the contract rates.</p>
+        <p><strong>Funding is per-order.</strong> Just like single award, each order is funded individually. The same severable/non-severable and fiscal year rules apply. One additional consideration: if you are placing orders against a Government-wide contract (GWAC) or multi-agency contract (MAC), your agency may need to pay an administrative fee to the contract-holding agency. Factor that into the funding.</p>
+
+        <div class="highlight-box">
+          <strong>DFARS note - Only One Offer Received:</strong> <span class="far-ref">DFARS 216.505-70</span> adds a requirement that does not exist in the FAR: if you run a competitive fair opportunity process and receive <strong>only one offer</strong> for an order exceeding the simplified acquisition threshold, you must follow the procedures at <span class="far-ref">DFARS 215.371</span>. That means you need to determine whether the solicitation was unnecessarily restrictive, re-solicit if appropriate, or document why the one offer received is sufficient. This catches a common scenario - you send the order request to five awardees and only one responds. Do not just award to the single offeror without the 215.371 analysis.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>FAR Overhaul note - BPAs Under Multiple Award IDIQs:</strong> The RFO added <span class="far-ref">FAR 16.507-2(c)</span>, which explicitly authorizes establishing <strong>Blanket Purchase Agreements (BPAs)</strong> under multiple award IDIQ contracts to fill repetitive needs. This was always a gray area - now it is codified. BPAs under multiple award IDIQs require sufficient scope detail, a defined ordering period with option terms, activity-specific ordering procedures, and fair opportunity applied to individual BPA orders. If the BPA ordering period exceeds five years, on-ramp provisions are required. This gives ordering activities a way to streamline high-volume, repetitive ordering without running a full fair opportunity process for every small purchase.
+        </div>
+
+        <div class="highlight-box">
+          <strong>DFARS note - SPRS Assessments:</strong> DoD contracting officers must consider <strong>Supplier Performance Risk System (SPRS)</strong> assessments of price and supplier risk when making award decisions on orders (<span class="far-ref">DFARS 216.505(a)</span>). Check SPRS before selecting an awardee - it provides price risk and supplier risk scores that should factor into your best value determination. Orders are issued using <strong>DD Form 1155</strong>.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">8</span> Order-Level Protests</h3>
+      <div class="learn-body">
+        <p>This is where multiple award IDIQs get interesting. Unlike traditional contract awards where protests go to GAO under FAR Part 33, order-level protests have their own rules and forums.</p>
+        <p><strong>The agency-level protest comes first.</strong> <span class="far-ref">FAR 16.505(a)(10)</span> requires that the base contract include a task-order and delivery-order protest procedure. Before going to GAO or the Court of Federal Claims, a protester must first file at the agency level and receive a decision (or have the time for decision expire). This is an internal review - typically handled by a level above the contracting officer who issued the order.</p>
+        <p><strong>GAO jurisdiction.</strong> GAO can hear protests of orders placed under multiple award IDIQ contracts, but only for orders exceeding $25 million (for DoD, NASA, and Coast Guard) or $10 million (for civilian agencies). Below those thresholds, the agency-level protest is the only formal remedy. GAO has 100 days to issue a decision on task order protests, just like other protests.</p>
+        <p><strong>Court of Federal Claims.</strong> The COFC has jurisdiction over task order protests above the same dollar thresholds as GAO. Contractors can choose to file at GAO or COFC, but not both simultaneously for the same protest grounds.</p>
+
+        <div class="scenario-box">
+          <div class="scenario-label">Protest Scenario</div>
+          <p>You place a $15 million task order on a DoD multiple award IDIQ without providing fair opportunity to one of the awardees. That awardee files an agency-level protest. The agency sustains the protest. Now what? You either cancel the order and re-compete it with fair opportunity, or you document a valid exception to fair opportunity. If the agency had denied the protest and the order exceeded $25 million, the protester could have taken it to GAO or COFC.</p>
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Prevention is better than correction.</strong> The best way to handle protests is to not get protested. Document your fair opportunity process thoroughly. Explain your evaluation rationale clearly. Treat every awardee consistently. When contractors can see that the process was fair and the decision was reasonable, they are far less likely to protest - and if they do, your documentation will sustain the decision.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">9</span> Common Mistakes</h3>
+      <div class="learn-body">
+        <p><strong>Skipping fair opportunity.</strong> The most common and most protestable mistake. Directing an order to a specific contractor without running a fair opportunity process or documenting an exception is a textbook protest scenario. Even if you believe the contractor is the best choice, you must follow the process.</p>
+        <p><strong>Vague or missing evaluation criteria.</strong> If your order request does not tell contractors how you will evaluate their proposals, you cannot defend your selection decision. State the criteria up front. Price, technical approach, past performance, relevant experience - whatever matters for this order, say so before you receive proposals.</p>
+        <p><strong>Inadequate documentation.</strong> A one-sentence selection memo that says "Contractor A was the best value" is not sufficient. Document what each contractor proposed, how each proposal was evaluated against the stated criteria, and why the selected contractor was the best value. If someone reads your file two years later, they should be able to understand the decision without talking to you.</p>
+        <p><strong>Unreasonable response times.</strong> Giving awardees 48 hours to respond to a complex task order request is not fair opportunity. The response time needs to be proportional to the complexity of the requirement. A simple delivery order might warrant 5 business days. A complex engineering task order might need 15 to 20.</p>
+        <p><strong>Scope creep through orders.</strong> Using the IDIQ to order work that stretches beyond the original scope. This is especially tempting on multiple award vehicles because they tend to be broad - but "broad" is not "unlimited." Every order still needs to be within the competed scope.</p>
+        <p><strong>Confusing fair opportunity with FAR Part 6.</strong> Fair opportunity is not full and open competition. You do not need a synopsis, a determination and findings, or a J&A (Justification and Approval under FAR 6.3). The exceptions to fair opportunity have their own justification process under FAR 16.505(b)(2). Do not conflate the two frameworks.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="mai-panel">
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>GSA OASIS+ Ordering Guide</h4>
+        <p>The ordering guide for GSA's government-wide professional services vehicle. Required reading before placing any OASIS task order - covers pools, fair opportunity procedures, the ordering portal, and fees.</p>
+        <a href="https://www.gsa.gov/buy-through-us/purchasing-programs/gsa-multiple-award-schedules/gsa-schedule-offerings/oasis-plus" target="_blank" rel="noopener">Open GSA OASIS+</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 16.505: Ordering</h4>
+        <p>The primary ordering reference for indefinite-delivery contracts. Contains fair opportunity requirements, exceptions, enhanced competition rules, and protest procedures.</p>
+        <a href="https://www.acquisition.gov/far/16.505" target="_blank" rel="noopener">Open FAR 16.505</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 16.505(b): Fair Opportunity</h4>
+        <p>The specific subsection governing fair opportunity and its exceptions for multiple award IDIQ orders. The section you will reference most often.</p>
+        <a href="https://www.acquisition.gov/far/16.505#FAR_16_505__d1051e39" target="_blank" rel="noopener">Open FAR 16.505(b)</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 16.504(c): Multiple Awards</h4>
+        <p>Establishes the preference for multiple awards and the conditions under which a contracting officer may determine that a single award is appropriate.</p>
+        <a href="https://www.acquisition.gov/far/16.504" target="_blank" rel="noopener">Open FAR 16.504</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Subpart 16.5: Indefinite-Delivery Contracts</h4>
+        <p>The full subpart covering all indefinite-delivery contract types including requirements contracts, definite-quantity, and indefinite-quantity.</p>
+        <a href="https://www.acquisition.gov/far/subpart-16.5" target="_blank" rel="noopener">Open FAR 16.5</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 33.104: Protests to GAO</h4>
+        <p>General GAO protest procedures. Combined with FAR 16.505(a)(10), covers how task and delivery order protests are handled at the GAO level.</p>
+        <a href="https://www.acquisition.gov/far/33.104" target="_blank" rel="noopener">Open FAR 33.104</a>
+      </div>
+      <div class="lookup-card">
+        <h4>DFARS Part 216: Types of Contracts</h4>
+        <p>DoD-specific supplements to FAR Part 16, including SPRS requirements, $15M debriefing rules, one-offer procedures, and LPTA restrictions at the order level.</p>
+        <a href="https://www.acquisition.gov/dfars/part-216-types-contracts" target="_blank" rel="noopener">Open DFARS 216</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Overhaul - Part 16</h4>
+        <p>The Revolutionary FAR Overhaul changes to Part 16, including on-ramps/off-ramps, pricing deferral, BPAs under IDIQs, task-order ombudsman, and innovative ordering approaches.</p>
+        <a href="https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16" target="_blank" rel="noopener">Open RFO Part 16</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Single Award IDIQ Orders (Topic 29)</h4>
+        <p>When the IDIQ has one awardee, there is no order-level competition. Learn the simpler side of IDIQ ordering first.</p>
+        <a href="idiq-single-award.html">Open Topic 29</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="dfars.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+document.querySelectorAll('.mai-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.mai-panel').forEach(function(p) { p.classList.remove('active'); });
+    document.querySelectorAll('.mai-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.getElementById('panel-' + tab.getAttribute('data-tab')).classList.add('active');
+    tab.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
