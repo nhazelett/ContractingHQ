@@ -17,7 +17,7 @@
 
   // ── STATE ────────────────────────────────────────────────────────
   var SK = 'cfm_v1';
-  var state = { idx: 0, time: 0, vol: 0.75, shuffle: false, favs: [] };
+  var state = { idx: 0, time: 0, vol: 0.75, shuffle: false, favs: [], wasPlaying: false };
 
   function loadState() {
     try {
@@ -103,7 +103,7 @@
   aud.addEventListener('timeupdate', function () { state.time = aud.currentTime; updateProgress(); });
   aud.addEventListener('error',  function () { setTimeout(nextTrack, 1200); });
 
-  window.addEventListener('beforeunload', function () { state.time = aud.currentTime; saveState(); });
+  window.addEventListener('beforeunload', function () { state.time = aud.currentTime; state.wasPlaying = isPlaying; saveState(); });
 
   // ── DETECT PAGE ──────────────────────────────────────────────────
   var path = window.location.pathname;
@@ -821,22 +821,27 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   }
 
   // ── INIT ─────────────────────────────────────────────────────────
+  function resumeAudio() {
+    aud.src = trackUrl(state.idx);
+    aud.load();
+    aud.addEventListener('canplay', function resume() {
+      aud.removeEventListener('canplay', resume);
+      aud.currentTime = state.time || 0;
+      if (state.wasPlaying) {
+        aud.play().catch(function () {});
+        playerReady = true;
+      }
+    }, { once: true });
+    updateAll();
+  }
+
   function init() {
     if (isHome) {
       buildHome();
+      if (state.wasPlaying || state.time > 0) resumeAudio();
     } else {
       buildFloat();
-      // Resume playback if was playing before navigation
-      if (state.time > 0) {
-        aud.src = trackUrl(state.idx);
-        aud.load();
-        aud.addEventListener('canplay', function resume() {
-          aud.removeEventListener('canplay', resume);
-          aud.currentTime = state.time;
-          // Don't auto-play on navigation - let user resume
-        }, { once: true });
-        updateAll();
-      }
+      if (state.wasPlaying || state.time > 0) resumeAudio();
     }
   }
 
