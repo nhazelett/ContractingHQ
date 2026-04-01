@@ -28,6 +28,7 @@
         if (typeof s.vol === 'number')   state.vol     = s.vol;
         if (typeof s.shuffle === 'boolean') state.shuffle = s.shuffle;
         if (Array.isArray(s.favs))       state.favs    = s.favs;
+        if (typeof s.wasPlaying === 'boolean') state.wasPlaying = s.wasPlaying;
       }
     } catch (e) {}
   }
@@ -836,12 +837,17 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   }
 
   function init() {
+    // If nothing was actively playing, start on a random track
+    if (!state.wasPlaying) {
+      state.idx = Math.floor(Math.random() * TRACKS.length);
+      state.time = 0;
+    }
     if (isHome) {
       buildHome();
-      if (state.wasPlaying || state.time > 0) resumeAudio();
+      if (state.wasPlaying) resumeAudio();
     } else {
       buildFloat();
-      if (state.wasPlaying || state.time > 0) resumeAudio();
+      if (state.wasPlaying) resumeAudio();
     }
   }
 
