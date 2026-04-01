@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Options training for contracting officers. Covers FAR 17.2, option exercise requirements, FAR 52.217-8 and 52.217-9, clause tailoring, government shutdowns, and what happens when a service contract lapses." />
+  <title>Options | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .opt-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .opt-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .opt-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .opt-tab:hover { color: var(--white); }
+    .opt-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .opt-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .opt-panel.active { display: block; }
+
+    /* ── Intro badge ── */
+    .opt-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .opt-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .opt-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .opt-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn section ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-body .far-ref { color: var(--accent); font-weight: 600; font-size: 0.82rem; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.5px; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── Scenario box ── */
+    .scenario-box { background: rgba(251,191,36,0.04); border: 1px solid rgba(251,191,36,0.2); border-radius: 14px; padding: 1.5rem; margin: 1.5rem 0; }
+    .scenario-box .scenario-label { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #fbbf24; margin-bottom: 0.5rem; }
+    .scenario-box p { color: var(--silver); font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.5rem; }
+    .scenario-box p:last-child { margin-bottom: 0; }
+    .scenario-box strong { color: #fde68a; }
+
+    /* ── Mnemonic box ── */
+    .mnemonic-box { background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.25); border-radius: 14px; padding: 1.5rem; margin: 1.5rem 0; text-align: center; }
+    .mnemonic-box .mnemonic-label { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #a78bfa; margin-bottom: 0.75rem; }
+    .mnemonic-box .mnemonic-line { font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--white); margin-bottom: 0.35rem; }
+    .mnemonic-box .mnemonic-sub { color: var(--silver); font-size: 0.85rem; line-height: 1.6; }
+
+    /* ── Compare table ── */
+    .compare-table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.85rem; }
+    .compare-table th { font-family: 'Rajdhani', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); padding: 0.65rem 0.85rem; text-align: left; border-bottom: 2px solid rgba(74,158,255,0.2); background: rgba(74,158,255,0.04); }
+    .compare-table td { padding: 0.65rem 0.85rem; color: var(--silver); border-bottom: 1px solid rgba(74,158,255,0.06); vertical-align: top; line-height: 1.6; }
+    .compare-table tr:hover td { background: rgba(74,158,255,0.03); }
+
+    /* ── Cowboy tip ── */
+    .cowboy-tip { background: rgba(251,191,36,0.04); border: 1px solid rgba(251,191,36,0.2); border-radius: 14px; padding: 1.25rem; margin: 1.25rem 0; }
+    .cowboy-tip .cowboy-label { font-family: 'Rajdhani', sans-serif; font-size: 0.82rem; font-weight: 700; color: #fbbf24; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+    .cowboy-tip p { color: var(--silver); font-size: 0.88rem; line-height: 1.7; margin-bottom: 0.75rem; }
+    .cowboy-tip p:last-child { margin-bottom: 0; }
+    .cowboy-tip strong { color: var(--white); }
+
+    /* ── Timeline ── */
+    .timeline { position: relative; margin: 1.5rem 0 1.5rem 1.5rem; padding-left: 1.5rem; border-left: 2px solid rgba(74,158,255,0.2); }
+    .timeline-item { position: relative; margin-bottom: 1.5rem; }
+    .timeline-item:last-child { margin-bottom: 0; }
+    .timeline-dot { position: absolute; left: -1.5rem; top: 0.15rem; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); transform: translateX(-50%); border: 2px solid #040d1f; }
+    .timeline-dot.danger { background: #f87171; }
+    .timeline-dot.success { background: #34d399; }
+    .timeline-label { font-family: 'Rajdhani', sans-serif; font-size: 0.78rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.2rem; }
+    .timeline-label.danger { color: #f87171; }
+    .timeline-label.success { color: #34d399; }
+    .timeline-text { color: var(--silver); font-size: 0.88rem; line-height: 1.6; }
+    .timeline-text strong { color: var(--white); }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; padding: 0; margin: 0.75rem 0; }
+    .checklist li { padding: 0.4rem 0 0.4rem 1.5rem; position: relative; font-size: 0.88rem; line-height: 1.6; }
+    .checklist li:before { content: '\2610'; position: absolute; left: 0; color: var(--accent); font-size: 1rem; }
+
+    /* ── Clause builder ── */
+    .cb-wrap { max-width: 800px; margin: 0 auto; }
+    .cb-prompt { text-align: center; margin-bottom: 2rem; }
+    .cb-prompt h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .cb-prompt p { color: var(--silver); font-size: 0.9rem; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+    .cb-group { margin-bottom: 1.75rem; }
+    .cb-label { font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .cb-sub { color: var(--silver); font-size: 0.82rem; margin-bottom: 0.65rem; line-height: 1.5; }
+    .cb-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; }
+    .cb-opt { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 12px; padding: 1rem 1.15rem; cursor: pointer; transition: all 0.2s; }
+    .cb-opt:hover { border-color: rgba(74,158,255,0.35); background: rgba(74,158,255,0.06); }
+    .cb-opt.selected { border-color: var(--accent); background: rgba(74,158,255,0.1); box-shadow: 0 0 16px rgba(74,158,255,0.08); }
+    .cb-opt-title { font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 0.2rem; }
+    .cb-opt-desc { font-size: 0.78rem; color: var(--silver); line-height: 1.5; }
+    .cb-generate { display: block; margin: 1.5rem auto 0; padding: 0.7rem 2rem; border-radius: 10px; font-size: 0.9rem; font-weight: 700; border: none; background: var(--accent); color: #040d1f; cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .cb-generate:hover { background: #6bb3ff; transform: translateY(-1px); }
+    .cb-generate:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .cb-output { display: none; margin-top: 2rem; animation: fadeSlideUp 0.35s ease-out; }
+    .cb-output.visible { display: block; }
+    .cb-output-section { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.15); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.25rem; }
+    .cb-output-section h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem; }
+    .cb-clause-text { background: rgba(4,13,31,0.8); border: 1px solid rgba(74,158,255,0.1); border-radius: 10px; padding: 1.15rem; font-size: 0.85rem; color: #c8d4e0; line-height: 1.7; font-family: inherit; white-space: pre-wrap; }
+    .cb-rationale { color: var(--silver); font-size: 0.85rem; line-height: 1.7; margin-top: 0.75rem; }
+    .cb-rationale strong { color: var(--white); }
+    .cb-warning { background: rgba(248,113,113,0.05); border: 1px solid rgba(248,113,113,0.15); border-radius: 10px; padding: 0.85rem 1rem; margin-top: 0.75rem; font-size: 0.82rem; color: #fca5a5; line-height: 1.6; }
+    .cb-tip { background: rgba(52,211,153,0.05); border: 1px solid rgba(52,211,153,0.15); border-radius: 10px; padding: 0.85rem 1rem; margin-top: 0.75rem; font-size: 0.82rem; color: #6ee7b7; line-height: 1.6; }
+    .cb-reset { text-align: center; margin-top: 1.5rem; }
+    .cb-reset button { padding: 0.55rem 1.4rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.25); background: rgba(74,158,255,0.08); color: var(--silver); cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .cb-reset button:hover { background: rgba(74,158,255,0.18); color: var(--white); }
+    @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .opt-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .compare-table { font-size: 0.78rem; }
+      .compare-table th, .compare-table td { padding: 0.5rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+      .mnemonic-box .mnemonic-line { font-size: 1.1rem; }
+      .cb-options { grid-template-columns: 1fr; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s;margin-top:.75rem}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="dfars.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="federal-register.html">Federal Register</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 34</span>
+    <h1 class="page-hero-title">Options</h1>
+    <p class="page-hero-sub">Options are not automatic. They are not guaranteed. They are a right the Government reserved at award, and exercising that right requires planning, justification, and action well before the contract expires. Miss the window and your mission stops.</p>
+  </div>
+</div>
+
+<div class="opt-bg">
+
+  <div class="opt-intro">
+    <span class="opt-intro-tag">Training</span>
+    <h2>Contract Options</h2>
+    <p>How options work, how to exercise them, how to tailor the clause to your situation, and what happens when a service contract dies. Governed by FAR Subpart 17.2 and the option clauses at FAR 52.217.</p>
+  </div>
+
+  <div class="opt-tabs">
+    <button class="opt-tab active" data-tab="learn">&#128218; Learn</button>
+    <button class="opt-tab" data-tab="tailor">&#9881; Clause Tailoring Tool</button>
+    <button class="opt-tab" data-tab="lookup">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="opt-panel active">
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> What Is an Option?</h3>
+      <div class="learn-body">
+        <p>An option is a unilateral right in a contract that the Government negotiated at the time of award. It allows the Government to purchase additional supplies or services, or to extend the term of the contract, without negotiating a new contract. The key word is <strong>unilateral</strong> - the contractor already agreed to the option terms when they signed the contract. The Government does not need the contractor's permission to exercise it.</p>
+        <p>FAR 17.2 governs options. FAR 17.201 defines an option as "a unilateral right in a contract by which, for a specified time, the Government may elect to purchase additional supplies or services called for by the contract, or may elect to extend the term of the contract." The contractor agreed to those prices and terms at award. If the Government exercises the option within the timeframes and conditions stated, the contractor is obligated to perform.</p>
+        <p>Options are not renewals. A renewal implies renegotiation. An option is the Government exercising something it already paid for (in the sense that the option pricing was part of the competitive evaluation at award). This is why options must be evaluated as part of the initial competition - so the Government gets the benefit of competitive pricing across all option periods, not just the base year.</p>
+
+        <div class="highlight-box">
+          <strong>Why options matter:</strong> Without options, every time a contract period ended you would need to start a brand new acquisition from scratch - new market research, new solicitation, new evaluation, new award. Options let you extend proven performance with pre-negotiated pricing, saving months of lead time and keeping services running.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> The Two Clauses You Need to Know</h3>
+      <div class="learn-body">
+        <p>There are two FAR clauses that drive nearly every option exercise you will do as a new contracting officer. They have similar names but very different purposes, and mixing them up is one of the most common mistakes in contract administration.</p>
+
+        <div class="mnemonic-box">
+          <div class="mnemonic-label">Memory Aid</div>
+          <div class="mnemonic-line">-8 if you're running late</div>
+          <div class="mnemonic-line">-9 when everything is fine</div>
+          <div class="mnemonic-sub" style="margin-top:0.5rem;">52.217-<strong>8</strong> is the emergency bridge. 52.217-<strong>9</strong> is the normal option exercise.</div>
+        </div>
+
+        <p><strong>FAR 52.217-9: Option to Extend the Term of the Contract.</strong> This is your standard option clause. It gives the Government the right to extend the contract for additional periods (usually one year at a time, up to the number of option years in the contract). The clause has fill-ins for the preliminary notice period and the exercise deadline. The specific timeframes are set when the solicitation is drafted - and as we will cover in the tailoring section, you have more flexibility here than most people realize. This is the clause you use when everything is going according to plan.</p>
+
+        <p><strong>FAR 52.217-8: Option to Extend Services.</strong> This is your lifeline when you are running late. It allows the Government to require continued performance of any services within the contract for up to 6 months. It is not an option year - it is a short-term bridge to prevent a gap in service while the follow-on contract is being awarded or the next option year is being processed. The Government must exercise it before the contract expires.</p>
+
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>52.217-9 (Extend Term)</th>
+              <th>52.217-8 (Extend Services)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Purpose</strong></td>
+              <td>Exercise a priced option year</td>
+              <td>Bridge a gap - keep services running</td>
+            </tr>
+            <tr>
+              <td><strong>Duration</strong></td>
+              <td>Full option period (typically 12 months)</td>
+              <td>Up to 6 months</td>
+            </tr>
+            <tr>
+              <td><strong>Pricing</strong></td>
+              <td>Pre-negotiated at award</td>
+              <td>Same rates as the current period</td>
+            </tr>
+            <tr>
+              <td><strong>When to use</strong></td>
+              <td>Normal option exercise - everything is on track</td>
+              <td>Follow-on not ready, need to keep services going</td>
+            </tr>
+            <tr>
+              <td><strong>Limitation</strong></td>
+              <td>Cannot exceed 5 years total (FAR 17.204)</td>
+              <td>6 months max; counts toward the 5-year total</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="highlight-box tip">
+          <strong>Pro tip:</strong> The 52.217-8 extension uses the same rates, terms, and conditions as the period being extended. This means if you are at the end of Option Year 3, the 217-8 extension uses OY3 rates. The contractor cannot renegotiate pricing just because you invoked the bridge clause.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Option Exercise Requirements</h3>
+      <div class="learn-body">
+        <p>FAR 17.207 lays out what the contracting officer must determine before exercising an option. This is not a rubber stamp. Every single option exercise requires a documented determination that covers these points:</p>
+
+        <ul class="checklist">
+          <li><strong>Need still exists.</strong> The requiring activity must confirm the supplies or services are still needed. Do not assume - get it in writing from the program office.</li>
+          <li><strong>Funds are available.</strong> You cannot exercise an option without funding. Coordinate with your Resource Advisor early.</li>
+          <li><strong>Option is the most advantageous method.</strong> Compared to a new solicitation or other alternatives, exercising the option provides the best value. If the market has shifted dramatically, you may need to compete instead.</li>
+          <li><strong>Option price is fair and reasonable.</strong> Just because the price was negotiated at award does not mean you skip this step. Verify the option pricing still represents fair and reasonable pricing.</li>
+          <li><strong>The option was synopsized in the original solicitation</strong> unless an exception under FAR 5.202 applies.</li>
+          <li><strong>Clause requirements are met.</strong> Whatever notice periods and conditions the option clause specifies have been satisfied.</li>
+        </ul>
+
+        <div class="highlight-box tip">
+          <strong>Calendar it.</strong> The single best thing you can do as a new contracting officer is put every contract expiration date in your calendar with reminders at 120, 90, 60, and 30 days. Do it the day the contract is awarded. Future you will be grateful.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> What Happens When a Service Contract Lapses</h3>
+      <div class="learn-body">
+        <p>If you miss the option exercise window and the contract expires, the contractor has no obligation to continue performing. Services stop. At that point, you have two choices:</p>
+        <p><strong>Choice 1: Write a sole-source bridge contract.</strong> This is the most common recovery path. You award a sole-source contract to the incumbent (or another qualified source) long enough to cover the time needed to re-solicit, evaluate, and award a new competitive contract. This requires a Justification and Approval (J&A) under FAR 6.302, which takes time and approvals. Depending on the dollar value, the J&A approval authority could go all the way up to the Head of Contracting Activity or higher.</p>
+        <p><strong>Choice 2: Live without services.</strong> If the requirement is not critical enough to justify a sole-source bridge, the organization goes without until a new contract is in place. For some requirements this is manageable. For base operations, IT services, or security - it is not.</p>
+        <p>Neither option is good. The sole-source bridge costs time and effort that could have been avoided, and it reduces competition. Going without services hurts the mission. The entire situation is preventable by exercising the option before the contract expires.</p>
+
+        <div class="highlight-box warn">
+          <strong>You cannot exercise an option on an expired contract.</strong> Once the period of performance ends, 52.217-9 and 52.217-8 are both dead. There is no retroactive option exercise. The contract is over and your only path forward is one of the two choices above.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Tailoring the Option Clause</h3>
+      <div class="learn-body">
+        <p>Most people assume 52.217-9 has to be filled in with something like "60-day preliminary notice" and "30-day final exercise." It does not. The clause has fill-in blanks, and <strong>you control what goes in them.</strong> The notice and exercise timeframes should be tailored to fit the actual requirement.</p>
+        <p>For a simple, non-complex service where the contractor's workforce is already in place and there is no mobilization involved - think custodial, grounds maintenance, or administrative support where the same people show up every day regardless - there is no practical reason to require 60 days of notice. The contractor already knows they are performing. You can fill in the clause to say the Government may provide notice <strong>at any time prior to contract expiration</strong> and may exercise the option <strong>at any time prior to contract expiration.</strong></p>
+        <p>This gives you maximum flexibility. If you get to 10 days before expiration and finally get your funds certified, you can still exercise the option without worrying about whether you missed a notice deadline.</p>
+
+        <div class="highlight-box warn">
+          <strong>The critical question: does this service require employee mobilization?</strong> If the contractor would need to hire new employees, relocate people, procure equipment, or ramp up operations for the option period, they need lead time. Removing notice periods from a contract that requires mobilization is unfair to the contractor and could create performance problems on day one of the option period. Tailor the clause to the reality of what the contractor needs to do to be ready.
+        </div>
+
+        <p>Here is how to think about it. If the answer to all three of these questions is "no," you can likely use minimal or no notice periods:</p>
+        <p><strong>1. Does the contractor need to hire or reassign people?</strong> If the same workforce continues performing, no mobilization is needed.</p>
+        <p><strong>2. Does the contractor need to procure materials or equipment?</strong> If the option period uses the same equipment already on site, no lead time is needed.</p>
+        <p><strong>3. Is there a transition or ramp-up period?</strong> If performance continues seamlessly from one period to the next, the contractor does not need advance warning.</p>
+        <p>If the answer to any of those is "yes," build in enough notice for the contractor to mobilize. 30 days is reasonable for light mobilization. 60 to 90 days for significant staffing or equipment changes. Match the notice period to the actual operational need, not to a template someone handed you.</p>
+
+        <div class="scenario-box">
+          <div class="scenario-label">Example: Simple Service</div>
+          <p>A janitorial contract at a single building. Same crew, same schedule, same supplies. The contractor does not need to hire anyone or buy anything new for the option year. <strong>Fill-in: "The Government may exercise the option by written notice to the Contractor at any time prior to expiration of the contract."</strong> No preliminary notice requirement. Maximum flexibility for the contracting officer.</p>
+        </div>
+
+        <div class="scenario-box">
+          <div class="scenario-label">Example: Complex Service</div>
+          <p>An IT services contract where the contractor staffs a 24/7 network operations center with cleared personnel. If the option is not exercised, those employees will be reassigned to other contracts. The contractor needs time to retain or backfill those positions. <strong>Fill-in: "The Government shall give the Contractor a preliminary written notice of its intent to extend the contract at least 60 days before the contract expires. The Contracting Officer may exercise the option by written notice at least 30 days before the contract expires."</strong></p>
+        </div>
+
+        <div class="cowboy-tip">
+          <div class="cowboy-label">Cowboy Tip of the Day</div>
+          <p>Think about option clause tailoring at the solicitation stage, not when you are trying to exercise the option two years later. The fill-ins are locked in at award. If you inherit a contract with rigid notice periods, you are stuck with them. When you write your own solicitations, tailor the fill-ins to give yourself room to operate. Your future self will thank you.</p>
+          <p style="font-size:0.78rem; color:rgba(148,163,184,0.6); margin-top:0.5rem; margin-bottom:0;">- Nick Hazelett</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> Government Shutdowns and Options</h3>
+      <div class="learn-body">
+        <p>Government shutdowns create a specific problem for options: you cannot obligate funds you do not have. If a shutdown or lapse in appropriations hits during your option exercise window, you cannot exercise the option because there is no money to obligate. But the FAR anticipated this problem.</p>
+
+        <p><strong>FAR 17.204(d) - The provision most people miss.</strong> FAR 17.204 is the section that governs option period structure. Most people know 17.204(a) through (c) - specify limits, state the exercise period, give the contractor adequate lead time. But paragraph (d) says something important: <em>"The period may extend beyond the contract completion date for service contracts. This is necessary for situations when exercise of the option would result in the obligation of funds that are not available in the fiscal year in which the contract would otherwise be completed."</em></p>
+
+        <div class="highlight-box warn">
+          <strong>FAR Overhaul note:</strong> This specific language from FAR 17.204(d) did not survive the Revolutionary FAR Overhaul. However, the new FAR language does not expressly prohibit extending the option exercise period beyond the contract completion date either. Since it was a permitted practice under the prior FAR and is not prohibited under the new FAR, it is reasonable to continue the practice. Check your agency's current guidance and consult legal if you want additional assurance, but do not assume this tool is off the table just because the old paragraph (d) language is gone.
+        </div>
+
+        <p>The concept is straightforward. You set the option exercise window so it extends <strong>past the contract completion date</strong> for service contracts when the issue is that next fiscal year's funds are not yet available. This is your shutdown protection. If you write your 52.217-9 fill-in so the Government can exercise the option within, say, 30 or 60 days <strong>after</strong> the contract completion date, a shutdown that overlaps with the end of the fiscal year does not kill the option. The Government reopens, funds become available, and you exercise the option within the extended window.</p>
+
+        <div class="highlight-box tip">
+          <strong>How to use 17.204(d):</strong> When drafting your 52.217-9 fill-in, include language like: "The Contracting Officer may exercise the option by written notice to the Contractor within 60 days after the expiration of the current contract period." This creates a post-expiration exercise window specifically for situations where funds are not available before the contract ends. Combine this with "at any time prior to expiration" for the preliminary notice, and you have covered both scenarios - normal exercise and funding-delayed exercise.
+        </div>
+
+        <p><strong>Why this matters.</strong> Without 17.204(d) tailoring, if the contract expires September 30 and the Government shuts down October 1, your option is dead. With 17.204(d) tailoring, the exercise window stays open past September 30, so when the Government reopens and funds are appropriated, you can still exercise the option and keep services running without a gap.</p>
+
+        <p><strong>FAR 52.232-19: Availability of Funds for the Next Fiscal Year.</strong> This clause complements the 17.204(d) approach. It is designed for severable service contracts that cross fiscal years and makes the Government's obligation to pay contingent on funds being available. If your option period is funded incrementally or if there is a risk of a funding gap at the start of the new fiscal year, this clause should be in the contract. Pair it with the extended exercise window from 17.204(d) and you have a complete framework for handling funding uncertainty.</p>
+
+        <p>The first line of defense is still to exercise early. If your clause allows exercise at any time prior to expiration, use that flexibility to exercise 90 or 120 days out when you have funds and certainty. But when that is not possible - because of a shutdown, a continuing resolution, or a delayed appropriation - 17.204(d) is what keeps the option alive.</p>
+
+        <div class="scenario-box">
+          <div class="scenario-label">Shutdown Scenario - Without 17.204(d) Tailoring</div>
+          <p>A facilities maintenance contract expires September 30. The Government shuts down October 1. The contracting officer was waiting on FY funds to exercise the option. The shutdown hits, the contract expires, and the option is dead. When the Government reopens three weeks later, the CO has to write a sole-source bridge contract just to get custodial and HVAC services back online.</p>
+        </div>
+
+        <div class="scenario-box">
+          <div class="scenario-label">Shutdown Scenario - With 17.204(d) Tailoring</div>
+          <p>Same contract, same shutdown. But the 52.217-9 clause was tailored at the solicitation stage to allow exercise within 60 days after contract completion per FAR 17.204(d). The Government reopens three weeks later, Congress passes an appropriations bill, and the CO exercises the option within the extended window. <strong>No gap in service. No sole-source bridge. No J&A.</strong> The only difference was how the clause was written two years earlier.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">7</span> The 5-Year Rule and Exceptions</h3>
+      <div class="learn-body">
+        <p>FAR 17.204 sets a general limit: the total contract period, including all options, cannot exceed 5 years. A one-year base with four one-year options is the standard structure. This rule exists because Congress does not want agencies locking in contractors for a decade without recompeting.</p>
+        <p>There are exceptions. Certain statutes authorize longer periods for specific contract types. Information technology contracts can go up to 5 years for the basic period plus options under the Clinger-Cohen Act. Some services contracts can extend beyond 5 years when authorized by agency-specific statutes. But for a new contracting officer working standard service contracts, the 5-year cap is your default assumption unless someone shows you the statutory authority for going longer.</p>
+        <p>The 217-8 extension counts toward this cap. If you have a base year plus four option years (5 years total), you have already maxed out your contract period. A 217-8 extension on top of that would exceed 5 years and is not authorized without additional statutory authority. Plan accordingly.</p>
+
+        <div class="highlight-box">
+          <strong>Practical impact:</strong> When building a solicitation, think about whether you need the flexibility of a 217-8 bridge. If you use a base + 4 option year structure, you have consumed the full 5 years and have no room for an emergency extension. Some offices deliberately structure contracts as base + 3 option years + a 217-8 clause, keeping a year of runway available if they need it.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">8</span> The Option Exercise Timeline</h3>
+      <div class="learn-body">
+        <p>Working backward from the contract expiration date, here is what a healthy option exercise timeline looks like. Adjust the exact days based on your clause fill-ins, but this is the general rhythm:</p>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot success"></div>
+            <div class="timeline-label success">120 Days Out</div>
+            <div class="timeline-text"><strong>Start the process.</strong> Pull the contract file. Confirm the option clause details, notice period requirements, and option pricing. Send a letter to the requiring activity asking them to confirm the need still exists and to certify funds availability.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot success"></div>
+            <div class="timeline-label success">90 Days Out</div>
+            <div class="timeline-text"><strong>Preliminary notice to the contractor</strong> (if your clause requires one). The notice tells the contractor the Government intends to exercise the option. This is not the exercise itself - it is a heads-up.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-label">60 Days Out</div>
+            <div class="timeline-text"><strong>Fair and reasonable determination.</strong> Document that the option price is still fair and reasonable. Check the market, compare to recent awards, look at BLS indices if applicable. Get your D&F signed by the appropriate authority.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-label">45 Days Out</div>
+            <div class="timeline-text"><strong>Funds confirmed.</strong> Your Resource Advisor has certified that funds are available and committed. If funds are not available, this is when you raise the alarm - not two weeks before expiration.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot success"></div>
+            <div class="timeline-label success">30 Days Out</div>
+            <div class="timeline-text"><strong>Execute the modification.</strong> Issue the unilateral modification exercising the option. The SF 30 goes to the contractor. The option is now exercised. Everything after this is filing and closeout of the current period.</div>
+          </div>
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>If you tailored your clause for maximum flexibility,</strong> this timeline becomes a guideline rather than a hard requirement. You still want to exercise early, but if something delays you (funding, shutdown risk, slow program office response), you have room to maneuver instead of missing a contractual deadline.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">9</span> Option Exercise D&F Template</h3>
+      <div class="learn-body">
+        <p>Every option exercise requires a Determination and Findings (D&F) documenting that the contracting officer has satisfied the requirements of FAR 17.207. Here is a template you can adapt to your situation. The bolded items in brackets are your fill-ins.</p>
+
+        <div class="cb-clause-text" style="margin:1.25rem 0;">DETERMINATION AND FINDINGS
+FOR EXERCISE OF OPTION
+
+1. I hereby determine that the following conditions have been met for the exercise of the option under Contract No. <strong>[contract number]</strong>, awarded to <strong>[contractor name]</strong>:
+
+FINDINGS:
+
+a. The requirement for <strong>[describe the supplies or services]</strong> continues to exist. The requiring activity confirmed the continued need on <strong>[date of requirement confirmation letter/email]</strong>.
+
+b. Funds in the amount of <strong>[$X,XXX.XX]</strong> are available and have been certified by <strong>[Resource Advisor name]</strong> on <strong>[date]</strong>.
+
+c. Exercise of this option is the most advantageous method of fulfilling the Government's need. <strong>[Briefly state why - e.g., "The option price was competitively established at award and remains below current market rates. Recompeting this requirement would result in a gap in services and increased acquisition lead time of approximately X months."]</strong>
+
+d. The option price of <strong>[$X,XXX.XX]</strong> for <strong>[option period, e.g., "Option Year 2, 1 Oct 2026 - 30 Sep 2027"]</strong> is determined to be fair and reasonable. <strong>[State basis - e.g., "Based on comparison to the prior option period pricing, BLS Employment Cost Index data showing a X% increase in the relevant labor category, and recent competitive awards for similar services in the local area."]</strong>
+
+e. The option was evaluated as part of the initial competition and synopsized in the original solicitation <strong>[solicitation number]</strong> posted on <strong>[date]</strong>, in accordance with FAR 5.2.
+
+f. The requirements of the option clause (FAR 52.217-9) have been satisfied. <strong>[State what was done - e.g., "Preliminary notice of intent to exercise was provided to the contractor on [date]. The option is being exercised within the timeframe specified in the contract."]</strong>
+
+DETERMINATION:
+
+Based on the above findings, I determine that it is in the best interest of the Government to exercise <strong>[Option Year X]</strong> of Contract No. <strong>[contract number]</strong> for the period <strong>[start date]</strong> through <strong>[end date]</strong> at a price of <strong>[$X,XXX.XX]</strong>.
+
+
+______________________________
+<strong>[Contracting Officer Name]</strong>
+<strong>[Title]</strong>
+Date: ______________</div>
+
+        <div class="highlight-box tip">
+          <strong>Keep it simple.</strong> The D&F does not need to be long. It needs to address each element of FAR 17.207 with enough specificity that someone reviewing the file later can see that you did the work. A one-page D&F that hits every point is better than a five-page document that buries the analysis in filler.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Fair and reasonable basis:</strong> For the price determination, you have several tools. Compare to the prior option year pricing. Check the Bureau of Labor Statistics Employment Cost Index for relevant labor categories. Look at recent competitive awards for similar services through FPDS. If the option price tracks with market movement, that is usually sufficient. If it is significantly above market, you may need to reconsider whether exercising the option is still the most advantageous approach.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">10</span> Common Mistakes</h3>
+      <div class="learn-body">
+        <p><strong>Treating options as automatic.</strong> Options are not automatic. The Government must affirmatively exercise them. If you do nothing, the contract expires and services stop. There is no "auto-renew" in Government contracting.</p>
+        <p><strong>Using template fill-ins without thinking.</strong> Copying "60-day preliminary notice, 30-day exercise" from the last contract without considering whether those timeframes make sense for your requirement. A simple service does not need the same notice periods as a complex staffing contract. Tailor the clause at the solicitation stage.</p>
+        <p><strong>Not planning for shutdowns.</strong> If your contract expires near the end of the fiscal year and you have rigid notice periods in the clause, a shutdown can make it impossible to exercise the option even when you intended to. Build in flexibility at the solicitation stage, consider an extended exercise window under the 17.204(d) concept, and exercise early when shutdown risk is elevated.</p>
+        <p><strong>Forgetting the fair and reasonable determination.</strong> Just because the price was competed at award does not mean you skip the analysis at exercise. Market conditions change. If option year 4 pricing is significantly above current market rates, you may need to consider recompeting.</p>
+        <p><strong>Not coordinating with the requiring activity.</strong> The program office needs to confirm the requirement still exists. Maybe the mission changed. Maybe the scope needs adjusting. If you exercise an option for services nobody needs anymore, that is a waste of taxpayer money.</p>
+        <p><strong>Confusing 217-8 and 217-9.</strong> Using 217-8 when you should be exercising a standard option year, or trying to use 217-9 when the follow-on is delayed and you just need a bridge. Know which tool fits which situation. -8 if you are running late, -9 when everything is fine.</p>
+
+        <div class="highlight-box">
+          <strong>Bottom line:</strong> Most of the pain around options comes from poor planning at the solicitation stage and poor time management during administration. Tailor your clauses upfront, calendar your deadlines, exercise early, and you will never have to write a sole-source bridge because you missed a window.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ CLAUSE TAILORING TOOL ═══════════════ -->
+  <div id="panel-tailor" class="opt-panel">
+    <div class="cb-wrap">
+
+      <div class="cb-prompt">
+        <h3>52.217-9 Clause Tailoring Tool</h3>
+        <p>Answer a few questions about your requirement and this tool will recommend fill-in language for your 52.217-9 option clause. The output is a starting point - adjust as needed for your specific situation.</p>
+      </div>
+
+      <div id="cb-inputs">
+        <div class="cb-group">
+          <div class="cb-label">What type of service is this?</div>
+          <div class="cb-sub">This determines whether the contractor needs lead time to mobilize for the option period.</div>
+          <div class="cb-options" data-field="serviceType">
+            <div class="cb-opt" data-val="simple" onclick="cbSelect(this)">
+              <div class="cb-opt-title">Simple / Steady-State</div>
+              <div class="cb-opt-desc">Same workforce, same location, no ramp-up. Custodial, grounds, admin support, etc.</div>
+            </div>
+            <div class="cb-opt" data-val="moderate" onclick="cbSelect(this)">
+              <div class="cb-opt-title">Moderate Complexity</div>
+              <div class="cb-opt-desc">Some staffing adjustments or equipment procurement may be needed between periods.</div>
+            </div>
+            <div class="cb-opt" data-val="complex" onclick="cbSelect(this)">
+              <div class="cb-opt-title">Complex / High Mobilization</div>
+              <div class="cb-opt-desc">Cleared personnel, specialized equipment, 24/7 ops, or significant ramp-up required.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cb-group">
+          <div class="cb-label">Does the contractor need to hire or relocate employees for option periods?</div>
+          <div class="cb-sub">If the same people continue performing seamlessly, no hiring lead time is needed.</div>
+          <div class="cb-options" data-field="hiring">
+            <div class="cb-opt" data-val="no" onclick="cbSelect(this)">
+              <div class="cb-opt-title">No</div>
+              <div class="cb-opt-desc">Same workforce continues. No new hires or relocations.</div>
+            </div>
+            <div class="cb-opt" data-val="some" onclick="cbSelect(this)">
+              <div class="cb-opt-title">Some</div>
+              <div class="cb-opt-desc">A few positions may turn over or need backfilling.</div>
+            </div>
+            <div class="cb-opt" data-val="significant" onclick="cbSelect(this)">
+              <div class="cb-opt-title">Significant</div>
+              <div class="cb-opt-desc">Major staffing changes, security clearance processing, or relocation required.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cb-group">
+          <div class="cb-label">Is there shutdown or funding risk near your expiration date?</div>
+          <div class="cb-sub">Contracts expiring near September 30 or during CR periods face elevated risk.</div>
+          <div class="cb-options" data-field="shutdownRisk">
+            <div class="cb-opt" data-val="low" onclick="cbSelect(this)">
+              <div class="cb-opt-title">Low Risk</div>
+              <div class="cb-opt-desc">Expires mid-fiscal-year with stable funding.</div>
+            </div>
+            <div class="cb-opt" data-val="moderate" onclick="cbSelect(this)">
+              <div class="cb-opt-title">Moderate Risk</div>
+              <div class="cb-opt-desc">Expires in Q4 or during a continuing resolution.</div>
+            </div>
+            <div class="cb-opt" data-val="high" onclick="cbSelect(this)">
+              <div class="cb-opt-title">High Risk</div>
+              <div class="cb-opt-desc">Expires September 30 or during expected shutdown period.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cb-group">
+          <div class="cb-label">Do you want to include 52.217-8 (Option to Extend Services)?</div>
+          <div class="cb-sub">The 6-month bridge clause. Recommended for most service contracts as a safety net.</div>
+          <div class="cb-options" data-field="include8">
+            <div class="cb-opt" data-val="yes" onclick="cbSelect(this)">
+              <div class="cb-opt-title">Yes</div>
+              <div class="cb-opt-desc">Include 52.217-8 as a backup bridge option.</div>
+            </div>
+            <div class="cb-opt" data-val="no" onclick="cbSelect(this)">
+              <div class="cb-opt-title">No</div>
+              <div class="cb-opt-desc">Not needed for this requirement.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cb-group">
+          <div class="cb-label">Extend exercise window past contract completion? (FAR 17.204(d) concept)</div>
+          <div class="cb-sub">Allows the Government to exercise the option after the contract ends if funds were not available in the expiring fiscal year. The original FAR 17.204(d) language did not survive the FAR Overhaul, but the practice is not prohibited under the new FAR.</div>
+          <div class="cb-options" data-field="extendWindow">
+            <div class="cb-opt" data-val="yes" onclick="cbSelect(this)">
+              <div class="cb-opt-title">Yes</div>
+              <div class="cb-opt-desc">Add a post-expiration exercise window (recommended for Sept 30 expirations).</div>
+            </div>
+            <div class="cb-opt" data-val="no" onclick="cbSelect(this)">
+              <div class="cb-opt-title">No</div>
+              <div class="cb-opt-desc">Standard exercise window only (before contract completion).</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="cb-generate" id="cb-gen-btn" onclick="cbGenerate()" disabled>Generate Recommended Language</button>
+      </div>
+
+      <div id="cb-output" class="cb-output">
+
+        <div class="cb-output-section">
+          <h4>52.217-9 Fill-In Language</h4>
+          <div id="cb-clause-9" class="cb-clause-text"></div>
+          <div id="cb-rationale-9" class="cb-rationale"></div>
+        </div>
+
+        <div id="cb-section-8" class="cb-output-section" style="display:none;">
+          <h4>52.217-8 Recommendation</h4>
+          <div id="cb-clause-8" class="cb-clause-text"></div>
+          <div id="cb-rationale-8" class="cb-rationale"></div>
+        </div>
+
+        <div id="cb-section-204d" class="cb-output-section" style="display:none;">
+          <h4>Extended Exercise Window (17.204(d) Concept)</h4>
+          <div id="cb-clause-204d" class="cb-clause-text"></div>
+          <div id="cb-rationale-204d" class="cb-rationale"></div>
+        </div>
+
+        <div class="cb-output-section">
+          <h4>Additional Considerations</h4>
+          <div id="cb-considerations"></div>
+        </div>
+
+        <div class="cb-reset">
+          <button onclick="cbReset()">Start Over</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="opt-panel">
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR Subpart 17.2: Options</h4>
+        <p>The governing subpart for options in Government contracts. Covers use, solicitation provisions, exercise requirements, and limitations.</p>
+        <a href="https://www.acquisition.gov/far/subpart-17.2" target="_blank" rel="noopener">Open FAR 17.2</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 17.207: Exercise of Options</h4>
+        <p>The specific section listing what the contracting officer must determine before exercising an option. This is your checklist.</p>
+        <a href="https://www.acquisition.gov/far/17.207" target="_blank" rel="noopener">Open FAR 17.207</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 52.217-8: Option to Extend Services</h4>
+        <p>The clause that allows the Government to extend services for up to 6 months. Your emergency bridge when the follow-on is not ready.</p>
+        <a href="https://www.acquisition.gov/far/52.217-8" target="_blank" rel="noopener">Open FAR 52.217-8</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 52.217-9: Option to Extend the Term</h4>
+        <p>The standard option exercise clause. Allows the Government to extend the contract for additional option periods at pre-negotiated pricing.</p>
+        <a href="https://www.acquisition.gov/far/52.217-9" target="_blank" rel="noopener">Open FAR 52.217-9</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 52.232-19: Availability of Funds for the Next Fiscal Year</h4>
+        <p>For severable service contracts crossing fiscal years. Makes the Government's obligation contingent on funds being available. Important for shutdown planning.</p>
+        <a href="https://www.acquisition.gov/far/52.232-19" target="_blank" rel="noopener">Open FAR 52.232-19</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 17.204: Contracts</h4>
+        <p>Covers the 5-year limitation on total contract period including options, and the exceptions to that rule.</p>
+        <a href="https://www.acquisition.gov/far/17.204" target="_blank" rel="noopener">Open FAR 17.204</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="dfars.html">FAR Updates</a>
+      <a href="about.html">About</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ── Tab switching ── */
+document.querySelectorAll('.opt-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.opt-panel').forEach(function(p) { p.classList.remove('active'); });
+    document.querySelectorAll('.opt-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.getElementById('panel-' + tab.getAttribute('data-tab')).classList.add('active');
+    tab.classList.add('active');
+  });
+});
+
+/* ── Clause Builder ── */
+var cbState = {};
+function cbSelect(el) {
+  var group = el.closest('.cb-options');
+  var field = group.getAttribute('data-field');
+  group.querySelectorAll('.cb-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  cbState[field] = el.getAttribute('data-val');
+  /* Enable button when all fields selected */
+  var btn = document.getElementById('cb-gen-btn');
+  if (cbState.serviceType && cbState.hiring && cbState.shutdownRisk && cbState.include8 && cbState.extendWindow) {
+    btn.disabled = false;
+  }
+}
+
+function cbGenerate() {
+  var svc = cbState.serviceType;
+  var hire = cbState.hiring;
+  var shutdown = cbState.shutdownRisk;
+  var inc8 = cbState.include8;
+
+  /* Determine notice and exercise periods */
+  var preliminary, exercise, rationale9;
+
+  if (svc === 'simple' && hire === 'no') {
+    preliminary = null;
+    exercise = 'at any time prior to expiration of the contract';
+    rationale9 = '<strong>Why no preliminary notice:</strong> This is a steady-state service with no employee mobilization. The same workforce continues performing regardless of whether the option is exercised. Removing the preliminary notice requirement gives the contracting officer maximum flexibility to exercise whenever funds and approvals are ready, without risking a missed deadline.';
+  } else if (svc === 'simple' && hire === 'some') {
+    preliminary = '30 days';
+    exercise = 'at any time prior to expiration of the contract';
+    rationale9 = '<strong>Why 30-day preliminary notice:</strong> The service is relatively simple but some positions may turn over between periods. 30 days gives the contractor enough time to backfill without imposing an unnecessarily rigid timeline on the contracting officer. The exercise itself can happen any time before expiration.';
+  } else if (svc === 'moderate' && hire === 'no') {
+    preliminary = '30 days';
+    exercise = 'at any time prior to expiration of the contract';
+    rationale9 = '<strong>Why 30-day preliminary notice:</strong> Moderate complexity with a stable workforce. The contractor may need some lead time for equipment or planning adjustments, but a 30-day heads-up is sufficient. Exercise flexibility is preserved.';
+  } else if (svc === 'moderate') {
+    preliminary = '60 days';
+    exercise = '30 days before the contract expires';
+    rationale9 = '<strong>Why 60/30 structure:</strong> Moderate complexity with some staffing changes means the contractor needs time to prepare. 60-day preliminary notice lets them plan, and a 30-day exercise deadline ensures the modification is executed with enough runway.';
+  } else if (svc === 'complex' || hire === 'significant') {
+    preliminary = '90 days';
+    exercise = '30 days before the contract expires';
+    rationale9 = '<strong>Why 90/30 structure:</strong> Complex services with significant mobilization requirements need substantial lead time. Cleared personnel processing, equipment procurement, or facility preparation all take time. 90 days of preliminary notice protects the contractor\'s ability to deliver on day one of the option period.';
+  } else {
+    preliminary = '60 days';
+    exercise = '30 days before the contract expires';
+    rationale9 = '<strong>Why 60/30 structure:</strong> Based on your inputs, a standard notice structure gives the contractor adequate preparation time while keeping the timeline manageable.';
+  }
+
+  /* Build the clause text */
+  var clauseText;
+  if (!preliminary) {
+    clauseText = '(a) The Government may extend the term of this contract by written notice to the Contractor at any time prior to expiration of the contract; provided that the Government gives the Contractor written notice of its intent to extend at any time prior to the contract expiring.\n\n(b) If the Government exercises this option, the extended contract shall be considered to include this option clause.\n\n(c) The total duration of this contract, including the exercise of any options under this clause, shall not exceed [fill in total period, e.g., 5 years].';
+  } else {
+    clauseText = '(a) The Government may extend the term of this contract by written notice to the Contractor ' + exercise + '; provided that the Government gives the Contractor a preliminary written notice of its intent to extend at least ' + preliminary + ' before the contract expires.\n\n(b) If the Government exercises this option, the extended contract shall be considered to include this option clause.\n\n(c) The total duration of this contract, including the exercise of any options under this clause, shall not exceed [fill in total period, e.g., 5 years].';
+  }
+
+  document.getElementById('cb-clause-9').textContent = clauseText;
+  document.getElementById('cb-rationale-9').innerHTML = rationale9;
+
+  /* 52.217-8 section */
+  var section8 = document.getElementById('cb-section-8');
+  if (inc8 === 'yes') {
+    section8.style.display = 'block';
+    document.getElementById('cb-clause-8').textContent = 'Include FAR 52.217-8, Option to Extend Services, in the solicitation and contract. This gives the Government the unilateral right to require continued performance for up to 6 months at the same rates, terms, and conditions as the current period.';
+    var rat8 = '<strong>Recommendation:</strong> 52.217-8 is your safety net. ';
+    if (shutdown === 'high') {
+      rat8 += 'Given the high shutdown/funding risk, this clause is especially important. If a lapse in appropriations delays the option exercise or the follow-on award, 52.217-8 keeps services running while you sort out funding.';
+    } else {
+      rat8 += 'Even with low shutdown risk, having a 6-month bridge available protects against unexpected delays in follow-on procurements, protests, or funding gaps.';
+    }
+    document.getElementById('cb-rationale-8').innerHTML = rat8;
+  } else {
+    section8.style.display = 'none';
+  }
+
+  /* 17.204(d) extended window section */
+  var extWin = cbState.extendWindow;
+  var section204d = document.getElementById('cb-section-204d');
+  if (extWin === 'yes') {
+    section204d.style.display = 'block';
+    var extDays = (shutdown === 'high') ? '60' : '30';
+    document.getElementById('cb-clause-204d').textContent = 'Add the following language to the 52.217-9 clause or as a supplemental provision:\n\n"Notwithstanding the exercise period stated in paragraph (a), if a lapse in appropriations or continuing resolution prevents the Government from obligating funds necessary to exercise this option prior to the expiration of the current contract period, the Government may exercise the option within ' + extDays + ' days after funds become available for obligation, provided the Contractor is given written notice of the Government\'s intent to exercise as soon as practicable."\n\nThis language is based on the concept from FAR 17.204(d), which permitted the option exercise period to extend beyond the contract completion date for service contracts when funds were not available in the expiring fiscal year.';
+    var rat204d = '<strong>Why include this:</strong> ';
+    if (shutdown === 'high') {
+      rat204d += 'Your contract expires during a high-risk funding period. A ' + extDays + '-day post-expiration exercise window gives you a meaningful safety net if a shutdown or CR delay prevents timely obligation. ';
+    } else {
+      rat204d += 'A ' + extDays + '-day post-expiration window provides protection against unexpected funding delays. ';
+    }
+    rat204d += '<br><br><strong>FAR Overhaul note:</strong> The original FAR 17.204(d) language that explicitly authorized this practice did not survive the Revolutionary FAR Overhaul. However, the new FAR does not prohibit it either. Since this was a permitted practice and is not now forbidden, it remains a reasonable approach. Consult your agency legal office if you want additional assurance.';
+    document.getElementById('cb-rationale-204d').innerHTML = rat204d;
+  } else {
+    section204d.style.display = 'none';
+  }
+
+  /* Additional considerations */
+  var considerations = '';
+
+  if (shutdown === 'high' || shutdown === 'moderate') {
+    considerations += '<div class="cb-warning"><strong>Shutdown risk:</strong> Your contract expires during a high-risk funding period. Exercise the option as early as possible - do not wait until the last month. If your clause allows exercise at any time prior to expiration, use that flexibility to exercise 90 to 120 days out when funds are available. Also consider including FAR 52.232-19 (Availability of Funds for the Next Fiscal Year) in the contract for severable services that cross fiscal years.</div>';
+  }
+
+  if (svc === 'simple' && hire === 'no' && !preliminary) {
+    considerations += '<div class="cb-tip"><strong>Maximum flexibility achieved:</strong> With no preliminary notice requirement and exercise at any time prior to expiration, you have the widest possible window. This is appropriate because there is no contractor mobilization to protect. Exercise whenever your funds and documentation are ready.</div>';
+  }
+
+  if (inc8 === 'yes') {
+    considerations += '<div class="cb-tip"><strong>5-year rule reminder:</strong> The 52.217-8 extension counts toward the FAR 17.204 five-year limitation. If your contract is structured as base + 4 option years, you have already consumed the full 5 years and a 217-8 extension would exceed the limit. Consider structuring as base + 3 option years if you want to preserve room for a bridge.</div>';
+  }
+
+  if (svc === 'complex' || hire === 'significant') {
+    considerations += '<div class="cb-warning"><strong>Mobilization lead time:</strong> With significant staffing or equipment requirements, make sure the preliminary notice period is realistic. If cleared personnel need to be processed or equipment needs to be procured, verify with the contractor during negotiations that the notice period is sufficient. An unrealistic notice period helps nobody.</div>';
+  }
+
+  considerations += '<div class="cb-tip"><strong>Remember:</strong> These fill-ins are set at the solicitation stage and locked in at award. Tailor them thoughtfully now so you do not inherit rigid deadlines that work against you during contract administration.</div>';
+
+  document.getElementById('cb-considerations').innerHTML = considerations;
+
+  /* Show output, hide inputs */
+  document.getElementById('cb-inputs').style.display = 'none';
+  document.getElementById('cb-output').classList.add('visible');
+}
+
+function cbReset() {
+  cbState = {};
+  document.querySelectorAll('.cb-opt').forEach(function(o) { o.classList.remove('selected'); });
+  document.getElementById('cb-gen-btn').disabled = true;
+  document.getElementById('cb-output').classList.remove('visible');
+  document.getElementById('cb-inputs').style.display = 'block';
+}
+</script>
+</body>
+</html>
