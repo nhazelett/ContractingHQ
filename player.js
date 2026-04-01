@@ -567,9 +567,11 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     document.getElementById('cfm-heart').addEventListener('click', function () {
       toggleFav(state.idx);
     });
-    document.getElementById('cfm-vol').addEventListener('input', function () {
+    var fVol = document.getElementById('cfm-vol');
+    fVol.addEventListener('input', function () {
       state.vol = parseFloat(this.value); aud.volume = state.vol; saveState(); updateVolIcon();
     });
+    bindTouchSlider(fVol, function (v) { state.vol = v; aud.volume = v; saveState(); updateVolIcon(); });
     document.getElementById('cfm-bar').addEventListener('click', function (e) {
       var rect = this.getBoundingClientRect();
       var pct = (e.clientX - rect.left) / rect.width;
@@ -720,6 +722,23 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     });
   }
 
+  // Touch handler for range sliders - bypasses iOS native range bug
+  function bindTouchSlider(el, onChange) {
+    if (!el) return;
+    function calc(touch) {
+      var rect = el.getBoundingClientRect();
+      return Math.max(0, Math.min(1, (touch.clientX - rect.left) / rect.width));
+    }
+    el.addEventListener('touchstart', function (e) {
+      e.preventDefault();
+      var v = calc(e.touches[0]); el.value = v; onChange(v);
+    }, { passive: false });
+    el.addEventListener('touchmove', function (e) {
+      e.preventDefault();
+      var v = calc(e.touches[0]); el.value = v; onChange(v);
+    }, { passive: false });
+  }
+
   function bindHome() {
     document.getElementById('cfm-sb-play').addEventListener('click', function () {
       if (!playerReady) { playerReady = true; loadTrack(state.idx, true); return; }
@@ -733,9 +752,11 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     document.getElementById('cfm-sb-heart').addEventListener('click', function () {
       toggleFav(state.idx);
     });
-    document.getElementById('cfm-sb-vol').addEventListener('input', function () {
+    var sbVol = document.getElementById('cfm-sb-vol');
+    sbVol.addEventListener('input', function () {
       state.vol = parseFloat(this.value); aud.volume = state.vol; saveState();
     });
+    bindTouchSlider(sbVol, function (v) { state.vol = v; aud.volume = v; saveState(); });
     document.getElementById('cfm-sb-bar').addEventListener('click', function (e) {
       var rect = this.getBoundingClientRect();
       var pct = (e.clientX - rect.left) / rect.width;
@@ -834,15 +855,21 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   function resumeAudio() {
     var targetTime = state.time;
     var shouldPlay = state.wasPlaying;
-    aud.src = trackUrl(state.idx);
+    // #t= fragment tells the browser to buffer from this position immediately
+    aud.src = trackUrl(state.idx) + (targetTime > 0 ? '#t=' + targetTime.toFixed(1) : '');
+    aud.preload = 'auto';
     aud.load();
-    aud.addEventListener('loadedmetadata', function () {
-      if (targetTime > 0) aud.currentTime = targetTime;
+    aud.addEventListener('canplay', function onReady() {
+      aud.removeEventListener('canplay', onReady);
+      // Correct position if browser ignored the fragment
+      if (targetTime > 0 && Math.abs(aud.currentTime - targetTime) > 2) {
+        aud.currentTime = targetTime;
+      }
       if (shouldPlay) {
         aud.play().catch(function () {});
         playerReady = true;
       }
-    }, { once: true });
+    });
     updateAll();
   }
 
