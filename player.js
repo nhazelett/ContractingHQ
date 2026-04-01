@@ -17,7 +17,7 @@
 
   // ── STATE ────────────────────────────────────────────────────────
   var SK = 'cfm_v1';
-  var state = { idx: 0, time: 0, vol: 0.5, shuffle: false, favs: [], wasPlaying: false };
+  var state = { idx: 0, time: 0, vol: 0.5, shuffle: false, favs: [], wasPlaying: false, favsOnly: false };
 
   function loadState() {
     try {
@@ -29,6 +29,7 @@
         if (typeof s.shuffle === 'boolean') state.shuffle = s.shuffle;
         if (Array.isArray(s.favs))       state.favs    = s.favs;
         if (typeof s.wasPlaying === 'boolean') state.wasPlaying = s.wasPlaying;
+        if (typeof s.favsOnly === 'boolean')   state.favsOnly   = s.favsOnly;
       }
     } catch (e) {}
   }
@@ -66,20 +67,29 @@
     else { aud.play().catch(function () {}); }
   }
 
+  function getPool() {
+    if (state.favsOnly && state.favs.length > 0) return state.favs;
+    return TRACKS.map(function (_, i) { return i; });
+  }
+
   function nextTrack() {
+    var pool = getPool();
+    var cur = pool.indexOf(state.idx);
     var next;
     if (state.shuffle) {
-      do { next = Math.floor(Math.random() * TRACKS.length); }
-      while (TRACKS.length > 1 && next === state.idx);
+      do { next = pool[Math.floor(Math.random() * pool.length)]; }
+      while (pool.length > 1 && next === state.idx);
     } else {
-      next = (state.idx + 1) % TRACKS.length;
+      next = pool[(cur + 1) % pool.length];
     }
     loadTrack(next, isPlaying);
   }
 
   function prevTrack() {
     if (aud.currentTime > 3) { aud.currentTime = 0; return; }
-    loadTrack((state.idx - 1 + TRACKS.length) % TRACKS.length, isPlaying);
+    var pool = getPool();
+    var cur = pool.indexOf(state.idx);
+    loadTrack(pool[(cur - 1 + pool.length) % pool.length], isPlaying);
   }
 
   function isFav(idx) { return state.favs.indexOf(idx) > -1; }
@@ -113,9 +123,10 @@
 
   window.addEventListener('beforeunload', function () { state.time = aud.currentTime; state.wasPlaying = isPlaying; saveState(); });
 
-  // ── DETECT PAGE ──────────────────────────────────────────────────
+  // ── DETECT PAGE / PLATFORM ───────────────────────────────────────
   var path = window.location.pathname;
   var isHome = path === '/' || path.endsWith('/index.html') || path.endsWith('/');
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
   // ── CSS ──────────────────────────────────────────────────────────
   var css = `
@@ -318,16 +329,18 @@ body.has-cfm-player { padding-bottom: 68px; }
 
 /* ── Homepage sidebar player ── */
 #cfm-home {
-  background: rgba(255,255,255,0.035);
-  border: 1px solid rgba(74,158,255,0.18);
+  background: linear-gradient(160deg, #0a0e20 0%, #060912 100%);
+  border: 1px solid rgba(74,158,255,0.28);
+  border-top: 1px solid rgba(74,158,255,0.5);
   border-radius: 14px;
   overflow: hidden;
   font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(74,158,255,0.08);
 }
 .cfm-sb-header {
   padding: 0.7rem 1rem;
-  background: rgba(74,158,255,0.06);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba(74,158,255,0.08);
+  border-bottom: 1px solid rgba(74,158,255,0.12);
   display: flex; align-items: center; justify-content: space-between;
 }
 .cfm-sb-name {
@@ -424,54 +437,46 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   -webkit-appearance: none; width: 16px; height: 16px;
   border-radius: 50%; background: #fff; cursor: pointer;
 }
-.cfm-sb-playlist {
-  border-top: 1px solid rgba(255,255,255,0.06);
-  max-height: 190px; overflow-y: auto;
+.cfm-sb-now-playing {
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding: 0.65rem 1rem;
+  display: flex; align-items: center; gap: 0.6rem;
 }
-.cfm-sb-playlist::-webkit-scrollbar { width: 3px; }
-.cfm-sb-playlist::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
-.cfm-sb-playlist-hdr {
-  font-family: 'Rajdhani', sans-serif; font-size: 0.7rem; font-weight: 700;
-  color: #334; text-transform: uppercase; letter-spacing: 1.5px;
-  padding: 0.5rem 1rem 0.3rem;
+.cfm-sb-np-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+  background: var(--cfm-accent, #4a9eff);
+  animation: cfm-pulse 1.4s ease-in-out infinite;
 }
-.cfm-sb-track {
-  display: flex; align-items: center; gap: 0.5rem;
-  padding: 0.38rem 1rem; cursor: pointer;
-  transition: background 0.15s;
-}
-.cfm-sb-track:hover { background: rgba(255,255,255,0.04); }
-.cfm-sb-track.active { background: rgba(74,158,255,0.07); }
-.cfm-sb-track-num {
-  font-family: 'Rajdhani', sans-serif; font-size: 0.72rem;
-  color: #334; min-width: 14px; text-align: center; flex-shrink: 0;
-}
-.cfm-sb-track.active .cfm-sb-track-num { color: #4a9eff; }
-.cfm-sb-track.playing .cfm-sb-track-num { display: none; }
-.cfm-sb-track-dot {
-  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
-  animation: cfm-pulse 1s ease-in-out infinite; display: none;
-}
-.cfm-sb-track.playing .cfm-sb-track-dot { display: block; }
-.cfm-sb-track-info { flex: 1; min-width: 0; }
-.cfm-sb-track-name {
-  font-size: 0.79rem; font-weight: 600; color: #c0cdd8;
+.cfm-sb-np-dot.paused { animation: none; background: #334; }
+.cfm-sb-np-info { flex: 1; min-width: 0; }
+.cfm-sb-np-title {
+  font-size: 0.8rem; font-weight: 600; color: #e2e8f0;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.cfm-sb-track.active .cfm-sb-track-name { color: #fff; }
-.cfm-sb-track-genre { font-size: 0.62rem; color: #334; margin-top: 0.04rem; }
-.cfm-sb-track-fav {
+.cfm-sb-np-label { font-size: 0.62rem; color: #445; margin-bottom: 0.1rem; letter-spacing: 0.5px; }
+.cfm-sb-np-heart {
   background: none; border: none; cursor: pointer;
-  font-size: 0.8rem; color: #334; padding: 0.15rem; flex-shrink: 0;
-  transition: color 0.18s;
+  font-size: 1.1rem; color: #334; padding: 0.2rem; flex-shrink: 0;
+  transition: color 0.2s, transform 0.15s;
 }
-.cfm-sb-track-fav.active { color: #ef4444; }
+.cfm-sb-np-heart.active { color: #ef4444; }
+.cfm-sb-np-heart:hover { transform: scale(1.2); }
+.cfm-sb-favs-btn {
+  width: 100%; padding: 0.6rem 1rem;
+  background: none; border: none; border-top: 1px solid rgba(255,255,255,0.05);
+  cursor: pointer; font-family: 'Inter', sans-serif;
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.3px;
+  color: #445; transition: color 0.2s, background 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+}
+.cfm-sb-favs-btn:hover { color: #8a9bb0; background: rgba(255,255,255,0.03); }
+.cfm-sb-favs-btn.active { color: #ef4444; background: rgba(239,68,68,0.06); }
+.cfm-sb-favs-btn.disabled { opacity: 0.35; cursor: default; }
 
 /* Mobile: art hidden, layout compressed */
 @media (max-width: 860px) {
   #cfm-home { border-radius: 10px; }
   .cfm-sb-art-wrap { display: none; }
-  .cfm-sb-playlist { max-height: 140px; }
   .cfm-sb-controls { padding: 0.4rem 1rem; }
 }
 @media (max-width: 600px) {
@@ -485,6 +490,13 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   var styleEl = document.createElement('style');
   styleEl.textContent = css;
   document.head.appendChild(styleEl);
+
+  // iOS controls volume via hardware only - hide the slider so it's not confusing
+  if (isIOS) {
+    var iosStyle = document.createElement('style');
+    iosStyle.textContent = '.cfm-volume-zone, .cfm-sb-vol { display: none !important; }';
+    document.head.appendChild(iosStyle);
+  }
 
   // ── ACCENT COLOR UPDATER ─────────────────────────────────────────
   function setAccent(color) {
@@ -566,11 +578,12 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       toggleFav(state.idx);
     });
     var fVol = document.getElementById('cfm-vol');
+    updateSliderFill(fVol);
     fVol.addEventListener('input', function () {
-      state.vol = parseFloat(this.value); aud.volume = state.vol; saveState(); updateVolIcon();
+      state.vol = parseFloat(this.value); aud.volume = state.vol; saveState(); updateVolIcon(); updateSliderFill(this);
     });
-    bindPointerSlider(fVol, function (v) { state.vol = v; aud.volume = v; saveState(); updateVolIcon(); });
-    document.getElementById('cfm-bar').addEventListener('click', function (e) {
+    bindPointerSlider(fVol, function (v) { state.vol = v; aud.volume = v; saveState(); updateVolIcon(); updateSliderFill(fVol); });
+    document.getElementById('cfm-bar').addEventListener('pointerdown', function (e) {
       var rect = this.getBoundingClientRect();
       var pct = (e.clientX - rect.left) / rect.width;
       if (aud.duration) aud.currentTime = pct * aud.duration;
@@ -656,7 +669,6 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
           '<button class="cfm-sb-btn" id="cfm-sb-prev" title="Previous">&#9664;&#9664;</button>',
           '<button class="cfm-sb-play-btn" id="cfm-sb-play" title="Play / Pause">&#9654;</button>',
           '<button class="cfm-sb-btn" id="cfm-sb-next" title="Next">&#9654;&#9654;</button>',
-          '<button class="cfm-sb-heart" id="cfm-sb-heart" title="Favorite">&#9825;</button>',
         '</div>',
         '<div class="cfm-sb-progress">',
           '<span class="cfm-sb-time" id="cfm-sb-cur">0:00</span>',
@@ -669,10 +681,15 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
           '<span class="cfm-sb-vol-icon">&#128266;</span>',
           '<input type="range" class="cfm-sb-vol-slider" id="cfm-sb-vol" min="0" max="1" step="0.01" value="' + state.vol + '">',
         '</div>',
-        '<div class="cfm-sb-playlist">',
-          '<div class="cfm-sb-playlist-hdr">Playlist</div>',
-          '<div id="cfm-sb-list"></div>',
+        '<div class="cfm-sb-now-playing">',
+          '<div class="cfm-sb-np-dot" id="cfm-sb-np-dot"></div>',
+          '<div class="cfm-sb-np-info">',
+            '<div class="cfm-sb-np-label">Now Playing</div>',
+            '<div class="cfm-sb-np-title" id="cfm-sb-np-title">-</div>',
+          '</div>',
+          '<button class="cfm-sb-np-heart" id="cfm-sb-heart" title="Like this track">&#9825;</button>',
         '</div>',
+        '<button class="cfm-sb-favs-btn" id="cfm-sb-favs-btn">&#10084; Play Liked Songs Only</button>',
       '</div>'
     ].join('');
 
@@ -682,42 +699,32 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   }
 
   function renderHomeList() {
-    var listEl = document.getElementById('cfm-sb-list');
-    if (!listEl) return;
-    var html = '';
-    TRACKS.forEach(function (t, i) {
-      var active = i === state.idx;
-      var fav = isFav(i);
-      html += [
-        '<div class="cfm-sb-track' + (active ? ' active' : '') + (active && isPlaying ? ' playing' : '') + '" data-idx="' + i + '">',
-          '<div class="cfm-sb-track-dot" style="background:' + t.color + '"></div>',
-          '<div class="cfm-sb-track-num">' + (i + 1) + '</div>',
-          '<div class="cfm-sb-track-info">',
-            '<div class="cfm-sb-track-name">' + t.title + '</div>',
-            '<div class="cfm-sb-track-genre">' + t.genre + '</div>',
-          '</div>',
-          '<button class="cfm-sb-track-fav' + (fav ? ' active' : '') + '" data-idx="' + i + '">',
-            fav ? '&#10084;' : '&#9825;',
-          '</button>',
-        '</div>'
-      ].join('');
-    });
-    listEl.innerHTML = html;
+    // Update now-playing strip and favs button
+    var npTitle = document.getElementById('cfm-sb-np-title');
+    var npDot   = document.getElementById('cfm-sb-np-dot');
+    var heart   = document.getElementById('cfm-sb-heart');
+    var favsBtn = document.getElementById('cfm-sb-favs-btn');
+    var t = TRACKS[state.idx];
+    if (npTitle) npTitle.textContent = t ? t.title : '-';
+    if (npDot)   npDot.classList.toggle('paused', !isPlaying);
+    if (heart) {
+      var fav = isFav(state.idx);
+      heart.classList.toggle('active', fav);
+      heart.innerHTML = fav ? '&#10084;' : '&#9825;';
+    }
+    if (favsBtn) {
+      var hasFavs = state.favs.length > 0;
+      favsBtn.classList.toggle('active', state.favsOnly);
+      favsBtn.classList.toggle('disabled', !hasFavs && !state.favsOnly);
+      favsBtn.title = hasFavs ? '' : 'Like a song first';
+    }
+  }
 
-    listEl.querySelectorAll('.cfm-sb-track').forEach(function (el) {
-      el.addEventListener('click', function (e) {
-        if (e.target.classList.contains('cfm-sb-track-fav')) return;
-        var idx = parseInt(this.getAttribute('data-idx'));
-        loadTrack(idx, true);
-        playerReady = true;
-      });
-    });
-    listEl.querySelectorAll('.cfm-sb-track-fav').forEach(function (el) {
-      el.addEventListener('click', function (e) {
-        e.stopPropagation();
-        toggleFav(parseInt(this.getAttribute('data-idx')));
-      });
-    });
+  // Update range slider track fill to visually reflect current value
+  function updateSliderFill(el) {
+    if (!el) return;
+    var pct = ((el.value - el.min) / (el.max - el.min) * 100).toFixed(1);
+    el.style.background = 'linear-gradient(to right, var(--cfm-accent, #4a9eff) 0%, var(--cfm-accent, #4a9eff) ' + pct + '%, rgba(255,255,255,0.12) ' + pct + '%, rgba(255,255,255,0.12) 100%)';
   }
 
   // Pointer event slider - works reliably on iOS, Android, and desktop
@@ -752,14 +759,19 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       state.shuffle = !state.shuffle; saveState(); updateShuffleBtns();
     });
     document.getElementById('cfm-sb-heart').addEventListener('click', function () {
-      toggleFav(state.idx);
+      toggleFav(state.idx); renderHomeList();
+    });
+    document.getElementById('cfm-sb-favs-btn').addEventListener('click', function () {
+      if (state.favs.length === 0 && !state.favsOnly) return;
+      state.favsOnly = !state.favsOnly; saveState(); renderHomeList();
     });
     var sbVol = document.getElementById('cfm-sb-vol');
+    updateSliderFill(sbVol);
     sbVol.addEventListener('input', function () {
-      state.vol = parseFloat(this.value); aud.volume = state.vol; saveState();
+      state.vol = parseFloat(this.value); aud.volume = state.vol; saveState(); updateSliderFill(this);
     });
-    bindPointerSlider(sbVol, function (v) { state.vol = v; aud.volume = v; saveState(); });
-    document.getElementById('cfm-sb-bar').addEventListener('click', function (e) {
+    bindPointerSlider(sbVol, function (v) { state.vol = v; aud.volume = v; saveState(); updateSliderFill(sbVol); });
+    document.getElementById('cfm-sb-bar').addEventListener('pointerdown', function (e) {
       var rect = this.getBoundingClientRect();
       var pct = (e.clientX - rect.left) / rect.width;
       if (aud.duration) aud.currentTime = pct * aud.duration;
@@ -806,8 +818,10 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     var p2 = document.getElementById('cfm-sb-play');
     if (p1) p1.innerHTML = icon;
     if (p2) p2.innerHTML = icon;
-    var ar = document.getElementById('cfm-sb-art');
-    if (ar) { if (isPlaying) ar.classList.add('playing'); else ar.classList.remove('playing'); }
+    var ar  = document.getElementById('cfm-sb-art');
+    var dot = document.getElementById('cfm-sb-np-dot');
+    if (ar)  { if (isPlaying) ar.classList.add('playing');    else ar.classList.remove('playing'); }
+    if (dot) { if (isPlaying) dot.classList.remove('paused'); else dot.classList.add('paused'); }
   }
 
   function updateShuffleBtns() {
@@ -823,6 +837,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     var h2 = document.getElementById('cfm-sb-heart');
     if (h1) { h1.classList.toggle('active', fav); h1.innerHTML = fav ? '&#10084;' : '&#9825;'; }
     if (h2) { h2.classList.toggle('active', fav); h2.innerHTML = fav ? '&#10084;' : '&#9825;'; }
+    renderHomeList();
   }
 
   function updateProgress() {
