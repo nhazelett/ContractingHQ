@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Understand the difference between personal and non-personal services contracts. Learn the employer-employee relationship test, common misconceptions, and FAR 37.104." />
+  <title>Personal vs. Non-personal Services | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .pvn-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .pvn-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .pvn-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .pvn-tab:hover { color: var(--white); }
+    .pvn-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .pvn-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .pvn-panel.active { display: block; }
+
+    /* ── Intro ── */
+    .pvn-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .pvn-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .pvn-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .pvn-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── Scenario Cards ── */
+    .scenario-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+    @media (max-width: 650px) { .scenario-grid { grid-template-columns: 1fr; } }
+    .scenario-card { border-radius: 12px; padding: 1.25rem; font-size: 0.88rem; line-height: 1.65; }
+    .scenario-card.personal { background: rgba(248,113,113,0.05); border: 1px solid rgba(248,113,113,0.2); }
+    .scenario-card.nonpersonal { background: rgba(52,211,153,0.05); border: 1px solid rgba(52,211,153,0.2); }
+    .scenario-label { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.82rem; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .scenario-card.personal .scenario-label { color: #fca5a5; }
+    .scenario-card.nonpersonal .scenario-label { color: #6ee7b7; }
+    .scenario-card strong { color: var(--white); }
+
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .pvn-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+
+  <!-- SEO: Open Graph & Twitter Card -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="ContractingHQ" />
+  <meta property="og:title"       content="Personal vs. Non-personal Services | ContractingHQ" />
+  <meta property="og:description" content="Understand the difference between personal and non-personal services contracts. Learn the employer-employee relationship test, FAR 37.104, and common misconceptions." />
+  <meta property="og:url"         content="https://kthq.org/personal-vs-non-personal-services.html" />
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:title"       content="Personal vs. Non-personal Services | ContractingHQ" />
+  <meta name="twitter:description" content="Understand the difference between personal and non-personal services contracts. Learn the employer-employee relationship test, FAR 37.104, and common misconceptions." />
+  <link rel="canonical"            href="https://kthq.org/personal-vs-non-personal-services.html" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 38</span>
+    <h1 class="page-hero-title">Personal vs. Non-personal Services</h1>
+    <p class="page-hero-sub">People love to call things &ldquo;personal services&rdquo; when they aren&rsquo;t. The real question is whether the arrangement creates an employer-employee relationship. If nobody in the Government is supervising the contractor&rsquo;s people day-to-day, it&rsquo;s almost certainly non-personal. Here&rsquo;s how to tell the difference and why it matters.</p>
+  </div>
+</div>
+
+<div class="training-nav-band training-nav-band-top"><div id="training-nav-top" class="training-nav training-nav-top"></div></div>
+
+<div class="pvn-bg">
+  <div class="pvn-tabs" role="tablist">
+    <button class="pvn-tab active" data-tab="learn" role="tab">&#128218; Learn</button>
+    <button class="pvn-tab" data-tab="trainer" role="tab">&#9878;&#65039; Comparisons</button>
+    <button class="pvn-tab" data-tab="lookup" role="tab">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════════════════════════ LEARN ═══ -->
+  <div id="panel-learn" class="pvn-panel active">
+    <div class="pvn-intro">
+      <div class="pvn-intro-tag">The Basics</div>
+      <h2>What Makes a Service &ldquo;Personal&rdquo;?</h2>
+      <p>A personal services contract creates an employer-employee relationship between the Government and the contractor&rsquo;s personnel. That&rsquo;s the whole test. The tricky part is knowing what that actually looks like in practice.</p>
+    </div>
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> The Core Rule</h3>
+      <div class="learn-body">
+        <p>The Government generally <strong>cannot</strong> award personal services contracts. If you need someone to show up every day, take direction from a Government supervisor, and do work that looks exactly like what a Government employee would do, you should be <strong>hiring</strong> that person, not contracting for them.</p>
+        <p>Personal services contracts circumvent the civil service laws. They bypass competitive hiring, the merit system, pay grades, and all the protections that exist when the Government brings someone on as an employee. If you need an employee, go through OPM and the hiring process. Don&rsquo;t use the contracting system as a workaround.</p>
+        <div class="highlight-box">
+          <strong>FAR 37.104(a):</strong> A personal services contract is characterized by the employer-employee relationship it creates between the Government and the contractor&rsquo;s personnel. The Government is normally required to obtain its employees by direct hire under competitive appointment or other procedures required by the civil service laws.
+        </div>
+        <p>There are narrow statutory exceptions. Certain agencies like DoD can award personal services contracts for specific purposes (like healthcare professionals under 10 U.S.C. 129b). But unless you&rsquo;re in one of those lanes, the default answer is: <strong>you can&rsquo;t do it</strong>.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> The Employer-Employee Test</h3>
+      <div class="learn-body">
+        <p>FAR 37.104(d) lays out the factors. No single factor is conclusive; it&rsquo;s the totality of the arrangement. Here are the ones that matter most in practice:</p>
+
+        <div class="highlight-box tip">
+          <strong>Supervision and control.</strong> Is the Government telling contractor employees <em>how</em> to do the work on a day-to-day basis? Setting their hours? Assigning specific tasks in real-time? Approving leave? If a Government supervisor is managing contractor personnel the same way they manage GS employees, that&rsquo;s the biggest single indicator.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Performance on-site at Government facilities.</strong> Contractor personnel working at Government desks, using Government equipment, embedded in a Government office. Not conclusive by itself, but it&rsquo;s a significant factor when combined with supervision.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Services applied directly to the Government organization.</strong> The contractor provides services that are applied directly to the integral effort of the agency or an organizational subpart. Put simply, the contractor&rsquo;s people are doing the agency&rsquo;s core work rather than providing a distinct service or deliverable.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Comparable to Government positions.</strong> The work is comparable to that of civil service employees. If you could post this as a GS position description and it would look identical, that&rsquo;s a flag.
+        </div>
+
+        <div class="highlight-box">
+          <strong>The two-question shortcut:</strong> When you&rsquo;re screening a requirement, start with these two questions: (1) Are we using this contract because we can&rsquo;t hire someone? and (2) Will Government personnel supervise these contractor employees day-to-day? If both answers are yes, you likely have a personal services problem.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> The Common Misconception</h3>
+      <div class="learn-body">
+        <p>Here&rsquo;s where people get it wrong: <strong>just because a contractor is providing a &ldquo;service&rdquo; doesn&rsquo;t make it &ldquo;personal services.&rdquo;</strong></p>
+        <p>People hear &ldquo;personal services&rdquo; and think it means any service performed by a person. It doesn&rsquo;t. You can have a contractor providing IT support, janitorial services, engineering analysis, or logistics support. All of those involve people performing services. None of them are inherently personal services.</p>
+
+        <div class="highlight-box warn">
+          <strong>The word &ldquo;personal&rdquo; refers to the relationship, not the service.</strong> It&rsquo;s about whether the Government is acting as the employer. A janitor who comes to your building on a schedule set by their company, supervised by their company manager, using a company-provided checklist? That&rsquo;s non-personal. A janitor who reports to a Government supervisor, gets told which rooms to clean and when, and has their leave approved by a Government employee? Now you&rsquo;re in personal services territory.
+        </div>
+
+        <p>The same work can be personal or non-personal depending entirely on <strong>how it&rsquo;s structured</strong>. The distinction is in the relationship, not the task.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Side-by-Side: Same Service, Different Structure</h3>
+      <div class="learn-body">
+        <p>Here are two scenarios involving the exact same service (administrative support) to show how the structure changes the classification.</p>
+
+        <div class="scenario-grid">
+          <div class="scenario-card personal">
+            <div class="scenario-label">Personal Services</div>
+            <p><strong>Scenario:</strong> The unit needs admin help. A contractor employee sits at a Government desk and takes daily direction from the flight commander. The commander assigns tasks throughout the day, reprioritizes work on the fly, approves time off, and evaluates performance informally. The contractor employee attends staff meetings as a &ldquo;team member.&rdquo;</p>
+            <p style="margin-top:0.75rem;"><strong>Why it&rsquo;s personal:</strong> Government supervisor controls the work and manages the individual. The contractor employee is functionally indistinguishable from a GS employee. The contract exists because the unit couldn&rsquo;t get a billet filled.</p>
+          </div>
+          <div class="scenario-card nonpersonal">
+            <div class="scenario-label">Non-personal Services</div>
+            <p><strong>Scenario:</strong> The unit needs admin help. They contract with a company to provide administrative support services. The company assigns its own people, manages their schedules, and has an on-site project manager who takes tasking from the Government COR. The deliverable is completed administrative work product (processed travel orders, updated trackers, filed documents), not the individual&rsquo;s time.</p>
+            <p style="margin-top:0.75rem;"><strong>Why it&rsquo;s non-personal:</strong> The company manages its people. The Government evaluates the work product, not the individual&rsquo;s day. Contractor personnel aren&rsquo;t supervised by Government employees.</p>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <strong>Notice the pattern.</strong> Same service, same building, maybe even the same desk. The difference is entirely in who&rsquo;s supervising. Once the Government starts directing contractor employees as if they were its own, you&rsquo;ve crossed the line.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> What To Do When You Spot It</h3>
+      <div class="learn-body">
+        <p>If a requirement crosses your desk and it looks like personal services, you have options.</p>
+
+        <div class="highlight-box tip">
+          <strong>Restructure the requirement.</strong> Work with the requiring activity to change the arrangement so the contractor company (not the Government) supervises its people. Add a contractor project lead. Define deliverables instead of hours. Remove Government supervision from the equation. Most of the time, this solves it.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Check for statutory authority.</strong> Some personal services contracts are specifically authorized by statute. DoD can use personal services contracts for healthcare professionals (10 U.S.C. 129b), certain advisory and assistance services, and a few other narrow categories. If your requirement falls in one of these lanes, you may have a path forward, but you need to cite the authority.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>Document your analysis.</strong> If you determine the requirement is non-personal, document why. If it&rsquo;s borderline, that analysis is even more important. A D&amp;F or MFR that walks through the FAR 37.104(d) factors protects you and the requiring activity if it gets questioned later.
+        </div>
+
+        <p>The goal isn&rsquo;t to kill requirements. It&rsquo;s to structure them correctly so the Government gets what it needs without creating an illegal employment arrangement. Most personal services problems can be fixed by restructuring, not by canceling the buy.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> Quick Reference: Red Flags</h3>
+      <div class="learn-body">
+        <p>When reviewing a services requirement, watch for these patterns. Any one of them alone doesn&rsquo;t seal the deal, but if you&rsquo;re checking multiple boxes, you need to take a harder look.</p>
+
+        <div style="display:grid; gap:0.75rem; margin:1rem 0;">
+          <div style="background:rgba(248,113,113,0.04); border:1px solid rgba(248,113,113,0.15); border-radius:10px; padding:0.85rem 1.1rem; font-size:0.88rem; color:var(--silver); display:flex; gap:0.75rem; align-items:flex-start;">
+            <span style="color:#fca5a5; font-weight:700; flex-shrink:0;">&#9888;</span>
+            <span>The SOW describes &ldquo;support&rdquo; for a Government office rather than specific deliverables or outcomes.</span>
+          </div>
+          <div style="background:rgba(248,113,113,0.04); border:1px solid rgba(248,113,113,0.15); border-radius:10px; padding:0.85rem 1.1rem; font-size:0.88rem; color:var(--silver); display:flex; gap:0.75rem; align-items:flex-start;">
+            <span style="color:#fca5a5; font-weight:700; flex-shrink:0;">&#9888;</span>
+            <span>Contractor personnel will report to a Government supervisor for daily task assignments.</span>
+          </div>
+          <div style="background:rgba(248,113,113,0.04); border:1px solid rgba(248,113,113,0.15); border-radius:10px; padding:0.85rem 1.1rem; font-size:0.88rem; color:var(--silver); display:flex; gap:0.75rem; align-items:flex-start;">
+            <span style="color:#fca5a5; font-weight:700; flex-shrink:0;">&#9888;</span>
+            <span>The customer says something like &ldquo;we just need a body&rdquo; or &ldquo;we need someone to fill this seat.&rdquo;</span>
+          </div>
+          <div style="background:rgba(248,113,113,0.04); border:1px solid rgba(248,113,113,0.15); border-radius:10px; padding:0.85rem 1.1rem; font-size:0.88rem; color:var(--silver); display:flex; gap:0.75rem; align-items:flex-start;">
+            <span style="color:#fca5a5; font-weight:700; flex-shrink:0;">&#9888;</span>
+            <span>The requirement was created because the unit has unfilled GS billets and can&rsquo;t hire fast enough.</span>
+          </div>
+          <div style="background:rgba(248,113,113,0.04); border:1px solid rgba(248,113,113,0.15); border-radius:10px; padding:0.85rem 1.1rem; font-size:0.88rem; color:var(--silver); display:flex; gap:0.75rem; align-items:flex-start;">
+            <span style="color:#fca5a5; font-weight:700; flex-shrink:0;">&#9888;</span>
+            <span>Government leave approval, performance evaluations, or day-to-day schedule control over contractor personnel.</span>
+          </div>
+          <div style="background:rgba(248,113,113,0.04); border:1px solid rgba(248,113,113,0.15); border-radius:10px; padding:0.85rem 1.1rem; font-size:0.88rem; color:var(--silver); display:flex; gap:0.75rem; align-items:flex-start;">
+            <span style="color:#fca5a5; font-weight:700; flex-shrink:0;">&#9888;</span>
+            <span>Contractor personnel attend staff meetings, are on org charts, or are referred to as &ldquo;team members.&rdquo;</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════ COMPARISONS ═══ -->
+  <div id="panel-trainer" class="pvn-panel">
+    <div class="pvn-intro">
+      <div class="pvn-intro-tag">Side by Side</div>
+      <h2>Personal vs. Non-personal: Real Scenarios</h2>
+      <p>The same type of work can be personal or non-personal depending on how it&rsquo;s structured. These comparisons show what makes the difference across common service types.</p>
+    </div>
+
+    <!-- Comparison 1: IT Support -->
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> IT Support</h3>
+      <div class="learn-body">
+        <div class="scenario-grid">
+          <div class="scenario-card personal">
+            <div class="scenario-label">Personal Services</div>
+            <p>A contractor &ldquo;IT specialist&rdquo; reports to the Government comm squadron each morning. The Government NCOIC assigns help desk tickets, sets the priority order, tells them which office to visit first, and approves time off. The contractor attends the Monday staff meeting and is listed on the section&rsquo;s duty roster.</p>
+            <p style="margin-top:0.75rem;"><strong>Why:</strong> Government supervisor controls daily work assignments, schedule, and leave. The contractor is functioning as a GS employee in everything but name.</p>
+          </div>
+          <div class="scenario-card nonpersonal">
+            <div class="scenario-label">Non-personal Services</div>
+            <p>The base contracts with an IT company to provide help desk and desktop support. The company assigns its own technicians, manages their schedules, and has a site lead who coordinates with the Government COR. The deliverable is measured by response times and resolution rates, not by who shows up or when.</p>
+            <p style="margin-top:0.75rem;"><strong>Why:</strong> The company manages its people. The Government evaluates the company&rsquo;s performance against contract metrics, not individual employees&rsquo; daily work.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Comparison 2: Admin / Clerical -->
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Administrative Support</h3>
+      <div class="learn-body">
+        <div class="scenario-grid">
+          <div class="scenario-card personal">
+            <div class="scenario-label">Personal Services</div>
+            <p>A contractor admin sits at the front desk of a Government office. The flight commander assigns them tasks throughout the day, reprioritizes their work, reviews it in real-time, and informally evaluates their performance. The contract was created because the unit lost its GS-0303 billet and couldn&rsquo;t get it filled through HR.</p>
+            <p style="margin-top:0.75rem;"><strong>Why:</strong> Direct Government supervision. The contract exists specifically to fill a vacancy that should have been a hire. The contractor is indistinguishable from the GS employee who used to sit there.</p>
+          </div>
+          <div class="scenario-card nonpersonal">
+            <div class="scenario-label">Non-personal Services</div>
+            <p>The unit contracts for administrative support services. The contractor company provides staff and a project manager. The COR provides task orders for specific work products: process these travel vouchers, maintain these trackers, update these spreadsheets. The company decides who does what and manages its own people&rsquo;s schedules.</p>
+            <p style="margin-top:0.75rem;"><strong>Why:</strong> The Government defines what needs to get done. The company decides how its people get it done. No Government supervisor is managing contractor employees.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Comparison 3: Engineering / Technical -->
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Engineering / Technical Analysis</h3>
+      <div class="learn-body">
+        <div class="scenario-grid">
+          <div class="scenario-card personal">
+            <div class="scenario-label">Personal Services</div>
+            <p>A contractor engineer is embedded in the Government program office. The program manager assigns them to specific projects, includes them in internal program reviews, and directs their day-to-day priorities alongside the GS engineers. Their work product is mixed in with Government personnel&rsquo;s output with no clear distinction.</p>
+            <p style="margin-top:0.75rem;"><strong>Why:</strong> The contractor is doing the same work, under the same supervision, alongside GS employees. The Government is directing the individual, not managing a contract deliverable.</p>
+          </div>
+          <div class="scenario-card nonpersonal">
+            <div class="scenario-label">Non-personal Services</div>
+            <p>The program office contracts for an independent technical assessment of a weapons system. The contractor company assigns its own team, conducts the analysis under its own project management, and delivers a written report with findings and recommendations. The Government reviews the report, not the individual engineers&rsquo; daily activities.</p>
+            <p style="margin-top:0.75rem;"><strong>Why:</strong> Clear deliverable. The company manages its own team. Government oversight is focused on the quality of the product, not supervision of the people.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Comparison 4: Security -->
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Security Guards</h3>
+      <div class="learn-body">
+        <div class="scenario-grid">
+          <div class="scenario-card personal">
+            <div class="scenario-label">Personal Services</div>
+            <p>A Government security manager assigns individual contractor guards to specific posts, changes their shifts, handles complaints about their performance directly, and approves their leave. The guards wear Government-issued badges and are treated as part of the security forces team.</p>
+            <p style="margin-top:0.75rem;"><strong>Why:</strong> The Government is managing these individuals like employees: shift assignments, leave, performance oversight of individuals. The contractor company is just the payroll mechanism.</p>
+          </div>
+          <div class="scenario-card nonpersonal">
+            <div class="scenario-label">Non-personal Services</div>
+            <p>The installation contracts for security services. The contract specifies which entry control points need coverage and during what hours. The security company assigns its own guards, manages the schedule and shift rotations, and has an on-site supervisor. If a guard doesn&rsquo;t perform, the COR raises it with the company, not with the individual guard.</p>
+            <p style="margin-top:0.75rem;"><strong>Why:</strong> The Government defines the requirement (these gates, these hours). The company figures out staffing. Performance issues go through the company, not directly to the individual.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Comparison 5: Janitorial -->
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Janitorial / Custodial</h3>
+      <div class="learn-body">
+        <div class="scenario-grid">
+          <div class="scenario-card personal">
+            <div class="scenario-label">Personal Services</div>
+            <p>A Government facility manager tells the contractor janitor which rooms to clean, in what order, and inspects their work room by room. The facility manager sets their start time, tells them when to take breaks, and sends them home when the work is done. The janitor&rsquo;s company has no on-site presence.</p>
+            <p style="margin-top:0.75rem;"><strong>Why:</strong> Day-to-day direction of the individual. The Government is acting as the supervisor, not the company. The arrangement looks identical to having an in-house custodian.</p>
+          </div>
+          <div class="scenario-card nonpersonal">
+            <div class="scenario-label">Non-personal Services</div>
+            <p>The base contracts for custodial services with performance standards: floors cleaned nightly, restrooms stocked and sanitized twice daily, trash removed by 0600. The company sends its crew, manages the schedule, and has a quality control inspector who checks the work. The COR does periodic quality assurance checks against the contract standards.</p>
+            <p style="margin-top:0.75rem;"><strong>Why:</strong> The Government defined the outcome (clean facility to these standards). The company manages how it gets done. Government oversight is through the COR checking contract performance, not supervising individuals.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- Comparison 6: Healthcare (exception) -->
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> Healthcare (The Exception)</h3>
+      <div class="learn-body">
+        <div class="scenario-grid">
+          <div class="scenario-card personal" style="grid-column: 1 / -1;">
+            <div class="scenario-label">Personal Services &ndash; But Authorized</div>
+            <p>A military treatment facility contracts for physicians and nurses to provide patient care. The contractor physicians are integrated into clinical teams, follow Government clinical protocols, and work under the direction of the chief of medical staff for patient care decisions. This looks exactly like an employer-employee relationship because <strong>it is one</strong>.</p>
+            <p style="margin-top:0.75rem;"><strong>Why it&rsquo;s okay:</strong> DoD has specific statutory authority for personal services contracts for healthcare under 10 U.S.C. 129b. The contract must cite this authority and comply with the additional requirements in DFARS 237.104. This is one of the few areas where personal services contracts are explicitly authorized.</p>
+          </div>
+        </div>
+        <div class="highlight-box tip">
+          <strong>Key takeaway:</strong> Healthcare is the most common exception you&rsquo;ll encounter. If someone tells you &ldquo;we do personal services contracts all the time,&rdquo; they&rsquo;re probably in the medical world. That doesn&rsquo;t mean the authority extends to IT support, admin, or maintenance. Each personal services authority is narrow and specific.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- The pattern -->
+    <div class="learn-section">
+      <h3><span class="section-num">7</span> The Pattern</h3>
+      <div class="learn-body">
+        <p>Across all of these examples, the line between personal and non-personal comes down to the same few things:</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1rem 0;">
+          <div style="background:rgba(248,113,113,0.05); border:1px solid rgba(248,113,113,0.15); border-radius:12px; padding:1.25rem;">
+            <div style="font-family:'Rajdhani',sans-serif; font-weight:700; color:#fca5a5; font-size:0.95rem; margin-bottom:0.75rem;">Personal Services Indicators</div>
+            <div style="color:var(--silver); font-size:0.85rem; line-height:1.7;">
+              Government supervises individuals daily<br>
+              Contract fills a hiring gap<br>
+              No clear deliverables, just &ldquo;support&rdquo;<br>
+              Government controls schedule and leave<br>
+              Contractor is on org chart / duty roster<br>
+              Company has no on-site management
+            </div>
+          </div>
+          <div style="background:rgba(52,211,153,0.05); border:1px solid rgba(52,211,153,0.15); border-radius:12px; padding:1.25rem;">
+            <div style="font-family:'Rajdhani',sans-serif; font-weight:700; color:#6ee7b7; font-size:0.95rem; margin-bottom:0.75rem;">Non-personal Services Indicators</div>
+            <div style="color:var(--silver); font-size:0.85rem; line-height:1.7;">
+              Company supervises its own people<br>
+              Contract is for a specific deliverable<br>
+              Performance measured against standards<br>
+              Company controls schedule and staffing<br>
+              Issues go through the company, not individuals<br>
+              COR oversees contract, not employees
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════ LOOK IT UP ═══ -->
+  <div id="panel-lookup" class="pvn-panel">
+    <div class="pvn-intro">
+      <div class="pvn-intro-tag">Rabbit Holes</div>
+      <h2>Look It Up</h2>
+      <p>The FAR, case law, and policy guidance on personal vs. non-personal services. If you want to go deeper, these are the authoritative sources.</p>
+    </div>
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR 37.104 &ndash; Personal Services Contracts</h4>
+        <p>The primary FAR section. Defines personal services, lists the factors for determining an employer-employee relationship, and explains when personal services contracts are authorized.</p>
+        <a href="https://www.acquisition.gov/far/37.104" target="_blank" rel="noopener">Open FAR 37.104</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 37.101 &ndash; Definitions</h4>
+        <p>Definitions for &ldquo;personal services contract&rdquo; and &ldquo;non-personal services contract.&rdquo; Short but important for understanding the baseline distinction the FAR draws.</p>
+        <a href="https://www.acquisition.gov/far/37.101" target="_blank" rel="noopener">Open FAR 37.101</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR Subpart 37.1 &ndash; Service Contracts (General)</h4>
+        <p>The full subpart covering service contracts. Includes the personal services rules plus general policy, performance-based contracting, and advisory and assistance services.</p>
+        <a href="https://www.acquisition.gov/far/subpart-37.1" target="_blank" rel="noopener">Open FAR Subpart 37.1</a>
+      </div>
+      <div class="lookup-card">
+        <h4>DFARS 237.104 &ndash; DoD Personal Services</h4>
+        <p>DoD-specific guidance and statutory authorities for personal services contracts, including healthcare, advisory services, and specific program authorities under 10 U.S.C.</p>
+        <a href="https://www.acquisition.gov/dfars/237.104" target="_blank" rel="noopener">Open DFARS 237.104</a>
+      </div>
+      <div class="lookup-card">
+        <h4>10 U.S.C. &sect; 129b &ndash; Personal Services Authority</h4>
+        <p>The statute that authorizes DoD to enter personal services contracts for certain functions, most notably healthcare. This is the foundation for most DoD personal services exceptions.</p>
+        <a href="https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title10-section129b&num=0&edition=prelim" target="_blank" rel="noopener">Open 10 USC 129b</a>
+      </div>
+      <div class="lookup-card">
+        <h4>5 U.S.C. &sect; 3109 &ndash; Employment of Experts &amp; Consultants</h4>
+        <p>The civil service law that governs when agencies can hire experts and consultants. This intersects with personal services when agencies try to use contracts instead of appointments.</p>
+        <a href="https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title5-section3109&num=0&edition=prelim" target="_blank" rel="noopener">Open 5 USC 3109</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="training-nav-band"><div id="training-nav" class="training-nav"></div></div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-brand">ContractingHQ</span>
+      <span class="footer-copy">&copy; 2026 ContractingHQ. Not an official DoD site.</span>
+    </div>
+  </div>
+</footer>
+<script src="main.js"></script>
+<script>
+/* ═══════ TABS ═══════ */
+document.querySelectorAll('.pvn-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.pvn-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.pvn-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+</script>
+<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script src="player.js"></script>
+</body>
+</html>

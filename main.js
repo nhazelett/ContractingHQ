@@ -73,7 +73,8 @@
     ["wage-determinations.html", "Wage Determinations"],
     ["blanket-purchase-agreements.html", "Blanket Purchase Agreements"],
     ["sf30-modifications.html", "SF 30s for Modifications and Amendments"],
-    ["unilateral-bilateral-modifications.html", "Unilateral vs. Bilateral Modifications"]
+    ["unilateral-bilateral-modifications.html", "Unilateral vs. Bilateral Modifications"],
+    ["personal-vs-non-personal-services.html", "Personal vs. Non-personal Services"]
   ];
 
   // Find current page in chain
