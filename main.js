@@ -70,6 +70,7 @@
     ["government-purchase-cards.html", "Government Purchase Cards"],
     ["gsa-orders-sat.html", "GSA Orders under the SAT"],
     ["gsa-orders-above-sat.html", "GSA Orders above the SAT"],
+    ["small-business-coordination.html", "DD Form 2579"],
     ["wage-determinations.html", "Wage Determinations"],
     ["blanket-purchase-agreements.html", "Blanket Purchase Agreements"],
     ["sf30-modifications.html", "SF 30s for Modifications and Amendments"],
