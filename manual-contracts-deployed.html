@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="How to execute manual contracts in a deployed or contingency environment using the SF 1449. Includes UCF structure, payment guidance, and a walkthrough of a properly filled manual 1449." />
+  <title>Manual Contracts in a Deployed Environment | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .mc-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .mc-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .mc-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .mc-tab:hover { color: var(--white); }
+    .mc-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .mc-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .mc-panel.active { display: block; }
+
+    /* ── Intro ── */
+    .mc-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .mc-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .mc-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .mc-intro p { color: var(--silver); font-size: 0.9rem; max-width: 660px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── UCF table ── */
+    .ucf-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; margin: 1rem 0; }
+    .ucf-table th { background: rgba(74,158,255,0.1); color: var(--accent); font-weight: 700; text-align: left; padding: 0.6rem 0.9rem; border-bottom: 1px solid rgba(74,158,255,0.2); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .ucf-table td { color: var(--silver); padding: 0.55rem 0.9rem; border-bottom: 1px solid rgba(74,158,255,0.06); vertical-align: top; }
+    .ucf-table tr.used td { background: rgba(52,211,153,0.05); color: var(--white); }
+    .ucf-table td strong { color: var(--white); }
+    .ucf-use { display: inline-block; padding: 0.12rem 0.5rem; border-radius: 100px; font-size: 0.68rem; font-weight: 700; }
+    .ucf-use.yes { background: rgba(52,211,153,0.15); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.3); }
+    .ucf-use.no { background: rgba(248,113,113,0.08); color: #fca5a5; border: 1px solid rgba(248,113,113,0.15); }
+    .ucf-use.sometimes { background: rgba(251,191,36,0.1); color: #fcd34d; border: 1px solid rgba(251,191,36,0.2); }
+
+    /* ── Mock 1449 form ── */
+    .mock-outer { background: rgba(10,22,50,0.3); border-radius: 14px; padding: 1.5rem; overflow-x: auto; }
+    .mock-form { min-width: 700px; border: 2px solid #000; background: #fff; color: #000; font-size: 10px; line-height: 1.4; font-family: 'Inter', Arial, sans-serif; }
+    .mock-cell { border: 1px solid #000; padding: 4px 6px; }
+    .mock-lbl { font-size: 7px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #444; }
+    .mock-val { font-size: 10px; color: #000; margin-top: 2px; }
+    .mock-click { cursor: pointer; transition: background 0.12s; }
+    .mock-click:hover { background: #f0f4ff; }
+    .mock-click.active { background: #fff9db; }
+    .mock-important { border-left: 3px solid #2563eb; }
+    .mock-header { background: #e5e7eb; font-weight: 700; text-align: center; padding: 6px; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid #000; }
+    .mock-cb { display: inline-flex; align-items: center; gap: 3px; font-size: 9px; margin: 1px 4px 1px 0; }
+    .mock-box { width: 10px; height: 10px; border: 1px solid #333; display: inline-block; flex-shrink: 0; background: #fff; }
+    .mock-box.checked { background: #1a1a1a; }
+
+    /* ── Popup overlay ── */
+    .mc-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; padding: 1rem; }
+    .mc-overlay.visible { opacity: 1; pointer-events: auto; }
+    .mc-popup { background: #0b1a34; border: 1px solid rgba(74,158,255,0.25); border-radius: 14px; max-width: 550px; width: 100%; padding: 1.75rem; position: relative; max-height: 80vh; overflow-y: auto; }
+    .mc-popup h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; }
+    .mc-popup p, .mc-popup div { color: var(--silver); font-size: 0.88rem; line-height: 1.7; }
+    .mc-popup strong { color: var(--white); }
+    .mc-popup-close { position: absolute; top: 0.75rem; right: 0.75rem; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.2); border-radius: 8px; color: var(--accent); cursor: pointer; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; }
+
+    /* ── Section attachment grid ── */
+    .section-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem; margin: 1rem 0; }
+    .section-card { background: rgba(10,22,50,0.4); border: 1px solid rgba(74,158,255,0.15); border-radius: 10px; padding: 0.85rem 1rem; text-align: center; }
+    .section-card .sec-letter { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+    .section-card .sec-name { color: var(--silver); font-size: 0.78rem; margin-top: 0.2rem; }
+    .section-card.needed { border-color: rgba(52,211,153,0.35); }
+    .section-card.needed .sec-letter { color: #6ee7b7; }
+    .section-card.skip { opacity: 0.4; }
+
+    /* ── Tool link cards ── */
+    .tool-link-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+    @media (max-width: 600px) { .tool-link-grid { grid-template-columns: 1fr; } }
+    .tool-link-card { background: rgba(10,22,50,0.5); border: 1px solid rgba(74,158,255,0.2); border-radius: 14px; padding: 1.25rem; text-decoration: none; display: block; transition: border-color 0.15s, background 0.15s; }
+    .tool-link-card:hover { border-color: var(--accent); background: rgba(74,158,255,0.05); }
+    .tool-link-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 0.35rem; }
+    .tool-link-card p { color: var(--silver); font-size: 0.83rem; line-height: 1.55; margin: 0; }
+
+    /* ── Look It Up ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+    .lookup-card { background: rgba(10,22,50,0.4); border: 1px solid rgba(74,158,255,0.12); border-radius: 12px; padding: 1.1rem 1.25rem; }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.82rem; line-height: 1.55; margin-bottom: 0.75rem; }
+    .lookup-card a { display: inline-block; font-size: 0.78rem; font-weight: 600; color: var(--accent); text-decoration: none; padding: 0.3rem 0.75rem; border: 1px solid rgba(74,158,255,0.25); border-radius: 6px; transition: all 0.15s; }
+    .lookup-card a:hover { background: rgba(74,158,255,0.1); border-color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <div class="mc-bg">
+    <div class="mc-intro">
+      <div class="mc-intro-tag">Topic 40 &mdash; Oversight &amp; Specialty</div>
+      <h2>Executing Manual Contracts in a Deployed Environment</h2>
+      <p>No contract writing system. No fancy tools. Just a blank SF 1449, a pen (or a PDF editor), and the knowledge to fill it correctly.</p>
+    </div>
+
+    <div class="mc-tabs">
+      <button class="mc-tab active" onclick="showMcTab('learn', this)">Learn</button>
+      <button class="mc-tab" onclick="showMcTab('walkthrough', this)">1449 Walkthrough</button>
+      <button class="mc-tab" onclick="showMcTab('tools', this)">Builder Tools</button>
+      <button class="mc-tab" onclick="showMcTab('lookup', this)">Look It Up</button>
+    </div>
+
+    <!-- ══════════════════════════════════════════════ LEARN ══ -->
+    <div id="mc-learn" class="mc-panel active">
+
+      <!-- 1 -->
+      <div class="learn-section">
+        <h3><span class="section-num">1</span> When You Write Manual Contracts</h3>
+        <div class="learn-body">
+          <p>In a deployed or contingency environment, you may not have access to a contract writing system. No ConWrite, no SPS, no PD2. You have a blank SF 1449 in PDF form (or printed copies), and you are the system. The contract is still a contract. It still needs to be legally sufficient. The same FAR, DFARS, and supplemental requirements still apply. The only thing that changes is the tool you are using to produce the document.</p>
+
+          <p>The SF 1449, "Solicitation/Contract/Order for Commercial Products and Services," is the standard form for commercial acquisitions under FAR Part 12. It covers the first two pages of your contract and award document. Everything after those two pages is the substance of your contract: your statement of work, your clauses, your delivery terms, and your attachments.</p>
+
+          <div class="highlight-box">
+            <strong>Know your forms.</strong> The SF 1449 is for commercial products and services. The SF 1442 is for construction. The SF 1155 (Order for Supplies or Services) can be simpler for some manual actions. Which form you use depends on the nature of the requirement. For modifications, you use the SF 30 regardless of which award form you started with.
+          </div>
+
+          <div class="highlight-box tip">
+            <strong>DLA has a solid walkthrough</strong> of the first two pages of the SF 1449, block by block. Before going further, review their training on how to read a solicitation/contract/order for commercial products and services. <a href="https://www.dla.mil/Small-Business/Resource-Center/Training-Resources/Details/Article/4181220/how-to-read-a-solicitationcontractorder-for-commercial-products-and-services-sf/" target="_blank" rel="noopener" style="color:var(--accent);">DLA SF 1449 Training</a>
+          </div>
+        </div>
+      </div>
+
+      <hr class="learn-divider" />
+
+      <!-- 2 -->
+      <div class="learn-section">
+        <h3><span class="section-num">2</span> After the First Two Pages: The UCF as Your Guide</h3>
+        <div class="learn-body">
+          <p>The first two pages of the SF 1449 are the form itself. Everything after that is the body of your contract. In a normal contract writing system, the software structures this for you. When writing manually, you need a structure yourself. The best one to follow is the Uniform Contract Format (UCF) from FAR 15.204-1.</p>
+
+          <p>Even though FAR Part 15 negotiated procedures may not apply to your contingency buy, the UCF is a clean, logical way to organize contract content. Here is the full section breakdown, and which ones you actually need for a typical manual contract:</p>
+
+          <table class="ucf-table">
+            <thead>
+              <tr>
+                <th>Section</th>
+                <th>Title</th>
+                <th>Manual Contract?</th>
+                <th>Why / Why Not</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>A</strong></td>
+                <td>Solicitation/Contract Form</td>
+                <td><span class="ucf-use no">Built In</span></td>
+                <td>This is the SF 1449 itself. The form is your Section A.</td>
+              </tr>
+              <tr>
+                <td><strong>B</strong></td>
+                <td>Supplies or Services and Prices/Costs</td>
+                <td><span class="ucf-use no">Built In</span></td>
+                <td>Blocks 19-24 of the 1449 cover this. Fill in the schedule on the form.</td>
+              </tr>
+              <tr class="used">
+                <td><strong>C</strong></td>
+                <td>Description / Specifications / SOW</td>
+                <td><span class="ucf-use yes">Include</span></td>
+                <td>Your PWS, SOW, or specifications. Put the whole thing in. In a deployed environment, key documents get lost. Having the full SOW inside your contract means it travels with the contract.</td>
+              </tr>
+              <tr>
+                <td><strong>D</strong></td>
+                <td>Packaging and Marking</td>
+                <td><span class="ucf-use no">Skip</span></td>
+                <td>Rarely relevant in a contingency environment unless you are buying supplies with specific packaging requirements.</td>
+              </tr>
+              <tr>
+                <td><strong>E</strong></td>
+                <td>Inspection and Acceptance</td>
+                <td><span class="ucf-use no">Covered</span></td>
+                <td>Covered by FAR 52.212-4, which should be in your Section I clauses.</td>
+              </tr>
+              <tr class="used">
+                <td><strong>F</strong></td>
+                <td>Deliveries or Performance</td>
+                <td><span class="ucf-use yes">Include</span></td>
+                <td>Your delivery schedule or period of performance. When does it start, when does it end, where does performance happen.</td>
+              </tr>
+              <tr>
+                <td><strong>G</strong></td>
+                <td>Contract Administration Data</td>
+                <td><span class="ucf-use no">Skip</span></td>
+                <td>Not typically needed for a contingency contract.</td>
+              </tr>
+              <tr class="used">
+                <td><strong>H</strong></td>
+                <td>Special Contract Requirements</td>
+                <td><span class="ucf-use sometimes">Sometimes</span></td>
+                <td>Base access instructions, security requirements, or location-specific operational constraints. If your deployed base has these, put them here.</td>
+              </tr>
+              <tr class="used">
+                <td><strong>I</strong></td>
+                <td>Contract Clauses</td>
+                <td><span class="ucf-use yes">Include</span></td>
+                <td>This is the section most people struggle with. At minimum you need 52.212-4 and a payment instruction clause. Use the KTHQ clause matrix or build your own.</td>
+              </tr>
+              <tr class="used">
+                <td><strong>J</strong></td>
+                <td>List of Attachments</td>
+                <td><span class="ucf-use yes">Include</span></td>
+                <td>Just a list of what is attached. Maps, diagrams, GFP lists, etc.</td>
+              </tr>
+              <tr>
+                <td><strong>K</strong></td>
+                <td>Reps, Certs, Other Statements</td>
+                <td><span class="ucf-use no">Solicitation</span></td>
+                <td>These were in your solicitation. Not needed on the award document.</td>
+              </tr>
+              <tr>
+                <td><strong>L</strong></td>
+                <td>Instructions, Conditions, Notices</td>
+                <td><span class="ucf-use no">Solicitation</span></td>
+                <td>Same as K. Solicitation-only.</td>
+              </tr>
+              <tr>
+                <td><strong>M</strong></td>
+                <td>Evaluation Factors</td>
+                <td><span class="ucf-use no">Solicitation</span></td>
+                <td>Same as K and L. Evaluation criteria are part of the solicitation, not the award.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="highlight-box tip">
+            <strong>So what do you actually need to attach to your 1449?</strong> Sections C, F, I, and J. Add H if your base has access or operational requirements. That is your contract. Everything else is either built into the form, covered by a clause, or was only relevant during the solicitation phase.
+          </div>
+        </div>
+      </div>
+
+      <hr class="learn-divider" />
+
+      <!-- 3 -->
+      <div class="learn-section">
+        <h3><span class="section-num">3</span> Section I: Getting Your Clauses Right</h3>
+        <div class="learn-body">
+          <p>Section I is where most manual contracts go wrong. Without a contract writing system auto-populating your clauses, you need to know which clauses apply and add them yourself.</p>
+
+          <div class="highlight-box">
+            <strong>The non-negotiable minimum for a commercial contract:</strong> FAR 52.212-4 (Contract Terms and Conditions, Commercial Products and Commercial Services). This single clause covers inspection, acceptance, assignment, disputes, payment terms, warranty, limitation of liability, termination, and more. If you put nothing else in your contract, 52.212-4 must be there.
+          </div>
+
+          <p>Beyond 52.212-4, you need a payment instruction clause. How is the contractor getting paid? This is the question that determines what else goes in Section I.</p>
+
+          <div class="highlight-box warn">
+            <strong>Payment by GPC:</strong> If you are in a situation where you are writing manual contracts, you are probably paying by cash or GPC. DAFI 64-117 authorizes the GPC as a method of payment against contracts. If you are paying by GPC, your clauses should reflect that. This is the simplest path in a deployed environment.
+          </div>
+
+          <div class="highlight-box">
+            <strong>Payment by electronic funds (WAWF):</strong> You can do manual contracts with electronic payment through WAWF via DFAS. But this means you need your WAWF clause in the contract (DFARS 252.232-7006 or applicable), AND you must upload your contract into EDA via PIEE. If the contract is not in EDA, your contractor will not get paid through WAWF. Period.
+          </div>
+
+          <div class="highlight-box tip">
+            <strong>Use the clause matrix.</strong> We have a <a href="provisions-clauses-commercial.html" style="color:var(--accent);">clause matrix here at KTHQ</a> built from the FAR 12.205 tables. Under the RFO, the old "master clauses" (52.212-5 and 52.212-3) are gone. The applicable clauses for commercial acquisitions now come directly from the FAR 12.205 tables (Tables 12-2, 12-3, and 12-4). Use the matrix to identify which ones apply to your buy, then list them in Section I. Build your own tailored matrix for your deployed operation so you can reuse it across multiple actions.
+          </div>
+        </div>
+      </div>
+
+      <hr class="learn-divider" />
+
+      <!-- 4 -->
+      <div class="learn-section">
+        <h3><span class="section-num">4</span> You Still Have to Upload to EDA</h3>
+        <div class="learn-body">
+          <p>This catches people off guard. You wrote the contract by hand (or on a PDF). You signed it. The contractor signed it. It is a binding contract. But if you do not upload it into EDA (Electronic Document Access) through PIEE, the contract does not exist in the official system of record.</p>
+
+          <div class="highlight-box warn">
+            <strong>If you are paying via WAWF, this is critical.</strong> DFAS processes payments through WAWF, which validates against EDA. No contract in EDA means no payment processing. Your contractor delivered the dumpsters, did the work, and has a signed contract, but cannot get paid because the contract is not in the system. Upload it.
+          </div>
+
+          <div class="highlight-box tip">
+            <strong>Even if you are paying by GPC,</strong> upload the contract to EDA. It is the official system of record for contract documents. An executed contract that only exists as a scanned PDF on someone's laptop is a contract that disappears when that laptop gets lost, damaged, or rotated out with the next unit. EDA is permanent. Use it.
+          </div>
+        </div>
+      </div>
+
+      <hr class="learn-divider" />
+
+      <!-- 5 -->
+      <div class="learn-section">
+        <h3><span class="section-num">5</span> Modifications: The Red Text Method</h3>
+        <div class="learn-body">
+          <p>Manual contracts get modified with manual SF 30s. The same form, done the same way, just without a contract writing system generating it for you. The key challenge with manual modifications is tracking what changed across the life of the contract.</p>
+
+          <p>Here is a method that works well and produces something close to a conformed copy by the time the contract closes out:</p>
+
+          <div class="highlight-box tip">
+            <strong>Modification 1:</strong> Start with your base contract content. All new or changed text from Mod 1 goes in <span style="color:#ef4444;">red</span>. Everything else stays black. This makes it immediately obvious what Mod 1 did.
+          </div>
+
+          <div class="highlight-box tip">
+            <strong>Modification 2:</strong> Take your Mod 1 document. Change the Mod 1 red text to black (it is now part of the baseline). Add Mod 2 changes in <span style="color:#ef4444;">red</span>. Now anyone reading the document can see what is new from Mod 2 and what was already incorporated.
+          </div>
+
+          <div class="highlight-box tip">
+            <strong>By the last modification,</strong> you have a running document that contains the entire history of the contract. All previous changes are in black (baseline). Only the most recent changes are in red. It reads like a conformed copy of the contract. Not mandatory, but when you close out the file or hand it off to the next rotation, whoever inherits the contract can read one document and know exactly what the contract looks like today.
+          </div>
+
+          <div class="highlight-box">
+            <strong>What goes in a typical deployed modification?</strong> Option exercises, period of performance extensions, quantity changes, price adjustments, and scope additions are the most common. Each mod should clearly state what it changes, reference the specific blocks or sections affected, and carry forward the full contract content so the document remains self-contained.
+          </div>
+        </div>
+      </div>
+
+      <hr class="learn-divider" />
+
+      <!-- 6 -->
+      <div class="learn-section">
+        <h3><span class="section-num">6</span> Accuracy Matters More When There Is No System Checking Your Work</h3>
+        <div class="learn-body">
+          <p>A contract writing system catches a lot of errors for you. Wrong CAGE code format, missing required clauses, inconsistent dollar amounts. When you are doing it manually, there is no system-level validation. You are the quality control.</p>
+
+          <div class="highlight-box warn">
+            <strong>Things to double-check on every manual contract:</strong>
+            <br><br>
+            The contract number follows proper formatting. NAICS code and size standard match the requirement. The total award amount in Block 26 matches the line items in Blocks 19-24. The CAGE code and DUNS/UEI are correct for the contractor. The period of performance dates are right. Clause citations are accurate and current. The solicitation number in Block 5 matches what you issued. The payment instructions actually work (GPC charge, or WAWF with the contract in EDA). Your signature and the contractor's signature are both present.
+          </div>
+
+          <p>Read through the completed contract as if someone else wrote it and you are reviewing it. If anything does not add up, fix it before execution. There is no "the system will catch that" safety net here.</p>
+        </div>
+      </div>
+
+      <div id="mc-nav-top"></div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════ WALKTHROUGH ══ -->
+    <div id="mc-walkthrough" class="mc-panel">
+      <p style="color:var(--silver); font-size:0.9rem; line-height:1.65; margin-bottom:1.5rem;">Below is a mock SF 1449 Page 1 for a contingency contract. Click any highlighted block to see guidance on how to fill it correctly in a manual environment. This example is a small business set-aside, FFP services contract for waste removal at a deployed location, paid by GPC.</p>
+
+      <div class="mock-outer">
+        <div class="mock-form">
+          <!-- Row 1: Header -->
+          <div style="display:grid; grid-template-columns:3fr 1fr 0.5fr 0.3fr 0.5fr;">
+            <div class="mock-cell" style="font-weight:700; font-size:8.5px; text-transform:uppercase; text-align:center; line-height:1.3; padding:6px;">Solicitation/Contract/Order<br>for Commercial Products and Commercial Services</div>
+            <div class="mock-cell mock-click" onclick="showMcNote('reqno')" data-note="reqno"><div class="mock-lbl">1. Requisition Number</div><div class="mock-val">FD20252500001</div></div>
+            <div class="mock-cell" style="text-align:center;"><div class="mock-lbl">Page</div><div class="mock-val">1</div></div>
+            <div class="mock-cell" style="text-align:center;"><div class="mock-lbl">of</div><div class="mock-val">8</div></div>
+            <div class="mock-cell" style="text-align:center;"><div class="mock-val"></div></div>
+          </div>
+
+          <!-- Row 2 -->
+          <div style="display:grid; grid-template-columns:1.5fr 1fr 1fr 1.5fr 1fr;">
+            <div class="mock-cell mock-click mock-important" onclick="showMcNote('contractno')" data-note="contractno"><div class="mock-lbl">2. Contract No.</div><div class="mock-val" style="font-weight:700;">FA8201-25-P-0042</div></div>
+            <div class="mock-cell mock-click" onclick="showMcNote('awarddate')" data-note="awarddate"><div class="mock-lbl">3. Award/Effective Date</div><div class="mock-val">15-Mar-2025</div></div>
+            <div class="mock-cell"><div class="mock-lbl">4. Order Number</div><div class="mock-val"></div></div>
+            <div class="mock-cell mock-click" onclick="showMcNote('solno')" data-note="solno"><div class="mock-lbl">5. Solicitation Number</div><div class="mock-val">FA8201-25-R-0042</div></div>
+            <div class="mock-cell"><div class="mock-lbl">6. Solicitation Issue Date</div><div class="mock-val">01-Mar-2025</div></div>
+          </div>
+
+          <!-- Row 3: POC / Offer Due -->
+          <div style="display:grid; grid-template-columns:2fr 1.5fr 1fr;">
+            <div class="mock-cell"><div class="mock-lbl">7. For Solicitation Information Call</div><div class="mock-val">a. Name: <strong>SSgt Jane Smith</strong></div></div>
+            <div class="mock-cell"><div class="mock-lbl">b. Telephone Number</div><div class="mock-val">DSN 318-555-1234</div></div>
+            <div class="mock-cell mock-click" onclick="showMcNote('offerdue')" data-note="offerdue"><div class="mock-lbl">8. Offer Due Date/Time</div><div class="mock-val">08-Mar-2025<br>1600L</div></div>
+          </div>
+
+          <!-- Row 4: Issued By / Acquisition Type / Delivery / Discount -->
+          <div style="display:grid; grid-template-columns:1.3fr 1fr 1fr 0.7fr;">
+            <div class="mock-cell mock-click" onclick="showMcNote('issuedby')" data-note="issuedby" style="grid-row: span 2;">
+              <div class="mock-lbl">9. Issued By</div>
+              <div class="mock-val" style="font-size:9px; line-height:1.5;">
+                332 ECONS/LGCA<br>
+                Unit 61000<br>
+                APO AE 09321
+              </div>
+            </div>
+            <div class="mock-cell mock-click mock-important" onclick="showMcNote('acquisition')" data-note="acquisition">
+              <div class="mock-lbl">10. This Acquisition Is</div>
+              <div style="margin-top:3px;">
+                <span class="mock-cb"><span class="mock-box"></span> Unrestricted</span><br>
+                <span class="mock-cb"><span class="mock-box checked"></span> Set Aside 100% for Small Business</span>
+              </div>
+              <div style="margin-top:3px; font-size:8px;">NAICS: 562111 &nbsp; Size Std: $47.0M</div>
+            </div>
+            <div class="mock-cell"><div class="mock-lbl">11. Delivery for FOB Destination</div><div class="mock-val">See Schedule</div></div>
+            <div class="mock-cell"><div class="mock-lbl">12. Discount Terms</div><div class="mock-val">Net 30</div></div>
+          </div>
+
+          <!-- Row 5: Method of solicitation -->
+          <div style="display:grid; grid-template-columns:1.3fr 1fr 1fr 0.7fr;">
+            <div class="mock-cell" style="visibility:hidden;"></div>
+            <div class="mock-cell mock-click" onclick="showMcNote('method')" data-note="method">
+              <div class="mock-lbl">14. Method of Solicitation</div>
+              <div style="margin-top:3px;">
+                <span class="mock-cb"><span class="mock-box"></span> RFQ</span>
+                <span class="mock-cb"><span class="mock-box"></span> IFB</span>
+                <span class="mock-cb"><span class="mock-box checked"></span> RFP</span>
+              </div>
+            </div>
+            <div class="mock-cell"><div class="mock-lbl">13a. Rated Order</div><div class="mock-val" style="font-size:8px;"><span class="mock-cb"><span class="mock-box"></span> Yes</span> <span class="mock-cb"><span class="mock-box checked"></span> No</span></div></div>
+            <div class="mock-cell"><div class="mock-lbl">13b. Rating</div><div class="mock-val">N/A</div></div>
+          </div>
+
+          <!-- Row 6: Deliver To / Administered By -->
+          <div style="display:grid; grid-template-columns:1fr 1fr;">
+            <div class="mock-cell mock-click" onclick="showMcNote('deliverto')" data-note="deliverto">
+              <div class="mock-lbl">15. Deliver To</div>
+              <div class="mock-val" style="font-size:9px; line-height:1.5;">
+                332 ECONS/LGCA<br>
+                Attn: SSgt Jane Smith, COR<br>
+                Unit 61000, APO AE 09321
+              </div>
+            </div>
+            <div class="mock-cell">
+              <div class="mock-lbl">16. Administered By</div>
+              <div class="mock-val" style="font-size:9px; text-align:center; padding:8px 0;">SEE ITEM 9</div>
+            </div>
+          </div>
+
+          <!-- Row 7: Contractor -->
+          <div style="display:grid; grid-template-columns:1.2fr 1fr 1.8fr;">
+            <div class="mock-cell mock-click mock-important" onclick="showMcNote('contractor')" data-note="contractor" style="grid-row: span 2;">
+              <div class="mock-lbl">17a. Contractor/Offeror</div>
+              <div class="mock-val" style="font-size:9px; line-height:1.5;">
+                DESERT WASTE SOLUTIONS LLC<br>
+                P.O. Box 4412<br>
+                Local City, Host Nation
+              </div>
+              <div style="margin-top:4px; font-size:8px;">Tel: +964-555-0199</div>
+            </div>
+            <div class="mock-cell"><div class="mock-lbl">Code</div><div class="mock-val">1ABC7</div></div>
+            <div class="mock-cell mock-click" onclick="showMcNote('payment')" data-note="payment">
+              <div class="mock-lbl">18a. Payment Will Be Made By</div>
+              <div class="mock-val" style="font-size:9px; line-height:1.5;">GPC - Government Purchase Card<br>See Section I, Payment Instructions</div>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1.2fr 2.8fr;">
+            <div class="mock-cell" style="visibility:hidden;"></div>
+            <div class="mock-cell"><div class="mock-lbl">17b./18b.</div><div class="mock-val" style="font-size:8px;">Check if remittance is different / Submit invoices to address in 18a unless block below is checked</div></div>
+          </div>
+
+          <!-- Schedule -->
+          <div style="display:grid; grid-template-columns:0.5fr 2fr 0.6fr 0.5fr 0.7fr 0.7fr;">
+            <div class="mock-cell mock-header">19. Item No.</div>
+            <div class="mock-cell mock-header">20. Schedule of Supplies/Services</div>
+            <div class="mock-cell mock-header">21. Quantity</div>
+            <div class="mock-cell mock-header">22. Unit</div>
+            <div class="mock-cell mock-header">23. Unit Price</div>
+            <div class="mock-cell mock-header">24. Amount</div>
+          </div>
+          <div style="display:grid; grid-template-columns:0.5fr 2fr 0.6fr 0.5fr 0.7fr 0.7fr;" class="mock-click" onclick="showMcNote('schedule')">
+            <div class="mock-cell" style="text-align:center;"><div class="mock-val">0001</div></div>
+            <div class="mock-cell"><div class="mock-val">Waste Removal Services, Base Period<br><span style="font-size:8px;">01 Apr 2025 - 30 Sep 2025 (6 months)</span><br><span style="font-size:8px;">Per PWS, Section C</span></div></div>
+            <div class="mock-cell" style="text-align:center;"><div class="mock-val">6</div></div>
+            <div class="mock-cell" style="text-align:center;"><div class="mock-val">MO</div></div>
+            <div class="mock-cell" style="text-align:right;"><div class="mock-val">$4,200.00</div></div>
+            <div class="mock-cell" style="text-align:right;"><div class="mock-val">$25,200.00</div></div>
+          </div>
+          <div style="display:grid; grid-template-columns:0.5fr 2fr 0.6fr 0.5fr 0.7fr 0.7fr;">
+            <div class="mock-cell" style="text-align:center;"><div class="mock-val">0002</div></div>
+            <div class="mock-cell"><div class="mock-val">Waste Removal Services, Option Period 1<br><span style="font-size:8px;">01 Oct 2025 - 31 Mar 2026 (6 months)</span><br><span style="font-size:8px;">Per PWS, Section C</span></div></div>
+            <div class="mock-cell" style="text-align:center;"><div class="mock-val">6</div></div>
+            <div class="mock-cell" style="text-align:center;"><div class="mock-val">MO</div></div>
+            <div class="mock-cell" style="text-align:right;"><div class="mock-val">$4,350.00</div></div>
+            <div class="mock-cell" style="text-align:right;"><div class="mock-val">$26,100.00</div></div>
+          </div>
+
+          <!-- Total -->
+          <div style="display:grid; grid-template-columns:3fr 2fr;">
+            <div class="mock-cell"><div class="mock-lbl">25. Accounting and Appropriation Data</div><div class="mock-val" style="font-size:9px;">See Schedule</div></div>
+            <div class="mock-cell mock-click" onclick="showMcNote('total')" data-note="total"><div class="mock-lbl">26. Total Award Amount (For Govt. Use Only)</div><div class="mock-val" style="font-weight:700; font-size:12px; text-align:right;">$25,200.00</div></div>
+          </div>
+
+          <!-- Blocks 27-31 -->
+          <div style="display:grid; grid-template-columns:1fr 1fr;">
+            <div class="mock-cell" style="font-size:8px; padding:6px;">
+              <div style="margin-bottom:3px;"><span class="mock-cb"><span class="mock-box checked"></span> 27a. Solicitation incorporates by reference FAR 52.212-1, 52.212-4. Applicable clauses per FAR 12.205 are listed in Section I.</span></div>
+              <div><span class="mock-cb"><span class="mock-box"></span> 27b. Contract/Purchase Order incorporates by reference FAR 52.212-4. Applicable clauses per FAR 12.205 are listed in Section I.</span></div>
+              <div style="margin-top:3px; font-size:7.5px;">Addenda <span class="mock-cb"><span class="mock-box checked"></span> Are</span> <span class="mock-cb"><span class="mock-box"></span> Are Not</span> Attached</div>
+            </div>
+            <div class="mock-cell mock-click" onclick="showMcNote('award')" data-note="award" style="font-size:8px; padding:6px;">
+              <div class="mock-lbl">29. Award of Contract</div>
+              <div style="margin-top:3px;"><span class="mock-cb"><span class="mock-box checked"></span> Your offer on Solicitation (Block 5), including any additions or changes which are set forth herein, is accepted as to items: SEE SCHEDULE</span></div>
+            </div>
+          </div>
+
+          <!-- Signatures -->
+          <div style="display:grid; grid-template-columns:1fr 1fr;">
+            <div class="mock-cell" style="min-height:45px; padding:6px;">
+              <div class="mock-lbl">30a. Signature of Offeror/Contractor</div>
+              <div style="font-family:cursive; font-size:14px; color:#333; padding:4px 0;">/s/ Ahmed Al-Rashid</div>
+              <div class="mock-lbl" style="margin-top:2px;">30b. Name and Title: Ahmed Al-Rashid, Owner</div>
+              <div class="mock-lbl">30c. Date Signed: 15-Mar-2025</div>
+            </div>
+            <div class="mock-cell mock-click" onclick="showMcNote('cosig')" data-note="cosig" style="min-height:45px; padding:6px;">
+              <div class="mock-lbl">31a. United States of America (Signature of Contracting Officer)</div>
+              <div style="font-family:cursive; font-size:14px; color:#333; padding:4px 0;">/s/ TSgt Michael Torres</div>
+              <div class="mock-lbl">31b. Name: MICHAEL TORRES / Contracting Officer</div>
+              <div class="mock-lbl">31c. Date Signed: 15-Mar-2025</div>
+            </div>
+          </div>
+
+        </div><!-- end mock-form -->
+      </div><!-- end mock-outer -->
+
+      <p style="color:var(--silver); font-size:0.82rem; margin-top:1rem; text-align:center;">Click any blue-bordered block for guidance on filling it in a manual/deployed environment.</p>
+    </div>
+
+    <!-- ══════════════════════════════════════════════ TOOLS ══ -->
+    <div id="mc-tools" class="mc-panel">
+      <div class="learn-body">
+        <p>These tools help you build the sections that go after the first two pages of your SF 1449, and manage modifications with change tracking. They are standalone pages you can use anytime.</p>
+
+        <div class="tool-link-grid">
+          <a href="manual-1449-builder.html" class="tool-link-card">
+            <h4>1449 Section Builder</h4>
+            <p>Fill in Sections C, F, H, I, and J for your manual contract. The tool rolls everything into one clean attachment you can print or attach to your SF 1449 as a PDF.</p>
+          </a>
+          <a href="manual-mod-builder.html" class="tool-link-card">
+            <h4>Manual Mod Builder</h4>
+            <p>Build SF 30 modification content with the red/black text tracking method. New changes show in red; previous mod text rolls to black automatically with each subsequent modification.</p>
+          </a>
+        </div>
+
+        <div class="highlight-box">
+          <strong>The clause matrix</strong> is available at <a href="provisions-clauses-commercial.html" style="color:var(--accent);">Provisions &amp; Clauses for Commercial Items</a>. Use it alongside the 1449 Section Builder to make sure your Section I is right.
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════ LOOK IT UP ══ -->
+    <div id="mc-lookup" class="mc-panel">
+      <div class="lookup-grid">
+
+        <div class="lookup-card">
+          <h4>FAR Part 12 &ndash; Commercial Acquisitions</h4>
+          <p>The governing part for commercial products and services. The SF 1449 is the prescribed form for commercial acquisitions. Start here for the overall framework.</p>
+          <a href="https://www.acquisition.gov/far/part-12" target="_blank" rel="noopener">Open FAR Part 12</a>
+        </div>
+
+        <div class="lookup-card">
+          <h4>FAR 15.204-1 &ndash; Uniform Contract Format</h4>
+          <p>The UCF section structure (A through M). Even if Part 15 does not apply to your buy, this is the best organizational guide for structuring contract content manually.</p>
+          <a href="https://www.acquisition.gov/far/15.204-1" target="_blank" rel="noopener">Open FAR 15.204-1</a>
+        </div>
+
+        <div class="lookup-card">
+          <h4>FAR 52.212-4 &ndash; Commercial Contract Terms</h4>
+          <p>The essential clause for every commercial contract. Covers inspection, acceptance, disputes, payment, termination, and more in one clause. Must be in every 1449.</p>
+          <a href="https://www.acquisition.gov/far/52.212-4" target="_blank" rel="noopener">Open FAR 52.212-4</a>
+        </div>
+
+        <div class="lookup-card">
+          <h4>FAR 53.212 &ndash; Prescribed Forms</h4>
+          <p>Prescribes the SF 1449 for commercial acquisitions. Also covers when to use SF 1442 (construction) and SF 1155 (orders for supplies or services).</p>
+          <a href="https://www.acquisition.gov/far/53.212" target="_blank" rel="noopener">Open FAR 53.212</a>
+        </div>
+
+        <div class="lookup-card">
+          <h4>DFARS 218 &ndash; Emergency Acquisitions</h4>
+          <p>DoD supplement covering contingency contracting authorities and flexibilities. Relevant when operating under emergency or contingency conditions.</p>
+          <a href="https://www.acquisition.gov/dfars/subpart-218.2-emergency-acquisition-flexibilities" target="_blank" rel="noopener">Open DFARS 218</a>
+        </div>
+
+        <div class="lookup-card">
+          <h4>DLA SF 1449 Training</h4>
+          <p>DLA's block-by-block walkthrough of how to read the SF 1449. Covers both pages of the form with explanations of each block.</p>
+          <a href="https://www.dla.mil/Small-Business/Resource-Center/Training-Resources/Details/Article/4181220/how-to-read-a-solicitationcontractorder-for-commercial-products-and-services-sf/" target="_blank" rel="noopener">DLA Training</a>
+        </div>
+
+        <div class="lookup-card">
+          <h4>PIEE / EDA</h4>
+          <p>Where you upload your manual contracts for official record. If paying through WAWF, the contract must be in EDA or DFAS cannot process payment.</p>
+          <a href="https://wawf.eb.mil/" target="_blank" rel="noopener">Open PIEE</a>
+        </div>
+
+        <div class="lookup-card">
+          <h4>KTHQ Clause Matrix</h4>
+          <p>Our clause matrix for commercial acquisitions, built from the FAR 12.205 tables. Under the RFO, the old 52.212-5 is gone. Use these tables to populate your Section I.</p>
+          <a href="provisions-clauses-commercial.html">Open Clause Matrix</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- end mc-bg -->
+
+  <!-- ── Popup overlay ── -->
+  <div class="mc-overlay" id="mcOverlay" onclick="if(event.target===this)hideMcNote()">
+    <div class="mc-popup">
+      <button class="mc-popup-close" onclick="hideMcNote()">&times;</button>
+      <h3 id="mcNoteTitle"></h3>
+      <div id="mcNoteBody"></div>
+    </div>
+  </div>
+
+  <div id="footer-placeholder"></div>
+  <script src="main.js"></script>
+  <script>
+    function showMcTab(id, btn) {
+      document.querySelectorAll('.mc-panel').forEach(function(p) { p.classList.remove('active'); });
+      document.querySelectorAll('.mc-tab').forEach(function(t) { t.classList.remove('active'); });
+      document.getElementById('mc-' + id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    var mcNotes = {
+      reqno: {
+        title: "Block 1: Requisition Number",
+        body: "Your PR number. In a deployed environment, this may come from a manual PR system or your unit's tracking sheet. Whatever numbering system your office uses, put it here. If you do not have a formal PR system, create a log and use sequential numbering so you can track requirements back to their source."
+      },
+      contractno: {
+        title: "Block 2: Contract Number",
+        body: "Your contract number. In a contract writing system, this is auto-generated. When writing manually, you need to follow your organization's contract numbering convention.<br><br><strong>Standard DoD format:</strong> The contract number follows PII (Procurement Instrument Identification) rules per DFARS 204.16. It includes your DODAAC, fiscal year, instrument type (P for purchase order, C for contract, etc.), and a sequential number.<br><br>If you are not sure what your DODAAC is or what numbering sequence your office is using, check with your flight chief or the previous rotation's contracting team. Using someone else's sequence or making up a format will cause problems downstream when the contract goes into EDA."
+      },
+      awarddate: {
+        title: "Block 3: Award/Effective Date",
+        body: "The date the contract becomes effective. In most cases this is the date both parties sign. Do not backdate contracts. If you need services to start on a specific date, make that the start date in your period of performance (Section F), not the award date."
+      },
+      solno: {
+        title: "Block 5: Solicitation Number",
+        body: "Your solicitation number. This should match whatever you issued as the solicitation document. Even in a contingency environment, you issued something (an RFP, RFQ, or request for offers) and it had a number. That number goes here. The contract number and solicitation number will usually share the same base, with different instrument type codes."
+      },
+      offerdue: {
+        title: "Block 8: Offer Due Date/Local Time",
+        body: "When offers were due. This is a solicitation block, so on the award document it reflects when the deadline was. In a deployed environment, be specific about the time zone. \"1600L\" means 1600 local time at the place of performance. If you are coordinating across time zones, spell it out."
+      },
+      issuedby: {
+        title: "Block 9: Issued By",
+        body: "Your contracting office. Include the unit, office symbol, and mailing address. In a deployed environment, this is usually your APO/FPO address. Make sure this matches your DODAAC registration. If your unit just stood up a new contracting office and the DODAAC has not been registered yet, get that sorted before you start issuing contracts."
+      },
+      acquisition: {
+        title: "Block 10: This Acquisition Is",
+        body: "Check the appropriate box. The Rule of Two still applies in a deployed environment. If two or more small businesses can meet the requirement at competitive prices, quality, and delivery, you must set aside per FAR 19.104-1.<br><br>Include your NAICS code and size standard. If you are buying waste removal services, that is NAICS 562111 (Solid Waste Collection). Get the right code. A wrong NAICS does not become right just because you are deployed."
+      },
+      method: {
+        title: "Block 14: Method of Solicitation",
+        body: "RFQ for simplified acquisitions. RFP if you are evaluating offers under competitive procedures. IFB for sealed bidding (rare in contingency). Check the one that matches how you actually solicited. If you posted a request and evaluated responses, that is an RFP."
+      },
+      deliverto: {
+        title: "Block 15: Deliver To",
+        body: "Where the supplies are delivered or where services are performed. In a deployed environment, this is your base or operating location. Include the COR's name and contact info so the contractor knows who to coordinate with on the ground."
+      },
+      contractor: {
+        title: "Block 17a: Contractor/Offeror",
+        body: "The contractor's name, address, and contact information. Verify the contractor's legal name. In many deployed environments, local contractors may not have a CAGE code or UEI. If they are a foreign vendor operating outside the U.S., document what you can and follow your theater's guidance on contractor registration.<br><br>The CAGE code in Block 17a (Code field) is important for EDA and payment processing. If the contractor does not have one, your office may need to help them get registered, or your theater may have a process for this."
+      },
+      payment: {
+        title: "Block 18a: Payment Will Be Made By",
+        body: "How the contractor gets paid. This is critical.<br><br><strong>GPC:</strong> If paying by Government Purchase Card, state it here. DAFI 64-117 authorizes GPC as a method of payment against contracts. This is the simplest option in a deployed environment.<br><br><strong>WAWF/DFAS:</strong> If paying electronically through WAWF, list the DFAS payment office and cage code. But remember: the contract must be uploaded to EDA via PIEE or DFAS cannot process the payment. No EDA entry means no payment, regardless of what this block says.<br><br>Whatever you put here needs to be consistent with your payment clause in Section I."
+      },
+      schedule: {
+        title: "Blocks 19-24: Schedule of Supplies/Services",
+        body: "Your line items. Each CLIN gets a row. Include the item number, description, quantity, unit of issue, unit price, and extended amount.<br><br><strong>For services:</strong> Reference your PWS/SOW in the description (e.g., \"Per PWS, Section C\"). Include the period of performance for each CLIN. If you have a base period and options, make them separate CLINs so you can exercise options individually via modification.<br><br><strong>Math check:</strong> Quantity times unit price must equal amount. Total of all amounts must equal Block 26. No contract writing system is checking this for you. Get it right."
+      },
+      total: {
+        title: "Block 26: Total Award Amount",
+        body: "The total obligated amount at time of award. For a contract with options, this should reflect only the base period amount that is being funded and obligated at award, not the total potential value including all options.<br><br>In this example, only the base period (CLIN 0001, $25,200) is obligated. Option Period 1 will be obligated later via modification if the option is exercised. The total in Block 26 is $25,200, not $51,300."
+      },
+      award: {
+        title: "Block 29: Award of Contract",
+        body: "Check this block and reference \"SEE SCHEDULE\" for the items accepted. This block indicates that the Government is accepting the contractor's offer. When both Block 29 is checked and both parties have signed (Blocks 30 and 31), you have a binding contract."
+      },
+      cosig: {
+        title: "Block 31: Contracting Officer Signature",
+        body: "Your signature, printed name, title, and date. This is the block that makes it a contract. Only a warranted contracting officer can sign here.<br><br>In a deployed environment, you may be signing a physical copy with a pen, or using a digital signature on a PDF. Either is acceptable. What matters is that a warranted CO signed it. If you are a contract specialist without a warrant, you cannot sign Block 31. Period.<br><br>Make sure the date here matches or follows the contractor's signature date in Block 30c. You cannot accept an offer before it was made."
+      }
+    };
+
+    function showMcNote(key) {
+      document.querySelectorAll('.mock-click').forEach(function(c) { c.classList.remove('active'); });
+      document.querySelectorAll('.mock-click[data-note="' + key + '"]').forEach(function(c) { c.classList.add('active'); });
+      document.getElementById('mcNoteTitle').textContent = mcNotes[key].title;
+      document.getElementById('mcNoteBody').innerHTML = mcNotes[key].body;
+      document.getElementById('mcOverlay').classList.add('visible');
+    }
+    function hideMcNote() {
+      document.getElementById('mcOverlay').classList.remove('visible');
+      document.querySelectorAll('.mock-click').forEach(function(c) { c.classList.remove('active'); });
+    }
+  </script>
+</body>
+</html>

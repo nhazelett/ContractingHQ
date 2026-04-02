@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Build SF 30 modification content for manual contracts with red/black text change tracking. New changes in red, previous changes roll to black with each modification." />
+  <title>Manual Mod Builder | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    .mod-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+    .mod-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .mod-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .mod-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .mod-intro p { color: var(--silver); font-size: 0.9rem; max-width: 660px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    .mod-wrap { max-width: 800px; margin: 2rem auto; padding: 0 1.5rem; }
+
+    /* Cards */
+    .mod-card { background: rgba(10,22,50,0.4); border: 1px solid rgba(74,158,255,0.15); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .mod-card h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 0.2rem; }
+    .mod-card .card-desc { color: var(--silver); font-size: 0.82rem; margin-bottom: 1rem; line-height: 1.5; }
+    .mod-card label { display: block; color: var(--silver); font-size: 0.82rem; font-weight: 600; margin-bottom: 0.3rem; margin-top: 0.75rem; }
+    .mod-card input[type="text"],
+    .mod-card input[type="date"],
+    .mod-card input[type="number"],
+    .mod-card select {
+      width: 100%; box-sizing: border-box; background: rgba(4,13,31,0.8); border: 1px solid rgba(74,158,255,0.2); color: var(--white); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.88rem; font-family: inherit;
+    }
+    .mod-card select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a9eff' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; padding-right: 2rem; cursor: pointer; }
+    .mod-card select option { background: #0a1632; color: #e2eaf4; padding: 0.4rem; }
+    .mod-card textarea {
+      width: 100%; box-sizing: border-box; background: rgba(4,13,31,0.8); border: 1px solid rgba(74,158,255,0.2); color: var(--white); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.85rem; font-family: inherit; min-height: 100px; resize: vertical; line-height: 1.6;
+    }
+    .mod-card input:focus, .mod-card textarea:focus, .mod-card select:focus { outline: none; border-color: var(--accent); }
+
+    .id-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .id-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+    @media (max-width: 500px) { .id-row, .id-row-3 { grid-template-columns: 1fr; } }
+
+    /* Modification blocks */
+    .mod-block { background: rgba(4,13,31,0.6); border: 1px solid rgba(74,158,255,0.1); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; position: relative; }
+    .mod-block h4 { font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .mod-block .mod-num { color: var(--accent); }
+    .mod-block .mod-remove { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; border-radius: 6px; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 700; }
+    .mod-block .mod-remove:hover { background: rgba(248,113,113,0.2); }
+
+    /* Preview area */
+    .preview-area { background: #fff; color: #000; border-radius: 10px; padding: 1.5rem; margin-top: 1.5rem; font-family: Arial, Helvetica, sans-serif; font-size: 11px; line-height: 1.6; max-height: 500px; overflow-y: auto; }
+    .preview-area .red-text { color: #dc2626; }
+    .preview-area .section-head { font-size: 13px; font-weight: bold; border-bottom: 1px solid #999; padding-bottom: 4px; margin: 16px 0 8px; }
+
+    .add-btn { background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.2); color: var(--accent); border-radius: 8px; padding: 0.45rem 0.9rem; cursor: pointer; font-size: 0.8rem; font-weight: 600; font-family: inherit; transition: background 0.12s; margin-top: 0.5rem; }
+    .add-btn:hover { background: rgba(74,158,255,0.2); }
+
+    .btn-row { display: flex; gap: 0.75rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap; }
+    .gen-btn { background: var(--accent); color: #040d1f; border: none; border-radius: 10px; padding: 0.75rem 2rem; font-size: 0.95rem; font-weight: 700; font-family: 'Rajdhani', sans-serif; cursor: pointer; letter-spacing: 0.5px; transition: opacity 0.12s; }
+    .gen-btn:hover { opacity: 0.85; }
+    .preview-btn { background: rgba(52,211,153,0.15); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.3); border-radius: 10px; padding: 0.75rem 2rem; font-size: 0.95rem; font-weight: 700; font-family: 'Rajdhani', sans-serif; cursor: pointer; transition: opacity 0.12s; }
+    .preview-btn:hover { opacity: 0.85; }
+
+    .legend { display: flex; gap: 1.5rem; align-items: center; margin: 1rem 0; font-size: 0.82rem; }
+    .legend-item { display: flex; align-items: center; gap: 0.35rem; color: var(--silver); }
+    .legend-swatch { width: 14px; height: 14px; border-radius: 3px; }
+    .legend-swatch.red { background: #dc2626; }
+    .legend-swatch.black { background: #000; border: 1px solid #555; }
+
+    /* Quick Fill template dropdown */
+    .mod-template-input { background-color: rgba(74,158,255,0.08) !important; border-color: rgba(74,158,255,0.3) !important; }
+
+    /* Hidden PDF content */
+    #pdf-mod-content { display: none; }
+    #pdf-mod-content.rendering { display: block; position: fixed; top: -9999px; left: -9999px; }
+  </style>
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <div class="mod-bg">
+    <div class="mod-intro">
+      <div class="mod-intro-tag">Tool</div>
+      <h2>Manual Mod Builder</h2>
+      <p>Build modification content with automatic red/black text change tracking. Current mod changes appear in red. Previous mod text rolls to black.</p>
+    </div>
+
+    <div class="mod-wrap">
+
+      <!-- Contract ID -->
+      <div class="mod-card">
+        <h3>Contract Identification</h3>
+        <div class="id-row">
+          <div>
+            <label>Contract Number</label>
+            <input type="text" id="mod-contractno" placeholder="e.g., FA8201-25-P-0042" />
+          </div>
+          <div>
+            <label>Contractor Name</label>
+            <input type="text" id="mod-contractor" placeholder="e.g., Desert Waste Solutions LLC" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Base Contract -->
+      <div class="mod-card">
+        <h3>Base Contract Content</h3>
+        <div class="card-desc">Enter your original contract content by section. This is the starting baseline. As you add modifications below, this content stays black and each mod's changes appear in red.</div>
+
+        <label>Section C (SOW/PWS Summary or Key Terms)</label>
+        <textarea id="base-c" placeholder="Enter the key terms from your base contract Section C. You can paste the full text or summarize the relevant portions that may be modified."></textarea>
+
+        <label>Section F (Period of Performance)</label>
+        <textarea id="base-f" style="min-height:60px;" placeholder="e.g., Base Period: 01 Apr 2025 - 30 Sep 2025. Place of performance: Camp Taji, Iraq."></textarea>
+
+        <label>Section I (Key Clauses)</label>
+        <textarea id="base-i" style="min-height:60px;" placeholder="List your base contract clauses, or summarize the key ones."></textarea>
+      </div>
+
+      <!-- Modifications -->
+      <div class="mod-card">
+        <h3>Modifications</h3>
+        <div class="card-desc">Add modifications in order. Use <strong>Quick Fill</strong> to pick a common mod type and get pre-filled language with blanks to fill in, or just type your summary of changes directly. Each mod's text appears in red; previous mods roll to black automatically.</div>
+
+        <div class="legend">
+          <div class="legend-item"><span class="legend-swatch red"></span> Current modification (red text)</div>
+          <div class="legend-item"><span class="legend-swatch black"></span> Previous/baseline (black text)</div>
+        </div>
+
+        <div id="mod-list">
+          <div class="mod-block" id="modblk-1"></div>
+        </div>
+
+        <button class="add-btn" onclick="addMod()">+ Add Modification</button>
+      </div>
+
+      <!-- Buttons -->
+      <div class="btn-row">
+        <button class="preview-btn" onclick="renderPreview()">Preview</button>
+        <button class="gen-btn" onclick="generateModPDF()">Generate PDF</button>
+      </div>
+
+      <!-- Preview -->
+      <div id="preview-container" style="display:none;">
+        <h3 style="font-family:'Rajdhani',sans-serif; color:var(--white); font-size:1.1rem; margin-bottom:0.5rem;">Preview</h3>
+        <p style="color:var(--silver); font-size:0.8rem; margin-bottom:0.75rem;">Text in <span style="color:#ef4444;">red</span> represents the most recent modification. All previous modifications and baseline text appear in black.</p>
+        <div class="preview-area" id="mod-preview"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="pdf-mod-content"></div>
+
+  <div id="footer-placeholder"></div>
+  <script src="main.js"></script>
+  <script>
+    var modCount = 1;
+
+    // Common modification templates with pre-filled language
+    var MOD_TEMPLATES = [
+      { value: '', label: '-- Select a common mod type (optional) --', purpose: '', text: '', section: 'general' },
+      {
+        value: 'option-exercise',
+        label: 'Exercise Option Period',
+        purpose: 'Exercise Option Period [___]',
+        text: 'The Government hereby exercises Option Period [___] in accordance with FAR 52.217-9, Option to Extend the Term of the Contract.\n\nOption Period [___]: [START DATE] through [END DATE]\nCLIN [____]: [DESCRIPTION]\nOption Period Price: $[AMOUNT]\n\nAll other terms and conditions remain unchanged.',
+        section: 'F'
+      },
+      {
+        value: 'pop-extension',
+        label: 'Extend Period of Performance',
+        purpose: 'Extend Period of Performance',
+        text: 'The period of performance is hereby extended as follows:\n\nPrevious End Date: [OLD DATE]\nNew End Date: [NEW DATE]\n\nReason: [CONTINUITY OF SERVICES / BRIDGE / OTHER]\n\nAll other terms and conditions remain unchanged.',
+        section: 'F'
+      },
+      {
+        value: 'price-increase',
+        label: 'Adjust Price / Funding',
+        purpose: 'Increase Contract Price by $[AMOUNT]',
+        text: 'The total contract price is hereby increased/decreased as follows:\n\nPrevious Contract Price: $[OLD AMOUNT]\nAmount of This Modification: $[+/- AMOUNT]\nNew Total Contract Price: $[NEW AMOUNT]\n\nCLIN [____]: Price changed from $[OLD] to $[NEW]\n\nReason: [ADDED SCOPE / QUANTITY CHANGE / OTHER]',
+        section: 'schedule'
+      },
+      {
+        value: 'quantity-change',
+        label: 'Change Quantity',
+        purpose: 'Increase/Decrease Quantity on CLIN [___]',
+        text: 'The quantity for the following CLIN(s) is hereby changed:\n\nCLIN [____]: [DESCRIPTION]\nPrevious Quantity: [OLD QTY] [UNIT]\nNew Quantity: [NEW QTY] [UNIT]\n\nPrice adjustment: $[OLD TOTAL] changed to $[NEW TOTAL]\n\nAll other terms and conditions remain unchanged.',
+        section: 'schedule'
+      },
+      {
+        value: 'scope-change',
+        label: 'Add / Change Scope of Work',
+        purpose: 'Modify Statement of Work',
+        text: 'The Statement of Work (Section C) is hereby modified as follows:\n\n[DESCRIBE THE SPECIFIC CHANGES TO THE SOW. DELETE OLD LANGUAGE AND INSERT NEW LANGUAGE AS APPLICABLE.]\n\nParagraph [___] is deleted in its entirety and replaced with the following:\n"[NEW LANGUAGE]"\n\nAll other terms and conditions remain unchanged.',
+        section: 'C'
+      },
+      {
+        value: 'add-clause',
+        label: 'Add / Remove Clause',
+        purpose: 'Incorporate Additional Clause(s)',
+        text: 'The following clause(s) are hereby added to Section I:\n\n[CLAUSE NUMBER] - [CLAUSE TITLE] ([DATE])\n\nReason: [WHY THIS CLAUSE IS BEING ADDED]\n\nAll other terms and conditions remain unchanged.',
+        section: 'I'
+      },
+      {
+        value: 'admin-change',
+        label: 'Administrative Change (e.g., address, POC, DODAAC)',
+        purpose: 'Administrative Change',
+        text: 'This is an administrative modification to update the following:\n\n[PAYING OFFICE DODAAC / COR NAME / CONTRACTOR ADDRESS / OTHER]\n\nPrevious: [OLD INFO]\nNew: [NEW INFO]\n\nThis is a no-cost modification. All other terms and conditions remain unchanged.',
+        section: 'general'
+      },
+      {
+        value: 'novation',
+        label: 'Novation / Change of Name',
+        purpose: 'Novation Agreement / Change of Name',
+        text: 'Effective [DATE], the contractor name/entity is changed as follows:\n\nPrevious Contractor: [OLD NAME]\nNew Contractor: [NEW NAME]\n\nPursuant to FAR 42.12, a novation agreement / change-of-name agreement has been executed.\n\nAll other terms and conditions remain unchanged.',
+        section: 'general'
+      },
+      {
+        value: 'deobligation',
+        label: 'Deobligate Excess Funds',
+        purpose: 'Deobligate Excess Funds',
+        text: 'Excess funds are hereby deobligated from this contract as follows:\n\nPrevious Obligated Amount: $[OLD AMOUNT]\nAmount Deobligated: $[AMOUNT]\nNew Obligated Amount: $[NEW AMOUNT]\n\nThis modification [does / does not] change the total contract price.\n\nAll other terms and conditions remain unchanged.',
+        section: 'schedule'
+      }
+    ];
+
+    function applyTemplate(blockId) {
+      var block = document.getElementById(blockId);
+      if (!block) return;
+      var sel = block.querySelector('.mod-template-input');
+      var idx = sel.selectedIndex;
+      if (idx <= 0) return;
+      var tmpl = MOD_TEMPLATES[idx];
+      block.querySelector('.mod-purpose-input').value = tmpl.purpose;
+      block.querySelector('.mod-changes-input').value = tmpl.text;
+      block.querySelector('.mod-section-input').value = tmpl.section;
+    }
+
+    function buildModBlockHTML(id, num) {
+      var templateOpts = '';
+      MOD_TEMPLATES.forEach(function(t) {
+        templateOpts += '<option value="' + t.value + '">' + t.label + '</option>';
+      });
+
+      return '<h4><span class="mod-num">Modification ' + num + '</span> <button class="mod-remove" onclick="removeMod(\'' + id + '\')">&times;</button></h4>' +
+        '<label>Quick Fill</label>' +
+        '<select class="mod-template-input" onchange="applyTemplate(\'' + id + '\')">' + templateOpts + '</select>' +
+        '<div class="id-row-3">' +
+          '<div><label>Mod Number</label><input type="text" class="mod-number-input" value="' + num + '" placeholder="e.g., ' + num + '" /></div>' +
+          '<div><label>Effective Date</label><input type="date" class="mod-date-input" /></div>' +
+          '<div><label>Mod Type</label><select class="mod-type-input"><option value="bilateral">Bilateral</option><option value="unilateral">Unilateral</option></select></div>' +
+        '</div>' +
+        '<label>Purpose of Modification</label>' +
+        '<input type="text" class="mod-purpose-input" placeholder="e.g., Exercise Option Period 1" />' +
+        '<label>Summary of Changes</label>' +
+        '<textarea class="mod-changes-input" placeholder="Describe what this modification does. This text will appear in red in the output. Use a Quick Fill template above to get started, or just type your changes here."></textarea>' +
+        '<label>Section Affected <span style="color:var(--silver);font-weight:400;font-size:0.75rem;">(optional, for conformed contract organization)</span></label>' +
+        '<select class="mod-section-input"><option value="general">General / Summary of Changes</option><option value="C">Section C - SOW/PWS</option><option value="F">Section F - Deliveries/Performance</option><option value="H">Section H - Special Requirements</option><option value="I">Section I - Clauses</option><option value="schedule">Schedule (CLINs/Pricing)</option></select>';
+    }
+
+    function addMod() {
+      modCount++;
+      var id = 'modblk-' + modCount;
+      var num = 'P' + String(modCount).padStart(5, '0');
+      var block = document.createElement('div');
+      block.className = 'mod-block';
+      block.id = id;
+      block.innerHTML = buildModBlockHTML(id, num);
+      document.getElementById('mod-list').appendChild(block);
+    }
+
+    function removeMod(id) {
+      var el = document.getElementById(id);
+      if (el) el.remove();
+    }
+
+    function escH(s) {
+      var d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function fmtD(d) {
+      if (!d) return '(TBD)';
+      var p = d.split('-');
+      var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return parseInt(p[2]) + ' ' + m[parseInt(p[1])-1] + ' ' + p[0];
+    }
+
+    function collectMods() {
+      var blocks = document.querySelectorAll('#mod-list .mod-block');
+      var mods = [];
+      blocks.forEach(function(b) {
+        mods.push({
+          number: b.querySelector('.mod-number-input').value || '(TBD)',
+          date: b.querySelector('.mod-date-input').value,
+          type: b.querySelector('.mod-type-input').value,
+          purpose: b.querySelector('.mod-purpose-input').value,
+          changes: b.querySelector('.mod-changes-input').value,
+          section: b.querySelector('.mod-section-input').value
+        });
+      });
+      return mods;
+    }
+
+    function sectionLabel(code) {
+      var labels = { general: 'Summary of Changes', C: 'Section C', F: 'Section F', H: 'Section H', I: 'Section I', schedule: 'Schedule' };
+      return labels[code] || code;
+    }
+
+    function buildModHTML(forPDF) {
+      var contractNo = document.getElementById('mod-contractno').value || '(Contract Number)';
+      var contractor = document.getElementById('mod-contractor').value || '(Contractor Name)';
+      var baseC = document.getElementById('base-c').value;
+      var baseF = document.getElementById('base-f').value;
+      var baseI = document.getElementById('base-i').value;
+      var mods = collectMods();
+
+      var redStyle = forPDF ? 'color:#dc2626;' : 'color:#dc2626;';
+      var html = '';
+      html += '<div style="font-family:Arial,Helvetica,sans-serif; font-size:11px; color:#000; line-height:1.6; max-width:700px; margin:0 auto; padding:' + (forPDF ? '20px' : '0') + ';">';
+
+      // Header
+      html += '<div style="text-align:center; border-bottom:2px solid #000; padding-bottom:8px; margin-bottom:16px;">';
+      html += '<div style="font-size:13px; font-weight:bold;">CONTRACT SUMMARY</div>';
+      html += '<div style="font-size:11px;">Contract No. ' + escH(contractNo) + '</div>';
+      html += '<div style="font-size:10px; color:#555;">Contractor: ' + escH(contractor) + '</div>';
+      if (mods.length > 0) {
+        var lastMod = mods[mods.length - 1];
+        html += '<div style="font-size:10px; color:#555;">Through Modification: ' + escH(lastMod.number) + ' (' + fmtD(lastMod.date) + ')</div>';
+      }
+      html += '</div>';
+
+      // Modification log
+      html += '<div class="section-head" style="font-size:13px; font-weight:bold; border-bottom:1px solid #999; padding-bottom:4px; margin-bottom:8px;">MODIFICATION LOG</div>';
+      html += '<table style="border-collapse:collapse; width:100%; font-size:10.5px; margin-bottom:16px;">';
+      html += '<tr style="border-bottom:1px solid #999;"><th style="text-align:left; padding:4px 6px;">Mod #</th><th style="text-align:left; padding:4px 6px;">Date</th><th style="text-align:left; padding:4px 6px;">Type</th><th style="text-align:left; padding:4px 6px;">Purpose</th></tr>';
+      mods.forEach(function(m, i) {
+        var isLast = (i === mods.length - 1);
+        var rowStyle = isLast ? 'style="border-bottom:1px solid #e0e0e0; ' + redStyle + '"' : 'style="border-bottom:1px solid #e0e0e0;"';
+        html += '<tr ' + rowStyle + '><td style="padding:4px 6px;">' + escH(m.number) + '</td><td style="padding:4px 6px;">' + fmtD(m.date) + '</td><td style="padding:4px 6px;">' + escH(m.type) + '</td><td style="padding:4px 6px;">' + escH(m.purpose) + '</td></tr>';
+      });
+      html += '</table>';
+
+      // Section C
+      if (baseC) {
+        html += '<div class="section-head" style="font-size:13px; font-weight:bold; border-bottom:1px solid #999; padding-bottom:4px; margin:16px 0 8px;">SECTION C &mdash; DESCRIPTION / SPECIFICATIONS / SOW</div>';
+        baseC.split('\n').forEach(function(p) {
+          if (p.trim()) html += '<p style="margin:0 0 8px;">' + escH(p) + '</p>';
+        });
+        // Add mod changes for section C
+        mods.forEach(function(m, i) {
+          if (m.section === 'C' && m.changes) {
+            var isLast = (i === mods.length - 1);
+            var style = isLast ? redStyle : '';
+            html += '<p style="margin:6px 0 2px; font-size:9px; font-weight:bold; ' + style + '">[' + escH(m.number) + ' - ' + escH(m.purpose) + ']</p>';
+            m.changes.split('\n').forEach(function(p) {
+              if (p.trim()) html += '<p style="margin:0 0 6px; ' + style + '">' + escH(p) + '</p>';
+            });
+          }
+        });
+      }
+
+      // Section F
+      if (baseF) {
+        html += '<div class="section-head" style="font-size:13px; font-weight:bold; border-bottom:1px solid #999; padding-bottom:4px; margin:16px 0 8px;">SECTION F &mdash; DELIVERIES OR PERFORMANCE</div>';
+        baseF.split('\n').forEach(function(p) {
+          if (p.trim()) html += '<p style="margin:0 0 8px;">' + escH(p) + '</p>';
+        });
+        mods.forEach(function(m, i) {
+          if (m.section === 'F' && m.changes) {
+            var isLast = (i === mods.length - 1);
+            var style = isLast ? redStyle : '';
+            html += '<p style="margin:6px 0 2px; font-size:9px; font-weight:bold; ' + style + '">[' + escH(m.number) + ' - ' + escH(m.purpose) + ']</p>';
+            m.changes.split('\n').forEach(function(p) {
+              if (p.trim()) html += '<p style="margin:0 0 6px; ' + style + '">' + escH(p) + '</p>';
+            });
+          }
+        });
+      }
+
+      // Section I
+      if (baseI) {
+        html += '<div class="section-head" style="font-size:13px; font-weight:bold; border-bottom:1px solid #999; padding-bottom:4px; margin:16px 0 8px;">SECTION I &mdash; CONTRACT CLAUSES</div>';
+        baseI.split('\n').forEach(function(p) {
+          if (p.trim()) html += '<p style="margin:0 0 8px;">' + escH(p) + '</p>';
+        });
+        mods.forEach(function(m, i) {
+          if (m.section === 'I' && m.changes) {
+            var isLast = (i === mods.length - 1);
+            var style = isLast ? redStyle : '';
+            html += '<p style="margin:6px 0 2px; font-size:9px; font-weight:bold; ' + style + '">[' + escH(m.number) + ' - ' + escH(m.purpose) + ']</p>';
+            m.changes.split('\n').forEach(function(p) {
+              if (p.trim()) html += '<p style="margin:0 0 6px; ' + style + '">' + escH(p) + '</p>';
+            });
+          }
+        });
+      }
+
+      // General/Schedule/H mods
+      var otherSections = ['general', 'schedule', 'H'];
+      var sectionNames = { general: 'SUMMARY OF CHANGES', schedule: 'SCHEDULE MODIFICATIONS', H: 'SECTION H &mdash; SPECIAL REQUIREMENTS' };
+      otherSections.forEach(function(sec) {
+        var hasMods = mods.some(function(m) { return m.section === sec && m.changes; });
+        if (hasMods) {
+          html += '<div class="section-head" style="font-size:13px; font-weight:bold; border-bottom:1px solid #999; padding-bottom:4px; margin:16px 0 8px;">' + sectionNames[sec] + '</div>';
+          mods.forEach(function(m, i) {
+            if (m.section === sec && m.changes) {
+              var isLast = (i === mods.length - 1);
+              var style = isLast ? redStyle : '';
+              html += '<p style="margin:6px 0 2px; font-size:9px; font-weight:bold; ' + style + '">[' + escH(m.number) + ' - ' + escH(m.purpose) + ']</p>';
+              m.changes.split('\n').forEach(function(p) {
+                if (p.trim()) html += '<p style="margin:0 0 6px; ' + style + '">' + escH(p) + '</p>';
+              });
+            }
+          });
+        }
+      });
+
+      // Footer
+      html += '<div style="border-top:1px solid #999; padding-top:6px; margin-top:24px; font-size:9px; color:#777; text-align:center;">';
+      html += escH(contractNo);
+      if (mods.length > 0) html += ' &mdash; Through ' + escH(mods[mods.length-1].number);
+      html += '</div>';
+
+      html += '</div>';
+      return html;
+    }
+
+    function renderPreview() {
+      var container = document.getElementById('preview-container');
+      var preview = document.getElementById('mod-preview');
+      preview.innerHTML = buildModHTML(false);
+      container.style.display = 'block';
+      container.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function generateModPDF() {
+      var contractNo = document.getElementById('mod-contractno').value || 'Contract';
+      var mods = collectMods();
+      var lastMod = mods.length > 0 ? mods[mods.length-1].number : 'Base';
+
+      var target = document.getElementById('pdf-mod-content');
+      target.innerHTML = buildModHTML(true);
+      target.className = 'rendering';
+
+      var filename = contractNo.replace(/[^a-zA-Z0-9\-]/g, '_') + '_' + lastMod.replace(/[^a-zA-Z0-9]/g, '') + '_Modified.pdf';
+
+      html2pdf().set({
+        margin: [0.5, 0.6, 0.5, 0.6],
+        filename: filename,
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      }).from(target).save().then(function() {
+        target.className = '';
+        target.innerHTML = '';
+      });
+    }
+
+    // Initialize the first mod block
+    document.getElementById('modblk-1').innerHTML = buildModBlockHTML('modblk-1', 'P00001');
+  </script>
+</body>
+</html>

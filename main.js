@@ -76,7 +76,8 @@
     ["sf30-modifications.html", "SF 30s for Modifications and Amendments"],
     ["unilateral-bilateral-modifications.html", "Unilateral vs. Bilateral Modifications"],
     ["personal-vs-non-personal-services.html", "Personal vs. Non-personal Services"],
-    ["cor-type-a-training.html", "COR Training: Type A Requirements"]
+    ["cor-type-a-training.html", "COR Training: Type A Requirements"],
+    ["manual-contracts-deployed.html", "Manual Contracts in a Deployed Environment"]
   ];
 
   // Find current page in chain

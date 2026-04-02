@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Build the sections that go after the first two pages of a manual SF 1449. Fill in Sections C, F, H, I, and J and generate a clean PDF attachment." />
+  <title>1449 Section Builder | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    .bldr-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+    .bldr-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .bldr-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .bldr-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .bldr-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    .bldr-form { max-width: 800px; margin: 2rem auto; padding: 0 1.5rem; }
+
+    /* Section cards */
+    .bldr-section { background: rgba(10,22,50,0.4); border: 1px solid rgba(74,158,255,0.15); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .bldr-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.5rem; }
+    .bldr-section .sec-desc { color: var(--silver); font-size: 0.82rem; margin-bottom: 1rem; line-height: 1.5; }
+    .bldr-section label { display: block; color: var(--silver); font-size: 0.82rem; font-weight: 600; margin-bottom: 0.3rem; margin-top: 0.75rem; }
+    .bldr-section input[type="text"],
+    .bldr-section input[type="date"],
+    .bldr-section input[type="number"] {
+      width: 100%; box-sizing: border-box; background: rgba(4,13,31,0.8); border: 1px solid rgba(74,158,255,0.2); color: var(--white); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.88rem; font-family: inherit;
+    }
+    .bldr-section textarea {
+      width: 100%; box-sizing: border-box; background: rgba(4,13,31,0.8); border: 1px solid rgba(74,158,255,0.2); color: var(--white); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.85rem; font-family: inherit; min-height: 120px; resize: vertical; line-height: 1.6;
+    }
+    .bldr-section select {
+      width: 100%; box-sizing: border-box; background: rgba(4,13,31,0.8); border: 1px solid rgba(74,158,255,0.2); color: var(--white); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.88rem; font-family: inherit;
+      appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a9eff' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; padding-right: 2rem; cursor: pointer;
+    }
+    .bldr-section select option { background: #0a1632; color: #e2eaf4; padding: 0.4rem; }
+    .bldr-section input:focus, .bldr-section textarea:focus, .bldr-section select:focus { outline: none; border-color: var(--accent); }
+    .bldr-section .optional-tag { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: #fcd34d; opacity: 0.7; font-weight: 700; }
+
+    /* CLIN rows */
+    .clin-row { display: grid; grid-template-columns: 80px 1fr 60px 60px 90px 36px; gap: 0.5rem; align-items: start; margin-bottom: 0.5rem; }
+    @media (max-width: 700px) { .clin-row { grid-template-columns: 1fr 1fr; } .clin-row .clin-desc { grid-column: 1 / -1; } }
+    .clin-row input { margin-top: 0 !important; }
+    .clin-header { display: grid; grid-template-columns: 80px 1fr 60px 60px 90px 36px; gap: 0.5rem; margin-bottom: 0.35rem; font-size: 0.72rem; color: var(--silver); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    @media (max-width: 700px) { .clin-header { display: none; } }
+
+    /* Clause rows */
+    .clause-row { display: grid; grid-template-columns: 160px 1fr 36px; gap: 0.5rem; align-items: start; margin-bottom: 0.5rem; }
+    @media (max-width: 600px) { .clause-row { grid-template-columns: 1fr; } }
+    .clause-row input { margin-top: 0 !important; }
+    .clause-remove { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; border-radius: 6px; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700; transition: background 0.12s; margin-top: 0; }
+    .clause-remove:hover { background: rgba(248,113,113,0.2); }
+
+    .add-btn { background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.2); color: var(--accent); border-radius: 8px; padding: 0.45rem 0.9rem; cursor: pointer; font-size: 0.8rem; font-weight: 600; font-family: inherit; transition: background 0.12s; margin-top: 0.5rem; }
+    .add-btn:hover { background: rgba(74,158,255,0.2); }
+
+    /* Attachment rows */
+    .attach-row { display: grid; grid-template-columns: 60px 1fr 36px; gap: 0.5rem; align-items: start; margin-bottom: 0.5rem; }
+    @media (max-width: 600px) { .attach-row { grid-template-columns: 1fr; } }
+
+    /* Buttons */
+    .btn-row { display: flex; gap: 0.75rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap; }
+    .gen-btn { background: var(--accent); color: #040d1f; border: none; border-radius: 10px; padding: 0.75rem 2rem; font-size: 0.95rem; font-weight: 700; font-family: 'Rajdhani', sans-serif; cursor: pointer; letter-spacing: 0.5px; transition: opacity 0.12s; }
+    .gen-btn:hover { opacity: 0.85; }
+    .preview-btn { background: rgba(52,211,153,0.15); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.3); border-radius: 10px; padding: 0.75rem 2rem; font-size: 0.95rem; font-weight: 700; font-family: 'Rajdhani', sans-serif; cursor: pointer; transition: opacity 0.12s; }
+    .preview-btn:hover { opacity: 0.85; }
+
+    /* Preview area */
+    .preview-area { background: #fff; color: #000; border-radius: 10px; padding: 1.5rem; margin-top: 1.5rem; font-family: Arial, Helvetica, sans-serif; font-size: 11px; line-height: 1.6; max-height: 600px; overflow-y: auto; }
+
+    /* Contract number row */
+    .id-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 500px) { .id-row { grid-template-columns: 1fr; } }
+
+    /* Hidden PDF content */
+    #pdf-content { display: none; }
+    #pdf-content.rendering { display: block; position: fixed; top: -9999px; left: -9999px; }
+  </style>
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <div class="bldr-bg">
+    <div class="bldr-intro">
+      <div class="bldr-intro-tag">Tool</div>
+      <h2>1449 Section Builder</h2>
+      <p>Fill in the sections that go after the first two pages of your SF 1449. Generate a clean PDF attachment you can print and attach to your manual contract.</p>
+    </div>
+
+    <div class="bldr-form">
+
+      <!-- Contract ID -->
+      <div class="bldr-section">
+        <h3>Contract Identification</h3>
+        <div class="sec-desc">This info goes in the header of each page so the attachment is traceable to your contract.</div>
+        <div class="id-row">
+          <div>
+            <label>Contract Number</label>
+            <input type="text" id="bld-contractno" placeholder="e.g., FA8201-25-P-0042" />
+          </div>
+          <div>
+            <label>Contractor Name</label>
+            <input type="text" id="bld-contractor" placeholder="e.g., Desert Waste Solutions LLC" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule / CLINs -->
+      <div class="bldr-section">
+        <h3>Schedule &ndash; CLINs / Pricing</h3>
+        <div class="sec-desc">Add your contract line item numbers. Each CLIN gets a number, description, quantity, unit of issue, and unit price. The builder will calculate extended prices automatically.</div>
+
+        <div class="clin-header">
+          <span>CLIN</span><span>Description</span><span>Qty</span><span>Unit</span><span>Unit Price</span><span></span>
+        </div>
+        <div id="clin-list">
+          <div class="clin-row" id="clin-0">
+            <input type="text" value="0001" placeholder="0001" />
+            <input type="text" class="clin-desc" placeholder="e.g., Waste Removal Services, Base Period" />
+            <input type="number" placeholder="Qty" min="0" step="1" />
+            <input type="text" placeholder="EA" />
+            <input type="text" placeholder="$0.00" />
+            <button class="clause-remove" onclick="removeClin('clin-0')">&times;</button>
+          </div>
+        </div>
+        <button class="add-btn" onclick="addClin()">+ Add CLIN</button>
+      </div>
+
+      <!-- Section C -->
+      <div class="bldr-section">
+        <h3>Section C &ndash; Description / Specifications / SOW</h3>
+        <div class="sec-desc">Paste or type your full PWS, SOW, or specifications. In a deployed environment, put the whole thing in. Key documents get lost, and having the complete SOW inside your contract means it travels with the contract.</div>
+        <label>Section C Title (optional)</label>
+        <input type="text" id="bld-c-title" placeholder="e.g., Performance Work Statement for Waste Removal Services" />
+        <label>Section C Content</label>
+        <textarea id="bld-c-body" placeholder="Paste your full SOW/PWS here. Include all paragraphs, deliverables, and requirements."></textarea>
+      </div>
+
+      <!-- Section F -->
+      <div class="bldr-section">
+        <h3>Section F &ndash; Deliveries or Performance</h3>
+        <div class="sec-desc">Choose whether this is a period of performance (services) or a delivery schedule (supplies), then fill in the details.</div>
+
+        <label>Section F Type</label>
+        <select id="bld-f-type" onchange="toggleSectionF()">
+          <option value="pop">Period of Performance (Services)</option>
+          <option value="delivery">Delivery Schedule (Supplies)</option>
+        </select>
+
+        <!-- PoP view -->
+        <div id="f-pop-view">
+          <div class="id-row" style="margin-top:0.75rem;">
+            <div>
+              <label>Period of Performance Start</label>
+              <input type="date" id="bld-f-start" />
+            </div>
+            <div>
+              <label>Period of Performance End</label>
+              <input type="date" id="bld-f-end" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Delivery view -->
+        <div id="f-delivery-view" style="display:none;">
+          <label>Delivery Schedule</label>
+          <textarea id="bld-f-delivery" style="min-height:80px;" placeholder="e.g., All items shall be delivered within 30 calendar days after contract award. FOB Destination. Delivery to: Building 1234, Camp Taji, Iraq."></textarea>
+        </div>
+
+        <label>Place of Delivery / Performance</label>
+        <input type="text" id="bld-f-place" placeholder="e.g., Camp Taji, Iraq" />
+        <label>Additional Terms (optional)</label>
+        <textarea id="bld-f-body" style="min-height:80px;" placeholder="Any additional delivery or performance terms, milestones, option periods, etc."></textarea>
+      </div>
+
+      <!-- Section H -->
+      <div class="bldr-section">
+        <h3>Section H &ndash; Special Contract Requirements <span class="optional-tag">Optional</span></h3>
+        <div class="sec-desc">Base access instructions, security requirements, force protection measures, or other location-specific operational constraints. Skip this section if none apply.</div>
+        <label>Section H Content</label>
+        <textarea id="bld-h-body" style="min-height:80px;" placeholder="e.g., Base access procedures, badging requirements, escort requirements, vehicle inspection protocols, etc."></textarea>
+      </div>
+
+      <!-- Section I -->
+      <div class="bldr-section">
+        <h3>Section I &ndash; Contract Clauses</h3>
+        <div class="sec-desc">Add each clause by citation number and title. At minimum, include FAR 52.212-4 and your payment instruction clause. Under the RFO, the old 52.212-5 is gone. Your applicable clauses now come from the FAR 12.205 tables. Use the <a href="provisions-clauses-commercial.html" style="color:var(--accent);">KTHQ clause matrix</a> to identify which ones apply to your buy.</div>
+
+        <div id="clause-list">
+          <!-- Pre-populated with the essential ones -->
+          <div class="clause-row" id="clause-0">
+            <input type="text" value="52.212-4" placeholder="Clause #" />
+            <input type="text" value="Contract Terms and Conditions - Commercial Products and Commercial Services" placeholder="Clause Title" />
+            <button class="clause-remove" onclick="removeClause('clause-0')">&times;</button>
+          </div>
+          <div class="clause-row" id="clause-1">
+            <input type="text" placeholder="Clause #" />
+            <input type="text" placeholder="Clause Title" />
+            <button class="clause-remove" onclick="removeClause('clause-2')">&times;</button>
+          </div>
+        </div>
+        <button class="add-btn" onclick="addClause()">+ Add Clause</button>
+      </div>
+
+      <!-- Section J -->
+      <div class="bldr-section">
+        <h3>Section J &ndash; List of Attachments</h3>
+        <div class="sec-desc">List any documents attached to the contract (maps, diagrams, GFP lists, etc.).</div>
+
+        <div id="attach-list">
+          <div class="attach-row" id="attach-0">
+            <input type="text" value="J-1" placeholder="#" style="text-align:center;" />
+            <input type="text" placeholder="Attachment description" />
+            <button class="clause-remove" onclick="removeAttach('attach-0')">&times;</button>
+          </div>
+        </div>
+        <button class="add-btn" onclick="addAttach()">+ Add Attachment</button>
+      </div>
+
+      <!-- Buttons -->
+      <div class="btn-row">
+        <button class="preview-btn" onclick="showPreview()">Preview</button>
+        <button class="gen-btn" onclick="generatePDF()">Generate PDF</button>
+      </div>
+      <p style="color:var(--silver); font-size:0.78rem; text-align:center; margin-top:-0.5rem;">Preview first, then generate a downloadable PDF to attach to your SF 1449.</p>
+
+      <!-- Preview -->
+      <div id="preview-container" style="display:none;">
+        <h3 style="font-family:'Rajdhani',sans-serif; color:var(--white); font-size:1.1rem; margin-bottom:0.5rem;">Preview</h3>
+        <div class="preview-area" id="section-preview"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Hidden PDF render target -->
+  <div id="pdf-content"></div>
+
+  <div id="footer-placeholder"></div>
+  <script src="main.js"></script>
+  <script>
+    var clauseCount = 2;
+    var attachCount = 1;
+    var clinCount = 1;
+
+    function toggleSectionF() {
+      var type = document.getElementById('bld-f-type').value;
+      document.getElementById('f-pop-view').style.display = type === 'pop' ? 'block' : 'none';
+      document.getElementById('f-delivery-view').style.display = type === 'delivery' ? 'block' : 'none';
+    }
+
+    function addClin() {
+      var id = 'clin-' + clinCount++;
+      var row = document.createElement('div');
+      row.className = 'clin-row';
+      row.id = id;
+      row.innerHTML = '<input type="text" placeholder="0002" /><input type="text" class="clin-desc" placeholder="Description" /><input type="number" placeholder="Qty" min="0" step="1" /><input type="text" placeholder="EA" /><input type="text" placeholder="$0.00" /><button class="clause-remove" onclick="removeClin(\'' + id + '\')">&times;</button>';
+      document.getElementById('clin-list').appendChild(row);
+    }
+    function removeClin(id) {
+      var el = document.getElementById(id);
+      if (el) el.remove();
+    }
+
+    function addClause() {
+      var id = 'clause-' + clauseCount++;
+      var row = document.createElement('div');
+      row.className = 'clause-row';
+      row.id = id;
+      row.innerHTML = '<input type="text" placeholder="Clause #" /><input type="text" placeholder="Clause Title" /><button class="clause-remove" onclick="removeClause(\'' + id + '\')">&times;</button>';
+      document.getElementById('clause-list').appendChild(row);
+    }
+    function removeClause(id) {
+      var el = document.getElementById(id);
+      if (el) el.remove();
+    }
+    function addAttach() {
+      attachCount++;
+      var id = 'attach-' + attachCount;
+      var row = document.createElement('div');
+      row.className = 'attach-row';
+      row.id = id;
+      row.innerHTML = '<input type="text" value="J-' + attachCount + '" placeholder="#" style="text-align:center;" /><input type="text" placeholder="Attachment description" /><button class="clause-remove" onclick="removeAttach(\'' + id + '\')">&times;</button>';
+      document.getElementById('attach-list').appendChild(row);
+    }
+    function removeAttach(id) {
+      var el = document.getElementById(id);
+      if (el) el.remove();
+    }
+
+    function escHtml(s) {
+      var d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function fmtDate(d) {
+      if (!d) return '(TBD)';
+      var parts = d.split('-');
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return parseInt(parts[2]) + ' ' + months[parseInt(parts[1])-1] + ' ' + parts[0];
+    }
+
+    function parseDollar(s) {
+      if (!s) return 0;
+      return parseFloat(s.replace(/[^0-9.\-]/g, '')) || 0;
+    }
+
+    function fmtDollar(n) {
+      return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    function collectFormData() {
+      var data = {
+        contractNo: document.getElementById('bld-contractno').value || '(Contract Number)',
+        contractor: document.getElementById('bld-contractor').value || '(Contractor Name)',
+        clins: [],
+        cTitle: document.getElementById('bld-c-title').value,
+        cBody: document.getElementById('bld-c-body').value,
+        fType: document.getElementById('bld-f-type').value,
+        fStart: document.getElementById('bld-f-start').value,
+        fEnd: document.getElementById('bld-f-end').value,
+        fDelivery: document.getElementById('bld-f-delivery').value,
+        fPlace: document.getElementById('bld-f-place').value,
+        fBody: document.getElementById('bld-f-body').value,
+        hBody: document.getElementById('bld-h-body').value,
+        clauses: [],
+        attachments: []
+      };
+      document.querySelectorAll('#clin-list .clin-row').forEach(function(row) {
+        var inputs = row.querySelectorAll('input');
+        var clin = inputs[0].value.trim();
+        var desc = inputs[1].value.trim();
+        var qty = parseFloat(inputs[2].value) || 0;
+        var unit = inputs[3].value.trim();
+        var unitPrice = parseDollar(inputs[4].value);
+        if (clin || desc) data.clins.push({ clin: clin, desc: desc, qty: qty, unit: unit, unitPrice: unitPrice });
+      });
+      document.querySelectorAll('#clause-list .clause-row').forEach(function(row) {
+        var inputs = row.querySelectorAll('input');
+        var num = inputs[0].value.trim();
+        var title = inputs[1].value.trim();
+        if (num || title) data.clauses.push({ num: num, title: title });
+      });
+      document.querySelectorAll('#attach-list .attach-row').forEach(function(row) {
+        var inputs = row.querySelectorAll('input');
+        var num = inputs[0].value.trim();
+        var desc = inputs[1].value.trim();
+        if (num || desc) data.attachments.push({ num: num, desc: desc });
+      });
+      return data;
+    }
+
+    function buildSectionHTML(d) {
+      var html = '';
+      html += '<div style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #000; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 20px;">';
+
+      html += '<div style="text-align:center; border-bottom:2px solid #000; padding-bottom:8px; margin-bottom:20px;">';
+      html += '<div style="font-size:13px; font-weight:bold;">CONTINUATION OF SF 1449</div>';
+      html += '<div style="font-size:11px; margin-top:3px;">Contract No. ' + escHtml(d.contractNo) + '</div>';
+      html += '<div style="font-size:10px; color:#555;">Contractor: ' + escHtml(d.contractor) + '</div>';
+      html += '</div>';
+
+      // Schedule / CLINs
+      if (d.clins.length > 0) {
+        html += '<div style="margin-bottom:24px;">';
+        html += '<div style="font-size:13px; font-weight:bold; border-bottom:1px solid #999; padding-bottom:4px; margin-bottom:8px;">SCHEDULE &mdash; CONTRACT LINE ITEMS</div>';
+        html += '<table style="border-collapse:collapse; width:100%; font-size:10.5px;">';
+        html += '<tr style="border-bottom:1px solid #999;"><th style="text-align:left; padding:4px 6px; font-weight:bold;">CLIN</th><th style="text-align:left; padding:4px 6px; font-weight:bold;">Description</th><th style="text-align:right; padding:4px 6px; font-weight:bold;">Qty</th><th style="text-align:left; padding:4px 6px; font-weight:bold;">Unit</th><th style="text-align:right; padding:4px 6px; font-weight:bold;">Unit Price</th><th style="text-align:right; padding:4px 6px; font-weight:bold;">Extended</th></tr>';
+        var grandTotal = 0;
+        d.clins.forEach(function(c) {
+          var ext = c.qty * c.unitPrice;
+          grandTotal += ext;
+          html += '<tr style="border-bottom:1px solid #e0e0e0;">';
+          html += '<td style="padding:4px 6px;">' + escHtml(c.clin) + '</td>';
+          html += '<td style="padding:4px 6px;">' + escHtml(c.desc) + '</td>';
+          html += '<td style="padding:4px 6px; text-align:right;">' + (c.qty || '') + '</td>';
+          html += '<td style="padding:4px 6px;">' + escHtml(c.unit) + '</td>';
+          html += '<td style="padding:4px 6px; text-align:right;">' + (c.unitPrice ? fmtDollar(c.unitPrice) : '') + '</td>';
+          html += '<td style="padding:4px 6px; text-align:right;">' + (ext ? fmtDollar(ext) : '') + '</td>';
+          html += '</tr>';
+        });
+        html += '<tr style="border-top:2px solid #000;"><td colspan="5" style="padding:4px 6px; font-weight:bold; text-align:right;">Total:</td><td style="padding:4px 6px; font-weight:bold; text-align:right;">' + fmtDollar(grandTotal) + '</td></tr>';
+        html += '</table>';
+        html += '</div>';
+      }
+
+      html += '<div style="margin-bottom:24px;">';
+      html += '<div style="font-size:13px; font-weight:bold; border-bottom:1px solid #999; padding-bottom:4px; margin-bottom:8px;">SECTION C &mdash; DESCRIPTION / SPECIFICATIONS / STATEMENT OF WORK</div>';
+      if (d.cTitle) html += '<div style="font-weight:bold; margin-bottom:6px;">' + escHtml(d.cTitle) + '</div>';
+      if (d.cBody) {
+        d.cBody.split('\n').forEach(function(p) {
+          if (p.trim()) html += '<p style="margin:0 0 8px;">' + escHtml(p) + '</p>';
+        });
+      } else {
+        html += '<p style="color:#999;">(No content provided)</p>';
+      }
+      html += '</div>';
+
+      html += '<div style="margin-bottom:24px;">';
+      html += '<div style="font-size:13px; font-weight:bold; border-bottom:1px solid #999; padding-bottom:4px; margin-bottom:8px;">SECTION F &mdash; DELIVERIES OR PERFORMANCE</div>';
+      if (d.fType === 'pop') {
+        html += '<table style="border-collapse:collapse; font-size:11px; margin-bottom:8px;">';
+        html += '<tr><td style="padding:3px 12px 3px 0; font-weight:bold;">Period of Performance:</td><td>' + fmtDate(d.fStart) + ' through ' + fmtDate(d.fEnd) + '</td></tr>';
+        if (d.fPlace) html += '<tr><td style="padding:3px 12px 3px 0; font-weight:bold;">Place of Performance:</td><td>' + escHtml(d.fPlace) + '</td></tr>';
+        html += '</table>';
+      } else {
+        if (d.fDelivery) {
+          d.fDelivery.split('\n').forEach(function(p) {
+            if (p.trim()) html += '<p style="margin:0 0 8px;">' + escHtml(p) + '</p>';
+          });
+        }
+        if (d.fPlace) {
+          html += '<table style="border-collapse:collapse; font-size:11px; margin-bottom:8px;">';
+          html += '<tr><td style="padding:3px 12px 3px 0; font-weight:bold;">Place of Delivery:</td><td>' + escHtml(d.fPlace) + '</td></tr>';
+          html += '</table>';
+        }
+      }
+      if (d.fBody) {
+        d.fBody.split('\n').forEach(function(p) {
+          if (p.trim()) html += '<p style="margin:0 0 8px;">' + escHtml(p) + '</p>';
+        });
+      }
+      html += '</div>';
+
+      if (d.hBody && d.hBody.trim()) {
+        html += '<div style="margin-bottom:24px;">';
+        html += '<div style="font-size:13px; font-weight:bold; border-bottom:1px solid #999; padding-bottom:4px; margin-bottom:8px;">SECTION H &mdash; SPECIAL CONTRACT REQUIREMENTS</div>';
+        d.hBody.split('\n').forEach(function(p) {
+          if (p.trim()) html += '<p style="margin:0 0 8px;">' + escHtml(p) + '</p>';
+        });
+        html += '</div>';
+      }
+
+      html += '<div style="margin-bottom:24px;">';
+      html += '<div style="font-size:13px; font-weight:bold; border-bottom:1px solid #999; padding-bottom:4px; margin-bottom:8px;">SECTION I &mdash; CONTRACT CLAUSES</div>';
+      html += '<p style="margin:0 0 10px;">The following clauses apply per FAR 12.205 and are incorporated by reference:</p>';
+      if (d.clauses.length > 0) {
+        html += '<table style="border-collapse:collapse; width:100%; font-size:10.5px;">';
+        html += '<tr style="border-bottom:1px solid #999;"><th style="text-align:left; padding:4px 8px; font-weight:bold;">Clause</th><th style="text-align:left; padding:4px 8px; font-weight:bold;">Title</th></tr>';
+        d.clauses.forEach(function(c) {
+          html += '<tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:4px 8px; white-space:nowrap;">' + escHtml(c.num) + '</td><td style="padding:4px 8px;">' + escHtml(c.title) + '</td></tr>';
+        });
+        html += '</table>';
+      } else {
+        html += '<p style="color:#999;">(No clauses added)</p>';
+      }
+      html += '</div>';
+
+      if (d.attachments.length > 0) {
+        html += '<div style="margin-bottom:24px;">';
+        html += '<div style="font-size:13px; font-weight:bold; border-bottom:1px solid #999; padding-bottom:4px; margin-bottom:8px;">SECTION J &mdash; LIST OF ATTACHMENTS</div>';
+        html += '<table style="border-collapse:collapse; width:100%; font-size:10.5px;">';
+        html += '<tr style="border-bottom:1px solid #999;"><th style="text-align:left; padding:4px 8px; font-weight:bold;">No.</th><th style="text-align:left; padding:4px 8px; font-weight:bold;">Description</th></tr>';
+        d.attachments.forEach(function(a) {
+          html += '<tr style="border-bottom:1px solid #e0e0e0;"><td style="padding:4px 8px; white-space:nowrap;">' + escHtml(a.num) + '</td><td style="padding:4px 8px;">' + escHtml(a.desc) + '</td></tr>';
+        });
+        html += '</table>';
+        html += '</div>';
+      }
+
+      html += '<div style="border-top:1px solid #999; padding-top:6px; margin-top:24px; font-size:9px; color:#777; text-align:center;">End of Continuation &mdash; ' + escHtml(d.contractNo) + '</div>';
+      html += '</div>';
+      return html;
+    }
+
+    function showPreview() {
+      var d = collectFormData();
+      var container = document.getElementById('preview-container');
+      document.getElementById('section-preview').innerHTML = buildSectionHTML(d);
+      container.style.display = 'block';
+      container.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function generatePDF() {
+      var d = collectFormData();
+      var target = document.getElementById('pdf-content');
+      target.innerHTML = buildSectionHTML(d);
+      target.className = 'rendering';
+
+      var filename = d.contractNo.replace(/[^a-zA-Z0-9\-]/g, '_') + '_Sections.pdf';
+
+      html2pdf().set({
+        margin: [0.5, 0.6, 0.5, 0.6],
+        filename: filename,
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      }).from(target).save().then(function() {
+        target.className = '';
+        target.innerHTML = '';
+      });
+    }
+  </script>
+</body>
+</html>
