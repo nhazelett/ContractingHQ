@@ -111,8 +111,8 @@
   }
 
   // Audio event listeners
-  aud.addEventListener('play',   function () { isPlaying = true;  updatePlayBtns(); });
-  aud.addEventListener('pause',  function () { isPlaying = false; updatePlayBtns(); saveState(); });
+  aud.addEventListener('play',   function () { isPlaying = true;  state.wasPlaying = true; updatePlayBtns(); saveState(); });
+  aud.addEventListener('pause',  function () { isPlaying = false; state.wasPlaying = false; updatePlayBtns(); saveState(); });
   aud.addEventListener('ended',  function () { nextTrack(true); });
   var lastSave = 0;
   aud.addEventListener('timeupdate', function () {
@@ -125,6 +125,14 @@
   aud.addEventListener('error',  function () { setTimeout(nextTrack, 1200); });
 
   window.addEventListener('beforeunload', function () { state.time = aud.currentTime; state.wasPlaying = isPlaying; saveState(); });
+
+  // Mobile browsers (especially iOS Safari) often skip beforeunload entirely.
+  // pagehide fires reliably on mobile navigation, and visibilitychange catches
+  // app-switching / tab-switching. Both ensure state is saved before the page dies.
+  window.addEventListener('pagehide', function () { state.time = aud.currentTime; state.wasPlaying = isPlaying; saveState(); });
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') { state.time = aud.currentTime; state.wasPlaying = isPlaying; saveState(); }
+  });
 
   // ── DETECT PAGE / PLATFORM ───────────────────────────────────────
   var path = window.location.pathname;
@@ -895,8 +903,20 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
         aud.currentTime = targetTime;
       }
       if (shouldPlay) {
-        aud.play().catch(function () {});
-        playerReady = true;
+        aud.play().then(function () {
+          playerReady = true;
+        }).catch(function () {
+          // Mobile browser blocked autoplay. Mark that we *wanted* to play so
+          // the very first user tap anywhere on the page will resume playback.
+          playerReady = true;
+          isPlaying = false;
+          updatePlayBtns();
+          function resumeOnTap() {
+            aud.play().catch(function () {});
+            document.removeEventListener('pointerdown', resumeOnTap, true);
+          }
+          document.addEventListener('pointerdown', resumeOnTap, true);
+        });
       }
     });
     updateAll();
