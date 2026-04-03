@@ -15,7 +15,12 @@
     { id: 5, title: 'Stop Putting Ceilings on your BPAs!', subtitle: 'ContractingFM', genre: 'ContractingFM', file: 'audio/track-05.mp3', color: '#dc2626' },
     { id: 6, title: '7 Exceptions to Full & Open Competition', subtitle: 'ContractingFM', genre: 'ContractingFM', file: 'audio/track-06.mp3', color: '#0891b2' },
     { id: 7, title: 'Personal or Non-Personal',           subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-07.mp3', color: '#7c3aed' },
-    { id: 8, title: 'Two Five Seven Nine',                subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-08.mp3', color: '#e11d48' }
+    { id: 8, title: 'Two Five Seven Nine',                subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-08.mp3', color: '#e11d48' },
+    { id: 9, title: 'Build the Lane with a BPA',          subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-09.mp3', color: '#f59e0b' },
+    { id: 10, title: 'Evaluate What They Wrote',           subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-10.mp3', color: '#10b981' },
+    { id: 11, title: 'Government Purchase Card',            subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-11.mp3', color: '#6366f1' },
+    { id: 12, title: 'Let the Record Speak',                subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-12.mp3', color: '#ec4899' },
+    { id: 13, title: 'Market Research',                     subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-13.mp3', color: '#14b8a6' }
   ];
 
   // ── STATE ────────────────────────────────────────────────────────
