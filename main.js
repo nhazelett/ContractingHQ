@@ -82,7 +82,8 @@
     ["personal-vs-non-personal-services.html", "Personal vs. Non-personal Services"],
     ["cor-type-a-training.html", "COR Training: Type A Requirements"],
     ["manual-contracts-deployed.html", "Manual Contracts in a Deployed Environment"],
-    ["cpars.html", "CPARS: Contractor Performance Assessments"]
+    ["cpars.html", "CPARS: Contractor Performance Assessments"],
+    ["rfp-preparation.html", "Preparing an RFP: C-Type Contracts & Part 15 Source Selection"]
   ];
 
   // Find current page in chain
