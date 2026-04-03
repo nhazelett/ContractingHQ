@@ -20,7 +20,19 @@
     { id: 10, title: 'Evaluate What They Wrote',           subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-10.mp3', color: '#10b981' },
     { id: 11, title: 'Government Purchase Card',            subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-11.mp3', color: '#6366f1' },
     { id: 12, title: 'Let the Record Speak',                subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-12.mp3', color: '#ec4899' },
-    { id: 13, title: 'Market Research',                     subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-13.mp3', color: '#14b8a6' }
+    { id: 13, title: 'Market Research',                     subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-13.mp3', color: '#14b8a6' },
+    { id: 14, title: '39 CONS Aşkı',                        subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-14.mp3', color: '#f97316' },
+    { id: 15, title: 'Begründ es sauber',                   subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-15.mp3', color: '#84cc16' },
+    { id: 16, title: 'Cure Notices',                        subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-16.mp3', color: '#06b6d4' },
+    { id: 17, title: 'Lo Que Cotizaste',                    subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-17.mp3', color: '#a855f7' },
+    { id: 18, title: "Price Ain't Cost",                    subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-18.mp3', color: '#f43f5e' },
+    { id: 19, title: 'Quello Che Hai Scritto',              subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-19.mp3', color: '#22c55e' },
+    { id: 20, title: 'Roll that Record',                    subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-20.mp3', color: '#3b82f6' },
+    { id: 21, title: 'Roll that Record (Alt)',              subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-21.mp3', color: '#eab308' },
+    { id: 22, title: "The Quotation Doesn't Lie",           subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-22.mp3', color: '#8b5cf6' },
+    { id: 23, title: 'Write It Clean',                      subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-23.mp3', color: '#0ea5e9' },
+    { id: 24, title: 'Хто це все придумав',                 subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-24.mp3', color: '#ef4444' },
+    { id: 25, title: '견적 더 줘',                           subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-25.mp3', color: '#10b981' }
   ];
 
   // ── STATE ────────────────────────────────────────────────────────
