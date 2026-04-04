@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Provision & Clause Matrix - ContractingHQ</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --accent: #4a9eff;
+      --bg-dark: #040d1f;
+      --bg-card: rgba(10,22,50,0.8);
+      --border-color: rgba(74,158,255,0.12);
+      --text-primary: #e2e8f0;
+      --text-muted: #94a3b8;
+      --spacing: 1rem;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    main {
+      flex: 1;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, rgba(74,158,255,0.08) 0%, rgba(10,22,50,0.8) 100%);
+      border-bottom: 1px solid var(--border-color);
+      padding: 3rem var(--spacing);
+      text-align: center;
+    }
+
+    .hero-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: rgba(74,158,255,0.15);
+      color: var(--accent);
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(135deg, #4a9eff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto 1rem;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .hero-summary {
+      font-size: 0.9rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--spacing);
+      width: 100%;
+    }
+
+    /* Filter Panel Card */
+    .filter-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-header h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .filter-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: transform 0.2s;
+    }
+
+    .filter-toggle-btn.collapsed {
+      transform: rotate(-90deg);
+    }
+
+    .filter-section {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .filter-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .pill {
+      padding: 0.4rem 0.85rem;
+      background: rgba(74,158,255,0.1);
+      border: 1px solid rgba(74,158,255,0.3);
+      border-radius: 20px;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .pill:hover {
+      background: rgba(74,158,255,0.2);
+      border-color: var(--accent);
+    }
+
+    .pill.active {
+      background: var(--accent);
+      color: #040d1f;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .filter-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .toggle-switch {
+      width: 36px;
+      height: 20px;
+      background: rgba(74,158,255,0.2);
+      border: 1px solid rgba(74,158,255,0.3);
+      border-radius: 10px;
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .toggle-switch.active {
+      background: var(--accent);
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: left 0.2s;
+    }
+
+    .toggle-switch.active::after {
+      left: 18px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(10,22,50,0.5);
+      border: 1px solid rgba(74,158,255,0.2);
+      border-radius: 8px;
+      padding: 0.6rem 0.8rem;
+      width: 100%;
+    }
+
+    .search-box input {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      width: 100%;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .search-box input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1rem;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #040d1f;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(74,158,255,0.1);
+      color: var(--accent);
+      border: 1px solid rgba(74,158,255,0.3);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(74,158,255,0.2);
+    }
+
+    /* Results Toolbar */
+    .results-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.75rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .results-toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .results-count {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .results-method-hint {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .results-toolbar-right {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-sm {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.78rem;
+    }
+
+    .results-section-header {
+      padding: 0.5rem 0.8rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .results-section-header.optional {
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    /* Results Section */
+    .results-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .result-row {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.6rem 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+    }
+
+    .result-row:hover {
+      background: rgba(10,22,50,0.95);
+      border-color: rgba(74,158,255,0.25);
+    }
+
+    .result-row.expanded {
+      background: rgba(10,22,50,0.95);
+    }
+
+    .result-checkbox {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      flex-shrink: 0;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+
+    .result-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .result-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .result-citation {
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 0.85rem;
+    }
+
+    .result-title {
+      color: var(--text-primary);
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .result-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.15rem 0.45rem;
+      background: rgba(74,158,255,0.15);
+      border-radius: 3px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+    }
+
+    .badge-provision {
+      background: rgba(251,146,60,0.2);
+      color: #fb923c;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .badge-clause {
+      background: rgba(59,130,246,0.2);
+      color: #93c5fd;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .badge-rfo {
+      background: rgba(34,197,94,0.15);
+      color: #86efac;
+    }
+
+    .badge-reg {
+      background: rgba(59,130,246,0.15);
+      color: #93c5fd;
+    }
+
+    .badge-reg-far {
+      background: rgba(59,130,246,0.15);
+      color: #93c5fd;
+    }
+
+    .badge-reg-dfars {
+      background: rgba(168,85,247,0.15);
+      color: #c4b5fd;
+    }
+
+    .badge-reg-dear {
+      background: rgba(236,72,153,0.15);
+      color: #f9a8d4;
+    }
+
+    .badge-reg-vaar {
+      background: rgba(20,184,166,0.15);
+      color: #5eead4;
+    }
+
+    .badge-reg-other {
+      background: rgba(251,191,36,0.15);
+      color: #fde68a;
+    }
+
+    .result-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .applicability-dots {
+      display: flex;
+      gap: 0.3rem;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot.required {
+      background: #22c55e;
+    }
+
+    .dot.applicable {
+      background: var(--accent);
+    }
+
+    .dot.optional {
+      background: #64748b;
+    }
+
+    .result-detail {
+      display: none;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .result-row.expanded .result-detail {
+      display: block;
+    }
+
+    .detail-section {
+      margin-bottom: 1rem;
+    }
+
+    .detail-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+    }
+
+    .detail-text {
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* ======= Floating Selection Panel (right side) ======= */
+    .sel-panel {
+      position: fixed;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      width: 52px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      transition: width 0.25s ease;
+      overflow: hidden;
+      max-height: 80vh;
+    }
+    .sel-panel.visible { display: flex; }
+    .sel-panel.expanded { width: 300px; }
+
+    .sel-compact {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.6rem 0;
+      gap: 0.6rem;
+      cursor: pointer;
+    }
+    .sel-panel.expanded .sel-compact { display: none; }
+
+    .sel-count-badge {
+      background: var(--accent);
+      color: #040d1f;
+      font-weight: 800;
+      font-size: 0.85rem;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sel-compact-icon {
+      font-size: 1rem;
+      color: var(--accent);
+      writing-mode: vertical-rl;
+      font-weight: 700;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .sel-expanded {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .sel-panel.expanded .sel-expanded { display: flex; }
+
+    .sel-exp-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+    }
+    .sel-exp-header h4 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .sel-collapse-btn {
+      background: none; border: none; color: var(--text-muted);
+      cursor: pointer; font-size: 1.1rem; padding: 0.2rem;
+    }
+
+    .sel-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.5rem;
+      min-height: 0;
+    }
+    .sel-list-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      color: var(--text-primary);
+      transition: background 0.15s;
+    }
+    .sel-list-item:hover { background: rgba(74,158,255,0.08); }
+    .sel-list-id {
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 0.72rem;
+      flex-shrink: 0;
+      min-width: 80px;
+    }
+    .sel-list-title {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-muted);
+    }
+    .sel-list-x {
+      background: none; border: none; color: #ef4444;
+      cursor: pointer; font-size: 0.85rem; padding: 0 0.2rem;
+      flex-shrink: 0; opacity: 0.6;
+    }
+    .sel-list-x:hover { opacity: 1; }
+
+    .sel-exp-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      padding: 0.6rem 0.8rem;
+      border-top: 1px solid var(--border-color);
+      flex-shrink: 0;
+    }
+    .sel-exp-actions .btn { font-size: 0.8rem; padding: 0.5rem; text-align: center; }
+
+    /* ======= Preview / Edit Page (replaces modal) ======= */
+    .preview-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg-dark);
+      z-index: 500;
+      overflow-y: auto;
+    }
+    .preview-overlay.visible { display: block; }
+
+    .preview-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    .preview-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .preview-topbar h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .preview-topbar-actions { display: flex; gap: 0.6rem; }
+
+    .preview-section {
+      margin-bottom: 2.5rem;
+    }
+    .preview-section-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* IBR table */
+    .ibr-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .ibr-table th {
+      text-align: left;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .ibr-table td {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(74,158,255,0.06);
+      color: var(--text-primary);
+    }
+    .ibr-table td:first-child {
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      color: var(--accent);
+      white-space: nowrap;
+      width: 130px;
+    }
+    .ibr-table tr:hover td { background: rgba(74,158,255,0.04); }
+    .ibr-remove {
+      background: none; border: none; color: #ef4444;
+      cursor: pointer; font-size: 0.8rem; opacity: 0.5;
+    }
+    .ibr-remove:hover { opacity: 1; }
+
+    /* Full text clause card */
+    .ft-card {
+      background: rgba(10,22,50,0.5);
+      border: 1px solid rgba(74,158,255,0.1);
+      border-radius: 10px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .ft-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .ft-card-id {
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 0.9rem;
+    }
+    .ft-card-title {
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      margin-left: 0.6rem;
+    }
+    .ft-card textarea {
+      width: 100%;
+      min-height: 200px;
+      background: rgba(4,13,31,0.6);
+      border: 1px solid rgba(74,158,255,0.15);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      padding: 1rem;
+      resize: vertical;
+    }
+    .ft-card textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .ft-remove {
+      background: none; border: none; color: #ef4444;
+      cursor: pointer; font-size: 0.85rem; opacity: 0.5;
+    }
+    .ft-remove:hover { opacity: 1; }
+
+    /* Prescription cell in tables */
+    .prescription-cell {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      max-width: 350px;
+      line-height: 1.5;
+    }
+
+    /* Fill-in card IBR/FT tags */
+    .fill-ibr-tag, .fill-ft-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      margin-right: 0.4rem;
+      vertical-align: middle;
+    }
+    .fill-ibr-tag {
+      background: rgba(59,130,246,0.15);
+      color: #93c5fd;
+    }
+    .fill-ft-tag {
+      background: rgba(168,85,247,0.15);
+      color: #c4b5fd;
+    }
+
+    /* Fill-in prescription hint above textarea */
+    .fill-prescription {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      background: rgba(74,158,255,0.05);
+      border-left: 3px solid var(--accent);
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 0.75rem;
+      border-radius: 0 6px 6px 0;
+      line-height: 1.5;
+    }
+
+    /* PDF Preview */
+    .pdf-preview {
+      background: #fff;
+      color: #111;
+      border-radius: 8px;
+      padding: 0;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    .pdf-page {
+      padding: 2.5rem 2rem;
+      font-family: 'Times New Roman', serif;
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+    .pdf-page-title {
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    .pdf-page-date {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #666;
+      margin-bottom: 1.5rem;
+    }
+    .pdf-section-head {
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-top: 1.5rem;
+      margin-bottom: 0.25rem;
+      padding-bottom: 0.25rem;
+      border-bottom: 1.5px solid #333;
+    }
+    .pdf-ibr-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .pdf-ibr-table td {
+      padding: 0.2rem 0.5rem 0.2rem 0;
+      font-size: 0.78rem;
+      vertical-align: top;
+    }
+    .pdf-clause-num {
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      white-space: nowrap;
+      width: 120px;
+    }
+    .pdf-ft-clause {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    .pdf-ft-head {
+      font-weight: 700;
+      font-size: 0.82rem;
+      margin-bottom: 0.3rem;
+    }
+    .pdf-ft-body {
+      font-size: 0.72rem;
+      white-space: pre-wrap;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 1.8rem;
+      }
+
+      .filter-row {
+        grid-template-columns: 1fr;
+      }
+
+      .result-header {
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .sel-panel { right: 0.5rem; }
+      .sel-panel.expanded { width: 260px; }
+
+      .preview-wrap { padding: 1rem; }
+      .preview-topbar { flex-direction: column; align-items: stretch; }
+      .preview-topbar-actions { justify-content: stretch; }
+      .preview-topbar-actions .btn { flex: 1; text-align: center; }
+    }
+
+    .bmc-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #FFDD00;
+      color: #000;
+      border-radius: 8px;
+      padding: 0.45rem 1rem;
+      font-weight: 700;
+      font-size: 0.83rem;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .bmc-btn:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html" class="active">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<main>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-tag">CO TOOLKIT</div>
+      <h1>Provision & Clause Matrix</h1>
+      <p>Search, filter, and export FAR, DFARS, and other provisions and clauses across all acquisition types. Select multiple clauses to generate a custom solicitation document.</p>
+      <div class="hero-summary" id="heroSummary">Loading...</div>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <div class="container">
+
+    <!-- Filter Panel -->
+    <div class="filter-card">
+      <div class="filter-header">
+        <h3>Filters</h3>
+        <button class="filter-toggle-btn" id="filterToggle">&#9660;</button>
+      </div>
+
+      <div id="filterContent">
+
+        <!-- ========= PHASE 1: BUILD ========= -->
+        <div class="filter-section" style="border-bottom:1px solid var(--border-color);padding-bottom:1.25rem;margin-bottom:1.25rem;">
+          <label style="grid-column:1/-1;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--accent);letter-spacing:0.03em;">Build <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted);margin-left:0.5rem;">Select the clause families that apply to your acquisition</span></label>
+          <div class="filter-pills" id="buildFilter">
+            <button class="pill" data-filter="build" data-value="commercial">Commercial</button>
+            <button class="pill" data-filter="build" data-value="construction">Construction</button>
+            <button class="pill" data-filter="build" data-value="services">Services</button>
+            <button class="pill" data-filter="build" data-value="sap" title="FAR Part 13 simplified acquisition procedures for non-commercial buys under the SAT">SAP (Non-Commercial)</button>
+            <button class="pill" data-filter="build" data-value="sealed-bid">Sealed Bid</button>
+            <button class="pill" data-filter="build" data-value="options">Options</button>
+            <button class="pill" data-filter="build" data-value="idiq">IDIQ/Requirements</button>
+            <button class="pill" data-filter="build" data-value="contingency">Contingency Ops</button>
+            <button class="pill" data-filter="build" data-value="a-e">A-E</button>
+            <button class="pill" data-filter="build" data-value="r-and-d">R&amp;D</button>
+            <button class="pill" data-filter="build" data-value="major-defense">Major Defense</button>
+            <button class="pill" data-filter="build" data-value="litigation">Litigation Support</button>
+            <button class="pill" data-filter="build" data-value="cots">COTS</button>
+            <button class="pill" data-filter="build" data-value="higher-ed">Higher Ed</button>
+            <button class="pill" data-filter="build" data-value="ccpd">CCPD Required</button>
+            <button class="pill" data-filter="build" data-value="fms">FMS</button>
+            <button class="pill" data-filter="build" data-value="vessels">Vessel Alteration</button>
+            <button class="pill" data-filter="build" data-value="uca">UCAs/Letter</button>
+            <button class="pill" data-filter="build" data-value="demo">Demo Project</button>
+            <button class="pill" data-filter="build" data-value="buy-american">Buy American</button>
+            <button class="pill" data-filter="build" data-value="lease">Lease</button>
+            <button class="pill" data-filter="build" data-value="multiple-year" title="Contracts crossing fiscal years / incremental funding (not multi-year authority, which is Options)">Multiple Year</button>
+            <button class="pill" data-filter="build" data-value="set-aside">Set-Asides</button>
+            <button class="pill" data-filter="build" data-value="gpc" title="Payment by Governmentwide Commercial Purchase Card">GPC</button>
+            <button class="pill" data-filter="build" data-value="data-rights" title="IP, technical data, computer software, and patent rights clauses">Data Rights</button>
+          </div>
+        </div>
+
+        <!-- ========= PHASE 2: TRIM ========= -->
+        <div class="filter-section" style="border-bottom:1px solid var(--border-color);padding-bottom:1.25rem;margin-bottom:1.25rem;">
+          <label style="grid-column:1/-1;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--text-muted);letter-spacing:0.03em;">Narrow <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted);margin-left:0.5rem;">Select what applies to your acquisition and we'll remove the rest</span></label>
+          <div class="filter-pills" id="trimFilter">
+            <button class="pill" data-filter="trim" data-value="oconus" title="Remove domestic-only clauses">OCONUS</button>
+            <button class="pill" data-filter="trim" data-value="above-sat" title="Remove clauses that only apply below the SAT">Above SAT</button>
+            <button class="pill" data-filter="trim" data-value="below-sat" title="Remove clauses that only apply above the SAT">Below SAT</button>
+            <button class="pill" data-filter="trim" data-value="flowdown" title="Keep only clauses with subcontract flowdown requirements">Subcontract Flowdown</button>
+            <button class="pill" data-filter="trim" data-value="sca-exempt" title="Remove Service Contract Labor Standards clauses">Not SCA</button>
+            <button class="pill" data-filter="trim" data-value="db-exempt" title="Remove Davis-Bacon / Construction Wage Rate clauses">Not Davis-Bacon</button>
+            <button class="pill" data-filter="trim" data-value="dod" title="Remove FAR clauses not applicable to DoD">DoD</button>
+            <button class="pill" data-filter="trim" data-value="not-covid" title="Remove coronavirus relief clauses">Not Coronavirus</button>
+          </div>
+        </div>
+
+        <!-- ========= DISPLAY OPTIONS ========= -->
+        <div class="filter-section" style="border-bottom:1px solid var(--border-color);padding-bottom:1.25rem;margin-bottom:1.25rem;">
+          <label style="grid-column:1/-1;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--text-muted);letter-spacing:0.03em;">Display <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted);margin-left:0.5rem;">Control which clauses are visible in the results</span></label>
+          <div class="filter-pills" id="displayFilter">
+            <button class="pill" data-filter="trim" data-value="hide-ibr" title="Hide Incorporated by Reference clauses">Hide IBR</button>
+            <button class="pill" data-filter="trim" data-value="hide-ft" title="Hide Full Text clauses">Hide Full Text</button>
+          </div>
+        </div>
+
+        <!-- ========= STRUCTURAL FILTERS ========= -->
+        <div class="filter-section">
+          <div class="filter-row">
+            <div class="filter-group">
+              <label>Regulation</label>
+              <div class="filter-pills" id="regFilter">
+                <button class="pill" data-filter="regulation" data-value="FAR">FAR</button>
+                <button class="pill" data-filter="regulation" data-value="DFARS">DFARS</button>
+                <button class="pill" data-filter="regulation" data-value="DEAR">DEAR</button>
+                <button class="pill" data-filter="regulation" data-value="VAAR">VAAR</button>
+                <button class="pill" data-filter="regulation" data-value="other">Other</button>
+              </div>
+            </div>
+
+            <div class="filter-group">
+              <label>Type</label>
+              <div class="filter-pills" id="typeFilter">
+                <button class="pill active" data-filter="type" data-value="all">All</button>
+                <button class="pill" data-filter="type" data-value="P">Provision</button>
+                <button class="pill" data-filter="type" data-value="C">Clause</button>
+              </div>
+            </div>
+
+            <div class="filter-group">
+              <label>Contract Type</label>
+              <div class="filter-pills" id="ctFilter">
+                <button class="pill" data-filter="ct" data-value="fp">FP</button>
+                <button class="pill" data-filter="ct" data-value="cr">CR</button>
+                <button class="pill" data-filter="ct" data-value="tmlh">T&M/LH</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search -->
+        <div class="filter-group" style="grid-column: 1 / -1; margin-top: 1rem;">
+          <label>Search</label>
+          <div class="search-box">
+            <span style="color: var(--text-muted);">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search by clause ID or title...">
+          </div>
+        </div>
+
+        <!-- Filter Actions -->
+        <div class="filter-actions">
+          <button class="btn btn-secondary" id="clearFilters">Clear All Filters</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Toolbar -->
+    <div class="results-toolbar" id="resultsToolbar">
+      <div class="results-toolbar-left">
+        <span class="results-count" id="resultsCount"></span>
+        <span class="results-method-hint" id="methodHint"></span>
+      </div>
+      <div class="results-toolbar-right">
+        <button class="btn btn-secondary btn-sm" id="selectRequired" title="Auto-select Required and Applicable clauses">Select Required</button>
+        <button class="btn btn-secondary btn-sm" id="selectAllFiltered" title="Select all visible clauses">Select All</button>
+        <button class="btn btn-secondary btn-sm" id="deselectAll" title="Deselect all clauses">Deselect All</button>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="results-container" id="resultsContainer">
+      <!-- Results rendered here -->
+    </div>
+
+  </div>
+</main>
+
+<!-- Floating Selection Panel -->
+<div class="sel-panel" id="selPanel">
+  <!-- Compact mode: count badge + vertical label -->
+  <div class="sel-compact" id="selCompact">
+    <div class="sel-count-badge" id="selCountBadge">0</div>
+    <div class="sel-compact-icon">Export</div>
+  </div>
+  <!-- Expanded mode: full list -->
+  <div class="sel-expanded">
+    <div class="sel-exp-header">
+      <h4 id="selExpTitle">0 Selected</h4>
+      <button class="sel-collapse-btn" id="selCollapse" title="Collapse">&times;</button>
+    </div>
+    <div class="sel-list" id="selList"></div>
+    <div class="sel-exp-actions">
+      <button class="btn btn-primary" id="reviewExport">Review &amp; Export</button>
+      <button class="btn btn-secondary" id="clearSelection">Clear All</button>
+    </div>
+  </div>
+</div>
+
+<!-- Preview / Edit Overlay -->
+<div class="preview-overlay" id="previewOverlay">
+  <div class="preview-wrap">
+    <div class="preview-topbar">
+      <h2 id="previewTitle">Review &amp; Export</h2>
+      <div class="preview-topbar-actions">
+        <button class="btn btn-secondary" id="backToMatrix">Back to Matrix</button>
+        <button class="btn btn-primary" id="exportPdfBtn">Export PDF</button>
+      </div>
+    </div>
+
+    <!-- Step 1: IBR Clauses -->
+    <div class="preview-section" id="prevIbrSection" style="display:none;">
+      <div class="preview-section-title">Incorporated by Reference (FAR 52.102)</div>
+      <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem;">These clauses are incorporated by reference and will appear as a table in the PDF.</p>
+      <table class="ibr-table">
+        <thead><tr><th>Clause</th><th>Title</th><th>Prescription</th><th></th></tr></thead>
+        <tbody id="ibrTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Step 2: Full Text Clauses (no fill-in) -->
+    <div class="preview-section" id="prevFtSection" style="display:none;">
+      <div class="preview-section-title">Full Text Clauses</div>
+      <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem;">These will be included in full text in the PDF. Clause text is included automatically.</p>
+      <table class="ibr-table">
+        <thead><tr><th>Clause</th><th>Title</th><th>Prescription</th><th></th></tr></thead>
+        <tbody id="ftTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Step 3: Fill-In Required -->
+    <div class="preview-section" id="prevFillSection" style="display:none;">
+      <div class="preview-section-title">Fill-In Required</div>
+      <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem;">These clauses require you to fill in blanks before including them. Edit the text below as needed.</p>
+      <div id="fillCardsList"></div>
+    </div>
+
+    <!-- Step 4: Preview -->
+    <div class="preview-section" id="prevPreviewSection" style="display:none;">
+      <div class="preview-section-title">PDF Preview</div>
+      <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem;">This is how the document will appear. All text is still editable.</p>
+      <div id="pdfPreview" class="pdf-preview"></div>
+    </div>
+
+    <div style="display:flex;gap:0.6rem;justify-content:flex-end;border-top:1px solid var(--border-color);padding-top:1.5rem;margin-top:1rem;">
+      <button class="btn btn-secondary" id="backToMatrix2">Back to Matrix</button>
+      <button class="btn btn-primary" id="exportPdfBtn2">Export PDF</button>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <a href="index.html" class="footer-logo">ContractingHQ</a>
+    <nav class="footer-links">
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="data/clause-matrix.js"></script>
+<script src="data/clause-detail.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+<script src="main.js"></script>
+<script src="player.js"></script>
+
+<script>
+// ============================================================================
+// CLAUSE MATRIX APPLICATION
+// ============================================================================
+
+class ClauseMatrix {
+  constructor() {
+    this.allClauses = CLAUSE_DATA || [];
+    this.filteredClauses = [...this.allClauses];
+    this.selectedIds = new Set();
+    this.expandedId = null;
+
+    // Filter state
+    this.filters = {
+      // Phase 1: Build (additive, stackable)
+      build: new Set(),    // 'commercial','construction','services','sap','sealed-bid','options','idiq','contingency','a-e'
+      // Phase 2: Trim (subtractive)
+      trim: new Set(['not-covid']),     // 'oconus','above-sat','below-sat','flowdown','not-covid'
+      // Structural
+      regulation: new Set(),
+      type: 'all',
+      ct: new Set(),
+      search: ''
+    };
+
+    this.renderBatchSize = 100;
+    this.renderedCount = 0;
+    this.init();
+  }
+
+  init() {
+    this.cacheDOM();
+    this.bindEvents();
+    // Activate default trim pills
+    document.querySelectorAll('.pill[data-filter="trim"]').forEach(p => {
+      if (this.filters.trim.has(p.dataset.value)) p.classList.add('active');
+    });
+    this.render();
+  }
+
+  cacheDOM() {
+    this.resultsContainer = document.getElementById('resultsContainer');
+    this.heroSummary = document.getElementById('heroSummary');
+    this.searchInput = document.getElementById('searchInput');
+    this.filterToggle = document.getElementById('filterToggle');
+    this.filterContent = document.getElementById('filterContent');
+    this.clearFiltersBtn = document.getElementById('clearFilters');
+    this.resultsCount = document.getElementById('resultsCount');
+    this.methodHint = document.getElementById('methodHint');
+    this.selectRequiredBtn = document.getElementById('selectRequired');
+    this.selectAllFilteredBtn = document.getElementById('selectAllFiltered');
+    this.deselectAllBtn = document.getElementById('deselectAll');
+    // Floating panel
+    this.selPanel = document.getElementById('selPanel');
+    this.selCompact = document.getElementById('selCompact');
+    this.selCountBadge = document.getElementById('selCountBadge');
+    this.selExpTitle = document.getElementById('selExpTitle');
+    this.selList = document.getElementById('selList');
+    this.selCollapse = document.getElementById('selCollapse');
+    this.clearSelectionBtn = document.getElementById('clearSelection');
+    this.reviewExportBtn = document.getElementById('reviewExport');
+    // Preview page
+    this.previewOverlay = document.getElementById('previewOverlay');
+    this.previewTitle = document.getElementById('previewTitle');
+    this.prevIbrSection = document.getElementById('prevIbrSection');
+    this.ibrTableBody = document.getElementById('ibrTableBody');
+    this.prevFtSection = document.getElementById('prevFtSection');
+    this.ftTableBody = document.getElementById('ftTableBody');
+    this.prevFillSection = document.getElementById('prevFillSection');
+    this.fillCardsList = document.getElementById('fillCardsList');
+    this.prevPreviewSection = document.getElementById('prevPreviewSection');
+    this.pdfPreview = document.getElementById('pdfPreview');
+  }
+
+  bindEvents() {
+    // All pill clicks (build, trim, regulation, type, ct)
+    document.querySelectorAll('.pill[data-filter]').forEach(pill => {
+      pill.addEventListener('click', e => this.handlePillClick(e));
+    });
+
+    // Search
+    this.searchInput.addEventListener('input', e => this.handleSearch(e));
+
+    // Filter panel toggle
+    this.filterToggle.addEventListener('click', () => this.toggleFilterPanel());
+
+    // Clear filters
+    this.clearFiltersBtn.addEventListener('click', () => this.clearAllFilters());
+
+    // Floating panel
+    this.selCompact.addEventListener('click', () => this.selPanel.classList.add('expanded'));
+    this.selCollapse.addEventListener('click', () => this.selPanel.classList.remove('expanded'));
+    this.clearSelectionBtn.addEventListener('click', () => this.clearSelection());
+    this.reviewExportBtn.addEventListener('click', () => this.openPreview());
+
+    // Preview page
+    document.getElementById('backToMatrix').addEventListener('click', () => this.closePreview());
+    document.getElementById('backToMatrix2').addEventListener('click', () => this.closePreview());
+    document.getElementById('exportPdfBtn').addEventListener('click', () => this.generatePDF());
+    document.getElementById('exportPdfBtn2').addEventListener('click', () => this.generatePDF());
+
+    // Results toolbar
+    this.selectRequiredBtn.addEventListener('click', () => this.selectRequired());
+    this.selectAllFilteredBtn.addEventListener('click', () => this.selectAllFiltered());
+    this.deselectAllBtn.addEventListener('click', () => this.deselectAll());
+  }
+
+  handlePillClick(e) {
+    const pill = e.target;
+    const filterType = pill.dataset.filter;
+    const value = pill.dataset.value;
+
+    if (filterType === 'type') {
+      // Single-select
+      document.querySelectorAll(`[data-filter="${filterType}"]`).forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      this.filters[filterType] = value;
+    } else if (filterType === 'build' || filterType === 'trim' || filterType === 'ct' || filterType === 'regulation') {
+      // Multi-select toggle
+      pill.classList.toggle('active');
+      if (pill.classList.contains('active')) {
+        this.filters[filterType].add(value);
+      } else {
+        this.filters[filterType].delete(value);
+      }
+    }
+
+    this.applyFilters();
+  }
+
+  handleSearch(e) {
+    clearTimeout(this._searchTimeout);
+    this._searchTimeout = setTimeout(() => {
+      this.filters.search = e.target.value.toLowerCase();
+      this.applyFilters();
+    }, 250);
+  }
+
+  toggleFilterPanel() {
+    const isCollapsed = this.filterToggle.classList.contains('collapsed');
+    if (isCollapsed) {
+      this.filterToggle.classList.remove('collapsed');
+      this.filterContent.style.display = 'block';
+    } else {
+      this.filterToggle.classList.add('collapsed');
+      this.filterContent.style.display = 'none';
+    }
+  }
+
+  clearAllFilters() {
+    this.filters = {
+      build: new Set(),
+      trim: new Set(['not-covid']),
+      regulation: new Set(),
+      type: 'all',
+      ct: new Set(),
+      search: ''
+    };
+
+    // Reset UI
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('[data-filter="type"][data-value="all"]')[0].classList.add('active');
+    // Re-activate default trim pills
+    document.querySelectorAll('.pill[data-filter="trim"]').forEach(p => {
+      if (this.filters.trim.has(p.dataset.value)) p.classList.add('active');
+    });
+    this.searchInput.value = '';
+
+    this.applyFilters();
+  }
+
+  // ===== Phase 1: Build rules =====
+  // Each build type maps to a function that returns true if the clause belongs to that family
+  static BUILD_RULES = {
+    'commercial': c => c.tags && c.tags.includes('part-12'),
+    'construction': c => c.id.startsWith('52.236') || c.id.startsWith('252.236') || (c.tags && c.tags.includes('construction')),
+    'services': c => c.id.startsWith('52.237') || c.id.startsWith('252.237'),
+    'sap': c => c.id.startsWith('52.213') || (c.method && (c.method.sap === 'R' || c.method.sap === 'O')),
+    'sealed-bid': c => c.id.startsWith('52.214') || (c.tags && c.tags.includes('sealed-bid')) || (c.method && (c.method.sldbid === 'R' || c.method.sldbid === 'O')),
+    'options': c => c.id.startsWith('52.217') || (c.tags && c.tags.includes('options')),
+    'idiq': c => c.id.startsWith('52.216') || c.id.startsWith('252.216') || (c.tags && c.tags.includes('idiq')),
+    'contingency': c => c.tags && c.tags.includes('contingency'),
+    'a-e': c => c.tags && c.tags.includes('a-e'),
+    'r-and-d': c => c.id.startsWith('52.235') || c.id.startsWith('252.235') || (c.tags && c.tags.includes('r-and-d')),
+    'major-defense': c => c.id.startsWith('52.234') || c.id.startsWith('252.234') || (c.tags && c.tags.includes('major-defense')),
+    'litigation': c => c.tags && c.tags.includes('litigation'),
+    'cots': c => (c.tags && (c.tags.includes('part-12') || c.tags.includes('cots'))),
+    'higher-ed': c => c.tags && c.tags.includes('higher-ed'),
+    'ccpd': c => c.id.startsWith('52.215') || c.id.startsWith('252.215') || c.id.startsWith('52.230') || c.id.startsWith('252.230') || (c.tags && c.tags.includes('ccpd')),
+    'fms': c => c.tags && c.tags.includes('fms'),
+    'vessels': c => c.id.startsWith('252.217-70') || (c.tags && c.tags.includes('vessels')),
+    'uca': c => c.id === '52.216-23' || c.id === '52.216-24' || c.id === '52.216-25' || (c.tags && c.tags.includes('uca')),
+    'demo': c => c.tags && c.tags.includes('demo'),
+    'buy-american': c => c.id.startsWith('52.225') || c.id.startsWith('252.225') || (c.tags && c.tags.includes('buy-american')),
+    'lease': c => c.id.startsWith('52.208') || c.id.startsWith('252.208') || (c.tags && c.tags.includes('lease')),
+    'multiple-year': c => c.tags && c.tags.includes('multiple-year'),
+    'set-aside': c => c.id.startsWith('52.219') || c.id.startsWith('252.219') || c.id.startsWith('52.226') || c.id.startsWith('252.226') || (c.tags && c.tags.includes('set-aside')),
+    'gpc': c => c.id === '52.232-36' || c.id === '252.232-7009' || (c.tags && c.tags.includes('gpc')),
+    'data-rights': c => c.id.startsWith('252.227') || (c.tags && c.tags.includes('ip-data')),
+  };
+
+  // ===== Phase 2: Trim rules =====
+  // Each trim type maps to a function that returns true if the clause should be REMOVED
+  static TRIM_RULES = {
+    'oconus': c => c.tags && c.tags.includes('domestic-only'),
+    'above-sat': c => c.tags && c.tags.includes('below-sat') && !(c.tags && c.tags.includes('above-sat')),
+    'below-sat': c => c.tags && c.tags.includes('above-sat') && !(c.tags && c.tags.includes('below-sat')),
+    'flowdown': c => !c.flow || (!c.flow.com && !c.flow.ncom),
+    'sca-exempt': c => c.tags && c.tags.includes('sca'),
+    'db-exempt': c => c.tags && c.tags.includes('davis-bacon'),
+    'dod': c => c.tags && c.tags.includes('not-dod'),
+    'not-covid': c => c.tags && c.tags.includes('coronavirus'),
+    'hide-ibr': c => c.ibr === 'Yes' || c.ibr === 'Yes*',
+    'hide-ft': c => c.ibr === 'No' || c.ibr === 'N' || c.ibr === null,
+  };
+
+  applyFilters() {
+    this.filteredClauses = this.allClauses.filter(clause => {
+
+      // ---- Phase 1: BUILD (additive) ----
+      // If any build filters are active, the clause must match at least one of them
+      // "core" tagged clauses always pass when any build filter is active
+      // "Gated" categories: clauses in these categories only appear when their
+      // specific filter is selected, even if they match other build rules
+      if (this.filters.build.size > 0) {
+        const isCore = clause.tags && clause.tags.includes('core');
+        if (!isCore) {
+          // Gated check: if clause belongs to a gated category but that filter isn't active, exclude it
+          const isDataRights = ClauseMatrix.BUILD_RULES['data-rights'](clause);
+          if (isDataRights && !this.filters.build.has('data-rights')) return false;
+
+          let matchesBuild = false;
+          for (const buildType of this.filters.build) {
+            const rule = ClauseMatrix.BUILD_RULES[buildType];
+            if (rule && rule(clause)) { matchesBuild = true; break; }
+          }
+          if (!matchesBuild) return false;
+        }
+      }
+
+      // ---- Phase 2: TRIM (subtractive) ----
+      // If any trim filters are active, remove clauses that match the trim rule
+      for (const trimType of this.filters.trim) {
+        const rule = ClauseMatrix.TRIM_RULES[trimType];
+        if (rule && rule(clause)) return false;
+      }
+
+      // ---- Structural filters ----
+      // Regulation (multi-select)
+      if (this.filters.regulation.size > 0) {
+        if (this.filters.regulation.has('other')) {
+          // "Other" matches anything not FAR/DFARS/DEAR/VAAR
+          const isStandard = ['FAR', 'DFARS', 'DEAR', 'VAAR'].includes(clause.reg);
+          const matchesNamed = [...this.filters.regulation].some(r => r !== 'other' && clause.reg === r);
+          if (isStandard && !matchesNamed) return false;
+        } else if (!this.filters.regulation.has(clause.reg)) {
+          return false;
+        }
+      }
+
+      // Type (Provision / Clause)
+      if (this.filters.type !== 'all' && clause.type !== this.filters.type) return false;
+
+      // Contract Type (FP / CR / T&M)
+      if (this.filters.ct.size > 0) {
+        if (!clause.ct || !Object.keys(clause.ct).some(k => this.filters.ct.has(k) && clause.ct[k])) return false;
+      }
+
+      // Search
+      if (this.filters.search) {
+        const s = this.filters.search;
+        const cid = (clause.id || '').toLowerCase();
+        const ctitle = (clause.title || '').toLowerCase();
+        const cst = (clause.st || '').toLowerCase();
+        if (!cid.includes(s) && !ctitle.includes(s) && !cst.includes(s)) return false;
+      }
+
+      return true;
+    });
+
+    // Sort: Required/Applicable first, then Optional, then null
+    if (this.filters.build.size > 0) {
+      const mk = this.getActiveMethodKey();
+      const priority = {'R': 0, 'A': 1, 'O': 2};
+      this.filteredClauses.sort((a, b) => {
+        const pa = priority[a.method?.[mk]] ?? 3;
+        const pb = priority[b.method?.[mk]] ?? 3;
+        return pa - pb;
+      });
+    }
+
+    this.render();
+  }
+
+  clearSelection() {
+    this.selectedIds.clear();
+    this.updateSelectionBar();
+    this.render();
+  }
+
+  render() {
+    this.renderResults();
+    this.updateHeroSummary();
+    this.updateResultsToolbar();
+  }
+
+  renderResults() {
+    // Clean up old scroll handler
+    if (this._scrollHandler) {
+      window.removeEventListener('scroll', this._scrollHandler);
+      this._scrollHandler = null;
+    }
+    // Clear expanded state on re-render
+    this.expandedId = null;
+
+    if (this.filteredClauses.length === 0) {
+      this.resultsContainer.innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--text-muted);">No clauses match your filters.</p>';
+      return;
+    }
+
+    this.renderedCount = 0;
+    this.resultsContainer.innerHTML = '';
+    this.renderBatch();
+  }
+
+  renderBatch() {
+    const end = Math.min(this.renderedCount + this.renderBatchSize, this.filteredClauses.length);
+    const fragment = document.createDocumentFragment();
+
+    for (let i = this.renderedCount; i < end; i++) {
+      const clause = this.filteredClauses[i];
+      const uid = clause._uid || clause.id;
+      const isSelected = this.selectedIds.has(uid);
+      const isExpanded = this.expandedId === uid;
+
+      // Build badges
+      const typeBadge = clause.type === 'P' ? 'Provision' : clause.type === 'C' ? 'Clause' : 'P/C';
+      const typeBadgeClass = clause.type === 'P' ? 'badge-provision' : clause.type === 'C' ? 'badge-clause' : '';
+
+      let badges = `<span class="badge ${typeBadgeClass}">${typeBadge}</span>`;
+      if (clause.reg) {
+        const regClass = {'FAR':'badge-reg-far','DFARS':'badge-reg-dfars','DEAR':'badge-reg-dear','VAAR':'badge-reg-vaar'}[clause.reg] || 'badge-reg-other';
+        badges += `<span class="badge ${regClass}">${clause.reg}</span>`;
+      }
+      if (clause.hasDev) badges += `<span class="badge" style="background:rgba(251,191,36,0.15);color:#fbbf24;">DEV</span>`;
+      if (clause.rfo) {
+        const rfoLabel = {'RFO X':'FILL-IN','ADD':'ADDENDUM','DFARS CD':'CLASS DEV'}[clause.rfo] || clause.rfo;
+        badges += `<span class="badge badge-rfo">${rfoLabel}</span>`;
+      }
+
+      // IBR / Full Text indicator
+      let ibrLabel = '';
+      if (clause.ibr === 'Yes' || clause.ibr === 'Yes*') {
+        ibrLabel = '<span class="badge" style="background:rgba(34,197,94,0.15);color:#86efac;">IBR</span>';
+      } else {
+        ibrLabel = '<span class="badge" style="background:rgba(251,146,60,0.15);color:#fb923c;">FULL TEXT</span>';
+      }
+
+      // Short prescription - check _uid first for alternate-specific text, fall back to base id
+      const _det = (typeof CLAUSE_DETAIL !== 'undefined') ? (CLAUSE_DETAIL[clause._uid] || CLAUSE_DETAIL[clause.id]) : null;
+      const shortP = (_det && _det.sp) || '';
+
+      const row = document.createElement('div');
+      row.className = `result-row ${isExpanded ? 'expanded' : ''}`;
+      row.dataset.uid = uid;
+      row.innerHTML = `
+          <input type="checkbox" class="result-checkbox" data-uid="${uid}" ${isSelected ? 'checked' : ''}>
+          <div class="result-main">
+            <div class="result-header">
+              <span class="result-citation">${clause.id}</span>
+              <span class="result-title">${clause.st || clause.title || ''}</span>
+              ${ibrLabel} ${badges}
+            </div>
+            ${shortP ? `<div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.15rem;">${shortP}</div>` : ''}
+            <div class="result-detail" style="display: ${isExpanded ? 'block' : 'none'};">
+              <div class="detail-section">
+                <div class="detail-label">Full Prescription</div>
+                <div class="detail-text">${(_det && _det.p) || 'N/A'}</div>
+              </div>
+              ${(_det && _det.ft) ? `
+                <div class="detail-section">
+                  <div class="detail-label">Full Clause Text</div>
+                  <div class="detail-text">${_det.ft}</div>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+      `;
+
+      // Bind click for expansion
+      row.addEventListener('click', e => {
+        if (e.target.classList.contains('result-checkbox')) return;
+        // Collapse previously expanded row
+        if (this.expandedId && this.expandedId !== uid) {
+          const prevRow = this.resultsContainer.querySelector(`[data-uid="${this.expandedId}"]`);
+          if (prevRow) {
+            prevRow.classList.remove('expanded');
+            prevRow.querySelector('.result-detail').style.display = 'none';
+          }
+        }
+        this.expandedId = this.expandedId === uid ? null : uid;
+        const detail = row.querySelector('.result-detail');
+        if (this.expandedId === uid) {
+          row.classList.add('expanded');
+          detail.style.display = 'block';
+        } else {
+          row.classList.remove('expanded');
+          detail.style.display = 'none';
+        }
+      });
+
+      // Bind checkbox
+      const checkbox = row.querySelector('.result-checkbox');
+      checkbox.addEventListener('change', e => {
+        e.stopPropagation();
+        if (checkbox.checked) {
+          this.selectedIds.add(uid);
+        } else {
+          this.selectedIds.delete(uid);
+        }
+        this.updateSelectionBar();
+      });
+
+      fragment.appendChild(row);
+    }
+
+    this.resultsContainer.appendChild(fragment);
+    this.renderedCount = end;
+
+    // Load more on scroll if needed
+    if (this.renderedCount < this.filteredClauses.length) {
+      if (!this._scrollHandler) {
+        this._scrollHandler = () => {
+          if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 600) {
+            if (this.renderedCount < this.filteredClauses.length) {
+              this.renderBatch();
+            }
+          }
+        };
+        window.addEventListener('scroll', this._scrollHandler);
+      }
+    }
+  }
+
+  updateHeroSummary() {
+    let filterCount = 0;
+    if (this.filters.build.size > 0) filterCount += this.filters.build.size;
+    if (this.filters.trim.size > 0) filterCount += this.filters.trim.size;
+    if (this.filters.regulation.size > 0) filterCount++;
+    if (this.filters.type !== 'all') filterCount++;
+    if (this.filters.ct.size > 0) filterCount++;
+    if (this.filters.search) filterCount++;
+
+    let text = `Showing ${this.filteredClauses.length.toLocaleString()} of ${this.allClauses.length.toLocaleString()}`;
+    if (filterCount > 0) text += ` (${filterCount} filter${filterCount > 1 ? 's' : ''} active)`;
+    text += ` | ${this.selectedIds.size} selected`;
+    this.heroSummary.textContent = text;
+  }
+
+  updateSelectionBar() {
+    const count = this.selectedIds.size;
+    if (count > 0) {
+      this.selPanel.classList.add('visible');
+      this.selCountBadge.textContent = count;
+      this.selExpTitle.textContent = `${count} Selected`;
+      this.renderSelList();
+    } else {
+      this.selPanel.classList.remove('visible');
+      this.selPanel.classList.remove('expanded');
+    }
+    this.updateHeroSummary();
+    this.updateResultsToolbar();
+  }
+
+  // Determine which method column to use based on active build filters
+  getActiveMethodKey() {
+    if (this.filters.build.has('sap')) return 'sap';
+    if (this.filters.build.has('sealed-bid')) return 'sldbid';
+    return 'negcon';
+  }
+
+  updateResultsToolbar() {
+    const total = this.filteredClauses.length;
+    const selected = this.selectedIds.size;
+    this.resultsCount.textContent = `${total.toLocaleString()} clauses${selected ? ` | ${selected} selected` : ''}`;
+
+    const methodKey = this.getActiveMethodKey();
+    const methodLabels = {sap: 'SAP', sldbid: 'Sealed Bid', negcon: 'Negotiated'};
+    const reqCount = this.filteredClauses.filter(c => c.method && (c.method[methodKey] === 'R' || c.method[methodKey] === 'A')).length;
+    const optCount = this.filteredClauses.filter(c => c.method && c.method[methodKey] === 'O').length;
+    this.methodHint.textContent = `${methodLabels[methodKey]}: ${reqCount} required/applicable, ${optCount} optional`;
+  }
+
+  selectRequired() {
+    const methodKey = this.getActiveMethodKey();
+    this.filteredClauses.forEach(c => {
+      if (c.method && (c.method[methodKey] === 'R' || c.method[methodKey] === 'A')) {
+        this.selectedIds.add(c._uid || c.id);
+      }
+    });
+    // Update checkboxes
+    this.resultsContainer.querySelectorAll('.result-checkbox').forEach(cb => {
+      if (this.selectedIds.has(cb.dataset.uid)) cb.checked = true;
+    });
+    this.updateSelectionBar();
+  }
+
+  selectAllFiltered() {
+    this.filteredClauses.forEach(c => {
+      this.selectedIds.add(c._uid || c.id);
+    });
+    this.resultsContainer.querySelectorAll('.result-checkbox').forEach(cb => {
+      cb.checked = true;
+    });
+    this.updateSelectionBar();
+  }
+
+  deselectAll() {
+    this.selectedIds.clear();
+    this.resultsContainer.querySelectorAll('.result-checkbox').forEach(cb => {
+      cb.checked = false;
+    });
+    this.updateSelectionBar();
+  }
+
+  renderSelList() {
+    const items = Array.from(this.selectedIds)
+      .map(uid => this.allClauses.find(c => (c._uid || c.id) === uid))
+      .filter(c => c);
+    this.selList.innerHTML = items.map(c => {
+      const uid = c._uid || c.id;
+      return `<div class="sel-list-item">
+        <span class="sel-list-id">${c.id}</span>
+        <span class="sel-list-title">${c.st || c.title || ''}</span>
+        <button class="sel-list-x" data-uid="${uid}" title="Remove">&times;</button>
+      </div>`;
+    }).join('');
+    this.selList.querySelectorAll('.sel-list-x').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        this.selectedIds.delete(btn.dataset.uid);
+        // Uncheck in grid
+        const cb = this.resultsContainer.querySelector(`.result-checkbox[data-uid="${btn.dataset.uid}"]`);
+        if (cb) cb.checked = false;
+        this.updateSelectionBar();
+      });
+    });
+  }
+
+  // ===== Preview / Edit Page =====
+
+  openPreview() {
+    const selected = Array.from(this.selectedIds)
+      .map(uid => this.allClauses.find(c => (c._uid || c.id) === uid))
+      .filter(c => c);
+
+    // If nothing selected, go back
+    if (selected.length === 0) {
+      this.closePreview();
+      return;
+    }
+
+    // IBR = Yes or Yes*; Full Text = No, N, or null
+    // Fill-In = detected from clause text patterns or rfo === 'RFO X'
+    const isIbr = c => c.ibr === 'Yes' || c.ibr === 'Yes*';
+
+    const ibrClauses = selected.filter(c => isIbr(c));
+    const ftClauses = selected.filter(c => !isIbr(c));
+    const fillInClauses = selected.filter(c => this.hasFillIn(c));
+
+    this.previewTitle.textContent = `Review & Export (${selected.length} clauses)`;
+
+    // Helper: get detail record
+    const getDet = (c) => (typeof CLAUSE_DETAIL !== 'undefined') ? (CLAUSE_DETAIL[c._uid] || CLAUSE_DETAIL[c.id]) : null;
+
+    // Helper: bind remove buttons
+    const removeHandler = (container, selector) => {
+      container.querySelectorAll(selector).forEach(btn => {
+        btn.addEventListener('click', () => {
+          this.selectedIds.delete(btn.dataset.uid);
+          this.openPreview();
+          this.updateSelectionBar();
+        });
+      });
+    };
+
+    // === Section 1: IBR table ===
+    if (ibrClauses.length > 0) {
+      this.prevIbrSection.style.display = 'block';
+      this.ibrTableBody.innerHTML = ibrClauses.map(c => {
+        const uid = c._uid || c.id;
+        const det = getDet(c);
+        const sp = (det && det.sp) || '';
+        return `<tr data-uid="${uid}">
+          <td>${c.id}${this.hasFillIn(c) ? ' <span style="color:#f59e0b;font-size:0.7rem;" title="Fill-in required">&#9998;</span>' : ''}</td>
+          <td>${c.title || ''}</td>
+          <td class="prescription-cell">${sp}</td>
+          <td><button class="ibr-remove" data-uid="${uid}" title="Remove">&times;</button></td>
+        </tr>`;
+      }).join('');
+      removeHandler(this.ibrTableBody, '.ibr-remove');
+    } else {
+      this.prevIbrSection.style.display = 'none';
+    }
+
+    // === Section 2: Full Text table ===
+    if (ftClauses.length > 0) {
+      this.prevFtSection.style.display = 'block';
+      this.ftTableBody.innerHTML = ftClauses.map(c => {
+        const uid = c._uid || c.id;
+        const det = getDet(c);
+        const sp = (det && det.sp) || '';
+        return `<tr data-uid="${uid}">
+          <td>${c.id}${this.hasFillIn(c) ? ' <span style="color:#f59e0b;font-size:0.7rem;" title="Fill-in required">&#9998;</span>' : ''}</td>
+          <td>${c.title || ''}</td>
+          <td class="prescription-cell">${sp}</td>
+          <td><button class="ibr-remove" data-uid="${uid}" title="Remove">&times;</button></td>
+        </tr>`;
+      }).join('');
+      removeHandler(this.ftTableBody, '.ibr-remove');
+    } else {
+      this.prevFtSection.style.display = 'none';
+    }
+
+    // === Section 3: Fill-In cards ===
+    // Deduplicate: if an alternate falls back to the base clause's detail text,
+    // only show one card (the base) and list the alternates that share it
+    const seenFillText = new Map(); // detailKey -> first clause
+    const dedupedFillIn = [];
+    for (const c of fillInClauses) {
+      const uid = c._uid || c.id;
+      const det = getDet(c);
+      const detKey = det ? (CLAUSE_DETAIL[uid] ? uid : c.id) : null;
+      if (detKey && seenFillText.has(detKey)) {
+        // This alternate shares text with an already-shown card — skip it
+        continue;
+      }
+      if (detKey) seenFillText.set(detKey, c);
+      dedupedFillIn.push(c);
+    }
+
+    if (dedupedFillIn.length > 0) {
+      this.prevFillSection.style.display = 'block';
+      this.fillCardsList.innerHTML = dedupedFillIn.map(c => {
+        const uid = c._uid || c.id;
+        const det = getDet(c);
+        const ft = (det && det.ft) || '';
+        const sp = (det && det.sp) || '';
+        const typeTag = isIbr(c) ? '<span class="fill-ibr-tag">IBR</span>' : '<span class="fill-ft-tag">Full Text</span>';
+        return `<div class="ft-card" data-uid="${uid}">
+          <div class="ft-card-header">
+            <div>
+              ${typeTag}
+              <span class="ft-card-id">${c.id}</span>
+              <span class="ft-card-title">${c.st || c.title || ''}</span>
+            </div>
+            <button class="ft-remove" data-uid="${uid}" title="Remove">&times;</button>
+          </div>
+          ${sp ? `<div class="fill-prescription">${sp}</div>` : ''}
+          <textarea data-clause-uid="${uid}" data-clause-id="${c.id}">${this.escapeHtml(ft)}</textarea>
+        </div>`;
+      }).join('');
+      removeHandler(this.fillCardsList, '.ft-remove');
+    } else {
+      this.prevFillSection.style.display = 'none';
+    }
+
+    // === Section 4: PDF Preview ===
+    this.prevPreviewSection.style.display = 'block';
+    this.renderPdfPreview(ibrClauses, ftClauses, fillInClauses);
+
+    this.previewOverlay.classList.add('visible');
+    document.body.style.overflow = 'hidden';
+    this.selPanel.classList.remove('visible');
+  }
+
+  renderPdfPreview(ibrClauses, ftClauses, fillInClauses) {
+    const getDet = (c) => (typeof CLAUSE_DETAIL !== 'undefined') ? (CLAUSE_DETAIL[c._uid] || CLAUSE_DETAIL[c.id]) : null;
+    let html = '';
+
+    html += '<div class="pdf-page">';
+    html += '<div class="pdf-page-title">Solicitation Provisions and Contract Clauses</div>';
+    html += `<div class="pdf-page-date">Generated: ${new Date().toLocaleDateString()}</div>`;
+
+    // IBR section (clause number + title only)
+    if (ibrClauses.length > 0) {
+      html += '<div class="pdf-section-head">CLAUSES INCORPORATED BY REFERENCE (FAR 52.102)</div>';
+      html += '<table class="pdf-ibr-table"><tbody>';
+      ibrClauses.forEach(c => {
+        html += `<tr><td class="pdf-clause-num">${c.id}</td><td>${c.title || ''}${c.date ? ' (' + c.date + ')' : ''}</td></tr>`;
+      });
+      html += '</tbody></table>';
+    }
+
+    // Full text section: non-IBR clauses get full text printed
+    if (ftClauses.length > 0) {
+      html += '<div class="pdf-section-head">CLAUSES INCORPORATED IN FULL TEXT</div>';
+      ftClauses.forEach(c => {
+        const uid = c._uid || c.id;
+        const det = getDet(c);
+        // Check if user edited in fill-in textarea
+        const ta = this.fillCardsList?.querySelector(`textarea[data-clause-uid="${uid}"]`);
+        let ft = ta ? ta.value : ((det && det.ft) || '');
+        html += `<div class="pdf-ft-clause">`;
+        html += `<div class="pdf-ft-head">${c.id}  ${c.title || ''}</div>`;
+        if (ft) {
+          html += `<div class="pdf-ft-body">${this.escapeHtml(ft)}</div>`;
+        }
+        html += `</div>`;
+      });
+    }
+
+    // Fill-in clauses that are IBR still need their edited text in the PDF
+    const ibrFillIns = ibrClauses.filter(c => this.hasFillIn(c));
+    if (ibrFillIns.length > 0) {
+      html += '<div class="pdf-section-head">FILL-IN TEXT FOR IBR CLAUSES</div>';
+      ibrFillIns.forEach(c => {
+        const uid = c._uid || c.id;
+        const det = getDet(c);
+        const ta = this.fillCardsList?.querySelector(`textarea[data-clause-uid="${uid}"]`);
+        let ft = ta ? ta.value : ((det && det.ft) || '');
+        html += `<div class="pdf-ft-clause">`;
+        html += `<div class="pdf-ft-head">${c.id}  ${c.title || ''}</div>`;
+        if (ft) {
+          html += `<div class="pdf-ft-body">${this.escapeHtml(ft)}</div>`;
+        }
+        html += `</div>`;
+      });
+    }
+
+    html += '</div>'; // close pdf-page
+    this.pdfPreview.innerHTML = html;
+  }
+
+  // Detect fill-in blanks from clause text, with rfo flag as fallback
+  hasFillIn(c) {
+    const det = (typeof CLAUSE_DETAIL !== 'undefined') ? (CLAUSE_DETAIL[c._uid] || CLAUSE_DETAIL[c.id]) : null;
+    const ft = (det && det.ft) || '';
+    // If we have text, scan for fill-in patterns (underscores, brackets, paren blanks)
+    // Note: * * * in FAR text means "remaining text unchanged" — NOT a fill-in blank
+    if (ft.length >= 20) {
+      return /_{3,}|\[.*?(insert|fill.?in|specify|enter|Contracting Officer).*?\]|\(_+\)/i.test(ft);
+    }
+    // Fallback for clauses with no/short text: use rfo flag
+    return c.rfo === 'RFO X';
+  }
+
+  escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  closePreview() {
+    this.previewOverlay.classList.remove('visible');
+    document.body.style.overflow = '';
+    this.updateSelectionBar(); // re-show float
+  }
+
+  generatePDF() {
+    if (!window.jspdf) {
+      alert('PDF library is still loading. Please try again in a moment.');
+      return;
+    }
+
+    const selected = Array.from(this.selectedIds)
+      .map(uid => this.allClauses.find(c => (c._uid || c.id) === uid))
+      .filter(c => c);
+
+    if (selected.length === 0) {
+      alert('No clauses selected. Select clauses from the matrix first.');
+      return;
+    }
+
+    const isIbr = c => c.ibr === 'Yes' || c.ibr === 'Yes*';
+
+    const ibrClauses = selected.filter(c => isIbr(c));
+    const ftClauses = selected.filter(c => !isIbr(c));
+
+    const getDet = (c) => (typeof CLAUSE_DETAIL !== 'undefined') ? (CLAUSE_DETAIL[c._uid] || CLAUSE_DETAIL[c.id]) : null;
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const pw = doc.internal.pageSize.getWidth();
+    const ph = doc.internal.pageSize.getHeight();
+    const margin = 20;
+    const textW = pw - margin * 2;
+    let y = margin;
+
+    const checkPage = (needed) => { if (y + needed > ph - 15) { doc.addPage(); y = margin; } };
+
+    // Title
+    doc.setFontSize(14);
+    doc.setFont('Helvetica', 'bold');
+    doc.text('Solicitation Provisions and Contract Clauses', pw / 2, y, { align: 'center' });
+    y += 7;
+    doc.setFontSize(9);
+    doc.setFont('Helvetica', 'normal');
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, pw / 2, y, { align: 'center' });
+    y += 10;
+
+    // IBR Section
+    if (ibrClauses.length > 0) {
+      doc.setFontSize(11);
+      doc.setFont('Helvetica', 'bold');
+      doc.text('CLAUSES INCORPORATED BY REFERENCE (FAR 52.102)', margin, y);
+      y += 3;
+      doc.setLineWidth(0.4);
+      doc.line(margin, y, pw - margin, y);
+      y += 5;
+
+      doc.setFontSize(9);
+      doc.setFont('Helvetica', 'normal');
+      ibrClauses.forEach(c => {
+        const line = `${c.id}  ${c.title || ''}${c.date ? '  (' + c.date + ')' : ''}`;
+        const wrapped = doc.splitTextToSize(line, textW);
+        checkPage(wrapped.length * 4.5);
+        wrapped.forEach(l => { doc.text(l, margin, y); y += 4.5; });
+      });
+      y += 8;
+    }
+
+    // Full Text Section (non-IBR clauses)
+    if (ftClauses.length > 0) {
+      checkPage(20);
+      doc.setFontSize(11);
+      doc.setFont('Helvetica', 'bold');
+      doc.text('CLAUSES INCORPORATED IN FULL TEXT', margin, y);
+      y += 3;
+      doc.setLineWidth(0.4);
+      doc.line(margin, y, pw - margin, y);
+      y += 8;
+
+      ftClauses.forEach(c => {
+        checkPage(20);
+        const uid = c._uid || c.id;
+        doc.setFontSize(10);
+        doc.setFont('Helvetica', 'bold');
+        const hdr = `${c.id}  ${c.title || ''}`;
+        const hdrLines = doc.splitTextToSize(hdr, textW);
+        hdrLines.forEach(l => { doc.text(l, margin, y); y += 5; });
+        y += 2;
+
+        const ta = this.fillCardsList?.querySelector(`textarea[data-clause-uid="${uid}"]`);
+        const det = getDet(c);
+        let ft = ta ? ta.value : ((det && det.ft) || '');
+
+        if (ft) {
+          doc.setFontSize(8);
+          doc.setFont('Helvetica', 'normal');
+          const lines = doc.splitTextToSize(ft, textW);
+          lines.forEach(l => {
+            checkPage(4);
+            doc.text(l, margin, y);
+            y += 3.8;
+          });
+        }
+        y += 10;
+      });
+    }
+
+    // Fill-in text for IBR clauses (edited in textareas)
+    const ibrFillIns = ibrClauses.filter(c => this.hasFillIn(c));
+    if (ibrFillIns.length > 0) {
+      checkPage(20);
+      doc.setFontSize(11);
+      doc.setFont('Helvetica', 'bold');
+      doc.text('FILL-IN TEXT FOR IBR CLAUSES', margin, y);
+      y += 3;
+      doc.setLineWidth(0.4);
+      doc.line(margin, y, pw - margin, y);
+      y += 8;
+
+      ibrFillIns.forEach(c => {
+        checkPage(20);
+        const uid = c._uid || c.id;
+        doc.setFontSize(10);
+        doc.setFont('Helvetica', 'bold');
+        const hdr = `${c.id}  ${c.title || ''}`;
+        const hdrLines = doc.splitTextToSize(hdr, textW);
+        hdrLines.forEach(l => { doc.text(l, margin, y); y += 5; });
+        y += 2;
+
+        const ta = this.fillCardsList?.querySelector(`textarea[data-clause-uid="${uid}"]`);
+        const det = getDet(c);
+        let ft = ta ? ta.value : ((det && det.ft) || '');
+
+        if (ft) {
+          doc.setFontSize(8);
+          doc.setFont('Helvetica', 'normal');
+          const lines = doc.splitTextToSize(ft, textW);
+          lines.forEach(l => {
+            checkPage(4);
+            doc.text(l, margin, y);
+            y += 3.8;
+          });
+        }
+        y += 10;
+      });
+    }
+
+    const dateStr = new Date().toISOString().slice(0,10);
+    doc.save(`solicitation-clauses-${dateStr}.pdf`);
+  }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  new ClauseMatrix();
+});
+</script>
+
+</body>
+</html>
