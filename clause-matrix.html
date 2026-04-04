@@ -333,6 +333,64 @@
       font-size: 0.78rem;
     }
 
+    /* Primary action button for Select Required */
+    .btn-action {
+      background: rgba(34,197,94,0.15);
+      color: #4ade80;
+      border: 1px solid rgba(34,197,94,0.4);
+      font-weight: 600;
+      position: relative;
+    }
+    .btn-action:hover {
+      background: rgba(34,197,94,0.25);
+      border-color: rgba(34,197,94,0.6);
+    }
+    .btn-action svg {
+      width: 14px;
+      height: 14px;
+      margin-right: 0.3rem;
+      vertical-align: -2px;
+    }
+    /* Subtle pulse when nothing selected */
+    @keyframes gentle-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.3); }
+      50% { box-shadow: 0 0 0 4px rgba(34,197,94,0); }
+    }
+    .btn-action.pulse {
+      animation: gentle-pulse 2.5s ease-in-out infinite;
+    }
+    /* Getting started hint */
+    .getting-started-hint {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1rem;
+      margin-bottom: 0.5rem;
+      background: rgba(34,197,94,0.06);
+      border: 1px solid rgba(34,197,94,0.15);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .getting-started-hint svg {
+      width: 16px;
+      height: 16px;
+      color: #4ade80;
+      flex-shrink: 0;
+    }
+    .getting-started-hint strong { color: #4ade80; }
+    .getting-started-hint .dismiss-hint {
+      margin-left: auto;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0 0.3rem;
+      opacity: 0.5;
+    }
+    .getting-started-hint .dismiss-hint:hover { opacity: 1; }
+
     .results-section-header {
       padding: 0.5rem 0.8rem;
       font-family: 'Rajdhani', sans-serif;
@@ -685,9 +743,9 @@
     .preview-overlay.visible { display: block; }
 
     .preview-wrap {
-      max-width: 960px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 2rem 1.5rem 4rem;
+      padding: 5rem 1.5rem 4rem;
     }
 
     .preview-topbar {
@@ -723,6 +781,10 @@
     .ibr-table {
       width: 100%;
       border-collapse: collapse;
+      table-layout: fixed;
+    }
+    .ibr-table th, .ibr-table td {
+      vertical-align: top;
     }
     .ibr-table th {
       text-align: left;
@@ -733,18 +795,27 @@
       padding: 0.5rem 0.75rem;
       border-bottom: 1px solid var(--border-color);
     }
+    .ibr-table th:nth-child(1),
+    .ibr-table td:nth-child(1) { width: 120px; }
+    .ibr-table th:nth-child(2),
+    .ibr-table td:nth-child(2) { width: 35%; }
+    .ibr-table th:nth-child(4),
+    .ibr-table td:nth-child(4) { width: 28px; }
     .ibr-table td {
       padding: 0.5rem 0.75rem;
       font-size: 0.85rem;
       border-bottom: 1px solid rgba(74,158,255,0.06);
       color: var(--text-primary);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
     .ibr-table td:first-child {
       font-family: 'Courier New', monospace;
       font-weight: 700;
       color: var(--accent);
       white-space: nowrap;
-      width: 130px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .ibr-table tr:hover td { background: rgba(74,158,255,0.04); }
     .ibr-remove {
@@ -806,40 +877,185 @@
     .prescription-cell {
       font-size: 0.78rem;
       color: var(--text-muted);
-      max-width: 350px;
+      max-width: 450px;
       line-height: 1.5;
+      word-wrap: break-word;
     }
 
     /* Fill-in card IBR/FT tags */
     .fill-ibr-tag, .fill-ft-tag {
       display: inline-block;
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       font-weight: 700;
-      letter-spacing: 0.04em;
-      padding: 0.15rem 0.4rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
       border-radius: 4px;
-      margin-right: 0.4rem;
+      margin-right: 0.5rem;
       vertical-align: middle;
     }
     .fill-ibr-tag {
-      background: rgba(59,130,246,0.15);
+      background: rgba(59,130,246,0.18);
       color: #93c5fd;
     }
     .fill-ft-tag {
-      background: rgba(168,85,247,0.15);
+      background: rgba(168,85,247,0.18);
       color: #c4b5fd;
     }
 
-    /* Fill-in prescription hint above textarea */
+    /* Fill-in card overrides */
+    .fill-card {
+      background: rgba(10,22,50,0.4);
+      border: 1px solid rgba(74,158,255,0.12);
+      border-radius: 12px;
+      padding: 0;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+    }
+    .fill-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1.2rem;
+      background: rgba(74,158,255,0.04);
+      border-bottom: 1px solid rgba(74,158,255,0.08);
+    }
+    .fill-card-top-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .fill-card-id {
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 0.88rem;
+    }
+    .fill-card-title {
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 0.88rem;
+    }
+    .fill-card-body {
+      padding: 1rem 1.2rem 1.2rem;
+    }
+
+    /* Fill-in prescription hint */
     .fill-prescription {
       font-size: 0.78rem;
       color: var(--text-muted);
-      background: rgba(74,158,255,0.05);
-      border-left: 3px solid var(--accent);
+      background: rgba(74,158,255,0.04);
+      border-left: 3px solid rgba(74,158,255,0.3);
       padding: 0.5rem 0.75rem;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
       border-radius: 0 6px 6px 0;
       line-height: 1.5;
+    }
+
+    /* Fill-in label */
+    .fill-label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #f59e0b;
+      margin-bottom: 0.5rem;
+    }
+    .fill-label svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Fill-in textarea */
+    .fill-card textarea {
+      width: 100%;
+      min-height: 160px;
+      background: rgba(4,13,31,0.5);
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      padding: 1rem;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+    .fill-card textarea:focus {
+      outline: none;
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.1);
+    }
+
+    /* Fill-in highlighted text display */
+    .fill-text-display {
+      font-size: 0.82rem;
+      line-height: 1.65;
+      color: var(--text-primary);
+      padding: 1rem;
+      background: rgba(4,13,31,0.35);
+      border: 1px solid rgba(74,158,255,0.08);
+      border-radius: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      word-wrap: break-word;
+    }
+    .fill-text-display .fill-blank {
+      background: rgba(245,158,11,0.18);
+      color: #fbbf24;
+      border: 1px dashed rgba(245,158,11,0.4);
+      border-radius: 4px;
+      padding: 0.1rem 0.35rem;
+      font-weight: 600;
+    }
+    /* FAR-style paragraph indentation */
+    .fill-text-display .far-line { margin: 0.15rem 0; }
+    .fill-text-display .far-l0 { padding-left: 0; }
+    .fill-text-display .far-l1 { padding-left: 1.5rem; }
+    .fill-text-display .far-l2 { padding-left: 3rem; }
+    .fill-text-display .far-l3 { padding-left: 4.5rem; }
+    .fill-text-display .far-l4 { padding-left: 6rem; }
+    /* PDF preview indentation */
+    .pdf-ft-body .far-line { margin: 0.1rem 0; }
+    .pdf-ft-body .far-l0 { padding-left: 0; }
+    .pdf-ft-body .far-l1 { padding-left: 1.2rem; }
+    .pdf-ft-body .far-l2 { padding-left: 2.4rem; }
+    .pdf-ft-body .far-l3 { padding-left: 3.6rem; }
+    .pdf-ft-body .far-l4 { padding-left: 4.8rem; }
+    .fill-edit-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: none;
+      border: 1px solid rgba(245,158,11,0.25);
+      color: #f59e0b;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      transition: all 0.2s;
+      margin-top: 0.75rem;
+    }
+    .fill-edit-toggle:hover {
+      background: rgba(245,158,11,0.1);
+      border-color: #f59e0b;
+    }
+    .fill-card textarea.fill-hidden { display: none; }
+    .fill-card .fill-text-display.fill-hidden { display: none; }
+    .fill-count-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      background: rgba(245,158,11,0.2);
+      color: #fbbf24;
+      padding: 0.15rem 0.5rem;
+      border-radius: 10px;
+      margin-left: 0.4rem;
     }
 
     /* PDF Preview */
@@ -905,7 +1121,6 @@
     }
     .pdf-ft-body {
       font-size: 0.72rem;
-      white-space: pre-wrap;
       color: #333;
       line-height: 1.5;
     }
@@ -1109,6 +1324,13 @@
       </div>
     </div>
 
+    <!-- Getting Started Hint -->
+    <div class="getting-started-hint" id="gettingStartedHint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      <span><strong>Getting started?</strong> Set your filters above, then click <strong>Select Required</strong> to auto-select all applicable clauses for your acquisition.</span>
+      <button class="dismiss-hint" id="dismissHint" title="Dismiss">&times;</button>
+    </div>
+
     <!-- Results Toolbar -->
     <div class="results-toolbar" id="resultsToolbar">
       <div class="results-toolbar-left">
@@ -1116,7 +1338,9 @@
         <span class="results-method-hint" id="methodHint"></span>
       </div>
       <div class="results-toolbar-right">
-        <button class="btn btn-secondary btn-sm" id="selectRequired" title="Auto-select Required and Applicable clauses">Select Required</button>
+        <button class="btn btn-action btn-sm pulse" id="selectRequired" title="Auto-select all Required and Applicable clauses based on your filters">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Select Required
+        </button>
         <button class="btn btn-secondary btn-sm" id="selectAllFiltered" title="Select all visible clauses">Select All</button>
         <button class="btn btn-secondary btn-sm" id="deselectAll" title="Deselect all clauses">Deselect All</button>
       </div>
@@ -1277,6 +1501,8 @@ class ClauseMatrix {
     this.selectRequiredBtn = document.getElementById('selectRequired');
     this.selectAllFilteredBtn = document.getElementById('selectAllFiltered');
     this.deselectAllBtn = document.getElementById('deselectAll');
+    this.gettingStartedHint = document.getElementById('gettingStartedHint');
+    this.dismissHintBtn = document.getElementById('dismissHint');
     // Floating panel
     this.selPanel = document.getElementById('selPanel');
     this.selCompact = document.getElementById('selCompact');
@@ -1330,6 +1556,16 @@ class ClauseMatrix {
     this.selectRequiredBtn.addEventListener('click', () => this.selectRequired());
     this.selectAllFilteredBtn.addEventListener('click', () => this.selectAllFiltered());
     this.deselectAllBtn.addEventListener('click', () => this.deselectAll());
+
+    // Getting started hint
+    this.dismissHintBtn.addEventListener('click', () => {
+      this.gettingStartedHint.style.display = 'none';
+      try { localStorage.setItem('kthq-hint-dismissed', '1'); } catch(e) {}
+    });
+    // Hide hint if previously dismissed
+    try {
+      if (localStorage.getItem('kthq-hint-dismissed')) this.gettingStartedHint.style.display = 'none';
+    } catch(e) {}
   }
 
   handlePillClick(e) {
@@ -1691,9 +1927,18 @@ class ClauseMatrix {
       this.selCountBadge.textContent = count;
       this.selExpTitle.textContent = `${count} Selected`;
       this.renderSelList();
+      // Stop pulsing and hide hint once user has selected something
+      this.selectRequiredBtn.classList.remove('pulse');
+      this.gettingStartedHint.style.display = 'none';
     } else {
       this.selPanel.classList.remove('visible');
       this.selPanel.classList.remove('expanded');
+      // Resume pulse if nothing selected and hint not dismissed
+      try {
+        if (!localStorage.getItem('kthq-hint-dismissed')) {
+          this.selectRequiredBtn.classList.add('pulse');
+        }
+      } catch(e) { this.selectRequiredBtn.classList.add('pulse'); }
     }
     this.updateHeroSummary();
     this.updateResultsToolbar();
@@ -1874,20 +2119,54 @@ class ClauseMatrix {
         const ft = (det && det.ft) || '';
         const sp = (det && det.sp) || '';
         const typeTag = isIbr(c) ? '<span class="fill-ibr-tag">IBR</span>' : '<span class="fill-ft-tag">Full Text</span>';
-        return `<div class="ft-card" data-uid="${uid}">
-          <div class="ft-card-header">
-            <div>
+        const formatted = this.formatClauseText(ft, true);
+        const blankCount = (ft.match(/_{3,}|\[.*?(insert|fill.?in|specify|enter|Contracting Officer).*?\]|\(_+\)/gi) || []).length;
+        return `<div class="fill-card" data-uid="${uid}">
+          <div class="fill-card-top">
+            <div class="fill-card-top-left">
               ${typeTag}
-              <span class="ft-card-id">${c.id}</span>
-              <span class="ft-card-title">${c.st || c.title || ''}</span>
+              <span class="fill-card-id">${c.id}</span>
+              <span class="fill-card-title">${c.st || c.title || ''}</span>
+              ${blankCount ? `<span class="fill-count-badge">${blankCount} fill-in${blankCount > 1 ? 's' : ''}</span>` : ''}
             </div>
             <button class="ft-remove" data-uid="${uid}" title="Remove">&times;</button>
           </div>
-          ${sp ? `<div class="fill-prescription">${sp}</div>` : ''}
-          <textarea data-clause-uid="${uid}" data-clause-id="${c.id}">${this.escapeHtml(ft)}</textarea>
+          <div class="fill-card-body">
+            ${sp ? `<div class="fill-prescription">${sp}</div>` : ''}
+            <div class="fill-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Clause Text — Edit Fill-Ins
+            </div>
+            <div class="fill-text-display" data-uid="${uid}">${formatted}</div>
+            <button class="fill-edit-toggle" data-uid="${uid}">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              Edit Raw Text
+            </button>
+            <textarea class="fill-hidden" data-clause-uid="${uid}" data-clause-id="${c.id}">${this.escapeHtml(ft)}</textarea>
+          </div>
         </div>`;
       }).join('');
       removeHandler(this.fillCardsList, '.ft-remove');
+      // Toggle edit mode on fill-in cards
+      this.fillCardsList.querySelectorAll('.fill-edit-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const card = btn.closest('.fill-card');
+          const display = card.querySelector('.fill-text-display');
+          const ta = card.querySelector('textarea');
+          if (ta.classList.contains('fill-hidden')) {
+            ta.classList.remove('fill-hidden');
+            display.classList.add('fill-hidden');
+            btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Show Highlighted View';
+            ta.focus();
+          } else {
+            // Sync textarea changes back to display with indentation
+            display.innerHTML = this.formatClauseText(ta.value, true);
+            ta.classList.add('fill-hidden');
+            display.classList.remove('fill-hidden');
+            btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Edit Raw Text';
+          }
+        });
+      });
     } else {
       this.prevFillSection.style.display = 'none';
     }
@@ -1897,6 +2176,7 @@ class ClauseMatrix {
     this.renderPdfPreview(ibrClauses, ftClauses, fillInClauses);
 
     this.previewOverlay.classList.add('visible');
+    document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
     this.selPanel.classList.remove('visible');
   }
@@ -1931,7 +2211,7 @@ class ClauseMatrix {
         html += `<div class="pdf-ft-clause">`;
         html += `<div class="pdf-ft-head">${c.id}  ${c.title || ''}</div>`;
         if (ft) {
-          html += `<div class="pdf-ft-body">${this.escapeHtml(ft)}</div>`;
+          html += `<div class="pdf-ft-body">${this.formatClauseText(ft, false)}</div>`;
         }
         html += `</div>`;
       });
@@ -1949,7 +2229,7 @@ class ClauseMatrix {
         html += `<div class="pdf-ft-clause">`;
         html += `<div class="pdf-ft-head">${c.id}  ${c.title || ''}</div>`;
         if (ft) {
-          html += `<div class="pdf-ft-body">${this.escapeHtml(ft)}</div>`;
+          html += `<div class="pdf-ft-body">${this.formatClauseText(ft, false)}</div>`;
         }
         html += `</div>`;
       });
@@ -1978,8 +2258,44 @@ class ClauseMatrix {
     return div.innerHTML;
   }
 
+  highlightFillIns(escapedText) {
+    // Highlight fill-in patterns: ___+, [insert/fill-in/specify/enter...], (___)
+    return escapedText
+      .replace(/_{3,}/g, '<span class="fill-blank">$&</span>')
+      .replace(/\[([^\]]*?(insert|fill.?in|specify|enter|Contracting Officer)[^\]]*?)\]/gi, '<span class="fill-blank">[$1]</span>')
+      .replace(/\(_+\)/g, '<span class="fill-blank">$&</span>');
+  }
+
+  // Format clause text with FAR-style indentation
+  // FAR hierarchy: (a)=L1, (1)=L2, (i)/(ii)/(iii)=L3, (A)=L4
+  formatClauseText(text, applyHighlights) {
+    const romans = new Set(['i','ii','iii','iv','v','vi','vii','viii','ix','x','xi','xii','xiii','xiv','xv','xvi','xvii','xviii','xix','xx']);
+    const lines = text.split('\n');
+    return lines.map(raw => {
+      const line = raw.trim();
+      if (!line) return '';
+      let level = 0;
+      const m = line.match(/^\(([^)]+)\)\s/);
+      if (m) {
+        const marker = m[1];
+        if (/^\d+$/.test(marker)) {
+          level = 2; // (1), (2), ...
+        } else if (/^[A-Z]$/.test(marker)) {
+          level = 4; // (A), (B), ...
+        } else if (romans.has(marker.toLowerCase())) {
+          level = 3; // (i), (ii), (iv), (v), (x), ...
+        } else if (/^[a-z]$/.test(marker)) {
+          level = 1; // (a), (b), (c), ...
+        }
+      }
+      const escaped = applyHighlights ? this.highlightFillIns(this.escapeHtml(line)) : this.escapeHtml(line);
+      return `<div class="far-line far-l${level}">${escaped}</div>`;
+    }).join('');
+  }
+
   closePreview() {
     this.previewOverlay.classList.remove('visible');
+    document.documentElement.style.overflow = '';
     document.body.style.overflow = '';
     this.updateSelectionBar(); // re-show float
   }
