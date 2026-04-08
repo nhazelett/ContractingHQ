@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="OCS for Dummies: Operational Contract Support explained from the ground up. Built for the newest contracting officer who just got tasked to deploy." />
+  <title>OCS for Dummies | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+<style>
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+/* ── Deployment / Camo Theme ── */
+:root {
+  --od-green: #4a5c3a;
+  --od-green-light: #6b8a50;
+  --od-green-pale: rgba(74,92,58,0.15);
+  --sand: #c4a96a;
+  --sand-light: #d4bf8a;
+  --sand-dark: #8b7640;
+  --dust: #a89274;
+  --bark: #3d3026;
+  --night: #0c0f08;
+  --night-card: #141a0f;
+  --text: #ddd8c8;
+  --text-muted: #918b78;
+  --white: #f0ece0;
+  --border: rgba(74,92,58,0.25);
+  --accent: #6b8a50;
+  --accent-glow: rgba(107,138,80,0.12);
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--text);
+  background: var(--night);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Subtle camo-ish texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(74,92,58,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 80% 90%, rgba(139,118,64,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 50% 50%, rgba(61,48,38,0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Top bar ── */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(12,15,8,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  height: 52px;
+  display: flex; align-items: center; padding: 0 1.5rem;
+}
+.topbar-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: 0.78rem;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--od-green-light);
+}
+.topbar-right {
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+/* ── Wrap ── */
+.wrap {
+  position: relative; z-index: 1;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ── Hero ── */
+.hero {
+  text-align: center;
+  padding: 7rem 1rem 3rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2.5rem;
+}
+.hero-tag {
+  display: inline-block;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--sand);
+  border: 1px solid rgba(196,169,106,0.35);
+  border-radius: 20px;
+  padding: 0.25rem 1rem;
+  margin-bottom: 1.25rem;
+}
+.hero h1 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(2rem, 5.5vw, 3rem);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+}
+.hero h1 span { color: var(--od-green-light); }
+.hero-sub {
+  max-width: 600px;
+  margin: 0 auto 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+.hero-meta {
+  display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;
+  font-size: 0.78rem; color: var(--dust);
+}
+.hero-meta span { display: flex; align-items: center; gap: 0.35rem; }
+
+/* ── Phase header ── */
+.phase {
+  margin-bottom: 3.5rem;
+  scroll-margin-top: 70px;
+}
+.phase-header {
+  display: flex; align-items: center; gap: 0.9rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.phase-num {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--night);
+  background: var(--od-green-light);
+  padding: 0.2rem 0.7rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.phase-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.45rem; font-weight: 700;
+  color: var(--white);
+}
+
+/* ── Prose ── */
+.prose {
+  font-size: 0.92rem;
+  line-height: 1.75;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+.prose strong { color: var(--white); font-weight: 600; }
+.prose em { color: var(--sand-light); font-style: italic; }
+
+/* ── Base map / squadron grid ── */
+.base-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.9rem;
+  margin: 1.5rem 0 2rem;
+}
+.base-card {
+  background: var(--night-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.1rem 1.2rem;
+  transition: border-color 0.2s, transform 0.15s;
+}
+.base-card:hover {
+  border-color: rgba(107,138,80,0.45);
+  transform: translateY(-2px);
+}
+.base-card-icon {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+.base-card-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem; font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.2rem;
+}
+.base-card-abbr {
+  font-size: 0.7rem; font-weight: 600;
+  color: var(--od-green-light);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.base-card-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+/* ── Reveal card (contractor flip) ── */
+.reveal-block {
+  background: rgba(196,169,106,0.05);
+  border: 1px dashed rgba(196,169,106,0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0 2rem;
+  text-align: center;
+}
+.reveal-btn {
+  display: inline-block;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--sand);
+  background: rgba(196,169,106,0.1);
+  border: 1px solid rgba(196,169,106,0.3);
+  border-radius: 8px;
+  padding: 0.6rem 1.6rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.reveal-btn:hover {
+  background: rgba(196,169,106,0.18);
+  border-color: rgba(196,169,106,0.5);
+}
+.reveal-content {
+  display: none;
+  margin-top: 1.25rem;
+  text-align: left;
+}
+.reveal-content.open { display: block; }
+.reveal-btn.open { display: none; }
+
+/* ── Stat bar ── */
+.stat-row {
+  display: flex; flex-wrap: wrap; gap: 1rem;
+  margin: 1.5rem 0;
+}
+.stat-card {
+  flex: 1; min-width: 140px;
+  background: var(--night-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  text-align: center;
+}
+.stat-num {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.8rem; font-weight: 700;
+  color: var(--sand);
+  line-height: 1.1;
+}
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+  line-height: 1.4;
+}
+
+/* ── Ratio Pyramid ── */
+.pyramid-wrap {
+  margin: 1.5rem 0 2rem;
+  overflow-x: auto;
+}
+.pyramid-container {
+  position: relative;
+  width: 100%;
+  max-width: 750px;
+  margin: 0 auto;
+}
+.pyramid-container svg {
+  width: 100%;
+  height: auto;
+}
+.pyramid-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  fill: var(--white);
+}
+.pyramid-ratio {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  fill: var(--sand);
+}
+.pyramid-axis {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  fill: var(--text-muted);
+}
+.pyramid-axis-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  fill: var(--od-green-light);
+  letter-spacing: 1px;
+}
+.pyramid-bar {
+  transition: opacity 0.2s;
+}
+.pyramid-bar:hover {
+  opacity: 0.85;
+}
+.pyramid-drivers {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+.pyramid-driver-tag {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px;
+  padding: 0.25rem 0.7rem;
+}
+
+/* ── Scenario box ── */
+.scenario {
+  background: rgba(74,92,58,0.08);
+  border: 1px solid rgba(74,92,58,0.25);
+  border-left: 3px solid var(--od-green-light);
+  border-radius: 0 10px 10px 0;
+  padding: 1.3rem 1.4rem;
+  margin: 1.5rem 0;
+}
+.scenario-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--od-green-light);
+  margin-bottom: 0.5rem;
+}
+.scenario p {
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.7;
+}
+.scenario p strong { color: var(--white); }
+
+/* ── Question flow ── */
+.q-block {
+  background: var(--night-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.4rem 1.5rem;
+  margin: 1.2rem 0;
+}
+.q-prompt {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.05rem; font-weight: 700;
+  color: var(--sand-light);
+  margin-bottom: 0.8rem;
+}
+.q-options {
+  display: flex; flex-direction: column; gap: 0.5rem;
+}
+.q-opt {
+  display: block; width: 100%;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: var(--text);
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  font-family: 'Inter', sans-serif;
+}
+.q-opt:hover {
+  background: rgba(107,138,80,0.1);
+  border-color: rgba(107,138,80,0.3);
+}
+.q-opt.correct {
+  background: rgba(107,138,80,0.15);
+  border-color: var(--od-green-light);
+  color: var(--white);
+}
+.q-opt.incorrect {
+  background: rgba(180,80,60,0.1);
+  border-color: rgba(180,80,60,0.35);
+  color: #c89080;
+}
+.q-opt.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+.q-feedback {
+  display: none;
+  margin-top: 0.8rem;
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  line-height: 1.65;
+}
+.q-feedback.show { display: block; }
+.q-feedback.good {
+  background: rgba(107,138,80,0.08);
+  border: 1px solid rgba(107,138,80,0.2);
+  color: var(--text);
+}
+.q-feedback.wrong {
+  background: rgba(180,80,60,0.06);
+  border: 1px solid rgba(180,80,60,0.18);
+  color: var(--text);
+}
+
+/* ── Role table ── */
+.role-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.82rem;
+}
+.role-table th {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--od-green-light);
+  background: rgba(74,92,58,0.12);
+  padding: 0.65rem 0.9rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.role-table td {
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--text);
+  line-height: 1.55;
+  vertical-align: top;
+}
+.role-table tr:hover td { background: rgba(255,255,255,0.02); }
+.role-table .who-tag {
+  display: inline-block;
+  font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.who-cons { background: rgba(107,138,80,0.2); color: var(--od-green-light); }
+.who-req { background: rgba(196,169,106,0.2); color: var(--sand); }
+.who-cmd { background: rgba(180,80,60,0.15); color: #d49080; }
+.who-j4 { background: rgba(100,140,200,0.15); color: #8ab4e0; }
+.who-ocsic { background: rgba(160,120,200,0.15); color: #c0a0e0; }
+
+/* ── OCS process timeline ── */
+.ocs-timeline {
+  display: flex; flex-direction: column; gap: 0;
+  margin: 1.5rem 0 2rem;
+  position: relative;
+}
+.ocs-timeline::before {
+  content: '';
+  position: absolute;
+  left: 18px; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom,
+    var(--od-green-light), var(--sand), var(--dust), var(--od-green));
+  opacity: 0.3;
+}
+.ocs-step {
+  position: relative;
+  padding-left: 48px;
+  padding-bottom: 1.5rem;
+}
+.ocs-step:last-child { padding-bottom: 0; }
+.ocs-dot {
+  position: absolute;
+  left: 9px; top: 2px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.62rem; font-weight: 700;
+  color: var(--night);
+  background: var(--od-green-light);
+  z-index: 1;
+}
+.ocs-step-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.95rem; font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.2rem;
+}
+.ocs-step-when {
+  font-size: 0.68rem; font-weight: 600;
+  color: var(--sand-dark);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+.ocs-step-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.ocs-step-who {
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+}
+
+/* ── Leads / Supports / Stands Down cards ── */
+.lane-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.lane-card {
+  border-radius: 10px;
+  padding: 1.1rem 1.2rem;
+}
+.lane-card.leads {
+  background: rgba(107,138,80,0.1);
+  border: 1px solid rgba(107,138,80,0.25);
+}
+.lane-card.supports {
+  background: rgba(196,169,106,0.08);
+  border: 1px solid rgba(196,169,106,0.2);
+}
+.lane-card.stands-down {
+  background: rgba(180,80,60,0.06);
+  border: 1px solid rgba(180,80,60,0.18);
+}
+.lane-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+.lane-card.leads .lane-label { color: var(--od-green-light); }
+.lane-card.supports .lane-label { color: var(--sand); }
+.lane-card.stands-down .lane-label { color: #c07060; }
+.lane-items {
+  display: flex; flex-direction: column; gap: 0.4rem;
+}
+.lane-item {
+  font-size: 0.82rem;
+  color: var(--text);
+  line-height: 1.55;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.lane-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.55em;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.4;
+}
+
+/* ── Scenario decision flow (Phase 4) ── */
+.decision {
+  background: var(--night-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+.decision-num {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--sand-dark);
+  margin-bottom: 0.5rem;
+}
+.decision-situation {
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+.decision-situation strong { color: var(--white); }
+
+/* ── Callout box ── */
+.callout {
+  background: rgba(196,169,106,0.06);
+  border: 1px solid rgba(196,169,106,0.2);
+  border-radius: 10px;
+  padding: 1.2rem 1.3rem;
+  margin: 1.5rem 0;
+}
+.callout-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--sand);
+  margin-bottom: 0.4rem;
+}
+.callout p {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.65;
+}
+
+/* ── Section divider ── */
+.divider {
+  border: none;
+  height: 1px;
+  background: var(--border);
+  margin: 2.5rem 0;
+}
+
+/* ── Closing / Next steps ── */
+.closing {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  margin-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.closing h2 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.6rem; font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.75rem;
+}
+.closing p {
+  max-width: 560px; margin: 0 auto;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* ── Progress tracker ── */
+.progress-bar {
+  position: fixed;
+  top: 52px; left: 0; right: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.05);
+  z-index: 99;
+}
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--od-green-light), var(--sand));
+  transition: width 0.15s;
+}
+
+/* ── Phase nav (sticky mini-nav) ── */
+.phase-nav {
+  position: sticky;
+  top: 52px;
+  z-index: 50;
+  background: rgba(12,15,8,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 0;
+  margin: 0 -1.5rem 2rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  display: flex;
+  gap: 0.3rem;
+  overflow-x: auto;
+}
+.phase-nav a {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: color 0.2s, background 0.2s;
+}
+.phase-nav a:hover, .phase-nav a.active {
+  color: var(--white);
+  background: rgba(107,138,80,0.15);
+}
+
+/* ── J-Staff Wheel ── */
+.jstaff-wrap {
+  margin: 2rem 0 2.5rem;
+}
+.jstaff-container {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.jstaff-wheel {
+  flex: 0 0 auto;
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+.jstaff-wheel svg {
+  width: 100%;
+  height: 100%;
+}
+.jstaff-slice {
+  cursor: pointer;
+  transition: opacity 0.2s, filter 0.2s;
+}
+.jstaff-slice:hover,
+.jstaff-slice.active {
+  filter: brightness(1.3);
+}
+.jstaff-slice text {
+  pointer-events: none;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  fill: #fff;
+}
+.jstaff-center-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  fill: var(--od-green-light);
+  text-anchor: middle;
+}
+.jstaff-detail {
+  flex: 1;
+  min-width: 260px;
+  background: var(--night-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.2rem 1.3rem;
+  min-height: 200px;
+  transition: border-color 0.2s;
+}
+.jstaff-detail.highlight {
+  border-color: rgba(107,138,80,0.45);
+}
+.jstaff-detail-code {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--od-green-light);
+  margin-bottom: 0.2rem;
+}
+.jstaff-detail-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.15rem; font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.6rem;
+}
+.jstaff-detail-desc {
+  font-size: 0.82rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+.jstaff-detail-items {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.jstaff-detail-items .jd-item {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  padding-left: 0.85rem;
+  position: relative;
+}
+.jd-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.5em;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--od-green-light);
+  opacity: 0.5;
+}
+@media (max-width: 640px) {
+  .jstaff-container { flex-direction: column; align-items: center; }
+  .jstaff-wheel { width: 260px; height: 260px; }
+  .jstaff-detail { min-width: unset; width: 100%; }
+}
+
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  margin-top: 2rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .base-grid { grid-template-columns: 1fr; }
+  .lane-grid { grid-template-columns: 1fr; }
+  .stat-row { flex-direction: column; }
+  .role-table { font-size: 0.76rem; }
+  .role-table th, .role-table td { padding: 0.5rem 0.6rem; }
+  .phase-nav { gap: 0.15rem; }
+  .phase-nav a { font-size: 0.65rem; padding: 0.35rem 0.6rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="topbar-label">ContractingHQ // Training</div>
+  <div class="topbar-right">Advanced Track</div>
+</div>
+
+<!-- Reading progress -->
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="wrap">
+
+  <!-- ═══ HERO ═══ -->
+  <div class="hero">
+    <div class="hero-tag">Advanced Track</div>
+    <h1>OCS for <span>Dummies</span></h1>
+    <p class="hero-sub">Operational Contract Support stripped down to what you actually need to know. No fluff, no 200-page handbooks. Just the stuff that matters when you're the new CCO on the ground.</p>
+    <div class="hero-meta">
+      <span>~25 min read</span>
+      <span>|</span>
+      <span>Interactive scenarios</span>
+      <span>|</span>
+      <span>4 phases</span>
+    </div>
+  </div>
+
+  <!-- ═══ PHASE NAV ═══ -->
+  <nav class="phase-nav" id="phaseNav">
+    <a href="#phase1">Phase 1: The Lay of the Land</a>
+    <a href="#phase2">Phase 2: Who's in Charge?</a>
+    <a href="#phase3">Phase 3: The Big Picture</a>
+    <a href="#phase4">Phase 4: Joint Contracting</a>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--              PHASE 1: YOU ALREADY KNOW THIS    -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="phase" id="phase1">
+    <div class="phase-header">
+      <span class="phase-num">Phase 1</span>
+      <span class="phase-title">The Lay of the Land</span>
+    </div>
+
+    <p class="prose">You just got to your deployed location. You've got your gear, your laptop, and your warrant. Before anyone says the words "operational contract support" to you, let's walk the base. You already know who runs what.</p>
+
+    <div class="base-grid">
+      <div class="base-card">
+        <div class="base-card-icon">🍽️</div>
+        <div class="base-card-abbr">FSS</div>
+        <div class="base-card-name">Force Support</div>
+        <div class="base-card-desc">Food service (DFAC), lodging, morale/welfare/recreation, fitness, postal, personnel support.</div>
+      </div>
+      <div class="base-card">
+        <div class="base-card-icon">🔧</div>
+        <div class="base-card-abbr">CE</div>
+        <div class="base-card-name">Civil Engineer</div>
+        <div class="base-card-desc">Construction, plumbing, electrical, HVAC, fire protection, explosive ordnance disposal, base infrastructure.</div>
+      </div>
+      <div class="base-card">
+        <div class="base-card-icon">🚛</div>
+        <div class="base-card-abbr">LRS</div>
+        <div class="base-card-name">Logistics Readiness</div>
+        <div class="base-card-desc">Vehicle operations, fuel distribution, cargo handling, supply chain, equipment management.</div>
+      </div>
+      <div class="base-card">
+        <div class="base-card-icon">🛡️</div>
+        <div class="base-card-abbr">SFS</div>
+        <div class="base-card-name">Security Forces</div>
+        <div class="base-card-desc">Base defense, entry control points, law enforcement, force protection, resource protection.</div>
+      </div>
+      <div class="base-card">
+        <div class="base-card-icon">⚖️</div>
+        <div class="base-card-abbr">JA</div>
+        <div class="base-card-name">Judge Advocate</div>
+        <div class="base-card-desc">Legal review, contract law support, fiscal law guidance, Status of Forces Agreements (SOFA), rules of engagement for contractors.</div>
+      </div>
+      <div class="base-card">
+        <div class="base-card-icon">💰</div>
+        <div class="base-card-abbr">FM</div>
+        <div class="base-card-name">Financial Management</div>
+        <div class="base-card-desc">Funding certification, budget execution, fiscal year tracking, Antideficiency Act compliance. They control the money.</div>
+      </div>
+    </div>
+
+    <p class="prose">On a normal Air Force deployment, these units become expeditionary. Your home station CES (CE Squadron) becomes ECES. FSS becomes EFSS. SFS becomes ESFS. Same people, same mission, different name tape.</p>
+
+    <p class="prose">Simple enough. FSS feeds you and houses you. CE builds things and fixes things. LRS moves stuff. SFS guards stuff. JA keeps you legal. FM keeps you funded. As a contracting officer, you support all of them. They bring you requirements, you buy what they need. That's the job you trained for.</p>
+
+    <p class="prose">With that foundation, let's look at who's actually doing all that work.</p>
+
+    <!-- Reveal: who's actually doing the work? -->
+    <div class="reveal-block" id="reveal1">
+      <p style="color: var(--sand-light); font-size: 0.9rem; margin-bottom: 1rem;">Take a guess: on a mature deployed base, how much of this work is being done by <strong style="color: var(--white);">contractors</strong> instead of uniformed personnel?</p>
+      <button class="reveal-btn" onclick="revealContent('reveal1')">Show Me</button>
+      <div class="reveal-content">
+        <!-- Contractor Ratio Pyramid -->
+        <div class="pyramid-wrap">
+          <div class="pyramid-container">
+            <svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg">
+              <!-- Y-axis label -->
+              <text x="14" y="200" class="pyramid-axis-label" transform="rotate(-90, 14, 200)" text-anchor="middle" style="letter-spacing:2px;">COMPLEXITY OF CONFLICT</text>
+
+              <!-- X-axis label -->
+              <text x="400" y="372" class="pyramid-axis-label" text-anchor="middle" style="letter-spacing:2px;">COMPLEXITY OF SERVICES</text>
+
+              <!-- Axis lines -->
+              <line x1="38" y1="10" x2="38" y2="340" stroke="rgba(107,138,80,0.3)" stroke-width="1"/>
+              <line x1="38" y1="340" x2="690" y2="340" stroke="rgba(107,138,80,0.3)" stroke-width="1"/>
+
+              <!-- Pyramid bars (bottom=oldest, top=newest, wider=more contractors) -->
+              <!-- American Revolution 1:6 -->
+              <rect class="pyramid-bar" x="46" y="305" width="85" height="28" rx="3" fill="#5a6a3a" opacity="0.7"/>
+              <text x="89" y="323" class="pyramid-label" font-size="9" text-anchor="middle">Am. Revolution</text>
+              <text x="145" y="323" class="pyramid-ratio" font-size="10" text-anchor="start">1:6</text>
+
+              <!-- Civil War 1:5 -->
+              <rect class="pyramid-bar" x="46" y="272" width="105" height="28" rx="3" fill="#5a6a3a" opacity="0.72"/>
+              <text x="99" y="290" class="pyramid-label" font-size="9" text-anchor="middle">Civil War</text>
+              <text x="163" y="290" class="pyramid-ratio" font-size="10" text-anchor="start">1:5</text>
+
+              <!-- World War I 1:20 -->
+              <rect class="pyramid-bar" x="46" y="239" width="70" height="28" rx="3" fill="#5c6c3c" opacity="0.74"/>
+              <text x="81" y="257" class="pyramid-label" font-size="9" text-anchor="middle">WWI</text>
+              <text x="126" y="257" class="pyramid-ratio" font-size="10" text-anchor="start">1:20</text>
+
+              <!-- World War II 1:7 -->
+              <rect class="pyramid-bar" x="46" y="206" width="130" height="28" rx="3" fill="#606e40" opacity="0.76"/>
+              <text x="111" y="224" class="pyramid-label" font-size="9" text-anchor="middle">WWII</text>
+              <text x="190" y="224" class="pyramid-ratio" font-size="10" text-anchor="start">1:7</text>
+
+              <!-- Korea 1:2.5 -->
+              <rect class="pyramid-bar" x="46" y="173" width="190" height="28" rx="3" fill="#667244" opacity="0.78"/>
+              <text x="141" y="191" class="pyramid-label" font-size="9" text-anchor="middle">Korea</text>
+              <text x="250" y="191" class="pyramid-ratio" font-size="10" text-anchor="start">1:2.5</text>
+
+              <!-- Vietnam 1:6 -->
+              <rect class="pyramid-bar" x="46" y="140" width="150" height="28" rx="3" fill="#6b7648" opacity="0.80"/>
+              <text x="121" y="158" class="pyramid-label" font-size="9" text-anchor="middle">Vietnam</text>
+              <text x="208" y="158" class="pyramid-ratio" font-size="10" text-anchor="start">1:6</text>
+
+              <!-- Gulf War 1:60 -->
+              <rect class="pyramid-bar" x="46" y="107" width="55" height="28" rx="3" fill="#707a4c" opacity="0.82"/>
+              <text x="74" y="125" class="pyramid-label" font-size="9" text-anchor="middle">Gulf</text>
+              <text x="113" y="125" class="pyramid-ratio" font-size="10" text-anchor="start">1:60</text>
+
+              <!-- Balkans 1:1 -->
+              <rect class="pyramid-bar" x="46" y="74" width="360" height="28" rx="3" fill="#7a8450" opacity="0.85"/>
+              <text x="226" y="92" class="pyramid-label" font-size="10" text-anchor="middle">Balkans</text>
+              <text x="420" y="92" class="pyramid-ratio" font-size="11" text-anchor="start">1:1</text>
+
+              <!-- Iraq / Afghanistan 1:1 -->
+              <rect class="pyramid-bar" x="46" y="41" width="400" height="28" rx="3" fill="#8a9058" opacity="0.88"/>
+              <text x="246" y="59" class="pyramid-label" font-size="10" text-anchor="middle">Iraq / Afghanistan</text>
+              <text x="460" y="59" class="pyramid-ratio" font-size="11" text-anchor="start">1:1+</text>
+
+              <!-- Humanitarian 30:1 -->
+              <rect class="pyramid-bar" x="46" y="8" width="580" height="28" rx="3" fill="#c4a96a" opacity="0.65"/>
+              <text x="336" y="26" class="pyramid-label" font-size="10" text-anchor="middle">Humanitarian?</text>
+              <text x="640" y="26" class="pyramid-ratio" font-size="12" text-anchor="start" fill="#f0ece0">30:1</text>
+
+              <!-- Service complexity labels along bottom -->
+              <text x="60" y="358" class="pyramid-axis" font-size="8">Laundry</text>
+              <text x="120" y="358" class="pyramid-axis" font-size="8">Food</text>
+              <text x="170" y="358" class="pyramid-axis" font-size="8">Transport</text>
+              <text x="240" y="358" class="pyramid-axis" font-size="8">Construction</text>
+              <text x="330" y="358" class="pyramid-axis" font-size="8">Comms/IT</text>
+              <text x="415" y="358" class="pyramid-axis" font-size="8">Translation</text>
+              <text x="500" y="358" class="pyramid-axis" font-size="8">Intel (ISR)</text>
+              <text x="580" y="358" class="pyramid-axis" font-size="8">Priv. Security</text>
+            </svg>
+          </div>
+          <div class="pyramid-drivers">
+            <span class="pyramid-driver-tag">Volunteer military (smaller force)</span>
+            <span class="pyramid-driver-tag">Higher standards of support</span>
+            <span class="pyramid-driver-tag">Military force caps</span>
+            <span class="pyramid-driver-tag">Complex weapon systems under contractor support</span>
+          </div>
+        </div>
+
+        <p class="prose">The trend is clear. As conflicts get more complex and the military gets leaner, the contractor footprint grows. In recent operations, there were <strong>as many contractors as troops</strong>. In humanitarian missions, contractors can outnumber military personnel 30 to 1. The person serving your food at the DFAC, the electricians, the fuel truck drivers, the security at the outer gate? Contractors, all of them.</p>
+
+        <p class="prose">And the types of services contractors provide have expanded too. It started with laundry and food, and now it includes communications, intelligence support, and armed security. The military doesn't have enough people to do everything, so contractors fill the gaps. <strong>They're a force multiplier baked into every operational plan.</strong></p>
+
+        <p class="prose">That massive contractor workforce running all around you? Somebody had to plan for it, pay for it, hire it, and watch over it. <strong>That's OCS.</strong> And as the contracting officer on the ground, you're standing right in the middle of it.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">The Point</div>
+      <p>Yes, OCS is doctrine. Yes, there are handbooks and joint publications and acronyms stacked on acronyms. But look at the name: <strong style="color: var(--white);">Operational</strong> Contract Support. The emphasis is on "operational," not "contracting." Contracting is the mechanism. You write contracts, you award task orders, you manage the paperwork. That's planting seeds. OCS is about the plant that grows from those seeds and what it's capable of. It's about understanding what that contracted support actually does for the mission, how it fits into the operation, and where it falls apart if nobody's paying attention.</p>
+      <p style="margin-top: 0.6rem;">Every day in a deployed environment, someone is asking: <strong style="color: var(--white);">"Can we do this ourselves, or do we need to buy it?"</strong> And then: who's buying it, who's paying for it, and who's making sure the contractor does what they said they'd do? That's OCS working.</p>
+      <p style="margin-top: 0.6rem;">And it happens at every level of the fight. At the <strong style="color: var(--white);">tactical level</strong>, it's you on the ground buying generators and managing CORs. You're largely <em>reactionary</em> here, responding to requirements as they come in. At the <strong style="color: var(--white);">operational level</strong>, it's theater planners integrating contractor support into campaign plans and standing up the boards that synchronize all of it. This level is <em>anticipatory</em>. Enterprise sourcing teams are constantly working to build contracts that are ready before the fight starts. Your AFCAP contracts, your LOGCAP task orders, those exist because somebody at the operational level asked "what could happen?" and built the contract vehicle to cover it. At the <strong style="color: var(--white);">strategic level</strong>, it's the combatant commands and OSD making decisions about which theater contracts exist, how many contractors the force can absorb, and what the acceptable risk is. OCS runs through all three.</p>
+      <p style="margin-top: 0.6rem;">As a new CCO, you'll spend most of your time at the tactical level. But the contracts you task order against? Those were built by operational-level teams who were thinking ahead. Understanding that distinction helps you appreciate why those vehicles exist and how they got there.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--             PHASE 2: SO WHO'S IN CHARGE?       -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="phase" id="phase2">
+    <div class="phase-header">
+      <span class="phase-num">Phase 2</span>
+      <span class="phase-title">So Who's in Charge of All That?</span>
+    </div>
+
+    <p class="prose">All those contractors are on the base. Somebody told them to come here. Somebody's paying them. Somebody's supposed to make sure they're doing their job. Let's trace through a single scenario and see how the pieces fit together.</p>
+
+    <div class="scenario">
+      <div class="scenario-label">Scenario</div>
+      <p><strong>CE needs a new generator installed at a remote site.</strong> The existing one is failing, and the site supports a critical communications relay. CE doesn't have the manpower or the specialized equipment to do the install. They need a contractor.</p>
+    </div>
+
+    <h3 style="font-family:'Rajdhani',sans-serif; font-size:1.05rem; font-weight:700; color:var(--white); margin: 1.5rem 0 0.75rem;">Step 1: The Requirement</h3>
+
+    <p class="prose">First question: who writes the requirement? <strong>The requiring activity owns the requirement.</strong> CE knows they need a 500kW generator installed at a specific location with a concrete pad and fuel hookup. That's their expertise.</p>
+
+    <p class="prose">But here's where it matters for you as the CCO: <strong>your job is to help them get there.</strong> CE knows what they need. They probably don't know how to write it in a way that satisfies the FAR, that's clear enough for a contractor to bid on, and that doesn't accidentally box out competition or create a problem downstream. That's where you come in. You know the regulations. You know the contract types. You know how to structure a requirement so it actually works.</p>
+
+    <p class="prose">And this is the part that separates a good CCO from a bad one. If your mission partner comes to you with a need and your first instinct is to tell them all the reasons it can't be done, you're a liability. You know the FAR. Great. Use that knowledge to find the path forward, not to build a wall. Your job is to help CE, or LRS, or SFS, or whoever walks through your door, achieve the outcome they need. You can be the smartest contracting officer in the world, but if you're not using that knowledge to help your mission partner succeed, it doesn't matter.</p>
+
+    <p class="prose">Is there a balance? Of course. You can't ignore the law. But the scale should always be tipping toward the warfighter. If you're spending more time explaining why something <em>can't</em> happen than figuring out how it <em>can</em>, recalibrate.</p>
+
+    <h3 style="font-family:'Rajdhani',sans-serif; font-size:1.05rem; font-weight:700; color:var(--white); margin: 1.5rem 0 0.75rem;">Step 2: The Award</h3>
+
+    <p class="prose">CE brought the requirement. CONS puts together the solicitation, evaluates the offers, and awards the contract. This part you already know from your training. Maybe it goes on an existing theater contract as a task order. Maybe it's a new local contract using simplified procedures. The point is, <strong>this is CONS doing what CONS does.</strong> We own this step.</p>
+
+    <h3 style="font-family:'Rajdhani',sans-serif; font-size:1.05rem; font-weight:700; color:var(--white); margin: 1.5rem 0 0.75rem;">Step 3: The Oversight</h3>
+
+    <p class="prose">The contract is awarded and the contractor shows up. Now who makes sure they're actually installing the generator correctly? Not CONS. We awarded the contract, but we don't know the difference between a good generator install and a bad one. <strong>A Contracting Officer Representative (COR) from CE</strong> handles day-to-day performance monitoring. They have the technical knowledge to verify the work, document whether it meets the specs, and report back to the contracting officer. We delegate surveillance to the COR through a formal appointment letter. CONS retains the contract authority, meaning we're the ones who can modify, terminate, or take action. But the eyes and ears on the ground are CE's people.</p>
+
+    <h3 style="font-family:'Rajdhani',sans-serif; font-size:1.05rem; font-weight:700; color:var(--white); margin: 1.5rem 0 0.75rem;">Step 4: The Complications</h3>
+
+    <p class="prose">The generator is installed. Contract's running. But now the contractor has a crew of eight people moving around the base every day, and one of them gets stopped at the ECP without proper identification. The gate guard turns them away. The contractor calls your office. CE calls your office. The project is stalled because the crew can't get on base. Whose problem is this?</p>
+
+    <p class="prose"><strong>Everyone's.</strong> The contract should have addressed base access procedures and credentialing requirements. The COR should have been verifying that contractor personnel had proper badges before work started. The base commander controls who comes onto the installation. And the contractor should have ensured their people had what they needed. No single office dropped the ball here. Multiple offices each assumed someone else was handling it. This is contractor management, and it's a team sport. When one link in the chain doesn't do their part, the mission stops.</p>
+
+    <!-- Responsibility table -->
+    <table class="role-table">
+      <thead>
+        <tr>
+          <th>Task</th>
+          <th>Who</th>
+          <th>Why Them</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Write the requirement</td>
+          <td><span class="who-tag who-req">CE (Requiring Activity)</span></td>
+          <td>They know what they need. We don't tell them what generator to buy.</td>
+        </tr>
+        <tr>
+          <td>Shape it for contract</td>
+          <td><span class="who-tag who-cons">CONS</span></td>
+          <td>We make it biddable, measurable, and legally sound.</td>
+        </tr>
+        <tr>
+          <td>Certify funding</td>
+          <td><span class="who-tag who-j4">FM</span></td>
+          <td>They control the money. No certified funds, no contract.</td>
+        </tr>
+        <tr>
+          <td>Legal advice</td>
+          <td><span class="who-tag who-j4">JA</span></td>
+          <td>Advises on fiscal law, SOFA implications, inherently governmental questions. They're advisors, not decision-makers. Their input matters, but it's guidance, not a veto.</td>
+        </tr>
+        <tr>
+          <td>Solicit, evaluate, award</td>
+          <td><span class="who-tag who-cons">CONS</span></td>
+          <td>This is our lane. We own the acquisition process.</td>
+        </tr>
+        <tr>
+          <td>Monitor daily performance</td>
+          <td><span class="who-tag who-req">COR (from CE)</span></td>
+          <td>Technical expertise to verify the work meets the specs.</td>
+        </tr>
+        <tr>
+          <td>Contract authority (mods, termination)</td>
+          <td><span class="who-tag who-cons">CONS</span></td>
+          <td>Only the KO can modify or terminate. CORs report, we act.</td>
+        </tr>
+        <tr>
+          <td>Base access &amp; force protection</td>
+          <td><span class="who-tag who-cmd">Commander</span> + <span class="who-tag who-req">SFS</span> + <span class="who-tag who-cons">CONS</span></td>
+          <td>The commander controls who's on the installation. SFS executes at the gate. CONS ensures the contract addresses access requirements and pushes credentialing through. You support the commander by making it happen.</td>
+        </tr>
+        <tr>
+          <td>Contractor credentialing &amp; base access</td>
+          <td><span class="who-tag who-cons">CONS</span> + <span class="who-tag who-req">COR</span> + <span class="who-tag who-cmd">Commander</span></td>
+          <td>Contract specifies requirements. COR verifies compliance. Commander controls installation access.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="prose">Look at that table. CONS shows up repeatedly, but we're not the only ones there. That's the nature of OCS. No single office owns the whole picture. The system works when everyone understands their piece, and it breaks when anyone assumes it's somebody else's problem.</p>
+
+    <div class="callout">
+      <div class="callout-label">Three Questions. Every Time.</div>
+      <p>Whenever you're dealing with contracted support in a deployed environment, you can cut through the noise with three questions:</p>
+      <p style="margin-top: 0.6rem;"><strong style="color: var(--white);">1. Who has the authority?</strong> (Who can make decisions about this contract?)<br>
+      <strong style="color: var(--white);">2. Who owns the requirement?</strong> (Whose need is being filled?)<br>
+      <strong style="color: var(--white);">3. Where are the resources coming from?</strong> (Who's paying, and with what money?)</p>
+      <p style="margin-top: 0.6rem;">If you can answer those three, you know who's in charge. If you can't, that's your first problem to solve. And notice: CONS has a hand in all three. You hold contracting authority. You help shape the requirement. You validate that the funding is certified before you obligate. You may not "own" every answer, but you're involved in every question.</p>
+    </div>
+
+    <p class="prose">That generator scenario touched requirement writing, contract award, COR oversight, commander authority, and contractor tracking. One scenario, five different offices involved. That's what OCS looks like at the tactical level. Now imagine scaling that across an entire theater.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--            PHASE 3: THE BIGGER PICTURE         -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="phase" id="phase3">
+    <div class="phase-header">
+      <span class="phase-num">Phase 3</span>
+      <span class="phase-title">The Bigger Picture</span>
+    </div>
+
+    <p class="prose">One generator at one site is manageable. But now zoom out. You're in a theater with 50 bases, thousands of contractors, hundreds of active contracts, and multiple services all operating at the same time. Army is running LOGCAP. Air Force has AFCAP. Navy has WEXMAC. DLA is providing fuel and subsistence. And every unit on every base has their own requirements they want on contract <em>yesterday</em>. At the heart of all of it, every single one of those efforts requires a contract to execute off of. CONS is the conductor of that orchestra.</p>
+
+    <p class="prose">This is where it stops being about one scenario and starts being about a <strong>system</strong>. And that system doesn't just involve contracting.</p>
+
+    <p class="prose">When you deploy to a joint environment, your base or theater falls under a joint task force (JTF) or a combatant command (CCMD). Those organizations have a headquarters staff organized into numbered directorates, called "the J-staff." Think of it as the HQ's functional departments: J-1 handles personnel, J-2 handles intelligence, J-3 handles operations, J-4 handles logistics, and so on through J-9.</p>
+
+    <p class="prose">Where are these people? It depends. The combatant command HQ (like CENTCOM at MacDill AFB or EUCOM in Stuttgart) might be on the other side of the world from you. A JTF headquarters might be on your base or at a different location in theater. Sometimes you'll interact with them face-to-face. Sometimes it's all email and VTCs. Either way, their decisions affect your operations. When they identify a need that requires contracted support, that requirement flows down to you. OCS touches every single one of these directorates, but as a CCO, there are three you need to understand well.</p>
+
+    <p class="prose"><strong>J-4 (Logistics)</strong> is your closest partner. They're the lead integrator for commercial capabilities in the operation. Common-user logistics, host nation support, theater logistics analysis, sustaining and moving contractors. When the operation needs contracted support, J-4 is usually the one coordinating it at the staff level. You'll work with them constantly.</p>
+
+    <p class="prose"><strong>J-3 (Operations)</strong> validates and prioritizes requirements. They handle force protection, base access, contractor badging, arming of contractors, and private security oversight. When a requirement shows up that touches operational security or the day-to-day running of the base, J-3 is in the mix.</p>
+
+    <p class="prose"><strong>J-8 (Resource Management)</strong> controls the money. Budget estimates, types of funding, monitoring contract expenditures, cost analysis. If you don't have a relationship with J-8, you're going to have a hard time getting contracts funded. No certified funds, no contract.</p>
+
+    <p class="prose">The rest of the staff matters too. Click around the wheel below to see what each directorate brings to OCS. You don't need to memorize all of it, but knowing it exists helps when a requirement comes from a direction you didn't expect.</p>
+
+    <!-- J-Staff Interactive Wheel -->
+    <div class="jstaff-wrap">
+      <div class="jstaff-container">
+        <div class="jstaff-wheel" id="jstaffWheel">
+          <svg viewBox="0 0 300 300" id="jstaffSvg"></svg>
+        </div>
+        <div class="jstaff-detail" id="jstaffDetail">
+          <div class="jstaff-detail-code" id="jdCode">Select a J-Code</div>
+          <div class="jstaff-detail-name" id="jdName">Click any section of the wheel</div>
+          <div class="jstaff-detail-desc" id="jdDesc">Each directorate on the joint staff has OCS responsibilities. Some generate requirements, some provide oversight, some handle funding. All of them interact with contracting at some point. Understanding who does what is how you figure out who to talk to when a problem lands on your desk.</div>
+          <div class="jstaff-detail-items" id="jdItems"></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="prose">Every single one of those directorates generates or touches contracted requirements. J-4 needs a logistics contract. J-3 needs private security vetted. J-6 needs satellite communications. J-8 needs to certify funding before any of it moves. The requirement originates with them, gets shaped and contracted through CONS, and then gets managed by CORs from those same directorates. That's why OCS is a staff-wide function, not just a contracting function. Understanding who these people are and what they care about is how you connect the dots when work lands on your desk.</p>
+
+    <p class="prose">OCS doctrine organizes all of this into a 9-element process. Think of it as the lifecycle of a deployment, and at each step, there's a question to answer.</p>
+
+    <div class="callout">
+      <div class="callout-label">A Note on Where You Sit</div>
+      <p>As a CCO on the ground, you're probably picking up this process somewhere around steps 4 through 8. Preparation, funding, award, integration, oversight. That's your daily reality, and that's fine. But somewhere down the road, you're going to be on a staff, and the front end of this process, the planning, the requirements, the support type decisions, that's going to be your world. The whole process matters. You just might not touch all of it yet.</p>
+    </div>
+
+    <div class="ocs-timeline">
+      <div class="ocs-step">
+        <div class="ocs-dot">1</div>
+        <div class="ocs-step-when">Before Deployment</div>
+        <div class="ocs-step-title">Planning</div>
+        <div class="ocs-step-desc">What are we going to need to buy? This starts early, during operation plan development. CONS should be at the planning table, not finding out about requirements after boots are on the ground.</div>
+        <div class="ocs-step-who"><span class="who-tag who-j4">J-4 Leads</span> <span class="who-tag who-cons">CONS Advises</span></div>
+      </div>
+      <div class="ocs-step">
+        <div class="ocs-dot">2</div>
+        <div class="ocs-step-when">Before Deployment</div>
+        <div class="ocs-step-title">Requirements</div>
+        <div class="ocs-step-desc">What exactly do we need? Each requirement gets identified and sourced. Can the military do it organically? Can a host nation provide it? Can an ally? If not, it goes to contract.</div>
+        <div class="ocs-step-who"><span class="who-tag who-req">Requiring Activities Lead</span> <span class="who-tag who-cons">CONS Shapes</span></div>
+      </div>
+      <div class="ocs-step">
+        <div class="ocs-dot">3</div>
+        <div class="ocs-step-when">Before Deployment</div>
+        <div class="ocs-step-title">Contracted Support Type</div>
+        <div class="ocs-step-desc">Which contract vehicle handles this? Is there an existing theater contract (LOGCAP, AFCAP)? Do we need a new local contract? Is there a DLA source? This is where CONS expertise is critical.</div>
+        <div class="ocs-step-who"><span class="who-tag who-cons">CONS Leads</span></div>
+      </div>
+      <div class="ocs-step">
+        <div class="ocs-dot">4</div>
+        <div class="ocs-step-when">Before Deployment</div>
+        <div class="ocs-step-title">Preparation</div>
+        <div class="ocs-step-desc">Get the contract ready before you need it. Pre-position task orders on existing vehicles. Draft solicitations. Get CORs trained and appointed. Don't wait until you're in theater to start paperwork.</div>
+        <div class="ocs-step-who"><span class="who-tag who-cons">CONS Leads</span> <span class="who-tag who-req">CORs Prepare</span></div>
+      </div>
+      <div class="ocs-step">
+        <div class="ocs-dot">5</div>
+        <div class="ocs-step-when">Before &amp; During</div>
+        <div class="ocs-step-title">Funding</div>
+        <div class="ocs-step-desc">Who's paying and with what money? O&M? MILCON? OCO? The type of funds determines what you can buy and how fast. Wrong funding = Antideficiency Act violation. Don't guess on this one.</div>
+        <div class="ocs-step-who"><span class="who-tag who-j4">FM/J-8 Leads</span> <span class="who-tag who-cons">CONS Validates</span></div>
+      </div>
+      <div class="ocs-step">
+        <div class="ocs-dot">6</div>
+        <div class="ocs-step-when">During Deployment</div>
+        <div class="ocs-step-title">Document &amp; Award</div>
+        <div class="ocs-step-desc">This is your bread and butter. Write the solicitation, evaluate offers, award the contract. In a contingency, you might be using simplified procedures, increased thresholds, and contingency-specific DFARS clauses.</div>
+        <div class="ocs-step-who"><span class="who-tag who-cons">CONS Leads</span></div>
+      </div>
+      <div class="ocs-step">
+        <div class="ocs-dot">7</div>
+        <div class="ocs-step-when">During Deployment</div>
+        <div class="ocs-step-title">Integration</div>
+        <div class="ocs-step-desc">The contractor shows up. Now they need to be folded into base operations without getting in the way of the mission. Badges, base access, billeting, force protection plans. Contractors are part of the force, not separate from it. This is where the OCSIC (Operational Contract Support Integration Cell) comes in. We'll cover what that is in Phase 4, but for now, think of it as the staff element that coordinates all contracted support across the operation.</div>
+        <div class="ocs-step-who"><span class="who-tag who-ocsic">OCSIC Leads</span> <span class="who-tag who-cons">CONS Supports</span> <span class="who-tag who-cmd">Commander Authorizes</span></div>
+      </div>
+      <div class="ocs-step">
+        <div class="ocs-dot">8</div>
+        <div class="ocs-step-when">During Deployment</div>
+        <div class="ocs-step-title">Oversight</div>
+        <div class="ocs-step-desc">Are contractors doing what they were paid to do? CORs monitor daily. CONS manages the contract. Commanders handle discipline and access. If performance is bad, you need to act. If it's good, document it.</div>
+        <div class="ocs-step-who"><span class="who-tag who-req">CORs Execute</span> <span class="who-tag who-cons">CONS Manages</span> <span class="who-tag who-cmd">Commander Enforces</span></div>
+      </div>
+      <div class="ocs-step">
+        <div class="ocs-dot">9</div>
+        <div class="ocs-step-when">Ongoing</div>
+        <div class="ocs-step-title">Assessment</div>
+        <div class="ocs-step-desc">Is the whole system working? Not just one contract, but the entire contracted support structure. Are we spending money wisely? Are there duplicate contracts? Are contractors being tracked? This is the feedback loop that makes everything else better.</div>
+        <div class="ocs-step-who"><span class="who-tag who-ocsic">OCSIC Leads</span> <span class="who-tag who-cons">CONS Reports</span></div>
+      </div>
+    </div>
+
+    <p class="prose">Notice how CONS shows up at almost every step? We don't "own" the entire process. But we're the only career field that touches every single element. That's what makes contracting unique in OCS: we're never fully in charge, but we're never fully out of the picture either.</p>
+
+    <h3 style="font-family:'Rajdhani',sans-serif; font-size:1.15rem; font-weight:700; color:var(--white); margin: 2rem 0 1rem;">When Does CONS Lead, Support, or Stand Down?</h3>
+
+    <p class="prose">This is the judgment call that separates a good deployed CCO from one who's just filling a seat. You need to know when to step up, when to advise from the side, and when to stay out of the way.</p>
+
+    <div class="lane-grid">
+      <div class="lane-card leads">
+        <div class="lane-label">CONS Leads</div>
+        <div class="lane-items">
+          <div class="lane-item">Identifying the right contract vehicle for a requirement</div>
+          <div class="lane-item">Running the JCSB (Joint Contracting Support Board) process to prioritize and de-conflict contracts</div>
+          <div class="lane-item">Advising the commander on what can and can't be legally contracted</div>
+          <div class="lane-item">Managing the contracting support synchronization matrix</div>
+          <div class="lane-item">Solicitation, evaluation, and award</div>
+          <div class="lane-item">Contract closeout and transition during drawdown</div>
+        </div>
+      </div>
+      <div class="lane-card supports">
+        <div class="lane-label">CONS Supports</div>
+        <div class="lane-items">
+          <div class="lane-item">Requirements development (help shape, don't own)</div>
+          <div class="lane-item">OCSIC planning and integration (we're one voice at the table)</div>
+          <div class="lane-item">COR program management (we appoint and oversee CORs, but daily monitoring is theirs)</div>
+          <div class="lane-item">Funding coordination (we need the money, FM provides it)</div>
+          <div class="lane-item">JRRB (Joint Requirements Review Board) deliberations</div>
+        </div>
+      </div>
+      <div class="lane-card stands-down">
+        <div class="lane-label">CONS Stands Down</div>
+        <div class="lane-items">
+          <div class="lane-item">Requirement is filled organically (military does it)</div>
+          <div class="lane-item">Host nation support covers it (SOFA or bilateral agreement)</div>
+          <div class="lane-item">Multinational partner provides it (ACSA / cross-service agreement)</div>
+          <div class="lane-item">The function is inherently governmental and can't be contracted</div>
+          <div class="lane-item">Another service has lead for contracting in that area</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Rajdhani',sans-serif; font-size:1.15rem; font-weight:700; color:var(--white); margin: 2rem 0 1rem;">The Big Contracts You Should Know About</h3>
+
+    <p class="prose">There are a lot of contract vehicles in play across a theater. These are the major ones you'll hear about. You don't need to memorize every detail, but you should know they exist, how they work, and how to advise your commander on what they can do.</p>
+
+    <div class="base-grid">
+      <div class="base-card">
+        <div class="base-card-icon">🏗️</div>
+        <div class="base-card-abbr">Army</div>
+        <div class="base-card-name">LOGCAP</div>
+        <div class="base-card-desc">Logistics Civil Augmentation Program. The big one. Base life support, construction, maintenance, transportation. Covers a massive scope of services across a theater.</div>
+      </div>
+      <div class="base-card">
+        <div class="base-card-icon">✈️</div>
+        <div class="base-card-abbr">Air Force</div>
+        <div class="base-card-name">AFCAP</div>
+        <div class="base-card-desc">Air Force Contract Augmentation Program. Similar scope to LOGCAP but Air Force-managed. Built to be anticipatory, ready before the fight starts.</div>
+      </div>
+      <div class="base-card">
+        <div class="base-card-icon">⚓</div>
+        <div class="base-card-abbr">Navy</div>
+        <div class="base-card-name">WEXMAC</div>
+        <div class="base-card-desc">Worldwide Expeditionary Multiple Award Contract. Navy's expeditionary contracting vehicle for contingency and humanitarian support.</div>
+      </div>
+      <div class="base-card">
+        <div class="base-card-icon">📦</div>
+        <div class="base-card-abbr">DLA</div>
+        <div class="base-card-name">DLA Programs</div>
+        <div class="base-card-desc">Defense Logistics Agency handles bulk fuel, subsistence (food), and medical supplies through their own contracts. If it's consumable, DLA probably has a vehicle for it.</div>
+      </div>
+    </div>
+
+    <p class="prose">These aren't the only vehicles out there. There are construction contracts (like GCCMAC and GCSMAC), IT contracts, and service-specific vehicles for just about every functional area. The landscape is deep. But the ones above are the heavyweights you'll encounter most often.</p>
+
+    <h3 style="font-family:'Rajdhani',sans-serif; font-size:1.05rem; font-weight:700; color:var(--white); margin: 1.5rem 0 0.75rem;">How Do These Actually Execute?</h3>
+
+    <p class="prose">You as a deployed CCO may not be the one executing task orders on LOGCAP or AFCAP. Those are typically managed by dedicated program offices or reach-back contracting teams. But you need to understand how they work so you can advise your on-site commander on what's possible and how fast.</p>
+
+    <p class="prose"><strong>Task orders</strong> are the primary execution mechanism. The base contract (LOGCAP, AFCAP, etc.) is already awarded and competed. When a new need comes up, a task order gets issued against that existing contract for the specific work. This is significantly faster than standing up a new contract from scratch because the competition already happened at the base contract level.</p>
+
+    <p class="prose"><strong>Undefinitized Contract Actions (UCAs)</strong> come into play when urgency demands that work start before all the terms are negotiated. The contractor begins performance under a letter contract or not-to-exceed ceiling, and the final terms get definitized later. This is a tool for when the mission can't wait for the full negotiation cycle, but it carries risk because you're committing to work before the price is fully agreed upon. Your commander should understand that UCAs are an option, but they come with oversight requirements and definitization deadlines.</p>
+
+    <p class="prose">The key thing for you to understand: <strong>when your commander asks "can we get this done?" the answer might not be "let me write a new contract."</strong> It might be "there's already a vehicle for this, let me coordinate a task order with the program office." Knowing which vehicle covers what, and how they execute, saves time, saves money, and gets the mission what it needs faster. That's you adding value as the contracting expert on the ground.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--             PHASE 4: THE DEEP END              -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="phase" id="phase4">
+    <div class="phase-header">
+      <span class="phase-num">Phase 4</span>
+      <span class="phase-title">The Bigger Picture: Joint Contracting</span>
+    </div>
+
+    <p class="prose">Up to this point, we've been talking mostly about what happens at your level: your office, your base, your contracts. But in a real-world deployment, you're almost never the only contracting shop in theater. The Army has their people. The Navy has theirs. The Marines have theirs. And you're all operating in the same area, buying from the same local vendors, sometimes contracting for the exact same services without knowing it.</p>
+
+    <p class="prose">That's the problem this phase is about. When multiple services are doing contracting in the same operating area, somebody has to coordinate. Otherwise you get duplicate contracts, services competing against each other for the same vendors (which drives up prices), and nobody with a clear picture of what's actually being spent. This happened repeatedly in Iraq and Afghanistan. One general officer described discovering units were contracting two and three times for the same services because nobody was talking to each other.</p>
+
+    <p class="prose">So how does the joint force solve this? Two ways. First, there's a staff cell called the <strong>OCSIC</strong> (Operational Contract Support Integration Cell) that integrates and coordinates contracted support across the operation. Second, there are <strong>theater contracting constructs</strong> that determine how the actual contracting work gets organized between the services. Let's break both of these down.</p>
+
+    <!-- ── OCSIC Section ── -->
+    <h3 style="color: var(--sand); font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; margin: 2.5rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">The OCSIC: Who Runs the Meeting</h3>
+
+    <p class="prose">The OCSIC is the hub where all the OCS coordination happens. Remember the J-staff wheel from Phase 2? The OCSIC is where those staff functions come together specifically for contracted support. It's made up of logistics planners and contracting subject matter experts, and it exists to make sure everyone is on the same page about what's being contracted, by whom, and for how much.</p>
+
+    <p class="prose">There are three levels of OCSIC, and each one has a different focus:</p>
+
+    <div class="card-grid" style="gap: 1.2rem; margin: 1.5rem 0;">
+      <div class="card" style="border-left: 3px solid #7b68ee;">
+        <div class="card-label" style="color: #7b68ee;">CCMD OCSIC</div>
+        <p><strong>Where:</strong> At the combatant command level (CENTCOM, EUCOM, INDOPACOM, etc.)</p>
+        <p><strong>Who staffs it:</strong> Usually a small dedicated team, anywhere from 1 to 7 people. Sits under the J-4 (logistics directorate). Can be military, civilian, or contractor.</p>
+        <p><strong>What it does:</strong> Steady-state planning across the entire area of responsibility (AOR). Analyzes the OCS aspects of the operational environment, develops AOR-wide contractor and contracting guidance, determines whether the theater needs an LSCC or LSC designation (more on those in a minute), and passes OCS estimates down to JTF-level OCSICs.</p>
+        <p><strong>Think of it as:</strong> The long-range planners. They're setting the conditions before a crisis happens.</p>
+      </div>
+      <div class="card" style="border-left: 3px solid #e67e22;">
+        <div class="card-label" style="color: #e67e22;">JTF OCSIC</div>
+        <p><strong>Where:</strong> At the Joint Task Force headquarters, inside the operational area.</p>
+        <p><strong>Who staffs it:</strong> Ad hoc, pulled from whatever units are assigned to the JTF. Typically built around the Service headquarters that forms the core of the JTF (for example, an Army corps or a numbered Air Force). Often augmented by TRANSCOM's Joint Enabling Capabilities Command (JECC).</p>
+        <p><strong>What it does:</strong> Execution-focused. Manages requirements, approves contracting priorities, runs the Joint Requirements Review Board (JRRB), coordinates with subordinate unit OCSICs, and oversees contract execution across the joint operating area (JOA). This is the one that runs the battle rhythm events you'll attend.</p>
+        <p><strong>Think of it as:</strong> The execution hub. When you hear "the OCSIC meeting," this is usually the one people mean.</p>
+      </div>
+      <div class="card" style="border-left: 3px solid #27ae60;">
+        <div class="card-label" style="color: #27ae60;">Service Component OCSIC</div>
+        <p><strong>Where:</strong> At each Service component command (ARCENT, AFCENT, NAVCENT, MARCENT, etc.)</p>
+        <p><strong>Who staffs it:</strong> Full-time or collateral-duty staff within the Service component's G-4/A-4/N-4. Each service does this a little differently. Army uses their G-4 and Theater Sustainment Command (TSC). Air Force uses the A-4/A-7 and an AFICC Operating Location (OL). Navy uses the N-4 and Fleet Logistics Centers (FLC). Marines use the G-4 and Marine Expeditionary Force (MEF) staff.</p>
+        <p><strong>What it does:</strong> Service-specific, steady-state actions. Supports CCMD OCSIC planning, coordinates with units to identify contract support requirements, and recommends where the "best source of support" is for their forces (organic, multinational, host nation, or commercial).</p>
+        <p><strong>Think of it as:</strong> Your service's home office for OCS. This is who connects you back to your service's contracting enterprise.</p>
+      </div>
+    </div>
+
+    <p class="prose">Here's the important part for you as a CCO: the OCSIC is not a contracting office. It doesn't award contracts. It doesn't hold warrants. Its job is to <em>integrate</em> contracted support into the operation and make sure the right hand knows what the left hand is doing. When you sit at the OCSIC table, you're the contracting subject matter expert. You bring the data on what's being contracted, flag duplication, and advise on what's feasible. That voice matters more than you think.</p>
+
+    <div class="scenario">
+      <div class="scenario-label">Real-World Example</div>
+      <p>In one major operation, the OCSIC discovered that multiple units had submitted nearly identical requirements for generator maintenance. Each had contracted separately with different vendors at different price points. Nobody did anything wrong individually, but without someone looking across all the contracts, nobody saw the overlap. That's exactly the kind of problem the OCSIC exists to catch. And it's the kind of problem a sharp CCO brings to the table with the data and a recommended fix, not just a complaint.</p>
+    </div>
+
+    <!-- ── Theater Contracting Constructs ── -->
+    <h3 style="color: var(--sand); font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; margin: 2.5rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">Theater Contracting Constructs: Who Does the Buying</h3>
+
+    <p class="prose">The OCSIC handles the coordination and integration side. But there's a separate question: when multiple services are contracting in the same area, how do you actually organize who buys what? That's where theater contracting constructs come in.</p>
+
+    <p class="prose">There are four options, arranged from simplest to most complex. The combatant command (CCMD) picks which one to use based on the size and complexity of the operation. Think of it as a ladder, and the CCMD only climbs as high as the situation demands.</p>
+
+    <!-- Construct Pyramid -->
+    <div style="max-width: 600px; margin: 2rem auto; text-align: center;">
+      <div style="font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.75rem;">Complexity &uarr;</div>
+      <div style="width: 35%; margin: 0 auto 4px; padding: 0.75rem; background: linear-gradient(135deg, #5b3a7a, #7b5a9a); border-radius: 6px 6px 0 0; color: var(--white); font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.1rem;">JTSCC</div>
+      <div style="width: 55%; margin: 0 auto 4px; padding: 0.75rem; background: linear-gradient(135deg, #8b6a20, #b08830); color: var(--white); font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.1rem;">LSC</div>
+      <div style="width: 75%; margin: 0 auto 4px; padding: 0.75rem; background: linear-gradient(135deg, #4a6a3a, #6a8a50); color: var(--white); font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.1rem;">LSCC</div>
+      <div style="width: 95%; margin: 0 auto; padding: 0.75rem; background: linear-gradient(135deg, #3a3a3a, #5a5a5a); border-radius: 0 0 6px 6px; color: var(--white); font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.1rem;">Services Support Their Own Forces</div>
+    </div>
+
+    <!-- Construct 1: Services Support Own -->
+    <div class="card" style="border-left: 3px solid #5a5a5a; margin-top: 1.5rem;">
+      <div class="card-label">Level 1: Services Support Their Own Forces</div>
+      <p><strong>What it means:</strong> Each service does its own contracting for its own forces. No formal coordination structure between services. Army buys for Army. Air Force buys for Air Force. Navy buys for Navy.</p>
+      <p><strong>When it's used:</strong> Single-service operations, small exercises, theater security cooperation events, humanitarian assistance projects, non-combatant evacuation operations (NEOs). Basically, any time the operation is small enough that there's no real overlap.</p>
+      <p><strong>The upside:</strong> Simple. No extra staff, no extra coordination. Each service uses its own contracting processes and nothing changes.</p>
+      <p><strong>The downside:</strong> No information sharing between services. If Army and Air Force are both buying fuel from the same local vendor, nobody knows. That can lead to duplicate contracts, competing bids driving up prices, and misalignment with the commander's priorities.</p>
+      <p style="margin-top: 0.75rem; padding: 0.6rem; background: var(--od-green-pale); border-radius: 4px;"><strong>Bottom line:</strong> This is the default. It's where every theater starts unless the CCMD says otherwise.</p>
+    </div>
+
+    <!-- Construct 2: LSCC -->
+    <div class="card" style="border-left: 3px solid #6a8a50; margin-top: 1.5rem;">
+      <div class="card-label">Level 2: LSCC (Lead Service for Contracting Coordination)</div>
+      <p><strong>What it means:</strong> The combatant command tasks one service to <em>coordinate</em> contracting activities across all the services in the area. The designated service's senior contracting official (SCO) chairs the Joint Contracting Support Board (JCSB), a regular meeting where all the contracting shops sit down together to share information and de-conflict.</p>
+      <p><strong>The key word is "coordination."</strong> The LSCC has coordinating authority, not command authority. That means the LSCC SCO can require consultation through the JCSB, but cannot compel other services to use a specific contractor or change their contracting approach. Everyone still buys their own stuff. The LSCC just makes sure they're not stepping on each other.</p>
+      <p><strong>When it's used:</strong> Steady-state operations or contingencies where two or more services are contracting in the same AOR or JOA. This is actually the most common construct globally. LSCCs are in place at most combatant commands right now, in steady state, before anything kicks off.</p>
+      <p><strong>How it gets established:</strong> The CCMD tasks a Service component command through a plan or order. That service's HQ then delegates tasking to their theater contracting activity. For example, at INDOPACOM, PACAF (the Air Force component) is the LSCC, and AFICC-KH (the Air Force contracting office at Hickam) does the actual coordination work.</p>
+      <p><strong>Real-world examples:</strong> INDOPACOM (Air Force), AFRICOM (Army, with the 414th CSB). Multiple designations can exist within one CCMD, split by country or region. In CENTCOM, there are Army, Air Force, and Navy LSCC designations split by country.</p>
+      <p style="margin-top: 0.75rem; padding: 0.6rem; background: var(--od-green-pale); border-radius: 4px;"><strong>Bottom line:</strong> The LSCC is a unity of effort arrangement. It creates a forum for information sharing and de-confliction, but it doesn't change who buys what. Each service still contracts for their own forces.</p>
+    </div>
+
+    <!-- Construct 3: LSC -->
+    <div class="card" style="border-left: 3px solid #b08830; margin-top: 1.5rem;">
+      <div class="card-label">Level 3: LSC (Lead Service for Contracting)</div>
+      <p><strong>What it means:</strong> Same as the LSCC, plus one service is now responsible for <em>actually contracting</em> for specific common supplies and services on behalf of all the services in the area. Think of it as LSCC-plus: you still coordinate everything, but for certain designated items, one shop does the buying for everybody.</p>
+      <p><strong>What gets designated for common contracting:</strong> Things that every service needs and that make no sense to contract separately. Food preparation services, laundry, waste removal, facility maintenance, power generation, local transportation, showers, latrines, billeting and lodging, minor construction, heating/air conditioning, ice production, storage rental, non-tactical vehicles. Basically, base life support.</p>
+      <p><strong>What does NOT get commonly contracted:</strong> Ammunition, weapon systems support, certain medical equipment, private security contractors, major construction, real estate leasing, depot-level maintenance, specialized IT and communications equipment. These stay with the services that need them.</p>
+      <p><strong>The catch:</strong> When the LSC contracts for common items, the other services have to change how they request support for those items. Instead of going through their own contracting shop, requiring activities submit requests through the LSC's process. This also means money has to move between services. If the Army is the LSC and they're contracting for laundry that supports Air Force personnel, the Air Force has to transfer funds to the Army. That's called an Economy Act transaction, and it adds administrative overhead.</p>
+      <p><strong>When it's used:</strong> Joint operations with a single funding source, or when one service has a preponderance of force. Usually geographically oriented (JOA-wide or FOB-specific).</p>
+      <p><strong>Real-world examples:</strong> CJTF-OIR in Iraq/Syria (Army, through the 408th CSB). USFOR-Afghanistan was Army. JTF-HOA in Djibouti (Navy with joint manning augmentation). Cobra Gold exercise (rotates between Marines and Army).</p>
+      <p style="margin-top: 0.75rem; padding: 0.6rem; background: var(--od-green-pale); border-radius: 4px;"><strong>Bottom line:</strong> The LSC creates efficiency by consolidating common buys under one shop. It reduces competition for local vendors and eliminates duplicate contracts. But it requires more staff, forces some units to change how they request things, and requires funds transfers between components. It works best when there's centrally managed money or one service is clearly in the lead.</p>
+    </div>
+
+    <!-- Construct 4: JTSCC -->
+    <div class="card" style="border-left: 3px solid #7b5a9a; margin-top: 1.5rem;">
+      <div class="card-label">Level 4: JTSCC (Joint Theater Support Contracting Command)</div>
+      <p><strong>What it means:</strong> A full-up joint command with both command and procurement authority over all deployed theater support contracting organizations. This isn't just coordination. The JTSCC actually commands the contracting forces from all services and provides procurement authority to them.</p>
+      <p><strong>When it's used:</strong> Major, complex, long-term joint stability operations with significant theater contract support requirements. This is the heaviest option.</p>
+      <p><strong>The upside:</strong> Gives the Joint Force Commander significant control over requirements prioritization. Consolidates all U.S. military demand for local resources under one organization, which promotes efficient use of contracting personnel and supports better information sharing.</p>
+      <p><strong>The downside:</strong> Requires both command and contracting staffs. Long lead time to stand up. Requires significant changes to how every service does requirements development and contracting procedures. It's the most disruptive option.</p>
+      <p><strong>Real-world examples:</strong> Various configurations were used in CENTCOM from 2010 to 2015. It's generally fallen out of favor because of the complexity and lead time required.</p>
+      <p style="margin-top: 0.75rem; padding: 0.6rem; background: var(--od-green-pale); border-radius: 4px;"><strong>Bottom line:</strong> The JTSCC is the "we need to bring everything under one roof" option. It gives maximum control but at maximum cost and complexity. You'll likely never see one stood up, but you should know it exists as a concept.</p>
+    </div>
+
+    <!-- ── Who Does Contracting: The Joint Angle ── -->
+    <h3 style="color: var(--sand); font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; margin: 2.5rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">Contracting Is Not Just Your Service</h3>
+
+    <p class="prose">Here's something that surprises a lot of people the first time they deploy to a joint environment: every service has contracting officers in theater, and they all do things a little differently. Understanding who the other players are will save you time and prevent you from duplicating work somebody else is already doing.</p>
+
+    <div class="card-grid" style="gap: 1.2rem; margin: 1.5rem 0;">
+      <div class="card" style="border-left: 3px solid #4a7a3a;">
+        <div class="card-label" style="color: #4a7a3a;">Army</div>
+        <p>The Army has the largest expeditionary contracting force. Their primary units are <strong>Contracting Support Brigades (CSBs)</strong> and subordinate contracting battalions (CBns) with deployed detachments (DETs). The CSBs are the ones you'll most often see in the LSCC or LSC role because the Army tends to have the biggest ground presence. Example: the 408th CSB was the LSC for CJTF-OIR.</p>
+      </div>
+      <div class="card" style="border-left: 3px solid #3a5a7a;">
+        <div class="card-label" style="color: #3a5a7a;">Navy</div>
+        <p>The Navy operates through <strong>Fleet Logistics Centers (FLCs)</strong> and <strong>Fleet/Expeditionary Contracting (FEC)</strong>. Ship husbanding, port services, and anything maritime-related is Navy contracting. They also support shore-based operations through NAVSUP contracting activities. In the OCSIC org chart, the Navy component's N-4 owns the OCS function.</p>
+      </div>
+      <div class="card" style="border-left: 3px solid #c0392b;">
+        <div class="card-label" style="color: #c0392b;">Marines</div>
+        <p>Marine contracting flows through the <strong>Marine Logistics Group (MLG)</strong> and <strong>Expeditionary Contracting Platoons (ECPs)</strong> within the Marine Expeditionary Force (MEF). Marines deploy with organic contracting capability embedded in their expeditionary units. The G-4 at MARFOR (Marine Forces) component commands handles OCS coordination, with OCS advisors on staff.</p>
+      </div>
+      <div class="card" style="border-left: 3px solid #2a6496;">
+        <div class="card-label" style="color: #2a6496;">Air Force</div>
+        <p>This is your world. Air Force contracting in theater runs through <strong>AFICC Operating Locations (AFICC/OLs)</strong> tied to the numbered air force or air component command. The A-4/A-7 at the AFFOR (Air Forces component command) is where OCS planning lives. OCS advisors (military) support the staff, and the AFICC/OL provides the contracting muscle.</p>
+      </div>
+    </div>
+
+    <p class="prose">Then there are the organizations that cut across all services. <strong>DLA (Defense Logistics Agency)</strong> has contracting activities in theater for items in their commodity lanes (fuel, food, medical supplies, construction material). <strong>USACE</strong> and <strong>NAVFAC</strong> handle major construction. <strong>LOGCAP</strong> (Army), <strong>AFCAP</strong> (Air Force), and the Marine equivalent are theater-wide contract vehicles managed from outside the theater that provide base life support and other services through task orders. And <strong>Theater Special Operations Commands (TSOCs)</strong> have their own contracting capability with SOCOM-warranted contracting officers under the J-4.</p>
+
+    <p class="prose">The point is: when you show up to a JCSB or OCSIC meeting, you're sitting across the table from Army contracting officers, Navy contracting officers, Marine contracting officers, DLA reps, and LOGCAP program managers. Each one has their own chain of command, their own contracting authority, and their own way of doing business. The construct (LSCC, LSC, etc.) determines how much they have to coordinate with each other. But regardless of the construct, the JCSB and OCSIC are where that coordination actually happens.</p>
+
+    <!-- ── JCSB Callout ── -->
+    <div class="scenario" style="margin-top: 1.5rem;">
+      <div class="scenario-label">The JCSB: Where It All Comes Together</div>
+      <p>The <strong>Joint Contracting Support Board (JCSB)</strong> is the working-level meeting chaired by the LSCC or LSC contracting director. This is where all the theater contracting activities sit down and coordinate. The JCSB de-conflicts contracting actions (so two shops don't bid on the same local vendor for the same service), reduces duplication of effort, coordinates market research data sharing, and ensures the commander's priorities are reflected in how contracting resources are allocated. If the LSCC is the construct, the JCSB is the mechanism.</p>
+    </div>
+
+    <!-- ── Decision Points ── -->
+    <h3 style="color: var(--sand); font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; margin: 2.5rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">Put It Together</h3>
+
+    <p class="prose">Now you know the players and the structures. Let's see if you can apply it.</p>
+
+    <!-- Decision 1 -->
+    <div class="decision" id="d1">
+      <div class="decision-num">Decision Point 1</div>
+      <div class="decision-situation">You're deployed to a joint base in the CENTCOM AOR. The base has Air Force, Army, and Marine units. You're the Air Force contracting rep. Your first week, you discover there are <strong>three separate contracts for laundry services</strong>: one you inherited from your predecessor, one the Army CSB awarded, and one on LOGCAP. All three are active. All three serve different parts of the base at different price points. The Army CSB holds the LSCC for this area. What do you do?</div>
+      <div class="q-options">
+        <button class="q-opt" onclick="answer(this, 'd1', false)">Leave it alone. They were all legally awarded and they're all working. Don't fix what isn't broken.</button>
+        <button class="q-opt" onclick="answer(this, 'd1', true)">Bring it to the next JCSB. Present the data: three contracts, total cost, overlapping scope. Recommend the board evaluate whether consolidation under one vehicle makes sense, and work with the Army LSCC to figure out the best path forward.</button>
+        <button class="q-opt" onclick="answer(this, 'd1', false)">Cancel your predecessor's contract and the LOGCAP task order. The Army is the LSCC, so laundry should be their problem.</button>
+      </div>
+      <div class="q-feedback good" id="d1-good"><strong>That's the move.</strong> Duplicate contracts are one of the most common OCS failures in every theater. Three contracts for the same service means three times the oversight burden, three different price points, and nobody with a clear picture of total cost. The JCSB is exactly where this gets resolved. You bring the data and a recommendation. The board, chaired by the LSCC, decides whether to consolidate and onto which vehicle. You can't cancel another service's contract, and the LSCC (coordination authority only) can't direct you to do anything. But through the JCSB, everyone can agree on the best path forward. This is exactly what the LSCC construct was designed for.</div>
+      <div class="q-feedback wrong" id="d1-wrong"><strong>Not quite.</strong> Leaving duplicate contracts in place wastes money and fragments oversight. On the other hand, unilaterally canceling contracts or dumping them on another service creates its own problems. The LSCC has <em>coordinating</em> authority, not command authority. They can't direct you, and you can't direct them. The JCSB is the venue where all the contracting shops sit down, look at the data, and work toward a solution together. Bring the duplication to the board with a cost comparison and a recommended approach. That's CONS leading.</div>
+    </div>
+
+    <!-- Decision 2 -->
+    <div class="decision" id="d2">
+      <div class="decision-num">Decision Point 2</div>
+      <div class="decision-situation">You're at a CCMD planning conference. The combatant command is looking at an upcoming multi-service exercise in a partner nation: <strong>1,600 personnel from all four services</strong> plus multinational partners, running for three weeks. Army, Marines, Air Force, and Navy all have units participating. The CCMD OCSIC is asking for a recommendation on the theater contracting construct. Currently the AOR uses "Services Support Their Own Forces." What do you recommend?</div>
+      <div class="q-options">
+        <button class="q-opt" onclick="answer(this, 'd2', false)">Keep Services Support Their Own Forces. It's a short exercise. Don't overcomplicate it.</button>
+        <button class="q-opt" onclick="answer(this, 'd2', true)">Recommend an LSCC. With four services contracting in the same area for three weeks, you need a coordination mechanism to prevent contracting fratricide. Designate one service to chair the JCSB and coordinate, but let each service do its own buying.</button>
+        <button class="q-opt" onclick="answer(this, 'd2', false)">Recommend an LSC. One service should do all the contracting for common items so there's no duplication.</button>
+      </div>
+      <div class="q-feedback good" id="d2-good"><strong>Good call.</strong> An LSCC is the right fit here. Four services in a limited area means real potential for contracting fratricide: multiple shops competing for the same local vendors, duplicate contracts for common needs like billeting and transportation, and no visibility on what everyone else is buying. But this is a three-week exercise, not a years-long stability operation. Standing up an LSC with funds transfers and changed requisition processes would be overkill. The LSCC gives you a JCSB to share market research, de-conflict contracting actions, and coordinate common needs, all without changing anyone's contracting authority or processes. That's the right tool for this job.</div>
+      <div class="q-feedback wrong" id="d2-wrong"><strong>Think about the tradeoffs.</strong> Keeping Services Support Their Own Forces means four contracting shops operating independently in the same area. That's fine for a single-service event, but with 1,600 people from four branches, the risk of duplicate contracts and competing bids is real. On the other end, an LSC is a heavy lift. It requires funds transfers between services, changes to how units submit requirements, and additional staff. For a three-week exercise, the setup cost outweighs the benefit. The LSCC hits the sweet spot: it creates a JCSB where all the contracting shops coordinate and share information, without changing anyone's authority or processes. Enough structure to prevent problems, not so much that it becomes the problem.</div>
+    </div>
+
+    <!-- Decision 3 -->
+    <div class="decision" id="d3">
+      <div class="decision-num">Decision Point 3</div>
+      <div class="decision-situation">You're the Air Force contracting rep on a JTF OCSIC. The Army has been designated the <strong>LSC</strong> for base life support in the JOA. The Army's 408th CSB is handling common contracted items: food service, laundry, waste removal, facility maintenance. A Marine unit commander comes directly to your office and asks you to <strong>award a contract for generator maintenance at his compound</strong> because the Army LSC "takes too long." What do you tell him?</div>
+      <div class="q-options">
+        <button class="q-opt" onclick="answer(this, 'd3', false)">Help him out. Generator maintenance is urgent and you have the warrant. Award the contract and sort out the coordination later.</button>
+        <button class="q-opt" onclick="answer(this, 'd3', false)">Tell him generator maintenance is the LSC's problem and he needs to submit his request through the Army's process. Send him away.</button>
+        <button class="q-opt" onclick="answer(this, 'd3', true)">Explain that generator maintenance falls under the LSC-designated common items, so it needs to go through the Army's contracting process. But offer to help him navigate that process, and flag the timeline issue at the next OCSIC meeting so the LSC can address the responsiveness concern.</button>
+      </div>
+      <div class="q-feedback good" id="d3-good"><strong>That's how you handle it.</strong> Under an LSC designation, common contracted items (including facility maintenance and power generation) run through the LSC's contracting process. If you award a separate contract for the same thing, you've just created the exact duplication the LSC construct was designed to prevent. But brushing off a Marine unit commander with "not my problem" burns a relationship you'll need later. The right move: explain why the LSC process exists, help him work through it (maybe he doesn't know who to call), and raise the responsiveness issue at the OCSIC. If the LSC is slow, that's a systemic problem the OCSIC needs to address, not something individual units should solve by going around the system.</div>
+      <div class="q-feedback wrong" id="d3-wrong"><strong>Both extremes cause problems.</strong> Awarding a separate contract for something the LSC is designated to handle undermines the whole construct. Now you have duplicate contracts, the LSC doesn't know about your action, and you've set a precedent that anyone can go around the system if they think it's too slow. But dismissing the Marine commander isn't helpful either. He has a real need and a legitimate frustration. The best move is to help him navigate the LSC's process (he might not know how it works), and then raise the timeline concern at the OCSIC. If the LSC is taking too long on common items, that's a leadership issue for the board to resolve.</div>
+    </div>
+
+    <!-- Decision 4 -->
+    <div class="decision" id="d4">
+      <div class="decision-num">Decision Point 4</div>
+      <div class="decision-situation">You've been on the ground for two months. The JTF OCSIC has been meeting weekly, but you've noticed a pattern: <strong>attendance is dropping</strong>. The Marine contracting rep stopped coming three weeks ago. The DLA rep dials in late and drops off early. The LOGCAP program manager hasn't shown up since your first week. The Army LSCC chair runs the meeting, but the agenda is stale and mostly just status updates. You can feel the coordination slipping. What do you do?</div>
+      <div class="q-options">
+        <button class="q-opt" onclick="answer(this, 'd4', false)">Not your problem. The Army chairs the JCSB, so it's their responsibility to fix attendance. Focus on your own contracts.</button>
+        <button class="q-opt" onclick="answer(this, 'd4', true)">Talk to the LSCC chair. Share what you're seeing: attendance is dropping, the agenda needs updating, and without full participation the board can't do its job. Offer to help. Suggest the agenda focus on actionable items like new requirements, de-confliction issues, and shared market research instead of just status updates. If that doesn't work, raise it with the OCSIC lead.</button>
+        <button class="q-opt" onclick="answer(this, 'd4', false)">Start coordinating directly with the other contracting shops outside the JCSB. If the meeting isn't working, build your own network.</button>
+      </div>
+      <div class="q-feedback good" id="d4-good"><strong>That's leadership without authority.</strong> A JCSB that nobody attends is a JCSB that isn't working, and when the board stops working, duplication and de-confliction problems come right back. The LSCC chair might not realize how bad it's gotten, or they might be stretched too thin to fix it alone. Offering to help, suggesting concrete agenda improvements, and escalating to the OCSIC lead if needed shows you're invested in the system working, not just your own lane. The OCSIC depends on participation from every service's contracting rep to function. If the forum dies, every contracting shop goes back to operating in a vacuum, and the whole point of having a theater contracting construct falls apart.</div>
+      <div class="q-feedback wrong" id="d4-wrong"><strong>Understandable instinct, but think bigger.</strong> Writing it off as the Army's problem misses the point. The JCSB only works if everyone participates, and you're "everyone." And building a shadow coordination network outside the board might help you short-term, but it undermines the formal process and leaves out whoever isn't in your informal circle. The right approach: talk to the LSCC chair first. Offer to help improve the agenda (focus on actionable items, not just status updates). If that doesn't work, raise it with the OCSIC lead. A functioning JCSB protects you as much as it protects everyone else.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ═══ CLOSING ═══ -->
+  <div class="closing">
+    <h2>You Know Enough to Be Dangerous</h2>
+    <p>Not dangerous in a bad way. Dangerous in the way that matters: you now know enough to ask the right questions when you show up to a deployment. You know who owns what, where CONS fits, when to lead and when to support, and what the big contracts look like.</p>
+    <p style="margin-top: 1rem;">The full JOPEC course goes deep on joint planning, Annex W development, theater-level OCS integration, and the strategic contracts that keep entire theaters running. What you've seen here is the foundation. Everything else builds on it.</p>
+    <p style="margin-top: 1rem; color: var(--sand);">Three questions. Every time.<br><strong style="color: var(--white);">Who has the authority? Who owns the requirement? Where are the resources?</strong></p>
+  </div>
+
+  <div class="footer">
+    OCS for Dummies // ContractingHQ Advanced Training
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// ── J-Staff Wheel Data & Builder ──
+const jStaff = [
+  { code: 'J-1', name: 'Manpower / Personnel', color: '#5a7a3a',
+    desc: 'Handles personnel reception, accountability, and casualty reporting. Plans support to contractors like mail and MWR. Identifies commercial requirements for personnel-related functions.',
+    items: ['Personnel reception & accountability','Casualty reporting for contractor personnel','Plan mail, MWR support to contractors','Identify commercial requirements for personnel functions'] },
+  { code: 'J-2', name: 'Intelligence', color: '#7a6830',
+    desc: 'Provides security assessments and OCS-related intelligence preparation of the operational environment. Assists with vendor threat mitigation to make sure you\'re not contracting with bad actors.',
+    items: ['Security assessments','OCS-related JIPOE: economic, information, infrastructure','Vendor threat mitigation','Identify commercial requirements for linguists / intel functions'] },
+  { code: 'J-3', name: 'Operations', color: '#8a5a30',
+    desc: 'Validates and prioritizes commercial requirements in battle rhythm events. Handles force protection, arming of contractors, private security contractors, badging, base access, and incident reporting.',
+    items: ['Validate & prioritize commercial requirements','Force protection / anti-terrorism','Arming contractors & private security oversight','Badging, base access, incident reporting','Personnel recovery','Identify requirements for info ops, targeting, C2'] },
+  { code: 'J-4', name: 'Logistics', color: '#4a6a5a',
+    desc: 'The lead integrator for commercial capabilities. Handles common-user logistics, ACSA and host nation support, theater logistics analysis, and sustaining/moving contractors. This is who CONS works with most.',
+    items: ['Lead commercial capability integration','Common-user logistics','ACSA & host nation support coordination','Mortuary affairs','Theater logistics analyses & estimates','Sustain & move contractors','Identify commercial requirements for logistics'] },
+  { code: 'J-5', name: 'Plans', color: '#5a5a7a',
+    desc: 'Incorporates commercial capabilities into planning. Captures contracted support considerations in operation plans and orders. If CONS isn\'t in the planning cell, this is who to coordinate with.',
+    items: ['Incorporate commercial capabilities during planning','Capture contracted support in plans & orders','Risk & opportunity analysis for contracted support'] },
+  { code: 'J-6', name: 'Comms / Cyber', color: '#3a6a7a',
+    desc: 'Handles frequency allocation, IT access and management. Identifies commercial requirements for signal, satellite, internet, and network administration.',
+    items: ['Frequency allocation','IT access & management','Identify commercial requirements for signal/cyber','Satellite, internet, network administration'] },
+  { code: 'J-7', name: 'Training / Education', color: '#6a5a6a',
+    desc: 'Addresses commercial support in exercises and staff training. Captures lessons learned from OCS execution to improve future operations.',
+    items: ['Address commercial support in exercises','Staff training on OCS','Lessons learned & after-action reviews'] },
+  { code: 'J-8', name: 'Resource Management', color: '#7a7a3a',
+    desc: 'Budget estimates, types of funding, monitoring contract expenditures. Runs integrated financial management operations. If you need to know where the money is, J-8 is your answer.',
+    items: ['Budget estimates & types of funding','Monitor contract expenditures','Integrated financial management operations','Cost analysis for commercial requirements'] },
+  { code: 'J-9', name: 'Civil-Military / Interagency', color: '#5a7a6a',
+    desc: 'Information source for inter- and intra-governmental actions. Provides the forum (CMOC) to address OCS actions and challenges with allies, partners, and other agencies.',
+    items: ['Inter/intra-governmental coordination','CMOC: forum for OCS issues with allies & partners','Civil-military interface for contracted support'] },
+  { code: 'SJA', name: 'Staff Judge Advocate', color: '#6a6a50',
+    desc: 'Legal backbone of OCS. Handles personnel legal status (SOFA), contract and fiscal law, operational law for contractor arming and private security, and combatting trafficking in persons.',
+    items: ['Personnel legal status / SOFA','Contract & fiscal law support','Operational law (contractor arming, PSC rules)','Combatting trafficking in persons','Identify commercial requirements for legal functions'] },
+  { code: 'Surgeon', name: 'Medical', color: '#5a6a4a',
+    desc: 'Pre-deployment medical requirements, personnel treatment and evacuation. Identifies commercial requirements for medical-related functions. Contractors in theater need medical support too.',
+    items: ['Pre-deployment medical requirements','Personnel treatment & evacuation','Identify commercial requirements for medical functions'] },
+  { code: 'PAO', name: 'Public Affairs', color: '#7a6a5a',
+    desc: 'Communicates U.S. business norms, vendor days, and hiring events to the local population. Identifies commercial requirements for public affairs functions.',
+    items: ['Communicate U.S. business norms','Vendor days & hiring events','Identify commercial requirements for PAO'] },
+  { code: 'Engineer', name: 'Engineer', color: '#4a7a4a',
+    desc: 'Land and facility allocation/use. Environmental standards compliance. Identifies commercial requirements for construction and facility maintenance.',
+    items: ['Land & facility allocation/use','Environmental standards','Identify commercial requirements for construction & facility maintenance'] }
+];
+
+function buildWheel() {
+  const svg = document.getElementById('jstaffSvg');
+  const cx = 150, cy = 150, r = 130, innerR = 55;
+  const n = jStaff.length;
+  const angleStep = (2 * Math.PI) / n;
+  const startOffset = -Math.PI / 2;
+
+  // Center circle
+  const centerCircle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  centerCircle.setAttribute('cx', cx);
+  centerCircle.setAttribute('cy', cy);
+  centerCircle.setAttribute('r', innerR);
+  centerCircle.setAttribute('fill', 'rgba(12,15,8,0.95)');
+  centerCircle.setAttribute('stroke', 'rgba(107,138,80,0.3)');
+  centerCircle.setAttribute('stroke-width', '1');
+  svg.appendChild(centerCircle);
+
+  // Center text
+  const ct1 = document.createElementNS('http://www.w3.org/2000/svg','text');
+  ct1.setAttribute('x', cx); ct1.setAttribute('y', cy - 8);
+  ct1.setAttribute('class','jstaff-center-text');
+  ct1.textContent = 'Integrate';
+  svg.appendChild(ct1);
+  const ct2 = document.createElementNS('http://www.w3.org/2000/svg','text');
+  ct2.setAttribute('x', cx); ct2.setAttribute('y', cy + 7);
+  ct2.setAttribute('class','jstaff-center-text');
+  ct2.textContent = 'Commercial';
+  svg.appendChild(ct2);
+  const ct3 = document.createElementNS('http://www.w3.org/2000/svg','text');
+  ct3.setAttribute('x', cx); ct3.setAttribute('y', cy + 22);
+  ct3.setAttribute('class','jstaff-center-text');
+  ct3.textContent = 'Capabilities';
+  svg.appendChild(ct3);
+
+  jStaff.forEach((s, i) => {
+    const a1 = startOffset + i * angleStep;
+    const a2 = startOffset + (i + 1) * angleStep;
+    const x1o = cx + r * Math.cos(a1);
+    const y1o = cy + r * Math.sin(a1);
+    const x2o = cx + r * Math.cos(a2);
+    const y2o = cy + r * Math.sin(a2);
+    const x1i = cx + innerR * Math.cos(a1);
+    const y1i = cy + innerR * Math.sin(a1);
+    const x2i = cx + innerR * Math.cos(a2);
+    const y2i = cy + innerR * Math.sin(a2);
+    const largeArc = angleStep > Math.PI ? 1 : 0;
+
+    const d = `M${x1i},${y1i} L${x1o},${y1o} A${r},${r} 0 ${largeArc} 1 ${x2o},${y2o} L${x2i},${y2i} A${innerR},${innerR} 0 ${largeArc} 0 ${x1i},${y1i} Z`;
+
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('class','jstaff-slice');
+    g.setAttribute('data-index', i);
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', d);
+    path.setAttribute('fill', s.color);
+    path.setAttribute('stroke', 'rgba(12,15,8,0.8)');
+    path.setAttribute('stroke-width', '1.5');
+    g.appendChild(path);
+
+    // Label
+    const midA = (a1 + a2) / 2;
+    const labelR = (r + innerR) / 2 + 5;
+    const lx = cx + labelR * Math.cos(midA);
+    const ly = cy + labelR * Math.sin(midA);
+    const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+    txt.setAttribute('x', lx);
+    txt.setAttribute('y', ly);
+    txt.setAttribute('text-anchor', 'middle');
+    txt.setAttribute('dominant-baseline', 'central');
+    // Rotate text to follow the slice angle
+    const deg = midA * (180 / Math.PI);
+    const flip = (deg > 90 && deg < 270) || (deg < -90 && deg > -270);
+    txt.setAttribute('transform', `rotate(${flip ? deg + 180 : deg}, ${lx}, ${ly})`);
+    txt.textContent = s.code;
+    g.appendChild(txt);
+
+    g.addEventListener('click', () => showJStaff(i));
+    g.addEventListener('mouseenter', () => showJStaff(i));
+    svg.appendChild(g);
+  });
+}
+
+function showJStaff(i) {
+  const s = jStaff[i];
+  document.getElementById('jdCode').textContent = s.code;
+  document.getElementById('jdName').textContent = s.name;
+  document.getElementById('jdDesc').textContent = s.desc;
+  const itemsEl = document.getElementById('jdItems');
+  itemsEl.innerHTML = s.items.map(t => `<div class="jd-item">${t}</div>`).join('');
+  const detail = document.getElementById('jstaffDetail');
+  detail.classList.add('highlight');
+  setTimeout(() => detail.classList.remove('highlight'), 600);
+  // Highlight active slice
+  document.querySelectorAll('.jstaff-slice').forEach((sl, j) => {
+    sl.classList.toggle('active', j === i);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', buildWheel);
+
+// ── Reveal toggle ──
+function revealContent(id) {
+  const block = document.getElementById(id);
+  const btn = block.querySelector('.reveal-btn');
+  const content = block.querySelector('.reveal-content');
+  btn.classList.add('open');
+  content.classList.add('open');
+}
+
+// ── Question answer ──
+function answer(btn, qId, isCorrect) {
+  const block = document.getElementById(qId);
+  const opts = block.querySelectorAll('.q-opt');
+  const goodFb = document.getElementById(qId + '-good');
+  const wrongFb = document.getElementById(qId + '-wrong');
+
+  // Disable all options
+  opts.forEach(o => {
+    o.classList.add('disabled');
+    if (o === btn) {
+      o.classList.add(isCorrect ? 'correct' : 'incorrect');
+    }
+    // Highlight correct answer if user was wrong
+    if (!isCorrect && o !== btn) {
+      // Find the correct option (the one that would pass true)
+      // We'll mark it after showing feedback
+    }
+  });
+
+  if (isCorrect) {
+    goodFb.classList.add('show');
+  } else {
+    wrongFb.classList.add('show');
+    // Highlight the correct answer with a subtle style
+    opts.forEach(o => {
+      if (o !== btn && !o.classList.contains('incorrect')) {
+        // We can't know which is correct from here, so we just show feedback
+      }
+    });
+  }
+}
+
+// ── Progress bar ──
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+
+// ── Phase nav active state ──
+const phases = document.querySelectorAll('.phase');
+const navLinks = document.querySelectorAll('.phase-nav a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const id = e.target.id;
+      const link = document.querySelector(`.phase-nav a[href="#${id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -60% 0px' });
+phases.forEach(p => observer.observe(p));
+</script>
+</body>
+</html>
