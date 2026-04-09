@@ -1,0 +1,38 @@
+name: Fetch RFO News
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-news:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch RFO news from feeds
+        run: python scripts/fetch_rfo_news.py
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --quiet data/rfo-news.json && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push updated news
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/rfo-news.json
+          git commit -m "Update RFO news feed ($(date -u +%Y-%m-%d))"
+          git push
