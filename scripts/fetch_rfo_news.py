@@ -229,10 +229,15 @@ def clean_html(text):
     """Strip HTML tags and unescape entities."""
     if not text:
         return ""
-    text = unescape(text)
-    # Double-decode in case of double-escaped entities
-    text = unescape(text)
+    # Aggressively decode nested HTML entities (some feeds encode multiple times)
+    prev = None
+    while prev != text:
+        prev = text
+        text = unescape(text)
+    # Strip HTML tags
     text = re.sub(r"<[^>]+>", "", text)
+    # Remove any remaining raw &amp; chains or HTML artifacts
+    text = re.sub(r"(&amp;)+", "&", text)
     text = re.sub(r"\s+", " ", text).strip()
     # Strip Drupal-style author/date prefix from Acquisition.gov
     text = re.sub(r"^.*?Anonymous\s*\(not verified\)\s*\w{3},\s*\d{2}/\d{2}/\d{4}\s*-\s*\d{2}:\d{2}\s*", "", text)
@@ -334,8 +339,9 @@ def parse_rss(xml_text, source):
                 continue
             if date and date < cutoff_str:
                 continue
-            if len(summary) > 400:
-                summary = summary[:397] + "..."
+            if len(summary) > 250:
+                # Cut at last word boundary
+                summary = summary[:250].rsplit(" ", 1)[0] + "..."
 
             items.append({
                 "title": title,
@@ -372,8 +378,9 @@ def parse_rss(xml_text, source):
                 continue
             if date and date < cutoff_str:
                 continue
-            if len(summary) > 400:
-                summary = summary[:397] + "..."
+            if len(summary) > 250:
+                # Cut at last word boundary
+                summary = summary[:250].rsplit(" ", 1)[0] + "..."
             # Strip the title repeated at start of summary
             if summary.startswith(title):
                 summary = summary[len(title):].strip()
