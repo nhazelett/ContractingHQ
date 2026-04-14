@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>First Light · ContractingHQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #02030a;
+    --ink-deep: #000004;
+    --silver: #d8e0ec;
+    --silver-soft: rgba(216, 224, 236, 0.72);
+    --silver-faint: rgba(216, 224, 236, 0.42);
+    --warm: #f5e4b8;
+    --accent: #9ab8e8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: var(--ink-deep);
+    color: var(--silver);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    cursor: default;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* canvases stack */
+  #nebula, #stars-bg, #stars-fg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  #nebula  { z-index: 1; }
+  #stars-bg { z-index: 2; }
+  #stars-fg { z-index: 3; cursor: crosshair; }
+
+  /* overlay UI */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  .corner {
+    position: fixed;
+    z-index: 6;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--silver-faint);
+    pointer-events: auto;
+    user-select: none;
+    transition: color 600ms ease, opacity 600ms ease;
+  }
+  .corner:hover { color: var(--silver); }
+
+  .corner a, .corner button {
+    color: inherit;
+    background: none;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 6px 10px;
+  }
+
+  .corner-tl { top: 24px; left: 28px; }
+  .corner-tr { top: 24px; right: 28px; display: flex; gap: 14px; align-items: center; }
+  .corner-bl { bottom: 24px; left: 28px; max-width: 320px; line-height: 1.5; }
+  .corner-br { bottom: 24px; right: 28px; }
+
+  .title-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--silver-soft);
+  }
+
+  .helper {
+    opacity: 0;
+    transition: opacity 1800ms ease 600ms;
+  }
+  .helper.show { opacity: 1; }
+
+  /* the floating reveal panel that follows hovered stars */
+  #reveal {
+    position: fixed;
+    z-index: 5;
+    pointer-events: none;
+    max-width: 360px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 900ms ease, transform 900ms ease;
+  }
+  #reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  /* pinned mode: used in galaxy view so the reveal panel doesn't follow
+     the cursor and clip off the bottom of the screen. The panel sits
+     locked to the right side, vertically centered, with a comfortable
+     reading width. */
+  #reveal.pinned {
+    left: auto !important;
+    right: 56px;
+    top: 50% !important;
+    transform: translateY(-50%);
+    max-width: 420px;
+    width: 420px;
+  }
+  #reveal.pinned.visible {
+    transform: translateY(-50%);
+  }
+  #reveal.pinned .word {
+    font-size: 32px;
+  }
+  #reveal.pinned .desc {
+    max-width: 100%;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  #reveal .word {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 38px;
+    letter-spacing: 0.02em;
+    color: var(--silver);
+    line-height: 1.05;
+    text-shadow: 0 0 24px rgba(154, 184, 232, 0.35);
+  }
+  /* affirmation styling: no headline, the whole line is the text,
+     in a slightly more flowing italic so it reads like a thought */
+  #reveal.affirm {
+    max-width: 460px;
+  }
+  #reveal.affirm .word {
+    font-style: italic;
+    font-size: 26px;
+    line-height: 1.4;
+    color: var(--silver-soft);
+    text-shadow: 0 0 28px rgba(245, 220, 160, 0.22);
+  }
+  #reveal.affirm .desc { display: none; }
+  #reveal .desc {
+    margin-top: 14px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--silver-soft);
+    max-width: 340px;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 1200ms ease 350ms, transform 1200ms ease 350ms;
+  }
+  #reveal.lingering .desc {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* status line: when does the next star arrive */
+  #status {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--silver-faint);
+  }
+  #status .num { color: var(--silver-soft); }
+
+  /* first-paint welcome veil that fades away */
+  #veil {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: var(--ink-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    transition: opacity 2400ms ease;
+  }
+  #veil.gone { opacity: 0; pointer-events: none; }
+  #veil .breath {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 28px;
+    letter-spacing: 0.06em;
+    color: var(--silver-soft);
+    opacity: 0;
+    animation: breathe 5s ease forwards;
+  }
+  #veil .sub {
+    margin-top: 18px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--silver-faint);
+    opacity: 0;
+    animation: breathe 5s ease 600ms forwards;
+  }
+  @keyframes breathe {
+    0%   { opacity: 0; transform: translateY(8px); }
+    20%  { opacity: 1; transform: translateY(0); }
+    80%  { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-4px); }
+  }
+
+  /* a soft note that briefly shows when a new star appears */
+  #newstar-note {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 6;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 22px;
+    color: var(--silver-soft);
+    letter-spacing: 0.04em;
+    opacity: 0;
+    pointer-events: none;
+    text-shadow: 0 0 24px rgba(245, 228, 184, 0.25);
+    transition: opacity 2200ms ease;
+  }
+  #newstar-note.show { opacity: 1; }
+
+  /* music toggle */
+  .music-btn {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid var(--silver-faint);
+    transition: border-color 600ms ease, color 600ms ease;
+  }
+  .music-btn:hover { border-color: var(--silver); color: var(--silver); }
+  .music-btn svg { width: 11px; height: 11px; fill: currentColor; }
+
+  /* back-to-sky link, only visible inside a galaxy view */
+  #back-button {
+    position: fixed;
+    top: 24px;
+    left: 28px;
+    z-index: 7;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    color: var(--silver-soft);
+    cursor: pointer;
+    pointer-events: auto;
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 900ms ease, transform 900ms ease, color 600ms ease;
+    pointer-events: none;
+  }
+  #back-button.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  #back-button:hover { color: var(--silver); }
+
+  /* galaxy title overlay shown when the user is inside a galaxy */
+  #galaxy-title {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    z-index: 6;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 1200ms ease, transform 1200ms ease;
+  }
+  #galaxy-title.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  #galaxy-title .gt-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 34px;
+    letter-spacing: 0.04em;
+    color: var(--silver);
+    text-shadow: 0 0 28px rgba(154, 184, 232, 0.35);
+  }
+  #galaxy-title .gt-sub {
+    margin-top: 4px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 16px;
+    letter-spacing: 0.06em;
+    color: var(--silver-soft);
+  }
+  /* RFO companion note inside the reveal panel */
+  #reveal .rfo-note {
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(180, 195, 220, 0.18);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--silver-faint);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 1200ms ease 500ms, transform 1200ms ease 500ms;
+  }
+  #reveal .rfo-note .rfo-label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--silver-faint);
+    margin-bottom: 4px;
+  }
+  #reveal.lingering .rfo-note { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<canvas id="nebula"></canvas>
+<canvas id="stars-bg"></canvas>
+<canvas id="stars-fg"></canvas>
+
+<div class="overlay"></div>
+
+<!-- corner UI -->
+<div class="corner corner-tr">
+  <button class="music-btn" id="music-toggle" title="Sound" aria-label="Toggle sound">
+    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
+  </button>
+  <a href="training.html" title="Return">Return</a>
+</div>
+
+<a id="back-button" href="#" title="Back to the sky">← back to the sky</a>
+
+<div id="galaxy-title">
+  <div class="gt-name"></div>
+  <div class="gt-sub"></div>
+</div>
+
+<div class="corner corner-bl helper" id="helper">
+  <div id="status">Next light: <span class="num">—</span></div>
+</div>
+
+<div class="corner corner-br helper">
+  <span style="text-transform: none; letter-spacing: 0; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 13px; color: var(--silver-faint);">hover a star</span>
+</div>
+
+<!-- floating reveal -->
+<div id="reveal">
+  <div class="word"></div>
+  <div class="desc"></div>
+  <div class="rfo-note"><span class="rfo-label">Under the RFO</span><span class="rfo-text"></span></div>
+</div>
+
+<div id="newstar-note">a new light has come</div>
+
+<!-- opening veil -->
+<div id="veil">
+  <div class="breath">be still for a moment</div>
+  <div class="sub">First Light</div>
+</div>
+
+<!-- ambient audio: a shuffled playlist that cycles forever -->
+<audio id="ambient" preload="auto"></audio>
+
+<script>
+/* ============================================================
+   First Light
+   A quiet place. Stars arrive one at a time, on a long cooldown.
+   Each star carries a small thing worth knowing or being told.
+   ============================================================ */
+
+// ---------- content -----------------------------------------------------
+// Stable IDs so localStorage survives content edits.
+
+// A pool of greetings. One is chosen at random each session and shown as
+// an ephemeral welcome star — it is NOT persisted.
+const WELCOMES = [
+  "Welcome. You are still allowed to be here.",
+  "You came in. That is a quiet kind of brave.",
+  "Welcome. Take a moment if you would like one.",
+  "Hello. The sky kept turning while you were away.",
+  "Welcome. There is nothing here that needs you to be ready.",
+  "Welcome. You do not have to do anything but breathe.",
+  "Welcome. The lights are on for you.",
+  "Hello. The chair is still here.",
+  "Welcome. Nothing is owed.",
+  "Welcome. Be still for a moment.",
+  "Hello. We saved your place.",
+  "Welcome back. You are exactly on time.",
+  "Hello. The night was kind to your stars while you were gone.",
+  "Welcome. You can put the day down at the door.",
+];
+
+const CONTENT = [
+  // terminology — Register C voice: quiet but real
+  { id: "t-rfp", kind: "term", word: "RFP",
+    desc: "Request for Proposal. You are asking vendors how they would do the work, not just what they would charge." },
+  { id: "t-rfq", kind: "term", word: "RFQ",
+    desc: "Request for Quotation. You are asking vendors what they would charge for something already specified." },
+  { id: "t-ifb", kind: "term", word: "IFB",
+    desc: "Invitation for Bid. Sealed prices on a clearly defined thing. The lowest responsive bid wins." },
+  { id: "t-option", kind: "term", word: "Option",
+    desc: "A future year of the contract that the government may choose to exercise, on terms agreed up front." },
+  { id: "t-mod", kind: "term", word: "Modification",
+    desc: "A change to a contract that is already in force, signed by both sides." },
+  { id: "t-award", kind: "term", word: "Award",
+    desc: "The signed agreement that turns a solicitation into a contract." },
+  { id: "t-sol", kind: "term", word: "Solicitation",
+    desc: "The document the government uses to ask vendors for offers." },
+  { id: "t-closeout", kind: "term", word: "Closeout",
+    desc: "The administrative finish of a contract, after the work is done and accepted." },
+  { id: "t-pp", kind: "term", word: "Past Performance",
+    desc: "How well a vendor has done on previous contracts, used to evaluate them now." },
+  { id: "t-setaside", kind: "term", word: "Set-aside",
+    desc: "A solicitation reserved for a specific category of small business." },
+  { id: "t-sole", kind: "term", word: "Sole Source",
+    desc: "A contract awarded to one vendor without competing it. There is a reason it could not be competed." },
+  { id: "t-sap", kind: "term", word: "SAP",
+    desc: "Simplified Acquisition Procedures. The lighter set of rules for smaller-dollar buys." },
+
+  // affirmations — no headline, just the line
+  { id: "a-1",  kind: "affirm", text: "There is enough time for you to become who you are becoming." },
+  { id: "a-2",  kind: "affirm", text: "Someone built the chair you sit in, hoping someone like you would come along." },
+  { id: "a-3",  kind: "affirm", text: "The world is mostly held together by people doing quiet work like yours." },
+  { id: "a-4",  kind: "affirm", text: "You will look back at today from a kinder place." },
+  { id: "a-5",  kind: "affirm", text: "You belong here, even on the days you do not feel like it." },
+  { id: "a-6",  kind: "affirm", text: "Some part of you already knows what to do. The rest of you is catching up." },
+  { id: "a-7",  kind: "affirm", text: "What you are learning is also learning you." },
+  { id: "a-8",  kind: "affirm", text: "You are not behind. There is no schedule but the one you carry." },
+  { id: "a-9",  kind: "affirm", text: "Be patient with the part of you that is still arriving." },
+  { id: "a-10", kind: "affirm", text: "Even a very long day is a small part of a long, good life." },
+  { id: "a-11", kind: "affirm", text: "The morning still comes for you." },
+  { id: "a-12", kind: "affirm", text: "You are allowed to take up space here." },
+  { id: "a-13", kind: "affirm", text: "I would rather have done this hard work and been changed by it than never have known what I could carry." },
+  { id: "a-14", kind: "affirm", text: "Somewhere ahead of you, an older version of you is rooting for the one reading this." },
+];
+
+// ---------- persistence -------------------------------------------------
+const KEY = "firstLight.v1";
+const HEARTBEAT_MS = 10 * 1000;        // one star arrives every 10 seconds
+const INTRO_MS = 4000;                 // dramatic "zoom into the sky" arrival animation
+const SHOOT_MIN_MS = 50 * 1000;        // shooting stars: ~every minute, jittered
+const SHOOT_MAX_MS = 75 * 1000;
+const VEIL_MS = 4400;                  // opening veil duration
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return { stars: [], lastAdded: 0, seen: [] };
+    const s = JSON.parse(raw);
+    return { stars: s.stars || [], lastAdded: s.lastAdded || 0, seen: s.seen || [] };
+  } catch (e) {
+    return { stars: [], lastAdded: 0, seen: [] };
+  }
+}
+function saveState(s) {
+  try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
+}
+
+let state = loadState();
+
+// Migration: old versions stored a single persistent "welcome" star.
+// Welcomes are now ephemeral (a fresh greeting each session), so strip
+// any leftover persistent welcome from the saved state on load.
+state.stars = state.stars.filter(s => s.id !== "welcome" && !(s.id || "").startsWith("welcome-"));
+state.seen = state.seen.filter(id => id !== "welcome");
+
+// Each page load is a session. Anything in state.stars whose `born` is older
+// than SESSION_START is "remembered" — those fade in on a randomized stagger
+// so every visit feels different. Anything born after SESSION_START is
+// genuinely new and gets the dramatic zoom-in arrival animation.
+const SESSION_START = Date.now();
+
+// Ephemeral session-only stars (welcomes). Never persisted to localStorage.
+const sessionStars = [];
+
+// Pick a fresh welcome for this visit and place it as a session-only star.
+// It arrives just as the opening veil dissolves so it feels like a doorway.
+function makeSessionWelcome() {
+  const text = WELCOMES[Math.floor(Math.random() * WELCOMES.length)];
+  return {
+    id: "welcome-session-" + Date.now(),
+    isWelcome: true,
+    welcomeText: text,
+    x: 0.40 + Math.random() * 0.20, // gentle center placement
+    y: 0.32 + Math.random() * 0.18,
+    _revealAt: SESSION_START + VEIL_MS,  // arrive as the veil fades out
+  };
+}
+sessionStars.push(makeSessionWelcome());
+
+// ---------- galaxies ----------------------------------------------------
+// Galaxies are destinations. Each one is a clickable region of the sky
+// holding the curated content for a particular FAR Part. They're not
+// persisted — they show up in the sky every visit, in a fixed position.
+const GALAXIES = [
+  {
+    id: "far-1",
+    title: "FAR Part 1",
+    subtitle: "Federal Acquisition Regulations System",
+    blurb: "Where the rules about the rules live. How the FAR is structured, how it is changed, who gets to sign contracts on behalf of the United States, and what it actually means to be a contracting officer. The Revolutionary FAR Overhaul reshuffles parts of this in ways that touch every CO — including the renumbering of unauthorized commitments to 1.405 and a reorganization of career development.",
+    x: 0.22, y: 0.30,
+    tint: { core: "rgba(232, 220, 255, ", arm: "rgba(190, 175, 230, " },
+    nodes: [
+      { label: "How the FAR Works",
+        title: "Purpose, Authority, Issuance",
+        text: "Why the FAR exists, where its authority comes from, how it gets published, and how amendments roll out through Federal Acquisition Circulars. This is the part of the regulation that explains the regulation.",
+        rfo: "Largely structural; the RFO preserves the basics of how the FAR is issued but is itself rolling out through model deviations rather than the traditional FAC cycle, which is unusual." },
+      { label: "Who Maintains the FAR",
+        title: "Administration",
+        text: "Who maintains the FAR. The Federal Acquisition Regulatory Council, the FAR secretariat, and the procedure for opening a FAR case to actually change something.",
+        rfo: "The FAR Council still drives the work under the RFO. The novel piece is the public crowdsourcing campaign — practitioners and vendors submitting feedback on what to keep, cut, or rewrite." },
+      { label: "Agency Supplements",
+        title: "Agency Acquisition Regulations",
+        text: "How agencies write their own supplements, like the DFARS for DoD or the AFFARS for the Air Force. The rule is that supplements implement and supplement the FAR, they do not contradict it.",
+        rfo: "Agencies are issuing their own RFO-aligned class deviations in parallel. Reading any clause right now means checking the FAR, the agency supplement, and any active deviation." },
+      { label: "Deviations",
+        title: "Deviations from the FAR",
+        text: "When and how a contracting activity can issue a class or individual deviation, the approval levels required, and the reporting back to the FAR Council. Deviations are how the system bends without breaking.",
+        rfo: "Under the RFO this subpart is being repurposed — the overhaul itself is being delivered as a sweeping set of class deviations, and 'Career Development' material is moving into 1.4 in the restructured layout." },
+      { label: "Public Participation",
+        title: "Agency and Public Participation",
+        text: "How proposed FAR rules go out for public comment and how agencies engage industry. The procedural side of writing rules in public.",
+        rfo: "RFO leans heavily on this idea but in practice has front-loaded a lot of change before formal rulemaking, which is part of why it is generating so much commentary." },
+      { label: "Career Development",
+        title: "Career Development, Contracting Authority, Responsibilities",
+        text: "Who is allowed to obligate the United States. Warrants, the contracting officer's responsibilities, the contracting officer's representative, and the rules on how authority flows from agency head down through the warrant.",
+        rfo: "The contracting officer authority bones stay. The career development piece is moving in the restructured layout, so future references to '1.6' may be talking about something different than they do today." },
+      { label: "Contracting Officer Authority",
+        title: "Contracting Officer Authority",
+        text: "Contracting officers may bind the government only within the authority delegated to them in their warrant. Above the warrant level, you have to route to someone with a bigger one. Below it, you are operating where you are supposed to operate.",
+        rfo: "The substance does not change: the warrant is still the source of authority. The renumbering does." },
+      { label: "Contracting Officer Responsibilities",
+        title: "Contracting Officer Responsibilities",
+        text: "The contracting officer is responsible for ensuring performance of all necessary actions for effective contracting, ensuring compliance with the terms, and safeguarding the interests of the United States. It is a short list with a heavy weight.",
+        rfo: "RFO trims procedural language elsewhere but the responsibility framework here is exactly the kind of principle the overhaul keeps." },
+      { label: "Unauthorized Commitments",
+        title: "Unauthorized Commitments and Ratifications",
+        text: "An unauthorized commitment is an agreement that is not binding solely because the government representative who made it lacked authority. Ratification is the formal process for making it binding after the fact, when the criteria are met. The ratification floor is the chief of the contracting office, by FAR.",
+        rfo: "Renumbered to 1.405 under the Revolutionary FAR Overhaul. The substantive criteria and the floor stay the same; the cite changes." },
+      { label: "Determinations and Findings",
+        title: "Determinations and Findings",
+        text: "A D&F is a written record that supports a discretionary decision the FAR requires the contracting officer to make. The 'determination' is the conclusion; the 'findings' are the facts that support it. Many subsequent parts of the FAR point back here.",
+        rfo: "D&F as a concept is preserved. The RFO trims some prescriptive scaffolding around format, leaning more on 'document the why' than on a fixed template." },
+    ],
+  },
+  {
+    id: "far-7",
+    title: "FAR Part 7",
+    subtitle: "Acquisition Planning",
+    blurb: "Before the solicitation, before the J&A, before any of it — Part 7 is where the planning happens. Who needs what, what kind of contract makes sense, whether to lease or buy, and which functions are not allowed to be contracted out at all.",
+    x: 0.50, y: 0.18,
+    tint: { core: "rgba(180, 235, 245, ", arm: "rgba(140, 200, 215, " },
+    nodes: [
+      { label: "Acquisition Planning",
+        title: "Acquisition Plans",
+        text: "The written plan that lays out the strategy for an acquisition. The need, the alternatives considered, the contract type, the competition approach, the milestones, the risks, and how the requiring activity and the contracting office will work together. The point is to think about all of it before issuing the solicitation, not after.",
+        rfo: "RFO trims the prescriptive content list. The plan still has to exist for significant acquisitions; the format is more in the contracting officer's hands." },
+      { label: "Lease or Purchase",
+        title: "Equipment Lease or Purchase",
+        text: "When the government needs equipment, Part 7 makes you decide whether to lease it or buy it, and document why. The factors include how long you need it, how fast technology is changing, maintenance, and total cost over the life of the requirement. Defaulting to one or the other without thinking is the failure mode the rule exists to prevent.",
+        rfo: "Same analysis under the overhaul. The judgment-based framing is the kind of thing the RFO leaves intact." },
+      { label: "Inherently Governmental Functions",
+        title: "Inherently Governmental Functions",
+        text: "Some functions cannot be contracted out at all. Anything so closely tied to the public interest that it has to be performed by federal employees — exercising sovereign authority, making policy decisions, binding the United States. Part 7 has the list and the test. If a function is on it, the answer is not 'find the right contract type,' it is 'this is government work.'",
+        rfo: "Statutory at its core. The overhaul does not move the line." },
+      { label: "Government vs Contractor Performance",
+        title: "Contractor Versus Government Performance",
+        text: "The framework for deciding whether work currently done by federal employees should move to a contractor or vice versa. The A-76 process lives here. In practice it has been paused for years by appropriations restrictions, but the FAR text is still on the books.",
+        rfo: "Largely dormant in practice; the overhaul has not made it the focus." },
+    ],
+  },
+  {
+    id: "far-9",
+    title: "FAR Part 9",
+    subtitle: "Contractor Qualifications",
+    blurb: "Before you give someone a contract, you have to be able to say they can do the work and that they are not the kind of company the government has decided not to do business with. Part 9 is the rules for both halves of that question.",
+    x: 0.65, y: 0.48,
+    tint: { core: "rgba(250, 245, 200, ", arm: "rgba(210, 200, 140, " },
+    nodes: [
+      { label: "Responsibility Determinations",
+        title: "Responsible Prospective Contractors",
+        text: "Before award, the contracting officer has to make an affirmative determination that the prospective contractor is responsible. Adequate financial resources, ability to comply with the schedule, satisfactory performance record, integrity and business ethics, and the necessary organization, experience, and skills. No determination, no award.",
+        rfo: "The standard is preserved. The RFO trims the prescriptive checklist language and leans on the contracting officer's judgment to assemble the record." },
+      { label: "Debarment and Suspension",
+        title: "Debarment, Suspension, and Ineligibility",
+        text: "The government can decide that a particular contractor is not eligible to receive federal contracts. Debarment is the long-term version, suspension is the temporary one pending investigation, and both are tracked in SAM.gov. The contracting officer has to check before every award.",
+        rfo: "Statutory and intact. The check is still mandatory under the overhaul." },
+      { label: "Organizational Conflicts of Interest",
+        title: "Organizational and Consultant Conflicts of Interest",
+        text: "When a contractor's other work creates a conflict — they helped write the requirement, they have access to nonpublic information, they would be evaluating their own performance — Part 9 is where you find the framework for identifying it, mitigating it, or deciding the conflict is bad enough to disqualify them.",
+        rfo: "The OCI framework stays. The RFO simplifies the procedural narration around how mitigation plans get documented." },
+      { label: "Contractor Team Arrangements",
+        title: "Contractor Team Arrangements",
+        text: "Joint ventures and prime-subcontractor teams. The FAR encourages teaming when it lets companies combine capabilities to compete for work that none of them could win alone. Part 9 sets the ground rules for what those arrangements look like and how the government deals with them.",
+        rfo: "Largely intact. Teaming is one of the things the overhaul actively encourages." },
+      { label: "First Article Testing",
+        title: "First Article Testing and Approval",
+        text: "When the government wants to verify that a manufactured item meets the specification before it accepts a full production run, it can require the contractor to submit a first article for inspection. Part 9 has the rules for when this applies and how it gets approved.",
+        rfo: "Niche enough that the overhaul leaves it alone." },
+    ],
+  },
+  {
+    id: "far-11",
+    title: "FAR Part 11",
+    subtitle: "Describing Agency Needs",
+    blurb: "How the government writes down what it actually wants. Performance-based descriptions versus design specifications, brand-name-or-equal rules, delivery schedules, liquidated damages, and priority ratings. Part 11 is where the requirement becomes contract language.",
+    x: 0.35, y: 0.48,
+    tint: { core: "rgba(255, 220, 200, ", arm: "rgba(225, 175, 150, " },
+    nodes: [
+      { label: "Describing Requirements",
+        title: "Selecting and Developing Requirements Documents",
+        text: "The general rule is to describe the requirement in a way that promotes competition. Performance-based language wherever practical — say what you need, not how to make it — and design specifications only when the government really does need to dictate the method. The choice shapes everything downstream.",
+        rfo: "The performance-based preference is reinforced under the overhaul, not relaxed." },
+      { label: "Brand Name or Equal",
+        title: "Brand Name or Equal",
+        text: "When the government names a specific brand in the requirement, it has to either justify the brand-name-only approach in writing or accept any equal product that meets the salient characteristics. Salient characteristics are the features the government actually cares about, written down so vendors can match them.",
+        rfo: "Same standard. The justification is still required when restricting to a single brand." },
+      { label: "Delivery Schedules",
+        title: "Delivery or Performance Schedules",
+        text: "When the government needs the work done. Realistic schedules tend to get realistic prices; aggressive schedules narrow the field and raise the price. Part 11 makes this an actual planning step, not a default copy-paste.",
+        rfo: "The principle of realistic scheduling is preserved." },
+      { label: "Liquidated Damages",
+        title: "Liquidated Damages",
+        text: "When late delivery would cause harm to the government that is hard to measure after the fact, the contract can include a per-day liquidated damages amount. The number has to be a reasonable forecast of actual damages, not a penalty.",
+        rfo: "The reasonable-forecast standard does not change." },
+      { label: "Priorities and Allocations",
+        title: "Priorities and Allocations (DPAS)",
+        text: "Under the Defense Priorities and Allocations System, certain contracts get a priority rating that requires contractors and suppliers to put government work ahead of their other commercial business. Part 11 explains when ratings apply and how they flow down through the supply chain.",
+        rfo: "DPAS is statutory. The mechanism is intact under the overhaul." },
+    ],
+  },
+  {
+    id: "far-12",
+    title: "FAR Part 12",
+    subtitle: "Acquisition of Commercial Products and Commercial Services",
+    blurb: "When what the government needs is something the commercial market already sells, Part 12 is the path. Streamlined solicitations, market-based pricing, and a short list of required clauses instead of the full contract apparatus. The preference for commercial buys runs through the whole FAR, and Part 12 is where that preference becomes a procedure.",
+    x: 0.10, y: 0.50,
+    tint: { core: "rgba(190, 240, 215, ", arm: "rgba(140, 205, 175, " },
+    nodes: [
+      { label: "Commercial Item Determination",
+        title: "Commercial Item Determination",
+        text: "Before using Part 12, the contracting officer documents that the item or service meets the FAR 2.101 definition of commercial. Market research is what supports the determination — what's sold in the marketplace, to whom, on what terms.",
+        rfo: "The Revolutionary FAR Overhaul broadens the working definition and pushes the determination to the lowest practical level." },
+      { label: "Streamlined Procedures",
+        title: "Streamlined Solicitation and Evaluation",
+        text: "Part 12.6 lets the contracting officer combine synopsis and solicitation, use abbreviated formats, and rely on existing market data instead of constructing a full evaluation plan. The point is that commercial buys should not look like cost-type negotiated procurements.",
+        rfo: "The overhaul expands the streamlined model and treats it as the default for commercial acquisitions." },
+      { label: "Required Clauses",
+        title: "Contract Clauses for Commercial Items",
+        text: "FAR 52.212-4 sets the standard commercial contract terms, and 52.212-5 lists the statutory clauses that flow into commercial contracts. Most other FAR clauses are excluded unless a statute requires them.",
+        rfo: "RFO trims the list of statutory flow-downs and revises 52.212-4 and 52.212-5 to reduce friction." },
+      { label: "Commercial Item Pricing",
+        title: "Determining Price Reasonableness",
+        text: "For commercial items, price analysis is the default. Cost or pricing data is generally not required because the marketplace establishes the price. The contracting officer compares the offered price to other market evidence.",
+        rfo: "RFO reaffirms market-based pricing as the standard and discourages requests for cost data on commercial buys." },
+    ],
+  },
+  {
+    id: "far-13",
+    title: "FAR Part 13",
+    subtitle: "Simplified Acquisition Procedures",
+    blurb: "The set of streamlined methods for buys below the simplified acquisition threshold, and a test program that extends those methods to commercial item buys well above it. Part 13 is where the FAR makes peace with the fact that a small purchase should not require a full source selection.",
+    x: 0.92, y: 0.55,
+    tint: { core: "rgba(230, 235, 245, ", arm: "rgba(180, 190, 210, " },
+    nodes: [
+      { label: "Micro-Purchase Threshold",
+        title: "Micro-Purchase Threshold",
+        text: "Currently $10,000 for most buys. At or below the threshold, the contracting officer can place an order without obtaining competitive quotes if the price is fair and reasonable, and without applying most of the small business set-aside rules.",
+        rfo: "The micro-purchase concept is preserved and aligned with the underlying statute." },
+      { label: "Simplified Acquisition Threshold",
+        title: "Simplified Acquisition Threshold",
+        text: "Currently $250,000 for most buys. Below the SAT, the contracting officer can use the streamlined methods of Part 13 instead of the full Part 14 or Part 15 process. The buy still has to be competed to the maximum extent practicable.",
+        rfo: "The SAT framework continues, with emphasis on choosing simplified methods over full sealed bidding or negotiated procedures when appropriate." },
+      { label: "Blanket Purchase Agreements",
+        title: "Blanket Purchase Agreements",
+        text: "A BPA is a simplified arrangement with a vendor for repetitive needs. Terms are pre-established, so individual calls under the BPA are quick to place. BPAs are not contracts on their own — the calls are.",
+        rfo: "BPAs remain a low-friction tool for recurring requirements." },
+      { label: "Test Program for Commercial Items",
+        title: "Test Program for Commercial Items (13.5)",
+        text: "Lets the contracting officer use simplified procedures for commercial item buys up to $7.5 million, and higher in some emergency or contingency situations. It is one of the most useful authorities in the entire FAR for moving quickly on commercial work.",
+        rfo: "RFO is positioned to make the 13.5 test program permanent and may raise the dollar ceilings further." },
+    ],
+  },
+  {
+    id: "far-14",
+    title: "FAR Part 14",
+    subtitle: "Sealed Bidding",
+    blurb: "The oldest competitive method in the FAR. A clearly-described requirement goes out as an Invitation for Bids, sealed bids come back, they get opened in public, and award goes to the lowest responsive responsible bidder. No discussions, no trade-offs, no source selection plan. Part 14 is rarely the right answer anymore, but it is still on the menu.",
+    x: 0.06, y: 0.18,
+    tint: { core: "rgba(245, 195, 180, ", arm: "rgba(215, 145, 130, " },
+    nodes: [
+      { label: "Invitation for Bids",
+        title: "Invitation for Bids",
+        text: "The IFB is the sealed-bidding solicitation. It must describe the requirement clearly enough that bidders can respond on price alone. If the requirement is not that clear, sealed bidding is the wrong method.",
+        rfo: "Sealed bidding is left mostly intact under the overhaul, even as it is used less often in practice." },
+      { label: "Bid Opening",
+        title: "Bid Opening",
+        text: "Bids are opened publicly at the time and place stated in the IFB. The contracting officer reads them aloud and records them. Late bids are generally not accepted, with narrow exceptions in 14.304.",
+        rfo: "The mechanics of bid opening are unchanged." },
+      { label: "Bid Evaluation",
+        title: "Bid Evaluation and Award",
+        text: "Award goes to the responsive, responsible bidder offering the lowest price. There is no trade-off analysis, no past performance evaluation in the source selection sense, and no negotiation. The IFB and the bid prices speak for themselves.",
+        rfo: "The lowest-responsive-responsible standard for sealed bidding does not change." },
+      { label: "Two-Step Sealed Bidding",
+        title: "Two-Step Sealed Bidding",
+        text: "When the specifications are not tight enough for a single-step IFB, the government can ask for technical proposals first, then issue an IFB only to the offerors whose proposals are acceptable. It bridges sealed bidding and negotiation.",
+        rfo: "Two-step survives but is rarely used in practice." },
+      { label: "Mistakes in Bids",
+        title: "Mistakes in Bids",
+        text: "If a bidder discovers a mistake before award, FAR 14.407 lays out the rules for correcting or withdrawing the bid. The contracting officer balances the bidder's mistake against the integrity of the sealed-bidding process.",
+        rfo: "Mistake-in-bid procedures are largely unchanged." },
+    ],
+  },
+  {
+    id: "far-16",
+    title: "FAR Part 16",
+    subtitle: "Types of Contracts",
+    blurb: "The catalog of contract types and the rules for choosing among them. Where on the spectrum from firm-fixed-price to cost-plus-fixed-fee does the risk live? Part 16 answers that, and lays out the indefinite-delivery vehicles, time-and-materials contracts, and letter contracts that fill in the rest of the toolbox.",
+    x: 0.94, y: 0.85,
+    tint: { core: "rgba(220, 200, 245, ", arm: "rgba(180, 160, 215, " },
+    nodes: [
+      { label: "Fixed-Price Contracts",
+        title: "Fixed-Price Contracts",
+        text: "The contractor takes the cost risk. Variants include firm-fixed-price, fixed-price with economic price adjustment, fixed-price incentive, and fixed-price level-of-effort. The right variant depends on how well the requirement is defined and how stable input costs are.",
+        rfo: "RFO reinforces the preference for fixed-price arrangements when the requirement is well-defined." },
+      { label: "Cost-Reimbursement Contracts",
+        title: "Cost-Reimbursement Contracts",
+        text: "The government pays allowable costs. Used when uncertainty makes a fixed price impractical. Requires the contractor to have an adequate accounting system and the government to actively monitor incurred costs.",
+        rfo: "Cost-reimbursement is preserved but the justification for using it is tightened." },
+      { label: "Time-and-Materials",
+        title: "Time-and-Materials and Labor-Hour Contracts",
+        text: "Pays a fixed hourly rate (with profit baked in) plus materials at cost. Considered the least preferred type because the contractor has limited incentive to control hours. Part 16 lets you use it only when no other type is suitable.",
+        rfo: "T&M remains a last resort, with continued documentation expectations." },
+      { label: "Indefinite-Delivery Contracts",
+        title: "Indefinite-Delivery Contracts",
+        text: "Definite-quantity, requirements, and indefinite-delivery indefinite-quantity contracts. Useful when the exact quantity or timing is not known up front. IDIQs come with fair-opportunity rules for placing orders among multiple awardees.",
+        rfo: "IDIQs and the fair-opportunity framework carry forward with limited changes." },
+      { label: "Letter Contracts",
+        title: "Letter Contracts",
+        text: "An undefinitized contract action that authorizes the contractor to start work immediately while the parties negotiate final terms. Time-limited, tightly controlled, and meant for situations where waiting would harm the mission.",
+        rfo: "Letter contracts remain available for genuine urgency, with the deadline to definitize reinforced." },
+    ],
+  },
+  {
+    id: "far-17",
+    title: "FAR Part 17",
+    subtitle: "Special Contracting Methods",
+    blurb: "The methods that don't fit cleanly anywhere else. Multi-year contracts, options, interagency acquisitions through GSA or another servicing agency, and undefinitized contract actions. Part 17 is where you go when the contract needs to span years, accommodate growth, or start before the price is settled.",
+    x: 0.50, y: 0.50,
+    tint: { core: "rgba(170, 220, 230, ", arm: "rgba(125, 180, 200, " },
+    nodes: [
+      { label: "Multi-Year Contracting",
+        title: "Multi-Year Contracting",
+        text: "Lets the government commit to multiple program years up front, typically up to five, when doing so produces savings or other benefits. Funding is still annual, and cancellation between years has consequences spelled out in the cancellation ceiling.",
+        rfo: "Multi-year authorities continue under the overhaul largely intact." },
+      { label: "Options",
+        title: "Contract Options",
+        text: "An option is a unilateral right for the government to extend the term or buy more quantity at agreed prices, without a new competition. Options have to be evaluated as part of the original award if they are going to be exercised later.",
+        rfo: "RFO reaffirms options as a planning tool and tightens the requirement to evaluate them at award." },
+      { label: "Interagency Acquisitions",
+        title: "Interagency Acquisitions",
+        text: "Use of another agency's contract or procurement support. Includes Economy Act orders and assisted acquisitions through GSA or other servicing agencies. The requesting agency stays accountable for the requirement and its funding.",
+        rfo: "Interagency acquisition rules carry forward, with emphasis on the requesting agency's responsibility for scope." },
+      { label: "Undefinitized Contract Actions",
+        title: "Undefinitized Contract Actions",
+        text: "An action where price or terms are not yet settled but the contractor is authorized to begin. Subject to a hard definitization deadline and a ceiling on costs that can be incurred before agreement on a final price.",
+        rfo: "RFO keeps the UCA framework with continued emphasis on prompt definitization." },
+    ],
+  },
+  {
+    id: "far-36",
+    title: "FAR Part 36",
+    subtitle: "Construction and Architect-Engineer Contracts",
+    blurb: "Construction is its own world. Different bonding rules, different labor standards, qualifications-based selection for design work, and procedures that account for the fact that you cannot finish a building over the phone. Part 36 is where the FAR steps out of the way of general procedures and writes a set tailored to building things.",
+    x: 0.32, y: 0.88,
+    tint: { core: "rgba(230, 200, 150, ", arm: "rgba(195, 160, 110, " },
+    nodes: [
+      { label: "Construction Contracting",
+        title: "Construction Contracting",
+        text: "Part 36 sets the rules for buying construction work. It expects sealed bidding as the default method when the requirement can be defined with technical specifications and drawings, and uses negotiated procedures when it cannot.",
+        rfo: "The basic construction-contracting framework is not significantly disturbed by the overhaul." },
+      { label: "Performance and Payment Bonds",
+        title: "Performance and Payment Bonds (Miller Act)",
+        text: "On construction contracts above $150,000, the Miller Act requires the contractor to furnish a performance bond and a payment bond. They protect the government against nonperformance and protect subcontractors and suppliers against nonpayment.",
+        rfo: "Miller Act bonding is statutory and unchanged." },
+      { label: "Architect-Engineer Services",
+        title: "Architect-Engineer Services (Brooks Act)",
+        text: "A-E services are selected on the basis of qualifications, not price. The agency announces the requirement, evaluates submissions, ranks firms, and then negotiates a fair and reasonable price with the most qualified firm. Price competition is statutorily off the table.",
+        rfo: "The Brooks Act qualifications-based selection process is statutory and survives the overhaul." },
+      { label: "Two-Phase Design-Build",
+        title: "Two-Phase Design-Build Selection",
+        text: "When the government wants the same firm to design and build the project, FAR 36.3 sets up a two-phase competition. Phase one looks at qualifications and approach; phase two collects technical and price proposals from a short list.",
+        rfo: "Two-phase design-build is preserved with its existing structure." },
+      { label: "Davis-Bacon Wages",
+        title: "Davis-Bacon Wage Determinations",
+        text: "The Davis-Bacon Act requires construction contractors to pay laborers and mechanics no less than the locally-prevailing wages determined by the Department of Labor. The wage determination is incorporated into the contract.",
+        rfo: "Davis-Bacon obligations are statutory. The underlying labor standard does not change." },
+    ],
+  },
+  {
+    id: "far-37",
+    title: "FAR Part 37",
+    subtitle: "Service Contracting",
+    blurb: "Buying services is different from buying things. The work is performed by people, the deliverable is performance instead of an item, and the law is sharply opposed to the government using a contract to manage individual workers as if they were employees. Part 37 lays out how to do all of that within the rules.",
+    x: 0.65, y: 0.88,
+    tint: { core: "rgba(245, 195, 225, ", arm: "rgba(210, 150, 195, " },
+    nodes: [
+      { label: "Service Contracting",
+        title: "Service Contracting",
+        text: "Part 37 covers contracts where the principal purpose is to provide services rather than to deliver supplies. The performance work statement and the quality assurance surveillance plan are central — together they tell the contractor what success looks like and how the government will measure it.",
+        rfo: "The overhaul continues to push services contracting toward outcome-based descriptions wherever practical." },
+      { label: "Performance-Based Acquisitions",
+        title: "Performance-Based Acquisitions",
+        text: "The preferred approach for buying services. The government describes the outcome it wants, the contractor proposes how to deliver it, and the contract measures performance against objective standards in a quality assurance surveillance plan.",
+        rfo: "RFO reinforces the performance-based preference and trims some of the prescriptive process around it." },
+      { label: "Personal Services Contracts",
+        title: "Personal Services Contracts",
+        text: "A personal services contract is one that creates an employer-employee relationship between the government and the contractor's personnel. Generally prohibited unless authorized by statute. The test looks at supervision, integration with government staff, and how the work is directed day to day.",
+        rfo: "The prohibition on unauthorized personal services contracts is statutory and unchanged." },
+      { label: "Service Contract Labor Standards",
+        title: "Service Contract Labor Standards (McNamara-O'Hara)",
+        text: "Requires service contractors to pay employees at least the locally-prevailing wages and fringe benefits determined by the Department of Labor for the relevant labor categories. The wage determination is incorporated into the contract.",
+        rfo: "Service Contract Labor Standards are statutory. The labor standard does not change." },
+    ],
+  },
+  {
+    id: "far-8",
+    title: "FAR Part 8",
+    subtitle: "Required Sources of Supplies and Services",
+    blurb: "Before you go to the open market, the FAR tells you to look at the sources the government already has lined up. Federal Supply Schedules, AbilityOne, Federal Prison Industries, agency inventories. Part 8 is the priority list for where to look first and the ordering procedures for the big one — GSA Schedules.",
+    x: 0.82, y: 0.72,
+    tint: { core: "rgba(255, 218, 230, ", arm: "rgba(220, 170, 190, " },
+    nodes: [
+      { label: "Priorities for Use",
+        title: "Priorities for Use of Government Sources",
+        text: "Part 8 sets an order. Before going to the open market, contracting officers are supposed to consider agency inventories, excess from other agencies, Federal Prison Industries, AbilityOne, Federal Supply Schedules, and a few others, in that order. The point is to use what the government already has before going out and creating something new.",
+        rfo: "The priority list is preserved under the overhaul. The narration around how to walk it is what gets simplified." },
+      { label: "Excess Personal Property",
+        title: "Excess Personal Property",
+        text: "Property that another federal agency no longer needs. Before buying new, you check whether something in the federal inventory will do the job. The mechanics live in Part 8 but the inventory itself is run elsewhere.",
+        rfo: "Largely intact." },
+      { label: "Federal Prison Industries",
+        title: "Federal Prison Industries (UNICOR)",
+        text: "UNICOR makes furniture, textiles, electronics, and other products using federal inmate labor. For some categories the government is required to consider UNICOR before going to the open market, with a market research step to confirm price, quality, and delivery are comparable.",
+        rfo: "Statutory program. Substance unchanged; the procedural framing is being trimmed." },
+      { label: "AbilityOne",
+        title: "AbilityOne Program",
+        text: "Products and services from nonprofit agencies employing people who are blind or have significant disabilities. When something is on the AbilityOne procurement list, federal agencies are required to buy it from the designated source rather than competing it on the open market.",
+        rfo: "Statutory and protected. The overhaul does not touch the mandatory-source nature of the program." },
+      { label: "Federal Supply Schedules",
+        title: "Federal Supply Schedules",
+        text: "Indefinite-delivery contracts that GSA holds with thousands of vendors for commercial products and services. The government negotiates ceiling pricing once, and agencies place orders against the schedule. This is the most common way federal contracting officers actually buy commercial things.",
+        rfo: "Schedules are a centerpiece of the RFO simplification story. The overhaul leans into them as a way to avoid reinventing competition for every commercial buy." },
+      { label: "Ordering from Schedules",
+        title: "Schedule Ordering Procedures",
+        text: "How an agency actually places an order against a GSA Schedule. The procedures depend on dollar value: under the micro-purchase threshold you can go to a single schedule holder, under the simplified acquisition threshold you survey a few, above it you have a more structured process with proposals and an evaluation.",
+        rfo: "Same tiered structure under the overhaul. The RFO trims procedural narration and trusts contracting officers to scale the process to the dollar value." },
+      { label: "Schedules for Services",
+        title: "Schedule Orders for Services Requiring a Statement of Work",
+        text: "When the order is for services rather than off-the-shelf supplies, you have to write a statement of work, give it to multiple schedule holders, and evaluate the responses against criteria you stated up front. It is closer to a small source selection than to a catalog buy.",
+        rfo: "The judgment-based core of this is exactly what the overhaul keeps. The boilerplate format requirements are being trimmed." },
+      { label: "Blanket Purchase Agreements",
+        title: "BPAs Against a Schedule",
+        text: "When the same agency is going to keep ordering the same thing from the same schedule holder, it can stand up a Blanket Purchase Agreement against the schedule. This locks in terms and pricing and lets future orders move faster. Single-award and multiple-award BPAs each have their own rules.",
+        rfo: "Preserved. The overhaul views schedule BPAs as an example of doing the work once instead of every time." },
+      { label: "Helium",
+        title: "Acquisition of Helium",
+        text: "Yes, helium gets its own subpart in Part 8. Federal agencies that need helium for major federal users have a statutory requirement to source it through the Bureau of Land Management's federal helium program. It is one of the more famously specific corners of the FAR.",
+        rfo: "Statutory and untouched. The overhaul does not get into the helium business." },
+      { label: "Leasing Motor Vehicles",
+        title: "Leasing of Motor Vehicles",
+        text: "When a federal agency leases vehicles for official use, Part 8 sets the rules — including the general expectation that GSA Fleet is the source of first resort rather than going out and leasing from a commercial provider on the side.",
+        rfo: "Largely intact. The GSA-Fleet-first posture stays." },
+    ],
+  },
+  {
+    id: "far-6",
+    title: "FAR Part 6",
+    subtitle: "Competition Requirements",
+    blurb: "The default rule is that the government competes everything, fairly, with all responsible sources allowed in. Part 6 is the rulebook for that default and the small set of doors out of it. Every door has a name, and every door has a paper trail.",
+    x: 0.18, y: 0.72,
+    tint: { core: "rgba(255, 230, 180, ", arm: "rgba(220, 180, 120, " },
+    nodes: [
+      { label: "Full and Open Competition",
+        title: "Full and Open Competition",
+        text: "All responsible sources are permitted to compete. This is the baseline the entire system is built on. Everything else in Part 6 is a structured way to leave the baseline, with reasons.",
+        rfo: "Untouched in spirit. The overhaul keeps full and open competition as the starting point and just trims procedural narration around how to get there." },
+      { label: "Set-Asides",
+        title: "Full and Open After Exclusion of Sources",
+        text: "Sometimes the rule is 'compete this, but only among a defined group.' Small business set-asides, 8(a), HUBZone, service-disabled veteran-owned. The competition is still real; the pool is just defined by policy.",
+        rfo: "Set-aside policy is statutory and stays. The RFO simplifies how contracting officers document the decision to set something aside." },
+      { label: "Only One Responsible Source",
+        title: "Only One Responsible Source",
+        text: "When only one company can actually do the work — proprietary technology, unique expertise, the only firm with a needed capability — you can go direct. The hard part is showing that 'only one' is true and not just convenient.",
+        rfo: "Same standard. The RFO posture is to be honest about when this really applies and to write the J&A like an explanation, not a checkbox." },
+      { label: "Unusual and Compelling Urgency",
+        title: "Unusual and Compelling Urgency",
+        text: "When delaying for a full competition would cause serious harm to the government, you can compress or skip parts of the process. Urgency has to be real, not the result of someone else's poor planning.",
+        rfo: "Statutory authority. The RFO does not change the standard; it just expects the file to actually show the urgency." },
+      { label: "Industrial Mobilization",
+        title: "Industrial Mobilization",
+        text: "Sometimes the government keeps a vendor in business not because it needs the deliverable today but because it needs the capability to exist. Industrial mobilization, engineering, developmental, or essential research capability.",
+        rfo: "Niche and largely intact." },
+      { label: "International Agreement",
+        title: "International Agreement",
+        text: "When an international agreement says the United States will buy from a specific source, that obligation overrides the normal competition rules. The agreement does the justifying.",
+        rfo: "Treaty obligations are external to the FAR. The overhaul leaves the mechanism alone." },
+      { label: "Authorized by Statute",
+        title: "Authorized or Required by Statute",
+        text: "Congress has carved out specific authorities — 8(a), Federal Prison Industries, AbilityOne, certain small business programs — that allow direct purchase from a defined source. The statute itself is the justification.",
+        rfo: "All statutory. The RFO does not touch any of these." },
+      { label: "National Security",
+        title: "National Security",
+        text: "When opening the procurement to full competition would itself harm national security — for example, by revealing sensitive information that the solicitation alone would expose — Part 6 lets you restrict the field.",
+        rfo: "The standard does not change. Documentation under the RFO is expected to be just as careful, with less ceremony." },
+      { label: "Public Interest",
+        title: "Public Interest",
+        text: "The final exception, used very rarely. Requires a written determination from the agency head that other-than-full-and-open is in the public interest, and notice to Congress. It is the door of last resort.",
+        rfo: "Statutory and procedural. Largely intact." },
+      { label: "Justification and Approval",
+        title: "Justification and Approval",
+        text: "When you use one of the exceptions above, you have to write a Justification and Approval that explains why. Approval level scales with dollar value: contracting officer at the bottom, all the way up to the head of the agency at the top. This is the paper trail that makes the exception accountable.",
+        rfo: "The RFO trims J&A boilerplate but keeps the approval-level structure. The principle is the same: the higher the dollar, the higher the signature." },
+    ],
+  },
+  {
+    id: "far-5",
+    title: "FAR Part 5",
+    subtitle: "Publicizing Contract Actions",
+    blurb: "How and when the government tells the world it wants to buy something, and how it tells the world after it has. Synopses, response times, exceptions, and award notices. The part that puts the public back in 'public contracting.'",
+    x: 0.50, y: 0.74,
+    tint: { core: "rgba(220, 245, 220, ", arm: "rgba(170, 215, 180, " },
+    nodes: [
+      { label: "When to Publicize",
+        title: "Dissemination of Information",
+        text: "The default rule: when the value of a proposed contract action is expected to exceed $25,000, you publicize it on the governmentwide point of entry, which is SAM.gov. Below that threshold the contracting officer still has to consider whether wider notice would help.",
+        rfo: "RFO keeps the SAM.gov-as-the-front-door model. The procedural language around how to format the notice is being trimmed in favor of 'tell people clearly what you are buying.'" },
+      { label: "The Synopsis",
+        title: "Synopses of Proposed Contract Actions",
+        text: "Before you issue a solicitation, you post a synopsis. The synopsis tells industry what you are buying, when the solicitation will be available, and who to contact. The point is to give vendors enough lead time to actually prepare a real response.",
+        rfo: "Same idea under the overhaul. The shift is away from rigid templates and toward whatever format actually communicates the requirement to the people who would bid on it." },
+      { label: "Exceptions to Synopsizing",
+        title: "Exceptions to Synopsis",
+        text: "There are a handful of situations where you do not have to synopsize: unusual and compelling urgency, classified acquisitions, certain international agreements, perishable subsistence, brand-name buys with documented justification, and a few others. The exception has to actually fit. 'It would be inconvenient' is not on the list.",
+        rfo: "The statutory exceptions cannot be overhauled away. The procedural narration around documenting them is what gets trimmed." },
+      { label: "Response Time",
+        title: "Publicizing and Response Time",
+        text: "The synopsis usually has to sit out there for at least fifteen days before the solicitation issues, and offerors generally get at least thirty days from solicitation issuance to respond. Commercial item buys can compress those windows. The principle is the same: vendors need time to do real work, not just react.",
+        rfo: "RFO leans into shortening the wait when the contracting officer can defend the shorter window. The minimums set by statute still anchor the floor." },
+      { label: "What Goes in a Synopsis",
+        title: "Preparation and Transmittal",
+        text: "What actually goes in the synopsis: the description of the work, the NAICS code, the set-aside status, the place of performance, the response date, the contracting officer's contact information. Boring fields, but they are how vendors decide whether to spend a week writing a proposal.",
+        rfo: "Field-by-field structure is exactly the kind of thing the overhaul wants to soften, in favor of the contracting officer using judgment about what industry actually needs to know." },
+      { label: "Combined Synopsis-Solicitation",
+        title: "Combined Synopsis-Solicitation",
+        text: "For commercial item acquisitions, you can combine the synopsis and the solicitation into one notice. It is faster, it is cleaner, and it is the default move for most off-the-shelf buys. The trade is that you do not get a separate window between 'heads up' and 'go.'",
+        rfo: "Heavily favored under the RFO posture. The overhaul nudges contracting officers toward the simplest publication path that still gives industry a fair shot." },
+      { label: "Award Notices",
+        title: "Synopses of Contract Awards",
+        text: "Once you award something over $25,000, you publicize the award too. Who got it, how much, what for. This is what makes the spend traceable on the public side and what lets unsuccessful offerors decide whether to ask for a debriefing.",
+        rfo: "The award-notice mechanism stays. The policy push under the overhaul is to make the notices more useful and less boilerplate." },
+      { label: "Releasing Information",
+        title: "Release of Information",
+        text: "What contracting officers can and cannot say about a procurement while it is in progress. Presolicitation and postaward release of information rules, the things that have to come from the contracting office and not from a program lead with a Twitter account.",
+        rfo: "Cleaner than today, same idea. The principle that the contracting officer controls the official narrative does not change." },
+      { label: "Paid Advertisements",
+        title: "Paid Advertisements",
+        text: "When the government pays a newspaper or trade publication to run a notice. Mostly used for niche buys where SAM.gov by itself will not reach the right audience. There are rules about how that is approved and paid for.",
+        rfo: "Niche enough that the RFO largely leaves it alone." },
+      { label: "Multi-Agency Vehicles",
+        title: "Multi-Agency Use Contracts",
+        text: "When one agency stands up a contract that other agencies can ride. The rules for publicizing those, so contracting officers across the government can find them and avoid duplicating the work.",
+        rfo: "RFO is broadly supportive of the 'do not reinvent it' instinct here. The publicizing mechanics are simplified but the idea of advertising sharable vehicles is reinforced." },
+    ],
+  },
+  {
+    id: "far-15",
+    title: "FAR Part 15",
+    subtitle: "Contracting by Negotiation",
+    blurb: "Where the government and a vendor sit down at a table, talk about what's needed and what it costs, and write a contract together. The home of RFPs, source selections, and best-value tradeoffs. The Revolutionary FAR Overhaul reaches Part 15 too — model deviation text was released in September 2025, trimming prescriptive process language and pushing more to the contracting officer's judgment.",
+    x: 0.78, y: 0.24,
+    tint: { core: "rgba(220, 232, 255, ", arm: "rgba(180, 200, 255, " },
+    nodes: [
+      { label: "Source Selection Processes",
+        title: "Source Selection Processes",
+        text: "How the team picks among proposals. Best-value continuum, tradeoff method, and lowest price technically acceptable. The big idea: you are not always required to take the lowest price. Sometimes a better proposal is worth paying more for, and the rules let you say so on the record.",
+        rfo: "Under the RFO model deviation, the structural language for the best-value continuum is preserved but the prescriptive narration around it is pared back. The decision still has to be defensible in writing." },
+      { label: "Solicitation and Receipt of Proposals",
+        title: "Solicitation and Receipt of Proposals",
+        text: "How the RFP gets written, what has to be in it, and how it reaches the vendor community. Synopsis, draft RFP, presolicitation conferences, amendments, and the rules for receiving proposals.",
+        rfo: "RFO trims the rigid uniform contract format scaffolding and lets contracting officers structure the solicitation in whatever way actually communicates the requirement." },
+      { label: "Source Selection",
+        title: "Source Selection",
+        text: "The actual evaluation. Standing up the team, applying the criteria you advertised, deciding the competitive range, holding discussions, asking for final proposal revisions, and writing the source selection decision document.",
+        rfo: "Under the overhaul, the SSDD still has to show the why. The shift is away from procedural box-checking and toward a record that a reasonable person can read and understand." },
+      { label: "Contract Pricing",
+        title: "Contract Pricing",
+        text: "Whether you need certified cost or pricing data, when price analysis is enough versus when cost analysis is required, profit and fee, and the remedies if pricing data turns out to have been defective.",
+        rfo: "TINA itself is statutory, so the threshold and the certification cannot be overhauled away. RFO leaves the pricing data framework intact and trims the surrounding procedural language." },
+      { label: "Notifications and Debriefings",
+        title: "Notifications and Debriefings",
+        text: "Telling unsuccessful offerors why they lost. Preaward and postaward debriefings, the things you have to cover, and the things you should not say. Most protests are either avoided or born here.",
+        rfo: "Required notification content is still required. The RFO removes some of the script around how to deliver it and trusts the contracting officer to run a clear conversation." },
+      { label: "Unsolicited Proposals",
+        title: "Unsolicited Proposals",
+        text: "When a vendor walks up with an idea the government did not ask for. The rules for receiving, evaluating, and possibly contracting based on something nobody solicited.",
+        rfo: "Largely intact under the overhaul. The bar for treating something as a true unsolicited proposal versus a marketing pitch is still a judgment call." },
+      { label: "Tradeoff vs LPTA",
+        title: "Best-Value Continuum",
+        text: "Tradeoff source selection: you can pay more for a better proposal if it is worth it, and the file has to show why. LPTA: among offers that meet the technical bar, you take the lowest price. Use tradeoff when 'better' really matters; use LPTA when it does not.",
+        rfo: "RFO keeps both as available approaches. The change is in tone: less procedural recipe, more 'pick the right tool for the requirement and write down your reasoning.'" },
+      { label: "Competitive Range",
+        title: "Who Stays In",
+        text: "After initial evaluation, the contracting officer can narrow the field to those proposals most highly rated, the ones with a real chance of award. Once the range is set, you have to hold discussions with everyone still in it.",
+        rfo: "Same legal contour under the overhaul. The discipline you build around documenting who is in and why is what protects the decision later." },
+      { label: "Discussions vs Clarifications",
+        title: "What You Can Talk About",
+        text: "Clarifications are limited exchanges, no negotiation. Discussions open the door to revising proposals. Crossing that line without first establishing a competitive range is a procedural problem you do not want to create.",
+        rfo: "The line still matters and the case law around it has not moved. RFO simplifies the language but does not erase the difference." },
+      { label: "TINA",
+        title: "Truth in Negotiations",
+        text: "Above the threshold, contractors must submit certified cost or pricing data and certify it is accurate, complete, and current. If the data is later found defective, the government can recover the difference.",
+        rfo: "Statutory. The overhaul does not touch the certification requirement or the defective-pricing remedy." },
+    ],
+  },
+];
+
+// Galaxies appear in the sky shortly after the welcome arrives. They use the
+// same arrival animation as stars so they feel like part of the constellation.
+const galaxies = GALAXIES.map(g => ({
+  ...g,
+  _revealAt: SESSION_START + VEIL_MS + 1800,
+  _rotSeed: Math.random() * Math.PI * 2,
+}));
+
+// ---------- view state --------------------------------------------------
+// "sky" = constellation view, "fadeOut" = transitioning into a galaxy,
+// "galaxy" = zoomed in on a galaxy's contents, "fadeIn" = transitioning back.
+let viewMode = "sky";
+let activeGalaxy = null;
+let modeStartTime = 0;
+const FADE_MS = 1100;
+
+function enterGalaxy(g) {
+  activeGalaxy = g;
+  viewMode = "fadeOut";
+  modeStartTime = Date.now();
+  freezeHeartbeat();
+  const backBtn = document.getElementById("back-button");
+  if (backBtn) backBtn.classList.add("show");
+  const gt = document.getElementById("galaxy-title");
+  if (gt) {
+    gt.querySelector(".gt-name").textContent = g.title;
+    gt.querySelector(".gt-sub").textContent = g.subtitle;
+    setTimeout(() => gt.classList.add("show"), FADE_MS * 0.6);
+  }
+  // hide hover panel during transition
+  reveal.classList.remove("visible", "lingering", "affirm");
+  hovered = null;
+  hoveredNode = null;
+}
+function returnToSky() {
+  if (viewMode !== "galaxy") return;
+  viewMode = "fadeIn";
+  modeStartTime = Date.now();
+  const backBtn = document.getElementById("back-button");
+  if (backBtn) backBtn.classList.remove("show");
+  const gt = document.getElementById("galaxy-title");
+  if (gt) gt.classList.remove("show");
+  reveal.classList.remove("visible", "lingering", "affirm");
+  hovered = null;
+  hoveredNode = null;
+}
+
+// All remembered stars start hidden. The heartbeat will reveal them one at
+// a time, in random order, every HEARTBEAT_MS. When the queue is empty,
+// brand new earned stars take over the cadence.
+state.stars.forEach(s => { s._revealAt = Infinity; });
+
+const revealQueue = state.stars.slice();
+for (let i = revealQueue.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [revealQueue[i], revealQueue[j]] = [revealQueue[j], revealQueue[i]];
+}
+
+// First heartbeat fires HEARTBEAT_MS after the welcome arrives.
+let nextHeartbeatAt = SESSION_START + VEIL_MS + HEARTBEAT_MS;
+
+// ---------- canvases ----------------------------------------------------
+const cNeb = document.getElementById("nebula");
+const cBg  = document.getElementById("stars-bg");
+const cFg  = document.getElementById("stars-fg");
+const xNeb = cNeb.getContext("2d");
+const xBg  = cBg.getContext("2d");
+const xFg  = cFg.getContext("2d");
+
+let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+function resize() {
+  W = window.innerWidth;
+  H = window.innerHeight;
+  for (const c of [cNeb, cBg, cFg]) {
+    c.width  = W * DPR;
+    c.height = H * DPR;
+    c.style.width  = W + "px";
+    c.style.height = H + "px";
+  }
+  xNeb.setTransform(DPR, 0, 0, DPR, 0, 0);
+  xBg.setTransform(DPR, 0, 0, DPR, 0, 0);
+  xFg.setTransform(DPR, 0, 0, DPR, 0, 0);
+  drawNebula();
+  buildBackgroundStars();
+}
+window.addEventListener("resize", resize);
+
+// ---------- sky background ----------------------------------------------
+// Pure black. The earned stars themselves will become the night sky.
+function drawNebula() {
+  xNeb.fillStyle = "#000000";
+  xNeb.fillRect(0, 0, W, H);
+}
+
+// ---------- background stars: none ---------------------------------------
+// The user's earned constellation IS the night sky. No random parallax
+// stars in the background — the sky stays pure black until the first
+// earned star arrives.
+function buildBackgroundStars() { /* intentionally empty */ }
+
+// ---------- earned stars (the meaningful ones) --------------------------
+// state.stars looks like: [{ id, x: 0..1, y: 0..1, born }]
+// They're stored normalized so resize doesn't move them.
+
+function placeNewStar(contentId) {
+  // Avoid placing too close to existing stars; sample a few candidates.
+  let best = null, bestDist = -1;
+  for (let i = 0; i < 20; i++) {
+    const cx = 0.10 + Math.random() * 0.80;
+    const cy = 0.15 + Math.random() * 0.70;
+    let minD = Infinity;
+    for (const s of state.stars) {
+      const dx = (s.x - cx), dy = (s.y - cy);
+      const d = dx*dx + dy*dy;
+      if (d < minD) minD = d;
+    }
+    if (minD > bestDist) { bestDist = minD; best = { x: cx, y: cy }; }
+  }
+  return { id: contentId, x: best.x, y: best.y, born: Date.now(), _revealAt: Date.now() };
+}
+
+// Earn the next content item from CONTENT. Called by the heartbeat after
+// all remembered stars have already returned. No cooldown check — the
+// heartbeat owns the cadence now.
+function addNextEarnedStar() {
+  const remaining = CONTENT.filter(c => !state.seen.includes(c.id));
+  if (remaining.length === 0) return null;
+
+  // light alternation: prefer the kind opposite the last two seen
+  const lastTwo = state.seen.slice(-2).map(id => (CONTENT.find(c => c.id === id) || {}).kind);
+  let pool = remaining;
+  if (lastTwo[0] === lastTwo[1] && lastTwo[0]) {
+    const flip = lastTwo[0] === "term" ? "affirm" : "term";
+    const alt = remaining.filter(c => c.kind === flip);
+    if (alt.length) pool = alt;
+  }
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  const s = placeNewStar(pick.id);
+  state.stars.push(s);
+  state.seen.push(pick.id);
+  state.lastAdded = Date.now();
+  saveState(state);
+  return s;
+}
+
+// ---------- animation ---------------------------------------------------
+let t = 0;
+let mouse = { x: W/2, y: H/2, mx: 0, my: 0 };
+window.addEventListener("mousemove", e => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+  // normalized -1..1 for parallax shift
+  mouse.mx = (e.clientX / W - 0.5) * 2;
+  mouse.my = (e.clientY / H - 0.5) * 2;
+});
+
+function drawBackgroundStars() {
+  xBg.clearRect(0, 0, W, H);
+}
+
+// hit testing for earned stars
+let hovered = null;
+// hit testing for galaxies (in sky view) and nodes (in galaxy view)
+let hoveredGalaxy = null;
+let hoveredNode = null;
+
+// As the constellation grows, the camera pulls back: stars get smaller and
+// the spread tightens toward center, leaving more breathing room around
+// the edges. Below 20 stars the sky stays at its full size.
+function crowdScale() {
+  const visible = state.stars.filter(s => s._revealAt <= Date.now()).length + sessionStars.length;
+  if (visible <= 20) return 1.0;
+  return Math.max(0.35, 1 - (visible - 20) * 0.012);
+}
+
+function drawForegroundStars() {
+  xFg.clearRect(0, 0, W, H);
+  // gentle camera drift
+  const driftX = Math.sin(t * 0.00005) * 8 - mouse.mx * 10;
+  const driftY = Math.cos(t * 0.00007) * 6 - mouse.my * 10;
+
+  const cs = crowdScale();
+  const allStars = state.stars.concat(sessionStars);
+  for (const s of allStars) {
+    if (s._revealAt == null || Date.now() < s._revealAt) {
+      s._sx = null;  // hidden — clear hit-test info
+      continue;
+    }
+
+    const c = s.isWelcome
+      ? { kind: "welcome" }
+      : CONTENT.find(c => c.id === s.id);
+    if (!c) continue;
+
+    // crowd-aware position: shrink toward center as the sky fills
+    const x = (s.x - 0.5) * W * cs + W / 2 + driftX;
+    const y = (s.y - 0.5) * H * cs + H / 2 + driftY;
+    const isHover = hovered && hovered.id === s.id;
+
+    // ---- unified arrival animation ----
+    // Every revealed star — remembered or brand new — uses the same zoom-in
+    // animation, started at _revealAt. There is no separate "load fade" path
+    // anymore; the heartbeat reveals stars one at a time.
+    const age = Date.now() - s._revealAt;
+    const introT = Math.min(1, age / INTRO_MS);
+    const eased = 1 - Math.pow(1 - introT, 3);
+    const introScale = 1 + (1 - eased) * 4.0;
+    const introBoost = 1 + (1 - eased) * 1.6;
+    const flash = age < 350 ? (1 - age / 350) : 0;
+
+    // tint by kind
+    let core, halo;
+    if (c.kind === "welcome") {
+      core = "rgba(255, 240, 210, "; halo = "rgba(245, 220, 160, ";
+    } else if (c.kind === "term") {
+      core = "rgba(220, 232, 255, "; halo = "rgba(150, 180, 230, ";
+    } else {
+      core = "rgba(255, 244, 220, "; halo = "rgba(220, 180, 130, ";
+    }
+
+    const twinkle = 0.85 + 0.15 * Math.sin(t * 0.0018 + (s.x + s.y) * 12);
+    const baseAlpha = twinkle * introBoost;                      // arriving stars are brighter
+    const hoverBoost = isHover ? 1.2 : 1.0;
+    const r = (c.kind === "welcome" ? 2.6 : 2.0) * hoverBoost * introScale * cs;
+    const haloR = 60 * hoverBoost * introScale * cs;
+
+    // outer glow rings
+    const ringAlpha = Math.min(1, baseAlpha * (isHover ? 0.55 : 0.32));
+    const grad = xFg.createRadialGradient(x, y, 0, x, y, haloR);
+    grad.addColorStop(0, halo + (ringAlpha * 0.9) + ")");
+    grad.addColorStop(0.25, halo + (ringAlpha * 0.35) + ")");
+    grad.addColorStop(1, halo + "0)");
+    xFg.fillStyle = grad;
+    xFg.beginPath();
+    xFg.arc(x, y, haloR, 0, Math.PI * 2);
+    xFg.fill();
+
+    // bright core
+    xFg.fillStyle = core + Math.min(1, baseAlpha) + ")";
+    xFg.beginPath();
+    xFg.arc(x, y, r, 0, Math.PI * 2);
+    xFg.fill();
+
+    // crisp highlight
+    xFg.fillStyle = "rgba(255,255,255," + Math.min(1, baseAlpha * 0.9) + ")";
+    xFg.beginPath();
+    xFg.arc(x, y, r * 0.45, 0, Math.PI * 2);
+    xFg.fill();
+
+    // arrival spark — a brief bright disc on top of the core, only the first ~350ms
+    if (flash > 0) {
+      const sparkR = 18 + 40 * flash;
+      const sg = xFg.createRadialGradient(x, y, 0, x, y, sparkR);
+      sg.addColorStop(0, "rgba(255,255,255," + (0.95 * flash) + ")");
+      sg.addColorStop(0.4, "rgba(255,255,255," + (0.35 * flash) + ")");
+      sg.addColorStop(1, "rgba(255,255,255,0)");
+      xFg.fillStyle = sg;
+      xFg.beginPath();
+      xFg.arc(x, y, sparkR, 0, Math.PI * 2);
+      xFg.fill();
+    }
+
+    // store screen position back on the object for hit test
+    s._sx = x;
+    s._sy = y;
+  }
+}
+
+// ---------- shooting stars ----------------------------------------------
+const shootingStars = [];
+let nextShootAt = SESSION_START + VEIL_MS + 25 * 1000 + Math.random() * 15000;
+
+function spawnShootingStar() {
+  // Start somewhere in the upper portion of the sky; travel down-and-across
+  // at a gentle angle. Random direction (left or right).
+  const fromLeft = Math.random() < 0.5;
+  const angle = (Math.PI / 6) + Math.random() * (Math.PI / 4); // 30..75 deg
+  const length = Math.max(W, H) * (0.5 + Math.random() * 0.4);
+  const x1 = fromLeft ? -40 + Math.random() * W * 0.4 : W + 40 - Math.random() * W * 0.4;
+  const y1 = -20 + Math.random() * H * 0.35;
+  const dirX = fromLeft ? Math.cos(angle) : -Math.cos(angle);
+  const dirY = Math.sin(angle);
+  shootingStars.push({
+    x1, y1,
+    x2: x1 + dirX * length,
+    y2: y1 + dirY * length,
+    born: Date.now(),
+    duration: 1500 + Math.random() * 700,
+  });
+}
+
+function drawShootingStars() {
+  const now = Date.now();
+  for (let i = shootingStars.length - 1; i >= 0; i--) {
+    const s = shootingStars[i];
+    const u = (now - s.born) / s.duration;
+    if (u >= 1) { shootingStars.splice(i, 1); continue; }
+    const eased = u * u * (3 - 2 * u); // smoothstep
+    const hx = s.x1 + (s.x2 - s.x1) * eased;
+    const hy = s.y1 + (s.y2 - s.y1) * eased;
+    const dx = s.x2 - s.x1;
+    const dy = s.y2 - s.y1;
+    const len = Math.sqrt(dx*dx + dy*dy);
+    const ux = dx / len, uy = dy / len;
+    const trailLen = 110;
+    const tx = hx - ux * trailLen;
+    const ty = hy - uy * trailLen;
+    // fade out near the end
+    const fade = u < 0.6 ? 1 : Math.max(0, 1 - (u - 0.6) / 0.4);
+    const alpha = 0.95 * fade;
+    const grad = xFg.createLinearGradient(tx, ty, hx, hy);
+    grad.addColorStop(0, "rgba(255,255,255,0)");
+    grad.addColorStop(1, `rgba(255,255,255,${alpha})`);
+    xFg.strokeStyle = grad;
+    xFg.lineWidth = 1.6;
+    xFg.lineCap = "round";
+    xFg.beginPath();
+    xFg.moveTo(tx, ty);
+    xFg.lineTo(hx, hy);
+    xFg.stroke();
+    // bright head
+    xFg.fillStyle = `rgba(255,255,255,${alpha})`;
+    xFg.beginPath();
+    xFg.arc(hx, hy, 1.8, 0, Math.PI * 2);
+    xFg.fill();
+  }
+}
+
+// ---------- galaxies: rendering ----------------------------------------
+// A small procedural spiral. Bright core, two arms made of small stars,
+// slow rotation. Used both as a tiny element in the sky view and as a
+// large centerpiece in the zoomed-in galaxy view.
+function drawGalaxy(g, cx, cy, scale, opts) {
+  opts = opts || {};
+  const alpha = opts.alpha == null ? 1 : opts.alpha;
+  const isHover = !!opts.hover;
+  const rotation = (t * 0.00005) + (g._rotSeed || 0);
+
+  // bright core: radial gradient
+  const coreR = 14 * scale * (isHover ? 1.15 : 1.0);
+  const coreGrad = xFg.createRadialGradient(cx, cy, 0, cx, cy, coreR * 4);
+  coreGrad.addColorStop(0, g.tint.core + (0.95 * alpha) + ")");
+  coreGrad.addColorStop(0.25, g.tint.core + (0.45 * alpha) + ")");
+  coreGrad.addColorStop(0.6, g.tint.arm + (0.18 * alpha) + ")");
+  coreGrad.addColorStop(1, g.tint.arm + "0)");
+  xFg.fillStyle = coreGrad;
+  xFg.beginPath();
+  xFg.arc(cx, cy, coreR * 4, 0, Math.PI * 2);
+  xFg.fill();
+
+  // bright central pip
+  xFg.fillStyle = "rgba(255,255,255," + (0.85 * alpha) + ")";
+  xFg.beginPath();
+  xFg.arc(cx, cy, 1.6 * scale, 0, Math.PI * 2);
+  xFg.fill();
+
+  // two spiral arms. Logarithmic spiral: r = a * e^(b*theta). We sample
+  // points along it and draw small dots, with a gentle outward thinning.
+  const arms = 2;
+  const samplesPerArm = Math.floor(60 * Math.min(scale, 2.2));
+  const a = 1.6 * scale;
+  const b = 0.32;
+  for (let arm = 0; arm < arms; arm++) {
+    const armOffset = (Math.PI * 2 * arm) / arms;
+    for (let i = 1; i < samplesPerArm; i++) {
+      const theta = i * 0.16;
+      const r = a * Math.exp(b * theta);
+      if (r > 90 * scale) break;
+      const ang = theta + armOffset + rotation;
+      const px = cx + Math.cos(ang) * r;
+      const py = cy + Math.sin(ang) * r * 0.55; // flatten a touch
+      // brightness fades along the arm
+      const armAlpha = Math.max(0.05, 0.85 - i * 0.012) * alpha;
+      const dotR = Math.max(0.4, (1.4 - i * 0.012) * scale * 0.5);
+      xFg.fillStyle = g.tint.arm + armAlpha + ")";
+      xFg.beginPath();
+      xFg.arc(px, py, dotR, 0, Math.PI * 2);
+      xFg.fill();
+    }
+  }
+
+  // a thin halo ring on hover, just to telegraph clickability
+  if (isHover) {
+    xFg.strokeStyle = g.tint.arm + (0.35 * alpha) + ")";
+    xFg.lineWidth = 1;
+    xFg.beginPath();
+    xFg.arc(cx, cy, 60 * scale, 0, Math.PI * 2);
+    xFg.stroke();
+  }
+}
+
+// In the sky view, draw each galaxy small. Skip during fadeIn (we're
+// returning to the sky from a galaxy) so the user lands on bare stars.
+function drawGalaxiesSky(alpha) {
+  if (alpha <= 0) return;
+  const cs = crowdScale();
+  const driftX = Math.sin(t * 0.00005) * 8 - mouse.mx * 10;
+  const driftY = Math.cos(t * 0.00007) * 6 - mouse.my * 10;
+  for (const g of galaxies) {
+    if (g._revealAt == null || Date.now() < g._revealAt) {
+      g._sx = null;
+      continue;
+    }
+    const cx = (g.x - 0.5) * W * cs + W / 2 + driftX;
+    const cy = (g.y - 0.5) * H * cs + H / 2 + driftY;
+
+    // arrival animation: same model as stars
+    const age = Date.now() - g._revealAt;
+    const introT = Math.min(1, age / INTRO_MS);
+    const eased = 1 - Math.pow(1 - introT, 3);
+    const introScale = 1 + (1 - eased) * 4.0;
+    const introAlpha = Math.min(1, 0.4 + eased * 0.6);
+
+    const isHover = hoveredGalaxy && hoveredGalaxy.id === g.id;
+    const baseScale = 0.55 * cs * introScale;
+
+    drawGalaxy(g, cx, cy, baseScale, {
+      alpha: introAlpha * alpha,
+      hover: isHover,
+    });
+
+    // small italic label, only on hover
+    if (isHover) {
+      xFg.font = 'italic 300 16px "Cormorant Garamond", serif';
+      xFg.fillStyle = "rgba(220, 232, 255, " + (0.85 * alpha) + ")";
+      xFg.textAlign = "center";
+      xFg.fillText(g.title, cx, cy + 70 * cs);
+      xFg.font = '300 10px "Inter", sans-serif';
+      xFg.fillStyle = "rgba(180, 195, 220, " + (0.6 * alpha) + ")";
+      xFg.fillText(g.subtitle.toUpperCase(), cx, cy + 86 * cs);
+    }
+
+    g._sx = cx;
+    g._sy = cy;
+    g._sr = 60 * baseScale; // hit radius
+  }
+}
+
+// Inside the galaxy view: a big central spiral, with the nodes orbiting
+// around it as small lights. Hovering a node reveals its content via the
+// existing reveal panel.
+function drawGalaxyDetail(g, alpha) {
+  if (alpha <= 0) return;
+  const cx = W / 2 + Math.sin(t * 0.00006) * 8;
+  const cy = H / 2 + 30 + Math.cos(t * 0.00008) * 6;
+
+  // the centerpiece spiral, large
+  drawGalaxy(g, cx, cy, 3.2, { alpha: alpha });
+
+  // node ring(s). For 10 nodes we put them on a single ellipse around the
+  // galaxy core, evenly spaced, with a slow shared rotation.
+  const ringRx = Math.min(W, H) * 0.36;
+  const ringRy = ringRx * 0.62;
+  const ringRot = t * 0.00003;
+  const n = g.nodes.length;
+  for (let i = 0; i < n; i++) {
+    const node = g.nodes[i];
+    const ang = (Math.PI * 2 * i) / n + ringRot;
+    const nx = cx + Math.cos(ang) * ringRx;
+    const ny = cy + Math.sin(ang) * ringRy;
+
+    const isHover = hoveredNode === node;
+    const r = (isHover ? 4.2 : 2.8);
+    const haloR = isHover ? 70 : 48;
+
+    // halo
+    const grad = xFg.createRadialGradient(nx, ny, 0, nx, ny, haloR);
+    grad.addColorStop(0, "rgba(220, 232, 255, " + (0.55 * alpha) + ")");
+    grad.addColorStop(0.3, "rgba(180, 200, 255, " + (0.20 * alpha) + ")");
+    grad.addColorStop(1, "rgba(180, 200, 255, 0)");
+    xFg.fillStyle = grad;
+    xFg.beginPath();
+    xFg.arc(nx, ny, haloR, 0, Math.PI * 2);
+    xFg.fill();
+
+    // core
+    xFg.fillStyle = "rgba(255, 255, 255, " + (0.95 * alpha) + ")";
+    xFg.beginPath();
+    xFg.arc(nx, ny, r, 0, Math.PI * 2);
+    xFg.fill();
+
+    // label, always visible but gentle
+    xFg.font = '300 10px "Inter", sans-serif';
+    xFg.fillStyle = isHover
+      ? "rgba(232, 240, 255, " + (0.95 * alpha) + ")"
+      : "rgba(180, 195, 220, " + (0.55 * alpha) + ")";
+    xFg.textAlign = "center";
+    // place label outside the ring (radial)
+    const lx = cx + Math.cos(ang) * (ringRx + 22);
+    const ly = cy + Math.sin(ang) * (ringRy + 22) + 4;
+    xFg.fillText(node.label.toUpperCase(), lx, ly);
+
+    node._sx = nx;
+    node._sy = ny;
+  }
+
+  // soft blurb under the title at the top of the screen
+  xFg.font = 'italic 300 14px "Cormorant Garamond", serif';
+  xFg.fillStyle = "rgba(180, 195, 220, " + (0.55 * alpha) + ")";
+  xFg.textAlign = "center";
+  // wrap manually if needed — give it room below the HTML title block
+  const blurbY = 156;
+  wrapText(xFg, g.blurb, W / 2, blurbY, Math.min(W * 0.7, 720), 18);
+}
+
+// quick text wrapper so the blurb can break cleanly under the title
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(" ");
+  let line = "";
+  let yy = y;
+  for (let i = 0; i < words.length; i++) {
+    const test = line ? line + " " + words[i] : words[i];
+    const w = ctx.measureText(test).width;
+    if (w > maxWidth && line) {
+      ctx.fillText(line, x, yy);
+      line = words[i];
+      yy += lineHeight;
+    } else {
+      line = test;
+    }
+  }
+  if (line) ctx.fillText(line, x, yy);
+}
+
+function tick(now) {
+  t = now || performance.now();
+  drawBackgroundStars();
+  xFg.clearRect(0, 0, W, H);
+
+  // figure out per-mode alphas based on transition state
+  let alphaSky = 0;
+  let alphaGalaxy = 0;
+  if (viewMode === "sky") {
+    alphaSky = 1;
+  } else if (viewMode === "galaxy") {
+    alphaGalaxy = 1;
+  } else if (viewMode === "fadeOut") {
+    const u = Math.min(1, (Date.now() - modeStartTime) / FADE_MS);
+    alphaSky = 1 - u;
+    alphaGalaxy = u;
+    if (u >= 1) viewMode = "galaxy";
+  } else if (viewMode === "fadeIn") {
+    const u = Math.min(1, (Date.now() - modeStartTime) / FADE_MS);
+    alphaSky = u;
+    alphaGalaxy = 1 - u;
+    if (u >= 1) {
+      viewMode = "sky";
+      activeGalaxy = null;
+      thawHeartbeat();
+    }
+  }
+
+  // sky layer
+  if (alphaSky > 0) {
+    xFg.save();
+    xFg.globalAlpha = alphaSky;
+    drawForegroundStarsInline();
+    drawGalaxiesSky(1);
+    drawShootingStars();
+    xFg.restore();
+  }
+  // galaxy layer
+  if (alphaGalaxy > 0 && activeGalaxy) {
+    xFg.save();
+    xFg.globalAlpha = alphaGalaxy;
+    drawGalaxyDetail(activeGalaxy, 1);
+    xFg.restore();
+  }
+
+  requestAnimationFrame(tick);
+}
+
+// drawForegroundStarsInline: same as drawForegroundStars but does not
+// clear the canvas (the new tick clears once per frame).
+function drawForegroundStarsInline() {
+  // Reuse drawForegroundStars but skip its initial clearRect by saving
+  // and restoring the canvas state. Easiest: temporarily swap clearRect.
+  const origClear = xFg.clearRect.bind(xFg);
+  xFg.clearRect = function() { /* no-op for this call */ };
+  try {
+    drawForegroundStars();
+  } finally {
+    xFg.clearRect = origClear;
+  }
+}
+
+// ---------- hover detection on earned stars -----------------------------
+const reveal = document.getElementById("reveal");
+const revealWord = reveal.querySelector(".word");
+const revealDesc = reveal.querySelector(".desc");
+let lingerTimer = null;
+
+const revealRfoNote = reveal.querySelector(".rfo-note");
+const revealRfoText = reveal.querySelector(".rfo-text");
+
+function showRevealForStar(found, e) {
+  reveal.classList.remove("pinned"); // sky-view stars use cursor follow
+  if (found.isWelcome) {
+    revealWord.textContent = found.welcomeText;
+    revealDesc.textContent = "";
+    reveal.classList.add("affirm");
+  } else {
+    const c = CONTENT.find(c => c.id === found.id);
+    if (c.kind === "affirm") {
+      revealWord.textContent = c.text;
+      revealDesc.textContent = "";
+      reveal.classList.add("affirm");
+    } else {
+      revealWord.textContent = c.word;
+      revealDesc.textContent = c.desc;
+      reveal.classList.remove("affirm");
+    }
+  }
+  if (revealRfoNote) revealRfoNote.style.display = "none";
+  reveal.classList.add("visible");
+  reveal.classList.remove("lingering");
+  clearTimeout(lingerTimer);
+  lingerTimer = setTimeout(() => reveal.classList.add("lingering"), 700);
+}
+
+function showRevealForNode(node) {
+  revealWord.textContent = node.title;
+  revealDesc.textContent = node.text;
+  reveal.classList.remove("affirm");
+  reveal.classList.add("pinned"); // lock to right side, no cursor follow
+  // clear any inline left/top from previous cursor-follow positioning
+  reveal.style.left = "";
+  reveal.style.top = "";
+  if (revealRfoNote && node.rfo) {
+    revealRfoText.textContent = node.rfo;
+    revealRfoNote.style.display = "block";
+  } else if (revealRfoNote) {
+    revealRfoNote.style.display = "none";
+  }
+  reveal.classList.add("visible");
+  reveal.classList.remove("lingering");
+  clearTimeout(lingerTimer);
+  lingerTimer = setTimeout(() => reveal.classList.add("lingering"), 700);
+}
+
+function clearReveal() {
+  reveal.classList.remove("visible", "lingering", "affirm", "pinned");
+  clearTimeout(lingerTimer);
+}
+
+function positionReveal(e) {
+  const pad = 24;
+  let rx = e.clientX + 28;
+  let ry = e.clientY + 18;
+  if (rx + 380 > W) rx = e.clientX - 380 - 24;
+  if (ry + 220 > H) ry = e.clientY - 220 - 24;
+  if (rx < pad) rx = pad;
+  if (ry < pad) ry = pad;
+  reveal.style.left = rx + "px";
+  reveal.style.top  = ry + "px";
+}
+
+cFg.addEventListener("mousemove", (e) => {
+  // ---- galaxy view: hit-test the orbiting nodes ----
+  if (viewMode === "galaxy" && activeGalaxy) {
+    let foundNode = null;
+    let bestD = 28 * 28;
+    for (const node of activeGalaxy.nodes) {
+      if (node._sx == null) continue;
+      const dx = e.clientX - node._sx;
+      const dy = e.clientY - node._sy;
+      const d = dx*dx + dy*dy;
+      if (d < bestD) { bestD = d; foundNode = node; }
+    }
+    if (foundNode && hoveredNode !== foundNode) {
+      hoveredNode = foundNode;
+      cFg.style.cursor = "pointer";
+      showRevealForNode(foundNode);
+    } else if (!foundNode && hoveredNode) {
+      hoveredNode = null;
+      cFg.style.cursor = "default";
+      clearReveal();
+    }
+    // pinned reveal panel — no cursor follow
+    return;
+  }
+
+  // ---- transitions: don't show new hover UI mid-fade ----
+  if (viewMode !== "sky") return;
+
+  // ---- sky view: hit-test stars and galaxies ----
+  let found = null;
+  let bestD = 32 * 32;
+  const allStars = state.stars.concat(sessionStars);
+  for (const s of allStars) {
+    if (s._sx == null) continue;
+    const dx = e.clientX - s._sx;
+    const dy = e.clientY - s._sy;
+    const d = dx*dx + dy*dy;
+    if (d < bestD) { bestD = d; found = s; }
+  }
+
+  // galaxy hit-test (use a more generous radius — galaxies are bigger)
+  let foundGalaxy = null;
+  let bestGD = 64 * 64;
+  for (const g of galaxies) {
+    if (g._sx == null) continue;
+    const dx = e.clientX - g._sx;
+    const dy = e.clientY - g._sy;
+    const d = dx*dx + dy*dy;
+    if (d < bestGD) { bestGD = d; foundGalaxy = g; }
+  }
+  // a star directly under the cursor wins over the galaxy
+  if (found) foundGalaxy = null;
+
+  if (found && (!hovered || hovered.id !== found.id)) {
+    hovered = found;
+    hoveredGalaxy = null;
+    cFg.style.cursor = "default";
+    showRevealForStar(found, e);
+  } else if (foundGalaxy && (!hoveredGalaxy || hoveredGalaxy.id !== foundGalaxy.id)) {
+    hoveredGalaxy = foundGalaxy;
+    hovered = null;
+    cFg.style.cursor = "pointer";
+    clearReveal();
+  } else if (!found && !foundGalaxy && (hovered || hoveredGalaxy)) {
+    hovered = null;
+    hoveredGalaxy = null;
+    cFg.style.cursor = "default";
+    clearReveal();
+  }
+  if (hovered) positionReveal(e);
+});
+
+// click: enter a galaxy if one is hovered in sky view
+cFg.addEventListener("click", (e) => {
+  if (viewMode === "sky" && hoveredGalaxy) {
+    enterGalaxy(hoveredGalaxy);
+  }
+});
+
+// ---------- new star note ----------------------------------------------
+function showNewStarNote() {
+  const note = document.getElementById("newstar-note");
+  note.classList.add("show");
+  setTimeout(() => note.classList.remove("show"), 4200);
+}
+
+// ---------- status: countdown to next light ----------------------------
+function fmtRemaining(ms) {
+  if (ms <= 0) return "ready";
+  const h = Math.floor(ms / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  const s = Math.ceil((ms % 60000) / 1000);
+  if (h > 0) return `${h}h ${m}m`;
+  if (m > 0) return `${m}m ${s}s`;
+  return `${s}s`;
+}
+function tickStatus() {
+  const el = document.querySelector("#status .num");
+  const stillToReveal = revealQueue.length;
+  const stillToEarn = CONTENT.filter(c => !state.seen.includes(c.id)).length;
+  if (stillToReveal + stillToEarn === 0) {
+    el.textContent = "the sky is full";
+    return;
+  }
+  const wait = nextHeartbeatAt - Date.now();
+  el.textContent = wait <= 0 ? "ready" : fmtRemaining(wait);
+}
+
+// The heartbeat: every HEARTBEAT_MS, reveal one star. Remembered stars
+// (from prior sessions) come back first, in random order; once that queue
+// is empty, brand-new earned stars from CONTENT take over the cadence.
+let heartbeatFrozen = false;
+let freezeStartedAt = 0;
+
+function freezeHeartbeat() {
+  if (heartbeatFrozen) return;
+  heartbeatFrozen = true;
+  freezeStartedAt = Date.now();
+}
+function thawHeartbeat() {
+  if (!heartbeatFrozen) return;
+  const elapsed = Date.now() - freezeStartedAt;
+  // shift the cadence forward by however long we were frozen
+  nextHeartbeatAt += elapsed;
+  nextShootAt += elapsed;
+  heartbeatFrozen = false;
+}
+
+function heartbeatTick() {
+  if (heartbeatFrozen) { tickStatus(); return; }
+  const now = Date.now();
+  if (now >= nextHeartbeatAt) {
+    if (revealQueue.length > 0) {
+      const s = revealQueue.shift();
+      s._revealAt = now;
+    } else {
+      addNextEarnedStar(); // sets _revealAt = now internally via placeNewStar
+    }
+    nextHeartbeatAt = now + HEARTBEAT_MS;
+  }
+  // shooting stars on their own slower cadence
+  if (now >= nextShootAt) {
+    spawnShootingStar();
+    nextShootAt = now + SHOOT_MIN_MS + Math.random() * (SHOOT_MAX_MS - SHOOT_MIN_MS);
+  }
+  tickStatus();
+}
+setInterval(heartbeatTick, 500);
+
+// ---------- music --------------------------------------------------------
+const PLAYLIST = [
+  "audio/starry-night-a.mp3",
+  "audio/starry-night-b.mp3",
+  "audio/starry-night-2-a.mp3",
+  "audio/starry-night-2-b.mp3",
+  "audio/study-night-a.mp3",
+  "audio/study-night-b.mp3",
+];
+
+// Fisher-Yates shuffle so each session has a different order
+function shuffled(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const audio = document.getElementById("ambient");
+let queue = shuffled(PLAYLIST);
+let qIdx = 0;
+audio.src = queue[0];
+audio.volume = 0.35;
+
+audio.addEventListener("ended", () => {
+  qIdx = (qIdx + 1) % queue.length;
+  if (qIdx === 0) queue = shuffled(PLAYLIST); // reshuffle each loop
+  audio.src = queue[qIdx];
+  audio.play().catch(() => {});
+});
+
+const musicBtn = document.getElementById("music-toggle");
+let musicOn = false;
+
+function setMusicOnUi(on) {
+  musicOn = on;
+  musicBtn.style.color = on ? "var(--silver)" : "";
+  musicBtn.style.borderColor = on ? "var(--silver)" : "";
+}
+
+// Try to autoplay the moment the page loads. Most browsers will block this
+// because there's been no user gesture yet — in that case, listen for the
+// first interaction anywhere on the page and start playback then. From the
+// user's perspective, the music starts "automatically" on first contact.
+function autoStartMusic() {
+  audio.play().then(() => setMusicOnUi(true)).catch(() => {
+    const start = () => {
+      audio.play().then(() => setMusicOnUi(true)).catch(() => {});
+      window.removeEventListener("pointerdown", start);
+      window.removeEventListener("keydown", start);
+      window.removeEventListener("touchstart", start);
+    };
+    window.addEventListener("pointerdown", start);
+    window.addEventListener("keydown", start);
+    window.addEventListener("touchstart", start);
+  });
+}
+
+musicBtn.addEventListener("click", () => {
+  if (musicOn) {
+    audio.pause();
+    setMusicOnUi(false);
+  } else {
+    audio.play().then(() => setMusicOnUi(true)).catch(() => {});
+  }
+});
+
+autoStartMusic();
+
+// back button + escape return to the sky from a galaxy view
+document.getElementById("back-button").addEventListener("click", (e) => {
+  e.preventDefault();
+  returnToSky();
+});
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && viewMode === "galaxy") {
+    returnToSky();
+  }
+});
+
+// ---------- boot --------------------------------------------------------
+resize();
+tickStatus();
+requestAnimationFrame(tick);
+
+// fade the veil
+setTimeout(() => {
+  document.getElementById("veil").classList.add("gone");
+  document.getElementById("helper").classList.add("show");
+  document.querySelector(".corner-br").classList.add("show");
+}, VEIL_MS);
+</script>
+
+</body>
+</html>
