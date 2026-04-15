@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warrant Board Prep | ContractingHQ</title>
+<meta name="description" content="Practice warrant board questions in the format a real board wants to hear. Calm, structured, repeatable.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0f1c;
+    --ink-soft: #131a2b;
+    --card: rgba(20, 25, 40, 0.78);
+    --card-edge: rgba(217, 175, 110, 0.18);
+    --cream: #ece1c8;
+    --cream-soft: #c9bfa6;
+    --cream-faint: #8a826d;
+    --amber: #d9a05b;
+    --amber-glow: rgba(217, 160, 91, 0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  #ambient-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* vignette */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 30%, var(--ink) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .top-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 1.4rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .top-bar a, .top-bar span {
+    pointer-events: auto;
+    font-size: 0.74rem;
+    color: var(--cream-faint);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.4s ease;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .top-bar a:hover {
+    color: var(--cream);
+  }
+
+  main {
+    position: relative;
+    z-index: 5;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 2rem 4rem;
+  }
+
+  .card {
+    max-width: 740px;
+    width: 100%;
+    background: var(--card);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--card-edge);
+    border-radius: 8px;
+    padding: 3rem 3.2rem 2.6rem;
+    box-shadow: 0 20px 80px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(217, 175, 110, 0.06);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: card-arrive 1600ms ease 200ms forwards;
+  }
+
+  @keyframes card-arrive {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .card-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.66rem;
+    color: var(--amber);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    margin-bottom: 1.4rem;
+    opacity: 0.9;
+  }
+
+  .question {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.55rem;
+    line-height: 1.55;
+    color: var(--cream);
+    margin-bottom: 2.6rem;
+  }
+
+  .slots {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  .slot {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: slot-arrive 900ms ease forwards;
+  }
+  .slot:nth-of-type(1) { animation-delay: 800ms; }
+  .slot:nth-of-type(2) { animation-delay: 1000ms; }
+  .slot:nth-of-type(3) { animation-delay: 1200ms; }
+  .slot:nth-of-type(4) { animation-delay: 1400ms; }
+  .slot:nth-of-type(5) { animation-delay: 1600ms; }
+
+  @keyframes slot-arrive {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .slot-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.62rem;
+    color: var(--amber);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+    opacity: 0.85;
+  }
+
+  .slot-hint {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.92rem;
+    color: var(--cream-faint);
+    margin-bottom: 0.55rem;
+  }
+
+  .slot textarea {
+    width: 100%;
+    background: rgba(10, 14, 24, 0.55);
+    border: 1px solid rgba(217, 175, 110, 0.12);
+    border-radius: 4px;
+    padding: 0.75rem 0.95rem;
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.02rem;
+    line-height: 1.6;
+    resize: vertical;
+    min-height: 64px;
+    transition: border-color 0.4s ease, background 0.4s ease;
+  }
+
+  .slot textarea:focus {
+    outline: none;
+    border-color: rgba(217, 175, 110, 0.4);
+    background: rgba(10, 14, 24, 0.7);
+  }
+
+  .slot textarea::placeholder {
+    color: rgba(138, 130, 109, 0.5);
+    font-style: italic;
+  }
+
+  .slot-model {
+    margin-top: 0;
+    padding: 0 1.05rem;
+    background: rgba(217, 175, 110, 0.04);
+    border-left: 2px solid rgba(217, 175, 110, 0);
+    color: var(--cream-soft);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    line-height: 1.7;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 1100ms ease,
+                opacity 1100ms ease,
+                margin-top 700ms ease,
+                padding 700ms ease,
+                border-color 700ms ease;
+  }
+
+  .slot.revealed .slot-model {
+    max-height: 600px;
+    opacity: 1;
+    margin-top: 0.75rem;
+    padding: 0.85rem 1.05rem;
+    border-left-color: rgba(217, 175, 110, 0.4);
+  }
+
+  .slot-model .precision-note {
+    display: block;
+    margin-top: 0.6rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(217, 175, 110, 0.12);
+    font-size: 0.82rem;
+    color: var(--cream-faint);
+    font-style: italic;
+  }
+
+  .reveal-btn {
+    margin-top: 2.4rem;
+    background: transparent;
+    color: var(--amber);
+    border: 1px solid var(--amber-glow);
+    padding: 0.75rem 1.7rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.74rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border-radius: 2px;
+  }
+
+  .reveal-btn:hover:not(:disabled) {
+    background: rgba(217, 175, 110, 0.08);
+    border-color: var(--amber);
+    color: var(--cream);
+  }
+
+  .reveal-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .self-assess {
+    margin-top: 2.4rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(217, 175, 110, 0.12);
+    display: none;
+  }
+
+  .self-assess.show {
+    display: block;
+    animation: fade-in 1400ms ease forwards;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .self-assess-prompt {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--cream-soft);
+    margin-bottom: 1rem;
+  }
+
+  .assess-buttons {
+    display: flex;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+  }
+
+  .assess-btn {
+    flex: 1;
+    min-width: 110px;
+    background: transparent;
+    color: var(--cream-soft);
+    border: 1px solid rgba(217, 175, 110, 0.18);
+    padding: 0.7rem 1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+  }
+
+  .assess-btn:hover {
+    border-color: var(--amber);
+    color: var(--cream);
+  }
+
+  .assess-btn.selected {
+    background: rgba(217, 175, 110, 0.1);
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+
+  .next-row {
+    margin-top: 1.6rem;
+    display: none;
+    text-align: center;
+  }
+
+  .next-row.show {
+    display: block;
+    animation: fade-in 1100ms ease forwards;
+  }
+
+  .next-btn {
+    background: transparent;
+    color: var(--cream-soft);
+    border: 1px solid rgba(217, 175, 110, 0.22);
+    padding: 0.8rem 1.6rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+  }
+
+  .next-btn:hover {
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+
+  .opening {
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--cream-faint);
+    margin-bottom: 1.6rem;
+    opacity: 0;
+    animation: fade-in 1800ms ease 600ms forwards;
+  }
+
+  /* aphorism: a memory of a mentor — drifts in from the left, holds, drifts away */
+  .aphorism {
+    position: fixed;
+    left: 2.4rem;
+    top: 50%;
+    z-index: 8;
+    max-width: 250px;
+    text-align: left;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.18rem;
+    line-height: 1.55;
+    color: var(--cream-soft);
+    opacity: 0;
+    pointer-events: none;
+    letter-spacing: 0.012em;
+    /* the resting state — vertically centered, no horizontal offset */
+    transform: translateY(-50%) translateX(-32px);
+  }
+  .aphorism.drifting {
+    animation: aphorism-drift 11000ms ease-in-out forwards;
+  }
+
+  @keyframes aphorism-drift {
+    0%   { opacity: 0;    transform: translateY(-50%) translateX(-32px); filter: blur(2px); }
+    18%  { opacity: 0.82; transform: translateY(-50%) translateX(0);     filter: blur(0); }
+    78%  { opacity: 0.82; transform: translateY(-50%) translateX(0);     filter: blur(0); }
+    100% { opacity: 0;    transform: translateY(-50%) translateX(28px);  filter: blur(2px); }
+  }
+
+  /* on narrower screens the side margin disappears, so fall back to bottom-center */
+  @media (max-width: 1180px) {
+    .aphorism {
+      left: 50%;
+      top: auto;
+      bottom: 4.2rem;
+      max-width: 540px;
+      width: calc(100% - 4rem);
+      text-align: center;
+      padding: 0 1rem;
+      font-size: 1.02rem;
+      transform: translateX(-50%) translateY(20px);
+    }
+    @keyframes aphorism-drift {
+      0%   { opacity: 0;    transform: translateX(-50%) translateY(20px); filter: blur(2px); }
+      18%  { opacity: 0.82; transform: translateX(-50%) translateY(0);    filter: blur(0); }
+      78%  { opacity: 0.82; transform: translateX(-50%) translateY(0);    filter: blur(0); }
+      100% { opacity: 0;    transform: translateX(-50%) translateY(-18px); filter: blur(2px); }
+    }
+  }
+  @media (max-width: 760px) {
+    .aphorism { display: none; }
+  }
+
+  /* music toggle */
+  .music-btn {
+    position: fixed;
+    bottom: 1.4rem;
+    left: 1.6rem;
+    z-index: 20;
+    background: transparent;
+    border: 1px solid rgba(217, 175, 110, 0.18);
+    color: var(--cream-faint);
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.4s ease, border-color 0.4s ease;
+  }
+  .music-btn:hover {
+    color: var(--cream);
+    border-color: rgba(217, 175, 110, 0.4);
+  }
+  .music-btn svg {
+    width: 11px;
+    height: 11px;
+    fill: currentColor;
+  }
+
+  @media (max-width: 680px) {
+    .card { padding: 2rem 1.5rem; }
+    .question { font-size: 1.3rem; }
+    main { padding: 5rem 1rem 3rem; }
+    .music-btn { bottom: 1rem; left: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="ambient-canvas"></canvas>
+
+<audio id="ambient-audio" preload="auto"></audio>
+
+<button class="music-btn" id="music-toggle" title="Toggle ambient music" aria-label="Toggle ambient music">
+  <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1 v10 l8 -5 z"/></svg>
+  <span id="music-label">Sound</span>
+</button>
+
+<div class="top-bar">
+  <a href="tools.html">&larr; back to tools</a>
+  <span id="progress">Card 1 of 1</span>
+</div>
+
+<div class="aphorism" id="aphorism"></div>
+
+<main>
+  <div style="width:100%;max-width:740px;">
+    <div class="opening">Take your time. There is no clock.</div>
+    <div class="card" id="card">
+      <div class="card-label" id="card-label">Practice</div>
+      <div class="question" id="question"></div>
+      <div class="slots" id="slots"></div>
+      <button class="reveal-btn" id="reveal-btn">Show me a strong answer</button>
+      <div class="self-assess" id="self-assess">
+        <div class="self-assess-prompt">How did you do?</div>
+        <div class="assess-buttons">
+          <button class="assess-btn" data-grade="had">I had it</button>
+          <button class="assess-btn" data-grade="partial">Partial</button>
+          <button class="assess-btn" data-grade="missed">Missed it</button>
+        </div>
+      </div>
+      <div class="next-row" id="next-row">
+        <button class="next-btn" id="next-btn">Next question &rarr;</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const QUESTIONS = [
+  {
+    topic: "Exceptions to Full and Open Competition",
+    q: "A program office tells you they have a requirement that only one company can fulfill, because that company holds the patent on the technology and there are no equivalent products on the market. Walk us through how you would handle the acquisition.",
+    slots: [
+      {
+        name: "Authority",
+        hint: "Where in the FAR does this live?",
+        model: "FAR 6.302-1, only one responsible source.",
+        precision: "This is one of the few places where the specific subsection matters. Each authority under 6.302 is a different statutory basis, so naming the right subsection (6.302-1 through 6.302-7) is part of the answer."
+      },
+      {
+        name: "Rule",
+        hint: "What does that authority require?",
+        model: "FAR 6.302-1 lets the contracting officer limit competition when supplies or services are available from only one responsible source. It requires a written justification, approved at the level set by the dollar value of the action, and the contract file has to support the finding."
+      },
+      {
+        name: "Apply",
+        hint: "How does the rule fit these facts?",
+        model: "Sole patent ownership with no equivalent product on the market is the textbook 6.302-1 pattern. The patent is documentary evidence of the single-source condition. The 'no equivalent product' claim is the part that has to be supported by independent market research, not just by what the program office or the contractor say about the marketplace."
+      },
+      {
+        name: "Decide",
+        hint: "What is your call?",
+        model: "I would prepare a Justification and Approval under 6.302-1, route it for the appropriate level of approval based on dollar value, synopsize the planned action under FAR 5.207 unless an exception applies, and document the market research and the patent finding in the contract file."
+      },
+      {
+        name: "Limit",
+        hint: "When would you bring someone else in?",
+        model: "I would have legal review the J&A before signing, particularly the 'no equivalent' finding, since that is the part most likely to be challenged later. I would coordinate with the technical team to make sure the market research holds up. If the dollar value triggers a higher approval level, I would start that conversation early so we are not waiting on signatures at the end."
+      },
+    ],
+  },
+  {
+    topic: "Certified Cost or Pricing Data",
+    q: "You are negotiating a sole-source contract for a custom radar component. Estimated value is around $4 million. The contractor tells you they would prefer not to provide cost or pricing data because their pricing approach is proprietary. Walk us through how you would handle that.",
+    slots: [
+      {
+        name: "Authority",
+        hint: "Where does this live?",
+        model: "FAR 15.403, certified cost or pricing data."
+      },
+      {
+        name: "Rule",
+        hint: "What is the requirement and what gets you out of it?",
+        model: "Certified cost or pricing data is required for negotiated contract actions expected to exceed the threshold in 15.403-4 unless an exception under 15.403-1 applies. The exceptions are adequate price competition, prices set by law or regulation, acquisition of a commercial product or commercial service, or a waiver from the head of the contracting activity."
+      },
+      {
+        name: "Apply",
+        hint: "How does that fit these facts?",
+        model: "Four million is well over the threshold. It is sole source, so there is no price competition. The contractor is calling the data proprietary, which is not one of the listed exceptions. Contractor preference does not override a statutory requirement. Unless this radar component qualifies as a commercial product, certified data is required."
+      },
+      {
+        name: "Decide",
+        hint: "What do you do?",
+        model: "I would tell the contractor that certified cost or pricing data is required, walk them through the Table 15-2 format and the Certificate of Current Cost or Pricing Data they will sign at agreement on price, and document the requirement in the negotiation memorandum. If they refuse to provide it, that is a refusal to negotiate and I document it accordingly."
+      },
+      {
+        name: "Limit",
+        hint: "Who else gets pulled in?",
+        model: "I would loop in DCAA early for audit support so we are not waiting on them at the end. If the contractor genuinely believes this is a commercial item, that is a determination I would push to legal and the program office before assuming we can skip the data."
+      },
+    ],
+  },
+  {
+    topic: "Tradeoff vs LPTA",
+    q: "Your customer has a complex technical requirement with multiple acceptable approaches and asks whether they should use LPTA. How do you advise them, and how would you set up the source selection?",
+    slots: [
+      {
+        name: "Authority",
+        hint: "Where does best value live?",
+        model: "FAR 15.101, the best value continuum. 15.101-1 covers tradeoff and 15.101-2 covers lowest price technically acceptable."
+      },
+      {
+        name: "Rule",
+        hint: "When does each fit?",
+        model: "LPTA fits when the requirement is well defined, the risk of unsuccessful performance is minimal, and there is no benefit to paying more for better technical merit. Tradeoff fits when the agency may want to award to other than the lowest priced offeror, and the source selection authority is willing to weigh technical merit against price."
+      },
+      {
+        name: "Apply",
+        hint: "How does that fit a complex requirement with multiple approaches?",
+        model: "A complex requirement with multiple acceptable approaches is the textbook tradeoff scenario. The customer is signaling they want to weigh how an offeror would do the work against what it costs. LPTA would force them to take the cheapest acceptable proposal even if a stronger technical approach was available for a small premium."
+      },
+      {
+        name: "Decide",
+        hint: "What do you recommend?",
+        model: "I would recommend tradeoff under 15.101-1, with technical and price as the major factors and subfactors that map to how the customer will actually evaluate strength. I would document in the acquisition plan why LPTA is not appropriate so the file shows the choice was deliberate."
+      },
+      {
+        name: "Limit",
+        hint: "Where do you bring in help?",
+        model: "I would work the evaluation factors with the program office until they describe something concrete that can be measured. Vague factors are protest exposure. Once the RFP is drafted I would route it through legal review before release."
+      },
+    ],
+  },
+  {
+    topic: "Discussions, Clarifications, and Communications",
+    q: "You are in source selection. After initial evaluation, one offeror has an obvious typo in their pricing. They wrote $10,000,000 where context makes clear they meant $1,000,000. Can you let them fix it?",
+    slots: [
+      {
+        name: "Authority",
+        hint: "Where do exchanges live?",
+        model: "FAR 15.306, exchanges with offerors after receipt of proposals."
+      },
+      {
+        name: "Rule",
+        hint: "What are the three kinds of exchanges?",
+        model: "Clarifications under 15.306(a) are limited exchanges to resolve minor uncertainties, and they do not give the offeror a chance to revise the proposal. Communications under 15.306(b) only happen before the competitive range is set and only with offerors whose past performance information is the basis for possible exclusion. Discussions under 15.306(d) are negotiations. They only happen with offerors in the competitive range, and they must be held with every offeror in that range."
+      },
+      {
+        name: "Apply",
+        hint: "Which bucket does a price typo fall into?",
+        model: "Changing a price by an order of magnitude is not a clarification. It is a revision. If I let one offeror change their price outside of discussions while the others have had no exchange at all, I have given them a competitive advantage and the basis for a protest."
+      },
+      {
+        name: "Decide",
+        hint: "What do you actually do?",
+        model: "I would not fix the typo through clarifications. If discussions are opened with the competitive range, I would address it through formal discussions and request a final proposal revision from each offeror in the range. If I am not opening discussions, I evaluate the price as offered."
+      },
+      {
+        name: "Limit",
+        hint: "Who do you walk this through with?",
+        model: "This is the kind of call to walk through with legal and the contract specialist before acting. 15.306 is one of the most heavily protested sections of the FAR, and the line between a clarification and a discussion is where most of those protests live."
+      },
+    ],
+  },
+  {
+    topic: "Competitive Range",
+    q: "You receive six proposals. Three are clearly strong, two are clearly weak, and one sits in the middle. Walk us through how you would establish a competitive range.",
+    slots: [
+      {
+        name: "Authority",
+        hint: "Where does this live?",
+        model: "FAR 15.306(c), competitive range."
+      },
+      {
+        name: "Rule",
+        hint: "What does the rule actually say?",
+        model: "The contracting officer establishes a competitive range comprising all of the most highly rated proposals based on the ratings of each proposal against all evaluation criteria. The competitive range can be limited for purposes of efficiency, and that decision and its basis have to be documented."
+      },
+      {
+        name: "Apply",
+        hint: "How does that fit six proposals with one in the middle?",
+        model: "The three strong proposals are in. The two clearly weak proposals are out. The middle one is the judgment call. I look at whether they have a reasonable chance of receiving award and whether including them serves the procurement, weighed against the efficiency of running discussions with one more offeror."
+      },
+      {
+        name: "Decide",
+        hint: "What is your call?",
+        model: "I put the three strong proposals in the competitive range. For the middle one, I walk through the evaluation against each factor and decide whether they are among the most highly rated. If yes, in. If no, out. Either way, the reasoning gets documented in the competitive range determination. The excluded offerors get pre-award notice under 15.503."
+      },
+      {
+        name: "Limit",
+        hint: "Who reviews it?",
+        model: "I would have the source selection evaluation board chair and legal review the competitive range determination before issuing pre-award notices. Excluding offerors from the competitive range is one of the most common protest grounds, so a reviewed and well-documented determination is the defense."
+      },
+    ],
+  },
+  {
+    topic: "Price Reasonableness with One Offer",
+    q: "You ran a competitive solicitation and only one offer came in. The contract type is firm fixed price. How do you determine price reasonableness?",
+    slots: [
+      {
+        name: "Authority",
+        hint: "Where do proposal analysis techniques live?",
+        model: "FAR 15.404-1, proposal analysis techniques."
+      },
+      {
+        name: "Rule",
+        hint: "What changes when there is only one offer?",
+        model: "When you only receive one offer in response to a competitive solicitation, you generally do not have adequate price competition under 15.403-1(c)(1)(i) unless additional conditions are met. Price reasonableness has to be supported through other techniques: comparison to the independent government estimate, comparison to historical prices for similar work, market research, parametric estimating, or analysis of cost data."
+      },
+      {
+        name: "Apply",
+        hint: "How does that fit one offer in a competitive solicitation?",
+        model: "One offer is not automatically a failure of competition, but it raises the question of whether the marketplace had a fair shot. I would look at how the requirement was scoped, who the synopsis reached, and whether anything in the solicitation discouraged offerors. Then I would compare the offered price against the IGE and any historical pricing for similar work."
+      },
+      {
+        name: "Decide",
+        hint: "What do you actually do?",
+        model: "If the price tracks the IGE and historical pricing within a reasonable band, I document price reasonableness on that basis in the price negotiation memorandum. If it does not, I either negotiate the price down or, depending on the dollar value, request certified cost or pricing data and run a cost analysis."
+      },
+      {
+        name: "Limit",
+        hint: "Who do you bring in?",
+        model: "A pricing analyst on the IGE comparison. If the dollar value crosses the certified cost or pricing data threshold and no exception applies, I bring DCAA in for audit support."
+      },
+    ],
+  },
+];
+
+// Shuffle the question order so each session is different
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+const order = shuffle(QUESTIONS.map((_, i) => i));
+let position = 0;
+let revealStep = 0;
+
+function loadQuestion(orderIdx) {
+  const q = QUESTIONS[order[orderIdx]];
+  document.getElementById("question").textContent = q.q;
+  document.getElementById("card-label").textContent =
+    "Card " + (orderIdx + 1) + " of " + order.length + " \u00B7 " + q.topic;
+  document.getElementById("progress").textContent =
+    "Card " + (orderIdx + 1) + " of " + order.length;
+  const slots = document.getElementById("slots");
+  slots.innerHTML = "";
+  q.slots.forEach((s, idx) => {
+    const slot = document.createElement("div");
+    slot.className = "slot";
+    slot.id = "slot-" + idx;
+    const precisionHtml = s.precision
+      ? '<span class="precision-note">' + s.precision + '</span>'
+      : '';
+    slot.innerHTML =
+      '<div class="slot-label">' + s.name + '</div>' +
+      '<div class="slot-hint">' + s.hint + '</div>' +
+      '<textarea rows="2" placeholder="Your answer..."></textarea>' +
+      '<div class="slot-model">' + s.model + precisionHtml + '</div>';
+    slots.appendChild(slot);
+  });
+  revealStep = 0;
+  const btn = document.getElementById("reveal-btn");
+  btn.disabled = false;
+  btn.textContent = "Show me a strong answer";
+  document.getElementById("self-assess").classList.remove("show");
+  document.getElementById("next-row").classList.remove("show");
+  document.querySelectorAll(".assess-btn").forEach(b => b.classList.remove("selected"));
+  // Scroll the card back to the top so the question is in view
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.getElementById("reveal-btn").addEventListener("click", () => {
+  const q = QUESTIONS[order[position]];
+  if (revealStep < q.slots.length) {
+    document.getElementById("slot-" + revealStep).classList.add("revealed");
+    revealStep++;
+    const btn = document.getElementById("reveal-btn");
+    if (revealStep < q.slots.length) {
+      btn.textContent = "Reveal next";
+    } else {
+      btn.disabled = true;
+      btn.textContent = "Answer revealed";
+      setTimeout(() => {
+        document.getElementById("self-assess").classList.add("show");
+      }, 700);
+    }
+  }
+});
+
+document.querySelectorAll(".assess-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".assess-btn").forEach(b => b.classList.remove("selected"));
+    btn.classList.add("selected");
+    document.getElementById("next-row").classList.add("show");
+  });
+});
+
+document.getElementById("next-btn").addEventListener("click", () => {
+  position = (position + 1) % order.length;
+  // If we wrapped, reshuffle so the next pass feels fresh
+  if (position === 0) {
+    shuffle(order);
+  }
+  loadQuestion(position);
+});
+
+loadQuestion(0);
+
+// ─────── ambient canvas: drifting embers + warm corner glow ───────
+const canvas = document.getElementById("ambient-canvas");
+const ctx = canvas.getContext("2d");
+let W, H;
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+const motes = [];
+function seedMotes() {
+  motes.length = 0;
+  for (let i = 0; i < 40; i++) {
+    motes.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vy: -(0.04 + Math.random() * 0.11),
+      vx: (Math.random() - 0.5) * 0.04,
+      r: 0.7 + Math.random() * 1.5,
+      a: 0.12 + Math.random() * 0.35,
+      phase: Math.random() * Math.PI * 2,
+    });
+  }
+}
+seedMotes();
+
+let t0 = performance.now();
+function tick(now) {
+  const dt = Math.min(3, (now - t0) / 16);
+  t0 = now;
+  ctx.clearRect(0, 0, W, H);
+
+  // warm corner glow (lantern feel)
+  const cx = W * 0.92;
+  const cy = H * 0.88;
+  const breath = 1 + Math.sin(now / 2400) * 0.05;
+  const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 360 * breath);
+  grad.addColorStop(0, "rgba(217, 160, 91, 0.16)");
+  grad.addColorStop(0.45, "rgba(217, 160, 91, 0.05)");
+  grad.addColorStop(1, "rgba(217, 160, 91, 0)");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // a second smaller glow on the opposite side, very faint
+  const cx2 = W * 0.08;
+  const cy2 = H * 0.15;
+  const breath2 = 1 + Math.sin(now / 3100 + 1) * 0.04;
+  const grad2 = ctx.createRadialGradient(cx2, cy2, 0, cx2, cy2, 280 * breath2);
+  grad2.addColorStop(0, "rgba(154, 184, 232, 0.06)");
+  grad2.addColorStop(1, "rgba(154, 184, 232, 0)");
+  ctx.fillStyle = grad2;
+  ctx.fillRect(0, 0, W, H);
+
+  // motes
+  motes.forEach(m => {
+    m.x += m.vx * dt;
+    m.y += m.vy * dt;
+    m.phase += 0.018 * dt;
+    if (m.y < -10) {
+      m.y = H + 10;
+      m.x = Math.random() * W;
+    }
+    if (m.x < -10) m.x = W + 10;
+    if (m.x > W + 10) m.x = -10;
+
+    const flicker = 0.7 + Math.sin(m.phase) * 0.3;
+    const size = m.r * 6;
+    const g2 = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, size);
+    g2.addColorStop(0, "rgba(232, 200, 140, " + (m.a * flicker) + ")");
+    g2.addColorStop(1, "rgba(232, 200, 140, 0)");
+    ctx.fillStyle = g2;
+    ctx.fillRect(m.x - size, m.y - size, size * 2, size * 2);
+  });
+
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+// ─────── ambient music ───────
+const PLAYLIST = [
+  "audio/warrant-study-1.mp3",
+  "audio/warrant-study-2.mp3",
+  "audio/warrant-study-3.mp3",
+  "audio/warrant-study-4.mp3",
+  "audio/warrant-study-5.mp3",
+  "audio/warrant-study-6.mp3",
+  "audio/study-night-a.mp3",
+  "audio/study-night-b.mp3",
+  "audio/starry-night-a.mp3",
+  "audio/starry-night-b.mp3",
+  "audio/starry-night-2-a.mp3",
+  "audio/starry-night-2-b.mp3",
+];
+
+function shuffled(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const ambientAudio = document.getElementById("ambient-audio");
+let queue = shuffled(PLAYLIST);
+let qIdx = 0;
+ambientAudio.src = queue[0];
+ambientAudio.volume = 0.3;
+
+ambientAudio.addEventListener("ended", () => {
+  qIdx = (qIdx + 1) % queue.length;
+  if (qIdx === 0) queue = shuffled(PLAYLIST);
+  ambientAudio.src = queue[qIdx];
+  ambientAudio.play().catch(() => {});
+});
+
+const musicBtn = document.getElementById("music-toggle");
+const musicLabel = document.getElementById("music-label");
+let musicOn = false;
+
+function setMusicOnUi(on) {
+  musicOn = on;
+  musicBtn.style.color = on ? "var(--amber)" : "";
+  musicBtn.style.borderColor = on ? "rgba(217, 175, 110, 0.45)" : "";
+  musicLabel.textContent = on ? "Sound on" : "Sound";
+}
+
+function autoStartMusic() {
+  ambientAudio.play().then(() => setMusicOnUi(true)).catch(() => {
+    const start = () => {
+      ambientAudio.play().then(() => setMusicOnUi(true)).catch(() => {});
+      window.removeEventListener("pointerdown", start);
+      window.removeEventListener("keydown", start);
+      window.removeEventListener("touchstart", start);
+    };
+    window.addEventListener("pointerdown", start);
+    window.addEventListener("keydown", start);
+    window.addEventListener("touchstart", start);
+  });
+}
+
+musicBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  if (musicOn) {
+    ambientAudio.pause();
+    setMusicOnUi(false);
+  } else {
+    ambientAudio.play().then(() => setMusicOnUi(true)).catch(() => {});
+  }
+});
+
+autoStartMusic();
+
+// ─────── ambient mentor voice ───────
+const APHORISMS = [
+  "You know this. The work you have done is in there.",
+  "Trust your reading. It usually lands.",
+  "You do not have to recite the FAR. You have to know where to look, and you do.",
+  "The board wants to see how you would do the job. You already do the job.",
+  "You belong in the room. Walk in like it.",
+  "When you slow down, the right answer comes.",
+  "You write clean contract files. That instinct is the warrant.",
+  "Plain reading wins. Trust yours.",
+  "You have already thought about harder things than this today.",
+  "Sole source is not a trap. You know how to document it.",
+  "Source selection lives in Part 15, but it leans on 12 and 13 too. You already know that.",
+  "Asking legal is not weakness. It is the job, and you do it well.",
+  "The CO they want is the one already sitting in your chair.",
+  "Take the breath. The answer is already there.",
+  "You have done this before, in smaller rooms. The big room is the same room.",
+  "Knowing where to look is most of the warrant. You know where to look.",
+  "Your judgment is why they gave you the file. Trust it.",
+  "It is going to connect. Give it a moment.",
+];
+
+const aphoEl = document.getElementById("aphorism");
+let aIdx = Math.floor(Math.random() * APHORISMS.length);
+
+// Animation duration must match the CSS @keyframes aphorism-drift
+const DRIFT_MS = 11000;
+const QUIET_MS = 8000;
+
+function cycleAphorism() {
+  aphoEl.textContent = APHORISMS[aIdx];
+  // Re-trigger the CSS animation by removing the class, forcing a reflow, then re-adding
+  aphoEl.classList.remove("drifting");
+  void aphoEl.offsetWidth;
+  aphoEl.classList.add("drifting");
+  setTimeout(() => {
+    aphoEl.classList.remove("drifting");
+    aIdx = (aIdx + 1) % APHORISMS.length;
+    setTimeout(cycleAphorism, QUIET_MS);
+  }, DRIFT_MS);
+}
+
+setTimeout(cycleAphorism, 5500);
+</script>
+</body>
+</html>
