@@ -358,58 +358,62 @@
     animation: fade-in 1800ms ease 600ms forwards;
   }
 
-  /* aphorism: a memory of a mentor — drifts in from the left, holds, drifts away */
+  /* aphorism: a memory surfacing — fades in slowly, holds, fades out */
   .aphorism {
     position: fixed;
-    left: 2.4rem;
+    left: 3rem;
     top: 50%;
     z-index: 8;
-    max-width: 250px;
+    max-width: 320px;
     text-align: left;
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: 1.18rem;
-    line-height: 1.55;
-    color: var(--cream-soft);
+    font-size: 1.6rem;
+    line-height: 1.45;
+    color: #f0e2c2;
     opacity: 0;
     pointer-events: none;
     letter-spacing: 0.012em;
-    /* the resting state — vertically centered, no horizontal offset */
-    transform: translateY(-50%) translateX(-32px);
+    text-shadow:
+      0 0 32px rgba(217, 160, 91, 0.22),
+      0 0 12px rgba(217, 160, 91, 0.12),
+      0 1px 2px rgba(0, 0, 0, 0.6);
+    /* resting state — vertically centered, slightly translated for blur-in */
+    transform: translateY(-50%) translateX(-18px);
   }
   .aphorism.drifting {
-    animation: aphorism-drift 11000ms ease-in-out forwards;
+    animation: aphorism-drift 14000ms ease-in-out forwards;
   }
 
   @keyframes aphorism-drift {
-    0%   { opacity: 0;    transform: translateY(-50%) translateX(-32px); filter: blur(2px); }
-    18%  { opacity: 0.82; transform: translateY(-50%) translateX(0);     filter: blur(0); }
-    78%  { opacity: 0.82; transform: translateY(-50%) translateX(0);     filter: blur(0); }
-    100% { opacity: 0;    transform: translateY(-50%) translateX(28px);  filter: blur(2px); }
+    0%   { opacity: 0;    transform: translateY(-50%) translateX(-18px); filter: blur(8px); }
+    18%  { opacity: 0.96; transform: translateY(-50%) translateX(0);     filter: blur(0); }
+    78%  { opacity: 0.96; transform: translateY(-50%) translateX(0);     filter: blur(0); }
+    100% { opacity: 0;    transform: translateY(-50%) translateX(14px);  filter: blur(6px); }
   }
 
   /* on narrower screens the side margin disappears, so fall back to bottom-center */
-  @media (max-width: 1180px) {
+  @media (max-width: 1240px) {
     .aphorism {
       left: 50%;
       top: auto;
-      bottom: 4.2rem;
-      max-width: 540px;
+      bottom: 5rem;
+      max-width: 620px;
       width: calc(100% - 4rem);
       text-align: center;
       padding: 0 1rem;
-      font-size: 1.02rem;
-      transform: translateX(-50%) translateY(20px);
+      font-size: 1.35rem;
+      transform: translateX(-50%) translateY(18px);
     }
     @keyframes aphorism-drift {
-      0%   { opacity: 0;    transform: translateX(-50%) translateY(20px); filter: blur(2px); }
-      18%  { opacity: 0.82; transform: translateX(-50%) translateY(0);    filter: blur(0); }
-      78%  { opacity: 0.82; transform: translateX(-50%) translateY(0);    filter: blur(0); }
-      100% { opacity: 0;    transform: translateX(-50%) translateY(-18px); filter: blur(2px); }
+      0%   { opacity: 0;    transform: translateX(-50%) translateY(18px);  filter: blur(8px); }
+      18%  { opacity: 0.96; transform: translateX(-50%) translateY(0);     filter: blur(0); }
+      78%  { opacity: 0.96; transform: translateX(-50%) translateY(0);     filter: blur(0); }
+      100% { opacity: 0;    transform: translateX(-50%) translateY(-14px); filter: blur(6px); }
     }
   }
   @media (max-width: 760px) {
-    .aphorism { display: none; }
+    .aphorism { font-size: 1.15rem; }
   }
 
   /* music toggle */
@@ -876,12 +880,34 @@ let queue = shuffled(PLAYLIST);
 let qIdx = 0;
 ambientAudio.src = queue[0];
 ambientAudio.volume = 0.3;
+ambientAudio.preload = "auto";
 
-ambientAudio.addEventListener("ended", () => {
+// Advance to the next track. Used for both natural end-of-track and load errors,
+// so a missing/404 file can't kill the whole playlist.
+let errorStreak = 0;
+function advanceTrack() {
   qIdx = (qIdx + 1) % queue.length;
   if (qIdx === 0) queue = shuffled(PLAYLIST);
   ambientAudio.src = queue[qIdx];
-  ambientAudio.play().catch(() => {});
+  ambientAudio.load();
+  // Only try to play if music is supposed to be on
+  if (musicOn) {
+    ambientAudio.play().catch(() => {});
+  }
+}
+
+ambientAudio.addEventListener("ended", () => {
+  errorStreak = 0;
+  advanceTrack();
+});
+
+ambientAudio.addEventListener("error", () => {
+  // Skip on load failure, but stop trying after a full pass through the playlist
+  // so we don't spin forever if every file is broken.
+  errorStreak++;
+  if (errorStreak < queue.length) {
+    advanceTrack();
+  }
 });
 
 const musicBtn = document.getElementById("music-toggle");
@@ -947,8 +973,8 @@ const aphoEl = document.getElementById("aphorism");
 let aIdx = Math.floor(Math.random() * APHORISMS.length);
 
 // Animation duration must match the CSS @keyframes aphorism-drift
-const DRIFT_MS = 11000;
-const QUIET_MS = 8000;
+const DRIFT_MS = 14000;
+const QUIET_MS = 9000;
 
 function cycleAphorism() {
   aphoEl.textContent = APHORISMS[aIdx];
