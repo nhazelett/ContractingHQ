@@ -459,6 +459,16 @@
     height: 11px;
     fill: currentColor;
   }
+  /* Pulses softly when autoplay was blocked, so the user knows where to click */
+  .music-btn.music-prompt {
+    color: #d9a05b;
+    border-color: rgba(217, 160, 91, 0.45);
+    animation: music-prompt-pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes music-prompt-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(217, 160, 91, 0.0); }
+    50%      { box-shadow: 0 0 22px 2px rgba(217, 160, 91, 0.35); }
+  }
 
   @media (max-width: 680px) {
     .card { padding: 2rem 1.5rem; }
@@ -1522,12 +1532,12 @@ requestAnimationFrame(tick);
 
 // ─────── ambient music ───────
 const PLAYLIST = [
-  "audio/warrant-study-1.mp3",
-  "audio/warrant-study-2.mp3",
-  "audio/warrant-study-3.mp3",
-  "audio/warrant-study-4.mp3",
-  "audio/warrant-study-5.mp3",
-  "audio/warrant-study-6.mp3",
+  "audio/Warrant%20Study%201.mp3",
+  "audio/Warrant%20Study%202.mp3",
+  "audio/Warrant%20Study%203.mp3",
+  "audio/Warrant%20Study%204.mp3",
+  "audio/Warrant%20Study%205.mp3",
+  "audio/Warrant%20Study%206.mp3",
   "audio/study-night-a.mp3",
   "audio/study-night-b.mp3",
   "audio/starry-night-a.mp3",
@@ -1587,23 +1597,58 @@ ambientAudio.addEventListener("error", () => {
 
 function setMusicOnUi(on) {
   musicOn = on;
-  if (on) musicEverStarted = true;
+  if (on) {
+    musicEverStarted = true;
+    musicBtn.classList.remove("music-prompt");
+  }
   musicBtn.style.color = on ? "var(--amber)" : "";
   musicBtn.style.borderColor = on ? "rgba(217, 175, 110, 0.45)" : "";
   musicLabel.textContent = on ? "Sound on" : "Sound";
 }
 
+// Attempt to start playback. Returns a promise that resolves true on success.
+function attemptPlay() {
+  if (musicOn) return Promise.resolve(true);
+  const p = ambientAudio.play();
+  if (!p || typeof p.then !== "function") {
+    setMusicOnUi(true);
+    return Promise.resolve(true);
+  }
+  return p.then(() => { setMusicOnUi(true); return true; })
+          .catch(() => false);
+}
+
+// Try to autostart on every plausible early hook. Browsers usually block
+// autoplay with sound, but if the user navigated here from a link click on
+// training.html, the activation token may carry forward and let it through.
 function autoStartMusic() {
-  ambientAudio.play().then(() => setMusicOnUi(true)).catch(() => {
-    const start = () => {
-      ambientAudio.play().then(() => setMusicOnUi(true)).catch(() => {});
-      window.removeEventListener("pointerdown", start);
-      window.removeEventListener("keydown", start);
-      window.removeEventListener("touchstart", start);
+  ambientAudio.load();
+  attemptPlay().then((ok) => {
+    if (ok) return;
+    // Try again once the audio is actually buffered enough to play.
+    ambientAudio.addEventListener("canplaythrough", () => {
+      if (!musicOn) attemptPlay();
+    }, { once: true });
+    // Visual cue that the user needs to interact to start music.
+    musicBtn.classList.add("music-prompt");
+    // Fallback: start on the very first user interaction anywhere on the page.
+    // Listen on document (not window) so the music button's own click handler
+    // beats us to it and we don't race with toggle logic.
+    const startOnInteraction = (e) => {
+      // Skip if the interaction is on the music button itself — let its own
+      // handler manage that case so we don't start-then-stop.
+      if (e.target && e.target.closest && e.target.closest("#music-toggle")) return;
+      attemptPlay().then((ok) => {
+        if (ok) {
+          document.removeEventListener("pointerdown", startOnInteraction, true);
+          document.removeEventListener("keydown", startOnInteraction, true);
+          document.removeEventListener("touchstart", startOnInteraction, true);
+        }
+      });
     };
-    window.addEventListener("pointerdown", start);
-    window.addEventListener("keydown", start);
-    window.addEventListener("touchstart", start);
+    document.addEventListener("pointerdown", startOnInteraction, true);
+    document.addEventListener("keydown", startOnInteraction, true);
+    document.addEventListener("touchstart", startOnInteraction, true);
   });
 }
 
@@ -1613,11 +1658,18 @@ musicBtn.addEventListener("click", (e) => {
     ambientAudio.pause();
     setMusicOnUi(false);
   } else {
-    ambientAudio.play().then(() => setMusicOnUi(true)).catch(() => {});
+    attemptPlay();
   }
 });
 
+// Kick it off as soon as we can.
 autoStartMusic();
+// And try again on the first content-ready event in case the audio element
+// was not ready the first time around.
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => { if (!musicOn) attemptPlay(); }, { once: true });
+}
+window.addEventListener("load", () => { if (!musicOn) attemptPlay(); }, { once: true });
 
 // ─────── ambient mentor voice ───────
 const APHORISMS = [
