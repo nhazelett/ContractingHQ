@@ -371,14 +371,13 @@
     animation: fade-in 1800ms ease 600ms forwards;
   }
 
-  /* aphorism: a memory surfacing — fades in slowly, holds, fades out */
+  /* aphorism: a memory surfacing — fades in slowly, holds, fades out.
+     Four spawn corners: top-left, top-right, bottom-left, bottom-right.
+     Left-side aphorisms drift right on exit; right-side drift left. */
   .aphorism {
     position: fixed;
-    left: 3rem;
-    top: 50%;
     z-index: 8;
     max-width: 320px;
-    text-align: left;
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
     font-size: 1.6rem;
@@ -391,24 +390,43 @@
       0 0 32px rgba(217, 160, 91, 0.22),
       0 0 12px rgba(217, 160, 91, 0.12),
       0 1px 2px rgba(0, 0, 0, 0.6);
-    /* resting state — vertically centered, slightly translated for blur-in */
-    transform: translateY(-50%) translateX(-18px);
   }
-  .aphorism.drifting {
-    animation: aphorism-drift 14000ms ease-in-out forwards;
+  /* corner variants */
+  .aphorism.pos-tl { top: 5rem;    left: 3rem;  text-align: left; }
+  .aphorism.pos-tr { top: 5rem;    right: 3rem; text-align: right; }
+  .aphorism.pos-bl { bottom: 6rem; left: 3rem;  text-align: left; }
+  .aphorism.pos-br { bottom: 6rem; right: 3rem; text-align: right; }
+
+  .aphorism.drifting.pos-tl,
+  .aphorism.drifting.pos-bl {
+    animation: aphorism-drift-left 14000ms ease-in-out forwards;
+  }
+  .aphorism.drifting.pos-tr,
+  .aphorism.drifting.pos-br {
+    animation: aphorism-drift-right 14000ms ease-in-out forwards;
   }
 
-  @keyframes aphorism-drift {
-    0%   { opacity: 0;    transform: translateY(-50%) translateX(-18px); filter: blur(8px); }
-    18%  { opacity: 0.96; transform: translateY(-50%) translateX(0);     filter: blur(0); }
-    78%  { opacity: 0.96; transform: translateY(-50%) translateX(0);     filter: blur(0); }
-    100% { opacity: 0;    transform: translateY(-50%) translateX(14px);  filter: blur(6px); }
+  @keyframes aphorism-drift-left {
+    0%   { opacity: 0;    transform: translateX(-18px); filter: blur(8px); }
+    18%  { opacity: 0.96; transform: translateX(0);     filter: blur(0); }
+    78%  { opacity: 0.96; transform: translateX(0);     filter: blur(0); }
+    100% { opacity: 0;    transform: translateX(14px);  filter: blur(6px); }
+  }
+  @keyframes aphorism-drift-right {
+    0%   { opacity: 0;    transform: translateX(18px);  filter: blur(8px); }
+    18%  { opacity: 0.96; transform: translateX(0);     filter: blur(0); }
+    78%  { opacity: 0.96; transform: translateX(0);     filter: blur(0); }
+    100% { opacity: 0;    transform: translateX(-14px); filter: blur(6px); }
   }
 
-  /* on narrower screens the side margin disappears, so fall back to bottom-center */
+  /* on narrower screens, collapse all four corners to a single bottom-center fallback */
   @media (max-width: 1240px) {
-    .aphorism {
+    .aphorism.pos-tl,
+    .aphorism.pos-tr,
+    .aphorism.pos-bl,
+    .aphorism.pos-br {
       left: 50%;
+      right: auto;
       top: auto;
       bottom: 5rem;
       max-width: 620px;
@@ -416,9 +434,14 @@
       text-align: center;
       padding: 0 1rem;
       font-size: 1.35rem;
-      transform: translateX(-50%) translateY(18px);
     }
-    @keyframes aphorism-drift {
+    .aphorism.drifting.pos-tl,
+    .aphorism.drifting.pos-tr,
+    .aphorism.drifting.pos-bl,
+    .aphorism.drifting.pos-br {
+      animation: aphorism-drift-mobile 14000ms ease-in-out forwards;
+    }
+    @keyframes aphorism-drift-mobile {
       0%   { opacity: 0;    transform: translateX(-50%) translateY(18px);  filter: blur(8px); }
       18%  { opacity: 0.96; transform: translateX(-50%) translateY(0);     filter: blur(0); }
       78%  { opacity: 0.96; transform: translateX(-50%) translateY(0);     filter: blur(0); }
@@ -1773,6 +1796,33 @@ const QUESTIONS = [
       { name: "Apply", hint: "Why does the distinction matter?", model: "Responsiveness is bid-side: did the bid say what it had to say. Responsibility is offeror-side: can this company actually do the work. A nonresponsive bid is rejected. A nonresponsible offeror cannot receive award. The two are evaluated at different times under different standards." },
     ],
   },
+  {
+    topic: "Rule of Two",
+    q: "What is the Rule of Two?",
+    slots: [
+      { name: "Authority", hint: "Where does this live?", model: "FAR 19.502-2 and 15 U.S.C. 644(j)." },
+      { name: "Rule", hint: "What is the test?", model: "Above the micro-purchase threshold and up to the SAT, the acquisition is automatically set aside for small business unless the CO does not have a reasonable expectation of offers from two or more small businesses at fair market price. Above the SAT, the CO shall set aside the acquisition for small business when there is a reasonable expectation that offers will be received from at least two responsible small business concerns and that award will be made at fair market prices. Both prongs are required: two or more, and fair market price." },
+      { name: "Apply", hint: "What does the CO actually do?", model: "The CO bases the determination on market research, not speculation. The documentation in the file identifies the small businesses that came up in the research, why their capability supports or does not support the expectation, and the pricing basis for fair market price. A Rule of Two analysis that does not name the small businesses is thin, and that is where protests live." },
+    ],
+  },
+  {
+    topic: "Limitations on Subcontracting",
+    q: "What are the limitations on subcontracting for a small business set-aside?",
+    slots: [
+      { name: "Authority", hint: "Where does this live?", model: "FAR 52.219-14 and 13 CFR 125.6." },
+      { name: "Rule", hint: "What are the percentages?", model: "For services (except construction), the small business awardee may not pay more than 50 percent of the amount paid by the government under the contract to firms that are not similarly situated. For supplies (other than procurement from a nonmanufacturer of manufactured end items), same 50 percent limit. For general construction, the small business may not pay more than 85 percent to non-similarly-situated subcontractors. For specialty trade construction, 75 percent. Work performed by similarly situated subcontractors (same size standard, same socioeconomic category) does not count toward the limitation." },
+      { name: "Apply", hint: "Why enforce it?", model: "Because the point of a set-aside is that a small business actually performs the work, not that it fronts for a large business. The clause is how the government enforces that. Noncompliance can result in termination, penalties, and referral to the SBA." },
+    ],
+  },
+  {
+    topic: "Nonmanufacturer Rule",
+    q: "What is the nonmanufacturer rule?",
+    slots: [
+      { name: "Authority", hint: "Where does this live?", model: "FAR 19.102(f) and 13 CFR 121.406." },
+      { name: "Rule", hint: "What is the rule?", model: "On a small business set-aside for manufactured products above the simplified acquisition threshold, a small business offeror that is not the manufacturer may still qualify if it has no more than 500 employees, is primarily engaged in the retail or wholesale trade and normally sells the type of item supplied, takes ownership or possession of the item consistent with industry practice, and supplies the end item of a small business manufacturer made in the United States. If no small business manufacturer exists, the CO can pursue a class waiver or individual waiver from SBA, which allows the small business reseller to supply a product made by a large business or foreign source while the set-aside stays in place. The rule does not apply to acquisitions at or below the SAT." },
+      { name: "Apply", hint: "Why does this exist?", model: "Because many small businesses are distributors rather than manufacturers. Without the nonmanufacturer rule, product set-asides would collapse any time a small business manufacturer was not available. The waiver process is the pressure valve that keeps the set-aside viable when the supply chain has no small-business maker for the item." },
+    ],
+  },
   // ---- FAR Part 5 ----
   {
     topic: "Public Display Period for Synopsis",
@@ -2460,7 +2510,6 @@ const APHORISMS = [
   "The board wants to see how you would do the job. You already do the job.",
   "You belong in the room. Walk in like it.",
   "When you slow down, the right answer comes.",
-  "You write clean contract files. That instinct is the warrant.",
   "Plain reading wins. Trust yours.",
   "You have already thought about harder things than this today.",
   "Sole source is not a trap. You know how to document it.",
@@ -2469,28 +2518,61 @@ const APHORISMS = [
   "The CO they want is the one already sitting in your chair.",
   "Take the breath. The answer is already there.",
   "You have done this before, in smaller rooms. The big room is the same room.",
-  "Knowing where to look is most of the warrant. You know where to look.",
-  "Your judgment is why they gave you the file. Trust it.",
   "It is going to connect. Give it a moment.",
   "Dan Cary cares. And that is why he contributed to this page for you.",
+  "The calm in your voice is the work showing.",
+  "You have read this. You have talked it through. That is enough.",
+  "The right answer is usually the simple one, and you already see it.",
+  "Pace beats panic every time.",
+  "You are allowed to think before you speak. The board wants to see the thinking.",
+  "If you are not sure, say so cleanly. That is strength.",
+  "Most of this is listening to the question. You listen well.",
+  "Steady hands beat fast hands.",
+  "You have been preparing for longer than you think.",
+  "The quiet second before the answer is the answer working itself out.",
+  "Be the clearest voice in the room. That is the one the board remembers.",
+  "You know when to call the lawyer, and that is half of this.",
+  "Catching your own mistake is a strength. They know it when they see it.",
+  "The board is looking for a working contracting officer. You already are one.",
+  "You have earned the chair. Sit in it.",
+  "Short answers are strong answers.",
+  "Saying 'I would check' is worth more than a confident wrong answer.",
+  "You remember more than you think you remember.",
+  "Honesty is the easiest tool to carry in.",
+  "Composure is contagious, and yours is steady.",
+  "Treat it like a conversation. It is one.",
+  "You have handled harder things on harder days.",
+  "The right answer tends to come when you stop gripping the question.",
+  "The people across the table want you to pass.",
+  "You already have the competence. Let it show.",
 ];
 
 const aphoEl = document.getElementById("aphorism");
 let aIdx = Math.floor(Math.random() * APHORISMS.length);
 
-// Animation duration must match the CSS @keyframes aphorism-drift
+// Four corner spawn positions. The cycle rotates through them so each aphorism
+// appears in a different part of the screen. Left-side positions drift right
+// on exit, right-side positions drift left — handled entirely in CSS.
+const POSITIONS = ["pos-tl", "pos-tr", "pos-bl", "pos-br"];
+// Start at a random corner so two back-to-back sessions do not look identical
+let pIdx = Math.floor(Math.random() * POSITIONS.length);
+
+// Animation duration must match the CSS @keyframes aphorism-drift-*
 const DRIFT_MS = 14000;
 const QUIET_MS = 9000;
 
 function cycleAphorism() {
   aphoEl.textContent = APHORISMS[aIdx];
-  // Re-trigger the CSS animation by removing the class, forcing a reflow, then re-adding
-  aphoEl.classList.remove("drifting");
+  // Clear previous state so the new position and animation start clean
+  aphoEl.classList.remove("drifting", "pos-tl", "pos-tr", "pos-bl", "pos-br");
+  // Force a reflow so the animation re-triggers when we re-add the classes
   void aphoEl.offsetWidth;
+  aphoEl.classList.add(POSITIONS[pIdx]);
   aphoEl.classList.add("drifting");
   setTimeout(() => {
     aphoEl.classList.remove("drifting");
     aIdx = (aIdx + 1) % APHORISMS.length;
+    pIdx = (pIdx + 1) % POSITIONS.length;
     setTimeout(cycleAphorism, QUIET_MS);
   }, DRIFT_MS);
 }
