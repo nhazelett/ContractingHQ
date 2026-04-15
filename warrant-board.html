@@ -482,7 +482,7 @@
 
 <canvas id="ambient-canvas"></canvas>
 
-<audio id="ambient-audio" preload="auto"></audio>
+<audio id="ambient-audio" preload="auto" autoplay></audio>
 
 <button class="music-btn" id="music-toggle" title="Toggle ambient music" aria-label="Toggle ambient music">
   <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1 v10 l8 -5 z"/></svg>
@@ -1555,121 +1555,146 @@ function shuffled(arr) {
   return a;
 }
 
+// ─────── ambient music ───────
+// Goal: start music as close to 100% of the time as the browser will allow.
+//
+// Browser autoplay-with-sound policy is the constraint. Chrome and Safari will
+// only autoplay sound if (a) the user has built up engagement on this domain,
+// (b) the page received a user-activation token from a click on the prior
+// page, or (c) the user has interacted on this page already. We try every
+// legal path:
+//
+//   1. autoplay attribute on the <audio> element
+//   2. .play() called immediately on script load (uses the navigation gesture)
+//   3. .play() called again on canplay (covers the case where step 2 failed
+//      because the file wasn't buffered yet, but the activation is still alive)
+//   4. .play() called on every plausible first-interaction event
+//      (click, keydown, pointerdown, touchstart) — first one wins
+//   5. sessionStorage flag so once the user enables sound in this session,
+//      subsequent loads of any page in this session retry autoplay aggressively
 const ambientAudio = document.getElementById("ambient-audio");
 const musicBtn = document.getElementById("music-toggle");
 const musicLabel = document.getElementById("music-label");
 let musicOn = false;
-let musicEverStarted = false;
 let queue = shuffled(PLAYLIST);
 let qIdx = 0;
-ambientAudio.preload = "auto";
-ambientAudio.src = queue[0];
 ambientAudio.volume = 0.3;
+ambientAudio.src = queue[0];
 
-// Advance to the next track. Called from the ended event, and from the error
-// event but only after music has successfully started at least once (so a transient
-// error during the initial preload doesn't desync the whole playlist).
-let errorStreak = 0;
-function advanceTrack() {
-  qIdx = (qIdx + 1) % queue.length;
-  if (qIdx === 0) queue = shuffled(PLAYLIST);
-  ambientAudio.src = queue[qIdx];
-  ambientAudio.load();
-  if (musicOn) {
-    ambientAudio.play().catch(() => {});
-  }
+// Session memory: once the user has enabled sound this session, remember it.
+const SOUND_FLAG = "contractinghq.sound.enabled";
+function rememberSoundEnabled() {
+  try { sessionStorage.setItem(SOUND_FLAG, "1"); } catch (_) {}
+}
+function userPreviouslyEnabledSound() {
+  try { return sessionStorage.getItem(SOUND_FLAG) === "1"; } catch (_) { return false; }
 }
 
-ambientAudio.addEventListener("ended", () => {
-  errorStreak = 0;
-  advanceTrack();
-});
-
-ambientAudio.addEventListener("error", () => {
-  // Don't react to errors before the user has actually started music — that's
-  // usually just a preload hiccup and acting on it desyncs everything.
-  if (!musicEverStarted) return;
-  errorStreak++;
-  if (errorStreak < queue.length) {
-    advanceTrack();
-  }
-});
+console.log("[music] init, first track:", queue[0], "session-enabled:", userPreviouslyEnabledSound());
 
 function setMusicOnUi(on) {
   musicOn = on;
   if (on) {
-    musicEverStarted = true;
     musicBtn.classList.remove("music-prompt");
+    rememberSoundEnabled();
   }
   musicBtn.style.color = on ? "var(--amber)" : "";
   musicBtn.style.borderColor = on ? "rgba(217, 175, 110, 0.45)" : "";
   musicLabel.textContent = on ? "Sound on" : "Sound";
 }
 
-// Attempt to start playback. Returns a promise that resolves true on success.
-function attemptPlay() {
-  if (musicOn) return Promise.resolve(true);
+function playCurrent(reason) {
+  if (musicOn) return;
+  console.log("[music] play attempt (" + (reason || "") + "):", ambientAudio.src);
   const p = ambientAudio.play();
-  if (!p || typeof p.then !== "function") {
+  if (p && typeof p.then === "function") {
+    p.then(() => {
+      console.log("[music] playing");
+      setMusicOnUi(true);
+    }).catch((err) => {
+      console.log("[music] play blocked or failed:", err && err.name, err && err.message);
+      musicBtn.classList.add("music-prompt");
+    });
+  } else {
     setMusicOnUi(true);
-    return Promise.resolve(true);
   }
-  return p.then(() => { setMusicOnUi(true); return true; })
-          .catch(() => false);
 }
 
-// Try to autostart on every plausible early hook. Browsers usually block
-// autoplay with sound, but if the user navigated here from a link click on
-// training.html, the activation token may carry forward and let it through.
-function autoStartMusic() {
-  ambientAudio.load();
-  attemptPlay().then((ok) => {
-    if (ok) return;
-    // Try again once the audio is actually buffered enough to play.
-    ambientAudio.addEventListener("canplaythrough", () => {
-      if (!musicOn) attemptPlay();
-    }, { once: true });
-    // Visual cue that the user needs to interact to start music.
-    musicBtn.classList.add("music-prompt");
-    // Fallback: start on the very first user interaction anywhere on the page.
-    // Listen on document (not window) so the music button's own click handler
-    // beats us to it and we don't race with toggle logic.
-    const startOnInteraction = (e) => {
-      // Skip if the interaction is on the music button itself — let its own
-      // handler manage that case so we don't start-then-stop.
-      if (e.target && e.target.closest && e.target.closest("#music-toggle")) return;
-      attemptPlay().then((ok) => {
-        if (ok) {
-          document.removeEventListener("pointerdown", startOnInteraction, true);
-          document.removeEventListener("keydown", startOnInteraction, true);
-          document.removeEventListener("touchstart", startOnInteraction, true);
-        }
-      });
-    };
-    document.addEventListener("pointerdown", startOnInteraction, true);
-    document.addEventListener("keydown", startOnInteraction, true);
-    document.addEventListener("touchstart", startOnInteraction, true);
+function advanceTrack() {
+  qIdx = (qIdx + 1) % queue.length;
+  if (qIdx === 0) queue = shuffled(PLAYLIST);
+  console.log("[music] advance to:", queue[qIdx]);
+  ambientAudio.src = queue[qIdx];
+  if (musicOn) {
+    const p = ambientAudio.play();
+    if (p && typeof p.then === "function") p.catch(() => {});
+  }
+}
+
+ambientAudio.addEventListener("ended", () => {
+  console.log("[music] track ended");
+  advanceTrack();
+});
+
+ambientAudio.addEventListener("error", (e) => {
+  const err = ambientAudio.error;
+  console.log("[music] audio error:", err && err.code, "src:", ambientAudio.currentSrc || ambientAudio.src);
+});
+
+// 1. Try autoplay immediately, before any other JS runs in this block.
+//    Uses the navigation activation token from the prior-page click if it's
+//    still alive.
+playCurrent("immediate");
+
+// 2. Retry once the file is actually buffered. This is the most common reason
+//    the immediate attempt fails — the audio element hasn't loaded the file
+//    yet so .play() rejects even though a user gesture was available.
+ambientAudio.addEventListener("canplay", () => {
+  if (!musicOn) playCurrent("canplay");
+}, { once: true });
+
+// 3. Retry on any first user interaction. The first event of any of these
+//    types triggers a play attempt; once we're playing, the listeners
+//    self-remove. We use { capture: true } so we beat any inner stopPropagation,
+//    and we explicitly skip the music button itself so its own toggle handler
+//    decides what to do (otherwise we'd race and start-then-stop).
+function startOnFirstInteraction(e) {
+  if (musicOn) return;
+  if (e && e.target && e.target.closest && e.target.closest("#music-toggle")) return;
+  console.log("[music] first interaction:", e && e.type);
+  playCurrent("first-interaction");
+}
+const interactionEvents = ["pointerdown", "click", "keydown", "touchstart"];
+interactionEvents.forEach((evt) => {
+  document.addEventListener(evt, startOnFirstInteraction, { capture: true });
+});
+// When music is on, tear down the interaction listeners so they don't fire forever.
+ambientAudio.addEventListener("playing", () => {
+  interactionEvents.forEach((evt) => {
+    document.removeEventListener(evt, startOnFirstInteraction, { capture: true });
   });
-}
+}, { once: true });
 
+// 4. Retry when the tab becomes visible (covers "opened in background tab,
+//    then switched to it" — visibility change can pair with an OS-level
+//    interaction to satisfy the autoplay policy).
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && !musicOn) {
+    playCurrent("visibility");
+  }
+});
+
+// The music button toggles on/off.
 musicBtn.addEventListener("click", (e) => {
   e.stopPropagation();
+  console.log("[music] button click, musicOn was:", musicOn);
   if (musicOn) {
     ambientAudio.pause();
     setMusicOnUi(false);
   } else {
-    attemptPlay();
+    playCurrent("button");
   }
 });
-
-// Kick it off as soon as we can.
-autoStartMusic();
-// And try again on the first content-ready event in case the audio element
-// was not ready the first time around.
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => { if (!musicOn) attemptPlay(); }, { once: true });
-}
-window.addEventListener("load", () => { if (!musicOn) attemptPlay(); }, { once: true });
 
 // ─────── ambient mentor voice ───────
 const APHORISMS = [
