@@ -60,7 +60,7 @@
     pointer-events: none;
   }
 
-  .top-bar a, .top-bar span {
+  .top-bar a, .top-bar span, .top-bar button {
     pointer-events: auto;
     font-size: 0.74rem;
     color: var(--cream-faint);
@@ -71,8 +71,21 @@
     font-family: 'Inter', sans-serif;
   }
 
-  .top-bar a:hover {
+  .top-bar a:hover, .top-bar button:hover {
     color: var(--cream);
+  }
+
+  .top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+  }
+
+  .skip-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
   }
 
   main {
@@ -468,7 +481,10 @@
 
 <div class="top-bar">
   <a href="tools.html">&larr; back to tools</a>
-  <span id="progress">Card 1 of 1</span>
+  <div class="top-bar-right">
+    <span id="progress">Card 1 of 1</span>
+    <button class="skip-btn" id="skip-btn" title="Skip to the next card">skip &rarr;</button>
+  </div>
 </div>
 
 <div class="aphorism" id="aphorism"></div>
@@ -759,14 +775,17 @@ document.querySelectorAll(".assess-btn").forEach(btn => {
   });
 });
 
-document.getElementById("next-btn").addEventListener("click", () => {
+function goToNextCard() {
   position = (position + 1) % order.length;
   // If we wrapped, reshuffle so the next pass feels fresh
   if (position === 0) {
     shuffle(order);
   }
   loadQuestion(position);
-});
+}
+
+document.getElementById("next-btn").addEventListener("click", goToNextCard);
+document.getElementById("skip-btn").addEventListener("click", goToNextCard);
 
 loadQuestion(0);
 
@@ -967,6 +986,7 @@ const APHORISMS = [
   "Knowing where to look is most of the warrant. You know where to look.",
   "Your judgment is why they gave you the file. Trust it.",
   "It is going to connect. Give it a moment.",
+  "Dan Cary cares. And that is why he contributed to this page for you.",
 ];
 
 const aphoEl = document.getElementById("aphorism");
