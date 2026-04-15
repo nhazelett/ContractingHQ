@@ -895,21 +895,25 @@ function shuffled(arr) {
 }
 
 const ambientAudio = document.getElementById("ambient-audio");
+const musicBtn = document.getElementById("music-toggle");
+const musicLabel = document.getElementById("music-label");
+let musicOn = false;
+let musicEverStarted = false;
 let queue = shuffled(PLAYLIST);
 let qIdx = 0;
+ambientAudio.preload = "auto";
 ambientAudio.src = queue[0];
 ambientAudio.volume = 0.3;
-ambientAudio.preload = "auto";
 
-// Advance to the next track. Used for both natural end-of-track and load errors,
-// so a missing/404 file can't kill the whole playlist.
+// Advance to the next track. Called from the ended event, and from the error
+// event but only after music has successfully started at least once (so a transient
+// error during the initial preload doesn't desync the whole playlist).
 let errorStreak = 0;
 function advanceTrack() {
   qIdx = (qIdx + 1) % queue.length;
   if (qIdx === 0) queue = shuffled(PLAYLIST);
   ambientAudio.src = queue[qIdx];
   ambientAudio.load();
-  // Only try to play if music is supposed to be on
   if (musicOn) {
     ambientAudio.play().catch(() => {});
   }
@@ -921,20 +925,18 @@ ambientAudio.addEventListener("ended", () => {
 });
 
 ambientAudio.addEventListener("error", () => {
-  // Skip on load failure, but stop trying after a full pass through the playlist
-  // so we don't spin forever if every file is broken.
+  // Don't react to errors before the user has actually started music — that's
+  // usually just a preload hiccup and acting on it desyncs everything.
+  if (!musicEverStarted) return;
   errorStreak++;
   if (errorStreak < queue.length) {
     advanceTrack();
   }
 });
 
-const musicBtn = document.getElementById("music-toggle");
-const musicLabel = document.getElementById("music-label");
-let musicOn = false;
-
 function setMusicOnUi(on) {
   musicOn = on;
+  if (on) musicEverStarted = true;
   musicBtn.style.color = on ? "var(--amber)" : "";
   musicBtn.style.borderColor = on ? "rgba(217, 175, 110, 0.45)" : "";
   musicLabel.textContent = on ? "Sound on" : "Sound";
