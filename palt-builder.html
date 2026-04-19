@@ -1,0 +1,2387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PALT &amp; Milestone Builder — plan acquisition timelines with milestone schedules based on acquisition profile, risk posture, and review cycles." />
+  <title>PALT &amp; Milestone Builder — ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Michroma&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>.bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}</style>
+<style>
+  :root {
+    --bg: #0a1220;
+    --bg-2: #0f1b2d;
+    --bg-3: #13203a;
+    --panel: #172642;
+    --panel-2: #1e2f4f;
+    --panel-3: #27395c;
+    --line: #243759;
+    --line-bright: #34497a;
+    --text: #e8edf7;
+    --text-soft: #a8b4cf;
+    --text-faint: #6e7d9e;
+    --blue: #3b82f6;
+    --blue-bright: #60a5fa;
+    --blue-dim: #2563eb;
+    --blue-glow: rgba(96,165,250,0.18);
+    --blue-soft: rgba(59,130,246,0.12);
+    --crimson: #ef4444;
+    --crimson-glow: rgba(239,68,68,0.14);
+    --emerald: #34d399;
+    --emerald-glow: rgba(52,211,153,0.12);
+    --yellow: #fbbf24;
+    --violet: #a78bfa;
+    --shadow-lg: 0 24px 60px -12px rgba(0,0,0,0.6), 0 2px 6px rgba(0,0,0,0.35);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.35);
+    --glow-blue: 0 0 0 1px var(--blue-dim), 0 0 20px -4px var(--blue-glow);
+    --font-display: 'Michroma', 'Oswald', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+  }
+
+  /* ─── Reset & Base ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body.palt-body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── Ambient background ─── */
+  .palt-ambient {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+  }
+  .palt-ambient::before {
+    content: '';
+    position: absolute;
+    width: 900px; height: 900px;
+    top: -200px; left: -200px;
+    background: radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%);
+    animation: palt-drift 30s ease-in-out infinite alternate;
+  }
+  .palt-ambient::after {
+    content: '';
+    position: absolute;
+    width: 700px; height: 700px;
+    bottom: -100px; right: -200px;
+    background: radial-gradient(circle, rgba(167,139,250,0.04) 0%, transparent 70%);
+    animation: palt-drift 25s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes palt-drift {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(60px, 40px) scale(1.1); }
+  }
+
+  /* ─── Layout ─── */
+  .palt-wrap {
+    position: relative; z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* ─── Hero ─── */
+  .palt-hero {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-top: 1.5rem;
+  }
+  .palt-hero-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--blue-bright);
+    background: var(--blue-soft);
+    border: 1px solid rgba(96,165,250,0.2);
+    border-radius: 100px;
+    padding: .35rem 1.2rem;
+    margin-bottom: .8rem;
+  }
+  .palt-hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: var(--text);
+    margin-bottom: .5rem;
+  }
+  .palt-hero p {
+    color: var(--text-soft);
+    font-size: .92rem;
+    max-width: 580px;
+    margin: 0 auto;
+  }
+
+  /* ─── Panels ─── */
+  .palt-panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .palt-panel-title {
+    font-family: var(--font-display);
+    font-size: .82rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue-bright);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+  .palt-panel-title::before {
+    content: '';
+    width: 3px; height: 16px;
+    background: var(--blue);
+    border-radius: 2px;
+  }
+
+  /* ─── Form Controls ─── */
+  .palt-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .palt-field {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+  }
+  .palt-field label {
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .palt-field select,
+  .palt-field input[type="number"],
+  .palt-field input[type="date"],
+  .palt-field input[type="text"] {
+    background: var(--bg-3);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: .88rem;
+    padding: .55rem .75rem;
+    transition: border-color .2s, box-shadow .2s;
+    outline: none;
+    width: 100%;
+  }
+  .palt-field select:focus,
+  .palt-field input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px var(--blue-soft);
+  }
+  .palt-field select option { background: var(--bg-3); color: var(--text); }
+
+  /* ─── Posture Slider ─── */
+  .palt-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: .5rem;
+  }
+  .palt-slider-row input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: linear-gradient(90deg, var(--emerald), var(--yellow), var(--crimson));
+    border-radius: 3px;
+    outline: none;
+  }
+  .palt-slider-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px;
+    background: var(--text);
+    border: 2px solid var(--blue);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(96,165,250,0.3);
+  }
+  .palt-slider-row input[type="range"]::-moz-range-thumb {
+    width: 20px; height: 20px;
+    background: var(--text);
+    border: 2px solid var(--blue);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(96,165,250,0.3);
+  }
+  .palt-posture-label {
+    font-family: var(--font-mono);
+    font-size: .82rem;
+    font-weight: 600;
+    min-width: 100px;
+    text-align: right;
+  }
+  .palt-posture-label.low { color: var(--emerald); }
+  .palt-posture-label.med { color: var(--yellow); }
+  .palt-posture-label.high { color: var(--crimson); }
+
+  /* ─── Review Cycle ─── */
+  .palt-review-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: .75rem;
+    margin-top: .5rem;
+  }
+  .palt-review-item {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    background: var(--bg-3);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: .4rem .65rem;
+  }
+  .palt-review-item label {
+    font-size: .78rem;
+    color: var(--text-soft);
+    flex: 1;
+  }
+  .palt-review-item input {
+    width: 50px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: .82rem;
+    padding: .25rem .4rem;
+    text-align: center;
+    outline: none;
+  }
+  .palt-review-item input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 2px var(--blue-soft);
+  }
+
+  /* ─── Summary Cards ─── */
+  .palt-summary-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .palt-stat-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+  }
+  .palt-stat-card .stat-value {
+    font-family: var(--font-mono);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--blue-bright);
+  }
+  .palt-stat-card .stat-label {
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-top: .15rem;
+  }
+  .palt-stat-card.risk-low .stat-value { color: var(--emerald); }
+  .palt-stat-card.risk-med .stat-value { color: var(--yellow); }
+  .palt-stat-card.risk-high .stat-value { color: var(--crimson); }
+
+  /* ─── Milestone Table ─── */
+  .palt-table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--bg-2);
+  }
+  .palt-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .84rem;
+  }
+  .palt-table thead {
+    background: var(--panel-2);
+  }
+  .palt-table th {
+    font-family: var(--font-mono);
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    padding: .7rem .8rem;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  .palt-table td {
+    padding: .6rem .8rem;
+    border-bottom: 1px solid rgba(36,55,89,0.5);
+    vertical-align: middle;
+  }
+  .palt-table tbody tr:hover {
+    background: rgba(59,130,246,0.04);
+  }
+  .palt-table tbody tr.phase-gate {
+    background: rgba(96,165,250,0.06);
+  }
+  .palt-table tbody tr.phase-gate td:first-child {
+    border-left: 3px solid var(--blue);
+    padding-left: calc(.8rem - 3px);
+  }
+  .palt-table tbody tr.custom-phase {
+    background: rgba(167,139,250,0.05);
+  }
+  .palt-table tbody tr.section-row td {
+    background: var(--panel-2);
+    border-bottom: 2px solid var(--blue-dim);
+    padding: .45rem .8rem;
+  }
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue-bright);
+  }
+
+  /* Phase name cell */
+  .phase-name {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .phase-name .gate-icon {
+    font-size: .75rem;
+  }
+  .phase-name .custom-tag {
+    font-size: .6rem;
+    font-family: var(--font-mono);
+    color: var(--violet);
+    background: rgba(167,139,250,0.12);
+    padding: .1rem .4rem;
+    border-radius: 4px;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+  }
+
+  /* Role chips */
+  .role-chip {
+    display: inline-block;
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .3px;
+    padding: .15rem .5rem;
+    border-radius: 5px;
+    white-space: nowrap;
+  }
+  .role-chip.req { background: rgba(167,139,250,0.12); color: var(--violet); }
+  .role-chip.fm { background: rgba(251,191,36,0.12); color: var(--yellow); }
+  .role-chip.cons { background: rgba(52,211,153,0.12); color: var(--emerald); }
+  .role-chip.legal { background: rgba(251,191,36,0.15); color: #fcd34d; }
+  .role-chip.clr { background: rgba(96,165,250,0.15); color: var(--blue-bright); }
+  .role-chip.tech { background: rgba(34,211,238,0.12); color: #67e8f9; }
+  .role-chip.sba { background: rgba(239,68,68,0.1); color: #f87171; }
+  .role-chip.custom-role { background: rgba(167,139,250,0.1); color: var(--violet); }
+
+  /* Days cell */
+  .days-cell {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: .85rem;
+    color: var(--text);
+    cursor: pointer;
+    border-radius: 6px;
+    padding: .2rem .4rem;
+    transition: background .15s;
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    position: relative;
+  }
+  .days-cell:hover {
+    background: var(--blue-soft);
+  }
+  .days-cell.overridden {
+    color: var(--yellow);
+  }
+  .days-cell .custom-indicator {
+    font-size: .58rem;
+    font-family: var(--font-mono);
+    color: var(--yellow);
+    opacity: .8;
+  }
+  .days-cell .reset-btn {
+    font-size: .7rem;
+    cursor: pointer;
+    color: var(--text-faint);
+    opacity: 0;
+    transition: opacity .15s;
+    background: none;
+    border: none;
+    padding: 0 2px;
+    line-height: 1;
+  }
+  .days-cell:hover .reset-btn { opacity: 1; }
+  .days-cell .reset-btn:hover { color: var(--crimson); }
+
+  .days-input {
+    width: 50px;
+    background: var(--bg-3);
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    color: var(--yellow);
+    font-family: var(--font-mono);
+    font-size: .85rem;
+    font-weight: 600;
+    padding: .2rem .3rem;
+    text-align: center;
+    outline: none;
+    box-shadow: 0 0 0 2px var(--blue-soft);
+  }
+
+  /* Date cells */
+  .date-cell {
+    font-family: var(--font-mono);
+    font-size: .78rem;
+    color: var(--text-soft);
+    white-space: nowrap;
+  }
+
+  /* Risk flags */
+  .risk-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    font-size: .68rem;
+    font-weight: 600;
+    padding: .15rem .5rem;
+    border-radius: 5px;
+    white-space: nowrap;
+  }
+  .risk-flag { cursor: pointer; transition: transform .1s, box-shadow .15s; }
+  .risk-flag:hover { transform: scale(1.05); box-shadow: 0 0 6px rgba(255,255,255,0.08); }
+  .risk-flag.low { background: var(--emerald-glow); color: var(--emerald); }
+  .risk-flag.med { background: rgba(251,191,36,0.12); color: var(--yellow); }
+  .risk-flag.high { background: var(--crimson-glow); color: var(--crimson); }
+  .risk-flag .risk-override-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: currentColor; opacity: .6; margin-left: .15rem;
+  }
+
+  /* ─── Phase Add/Remove Buttons ─── */
+  .phase-add-row {
+    height: 0;
+    position: relative;
+    overflow: visible;
+  }
+  .phase-add-row td {
+    padding: 0 !important;
+    border: none !important;
+    position: relative;
+    height: 0;
+  }
+  .add-phase-btn {
+    position: absolute;
+    left: 50%;
+    top: -8px;
+    transform: translateX(-50%);
+    width: 22px; height: 22px;
+    background: var(--panel-3);
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    color: var(--text-faint);
+    font-size: .75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity .2s, background .15s, color .15s;
+    z-index: 2;
+    line-height: 1;
+  }
+  .palt-table tbody:hover .add-phase-btn {
+    opacity: .4;
+  }
+  .add-phase-btn:hover {
+    opacity: 1 !important;
+    background: var(--blue);
+    color: #fff;
+    border-color: var(--blue);
+  }
+  .remove-phase-btn {
+    background: none;
+    border: none;
+    color: var(--text-faint);
+    cursor: pointer;
+    font-size: .85rem;
+    padding: .15rem .4rem;
+    border-radius: 4px;
+    opacity: .35;
+    transition: opacity .15s, color .15s, background .15s;
+    line-height: 1;
+  }
+  tr:hover .remove-phase-btn { opacity: .7; }
+  .remove-phase-btn:hover { opacity: 1; color: var(--crimson); background: var(--crimson-glow); }
+
+  /* ─── Removed Phases List ─── */
+  .removed-phases {
+    margin-top: .75rem;
+    padding: .5rem .75rem;
+    background: var(--bg-3);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: .78rem;
+    color: var(--text-faint);
+  }
+  .removed-phases-title {
+    font-weight: 600;
+    margin-bottom: .3rem;
+    font-size: .72rem;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+  }
+  .removed-phase-item {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: .2rem .5rem;
+    margin: .2rem .3rem .2rem 0;
+    text-decoration: line-through;
+    color: var(--text-faint);
+  }
+  .removed-phase-item button {
+    background: none;
+    border: none;
+    color: var(--emerald);
+    cursor: pointer;
+    font-size: .72rem;
+    font-weight: 700;
+    padding: 0 2px;
+    text-decoration: none;
+  }
+  .removed-phase-item button:hover { color: var(--blue-bright); }
+
+  /* ─── Buttons ─── */
+  .palt-btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-top: 1rem;
+  }
+  .palt-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    font-family: var(--font-sans);
+    font-size: .8rem;
+    font-weight: 600;
+    padding: .55rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel-2);
+    color: var(--text);
+    cursor: pointer;
+    transition: background .15s, border-color .15s, transform .1s;
+  }
+  .palt-btn:hover {
+    background: var(--panel-3);
+    border-color: var(--line-bright);
+    transform: translateY(-1px);
+  }
+  .palt-btn.primary {
+    background: var(--blue-dim);
+    border-color: var(--blue);
+    color: #fff;
+  }
+  .palt-btn.primary:hover {
+    background: var(--blue);
+  }
+  .palt-btn.success {
+    background: rgba(52,211,153,0.15);
+    border-color: rgba(52,211,153,0.3);
+    color: var(--emerald);
+  }
+  .palt-btn.danger {
+    background: rgba(239,68,68,0.1);
+    border-color: rgba(239,68,68,0.2);
+    color: var(--crimson);
+  }
+
+  /* ─── Tooltip ─── */
+  .palt-tooltip {
+    position: fixed;
+    background: var(--emerald);
+    color: #000;
+    font-size: .75rem;
+    font-weight: 600;
+    padding: .3rem .7rem;
+    border-radius: 6px;
+    pointer-events: none;
+    z-index: 999;
+    transform: translateY(-8px);
+    opacity: 0;
+    transition: opacity .2s, transform .2s;
+  }
+  .palt-tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── Custom Phase Modal ─── */
+  .palt-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .palt-modal-overlay.active { display: flex; }
+  .palt-modal {
+    background: var(--panel);
+    border: 1px solid var(--line-bright);
+    border-radius: 14px;
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: var(--shadow-lg);
+  }
+  .palt-modal h3 {
+    font-family: var(--font-display);
+    font-size: .85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--blue-bright);
+    margin-bottom: 1rem;
+  }
+  .palt-modal .palt-field {
+    margin-bottom: .75rem;
+  }
+  .palt-modal-btns {
+    display: flex;
+    gap: .5rem;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  /* ─── Gantt-ish visual bar ─── */
+  .gantt-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--blue);
+    min-width: 4px;
+    opacity: .7;
+  }
+  .gantt-bar.gate { background: var(--yellow); }
+  .gantt-bar.custom { background: var(--violet); }
+
+  /* ─── Micro-Purchase Info ─── */
+  .micro-info {
+    background: var(--bg-3); border: 1px solid var(--line); border-radius: 8px;
+    padding: .75rem 1rem; margin-top: .75rem; font-size: .82rem; color: var(--text-soft);
+    display: none; line-height: 1.8;
+  }
+  .micro-info.visible { display: block; }
+  .micro-info .micro-info-title { color: var(--text); font-size: .72rem; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; display: block; margin-bottom: .3rem; }
+  .micro-info .micro-row { display: flex; justify-content: space-between; padding: .1rem 0; border-bottom: 1px dashed rgba(36,55,89,0.4); }
+  .micro-info .micro-row:last-child { border-bottom: none; }
+  .micro-info .micro-val { color: var(--blue-bright); font-family: var(--font-mono); font-size: .8rem; font-weight: 600; }
+
+  /* ─── Need-by Warning ─── */
+  .needby-warn {
+    background: var(--crimson-glow); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px;
+    padding: .6rem 1rem; margin-bottom: 1rem; font-size: .82rem; color: #fca5a5;
+    display: none;
+  }
+  .needby-warn.visible { display: block; }
+  .needby-warn strong { color: var(--crimson); }
+
+  /* ─── Disclaimer ─── */
+  .palt-disclaimer {
+    text-align: center;
+    font-size: .72rem;
+    color: var(--text-faint);
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+  }
+
+  /* ─── Print ─── */
+  @media print {
+    body.palt-body { background: #fff !important; color: #111 !important; }
+    .navbar, .footer, .palt-ambient, .palt-hero-tag, .palt-btn-row,
+    .add-phase-btn, .remove-phase-btn, .palt-modal-overlay,
+    .bmc-btn, .palt-preset-row { display: none !important; }
+    .palt-panel { background: #fff; border-color: #ccc; box-shadow: none; }
+    .palt-table th { color: #333; background: #f0f0f0; }
+    .palt-table td { color: #111; border-color: #ddd; }
+    .role-chip { border: 1px solid #ccc; }
+    .palt-stat-card { border-color: #ccc; background: #fafafa; }
+    .palt-stat-card .stat-value { color: #111; }
+    .days-cell { color: #111; }
+    .days-cell.overridden { color: #b45309; }
+    .date-cell { color: #333; }
+    .palt-wrap { padding-top: .5rem; }
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 768px) {
+    .palt-wrap { padding: 1rem; }
+    .palt-form-grid { grid-template-columns: 1fr; }
+    .palt-summary-row { grid-template-columns: repeat(2, 1fr); }
+    .palt-review-grid { grid-template-columns: 1fr 1fr; }
+    .palt-table { font-size: .78rem; }
+  }
+
+  /* ─── Smart Toggles ─── */
+  .palt-toggles-header {
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; user-select: none;
+  }
+  .palt-toggles-header .chevron {
+    font-size: .7rem; color: var(--text-faint); transition: transform .2s;
+  }
+  .palt-toggles-header.open .chevron { transform: rotate(90deg); }
+  .palt-toggles-body {
+    display: none; padding-top: .75rem;
+  }
+  .palt-toggles-body.open { display: block; }
+  .palt-toggle-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: .6rem;
+  }
+  .palt-toggle-item {
+    display: flex; align-items: flex-start; gap: .5rem;
+    background: var(--bg-3); border: 1px solid var(--line); border-radius: 8px;
+    padding: .55rem .75rem; transition: border-color .15s;
+  }
+  .palt-toggle-item:has(input:checked) { border-color: var(--blue-dim); }
+  .palt-toggle-item input[type="checkbox"] {
+    accent-color: var(--blue); margin-top: .15rem; flex-shrink: 0;
+  }
+  .palt-toggle-item .toggle-text { display: flex; flex-direction: column; gap: .1rem; }
+  .palt-toggle-item .toggle-label {
+    font-size: .82rem; font-weight: 500; color: var(--text); line-height: 1.3;
+  }
+  .palt-toggle-item .toggle-hint {
+    font-size: .7rem; color: var(--text-faint); line-height: 1.35;
+  }
+  .palt-toggle-item.disabled-look { opacity: .45; pointer-events: none; }
+
+  /* ─── Preset row ─── */
+  .palt-preset-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    align-items: center;
+    margin-top: .75rem;
+    padding-top: .75rem;
+    border-top: 1px solid var(--line);
+  }
+  .palt-preset-row .palt-preset-label {
+    font-size: .72rem;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body class="palt-body">
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html" class="active">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="palt-ambient"></div>
+
+<div class="palt-wrap">
+  <!-- Hero -->
+  <div class="palt-hero">
+    <div class="palt-hero-tag">Acquisition Timeline Tool</div>
+    <h1>PALT &amp; Milestone Builder</h1>
+    <p>Generate realistic acquisition milestone schedules based on dollar threshold, competition approach, risk posture, and review cycle times.</p>
+  </div>
+
+  <!-- Acquisition Profile -->
+  <div class="palt-panel">
+    <div class="palt-panel-title">Acquisition Profile</div>
+    <div class="palt-form-grid">
+      <div class="palt-field">
+        <label for="category">Acquisition Category</label>
+        <select id="category">
+          <option value="micro">Micro-Purchase</option>
+          <option value="comm_under9m" selected>Commercial &mdash; Up to $9M (FAR Part 12)</option>
+          <option value="comm_over9m">Commercial &mdash; Over $9M (FAR Part 12)</option>
+          <option value="noncomm_under250k">Non-Commercial &mdash; Under $250K (SAP)</option>
+          <option value="noncomm_over250k">Non-Commercial &mdash; Over $250K (FAR Part 15)</option>
+        </select>
+        <div class="micro-info" id="microInfo">
+          <span class="micro-info-title">Micro-Purchase Thresholds (FAR 2.101)</span>
+          <div class="micro-row"><span>Standard</span><span class="micro-val">$15,000</span></div>
+          <div class="micro-row"><span>Construction (Davis-Bacon)</span><span class="micro-val">$2,000</span></div>
+          <div class="micro-row"><span>Service Contract Labor Standards</span><span class="micro-val">$2,500</span></div>
+          <div class="micro-row"><span>Contingency/Disaster (inside U.S.)</span><span class="micro-val">$25,000</span></div>
+          <div class="micro-row"><span>Contingency/Disaster (outside U.S.)</span><span class="micro-val">$40,000</span></div>
+          <div class="micro-row"><span>Higher Education / Nonprofit Research</span><span class="micro-val">$15,000+</span></div>
+        </div>
+      </div>
+      <div class="palt-field">
+        <label for="competition">Competition Approach</label>
+        <select id="competition">
+          <option value="full_open" selected>Full &amp; Open</option>
+          <option value="limited">Limited Competition</option>
+          <option value="sole_source">Sole Source (J&amp;A Required)</option>
+          <option value="existing_vehicle">Existing Vehicle (BPA Call / Task Order)</option>
+        </select>
+      </div>
+      <div class="palt-field">
+        <label for="contractType">Contract Type</label>
+        <select id="contractType">
+          <option value="ffp" selected>FFP &mdash; Firm Fixed Price</option>
+          <option value="cpff">CPFF &mdash; Cost Plus Fixed Fee</option>
+          <option value="cpaf">CPAF &mdash; Cost Plus Award Fee</option>
+          <option value="tm">T&amp;M &mdash; Time &amp; Materials</option>
+          <option value="idiq">IDIQ &mdash; Indefinite Delivery</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Schedule Buffer -->
+  <div class="palt-panel">
+    <div class="palt-panel-title">Schedule Buffer</div>
+    <p style="font-size:.78rem;color:var(--text-faint);margin-bottom:.6rem;">How much padding to build into each phase. Tight schedules assume everything goes right. More buffer means more room for delays.</p>
+    <div class="palt-slider-row">
+      <span style="font-size:.75rem;color:var(--emerald);">Tight</span>
+      <input type="range" id="riskPosture" min="1" max="5" value="3" step="1">
+      <span style="font-size:.75rem;color:var(--crimson);">Padded</span>
+      <span class="palt-posture-label med" id="postureLabel">Standard</span>
+    </div>
+  </div>
+
+  <!-- Review Cycle Times -->
+  <div class="palt-panel">
+    <div class="palt-panel-title">Review Cycle Times (Business Days)</div>
+    <div class="palt-review-grid">
+      <div class="palt-review-item">
+        <label>Legal Review</label>
+        <input type="number" id="revLegal" min="0" max="60" value="5">
+      </div>
+      <div class="palt-review-item">
+        <label>SBA/OSBP Review</label>
+        <input type="number" id="revSBA" min="0" max="60" value="3">
+      </div>
+      <div class="palt-review-item">
+        <label>Contracting Review</label>
+        <input type="number" id="revCS" min="0" max="60" value="3">
+      </div>
+      <div class="palt-review-item">
+        <label>Requirements Review</label>
+        <input type="number" id="revReq" min="0" max="60" value="5">
+      </div>
+      <div class="palt-review-item">
+        <label>Finance Coordination</label>
+        <input type="number" id="revFinance" min="0" max="60" value="3">
+      </div>
+    </div>
+    <div class="palt-preset-row">
+      <span class="palt-preset-label">Defaults:</span>
+      <button class="palt-btn" onclick="saveDefaults()">Save as My Defaults</button>
+      <button class="palt-btn danger" onclick="clearDefaults()" id="clearDefaultsBtn" style="display:none;">Clear Saved Defaults</button>
+    </div>
+  </div>
+
+  <!-- Scheduling -->
+  <div class="palt-panel">
+    <div class="palt-panel-title">Scheduling</div>
+    <div class="palt-form-grid">
+      <div class="palt-field">
+        <label for="prDate">PR Receipt Date</label>
+        <input type="date" id="prDate">
+      </div>
+      <div class="palt-field">
+        <label for="nbDate">Need-by Date</label>
+        <input type="date" id="nbDate">
+      </div>
+    </div>
+  </div>
+  <div class="needby-warn" id="needbyWarn"></div>
+
+  <!-- Smart Toggles -->
+  <div class="palt-panel">
+    <div class="palt-toggles-header" id="togglesHeader" onclick="this.classList.toggle('open');document.getElementById('togglesBody').classList.toggle('open');">
+      <div class="palt-panel-title" style="margin-bottom:0;">Schedule Adjustments</div>
+      <span class="chevron">&#9654;</span>
+    </div>
+    <div class="palt-toggles-body" id="togglesBody">
+      <div class="palt-toggle-grid">
+        <div class="palt-toggle-item" id="toggleCombineSynopsisWrap">
+          <input type="checkbox" id="togCombineSynopsis">
+          <div class="toggle-text">
+            <span class="toggle-label">Combine Synopsis &amp; Solicitation</span>
+            <span class="toggle-hint">Merges SAM.gov posting into the solicitation phase. Common for commercial buys under Part 12.</span>
+          </div>
+        </div>
+        <div class="palt-toggle-item">
+          <input type="checkbox" id="togClearance" checked>
+          <div class="toggle-text">
+            <span class="toggle-label">Include Clearance Reviews</span>
+            <span class="toggle-hint">Pre-solicitation and pre-award clearance gates. Required by most organizations above certain thresholds.</span>
+          </div>
+        </div>
+        <div class="palt-toggle-item">
+          <input type="checkbox" id="togSBA" checked>
+          <div class="toggle-text">
+            <span class="toggle-label">Include SBA Coordination</span>
+            <span class="toggle-hint">Small business set-aside coordination with SBA/OSBP. Can be skipped for existing vehicles or directed buys.</span>
+          </div>
+        </div>
+        <div class="palt-toggle-item">
+          <input type="checkbox" id="togDebrief" checked>
+          <div class="toggle-text">
+            <span class="toggle-label">Include Debriefing &amp; Standstill</span>
+            <span class="toggle-hint">Post-award notifications, debriefings, and the GAO protest standstill window.</span>
+          </div>
+        </div>
+        <div class="palt-toggle-item" id="togglePreAwardLegalWrap">
+          <input type="checkbox" id="togPreAwardLegal" checked>
+          <div class="toggle-text">
+            <span class="toggle-label">Include Pre-Award Legal Review</span>
+            <span class="toggle-hint">Separate legal review before award. Typically required for higher-dollar or complex actions.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Stats -->
+  <div class="palt-summary-row" id="summaryRow"></div>
+
+  <!-- Milestone Table -->
+  <div class="palt-panel" style="padding:0;overflow:hidden;">
+    <div style="padding:1rem 1.5rem .5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
+      <div class="palt-panel-title" style="margin-bottom:0;">Milestone Schedule</div>
+      <label style="display:inline-flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--text-faint);cursor:pointer;user-select:none;">
+        <input type="checkbox" id="showGates" style="accent-color:var(--blue);"> Show gate markers
+      </label>
+    </div>
+    <div class="palt-table-wrap" style="border:none;border-radius:0;">
+      <table class="palt-table" id="milestoneTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Phase / Milestone</th>
+            <th>Role</th>
+            <th>Days</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Risk</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="milestoneBody"></tbody>
+      </table>
+    </div>
+    <div id="removedPhasesContainer" style="padding: 0 1.5rem 1rem;"></div>
+  </div>
+
+  <!-- Actions -->
+  <div class="palt-btn-row">
+    <button class="palt-btn primary" onclick="exportExcel()">Export Excel</button>
+    <button class="palt-btn" onclick="window.print()">Print</button>
+    <button class="palt-btn success" onclick="copyLink()">Copy Link</button>
+  </div>
+
+  <div class="palt-disclaimer">
+    Planning estimates only. Not coordinated with any policy office or official source.<br>
+    Actual timelines depend on local review processes, workload, and organizational requirements.
+  </div>
+</div>
+
+<!-- Custom Phase Modal -->
+<div class="palt-modal-overlay" id="phaseModal">
+  <div class="palt-modal">
+    <h3>Add Custom Phase</h3>
+    <div class="palt-field">
+      <label for="modalPhaseName">Phase Name</label>
+      <input type="text" id="modalPhaseName" placeholder="e.g., Security Review">
+    </div>
+    <div class="palt-field">
+      <label for="modalPhaseDays">Duration (Business Days)</label>
+      <input type="number" id="modalPhaseDays" min="1" max="365" value="5">
+    </div>
+    <div class="palt-field">
+      <label for="modalPhaseRole">Responsible Role</label>
+      <select id="modalPhaseRole">
+        <option value="CONS">CONS (Contracting)</option>
+        <option value="REQ">Requirements Activity</option>
+        <option value="FM">FM (Financial Management)</option>
+        <option value="LEGAL">Legal</option>
+        <option value="CLR">Clearance Reviewer</option>
+        <option value="TECH">Technical Team</option>
+        <option value="SBA">SBA</option>
+        <option value="Custom">Other (Custom)</option>
+      </select>
+    </div>
+    <div class="palt-field" id="customRoleField" style="display:none;">
+      <label for="modalCustomRole">Custom Role Name</label>
+      <input type="text" id="modalCustomRole" placeholder="e.g., Security Office">
+    </div>
+    <div class="palt-modal-btns">
+      <button class="palt-btn" onclick="closePhaseModal()">Cancel</button>
+      <button class="palt-btn primary" onclick="confirmAddPhase()">Add Phase</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tooltip -->
+<div class="palt-tooltip" id="tooltip"></div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+<script src="main.js"></script>
+<script src="player.js"></script>
+
+<script>
+(function() {
+  'use strict';
+
+  // ═══════════════════════════════════════════════
+  //  STATE
+  // ═══════════════════════════════════════════════
+  const state = {
+    overrides: {},
+    riskOverrides: {},
+    removed: [],
+    customPhases: [],
+    insertAfterPhaseId: null,
+    suppressHash: false
+  };
+
+  // ═══════════════════════════════════════════════
+  //  ELEMENTS
+  // ═══════════════════════════════════════════════
+  const $ = id => document.getElementById(id);
+  const catEl        = $('category');
+  const compEl       = $('competition');
+  const typeEl       = $('contractType');
+  const riskEl       = $('riskPosture');
+  const postureLbl   = $('postureLabel');
+  const revLegal     = $('revLegal');
+  const revSBA       = $('revSBA');
+  const revCS        = $('revCS');
+  const revReq       = $('revReq');
+  const revFinance   = $('revFinance');
+  const prDateEl     = $('prDate');
+  const nbDateEl     = $('nbDate');
+  const microInfo    = $('microInfo');
+  const needbyWarn   = $('needbyWarn');
+  const summaryRow   = $('summaryRow');
+  const tbody        = $('milestoneBody');
+  const removedCont  = $('removedPhasesContainer');
+  const showGatesEl  = $('showGates');
+  // Smart toggles
+  const togCombineSynopsis = $('togCombineSynopsis');
+  const togClearance       = $('togClearance');
+  const togSBA             = $('togSBA');
+  const togDebrief         = $('togDebrief');
+  const togPreAwardLegal   = $('togPreAwardLegal');
+
+  // ═══════════════════════════════════════════════
+  //  POSTURE LABELS
+  // ═══════════════════════════════════════════════
+  const postureMap = {
+    1: { label: 'Tight',          cls: 'low' },
+    2: { label: 'Lean',           cls: 'low' },
+    3: { label: 'Standard',       cls: 'med' },
+    4: { label: 'Comfortable',    cls: 'med' },
+    5: { label: 'Maximum Buffer', cls: 'high' }
+  };
+
+  function updatePostureLabel() {
+    const v = +riskEl.value;
+    const p = postureMap[v];
+    postureLbl.textContent = p.label;
+    postureLbl.className = 'palt-posture-label ' + p.cls;
+  }
+
+  // Show/hide micro-purchase info
+  function updateMicroInfo() {
+    if (catEl.value === 'micro') microInfo.classList.add('visible');
+    else microInfo.classList.remove('visible');
+  }
+
+  // Update toggle availability based on current config
+  function updateToggleStates() {
+    var cat = catEl.value;
+    var isComm = cat === 'comm_under9m' || cat === 'comm_over9m';
+    var isLarge = cat === 'comm_over9m' || cat === 'noncomm_over250k';
+    var isMicro = cat === 'micro';
+
+    // Combine synopsis only relevant for commercial
+    var synWrap = $('toggleCombineSynopsisWrap');
+    if (isComm && !isMicro) { synWrap.classList.remove('disabled-look'); togCombineSynopsis.disabled = false; }
+    else { synWrap.classList.add('disabled-look'); togCombineSynopsis.disabled = true; }
+
+    // Pre-award legal only relevant for large dollar
+    var palWrap = $('togglePreAwardLegalWrap');
+    if (isLarge) { palWrap.classList.remove('disabled-look'); togPreAwardLegal.disabled = false; }
+    else { palWrap.classList.add('disabled-look'); togPreAwardLegal.disabled = true; }
+  }
+
+  // ═══════════════════════════════════════════════
+  //  ROLE HELPERS
+  // ═══════════════════════════════════════════════
+  const ROLE_META = {
+    REQ:   { label: 'REQ',   cls: 'req' },
+    FM:    { label: 'FM',    cls: 'fm' },
+    CONS:  { label: 'CONS',  cls: 'cons' },
+    LEGAL: { label: 'LEGAL', cls: 'legal' },
+    CLR:   { label: 'CLR',   cls: 'clr' },
+    TECH:  { label: 'TECH',  cls: 'tech' },
+    SBA:   { label: 'SBA',   cls: 'sba' }
+  };
+
+  function makeRoleChips(roles) {
+    if (!Array.isArray(roles)) roles = [roles];
+    return roles.map(function(r) {
+      if (typeof r === 'object' && r.custom) {
+        return '<span class="role-chip custom-role">' + esc(r.custom) + '</span>';
+      }
+      var m = ROLE_META[r];
+      if (!m) return '<span class="role-chip custom-role">' + esc(r) + '</span>';
+      return '<span class="role-chip ' + m.cls + '">' + m.label + '</span>';
+    }).join(' ');
+  }
+
+  // ═══════════════════════════════════════════════
+  //  BUILD PHASES
+  // ═══════════════════════════════════════════════
+  function buildPhases() {
+    var cat    = catEl.value;
+    var comp   = compEl.value;
+    var ctype  = typeEl.value;
+    var risk   = +riskEl.value;
+    var legal  = +revLegal.value;
+    var sba    = +revSBA.value;
+    var cs     = +revCS.value;
+    var req    = +revReq.value;
+    var fin    = +revFinance.value;
+
+    var isCommercial   = cat === 'comm_under9m' || cat === 'comm_over9m';
+    var isLargeDollar  = cat === 'comm_over9m' || cat === 'noncomm_over250k';
+    var isSoleSource   = comp === 'sole_source';
+    var isExistingVeh  = comp === 'existing_vehicle';
+    var isCostType     = ctype === 'cpff' || ctype === 'cpaf';
+    var isTM           = ctype === 'tm';
+    var isIDIQ         = ctype === 'idiq';
+
+    // Smart toggles
+    var combineSynopsis = togCombineSynopsis.checked;
+    var inclClearance   = togClearance.checked;
+    var inclSBA         = togSBA.checked;
+    var inclDebrief     = togDebrief.checked;
+    var inclPreAwardLegal = togPreAwardLegal.checked;
+
+    // Risk multiplier: 0.7 at 1, 1.0 at 3, 1.5 at 5
+    var rm = [0.7, 0.85, 1.0, 1.25, 1.5][risk - 1];
+    function d(base) { return Math.max(1, Math.round(base * rm)); }
+
+    var phases = [];
+
+    function addPhase(id, name, days, roles, opts) {
+      opts = opts || {};
+      if (!Array.isArray(roles)) roles = [roles];
+      var defaultRisk = opts.risk || 'low';
+      phases.push({
+        id: id, name: name, baseDays: days,
+        days: state.overrides[id] !== undefined ? state.overrides[id] : days,
+        roles: roles, isGate: !!opts.gate,
+        riskLevel: state.riskOverrides[id] !== undefined ? state.riskOverrides[id] : defaultRisk,
+        defaultRisk: defaultRisk,
+        builtin: true
+      });
+    }
+    function addGate(id, name, days, roles) {
+      if (!Array.isArray(roles)) roles = [roles];
+      addPhase(id, name, days, roles, { gate: true, risk: 'low' });
+    }
+    function addSection(label) {
+      phases.push({ id: '__section_' + label, name: label, isSection: true, days: 0, baseDays: 0, roles: [], builtin: true });
+    }
+
+    // ─── Micro-Purchase ───
+    if (cat === 'micro') {
+
+      addPhase('req_receipt',     'Receive & Validate Requirement',  d(2), ['REQ','FM','CONS']);
+      addPhase('market_research', 'Market Research / Sources Check',  d(2), ['CONS']);
+      addPhase('quote_obtain',    'Obtain Quotes / Price Check',      d(3), ['CONS']);
+      addPhase('price_det',       'Price Reasonableness Determination', d(1), ['CONS']);
+
+      addPhase('award_doc',       'Prepare Award Documentation',      d(1), ['CONS']);
+      addGate('co_review',        'CO Review & Signature',            d(1), ['CONS']);
+      addPhase('award_issue',     'Issue Award / Place Order',        d(1), ['CONS']);
+      render(phases); return;
+    }
+
+    // ─── Phase 1: Requirements ───
+
+    addPhase('req_receipt',     'Receive & Validate PR Package',       d(3), ['REQ','FM','CONS']);
+    addPhase('req_review',      'Requirements Review & Coordination',  d(req), ['REQ','CONS'], { risk: req > 7 ? 'high' : req > 4 ? 'med' : 'low' });
+    addPhase('market_research', 'Market Research',                     d(isLargeDollar ? 10 : 5), ['REQ','CONS']);
+
+    // ─── SBA Coordination ───
+    if (!isExistingVeh && inclSBA) {
+      addPhase('sba_coord', 'Small Business Coordination', d(sba), ['SBA','CONS'], { risk: sba > 5 ? 'med' : 'low' });
+    }
+
+    // ─── J&A for Sole Source ───
+    if (isSoleSource) {
+      addPhase('ja_draft',  'Draft Justification & Approval (J&A)', d(5), ['CONS'], { risk: 'med' });
+      addPhase('ja_legal',  'J&A Legal Review', d(legal), ['LEGAL'], { risk: legal > 7 ? 'high' : 'low' });
+      addGate('ja_approve', 'J&A Approval', d(3), ['CONS']);
+    }
+
+    // ─── Cost Analysis (CPFF/CPAF) ───
+    if (isCostType) {
+      addPhase('cost_analysis', 'Cost Analysis & Audit Coordination', d(isLargeDollar ? 14 : 10), ['FM','CONS'], { risk: 'med' });
+    }
+
+    // ─── Labor Rate Analysis (T&M) ───
+    if (isTM) {
+      addPhase('labor_rate', 'Labor Rate Analysis', d(isLargeDollar ? 10 : 7), ['FM','CONS'], { risk: 'med' });
+    }
+
+    // ─── Ordering Procedures (IDIQ contract type) ───
+    if (isIDIQ) {
+      addPhase('ordering_proc', 'Ordering Procedures & Fair Opportunity Design', d(7), ['CONS'], { risk: 'med' });
+    }
+
+    // ─── Solicitation Development ───
+
+    if (isExistingVeh) {
+      addPhase('call_draft',   'Draft BPA Call / Task Order RFQ', d(isLargeDollar ? 7 : 3), ['CONS']);
+      if (inclClearance) addGate('sol_clearance', 'Clearance Review', d(cs), ['CLR']);
+    } else if (isCommercial) {
+      var solDays = isLargeDollar ? 10 : 5;
+      var solLabel = combineSynopsis ? 'Draft & Post Combined Synopsis / RFQ' : 'Draft RFQ';
+      addPhase('sol_draft', solLabel, d(combineSynopsis ? solDays + 1 : solDays), ['CONS']);
+      addPhase('sol_legal',    'Legal Sufficiency Review', d(legal), ['LEGAL'], { risk: legal > 7 ? 'high' : legal > 4 ? 'med' : 'low' });
+      if (inclClearance) addGate('sol_clearance', 'Clearance Review', d(cs), ['CLR']);
+    } else {
+      var solDays2 = isLargeDollar ? 15 : 10;
+      addPhase('sol_draft',    'Draft RFP (Sections L&M, SOW)', d(solDays2), ['CONS'], { risk: 'med' });
+      addPhase('sol_legal',    'Legal Sufficiency Review', d(legal), ['LEGAL'], { risk: legal > 7 ? 'high' : legal > 4 ? 'med' : 'low' });
+      if (inclClearance) addGate('sol_clearance', 'Clearance Review', d(cs), ['CLR']);
+    }
+
+    // ─── Synopsis / Posting ───
+    if (!isExistingVeh && !(isCommercial && combineSynopsis)) {
+      addPhase('synopsis', 'Post Synopsis (SAM.gov)', d(isLargeDollar ? 2 : 1), ['CONS']);
+    }
+
+    // ─── Response Period ───
+    if (isExistingVeh) {
+      addPhase('response_period', 'Response Period', d(isLargeDollar ? 14 : 7), ['REQ','CONS']);
+    } else if (isSoleSource) {
+      addPhase('response_period', 'Proposal Response Period', d(14), ['REQ','CONS']);
+    } else {
+      var respBase = isCommercial
+        ? (isLargeDollar ? 21 : 10)
+        : (isLargeDollar ? 30 : 20);
+      addPhase('response_period', isCommercial ? 'Quote/Offer Response Period' : 'Proposal Response Period', d(respBase), ['REQ','CONS']);
+    }
+
+    // ─── Q&A / Amendments ───
+    if (isLargeDollar) {
+      addPhase('amendments', 'Q&A / Amendments', d(isLargeDollar ? 7 : 3), ['CONS','REQ']);
+    }
+
+    // ─── Evaluation ───
+
+    if (isExistingVeh) {
+      addPhase('eval_quotes', 'Evaluate Quotes / Proposals', d(isLargeDollar ? 10 : 5), ['CONS','TECH']);
+    } else if (isCommercial) {
+      var evalDays = isLargeDollar ? 10 : 5;
+      addPhase('eval_streamlined', 'Streamlined Evaluation', d(evalDays), ['CONS','TECH'], { risk: evalDays > 7 ? 'med' : 'low' });
+      if (!isSoleSource) {
+        addPhase('eval_past_perf', 'Past Performance Evaluation', d(3), ['CONS']);
+      }
+    } else {
+      // Non-commercial (Part 15): full formal evaluation
+      var evalDays2 = isLargeDollar ? 14 : 10;
+      addPhase('eval_tech',   'SSEB Technical Evaluation', d(evalDays2), ['TECH'], { risk: 'med' });
+      addPhase('eval_cost',   'Cost/Price Evaluation', d(isLargeDollar ? 10 : 7), ['FM','CONS']);
+      addPhase('eval_past',   'Past Performance Evaluation', d(5), ['CONS']);
+      addPhase('eval_ssa',    'SSA Briefing & Recommendation', d(3), ['CONS']);
+
+      // Competitive range / discussions / FPR
+      if (!isSoleSource) {
+        addPhase('comp_range',  'Competitive Range Determination', d(3), ['CONS'], { risk: 'med' });
+        addPhase('discussions', 'Discussions / Negotiations', d(isLargeDollar ? 14 : 7), ['CONS'], { risk: 'high' });
+        addPhase('fpr',         'Final Proposal Revision (FPR)', d(isLargeDollar ? 10 : 7), ['CONS']);
+        addPhase('eval_final',  'Final Evaluation', d(isLargeDollar ? 7 : 5), ['TECH','CONS'], { risk: 'med' });
+      }
+    }
+
+    // ─── Source Selection / Award Decision ───
+    addSection('Pre-Award');
+    if (isSoleSource) {
+      addPhase('price_analysis', 'Price/Cost Analysis', d(isLargeDollar ? 7 : 5), ['CONS','FM'], { risk: 'med' });
+      addPhase('award_decision', 'Award Decision & Documentation', d(3), ['CONS']);
+    } else {
+      addPhase('award_decision', isCommercial ? 'Best Value Determination' : 'Source Selection Decision', d(isLargeDollar ? 5 : 3), ['CONS']);
+    }
+
+    // ─── Pre-Award Reviews (larger actions) ───
+    if (isLargeDollar) {
+      if (inclPreAwardLegal) addPhase('preaward_legal', 'Pre-Award Legal Review', d(legal), ['LEGAL'], { risk: legal > 5 ? 'med' : 'low' });
+      if (inclClearance) addGate('preaward_clearance', 'Pre-Award Clearance Review', d(cs), ['CLR']);
+    }
+
+    // ─── Award ───
+    addSection('Award');
+    addPhase('award_prep', 'Prepare Award Documents', d(isLargeDollar ? 5 : 3), ['CONS']);
+
+    // Debriefing / Protest standstill (competitive, non-sole-source, non-existing-vehicle)
+    if (!isSoleSource && !isExistingVeh && inclDebrief) {
+      addPhase('notify_unsuccess', 'Notify Unsuccessful Offerors', d(1), ['CONS']);
+      addPhase('debrief_period',   'Debriefing Period', d(isLargeDollar ? 5 : 3), ['CONS']);
+      addPhase('standstill',       'Protest Standstill Window', d(5), ['CONS','LEGAL'], { risk: 'low' });
+    }
+
+    addGate('award_sign', 'Contract Award / CO Signature', d(1), ['CONS']);
+
+    // ─── Post-Award ───
+
+    addPhase('award_notice', 'Award Notice & Distribution', d(2), ['CONS']);
+    if (cat !== 'noncomm_under250k') {
+      addPhase('kickoff', 'Post-Award Conference / Kickoff', d(isLargeDollar ? 5 : 3), ['CONS','REQ','TECH']);
+    }
+
+    render(phases);
+  }
+
+  // ═══════════════════════════════════════════════
+  //  RENDER
+  // ═══════════════════════════════════════════════
+  function render(phases) {
+    // Filter out removed phases
+    const activePhases = phases.filter(p => !state.removed.includes(p.id));
+
+    // Insert custom phases
+    let allPhases = [];
+    for (let i = 0; i < activePhases.length; i++) {
+      allPhases.push(activePhases[i]);
+      // Add any custom phases inserted after this phase
+      const customs = state.customPhases.filter(c => c.afterPhaseId === activePhases[i].id && !state.removed.includes(c.id));
+      customs.forEach(c => {
+        allPhases.push({
+          id: c.id, name: c.name, baseDays: c.days,
+          days: state.overrides[c.id] !== undefined ? state.overrides[c.id] : c.days,
+          roles: c.customRole ? [{ custom: c.customRole }] : [c.role || 'CONS'],
+          isGate: false, riskLevel: 'low', builtin: false
+        });
+      });
+    }
+    // Also add custom phases inserted at the start (afterPhaseId === null and not after any phase)
+    const startCustoms = state.customPhases.filter(c => c.afterPhaseId === '__start__' && !state.removed.includes(c.id));
+    if (startCustoms.length) {
+      const customs = startCustoms.map(c => ({
+        id: c.id, name: c.name, baseDays: c.days,
+        days: state.overrides[c.id] !== undefined ? state.overrides[c.id] : c.days,
+        roles: c.customRole ? [{ custom: c.customRole }] : [c.role || 'CONS'],
+        isGate: false, riskLevel: 'low', builtin: false
+      }));
+      allPhases = [...customs, ...allPhases];
+    }
+
+    // Separate real phases from section headers for date math
+    const realPhases = allPhases.filter(p => !p.isSection);
+
+    // Calculate dates — infer direction from which date fields are filled
+    const prDate = prDateEl.value ? new Date(prDateEl.value + 'T00:00:00') : null;
+    const nbDate = nbDateEl.value ? new Date(nbDateEl.value + 'T00:00:00') : null;
+    const useBackward = !prDate && nbDate;
+
+    let totalDays = realPhases.reduce((s, p) => s + p.days, 0);
+
+    if (useBackward) {
+      let current = new Date(nbDate);
+      for (let i = realPhases.length - 1; i >= 0; i--) {
+        realPhases[i].endDate = new Date(current);
+        current = subtractBusinessDays(current, realPhases[i].days);
+        realPhases[i].startDate = new Date(current);
+      }
+    } else {
+      let anchor = prDate || new Date();
+      let current = new Date(anchor);
+      realPhases.forEach(p => {
+        p.startDate = new Date(current);
+        current = addBusinessDays(current, p.days);
+        p.endDate = new Date(current);
+      });
+    }
+
+    // Need-by warning
+    needbyWarn.classList.remove('visible');
+    if (prDate && nbDate && realPhases.length > 0) {
+      const projectedEnd = realPhases[realPhases.length - 1].endDate;
+      if (projectedEnd > nbDate) {
+        const overDays = Math.round((projectedEnd - nbDate) / (1000*60*60*24));
+        needbyWarn.innerHTML = '<strong>Schedule exceeds need-by date</strong> by approximately ' + overDays + ' calendar days. Consider increasing schedule buffer or reducing review cycle times.';
+        needbyWarn.classList.add('visible');
+      }
+    }
+
+    // Compute calendar days span
+    let calendarDays = 0;
+    if (realPhases.length > 0) {
+      const first = realPhases[0].startDate;
+      const last = realPhases[realPhases.length - 1].endDate;
+      calendarDays = Math.round((last - first) / (1000 * 60 * 60 * 24));
+    }
+
+    // Summary stats
+    const gateCount = realPhases.filter(p => p.isGate).length;
+    const riskCount = realPhases.filter(p => p.riskLevel === 'high').length;
+    const riskCls = riskCount === 0 ? 'risk-low' : riskCount <= 2 ? 'risk-med' : 'risk-high';
+
+    summaryRow.innerHTML = `
+      <div class="palt-stat-card">
+        <div class="stat-value">${totalDays}</div>
+        <div class="stat-label">Business Days</div>
+      </div>
+      <div class="palt-stat-card">
+        <div class="stat-value">${calendarDays}</div>
+        <div class="stat-label">Calendar Days</div>
+      </div>
+      <div class="palt-stat-card">
+        <div class="stat-value">${realPhases.length}</div>
+        <div class="stat-label">Phases</div>
+      </div>
+      <div class="palt-stat-card">
+        <div class="stat-value">${gateCount}</div>
+        <div class="stat-label">Clearance Gates</div>
+      </div>
+      <div class="palt-stat-card ${riskCls}">
+        <div class="stat-value">${riskCount}</div>
+        <div class="stat-label">High-Risk Phases</div>
+      </div>
+    `;
+
+    // Build table
+    let html = '';
+
+    // Add-before-first button
+    html += `<tr class="phase-add-row"><td colspan="8"><button class="add-phase-btn" onclick="openPhaseModal('__start__')" title="Add phase at start">+</button></td></tr>`;
+
+    let phaseNum = 0;
+    allPhases.forEach((p, i) => {
+      // Section header rows
+      if (p.isSection) {
+        html += `<tr class="section-row"><td colspan="8"><span class="section-label">${esc(p.name)}</span></td></tr>`;
+        return;
+      }
+      phaseNum++;
+      const gatesOn = showGatesEl.checked;
+      const rowCls = (p.isGate && gatesOn) ? 'phase-gate' : (!p.builtin ? 'custom-phase' : '');
+      const isOverridden = state.overrides[p.id] !== undefined;
+      const overrideCls = isOverridden ? ' overridden' : '';
+      const roleChip = makeRoleChips(p.roles);
+      const riskIsOverridden = state.riskOverrides[p.id] !== undefined;
+      const riskBadge = makeRiskBadge(p.riskLevel, p.id, riskIsOverridden);
+      const phaseLabel = (p.isGate && gatesOn)
+        ? `<span class="gate-icon">&#9670;</span> ${esc(p.name)}`
+        : esc(p.name);
+      const customTag = !p.builtin ? ' <span class="custom-tag">custom</span>' : '';
+
+      html += `<tr class="${rowCls}" data-phase-id="${p.id}">
+        <td style="color:var(--text-faint);font-family:var(--font-mono);font-size:.75rem;">${phaseNum}</td>
+        <td><span class="phase-name">${phaseLabel}${customTag}</span></td>
+        <td>${roleChip}</td>
+        <td>
+          <span class="days-cell${overrideCls}" onclick="editDays(this,'${p.id}',${p.baseDays})">
+            ${p.days}d
+            ${isOverridden ? '<span class="custom-indicator">(custom)</span><button class="reset-btn" onclick="event.stopPropagation();resetDays(\'' + p.id + '\')" title="Reset to computed">&#x21A9;</button>' : ''}
+          </span>
+        </td>
+        <td class="date-cell">${formatDate(p.startDate)}</td>
+        <td class="date-cell">${formatDate(p.endDate)}</td>
+        <td>${riskBadge}</td>
+        <td><button class="remove-phase-btn" onclick="removePhase('${p.id}',${p.builtin ? 'true' : 'false'},'${esc(p.name)}')" title="Remove phase">&times;</button></td>
+      </tr>`;
+
+      // Add phase button after each row
+      html += `<tr class="phase-add-row"><td colspan="8"><button class="add-phase-btn" onclick="openPhaseModal('${p.id}')" title="Add phase after this">+</button></td></tr>`;
+    });
+
+    tbody.innerHTML = html;
+
+    // Render removed phases
+    renderRemovedPhases();
+
+    // Update URL hash
+    if (!state.suppressHash) updateHash();
+  }
+
+  // ═══════════════════════════════════════════════
+  //  HELPERS
+  // ═══════════════════════════════════════════════
+  function esc(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+
+  function makeRiskBadge(level, phaseId, isOverridden) {
+    const labels = { low: 'Low', med: 'Medium', high: 'High' };
+    const icons = { low: '&#10003;', med: '&#9888;', high: '&#9888;' };
+    const dot = isOverridden ? '<span class="risk-override-dot" title="Manually set"></span>' : '';
+    return `<span class="risk-flag ${level}" onclick="cycleRisk('${phaseId}')" title="Click to change risk level">${icons[level]} ${labels[level]}${dot}</span>`;
+  }
+
+  function formatDate(d) {
+    if (!d || isNaN(d.getTime())) return '--';
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  }
+
+  function addBusinessDays(date, days) {
+    const result = new Date(date);
+    let added = 0;
+    while (added < days) {
+      result.setDate(result.getDate() + 1);
+      const dow = result.getDay();
+      if (dow !== 0 && dow !== 6) added++;
+    }
+    return result;
+  }
+
+  function subtractBusinessDays(date, days) {
+    const result = new Date(date);
+    let subtracted = 0;
+    while (subtracted < days) {
+      result.setDate(result.getDate() - 1);
+      const dow = result.getDay();
+      if (dow !== 0 && dow !== 6) subtracted++;
+    }
+    return result;
+  }
+
+  // ═══════════════════════════════════════════════
+  //  INLINE DAYS EDITING
+  // ═══════════════════════════════════════════════
+  window.editDays = function(el, phaseId, baseDays) {
+    // Don't open if already editing
+    if (el.querySelector('.days-input')) return;
+
+    const currentVal = state.overrides[phaseId] !== undefined ? state.overrides[phaseId] : baseDays;
+    el.innerHTML = `<input type="number" class="days-input" value="${currentVal}" min="0" max="365">`;
+    const inp = el.querySelector('.days-input');
+    inp.focus();
+    inp.select();
+
+    function commit() {
+      const v = parseInt(inp.value, 10);
+      if (!isNaN(v) && v >= 0) {
+        if (v !== baseDays) {
+          state.overrides[phaseId] = v;
+        } else {
+          delete state.overrides[phaseId];
+        }
+      }
+      buildPhases();
+    }
+    inp.addEventListener('blur', commit);
+    inp.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); commit(); }
+      if (e.key === 'Escape') { buildPhases(); }
+    });
+  };
+
+  window.resetDays = function(phaseId) {
+    delete state.overrides[phaseId];
+    buildPhases();
+  };
+
+  // Cycle per-phase risk: low → med → high → (back to default)
+  window.cycleRisk = function(phaseId) {
+    var current = state.riskOverrides[phaseId];
+    var cycle = ['low', 'med', 'high'];
+    if (current === undefined) {
+      // First click: advance from whatever the computed default is
+      // We need to find the phase's current risk to know where to go next
+      var el = document.querySelector('[data-phase-id="' + phaseId + '"] .risk-flag');
+      var curLevel = 'low';
+      if (el) {
+        if (el.classList.contains('high')) curLevel = 'high';
+        else if (el.classList.contains('med')) curLevel = 'med';
+      }
+      var nextIdx = (cycle.indexOf(curLevel) + 1) % cycle.length;
+      state.riskOverrides[phaseId] = cycle[nextIdx];
+    } else {
+      var nextIdx = (cycle.indexOf(current) + 1) % cycle.length;
+      state.riskOverrides[phaseId] = cycle[nextIdx];
+    }
+    buildPhases();
+  };
+
+  // ═══════════════════════════════════════════════
+  //  ADD / REMOVE PHASES
+  // ═══════════════════════════════════════════════
+  window.removePhase = function(phaseId, isBuiltin, name) {
+    state.removed.push(phaseId);
+    buildPhases();
+  };
+
+  window.reAddPhase = function(phaseId) {
+    state.removed = state.removed.filter(id => id !== phaseId);
+    buildPhases();
+  };
+
+  function renderRemovedPhases() {
+    // Get names for removed built-in phases
+    const removedBuiltin = state.removed.filter(id => {
+      return !state.customPhases.find(c => c.id === id);
+    });
+    // For custom phases that are removed, just delete them
+    state.customPhases = state.customPhases.filter(c => !state.removed.includes(c.id) || removedBuiltin.includes(c.id));
+    // Actually remove custom phases from removed
+    const removedCustomIds = state.removed.filter(id => state.customPhases.find(c => c.id === id) === undefined && !removedBuiltin.includes(id));
+    state.removed = state.removed.filter(id => !removedCustomIds.includes(id));
+
+    if (removedBuiltin.length === 0) {
+      removedCont.innerHTML = '';
+      return;
+    }
+
+    // We need phase names - rebuild quick just for lookup
+    const nameMap = {};
+    buildPhaseNamesOnly(nameMap);
+
+    let html = '<div class="removed-phases"><div class="removed-phases-title">Removed Phases</div>';
+    removedBuiltin.forEach(id => {
+      const name = nameMap[id] || id;
+      html += `<span class="removed-phase-item">${esc(name)} <button onclick="reAddPhase('${id}')" title="Re-add">+</button></span>`;
+    });
+    html += '</div>';
+    removedCont.innerHTML = html;
+  }
+
+  function buildPhaseNamesOnly(map) {
+    // Quick pass to collect all possible phase IDs and their names
+    const names = {
+      'req_receipt': 'Receive & Validate PR Package',
+      'req_review': 'Requirements Review & Coordination',
+      'market_research': 'Market Research',
+      'sba_coord': 'Small Business Coordination',
+      'ja_draft': 'Draft J&A',
+      'ja_legal': 'J&A Legal Review',
+      'ja_approve': 'J&A Approval',
+      'cost_analysis': 'Cost Analysis & Audit Coordination',
+      'labor_rate': 'Labor Rate Analysis',
+      'ordering_proc': 'Ordering Procedures & Fair Opportunity Design',
+      'call_draft': 'Draft BPA Call / RFQ',
+      'call_review': 'Contracting Review',
+      'to_draft': 'Draft Task Order Request',
+      'fair_opp': 'Fair Opportunity Notice Period',
+      'sol_draft': 'Draft Solicitation',
+      'sol_legal': 'Legal Sufficiency Review',
+      'sol_clearance': 'Clearance Review',
+      'synopsis': 'Post Synopsis',
+      'response_period': 'Response Period',
+      'amendments': 'Q&A / Amendments',
+      'eval_quotes': 'Evaluate Quotes',
+      'eval_streamlined': 'Streamlined Evaluation',
+      'eval_past_perf': 'Past Performance Evaluation',
+      'eval_tech': 'SSEB Technical Evaluation',
+      'eval_cost': 'Cost/Price Evaluation',
+      'eval_past': 'Past Performance Evaluation',
+      'eval_ssa': 'SSA Briefing & Recommendation',
+      'comp_range': 'Competitive Range Determination',
+      'discussions': 'Discussions / Negotiations',
+      'fpr': 'Final Proposal Revision (FPR)',
+      'eval_final': 'Final Evaluation',
+      'price_analysis': 'Price/Cost Analysis',
+      'award_decision': 'Award Decision',
+      'preaward_legal': 'Pre-Award Legal Review',
+      'preaward_clearance': 'Pre-Award Clearance Review',
+      'award_prep': 'Prepare Award Documents',
+      'notify_unsuccess': 'Notify Unsuccessful Offerors',
+      'debrief_period': 'Debriefing Period',
+      'standstill': 'Protest Standstill Window',
+      'award_sign': 'Contract Award / CO Signature',
+      'award_notice': 'Award Notice & Distribution',
+      'kickoff': 'Post-Award Conference / Kickoff',
+      'quote_obtain': 'Obtain Quotes / Price Check',
+      'price_det': 'Price Reasonableness Determination',
+      'award_doc': 'Prepare Award Documentation',
+      'co_review': 'CO Review & Signature',
+      'award_issue': 'Issue Award / Place Order'
+    };
+    Object.assign(map, names);
+  }
+
+  // ─── Custom Phase Modal ───
+  window.openPhaseModal = function(afterId) {
+    state.insertAfterPhaseId = afterId;
+    $('modalPhaseName').value = '';
+    $('modalPhaseDays').value = '5';
+    $('modalPhaseRole').value = 'CONS';
+    $('modalCustomRole').value = '';
+    $('customRoleField').style.display = 'none';
+    $('phaseModal').classList.add('active');
+    setTimeout(() => $('modalPhaseName').focus(), 100);
+  };
+
+  window.closePhaseModal = function() {
+    $('phaseModal').classList.remove('active');
+  };
+
+  $('modalPhaseRole').addEventListener('change', function() {
+    $('customRoleField').style.display = this.value === 'Custom' ? 'block' : 'none';
+  });
+
+  window.confirmAddPhase = function() {
+    const name = $('modalPhaseName').value.trim();
+    if (!name) { $('modalPhaseName').focus(); return; }
+    const days = parseInt($('modalPhaseDays').value, 10) || 5;
+    const role = $('modalPhaseRole').value;
+    const customRole = role === 'Custom' ? ($('modalCustomRole').value.trim() || 'Custom') : '';
+
+    const id = 'custom_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+    state.customPhases.push({
+      id: id,
+      name: name,
+      days: days,
+      role: role,
+      customRole: customRole,
+      afterPhaseId: state.insertAfterPhaseId
+    });
+
+    closePhaseModal();
+    buildPhases();
+  };
+
+  // Close modal on overlay click
+  $('phaseModal').addEventListener('click', function(e) {
+    if (e.target === this) closePhaseModal();
+  });
+
+  // ═══════════════════════════════════════════════
+  //  EXCEL EXPORT (multi-tab .xlsx via ExcelJS)
+  // ═══════════════════════════════════════════════
+  window.exportExcel = function() {
+    if (typeof ExcelJS === 'undefined') { alert('Excel library still loading. Try again in a moment.'); return; }
+
+    // ── Scrape current table data ──
+    var phaseData = [];
+    var trs = tbody.querySelectorAll('tr:not(.phase-add-row)');
+    var num = 0;
+    trs.forEach(function(tr) {
+      // Section header rows
+      if (tr.classList.contains('section-row')) {
+        phaseData.push({ isSection: true, label: tr.textContent.trim() });
+        return;
+      }
+      var tds = tr.querySelectorAll('td');
+      if (tds.length < 7) return;
+      num++;
+      phaseData.push({
+        num: num,
+        phase: tds[1].textContent.trim(),
+        role: tds[2].textContent.trim(),
+        days: parseInt(tds[3].textContent.replace(/[^\d]/g, ''), 10) || 0,
+        start: tds[4].textContent.trim(),
+        end: tds[5].textContent.trim(),
+        risk: tds[6].textContent.trim()
+      });
+    });
+    var totalDays = phaseData.filter(function(p) { return !p.isSection; }).reduce(function(s, p) { return s + p.days; }, 0);
+
+    // ── Color palette ──
+    var C = {
+      navy: 'FF0F1B2D', dkBlue: 'FF172642', blue: 'FF3B82F6', ltBlue: 'FF1E2F4F',
+      rowAlt: 'FF13203A', white: 'FFFFFFFF', textLight: 'FFE8EDF7', textSoft: 'FFA8B4CF',
+      textFaint: 'FF6E7D9E', green: 'FF34D399', greenBg: 'FF0D2818', yellow: 'FFFBBF24',
+      yellowBg: 'FF2A2008', red: 'FFEF4444', redBg: 'FF2A0D0D', gold: 'FFFCD34D',
+      violet: 'FFA78BFA', border: 'FF243759'
+    };
+    var fontBase = { name: 'Arial', size: 10, color: { argb: C.textLight } };
+    var fontSmall = { name: 'Arial', size: 9, color: { argb: C.textSoft } };
+    var fontMono = { name: 'Consolas', size: 10, color: { argb: C.textLight } };
+    var borderThin = { style: 'thin', color: { argb: C.border } };
+    var borders = { top: borderThin, bottom: borderThin, left: borderThin, right: borderThin };
+
+    var wb = new ExcelJS.Workbook();
+    wb.creator = 'ContractingHQ PALT Builder';
+    wb.created = new Date();
+
+    // ════════════════════════════════════════
+    // SHEET 1: Schedule
+    // ════════════════════════════════════════
+    var ws = wb.addWorksheet('Schedule', { properties: { tabColor: { argb: C.blue } } });
+    ws.columns = [
+      { width: 5 }, { width: 44 }, { width: 24 }, { width: 14 },
+      { width: 15 }, { width: 15 }, { width: 12 }, { width: 32 }
+    ];
+
+    // Title block (rows 1-3)
+    ws.mergeCells('A1:H1');
+    var titleRow = ws.getRow(1);
+    titleRow.getCell(1).value = 'PALT & Milestone Schedule';
+    titleRow.getCell(1).font = { name: 'Arial', size: 16, bold: true, color: { argb: C.white } };
+    titleRow.getCell(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.navy } };
+    titleRow.getCell(1).alignment = { vertical: 'middle' };
+    titleRow.height = 32;
+    for (var c = 2; c <= 8; c++) { titleRow.getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.navy } }; }
+
+    var r2 = ws.getRow(2);
+    r2.getCell(1).value = 'Generated: ' + new Date().toLocaleDateString();
+    r2.getCell(1).font = fontSmall;
+    r2.getCell(4).value = 'Category:';
+    r2.getCell(4).font = { name: 'Arial', size: 9, color: { argb: C.textFaint } };
+    r2.getCell(5).value = catEl.options[catEl.selectedIndex].text;
+    r2.getCell(5).font = { name: 'Arial', size: 9, bold: true, color: { argb: C.textLight } };
+    for (var c = 1; c <= 8; c++) { r2.getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.dkBlue } }; }
+
+    var r3 = ws.getRow(3);
+    r3.getCell(1).value = 'Buffer: ' + postureLbl.textContent;
+    r3.getCell(1).font = fontSmall;
+    r3.getCell(4).value = 'Competition:';
+    r3.getCell(4).font = { name: 'Arial', size: 9, color: { argb: C.textFaint } };
+    r3.getCell(5).value = compEl.options[compEl.selectedIndex].text;
+    r3.getCell(5).font = { name: 'Arial', size: 9, bold: true, color: { argb: C.textLight } };
+    for (var c = 1; c <= 8; c++) { r3.getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.dkBlue } }; }
+
+    // Empty row 4
+    ws.getRow(4).height = 6;
+
+    // Header row (row 5)
+    var headers = ['#', 'Phase / Milestone', 'Responsible Role(s)', 'Duration (Days)', 'Start Date', 'End Date', 'Risk', 'Notes / Adjustments'];
+    var hRow = ws.getRow(5);
+    hRow.height = 22;
+    headers.forEach(function(h, i) {
+      var cell = hRow.getCell(i + 1);
+      cell.value = h;
+      cell.font = { name: 'Arial', size: 9, bold: true, color: { argb: C.white } };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.blue } };
+      cell.alignment = { horizontal: i === 3 ? 'center' : 'left', vertical: 'middle', wrapText: true };
+      cell.border = borders;
+    });
+
+    // Data rows (starting row 6)
+    var excelRow = 6;
+    var dataIdx = 0;
+    phaseData.forEach(function(p) {
+      var row = ws.getRow(excelRow);
+
+      // Section header row
+      if (p.isSection) {
+        ws.mergeCells('A' + excelRow + ':H' + excelRow);
+        row.getCell(1).value = p.label;
+        row.getCell(1).font = { name: 'Arial', size: 9, bold: true, color: { argb: C.white }, letterSpacing: 200 };
+        row.getCell(1).alignment = { vertical: 'middle' };
+        for (var c = 1; c <= 8; c++) {
+          row.getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.ltBlue } };
+          row.getCell(c).border = { bottom: { style: 'medium', color: { argb: C.blue } } };
+        }
+        row.height = 20;
+        excelRow++;
+        return;
+      }
+
+      var isAlt = dataIdx % 2 === 1;
+      dataIdx++;
+      var bgColor = isAlt ? C.rowAlt : C.dkBlue;
+
+      // Risk-based fill for risk column
+      var riskColor, riskBg, riskText;
+      if (p.risk.indexOf('High') !== -1) { riskColor = C.red; riskBg = C.redBg; riskText = 'High'; }
+      else if (p.risk.indexOf('Med') !== -1) { riskColor = C.yellow; riskBg = C.yellowBg; riskText = 'Medium'; }
+      else { riskColor = C.green; riskBg = C.greenBg; riskText = 'Low'; }
+
+      row.getCell(1).value = p.num;
+      row.getCell(1).font = { name: 'Consolas', size: 9, color: { argb: C.textFaint } };
+      row.getCell(1).alignment = { horizontal: 'center' };
+
+      row.getCell(2).value = p.phase;
+      row.getCell(2).font = { name: 'Arial', size: 10, color: { argb: C.textLight } };
+
+      row.getCell(3).value = p.role;
+      row.getCell(3).font = { name: 'Arial', size: 9, color: { argb: C.textSoft } };
+
+      row.getCell(4).value = p.days;
+      row.getCell(4).font = { name: 'Consolas', size: 10, bold: true, color: { argb: C.blue } };
+      row.getCell(4).alignment = { horizontal: 'center' };
+
+      row.getCell(5).value = p.start;
+      row.getCell(5).font = { name: 'Consolas', size: 9, color: { argb: C.textSoft } };
+
+      row.getCell(6).value = p.end;
+      row.getCell(6).font = { name: 'Consolas', size: 9, color: { argb: C.textSoft } };
+
+      row.getCell(7).value = riskText;
+      row.getCell(7).font = { name: 'Arial', size: 9, bold: true, color: { argb: riskColor } };
+      row.getCell(7).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: riskBg } };
+      row.getCell(7).alignment = { horizontal: 'center' };
+
+      row.getCell(8).value = '';
+      row.getCell(8).font = fontSmall;
+
+      // Apply background & borders to all cells
+      for (var c = 1; c <= 8; c++) {
+        if (c !== 7) row.getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bgColor } };
+        row.getCell(c).border = borders;
+        if (!row.getCell(c).alignment) row.getCell(c).alignment = { vertical: 'middle' };
+      }
+      excelRow++;
+    });
+
+    // Total row
+    var tRowIdx = excelRow + 1;
+    var tRow = ws.getRow(tRowIdx);
+    tRow.getCell(2).value = 'TOTAL BUSINESS DAYS';
+    tRow.getCell(2).font = { name: 'Arial', size: 10, bold: true, color: { argb: C.white } };
+    tRow.getCell(4).value = totalDays;
+    tRow.getCell(4).font = { name: 'Consolas', size: 12, bold: true, color: { argb: C.gold } };
+    tRow.getCell(4).alignment = { horizontal: 'center' };
+    for (var c = 1; c <= 8; c++) {
+      tRow.getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.ltBlue } };
+      tRow.getCell(c).border = { top: { style: 'medium', color: { argb: C.blue } }, bottom: { style: 'medium', color: { argb: C.blue } }, left: borderThin, right: borderThin };
+    }
+
+    // Freeze header
+    ws.views = [{ state: 'frozen', ySplit: 5 }];
+
+    // ════════════════════════════════════════
+    // SHEET 2: Configuration
+    // ════════════════════════════════════════
+    var wc = wb.addWorksheet('Configuration', { properties: { tabColor: { argb: 'FFFBBF24' } } });
+    wc.columns = [{ width: 36 }, { width: 32 }, { width: 20 }, { width: 56 }];
+
+    // Title
+    wc.mergeCells('A1:D1');
+    wc.getRow(1).getCell(1).value = 'PALT Builder Configuration';
+    wc.getRow(1).getCell(1).font = { name: 'Arial', size: 14, bold: true, color: { argb: C.white } };
+    wc.getRow(1).height = 28;
+    for (var c = 1; c <= 4; c++) wc.getRow(1).getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.navy } };
+
+    wc.mergeCells('A2:D2');
+    wc.getRow(2).getCell(1).value = 'Edit the "Adjust Here" column, then update the Schedule tab or re-run the online tool.';
+    wc.getRow(2).getCell(1).font = { name: 'Arial', size: 9, italic: true, color: { argb: C.textFaint } };
+    for (var c = 1; c <= 4; c++) wc.getRow(2).getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.dkBlue } };
+
+    // Helper to add section header
+    function addSectionHeader(sheet, rowNum, title) {
+      sheet.mergeCells('A' + rowNum + ':D' + rowNum);
+      var r = sheet.getRow(rowNum);
+      r.getCell(1).value = title;
+      r.getCell(1).font = { name: 'Arial', size: 10, bold: true, color: { argb: C.white } };
+      for (var c = 1; c <= 4; c++) r.getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.ltBlue } };
+      r.getCell(1).border = borders;
+    }
+    function addConfigRow(sheet, rowNum, label, value, notes, isAlt) {
+      var r = sheet.getRow(rowNum);
+      var bg = isAlt ? C.rowAlt : C.dkBlue;
+      r.getCell(1).value = label;
+      r.getCell(1).font = fontBase;
+      r.getCell(2).value = value;
+      r.getCell(2).font = { name: 'Consolas', size: 10, color: { argb: C.textLight } };
+      r.getCell(3).value = '';
+      r.getCell(3).font = { name: 'Arial', size: 10, color: { argb: 'FF3B82F6' } };
+      r.getCell(3).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1A2744' } };
+      r.getCell(4).value = notes;
+      r.getCell(4).font = { name: 'Arial', size: 8, italic: true, color: { argb: C.textFaint } };
+      for (var c = 1; c <= 4; c++) {
+        if (c !== 3) r.getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bg } };
+        r.getCell(c).border = borders;
+      }
+    }
+
+    // Column headers row 4
+    var chRow = wc.getRow(4);
+    ['Setting', 'Current Value', 'Adjust Here', 'Notes'].forEach(function(h, i) {
+      var cell = chRow.getCell(i + 1);
+      cell.value = h;
+      cell.font = { name: 'Arial', size: 9, bold: true, color: { argb: C.white } };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.blue } };
+      cell.border = borders;
+    });
+
+    addSectionHeader(wc, 5, 'Acquisition Profile');
+    addConfigRow(wc, 6, 'Acquisition Category', catEl.options[catEl.selectedIndex].text, 'micro | comm_under9m | comm_over9m | noncomm_under250k | noncomm_over250k', false);
+    addConfigRow(wc, 7, 'Competition Approach', compEl.options[compEl.selectedIndex].text, 'full_open | limited | sole_source | existing_vehicle', true);
+    addConfigRow(wc, 8, 'Contract Type', typeEl.options[typeEl.selectedIndex].text, 'FFP | CPFF | CPAF | T&M | IDIQ', false);
+    addConfigRow(wc, 9, 'Schedule Buffer', postureLbl.textContent + ' (' + riskEl.value + '/5)', '1=Tight  2=Lean  3=Standard  4=Comfortable  5=Maximum', true);
+
+    addSectionHeader(wc, 11, 'Review Cycle Times (Business Days)');
+    addConfigRow(wc, 12, 'Legal Review', +revLegal.value, 'Days for legal sufficiency review', false);
+    addConfigRow(wc, 13, 'SBA/OSBP Review', +revSBA.value, 'Days for small business coordination', true);
+    addConfigRow(wc, 14, 'Contracting Review', +revCS.value, 'Days for contracting office review', false);
+    addConfigRow(wc, 15, 'Requirements Review', +revReq.value, 'Days for requirements coordination', true);
+    addConfigRow(wc, 16, 'Finance Coordination', +revFinance.value, 'Days for FM coordination', false);
+
+    addSectionHeader(wc, 18, 'Schedule Adjustments');
+    addConfigRow(wc, 19, 'Combine Synopsis + Solicitation', togCombineSynopsis.checked ? 'Yes' : 'No', 'Merge SAM.gov posting into solicitation (commercial)', false);
+    addConfigRow(wc, 20, 'Include Clearance Reviews', togClearance.checked ? 'Yes' : 'No', 'Pre-solicitation and pre-award clearance gates', true);
+    addConfigRow(wc, 21, 'Include SBA Coordination', togSBA.checked ? 'Yes' : 'No', 'Small business set-aside coordination', false);
+    addConfigRow(wc, 22, 'Include Debriefing & Standstill', togDebrief.checked ? 'Yes' : 'No', 'Post-award notifications and protest window', true);
+    addConfigRow(wc, 23, 'Include Pre-Award Legal', togPreAwardLegal.checked ? 'Yes' : 'No', 'Separate legal review before award', false);
+
+    addSectionHeader(wc, 25, 'Scheduling Dates');
+    addConfigRow(wc, 26, 'PR Receipt Date', prDateEl.value || '(not set)', 'Forward scheduling anchor', false);
+    addConfigRow(wc, 27, 'Need-by Date', nbDateEl.value || '(not set)', 'Backward scheduling anchor', true);
+
+    wc.views = [{ state: 'frozen', ySplit: 4 }];
+
+    // ════════════════════════════════════════
+    // SHEET 3: Instructions
+    // ════════════════════════════════════════
+    var wi = wb.addWorksheet('Instructions', { properties: { tabColor: { argb: 'FF34D399' } } });
+    wi.columns = [{ width: 90 }];
+
+    // Light-theme colors for readability in print / on screen
+    var Ci = {
+      black: 'FF111111', gray: 'FF444444', grayLight: 'FF777777',
+      accent: 'FF1E3A5F', accentBg: 'FFE8EFF8', sectionBg: 'FF1E3A5F',
+      sectionText: 'FFFFFFFF', tipBg: 'FFF0F7FF', warnBg: 'FFFFF4F4',
+      warnText: 'FFC0392B', link: 'FF2563EB', codeBg: 'FFF5F5F5'
+    };
+    var instrLines = [
+      { text: 'PALT & Milestone Builder', font: { name: 'Arial', size: 16, bold: true, color: { argb: Ci.sectionText } }, fill: Ci.sectionBg, height: 34 },
+      { text: 'How to Use This Workbook', font: { name: 'Arial', size: 10, italic: true, color: { argb: Ci.grayLight } }, fill: Ci.accentBg, height: 22 },
+      { text: '' },
+      { text: 'This workbook is your office\'s tailorable acquisition timeline. You do not need to return to the website to make changes.' },
+      { text: '' },
+      { text: 'TAILORING YOUR SCHEDULE', font: { name: 'Arial', size: 11, bold: true, color: { argb: Ci.sectionText } }, fill: Ci.sectionBg, height: 24 },
+      { text: '' },
+      { text: '1.  Adjust Durations  —  Change the "Duration (Days)" column for any phase in the Schedule tab.' },
+      { text: '2.  Add Phases  —  Insert a row wherever you need an additional milestone or review step.' },
+      { text: '3.  Remove Phases  —  Delete any row that doesn\'t apply to your acquisition.' },
+      { text: '4.  Update Risk  —  Change the Risk column to flag phases your team should monitor closely.' },
+      { text: '5.  Use the Notes Column  —  Document why you changed a duration, who owns it, or local requirements.' },
+      { text: '' },
+      { text: 'DATE FORMULA TIP', font: { name: 'Arial', size: 11, bold: true, color: { argb: Ci.sectionText } }, fill: Ci.sectionBg, height: 24 },
+      { text: '' },
+      { text: 'To auto-calculate dates so they cascade when you change a duration:' },
+      { text: '    Start Date (row 7+):   =F6                    (previous row\'s End Date)', font: { name: 'Consolas', size: 9, color: { argb: Ci.accent } }, fill: Ci.codeBg },
+      { text: '    End Date:                    =WORKDAY(E7, D7)    (skips weekends automatically)', font: { name: 'Consolas', size: 9, color: { argb: Ci.accent } }, fill: Ci.codeBg },
+      { text: '' },
+      { text: 'RISK LEVELS', font: { name: 'Arial', size: 11, bold: true, color: { argb: Ci.sectionText } }, fill: Ci.sectionBg, height: 24 },
+      { text: '' },
+      { text: 'Low  —  Standard timeline, minimal schedule pressure.' },
+      { text: 'Medium  —  Some complexity or dependency that could cause slippage.' },
+      { text: 'High  —  Significant schedule risk. Monitor closely and plan contingencies.' },
+      { text: '' },
+      { text: 'CONFIGURATION TAB', font: { name: 'Arial', size: 11, bold: true, color: { argb: Ci.sectionText } }, fill: Ci.sectionBg, height: 24 },
+      { text: '' },
+      { text: 'Records the settings used to generate this schedule. Use it as a reference to re-run the online tool, or to document your planning assumptions. The "Adjust Here" column lets you track changes without overwriting the original values.' },
+      { text: '' },
+      { text: 'DISCLAIMER', font: { name: 'Arial', size: 11, bold: true, color: { argb: Ci.warnText } }, fill: Ci.warnBg, height: 24 },
+      { text: '' },
+      { text: 'Planning estimates only. Not coordinated with any policy office or official source. Actual timelines depend on local review processes, workload, and organizational requirements.' },
+      { text: '' },
+      { text: 'Generated by ContractingHQ PALT & Milestone Builder', font: { name: 'Arial', size: 10, bold: true, color: { argb: Ci.gray } } },
+      { text: 'https://nhazelett.github.io/ContractingHQ/palt-builder.html', font: { name: 'Arial', size: 9, underline: true, color: { argb: Ci.link } } }
+    ];
+
+    instrLines.forEach(function(line, idx) {
+      var row = wi.getRow(idx + 1);
+      var cell = row.getCell(1);
+      cell.value = line.text;
+      cell.font = line.font || { name: 'Arial', size: 10, color: { argb: Ci.black } };
+      if (line.fill) cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: line.fill } };
+      if (line.height) row.height = line.height;
+      cell.alignment = { vertical: 'middle', wrapText: true };
+    });
+
+    // ── Generate & download ──
+    wb.xlsx.writeBuffer().then(function(buf) {
+      var blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'palt-milestone-schedule.xlsx';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  };
+
+  // ═══════════════════════════════════════════════
+  //  URL HASH SAVE / LOAD
+  // ═══════════════════════════════════════════════
+  function getConfig() {
+    return {
+      cat: catEl.value,
+      comp: compEl.value,
+      ctype: typeEl.value,
+      risk: +riskEl.value,
+      revLegal: +revLegal.value,
+      revSBA: +revSBA.value,
+      revCS: +revCS.value,
+      revReq: +revReq.value,
+      revFinance: +revFinance.value,
+      prDate: prDateEl.value,
+      nbDate: nbDateEl.value,
+      showGates: showGatesEl.checked,
+      togCombineSynopsis: togCombineSynopsis.checked,
+      togClearance: togClearance.checked,
+      togSBA: togSBA.checked,
+      togDebrief: togDebrief.checked,
+      togPreAwardLegal: togPreAwardLegal.checked,
+      overrides: state.overrides,
+      riskOverrides: state.riskOverrides,
+      removed: state.removed,
+      customPhases: state.customPhases
+    };
+  }
+
+  function applyConfig(cfg) {
+    state.suppressHash = true;
+    if (cfg.cat) catEl.value = cfg.cat;
+    if (cfg.comp) compEl.value = cfg.comp;
+    if (cfg.ctype) typeEl.value = cfg.ctype;
+    if (cfg.risk) riskEl.value = cfg.risk;
+    if (cfg.revLegal !== undefined) revLegal.value = cfg.revLegal;
+    if (cfg.revSBA !== undefined) revSBA.value = cfg.revSBA;
+    if (cfg.revCS !== undefined) revCS.value = cfg.revCS;
+    if (cfg.revReq !== undefined) revReq.value = cfg.revReq;
+    if (cfg.revFinance !== undefined) revFinance.value = cfg.revFinance;
+    if (cfg.prDate) prDateEl.value = cfg.prDate;
+    if (cfg.nbDate) nbDateEl.value = cfg.nbDate;
+    if (cfg.showGates) showGatesEl.checked = cfg.showGates;
+    if (cfg.togCombineSynopsis !== undefined) togCombineSynopsis.checked = cfg.togCombineSynopsis;
+    if (cfg.togClearance !== undefined) togClearance.checked = cfg.togClearance;
+    if (cfg.togSBA !== undefined) togSBA.checked = cfg.togSBA;
+    if (cfg.togDebrief !== undefined) togDebrief.checked = cfg.togDebrief;
+    if (cfg.togPreAwardLegal !== undefined) togPreAwardLegal.checked = cfg.togPreAwardLegal;
+    if (cfg.overrides) state.overrides = cfg.overrides;
+    if (cfg.riskOverrides) state.riskOverrides = cfg.riskOverrides;
+    if (cfg.removed) state.removed = cfg.removed;
+    if (cfg.customPhases) state.customPhases = cfg.customPhases;
+    updatePostureLabel();
+    updateMicroInfo();
+    state.suppressHash = false;
+  }
+
+  function updateHash() {
+    try {
+      const cfg = getConfig();
+      const json = JSON.stringify(cfg);
+      const encoded = btoa(unescape(encodeURIComponent(json)));
+      history.replaceState(null, '', '#' + encoded);
+    } catch (e) { /* ignore */ }
+  }
+
+  function loadFromHash() {
+    try {
+      const hash = location.hash.slice(1);
+      if (!hash) return false;
+      const json = decodeURIComponent(escape(atob(hash)));
+      const cfg = JSON.parse(json);
+      applyConfig(cfg);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // ═══════════════════════════════════════════════
+  //  COPY LINK
+  // ═══════════════════════════════════════════════
+  window.copyLink = function() {
+    updateHash();
+    const url = location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      showTooltip('Copied!');
+    }).catch(() => {
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = url;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+      showTooltip('Copied!');
+    });
+  };
+
+  function showTooltip(text) {
+    const tip = $('tooltip');
+    tip.textContent = text;
+    // Position near the Copy Link button
+    const btn = document.querySelector('.palt-btn.success');
+    if (btn) {
+      const rect = btn.getBoundingClientRect();
+      tip.style.left = rect.left + 'px';
+      tip.style.top = (rect.top - 30) + 'px';
+    }
+    tip.classList.add('show');
+    setTimeout(() => tip.classList.remove('show'), 1500);
+  }
+
+  // ═══════════════════════════════════════════════
+  //  LOCALSTORAGE PRESETS
+  // ═══════════════════════════════════════════════
+  const STORAGE_KEY = 'palt_builder_defaults';
+
+  window.saveDefaults = function() {
+    const defaults = {
+      risk: +riskEl.value,
+      revLegal: +revLegal.value,
+      revSBA: +revSBA.value,
+      revCS: +revCS.value,
+      revReq: +revReq.value,
+      revFinance: +revFinance.value
+    };
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(defaults));
+      $('clearDefaultsBtn').style.display = '';
+      showTooltip('Defaults saved!');
+    } catch (e) { /* ignore */ }
+  };
+
+  window.clearDefaults = function() {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      $('clearDefaultsBtn').style.display = 'none';
+      showTooltip('Defaults cleared');
+    } catch (e) { /* ignore */ }
+  };
+
+  function loadDefaults() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return false;
+      const d = JSON.parse(raw);
+      if (d.risk) riskEl.value = d.risk;
+      if (d.revLegal !== undefined) revLegal.value = d.revLegal;
+      if (d.revSBA !== undefined) revSBA.value = d.revSBA;
+      if (d.revCS !== undefined) revCS.value = d.revCS;
+      if (d.revReq !== undefined) revReq.value = d.revReq;
+      if (d.revFinance !== undefined) revFinance.value = d.revFinance;
+      $('clearDefaultsBtn').style.display = '';
+      return true;
+    } catch (e) { return false; }
+  }
+
+  // ═══════════════════════════════════════════════
+  //  EVENT LISTENERS
+  // ═══════════════════════════════════════════════
+  [catEl, compEl, typeEl].forEach(el => {
+    el.addEventListener('change', () => { updateMicroInfo(); updateToggleStates(); buildPhases(); });
+  });
+
+  // Smart toggle listeners
+  [togCombineSynopsis, togClearance, togSBA, togDebrief, togPreAwardLegal].forEach(el => {
+    el.addEventListener('change', buildPhases);
+  });
+
+  [prDateEl, nbDateEl].forEach(el => {
+    el.addEventListener('change', buildPhases);
+  });
+
+  showGatesEl.addEventListener('change', buildPhases);
+
+  riskEl.addEventListener('input', () => {
+    updatePostureLabel();
+    buildPhases();
+  });
+
+  [revLegal, revSBA, revCS, revReq, revFinance].forEach(el => {
+    el.addEventListener('change', buildPhases);
+  });
+
+  // ═══════════════════════════════════════════════
+  //  INIT
+  // ═══════════════════════════════════════════════
+  (function init() {
+    // Priority: URL hash > localStorage defaults > built-in defaults
+    const hashLoaded = loadFromHash();
+    if (!hashLoaded) {
+      loadDefaults();
+    } else {
+      // Check if localStorage has saved defaults to show clear button
+      try {
+        if (localStorage.getItem(STORAGE_KEY)) $('clearDefaultsBtn').style.display = '';
+      } catch(e) {}
+    }
+    updatePostureLabel();
+    updateMicroInfo();
+    updateToggleStates();
+    buildPhases();
+  })();
+
+})();
+</script>
+</body>
+</html>
