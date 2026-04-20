@@ -935,6 +935,7 @@
           <option value="comm_over9m">Commercial &mdash; Over $9M (FAR Part 12)</option>
           <option value="noncomm_under250k">Non-Commercial &mdash; Under $250K (SAP)</option>
           <option value="noncomm_over250k">Non-Commercial &mdash; Over $250K (FAR Part 15)</option>
+          <option value="ae_services">A&amp;E Services (FAR Part 36.6)</option>
         </select>
         <div class="micro-info" id="microInfo">
           <span class="micro-info-title">Micro-Purchase Thresholds (FAR 2.101)</span>
@@ -1275,17 +1276,18 @@
   function updateToggleStates() {
     var cat = catEl.value;
     var isComm = cat === 'comm_under9m' || cat === 'comm_over9m';
-    var isLarge = cat === 'comm_over9m' || cat === 'noncomm_over250k';
+    var isLarge = cat === 'comm_over9m' || cat === 'noncomm_over250k' || cat === 'ae_services';
     var isMicro = cat === 'micro';
+    var isAE = cat === 'ae_services';
 
-    // Combine synopsis only relevant for commercial
+    // Combine synopsis only relevant for commercial (not A&E)
     var synWrap = $('toggleCombineSynopsisWrap');
-    if (isComm && !isMicro) { synWrap.classList.remove('disabled-look'); togCombineSynopsis.disabled = false; }
+    if (isComm && !isMicro && !isAE) { synWrap.classList.remove('disabled-look'); togCombineSynopsis.disabled = false; }
     else { synWrap.classList.add('disabled-look'); togCombineSynopsis.disabled = true; }
 
-    // Pre-award legal only relevant for large dollar
+    // Pre-award legal only relevant for large dollar or A&E
     var palWrap = $('togglePreAwardLegalWrap');
-    if (isLarge) { palWrap.classList.remove('disabled-look'); togPreAwardLegal.disabled = false; }
+    if (isLarge || isAE) { palWrap.classList.remove('disabled-look'); togPreAwardLegal.disabled = false; }
     else { palWrap.classList.add('disabled-look'); togPreAwardLegal.disabled = true; }
 
     // Update active-toggle count badge
@@ -1336,7 +1338,8 @@
     var fin    = +revFinance.value;
 
     var isCommercial   = cat === 'comm_under9m' || cat === 'comm_over9m';
-    var isLargeDollar  = cat === 'comm_over9m' || cat === 'noncomm_over250k';
+    var isAE           = cat === 'ae_services';
+    var isLargeDollar  = cat === 'comm_over9m' || cat === 'noncomm_over250k' || isAE;
     var isSoleSource   = comp === 'sole_source';
     var isExistingVeh  = comp === 'existing_vehicle';
     var isCostType     = ctype === 'cpff' || ctype === 'cpaf';
@@ -1384,6 +1387,58 @@
       addPhase('award_doc',       'Prepare Award Documentation',      d(1), ['CONS']);
       addGate('co_review',        'CO Review & Signature',            d(1), ['CONS']);
       addPhase('award_issue',     'Issue Award / Place Order',        d(1), ['CONS']);
+      render(phases); return;
+    }
+
+    // ─── A&E Services (FAR Part 36.6) ───
+    if (isAE) {
+      // Part 1: Requirements & Selection Board
+      addPhase('ae_req_id',       'Identify Requirement',                         d(1), ['REQ']);
+      addPhase('ae_notify_cust',  'Notify Customer / Coordination',               d(1), ['REQ','CONS']);
+      addPhase('ae_draft_sow',    'Receive Draft SOW / Performance Requirements', d(1), ['REQ']);
+      addPhase('ae_review_sow',   'Review Draft SOW',                             d(req), ['REQ','CONS','TECH'], { risk: req > 5 ? 'med' : 'low' });
+      addPhase('ae_corrections',  'Corrections & Finalize Requirements',          d(5), ['REQ','CONS']);
+      addPhase('ae_pkg_receipt',  'Receive Complete Package with Funding',         d(Math.max(1, fin)), ['REQ','FM','CONS']);
+      addPhase('ae_eval_prep',    'Evaluation Board Preparation',                 d(1), ['CONS','TECH']);
+
+      if (inclSBA) {
+        addPhase('sba_coord', 'Small Business Coordination', d(sba), ['SBA','CONS'], { risk: sba > 5 ? 'med' : 'low' });
+      }
+
+      // Synopsis & SF 330
+      addPhase('ae_synopsis',     'Post Synopsis / Request SF 330s (SAM.gov)',     d(14), ['CONS'], { risk: 'med' });
+
+      // Evaluation Board
+      addPhase('ae_eval_board',   'Evaluation Board Review (Qualifications)',      d(4), ['CONS','TECH'], { risk: 'med' });
+      addPhase('ae_eval_docs',    'Prepare Evaluation Documentation & Solicitation', d(3), ['CONS']);
+      addPhase('ae_peer_review',  'Peer Review with Corrections',                 d(2), ['CONS']);
+
+      // Clearance & Legal (pre-solicitation)
+      if (inclClearance) addGate('sol_clearance', 'Clearance Review', d(cs), ['CLR']);
+      addPhase('ae_legal_init',   'Initial Legal Review',                         d(legal), ['LEGAL'], { risk: legal > 7 ? 'high' : legal > 4 ? 'med' : 'low' });
+      addPhase('ae_legal_corr',   'Legal Corrections',                            d(3), ['CONS','LEGAL']);
+
+      // Part 2: Solicitation through Award
+      addPhase('ae_issue_sol',    'Issue Solicitation',                            d(1), ['CONS']);
+      addPhase('ae_sol_close',    'Solicitation Closing Period',                   d(14), ['REQ','CONS']);
+      addPhase('ae_prop_eval',    'Evaluate Proposals',                            d(7), ['CONS','TECH'], { risk: 'med' });
+      addPhase('ae_negotiations', 'Clarifications / Negotiations',                 d(7), ['CONS'], { risk: 'high' });
+      addPhase('ae_tech_eval',    'Technical Evaluation',                          d(5), ['TECH','CONS'], { risk: 'med' });
+      addPhase('ae_responsibility','Evaluate Contractor Responsibility',           d(3), ['CONS']);
+      addPhase('ae_prep_docs',    'Prepare Contract & Documentation',              d(5), ['CONS']);
+      addPhase('ae_final_review', 'Final Peer Review with Corrections',            d(2), ['CONS']);
+
+      // Pre-award clearance & legal
+      if (inclClearance) addGate('preaward_clearance', 'Pre-Award Clearance Review', d(cs), ['CLR']);
+      if (inclPreAwardLegal) addPhase('preaward_legal', 'Pre-Award Legal Review', d(legal), ['LEGAL'], { risk: legal > 5 ? 'med' : 'low' });
+      addPhase('ae_eng_corr',     'Final Corrections',                             d(2), ['CONS','TECH']);
+      addPhase('ae_final_clearance','Final Review',                                d(3), ['CONS']);
+
+      // Award
+      addGate('award_sign', 'Contract Award / CO Signature', d(1), ['CONS']);
+      addPhase('notify_unsuccess', 'Notice to Unsuccessful Offerors', d(1), ['CONS']);
+      addPhase('ae_ntp',          'Notice to Proceed / Performance Starts',        d(10), ['CONS','REQ']);
+
       render(phases); return;
     }
 
@@ -1906,7 +1961,31 @@
       'price_det': 'Price Reasonableness Determination',
       'award_doc': 'Prepare Award Documentation',
       'co_review': 'CO Review & Signature',
-      'award_issue': 'Issue Award / Place Order'
+      'award_issue': 'Issue Award / Place Order',
+      'ae_req_id': 'Identify Requirement',
+      'ae_notify_cust': 'Notify Customer / Coordination',
+      'ae_draft_sow': 'Receive Draft SOW',
+      'ae_review_sow': 'Review Draft SOW',
+      'ae_corrections': 'Corrections & Finalize Requirements',
+      'ae_pkg_receipt': 'Receive Complete Package with Funding',
+      'ae_eval_prep': 'Evaluation Board Preparation',
+      'ae_synopsis': 'Post Synopsis / Request SF 330s',
+      'ae_eval_board': 'Evaluation Board Review',
+      'ae_eval_docs': 'Prepare Evaluation Documentation & Solicitation',
+      'ae_peer_review': 'Peer Review with Corrections',
+      'ae_legal_init': 'Initial Legal Review',
+      'ae_legal_corr': 'Legal Corrections',
+      'ae_issue_sol': 'Issue Solicitation',
+      'ae_sol_close': 'Solicitation Closing Period',
+      'ae_prop_eval': 'Evaluate Proposals',
+      'ae_negotiations': 'Clarifications / Negotiations',
+      'ae_tech_eval': 'Technical Evaluation',
+      'ae_responsibility': 'Evaluate Contractor Responsibility',
+      'ae_prep_docs': 'Prepare Contract & Documentation',
+      'ae_final_review': 'Final Peer Review',
+      'ae_eng_corr': 'Final Corrections',
+      'ae_final_clearance': 'Final Review',
+      'ae_ntp': 'Notice to Proceed'
     };
     Object.assign(map, names);
   }
