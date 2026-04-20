@@ -1,0 +1,465 @@
+window.CLUE_BANK_DATA = {
+  "_meta": {
+    "version": "1.0",
+    "rfo": "FAR references reflect the Revolutionary FAR Overhaul. Cites are generally at Part level because the RFO collapsed many sub-section references.",
+    "authoring_rules": [
+      "Single Jeopardy = basics for new COs; Double Jeopardy = moderately advanced; Final Jeopardy = integration.",
+      "Part 12 leads for commercial; Part 13 covers noncommercial below the SAT.",
+      "Exchanges under Part 15 are clarifications and negotiations (no discussions or communications).",
+      "Source selection approaches are tradeoff, LPTA, HTRFRP, and phased acquisition.",
+      "Commercial terminations use FAR 12.403 and clause 52.212-4(l), not a Part 49 settlement.",
+      "A UC is an unauthorized + commitment, not any acquisition mistake."
+    ]
+  },
+  "single": {
+    "FAR PARTS": {
+      "1": [
+        { "clue": "This FAR part governs competition requirements and the exceptions to full and open competition.", "answer": "Part 6" },
+        { "clue": "This FAR part governs the acquisition of commercial products and commercial services.", "answer": "Part 12" },
+        { "clue": "This FAR part governs simplified acquisition procedures for noncommercial acquisitions below the simplified acquisition threshold.", "answer": "Part 13" },
+        { "clue": "This FAR part is where you find the requirements for publicizing contract actions.", "answer": "Part 5" }
+      ],
+      "2": [
+        { "clue": "This FAR part governs market research.", "answer": "Part 10" },
+        { "clue": "This FAR part governs describing agency needs, including brand name or equal.", "answer": "Part 11" },
+        { "clue": "This FAR part covers required sources of supplies and services, including AbilityOne and the Federal Supply Schedules.", "answer": "Part 8" },
+        { "clue": "This FAR part contains the definitions of words and terms used throughout the regulation.", "answer": "Part 2" }
+      ],
+      "3": [
+        { "clue": "This FAR part covers contracting by negotiation, including source selection.", "answer": "Part 15" },
+        { "clue": "This FAR part covers types of contracts, from firm-fixed-price to cost-reimbursement to IDIQ.", "answer": "Part 16" },
+        { "clue": "This FAR part governs contractor qualifications, responsibility determinations, and SAM exclusions.", "answer": "Part 9" },
+        { "clue": "This FAR part covers acquisition planning.", "answer": "Part 7" }
+      ],
+      "4": [
+        { "clue": "This FAR part governs small business programs, including set-asides and the 8(a) program.", "answer": "Part 19" },
+        { "clue": "This FAR part covers contract cost principles and procedures.", "answer": "Part 31" },
+        { "clue": "This FAR part covers contract modifications.", "answer": "Part 43" },
+        { "clue": "This FAR part governs contract administration and audit services.", "answer": "Part 42" }
+      ],
+      "5": [
+        { "clue": "This FAR part governs the termination of noncommercial contracts, including T4C settlement procedures.", "answer": "Part 49" },
+        { "clue": "This FAR part contains the solicitation provisions and contract clauses, including the matrix.", "answer": "Part 52" },
+        { "clue": "This FAR part covers construction and architect-engineer contracts.", "answer": "Part 36" },
+        { "clue": "This FAR part covers protests, disputes, and appeals.", "answer": "Part 33" }
+      ]
+    },
+    "MARKET RESEARCH": {
+      "1": [
+        { "clue": "This FAR part instructs contracting officers to conduct market research appropriate to the circumstances.", "answer": "Part 10" },
+        { "clue": "A widely used market research technique, this is a public notice posted to SAM.gov to identify capable sources.", "answer": "a sources sought notice" },
+        { "clue": "Market research is used to determine whether the item or service being bought meets this key definition, which triggers Part 12 procedures.", "answer": "commercial product or commercial service" },
+        { "clue": "This document captures the contracting officer's findings from market research and supports the acquisition strategy.", "answer": "Market Research Report (MRR)" }
+      ],
+      "2": [
+        { "clue": "You must conduct market research before soliciting offers for contracts in excess of this dollar figure, which the FAR defines in Part 2.", "answer": "the simplified acquisition threshold" },
+        { "clue": "This government-wide point of entry is where contracting opportunities are publicized and where sources sought notices live.", "answer": "SAM.gov" },
+        { "clue": "Reviewing GSA Advantage, past contract files, and industry publications are all examples of this type of market research.", "answer": "non-solicitation market research (or passive market research)" },
+        { "clue": "An RFI, or this expanded phrase, is a common tool for gathering information from industry before a solicitation is issued.", "answer": "Request for Information" }
+      ],
+      "3": [
+        { "clue": "Market research must identify customary commercial practices, including these, before restricting Part 12 commercial clauses.", "answer": "terms and conditions" },
+        { "clue": "A PALT starts ticking when this document is complete and the requirement is ready to compete.", "answer": "the purchase request" },
+        { "clue": "The contracting officer should document market research sufficient to support these two key pricing determinations under the commercial framework.", "answer": "price reasonableness and commerciality" },
+        { "clue": "Market research supporting a brand name restriction must be documented under this FAR part on describing needs.", "answer": "Part 11" }
+      ],
+      "4": [
+        { "clue": "When no commercial market exists, market research still informs this Part 7 document.", "answer": "the acquisition plan" },
+        { "clue": "A market research report that supports a sole source must be paired with this document under Part 6.", "answer": "a justification and approval (J&A)" },
+        { "clue": "This is the federal catalog number system for products and services, used to classify requirements during market research.", "answer": "FSC or PSC (Federal Supply Classification / Product Service Codes)" },
+        { "clue": "Responses to a sources sought that claim a small business can perform the work are weighed against this small business rule before setting competition terms.", "answer": "the rule of two" }
+      ],
+      "5": [
+        { "clue": "The determination that only one source can meet the need leans on this FAR Part 6 exception.", "answer": "only one responsible source" },
+        { "clue": "Market research that documents a competitive commercial market supports this Part 15 pricing exception to certified cost or pricing data.", "answer": "adequate price competition" },
+        { "clue": "This industry day technique, where the government previews the requirement to industry, is both market research and a publicizing action.", "answer": "a presolicitation conference (or industry day)" },
+        { "clue": "The RFO consolidates several commercial-item determination cites into this Part and Part 12, which together govern commerciality decisions.", "answer": "Part 10" }
+      ]
+    },
+    "ACQUISITION BASICS": {
+      "1": [
+        { "clue": "This document, usually generated by the requiring activity, is what kicks off a contracting action.", "answer": "the purchase request" },
+        { "clue": "A requirement written in terms of measurable performance outcomes is captured in this document.", "answer": "a Performance Work Statement (PWS)" },
+        { "clue": "A requirement written in terms of specific tasks to be performed is captured in this document.", "answer": "a Statement of Work (SOW)" },
+        { "clue": "A requirement written in terms of desired results without prescribing how, inviting the contractor to propose the approach, is captured in this document.", "answer": "a Statement of Objectives (SOO)" }
+      ],
+      "2": [
+        { "clue": "Under Part 7, this plan documents the acquisition strategy and is generally required above the SAT.", "answer": "the acquisition plan" },
+        { "clue": "This numerical code system classifies businesses by industry and drives size standard determinations.", "answer": "NAICS codes" },
+        { "clue": "The FAR definition of this term describes a business that, combined with its affiliates, meets the applicable size standard.", "answer": "small business" },
+        { "clue": "Before spending appropriated funds, the CO must confirm this is certified and sufficient on the purchase request.", "answer": "funding (or the fund cite)" }
+      ],
+      "3": [
+        { "clue": "This oversight role assists the CO with technical surveillance of contractor performance but cannot change contract terms.", "answer": "Contracting Officer's Representative (COR)" },
+        { "clue": "Issued by the CO, this document is the only instrument that can legally bind the government to change contract terms.", "answer": "a contract modification (or bilateral / unilateral mod)" },
+        { "clue": "Under FAR Part 2, this is the general word for a gift or award instrument including contracts, task orders, and BPAs.", "answer": "contract (or acquisition instrument)" },
+        { "clue": "The contracting officer's authority to bind the government is limited by this document, issued by the agency.", "answer": "the contracting officer's warrant" }
+      ],
+      "4": [
+        { "clue": "When two offices are doing related work and decide which one will manage it, they are performing this kind of coordination.", "answer": "contract coordination (or assignment of contracting responsibility)" },
+        { "clue": "This Part 42 activity is where DCMA typically lives when assigned to administer a contract.", "answer": "contract administration" },
+        { "clue": "The FAR's word for what the government actually buys, including noncommercial things.", "answer": "supplies and services" },
+        { "clue": "The acquisition plan identifies sources, delivery, risk, and this overarching approach to achieving best value.", "answer": "the source selection strategy" }
+      ],
+      "5": [
+        { "clue": "This form, often called the 2579, documents the small business coordination and must be cleared before soliciting above the SAT.", "answer": "the Small Business Coordination Record (DD 2579)" },
+        { "clue": "A requirements document that is neither performance nor prescriptive but sits between, often used for commercial services.", "answer": "a hybrid statement of work (or hybrid PWS)" },
+        { "clue": "This Part 11 technique lets the CO describe the need by an existing item and allow offers that meet or exceed it.", "answer": "brand name or equal" },
+        { "clue": "This document, signed by a senior official, authorizes the CO to deviate from standard FAR language when truly required.", "answer": "a determination and findings (D&F)" }
+      ]
+    },
+    "SOLICITATIONS 101": {
+      "1": [
+        { "clue": "This solicitation is used to gather offers that will lead to a purchase order under simplified procedures.", "answer": "a Request for Quotations (RFQ)" },
+        { "clue": "This solicitation is used to gather offers in a Part 15 negotiated acquisition.", "answer": "a Request for Proposals (RFP)" },
+        { "clue": "Under FAR Part 5, this is the main mechanism for publicizing proposed contract actions above the SAT.", "answer": "the synopsis on SAM.gov (GPE)" },
+        { "clue": "A solicitation amendment is issued on this standard form.", "answer": "SF 30" }
+      ],
+      "2": [
+        { "clue": "This combined document serves as both the notice and the solicitation for commercial buys, saving a step.", "answer": "the combined synopsis/solicitation" },
+        { "clue": "Under Part 5, a pre-solicitation synopsis must generally appear for at least this many calendar days before the solicitation is issued.", "answer": "15 days" },
+        { "clue": "Part 5 lists exceptions to synopsis, including national security and this acquisition-type where urgency is established.", "answer": "unusual and compelling urgency" },
+        { "clue": "When canceling a solicitation, the CO documents this key element before issuing the cancellation notice.", "answer": "the rationale for cancellation" }
+      ],
+      "3": [
+        { "clue": "This provision required in most commercial solicitations collects the offeror's representations and certifications.", "answer": "52.212-3" },
+        { "clue": "In a commercial solicitation, this clause incorporates the government's terms and conditions for commercial items.", "answer": "52.212-4" },
+        { "clue": "A synopsis is not required for acquisitions at or below this threshold, the SAT.", "answer": "the simplified acquisition threshold" },
+        { "clue": "The CO includes evaluation factors in this section of a Part 15 RFP.", "answer": "Section M" }
+      ],
+      "4": [
+        { "clue": "This section of an RFP contains instructions to offerors on how to prepare and submit a proposal.", "answer": "Section L" },
+        { "clue": "The CO's standard uniform contract format uses these lettered sections A through M.", "answer": "the Uniform Contract Format" },
+        { "clue": "A solicitation that permits offers only from businesses in a specific socioeconomic category uses this mechanism.", "answer": "a small business set-aside (or socioeconomic set-aside)" },
+        { "clue": "The RFO still routes urgency-based synopsis exceptions through this FAR part's urgency authority.", "answer": "Part 6" }
+      ],
+      "5": [
+        { "clue": "The maximum response time for a commercial item solicitation is generally this many days.", "answer": "30 days (or shorter for urgent commercial buys)" },
+        { "clue": "When a protest is filed after a solicitation is issued, the CO may be required to do this to the procurement.", "answer": "stay or suspend award" },
+        { "clue": "This provision lets the government change the solicitation terms by amendment after release.", "answer": "the amendment authority in FAR Part 15 / SF 30" },
+        { "clue": "A Part 5 exception permitting contract awards without synopsis is available when this brand is the only source and the J&A supports it.", "answer": "only one responsible source" }
+      ]
+    },
+    "COMMERCIAL & SIMPLIFIED": {
+      "1": [
+        { "clue": "Under the RFO, this FAR part is the primary authority for buying commercial products and services, including above the SAT.", "answer": "Part 12" },
+        { "clue": "Using an individual government charge card to buy office supplies under the micro-purchase threshold uses this instrument.", "answer": "the Government Purchase Card (GPC)" },
+        { "clue": "The general civilian micro-purchase threshold is this dollar figure.", "answer": "$10,000" },
+        { "clue": "The simplified acquisition threshold for most civilian acquisitions is this dollar figure.", "answer": "$250,000" }
+      ],
+      "2": [
+        { "clue": "Under the RFO, simplified procedures under Part 12 for commercial products and services reach up to this dollar amount.", "answer": "$9 million" },
+        { "clue": "For contingency, humanitarian, or emergency operations, Part 12 simplified procedures reach this higher ceiling.", "answer": "the contingency ceiling (or approximately $15 million under the RFO)" },
+        { "clue": "Noncommercial simplified acquisitions below the SAT are governed by this FAR part.", "answer": "Part 13" },
+        { "clue": "A PO issued under simplified procedures typically uses this standard form.", "answer": "SF 1449" }
+      ],
+      "3": [
+        { "clue": "The clause that incorporates the government's commercial terms and conditions, including termination and inspection, is this number.", "answer": "52.212-4" },
+        { "clue": "This provision lists the addenda of clauses activated by specific policies in commercial solicitations.", "answer": "52.212-5" },
+        { "clue": "The provision collecting commercial offeror representations and certifications is this number.", "answer": "52.212-3" },
+        { "clue": "The provision stating commercial solicitation instructions to offerors is this number.", "answer": "52.212-1" }
+      ],
+      "4": [
+        { "clue": "Under Part 12, the CO must make this written determination before awarding.", "answer": "the commercial item determination (or commercial products/services determination)" },
+        { "clue": "A BPA established under simplified procedures for frequent small purchases is governed by this FAR part.", "answer": "Part 13" },
+        { "clue": "Procurements made with a purchase card at or below the micro-purchase threshold are generally exempt from this requirement.", "answer": "competition (or obtaining competitive quotes)" },
+        { "clue": "Above the micro-purchase threshold but within the SAT, competition is required to the maximum extent practicable under this FAR part.", "answer": "Part 13" }
+      ],
+      "5": [
+        { "clue": "A commercial item determination must consider this industry-side evidence, documented in the file.", "answer": "market research" },
+        { "clue": "Under the RFO, Part 12 simplified commercial procedures use a streamlined version of this type of solicitation rather than a full negotiated process.", "answer": "an RFQ-style solicitation (streamlined commercial procedures under Part 12)" },
+        { "clue": "Terminating a commercial contract is governed by this FAR part plus the commercial terms clause 52.212-4(l).", "answer": "Part 12, specifically 12.403" },
+        { "clue": "The RFO's micro-purchase split routes commercial purchases to this FAR part, while noncommercial micro-purchases stay in Part 13.", "answer": "Part 12" }
+      ]
+    },
+    "POST-AWARD 101": {
+      "1": [
+        { "clue": "This is the standard form used for all contract modifications and solicitation amendments.", "answer": "SF 30" },
+        { "clue": "A modification signed by both the government and the contractor is this type.", "answer": "a bilateral modification" },
+        { "clue": "A modification signed only by the government, authorized by a specific clause in the contract, is this type.", "answer": "a unilateral modification" },
+        { "clue": "This is the CO action that formally ends the contract once all obligations are complete.", "answer": "contract closeout" }
+      ],
+      "2": [
+        { "clue": "On a construction contract, this document formally starts the contractor's performance period.", "answer": "Notice to Proceed (NTP)" },
+        { "clue": "The CO's Memorandum for Record documents decisions and reasoning in the contract file and is known by this acronym.", "answer": "MFR" },
+        { "clue": "Under FAR Part 4, contract action reports are filed in this system.", "answer": "FPDS (the Federal Procurement Data System)" },
+        { "clue": "A contract option is exercised using this standard form.", "answer": "SF 30 (citing the Option clause)" }
+      ],
+      "3": [
+        { "clue": "The standard option clause allowing extension of services up to six months to avoid a gap is this number.", "answer": "52.217-8" },
+        { "clue": "The standard option clause for an extension of the contract itself, usually used for priced option years, is this number.", "answer": "52.217-9" },
+        { "clue": "Before exercising an option, the CO must determine that exercise is in this key interest, documented in the file.", "answer": "the Government's best interest" },
+        { "clue": "The contractor's past performance on a completed contract is documented here for use in future source selections.", "answer": "CPARS (Contractor Performance Assessment Reporting System)" }
+      ],
+      "4": [
+        { "clue": "A construction-specific meeting held before on-site work begins that covers submittals, schedules, and site logistics is this.", "answer": "the preconstruction conference" },
+        { "clue": "A document from the contractor describing materials, equipment, or methods proposed for government approval is this.", "answer": "a submittal" },
+        { "clue": "This Part 42 activity tracks whether the contractor is meeting schedule milestones and cost performance.", "answer": "contract administration (or surveillance)" },
+        { "clue": "The standard remedy clause for defects discovered after final acceptance on commercial items is found in this clause.", "answer": "52.212-4 (paragraph on warranty and inspection)" }
+      ],
+      "5": [
+        { "clue": "A physically complete contract enters this closeout window before the CO may close it, typically six months to three years depending on type.", "answer": "the closeout period (physical completion to final closeout)" },
+        { "clue": "This document ends the contractor's obligation to settle claims against the government once the contract is closed out.", "answer": "the release of claims" },
+        { "clue": "A cost-reimbursement contract is not closed out until this key cost verification event is complete.", "answer": "the final incurred cost audit (or indirect rate settlement)" },
+        { "clue": "The CO documents exercise of an option in this file document, sometimes nicknamed a 'determination to exercise.'", "answer": "the option exercise determination (D&F)" }
+      ]
+    }
+  },
+  "double": {
+    "COMPETITION & J&AS": {
+      "1": [
+        { "clue": "The policy of FAR Part 6 is to obtain this level of competition, with narrow exceptions.", "answer": "full and open competition" },
+        { "clue": "An acquisition restricted to small businesses is not a Part 6 exception but rather an exercise of this FAR part's authority.", "answer": "Part 19" },
+        { "clue": "The document justifying other than full and open competition is this, signed at an approval level based on dollar value.", "answer": "a justification and approval (J&A)" },
+        { "clue": "Under the RFO, this is the lowest dollar threshold at which a J&A approval rises above the CO level.", "answer": "above the SAT (with increasing levels at higher dollar values)" }
+      ],
+      "2": [
+        { "clue": "This Part 6 exception applies when only one responsible source can provide the supply or service.", "answer": "only one responsible source (sole source)" },
+        { "clue": "This Part 6 exception applies when unusual and compelling urgency precludes full and open competition.", "answer": "unusual and compelling urgency" },
+        { "clue": "This Part 6 exception applies when international agreements require use of a specific source.", "answer": "international agreement" },
+        { "clue": "This Part 6 exception applies when industrial mobilization, essential R&D, or experimental work justifies a specific source.", "answer": "industrial mobilization, engineering, developmental, or research capability" }
+      ],
+      "3": [
+        { "clue": "A J&A using the urgency exception is limited to this duration of work in most cases, enough to cover the urgent need while competing follow-on.", "answer": "the duration of the urgent requirement (not longer than necessary)" },
+        { "clue": "Under the RFO, brand name restrictions are documented under this FAR part and justified under Part 6.", "answer": "Part 11" },
+        { "clue": "A sole source award under the Part 6 only-one-source exception above a specific threshold requires posting this document publicly.", "answer": "the J&A (usually posted to SAM.gov)" },
+        { "clue": "When small business is eligible under the rule of two, the CO must consider this kind of acquisition before a Part 6 exception.", "answer": "a small business set-aside (Part 19 rule of two)" }
+      ],
+      "4": [
+        { "clue": "This senior agency official oversees competition and reviews J&As for adequacy.", "answer": "the Competition Advocate" },
+        { "clue": "On an FSS order, fair opportunity exceptions are governed by this FAR part, not Part 6.", "answer": "Part 8 (for FSS) or Part 16 (for IDIQ fair opportunity)" },
+        { "clue": "A J&A must describe this key future action to restore competition.", "answer": "actions to increase competition (remove barriers for future acquisitions)" },
+        { "clue": "An agency's requirement that only a specific manufacturer's part will meet the need is restricted under this Part 11 concept.", "answer": "brand name (or brand name only)" }
+      ],
+      "5": [
+        { "clue": "The RFO routes the urgency J&A authority under this FAR part, even though specific subsection cites are no longer required.", "answer": "Part 6" },
+        { "clue": "Under Part 16 fair opportunity, this exception allows issuing a task order without soliciting all IDIQ holders when logical follow-on.", "answer": "logical follow-on to a task order previously competed" },
+        { "clue": "When urgency exists but competition is still possible among a subset of sources, the CO may issue a J&A limited to this.", "answer": "sources reasonably available" },
+        { "clue": "Under the RFO, the authority to procure from AbilityOne or FPI without competition rests in this FAR part on required sources.", "answer": "Part 8" }
+      ]
+    },
+    "PART 15 SOURCE SELECTION": {
+      "1": [
+        { "clue": "Under the RFO, Part 15 recognizes four source selection approaches; this one trades technical merit against price.", "answer": "tradeoff" },
+        { "clue": "Under the RFO, this Part 15 source selection approach awards to the lowest-priced technically acceptable offer.", "answer": "LPTA" },
+        { "clue": "Under the RFO, this Part 15 source selection approach awards to the highest technically rated offer with a fair and reasonable price.", "answer": "Highest Technically Rated with a Fair and Reasonable Price (HTRFRP)" },
+        { "clue": "Under the RFO, this Part 15 source selection approach narrows the field before requesting full proposals.", "answer": "phased acquisition" }
+      ],
+      "2": [
+        { "clue": "Under the RFO, exchanges with offerors fall into these two main categories.", "answer": "clarifications and negotiations" },
+        { "clue": "Under the RFO, a flaw in a proposal that increases the risk of unsuccessful performance is this.", "answer": "a weakness" },
+        { "clue": "Under the RFO, a flaw in a proposal that appreciably increases the risk of unsuccessful performance is this.", "answer": "a significant weakness" },
+        { "clue": "Under the RFO, a part of an offer that does not conform to a material requirement of the solicitation is this.", "answer": "a deficiency" }
+      ],
+      "3": [
+        { "clue": "The group of offerors best suited for further negotiation is called this under the RFO.", "answer": "the competitive range" },
+        { "clue": "When the CO opens negotiations, this is the final revised proposal requested at the end.", "answer": "the Final Proposal Revision (FPR)" },
+        { "clue": "The written notice given to an offeror after award that addresses strengths and weaknesses is this.", "answer": "a debriefing" },
+        { "clue": "The formal communication during negotiations identifying deficiencies and significant weaknesses is this.", "answer": "an Evaluation Notice (EN)" }
+      ],
+      "4": [
+        { "clue": "The senior official who makes the award decision in a Part 15 source selection is this.", "answer": "the Source Selection Authority (SSA)" },
+        { "clue": "A body that advises the SSA on evaluation findings is this acronym.", "answer": "the Source Selection Advisory Council (SSAC)" },
+        { "clue": "The team that evaluates technical proposals against solicitation criteria is this.", "answer": "the Source Selection Evaluation Board (SSEB) or Technical Evaluation Team" },
+        { "clue": "Changing a price by an order of magnitude is not a clarification; under the RFO, it is this.", "answer": "a material revision (handled only through negotiations)" }
+      ],
+      "5": [
+        { "clue": "Under the RFO, this is what past performance evaluates, rather than being a responsibility determination.", "answer": "the quality and relevance of prior contract performance" },
+        { "clue": "Under the RFO, this must be documented regardless of source selection approach to show the award represents best value.", "answer": "the Source Selection Decision Document (SSDD) / Award Decision Document" },
+        { "clue": "The line between a clarification and a negotiation is the single most protested area of this FAR part.", "answer": "Part 15" },
+        { "clue": "This RFO-era source selection approach is particularly suited to acquisitions where price is secondary to technical quality.", "answer": "Highest Technically Rated with a Fair and Reasonable Price (HTRFRP)" }
+      ]
+    },
+    "CONTRACT TYPES & PRICING": {
+      "1": [
+        { "clue": "Under this contract type, the contractor bears all cost risk above the agreed price.", "answer": "firm-fixed-price (FFP)" },
+        { "clue": "Under this cost-reimbursement type, the contractor earns a negotiated fixed fee regardless of cost performance.", "answer": "cost-plus-fixed-fee (CPFF)" },
+        { "clue": "This contract type pays the contractor for labor hours at fixed rates plus materials at cost.", "answer": "time-and-materials (T&M)" },
+        { "clue": "This contract vehicle provides for an indefinite quantity of supplies or services over a stated period.", "answer": "indefinite-delivery indefinite-quantity (IDIQ)" }
+      ],
+      "2": [
+        { "clue": "Two techniques the CO uses to determine that a price is fair and reasonable are cost analysis and this.", "answer": "price analysis" },
+        { "clue": "This is the standard baseline for price analysis and is generally preferred when adequate competition exists.", "answer": "comparison with competitive proposed prices" },
+        { "clue": "Under the RFO, this is the exception to certified cost or pricing data when the buy was competed with two or more offers reasonably expected to compete.", "answer": "adequate price competition" },
+        { "clue": "The RFO's data format requirement for cost or pricing data, without citing the old Table 15-2, is just this.", "answer": "the required data format (prescribed pricing data)" }
+      ],
+      "3": [
+        { "clue": "Under a cost-reimbursement contract, allowable costs must be reasonable, allocable, and this.", "answer": "allowable under FAR Part 31 cost principles" },
+        { "clue": "An incentive contract that rewards the contractor for exceeding cost, schedule, or technical targets is this type.", "answer": "cost-plus-incentive-fee (CPIF) or fixed-price-incentive (FPI)" },
+        { "clue": "The contracting officer's written analysis supporting the negotiated price and terms is this memorandum.", "answer": "Price Negotiation Memorandum (PNM)" },
+        { "clue": "This pricing technique estimates what a contractor's cost should be, challenging inflated proposal cost elements.", "answer": "should-cost analysis" }
+      ],
+      "4": [
+        { "clue": "Under a T&M contract, this is the maximum dollar value the CO cannot exceed without a modification.", "answer": "the ceiling price (not-to-exceed)" },
+        { "clue": "This contract type is used when a requirement can be defined but costs cannot be predicted with confidence.", "answer": "cost-reimbursement" },
+        { "clue": "Under FAR Part 15 pricing policy, the contracting officer is responsible for this overarching pricing result.", "answer": "awarding at a fair and reasonable price" },
+        { "clue": "A contract where the buyer reimburses the seller's incurred costs but no fee is paid is this type, rarely used.", "answer": "cost-no-fee (or cost-sharing)" }
+      ],
+      "5": [
+        { "clue": "Under the RFO, the defective pricing remedy lives in Part 15 and ties to this certificate.", "answer": "Certificate of Current Cost or Pricing Data" },
+        { "clue": "The pass-through cost clauses, now consolidated under Part 52 in the RFO, target this kind of subcontractor cost treatment.", "answer": "excessive pass-through charges" },
+        { "clue": "An indefinite-quantity minimum the government promises to order is this core element of IDIQ consideration.", "answer": "the guaranteed minimum" },
+        { "clue": "FAR Part 16 disfavors cost-reimbursement type contracts for acquisitions of this kind, which generally call for fixed-price.", "answer": "commercial products or services" }
+      ]
+    },
+    "CORS & ADMINISTRATION": {
+      "1": [
+        { "clue": "This acronym identifies the module through which COR nominations are appointed within DoD.", "answer": "JAM (Joint Appointment Module)" },
+        { "clue": "This acronym identifies the module used by COR surveillance teams for performance monitoring in DoD.", "answer": "SPM (Surveillance and Performance Monitoring)" },
+        { "clue": "A COR's authority comes from this written instrument, limiting the COR to technical monitoring.", "answer": "the COR appointment letter" },
+        { "clue": "A COR cannot do this, no matter how obvious the fix seems at the worksite.", "answer": "change contract terms or direct work outside contract scope" }
+      ],
+      "2": [
+        { "clue": "Under DoD policy, CORs are classified by this scheme that aligns training and surveillance duties to risk.", "answer": "COR Types (A, B, C)" },
+        { "clue": "A COR assigned to a low-risk fixed-price supply contract is typically this type.", "answer": "Type A" },
+        { "clue": "A COR assigned to a complex services or cost-reimbursement contract is typically this type.", "answer": "Type C" },
+        { "clue": "The annual review the CO conducts of COR files, modules, and surveillance documentation is this.", "answer": "the annual COR file review" }
+      ],
+      "3": [
+        { "clue": "The system used to record contractor performance at completion of work is this acronym.", "answer": "CPARS" },
+        { "clue": "A CPARS narrative must address these core factor areas, including quality, schedule, and cost control.", "answer": "the CPARS factor areas (quality, schedule, cost control, management, small business, regulatory compliance)" },
+        { "clue": "Under Part 15, past performance information drawn from CPARS must meet this threshold of relevance before it can be used.", "answer": "relevance to the instant acquisition" },
+        { "clue": "A completed CPARS report stays available for use in source selections for this period.", "answer": "three years (generally)" }
+      ],
+      "4": [
+        { "clue": "When a contractor disputes an interim CPARS rating, this person issues the final agency decision.", "answer": "the Reviewing Official (one level above the AO)" },
+        { "clue": "A COR's surveillance log that documents date, observation, and any corrective action taken is this.", "answer": "the COR file (or QASP log)" },
+        { "clue": "The plan appended to the contract that describes how the government will evaluate contractor performance is this.", "answer": "the Quality Assurance Surveillance Plan (QASP)" },
+        { "clue": "A services contract that allows government supervision of contractor employees raises this risk, expressly prohibited by FAR.", "answer": "personal services" }
+      ],
+      "5": [
+        { "clue": "Under the RFO, COR-relevant past performance cites now point to this FAR part rather than to old Subpart 42.15.", "answer": "Part 42" },
+        { "clue": "A CPARS rating of this category signals the highest performance and carries specific narrative requirements.", "answer": "Exceptional" },
+        { "clue": "The senior contracting official who resolves disputes between a COR and contractor representatives is this.", "answer": "the contracting officer" },
+        { "clue": "A contract that mixes elements of both personal and non-personal services runs this compliance risk.", "answer": "an unauthorized personal services contract" }
+      ]
+    },
+    "REMEDIES & TERMINATIONS": {
+      "1": [
+        { "clue": "This government letter gives the contractor a period to fix its failure to make progress or deliver.", "answer": "a cure notice" },
+        { "clue": "This government letter demands the contractor explain why the contract should not be terminated for default.", "answer": "a show cause notice" },
+        { "clue": "This kind of termination ends a contract because the contractor breached, with potential reprocurement costs charged to the contractor.", "answer": "termination for default (T4D)" },
+        { "clue": "This kind of termination ends a contract at the government's discretion, with settlement of allowable costs.", "answer": "termination for convenience (T4C)" }
+      ],
+      "2": [
+        { "clue": "For noncommercial contracts, termination procedures live in this FAR part.", "answer": "Part 49" },
+        { "clue": "For commercial contracts, termination procedures live here, citing Part 12 and this clause paragraph.", "answer": "52.212-4(l)" },
+        { "clue": "The RFO-era cite for commercial termination decisions is this section of Part 12.", "answer": "12.403" },
+        { "clue": "Under a commercial T4C, the contractor is entitled to the percentage of the contract price reflecting this.", "answer": "the work performed plus reasonable charges resulting from the termination" }
+      ],
+      "3": [
+        { "clue": "A termination for default requires this kind of analysis, often documented as a 'cure then show cause' sequence.", "answer": "documented notice and opportunity to cure or respond" },
+        { "clue": "A T4D can be converted to a T4C if this result is reached during appeal or settlement.", "answer": "the default was improper or could not be proved" },
+        { "clue": "A termination settlement proposal on a noncommercial contract is reviewed by this office.", "answer": "the TCO (Termination Contracting Officer)" },
+        { "clue": "Under Part 49, a contractor may elect this settlement method to avoid the full proposal process on smaller terminations.", "answer": "a no-cost settlement (or inventory basis settlement)" }
+      ],
+      "4": [
+        { "clue": "A delivery order against a pre-awarded IDIQ for supplies uses this FAR part's rules.", "answer": "Part 16" },
+        { "clue": "A task order for services against a pre-awarded IDIQ is still bound by the original IDIQ scope and this procedural requirement.", "answer": "fair opportunity (Part 16) to IDIQ holders" },
+        { "clue": "Under Part 16, fair opportunity exceptions include this logical-follow-on scenario.", "answer": "logical follow-on to a task order previously competed" },
+        { "clue": "Converting a T4D to a T4C is sometimes called this, reflecting a compromise outcome.", "answer": "settlement (or conversion)" }
+      ],
+      "5": [
+        { "clue": "A disputes clause decision by the CO triggers this contractor option under Part 33.", "answer": "an appeal to the agency board or the Court of Federal Claims" },
+        { "clue": "Reprocurement costs charged to a defaulted contractor are limited to this reasonableness standard.", "answer": "excess costs reasonably incurred to complete the work" },
+        { "clue": "A stop-work order under a fixed-price contract is time-bounded and includes this contractor remedy element.", "answer": "equitable adjustment if the stop-work causes cost or schedule impact" },
+        { "clue": "On commercial contracts, the government terminates under this clause paragraph instead of issuing a Part 49 settlement.", "answer": "52.212-4(l)" }
+      ]
+    },
+    "PROTESTS, RATS & GAO": {
+      "1": [
+        { "clue": "This independent agency decides most bid protests at the federal level.", "answer": "GAO (Government Accountability Office)" },
+        { "clue": "GAO must issue its decision on a protest within this many days.", "answer": "100 days (calendar)" },
+        { "clue": "A protest filed before proposals are due, challenging the solicitation terms, must be filed before this event.", "answer": "the time set for receipt of proposals" },
+        { "clue": "A post-award protest must generally be filed within this many days of the protest basis becoming known.", "answer": "10 days (calendar)" }
+      ],
+      "2": [
+        { "clue": "This is the definitional threshold at which an action by a government employee lacking authority becomes a UC.", "answer": "an unauthorized commitment (unauthorized + a commitment that would bind the government if proper)" },
+        { "clue": "The process to give retroactive approval to a UC that is otherwise in the government's interest is this.", "answer": "ratification" },
+        { "clue": "A ratification is approved by an official at this warrant level or above, depending on agency rules.", "answer": "a senior warranted official (above the involved CO, per agency policy)" },
+        { "clue": "A UC is not every acquisition mistake; it requires both a lack of authority and this element.", "answer": "a commitment that would be binding if made by a proper official" }
+      ],
+      "3": [
+        { "clue": "When a protest is filed at GAO within a specific time window after award, the agency must take this action.", "answer": "stay contract performance (CICA stay)" },
+        { "clue": "An agency-level protest is governed by this FAR part.", "answer": "Part 33" },
+        { "clue": "GAO protests generally cannot challenge decisions that are this kind of matter-of-discretion action.", "answer": "matters of contract administration" },
+        { "clue": "The three GAO protest grounds commonly cited are solicitation defects, improper evaluation, and this.", "answer": "improper award or source selection decision" }
+      ],
+      "4": [
+        { "clue": "A ratification decision must include this finding, signed by the approving authority, about the government's interest.", "answer": "that ratification is in the best interest of the government" },
+        { "clue": "An agency protest decision is made by this official unless the CO is the protested party.", "answer": "the contracting officer (or one level above)" },
+        { "clue": "The official body that hears appeals of DoD contracting officer final decisions is this.", "answer": "the Armed Services Board of Contract Appeals (ASBCA)" },
+        { "clue": "A protest at GAO may be dismissed if it fails this basic adequacy test at filing.", "answer": "sufficiency (legally sufficient grounds stated with specificity)" }
+      ],
+      "5": [
+        { "clue": "A UC discovered during closeout may be handled through this file action if the price is fair and reasonable and the person committing acted in good faith.", "answer": "ratification under FAR Part 1" },
+        { "clue": "The three UC elements are typically: not a warranted CO, intent to bind the government, and this.", "answer": "the contractor relied on the commitment" },
+        { "clue": "A GAO protest outcome that sustains the protest may include this recommendation to the agency.", "answer": "recommended corrective action (reopen, reevaluate, terminate for convenience)" },
+        { "clue": "A CO who gets pulled into a ratification package should verify this before signing anything.", "answer": "whether the commitment is actually a UC and whether the action is otherwise proper" }
+      ]
+    }
+  },
+  "final": [
+    { "category": "RFO ESSENTIALS", "clue": "This RFO-era source selection approach lets the CO narrow the field before requesting full proposals.", "answer": "phased acquisition" },
+    { "category": "RFO ESSENTIALS", "clue": "Under the RFO, exchanges with offerors during source selection fall into these two categories.", "answer": "clarifications and negotiations" },
+    { "category": "RFO ESSENTIALS", "clue": "Under the RFO, the deficiency definition was simplified to a part of an offer that does not conform to this.", "answer": "a material requirement of the solicitation" },
+    { "category": "RFO ESSENTIALS", "clue": "Under the RFO, commercial simplified procedures under Part 12 now reach up to this dollar ceiling.", "answer": "$9 million" },
+    { "category": "RFO ESSENTIALS", "clue": "Under the RFO, this is the FAR part of first resort for any commercial acquisition, replacing the old Subpart 13.5 wrapper.", "answer": "Part 12" },
+    { "category": "COMPETITION", "clue": "The Part 6 policy requirement is this, with narrowly drawn exceptions requiring a signed J&A.", "answer": "full and open competition" },
+    { "category": "COMPETITION", "clue": "A senior agency official responsible for promoting competition and reviewing proposed non-competitive actions is this.", "answer": "the Competition Advocate" },
+    { "category": "COMPETITION", "clue": "Under the rule of two, this Part 19 action is considered first when two or more small businesses can perform at fair market price.", "answer": "a small business set-aside" },
+    { "category": "COMPETITION", "clue": "Logical follow-on is a recognized exception under this FAR part's fair opportunity rules for task orders.", "answer": "Part 16" },
+    { "category": "COMPETITION", "clue": "The Part 6 exception requiring the contractor to support mobilization or essential R&D is this one.", "answer": "industrial mobilization, engineering, developmental, or research capability" },
+    { "category": "SOURCE SELECTION", "clue": "A flaw in a proposal that appreciably increases the risk of unsuccessful contract performance is this.", "answer": "a significant weakness" },
+    { "category": "SOURCE SELECTION", "clue": "An evaluator's written note to a proposal team identifying a significant weakness or deficiency during negotiations is called this.", "answer": "an Evaluation Notice (EN)" },
+    { "category": "SOURCE SELECTION", "clue": "The source selection approach that awards to the highest-rated offer at a fair price is this acronym.", "answer": "HTRFRP" },
+    { "category": "SOURCE SELECTION", "clue": "The senior official who signs the award decision in a Part 15 source selection is this acronym.", "answer": "the SSA" },
+    { "category": "SOURCE SELECTION", "clue": "Final revisions requested after negotiations close are called these.", "answer": "Final Proposal Revisions (FPRs)" },
+    { "category": "PRICING", "clue": "Comparison with competitive proposed prices is the first and most preferred technique for this determination.", "answer": "price reasonableness" },
+    { "category": "PRICING", "clue": "This cost analysis tool estimates what a contractor's cost ought to be, challenging inflated line items.", "answer": "should-cost analysis" },
+    { "category": "PRICING", "clue": "Under the RFO, defective pricing still hinges on this certificate, signed at the time of agreement.", "answer": "Certificate of Current Cost or Pricing Data" },
+    { "category": "PRICING", "clue": "Adequate price competition is one exception to submission of certified cost or pricing data under this FAR part.", "answer": "Part 15" },
+    { "category": "PRICING", "clue": "Under a T&M contract, this figure caps the government's total exposure and cannot be exceeded without a mod.", "answer": "the ceiling price (NTE)" },
+    { "category": "COMMERCIAL", "clue": "On a commercial contract, terminations for cause and for convenience are handled under this clause's paragraphs.", "answer": "52.212-4 (paragraphs (l) and (m))" },
+    { "category": "COMMERCIAL", "clue": "A commercial item solicitation typically uses this provision to collect offeror reps and certs.", "answer": "52.212-3" },
+    { "category": "COMMERCIAL", "clue": "Under the RFO, the commercial simplified procedures ceiling for contingency and emergency operations rises to roughly this figure.", "answer": "the contingency ceiling (approximately $15 million)" },
+    { "category": "COMMERCIAL", "clue": "A commercial item determination must be supported by this type of evidence, developed under Part 10.", "answer": "market research" },
+    { "category": "COMMERCIAL", "clue": "Under the RFO, micro-purchases for commercial items route to this FAR part, while noncommercial micro-purchases stay in Part 13.", "answer": "Part 12" },
+    { "category": "POST-AWARD", "clue": "The clause that provides an up-to-six-month extension of services to prevent a gap in performance is this number.", "answer": "52.217-8" },
+    { "category": "POST-AWARD", "clue": "The bilateral priced option-year extension clause is this number.", "answer": "52.217-9" },
+    { "category": "POST-AWARD", "clue": "The determination a CO documents before exercising a priced option is this.", "answer": "that exercise is in the Government's best interest" },
+    { "category": "POST-AWARD", "clue": "This Part 42 post-award activity verifies the contractor's indirect cost rates before closeout on cost contracts.", "answer": "indirect cost rate audit (final incurred cost audit)" },
+    { "category": "POST-AWARD", "clue": "A construction contract begins its clock when this document is issued.", "answer": "Notice to Proceed (NTP)" },
+    { "category": "CORS", "clue": "The DoD system where COR appointments are processed is this acronym.", "answer": "JAM" },
+    { "category": "CORS", "clue": "The DoD system where COR surveillance activity is documented is this acronym.", "answer": "SPM" },
+    { "category": "CORS", "clue": "A COR assigned to a complex cost-reimbursement services contract is typically this type.", "answer": "Type C" },
+    { "category": "CORS", "clue": "The written document spelling out how the government will evaluate contractor performance is this acronym.", "answer": "QASP" },
+    { "category": "CORS", "clue": "The annual review the CO conducts of COR files and JAM/SPM entries is called this.", "answer": "the annual COR file review" },
+    { "category": "PROTESTS", "clue": "The statutory window for GAO to decide a protest on the merits is this number of calendar days.", "answer": "100 days" },
+    { "category": "PROTESTS", "clue": "A pre-award protest of solicitation terms must be filed before this event.", "answer": "the time set for receipt of proposals" },
+    { "category": "PROTESTS", "clue": "An agency protest lives in this FAR part.", "answer": "Part 33" },
+    { "category": "PROTESTS", "clue": "The CICA stay of contract performance kicks in when a GAO protest is filed within this number of days after award.", "answer": "10 calendar days of award (or 5 days of required debriefing)" },
+    { "category": "PROTESTS", "clue": "This adjudicative body hears appeals of DoD contracting officer final decisions under the Contract Disputes Act.", "answer": "ASBCA (Armed Services Board of Contract Appeals)" },
+    { "category": "UCS & RATS", "clue": "A UC is not every mistake; it requires a lack of authority and this specific action.", "answer": "a commitment that would bind the government if made by a proper official" },
+    { "category": "UCS & RATS", "clue": "The FAR process that retroactively approves a UC when it is in the government's interest is this.", "answer": "ratification" },
+    { "category": "UCS & RATS", "clue": "Ratification authority generally rests with this kind of official, above the CO level per agency policy.", "answer": "a senior warranted official (HCA or designee)" },
+    { "category": "UCS & RATS", "clue": "Before signing a ratification package, the CO verifies whether the action is actually a UC and whether it is otherwise this.", "answer": "a proper, necessary, and fairly priced acquisition" },
+    { "category": "UCS & RATS", "clue": "The three practical UC elements are: lack of authority, intent to bind the government, and this.", "answer": "contractor reliance on the commitment" },
+    { "category": "TERMINATIONS", "clue": "Commercial contracts route terminations through this clause's specific paragraphs, not through Part 49.", "answer": "52.212-4 (paragraphs (l) and (m))" },
+    { "category": "TERMINATIONS", "clue": "A cure notice gives the contractor this period of time to correct the condition endangering performance.", "answer": "10 days (generally)" },
+    { "category": "TERMINATIONS", "clue": "A show cause notice asks the contractor to respond within this timeframe to avoid default termination.", "answer": "10 days (generally)" },
+    { "category": "TERMINATIONS", "clue": "If a T4D is later found improper, it is typically converted to this.", "answer": "a termination for convenience (T4C)" },
+    { "category": "TERMINATIONS", "clue": "On a noncommercial contract, the official who handles the T4C settlement proposal is this.", "answer": "the Termination Contracting Officer (TCO)" },
+    { "category": "DEFINITIONS", "clue": "Under FAR Part 2, this term covers contracts, orders, BPAs, and other obligation instruments collectively.", "answer": "contract (or acquisition instrument)" },
+    { "category": "DEFINITIONS", "clue": "This RFO-era Part 10 concept determines whether a requirement can be met by commercial products or services.", "answer": "commerciality (or commercial item determination)" },
+    { "category": "DEFINITIONS", "clue": "Under FAR Part 2, a business combined with its affiliates that meets the applicable size standard is this.", "answer": "a small business concern" },
+    { "category": "DEFINITIONS", "clue": "Under FAR Part 2, the dollar figure at which simplified procedures generally give way to full competition is the definition of this.", "answer": "the simplified acquisition threshold (SAT)" },
+    { "category": "DEFINITIONS", "clue": "The written, fact-based finding signed by a senior official to authorize a departure from standard procedure is this.", "answer": "a Determination and Findings (D&F)" },
+    { "category": "SOLICITATIONS", "clue": "A solicitation seeking quotes under simplified procedures is called this.", "answer": "a Request for Quotations (RFQ)" },
+    { "category": "SOLICITATIONS", "clue": "A solicitation seeking proposals in a Part 15 negotiated acquisition is called this.", "answer": "a Request for Proposals (RFP)" },
+    { "category": "SOLICITATIONS", "clue": "The combined synopsis/solicitation streamlines this type of acquisition.", "answer": "commercial acquisitions (under Part 12)" },
+    { "category": "SOLICITATIONS", "clue": "Part 5's publicizing rule requires a minimum of this total elapsed time from synopsis to receipt of offers in most cases.", "answer": "30 days" },
+    { "category": "SOLICITATIONS", "clue": "The Uniform Contract Format runs from this section letter through this one.", "answer": "A through M" }
+  ]
+}
+;

@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Contracting Jeopardy — a full 3-round game for new contracting officers. 300+ clues drawn from the Revolutionary FAR Overhaul. Solo study or hot-seat multiplayer." />
+
+  <title>Contracting Jeopardy | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+
+  <!-- SEO: Open Graph & Twitter Card -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ContractingHQ" />
+  <meta property="og:title" content="Contracting Jeopardy | ContractingHQ" />
+  <meta property="og:description" content="A full 3-round Jeopardy game for new contracting officers. 300+ clues, solo or multiplayer." />
+  <meta property="og:url" content="https://kthq.org/jeopardy.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@ContractingHQ" />
+  <meta name="twitter:title" content="Contracting Jeopardy | ContractingHQ" />
+  <meta name="twitter:description" content="A full 3-round Jeopardy game for new contracting officers." />
+  <link rel="canonical" href="https://kthq.org/jeopardy.html" />
+
+  <style>
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+
+    /* Board palette: classic Jeopardy with a KTHQ twist */
+    :root {
+      --j-bg: #040d1f;
+      --j-board: #0a2472;
+      --j-board-deep: #06175a;
+      --j-gold: #f4c430;
+      --j-gold-soft: #d9ad1a;
+      --j-cell-border: #0f3ba8;
+      --j-cell-used: #031034;
+      --j-text: #ffffff;
+    }
+
+    body { background: var(--j-bg); }
+
+    /* ───── Page hero ───── */
+    .jeopardy-hero {
+      background: linear-gradient(135deg, #040d1f 0%, #0a1e42 50%, #040d1f 100%);
+      padding: 6rem 1.5rem 2rem;
+      text-align: center;
+    }
+    .jeopardy-hero-tag {
+      display: inline-block;
+      background: rgba(244,196,48,0.1);
+      border: 1px solid rgba(244,196,48,0.3);
+      color: var(--j-gold);
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 0.3rem 1rem; border-radius: 100px;
+      margin-bottom: 0.75rem;
+    }
+    .jeopardy-hero h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 700; color: var(--white);
+      margin-bottom: 0.6rem;
+      letter-spacing: 0.5px;
+    }
+    .jeopardy-hero p {
+      color: var(--silver); font-size: 1rem;
+      max-width: 620px; margin: 0 auto;
+      line-height: 1.65;
+    }
+    .jeopardy-hero .rfo-note {
+      margin-top: 1rem;
+      font-size: 0.78rem;
+      color: rgba(200,212,224,0.55);
+      font-style: italic;
+    }
+
+    /* ───── Stage (board area) ───── */
+    .j-stage {
+      max-width: 1200px;
+      margin: 1.5rem auto 4rem;
+      padding: 0 1rem;
+      min-height: 60vh;
+    }
+
+    /* ───── Start screen ───── */
+    .start-card {
+      max-width: 620px;
+      margin: 3rem auto;
+      background: rgba(10,22,50,0.85);
+      border: 1px solid rgba(244,196,48,0.25);
+      border-radius: 14px;
+      padding: 2rem 2.25rem;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    }
+    .start-card h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.6rem; font-weight: 700;
+      color: var(--j-gold); margin-bottom: 1rem;
+      text-align: center;
+    }
+    .start-card .start-step {
+      margin-bottom: 1.5rem;
+    }
+    .start-card label {
+      display: block;
+      color: var(--silver-light);
+      font-size: 0.85rem; font-weight: 600;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .mode-toggle {
+      display: flex; gap: 0.5rem;
+    }
+    .mode-btn {
+      flex: 1; padding: 0.85rem 1rem;
+      background: rgba(4,13,31,0.6);
+      border: 1.5px solid rgba(74,158,255,0.25);
+      border-radius: 10px;
+      color: var(--silver-light);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .mode-btn:hover { border-color: rgba(244,196,48,0.5); color: var(--white); }
+    .mode-btn.active {
+      background: rgba(244,196,48,0.12);
+      border-color: var(--j-gold);
+      color: var(--j-gold);
+    }
+
+    .player-rows { display: flex; flex-direction: column; gap: 0.5rem; }
+    .player-row {
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .player-row input {
+      flex: 1; padding: 0.55rem 0.8rem;
+      background: rgba(4,13,31,0.8);
+      border: 1px solid rgba(74,158,255,0.2);
+      border-radius: 6px;
+      color: var(--white); font-family: inherit; font-size: 0.92rem;
+    }
+    .player-row input:focus { outline: none; border-color: var(--j-gold); }
+    .player-row button.remove-player {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #f87171;
+      padding: 0.45rem 0.7rem; border-radius: 6px;
+      font-size: 0.9rem; cursor: pointer; line-height: 1;
+    }
+    .add-player-btn {
+      background: rgba(74,158,255,0.08);
+      border: 1px dashed rgba(74,158,255,0.3);
+      color: var(--accent);
+      padding: 0.5rem 0.9rem; border-radius: 6px;
+      font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; margin-top: 0.4rem;
+      width: 100%;
+    }
+    .add-player-btn:hover { background: rgba(74,158,255,0.15); }
+
+    .start-go {
+      display: block; width: 100%;
+      background: var(--j-gold);
+      color: #1a1a2e;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700; font-size: 1.2rem;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 0.9rem 1rem; border-radius: 10px;
+      border: none; cursor: pointer;
+      margin-top: 1rem;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .start-go:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(244,196,48,0.3); }
+
+    /* ───── Game chrome (round banner + scores) ───── */
+    .round-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap;
+      background: rgba(10,22,50,0.7);
+      border: 1px solid rgba(244,196,48,0.15);
+      border-radius: 10px;
+      padding: 0.6rem 1rem;
+      margin-bottom: 1rem;
+    }
+    .round-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      color: var(--j-gold);
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+    .round-sub {
+      color: var(--silver); font-size: 0.78rem;
+    }
+    .scoreboard {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .score-pill {
+      background: rgba(4,13,31,0.7);
+      border: 1px solid rgba(74,158,255,0.2);
+      border-radius: 8px;
+      padding: 0.4rem 0.75rem;
+      display: flex; flex-direction: column;
+      min-width: 120px;
+    }
+    .score-pill.active {
+      border-color: var(--j-gold);
+      background: rgba(244,196,48,0.08);
+    }
+    .score-name {
+      font-size: 0.7rem; color: var(--silver);
+      text-transform: uppercase; letter-spacing: 0.8px;
+    }
+    .score-value {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.25rem; font-weight: 700;
+      color: var(--white);
+    }
+    .score-value.negative { color: #f87171; }
+    .quit-btn {
+      background: transparent;
+      border: 1px solid rgba(239,68,68,0.25);
+      color: #f87171;
+      padding: 0.35rem 0.75rem; border-radius: 6px;
+      font-size: 0.72rem; font-weight: 600;
+      cursor: pointer;
+      text-transform: uppercase; letter-spacing: 0.8px;
+    }
+    .quit-btn:hover { background: rgba(239,68,68,0.1); }
+
+    /* ───── Board ───── */
+    .j-board {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+      background: #000;
+      padding: 6px;
+      border-radius: 6px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    }
+    .j-cat {
+      background: var(--j-board-deep);
+      border: 1px solid var(--j-cell-border);
+      min-height: 90px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0.5rem;
+      text-align: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.62rem, 1.2vw, 0.95rem);
+      color: var(--white);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      line-height: 1.15;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    .j-cell {
+      background: var(--j-board);
+      border: 1px solid var(--j-cell-border);
+      min-height: 95px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.2rem, 3vw, 2.25rem);
+      color: var(--j-gold);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.55);
+      cursor: pointer;
+      transition: background 0.15s, transform 0.12s;
+    }
+    .j-cell:hover:not(.used) {
+      background: #0e36c2;
+      transform: scale(1.02);
+    }
+    .j-cell.used {
+      background: var(--j-cell-used);
+      color: transparent;
+      cursor: default;
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.6);
+    }
+    .j-cell.used:hover { transform: none; }
+
+    /* ───── Clue overlay ───── */
+    .overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .clue-card {
+      background: var(--j-board);
+      border: 3px solid var(--j-gold);
+      border-radius: 12px;
+      max-width: 860px; width: 100%;
+      max-height: 92vh;
+      padding: 2rem 2.5rem 1.5rem;
+      display: flex; flex-direction: column;
+      box-shadow: 0 16px 60px rgba(0,0,0,0.6);
+      overflow: auto;
+    }
+    .clue-head {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1.25rem;
+      gap: 1rem; flex-wrap: wrap;
+    }
+    .clue-cat {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.85rem; font-weight: 700;
+      color: var(--j-gold); letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+    .clue-val {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.3rem; font-weight: 700;
+      color: var(--j-gold);
+    }
+    .clue-dd-flag {
+      display: inline-block;
+      background: #c9302c;
+      color: #fff8dc;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      box-shadow: 0 0 18px rgba(201,48,44,0.6);
+      margin-bottom: 0.75rem;
+      align-self: flex-start;
+    }
+    .clue-text {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(1.15rem, 2.2vw, 1.8rem);
+      font-weight: 500;
+      color: #fff;
+      text-align: center;
+      line-height: 1.35;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+      flex: 1;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 180px;
+      padding: 1.5rem 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .clue-answer {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(1rem, 1.8vw, 1.4rem);
+      font-weight: 700;
+      color: var(--j-gold);
+      text-align: center;
+      padding: 1rem 0;
+      border-top: 1px solid rgba(244,196,48,0.3);
+      margin-top: 1rem;
+    }
+    .clue-answer .ans-label {
+      display: block;
+      font-size: 0.72rem;
+      color: rgba(244,196,48,0.6);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .clue-footer {
+      margin-top: 1.25rem;
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .clue-timer {
+      text-align: center;
+      font-family: 'Rajdhani', sans-serif;
+      color: var(--silver-light);
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .clue-timer-bar {
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 0.35rem;
+    }
+    .clue-timer-bar-fill {
+      height: 100%;
+      background: var(--j-gold);
+      transition: width 0.1s linear;
+    }
+    .clue-buttons {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      justify-content: center;
+    }
+    .clue-btn {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.9rem; font-weight: 700;
+      padding: 0.6rem 1.1rem; border-radius: 8px;
+      border: 1.5px solid;
+      cursor: pointer;
+      text-transform: uppercase; letter-spacing: 1px;
+      transition: all 0.15s;
+    }
+    .clue-btn-reveal {
+      background: var(--j-gold); color: #1a1a2e;
+      border-color: var(--j-gold);
+    }
+    .clue-btn-reveal:hover { background: var(--j-gold-soft); }
+    .clue-btn-right {
+      background: rgba(52,211,153,0.1); color: #6ee7b7;
+      border-color: rgba(52,211,153,0.5);
+    }
+    .clue-btn-right:hover { background: rgba(52,211,153,0.2); }
+    .clue-btn-wrong {
+      background: rgba(239,68,68,0.1); color: #f87171;
+      border-color: rgba(239,68,68,0.5);
+    }
+    .clue-btn-wrong:hover { background: rgba(239,68,68,0.2); }
+    .clue-btn-skip {
+      background: rgba(156,163,175,0.08); color: #9ca3af;
+      border-color: rgba(156,163,175,0.3);
+    }
+    .clue-btn-skip:hover { background: rgba(156,163,175,0.15); }
+    .clue-btn-next {
+      background: rgba(74,158,255,0.1); color: var(--accent);
+      border-color: rgba(74,158,255,0.5);
+    }
+    .clue-btn-next:hover { background: rgba(74,158,255,0.2); }
+
+    .who-label {
+      text-align: center;
+      color: var(--silver);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 0.5rem;
+    }
+    .who-players {
+      display: flex; justify-content: center; gap: 0.4rem; flex-wrap: wrap;
+      margin-top: 0.4rem;
+    }
+    .who-btn {
+      background: rgba(244,196,48,0.08);
+      border: 1px solid rgba(244,196,48,0.35);
+      color: var(--j-gold);
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .who-btn:hover { background: rgba(244,196,48,0.18); }
+    .who-btn.no-one {
+      background: rgba(156,163,175,0.08);
+      border-color: rgba(156,163,175,0.3);
+      color: #9ca3af;
+    }
+    .who-btn.no-one:hover { background: rgba(156,163,175,0.15); }
+
+    /* ───── Wager overlay ───── */
+    .wager-card {
+      background: rgba(10,22,50,0.95);
+      border: 3px solid var(--j-gold);
+      border-radius: 12px;
+      max-width: 520px; width: 100%;
+      padding: 2rem 2.25rem;
+      text-align: center;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    }
+    .wager-card h2 {
+      font-family: 'Rajdhani', sans-serif;
+      color: var(--j-gold);
+      font-size: 1.6rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .wager-card p {
+      color: var(--silver-light);
+      font-size: 0.92rem;
+      margin-bottom: 1.25rem;
+    }
+    .wager-card .wager-player {
+      color: var(--j-gold);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem; font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+    .wager-card input[type="number"] {
+      width: 100%;
+      background: rgba(4,13,31,0.8);
+      border: 1.5px solid var(--j-gold);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--j-gold);
+      text-align: center;
+    }
+    .wager-range {
+      color: var(--silver);
+      font-size: 0.8rem;
+      margin-top: 0.4rem;
+    }
+    .wager-submit {
+      background: var(--j-gold);
+      color: #1a1a2e;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700; font-size: 1rem;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 0.7rem 1.5rem; border-radius: 8px;
+      border: none; cursor: pointer;
+      margin-top: 1rem;
+      width: 100%;
+    }
+    .wager-submit:hover { background: var(--j-gold-soft); }
+
+    /* ───── Round transition ───── */
+    .transition-card {
+      background: rgba(10,22,50,0.95);
+      border: 3px solid var(--j-gold);
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      text-align: center;
+      max-width: 540px;
+    }
+    .transition-card h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2.5rem; font-weight: 700;
+      color: var(--j-gold);
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .transition-card p {
+      color: var(--silver-light);
+      font-size: 1rem; line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ───── Game over ───── */
+    .gameover-card {
+      background: rgba(10,22,50,0.95);
+      border: 3px solid var(--j-gold);
+      border-radius: 14px;
+      padding: 2.5rem 2rem;
+      max-width: 620px;
+    }
+    .gameover-card h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2rem; font-weight: 700;
+      color: var(--j-gold);
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 0.4rem;
+      text-align: center;
+    }
+    .gameover-sub {
+      text-align: center;
+      color: var(--silver);
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+    .standings-row {
+      display: grid;
+      grid-template-columns: 40px 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.8rem 1rem;
+      background: rgba(4,13,31,0.6);
+      border: 1px solid rgba(244,196,48,0.1);
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+    }
+    .standings-row.winner {
+      border-color: var(--j-gold);
+      background: rgba(244,196,48,0.08);
+    }
+    .standings-rank {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.4rem; font-weight: 700;
+      color: var(--j-gold);
+      text-align: center;
+    }
+    .standings-name {
+      color: var(--white); font-weight: 600;
+    }
+    .standings-score {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.3rem; font-weight: 700;
+      color: var(--white);
+    }
+    .standings-score.negative { color: #f87171; }
+    .again-btn {
+      display: block; width: 100%;
+      background: var(--j-gold);
+      color: #1a1a2e;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700; font-size: 1.1rem;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 0.85rem; border-radius: 10px;
+      border: none; cursor: pointer;
+      margin-top: 1rem;
+    }
+    .again-btn:hover { background: var(--j-gold-soft); }
+
+    /* ───── How-to-play strip ───── */
+    .how-strip {
+      max-width: 1100px; margin: 1rem auto 0;
+      padding: 1rem 1.25rem;
+      background: rgba(10,22,50,0.4);
+      border: 1px solid rgba(74,158,255,0.1);
+      border-radius: 10px;
+      font-size: 0.84rem;
+      color: var(--silver);
+      line-height: 1.6;
+    }
+    .how-strip strong { color: var(--j-gold); }
+
+    /* ───── Responsive ───── */
+    @media (max-width: 760px) {
+      .j-board { gap: 3px; padding: 3px; }
+      .j-cat { min-height: 60px; font-size: 0.55rem; padding: 0.3rem 0.2rem; }
+      .j-cell { min-height: 60px; font-size: 1.05rem; }
+      .clue-card { padding: 1.25rem 1.25rem 1rem; }
+      .clue-text { font-size: 1.05rem; min-height: 120px; padding: 1rem 0; }
+      .round-bar { padding: 0.5rem 0.75rem; }
+      .score-pill { min-width: 95px; padding: 0.3rem 0.55rem; }
+      .score-name { font-size: 0.62rem; }
+      .score-value { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="dfars.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="federal-register.html">Federal Register</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="jeopardy-hero">
+  <span class="jeopardy-hero-tag">Study Game</span>
+  <h1>Contracting Jeopardy</h1>
+  <p>Three full rounds. Twelve categories. Over 300 clues on the Revolutionary FAR Overhaul, source selection, post-award, and the parts of the job that actually come up on the desk. Play solo to drill or hot-seat with coworkers.</p>
+  <div class="rfo-note">FAR references reflect the Revolutionary FAR Overhaul (RFO). Specific section numbers may shift as the overhaul continues.</div>
+</div>
+
+<div class="j-stage" id="jStage">
+  <!-- Start screen renders here by default; swapped for board, clue, etc. -->
+</div>
+
+<div class="how-strip" id="howStrip">
+  <strong>How to play.</strong> Pick a category and dollar value. Read the clue. Reveal the answer. Mark right (score added) or wrong (score subtracted). Finish the board, then on to Double Jeopardy (double values, two Daily Doubles). Finish that, then Final Jeopardy: wager first, clue second. Multi-player takes turns and each player self-scores on the honor system.
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="dfars.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script src="data/jeopardy-clues.js"></script>
+<script src="scripts/sounds.js"></script>
+<script src="scripts/jeopardy.js"></script>
+</body>
+</html>

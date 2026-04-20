@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Protest Roulette — draft a defensible source selection, then see whether a losing offeror's protest would survive GAO review. Training tool for contracting officers." />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-X2RXS78N7K');
+  </script>
+
+  <title>Protest Roulette | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+
+    /* Page background & hero */
+    body.pr-page { background: #040d1f; min-height: 100vh; }
+    .pr-hero { padding: 6rem 1.5rem 1.5rem; text-align: center; }
+    .pr-hero-tag {
+      display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25);
+      color: var(--accent); font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      padding: 0.3rem 1rem; border-radius: 100px; margin-bottom: 0.75rem;
+    }
+    .pr-hero h1 {
+      font-family: 'Rajdhani', sans-serif; font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 700;
+      color: #e2e8f0; margin-bottom: 0.6rem; letter-spacing: 0.5px;
+    }
+    .pr-hero p {
+      color: var(--silver); font-size: 1rem; max-width: 640px; margin: 0 auto; line-height: 1.65;
+    }
+
+    /* App container */
+    .pr-wrap { max-width: 860px; margin: 0 auto 3rem; padding: 0 1.25rem; }
+
+    /* Scoreboard */
+    .scoreboard {
+      display: flex; gap: 0.75rem; justify-content: center; margin-bottom: 1.5rem; flex-wrap: wrap;
+    }
+    .score-cell {
+      background: rgba(10,22,50,0.6); border: 1px solid rgba(74,158,255,0.15);
+      border-radius: 10px; padding: 0.6rem 1.2rem; min-width: 96px;
+      font-family: 'JetBrains Mono', monospace; text-align: center;
+    }
+    .score-cell .label {
+      font-family: 'Rajdhani', sans-serif; font-size: 0.65rem; color: #8aa4d0;
+      letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.1rem;
+    }
+    .score-cell .val {
+      font-size: 1.4rem; font-weight: 600; color: #fbbf24; line-height: 1;
+    }
+    .score-cell.streak .val.hot { color: #4a9eff; }
+
+    /* Cards */
+    .pr-card {
+      background: rgba(10,22,50,0.65); border: 1px solid rgba(74,158,255,0.15);
+      border-radius: 12px; padding: 1.5rem 1.75rem; margin-bottom: 1rem;
+    }
+
+    /* Scenario card */
+    .scenario-card { border-left: 3px solid #fbbf24; padding-left: 1.5rem; }
+    .scenario-card h2 {
+      font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; color: #fbbf24;
+      margin-bottom: 0.3rem; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .scenario-card .blurb { color: #d6dfec; font-size: 1.02rem; margin-bottom: 0.75rem; line-height: 1.55; }
+    .scenario-facts { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+    .fact {
+      font-family: 'JetBrains Mono', monospace; background: rgba(74,158,255,0.08);
+      border: 1px solid rgba(74,158,255,0.2); padding: 0.25rem 0.65rem;
+      border-radius: 4px; font-size: 0.76rem; color: #c8d4e0;
+    }
+    .fact.warn {
+      background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.3); color: #fbbf24;
+    }
+
+    /* Gates */
+    .gates-header {
+      font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; color: #8aa4d0;
+      letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .gate { margin-bottom: 1.1rem; }
+    .gate .q {
+      font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 600;
+      color: #e2e8f0; margin-bottom: 0.5rem;
+    }
+    .gate .options { display: flex; flex-direction: column; gap: 0.4rem; }
+    .gate .opt {
+      display: flex; align-items: center; background: rgba(20,40,80,0.4);
+      border: 1px solid rgba(74,158,255,0.15); padding: 0.6rem 0.95rem;
+      border-radius: 6px; cursor: pointer; transition: all 0.15s ease;
+      color: #e2e8f0; font-size: 0.92rem;
+    }
+    .gate .opt:hover { background: rgba(74,158,255,0.08); border-color: rgba(74,158,255,0.35); }
+    .gate .opt.selected {
+      background: rgba(251,191,36,0.1); border-color: rgba(251,191,36,0.5); color: #fbbf24; font-weight: 600;
+    }
+
+    /* Award bar */
+    .award-bar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 1.25rem; }
+    .award-bar .progress {
+      flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #8aa4d0;
+    }
+    .btn-award {
+      background: #fbbf24; color: #040d1f; border: none;
+      font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.75rem 1.75rem; border-radius: 6px; cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-award:disabled {
+      background: rgba(74,158,255,0.15); color: #6a7a94; cursor: not-allowed;
+    }
+    .btn-award:hover:not(:disabled) {
+      background: #fcd34d; transform: translateY(-1px);
+    }
+
+    /* Roulette reveal */
+    .roulette { text-align: center; padding: 1.75rem 1.5rem; }
+    .roulette .heading {
+      font-family: 'Rajdhani', sans-serif; font-size: 1rem; color: #8aa4d0;
+      letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .reel {
+      height: 80px; overflow: hidden; background: rgba(4,13,31,0.85);
+      border: 2px solid rgba(251,191,36,0.55); border-radius: 10px;
+      position: relative; margin: 0 auto; max-width: 560px;
+    }
+    .reel-inner { position: absolute; left: 0; right: 0; transition: transform 2.5s cubic-bezier(0.15, 0.85, 0.3, 1); }
+    .reel-item {
+      height: 80px; display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; font-weight: 600;
+      color: #fbbf24; padding: 0 1rem; text-align: center;
+    }
+    .reel::before, .reel::after {
+      content: ''; position: absolute; left: 0; right: 0; height: 20px; z-index: 2; pointer-events: none;
+    }
+    .reel::before { top: 0; background: linear-gradient(to bottom, rgba(10,22,50,1), transparent); }
+    .reel::after  { bottom: 0; background: linear-gradient(to top,   rgba(10,22,50,1), transparent); }
+
+    /* Verdict */
+    .verdict-card { text-align: center; padding: 1.75rem 1.5rem; border-width: 1.5px; }
+    .verdict-card.sustained {
+      border-color: rgba(239,68,68,0.55);
+      background: linear-gradient(180deg, rgba(239,68,68,0.08), rgba(10,22,50,0.7));
+    }
+    .verdict-card.denied {
+      border-color: rgba(74,222,128,0.5);
+      background: linear-gradient(180deg, rgba(74,222,128,0.08), rgba(10,22,50,0.7));
+    }
+    .verdict-card.dismissed {
+      border-color: rgba(74,158,255,0.55);
+      background: linear-gradient(180deg, rgba(74,158,255,0.08), rgba(10,22,50,0.7));
+    }
+    .verdict-label {
+      font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #8aa4d0; margin-bottom: 0.5rem;
+    }
+    .verdict-headline {
+      font-family: 'Rajdhani', sans-serif; font-size: 2.4rem; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase; line-height: 1; margin-bottom: 0.6rem;
+    }
+    .verdict-card.sustained .verdict-headline { color: #ef4444; }
+    .verdict-card.denied    .verdict-headline { color: #4ade80; }
+    .verdict-card.dismissed .verdict-headline { color: #4a9eff; }
+
+    .protest-narrative {
+      text-align: left; background: rgba(4,13,31,0.55); padding: 1rem 1.2rem;
+      border-radius: 8px; margin: 1.25rem 0 0.75rem;
+      font-size: 0.94rem; color: #d6dfec; line-height: 1.6;
+      border: 1px solid rgba(74,158,255,0.1);
+    }
+    .protester-line {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+      color: #8aa4d0; margin-bottom: 0.5rem; letter-spacing: 0.04em;
+    }
+    .gao-line {
+      font-family: 'Rajdhani', sans-serif; font-size: 0.92rem; color: #d6dfec;
+      letter-spacing: 0.03em; margin-top: 0.75rem; padding-top: 0.75rem;
+      border-top: 1px solid rgba(74,158,255,0.12);
+    }
+    .gao-line strong { color: #fbbf24; }
+
+    .lessons {
+      text-align: left; margin-top: 1rem; padding: 0.9rem 1.1rem;
+      background: rgba(251,191,36,0.05);
+      border-left: 2px solid rgba(251,191,36,0.45);
+      border-radius: 4px; font-size: 0.88rem; color: #d6c48a; line-height: 1.6;
+    }
+    .lessons strong { color: #fbbf24; }
+
+    .btn-continue {
+      margin-top: 1.5rem; background: transparent; color: #fbbf24;
+      border: 1.5px solid rgba(251,191,36,0.55);
+      font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.95rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.65rem 1.6rem; border-radius: 6px; cursor: pointer; transition: all 0.15s ease;
+    }
+    .btn-continue:hover { background: rgba(251,191,36,0.1); border-color: #fbbf24; }
+
+    .how-to {
+      margin-top: 1.5rem; padding: 1rem 1.2rem;
+      background: rgba(74,158,255,0.04);
+      border: 1px dashed rgba(74,158,255,0.25);
+      border-radius: 8px; color: #a7b3c7; font-size: 0.85rem; line-height: 1.6;
+    }
+    .how-to strong { color: #4a9eff; }
+
+    @media (max-width: 600px) {
+      .pr-hero { padding-top: 5rem; }
+      .pr-card { padding: 1.2rem 1.25rem; }
+      .verdict-headline { font-size: 1.9rem; }
+      .reel { height: 60px; }
+      .reel-item { height: 60px; font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body class="pr-page">
+
+<!-- NAV -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="dfars.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="federal-register.html">Federal Register</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="pr-hero">
+  <span class="pr-hero-tag">Intermediate · I-23</span>
+  <h1>Protest Roulette</h1>
+  <p>Draft a defensible source selection decision. Award the contract. See what the losing offeror files and what GAO does with it. Streak resets when a protest is sustained.</p>
+</div>
+
+<!-- APP -->
+<div class="pr-wrap">
+  <div class="scoreboard">
+    <div class="score-cell streak">
+      <div class="label">Streak</div>
+      <div class="val" id="streakVal">0</div>
+    </div>
+    <div class="score-cell">
+      <div class="label">Best</div>
+      <div class="val" id="bestVal">0</div>
+    </div>
+    <div class="score-cell">
+      <div class="label">Awards</div>
+      <div class="val" id="totalVal">0</div>
+    </div>
+  </div>
+
+  <div id="app"></div>
+
+  <div class="how-to">
+    <strong>How it works.</strong> Each round generates a procurement scenario. Work through the gates and pick how you structured the source selection. When you click Award, a losing offeror files a protest on a random ground. If your choices left them an opening, GAO sustains. Survive the protest to keep your streak alive.
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="dfars.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════
+   SCENARIO GENERATOR
+   ══════════════════════════════════════════════════════════════ */
+
+const PROC_TYPES = [
+  'IT managed services',
+  'cybersecurity services',
+  'facility maintenance',
+  'professional engineering services',
+  'vehicle maintenance',
+  'training services',
+  'logistics support services',
+  'custodial services',
+  'analytical consulting',
+  'technology refresh'
+];
+
+const VALUE_TIERS = [
+  { label: '$850K', val: 850000, complexity: 'mid' },
+  { label: '$1.8M', val: 1800000, complexity: 'mid' },
+  { label: '$4.2M', val: 4200000, complexity: 'mid' },
+  { label: '$12M', val: 12000000, complexity: 'high' },
+  { label: '$28M', val: 28000000, complexity: 'high' },
+  { label: '$65M', val: 65000000, complexity: 'high' }
+];
+
+const PROTESTER_NAMES = [
+  'Redline Systems, LLC',
+  'Argent Solutions, Inc.',
+  'Vanguard Logistics Group',
+  'Meridian Professional Services',
+  'Northgate Technical Services',
+  'Summit Contract Partners',
+  'Bastion Enterprise Solutions',
+  'Ironwood Consulting Group'
+];
+
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function pickRand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function generateScenario() {
+  const type = pickRand(PROC_TYPES);
+  const tier = pickRand(VALUE_TIERS);
+  const offerors = randInt(2, 5);
+  const flags = [];
+  if (Math.random() < 0.45) flags.push('incumbent');
+  if (Math.random() < 0.30) flags.push('set-aside');
+  if (Math.random() < 0.35) flags.push('close-prices');
+  if (Math.random() < 0.40) flags.push('technical-diff');
+  const protester = pickRand(PROTESTER_NAMES);
+
+  return {
+    type, tier, offerors, complexity: tier.complexity, flags, protester,
+    blurb: buildBlurb(type, tier, offerors, flags)
+  };
+}
+
+function buildBlurb(type, tier, offerors, flags) {
+  const parts = [];
+  parts.push(cap(type) + '. ' + tier.label + ' estimated value.');
+  parts.push(offerors + ' offerors in the competitive range.');
+  if (flags.includes('incumbent')) parts.push('The incumbent is competing.');
+  if (flags.includes('set-aside')) parts.push('Small business set-aside.');
+  if (flags.includes('close-prices')) parts.push('Prices are close across offerors.');
+  if (flags.includes('technical-diff')) parts.push('Offerors are clearly differentiated on the technical factors.');
+  return parts.join(' ');
+}
+
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+/* ══════════════════════════════════════════════════════════════
+   GATES
+   ══════════════════════════════════════════════════════════════ */
+
+const GATES = [
+  {
+    key: 'basis',
+    q: 'Source selection basis',
+    options: [
+      { v: 'tradeoff', label: 'Tradeoff / best value' },
+      { v: 'lpta', label: 'Lowest Price Technically Acceptable' }
+    ]
+  },
+  {
+    key: 'factors',
+    q: 'How closely did the evaluators stick to the solicited factors?',
+    options: [
+      { v: 'strict', label: 'Evaluated only what the solicitation disclosed' },
+      { v: 'slip', label: 'Considered an unstated sub-factor the TEB felt was important' }
+    ]
+  },
+  {
+    key: 'narrative',
+    q: 'Source selection decision document',
+    options: [
+      { v: 'thorough', label: 'Narrative compares specific proposal strengths, explains tradeoffs' },
+      { v: 'mechanical', label: 'Rolled up adjectival ratings with brief conclusions' }
+    ]
+  },
+  {
+    key: 'exchanges',
+    q: 'Exchanges (clarifications or negotiations)',
+    options: [
+      { v: 'all', label: 'Held with all offerors in the competitive range' },
+      { v: 'selective', label: 'Held only with the eventual awardee' },
+      { v: 'none', label: 'Did not hold exchanges' }
+    ]
+  },
+  {
+    key: 'award_rationale',
+    q: 'Award rationale in the SSDD',
+    options: [
+      { v: 'tradeoff-explicit', label: 'Explicit tradeoff tying price premium to specific technical benefits' },
+      { v: 'highest-tech', label: 'Awarded to the highest technical rating, price treated as secondary' },
+      { v: 'lowest-price', label: 'Awarded to the lowest price among acceptable offerors' }
+    ]
+  }
+];
+
+const CONDITIONAL_GATES = {
+  'incumbent': {
+    key: 'oci',
+    q: 'Incumbent is competing. OCI review?',
+    options: [
+      { v: 'investigate', label: 'Investigated OCI; documented no conflict or mitigation plan' },
+      { v: 'skip', label: 'Skipped the formal OCI review' }
+    ]
+  },
+  'set-aside': {
+    key: 'size',
+    q: 'Small business set-aside. Awardee size verification?',
+    options: [
+      { v: 'verify', label: 'Verified size status in SAM.gov and documented' },
+      { v: 'assume', label: 'Assumed the SAM.gov representation was accurate; did not document' }
+    ]
+  }
+};
+
+/* ══════════════════════════════════════════════════════════════
+   PROTEST GROUNDS
+   ══════════════════════════════════════════════════════════════ */
+
+const PROTEST_GROUNDS = [
+  {
+    id: 'unstated',
+    name: 'Unstated Evaluation Criteria',
+    allegation: (s) => s.protester + ' alleges that the evaluation team applied a sub-factor the solicitation never disclosed.',
+    triggered: (p) => p.factors === 'slip',
+    sustain_text: 'The record shows an unstated factor materially affected the source selection. Agencies must evaluate offerors only on criteria disclosed in the solicitation.',
+    deny_text: 'The record shows the evaluators considered only the disclosed factors. The allegation of unstated criteria is not supported.'
+  },
+  {
+    id: 'tradeoff-flawed',
+    name: 'Unreasonable Best Value Analysis',
+    allegation: (s) => s.protester + ' argues the source selection authority called it a tradeoff but awarded mechanically to the highest technical rating without analyzing the price premium.',
+    triggered: (p) => p.basis === 'tradeoff' && (p.narrative === 'mechanical' || p.award_rationale === 'highest-tech'),
+    sustain_text: 'A tradeoff decision must show comparative analysis. The SSDD relies on adjectival ratings rather than the underlying merits of the proposals, and does not explain why the price premium was justified.',
+    deny_text: 'The SSDD contains the comparative analysis the tradeoff process requires. The award rationale walks through specific technical strengths and weighs them against price.'
+  },
+  {
+    id: 'unequal-exchanges',
+    name: 'Unequal Exchanges',
+    allegation: (s) => s.protester + ' alleges the agency held meaningful exchanges with the eventual awardee but not with other offerors in the competitive range.',
+    triggered: (p) => p.exchanges === 'selective',
+    sustain_text: 'When an agency opens exchanges with offerors in the competitive range, it must treat all offerors equally. The record shows substantive exchanges with only one offeror.',
+    deny_text: 'Exchanges were conducted with all offerors in the competitive range on equal footing. No disparate treatment is shown.'
+  },
+  {
+    id: 'inadequate-doc',
+    name: 'Inadequate Documentation',
+    allegation: (s) => s.protester + ' argues the source selection decision is not supported by the record.',
+    triggered: (p) => p.narrative === 'mechanical',
+    sustain_text: 'The SSDD does not contain the analysis necessary for meaningful review. Adjectival ratings alone do not support a best-value award.',
+    deny_text: 'The SSDD documents the analysis with enough specificity for GAO to review the agency\'s judgment.'
+  },
+  {
+    id: 'oci',
+    name: 'Unmitigated Organizational Conflict of Interest',
+    allegation: (s) => s.protester + ' alleges the incumbent had an unmitigated OCI that gave it unfair access to source selection sensitive information.',
+    triggered: (p, s) => s.flags.includes('incumbent') && p.oci === 'skip',
+    sustain_text: 'The contracting officer is required to identify and mitigate potential OCIs. The record contains no meaningful OCI investigation despite an incumbent offeror.',
+    deny_text: 'The contracting officer conducted a reasonable OCI investigation and documented the conclusion in the record.'
+  },
+  {
+    id: 'size',
+    name: 'Awardee Size Status',
+    allegation: (s) => s.protester + ' challenges the awardee\'s small business size representation.',
+    triggered: (p, s) => s.flags.includes('set-aside') && p.size === 'assume',
+    sustain_text: 'When facts put the awardee\'s size status in question, the contracting officer must make a size determination. The record contains no such analysis.',
+    deny_text: 'Size status was verified in SAM.gov and the verification is documented in the record.'
+  },
+  {
+    id: 'lpta-misapply',
+    name: 'LPTA Inappropriately Applied',
+    allegation: (s) => s.protester + ' argues LPTA was the wrong source selection method for a requirement where technical differentiators drive value.',
+    triggered: (p, s) => p.basis === 'lpta' && s.complexity === 'high' && s.flags.includes('technical-diff'),
+    sustain_text: 'The agency applied LPTA to a requirement where technical differentiation clearly drives value. The solicitation did not give offerors a meaningful opportunity to compete on the quality of their approach.',
+    deny_text: 'The agency had a reasonable basis for selecting LPTA and the acceptability criteria were clear and measurable.'
+  }
+];
+
+/* ══════════════════════════════════════════════════════════════
+   STATE + SCORE
+   ══════════════════════════════════════════════════════════════ */
+
+const state = {
+  scenario: null,
+  picks: {},
+  phase: 'playing',
+  activeGates: []
+};
+
+const SCORE_KEY = 'kthq_protest_roulette_v1';
+function loadScore() {
+  try { return JSON.parse(localStorage.getItem(SCORE_KEY)) || { streak: 0, best: 0, total: 0 }; }
+  catch (e) { return { streak: 0, best: 0, total: 0 }; }
+}
+function saveScore(s) { try { localStorage.setItem(SCORE_KEY, JSON.stringify(s)); } catch (e) {} }
+function paintScore() {
+  const s = loadScore();
+  document.getElementById('streakVal').textContent = s.streak;
+  document.getElementById('bestVal').textContent = s.best;
+  document.getElementById('totalVal').textContent = s.total;
+  const sv = document.getElementById('streakVal');
+  if (s.streak >= 5) sv.classList.add('hot'); else sv.classList.remove('hot');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   GAME LOOP
+   ══════════════════════════════════════════════════════════════ */
+
+function newRound() {
+  state.scenario = generateScenario();
+  state.picks = {};
+  state.phase = 'playing';
+  state.activeGates = [...GATES];
+  state.scenario.flags.forEach(f => {
+    if (CONDITIONAL_GATES[f]) state.activeGates.push(CONDITIONAL_GATES[f]);
+  });
+  render();
+}
+
+function renderScenarioCard() {
+  const s = state.scenario;
+  const wrap = document.createElement('div');
+  wrap.className = 'pr-card scenario-card';
+  const h = document.createElement('h2');
+  h.textContent = 'This procurement';
+  wrap.appendChild(h);
+  const blurb = document.createElement('div');
+  blurb.className = 'blurb';
+  blurb.textContent = s.blurb;
+  wrap.appendChild(blurb);
+  const facts = document.createElement('div');
+  facts.className = 'scenario-facts';
+  facts.innerHTML =
+    '<div class="fact">Value: ' + s.tier.label + '</div>' +
+    '<div class="fact">Offerors: ' + s.offerors + '</div>' +
+    '<div class="fact">Complexity: ' + s.complexity + '</div>' +
+    (s.flags.includes('incumbent') ? '<div class="fact warn">Incumbent competing</div>' : '') +
+    (s.flags.includes('set-aside') ? '<div class="fact warn">Set-aside</div>' : '') +
+    (s.flags.includes('technical-diff') ? '<div class="fact">Technical differentiators</div>' : '') +
+    (s.flags.includes('close-prices') ? '<div class="fact">Close pricing</div>' : '');
+  wrap.appendChild(facts);
+  return wrap;
+}
+
+function renderGates() {
+  const wrap = document.createElement('div');
+  wrap.className = 'pr-card';
+  const h = document.createElement('div');
+  h.className = 'gates-header';
+  h.textContent = 'Award package';
+  wrap.appendChild(h);
+
+  state.activeGates.forEach(g => {
+    const gateDiv = document.createElement('div');
+    gateDiv.className = 'gate';
+    const q = document.createElement('div');
+    q.className = 'q';
+    q.textContent = g.q;
+    gateDiv.appendChild(q);
+    const opts = document.createElement('div');
+    opts.className = 'options';
+    g.options.forEach(o => {
+      const btn = document.createElement('label');
+      btn.className = 'opt' + (state.picks[g.key] === o.v ? ' selected' : '');
+      btn.textContent = o.label;
+      btn.onclick = () => {
+        state.picks[g.key] = o.v;
+        render();
+      };
+      opts.appendChild(btn);
+    });
+    gateDiv.appendChild(opts);
+    wrap.appendChild(gateDiv);
+  });
+
+  const bar = document.createElement('div');
+  bar.className = 'award-bar';
+  const filled = state.activeGates.filter(g => state.picks[g.key] != null).length;
+  const total = state.activeGates.length;
+  const progress = document.createElement('div');
+  progress.className = 'progress';
+  progress.textContent = filled + ' / ' + total + ' gates completed';
+  bar.appendChild(progress);
+  const award = document.createElement('button');
+  award.className = 'btn-award';
+  award.textContent = 'Award \u25B8';
+  award.disabled = filled < total;
+  award.onclick = executeAward;
+  bar.appendChild(award);
+  wrap.appendChild(bar);
+  return wrap;
+}
+
+function executeAward() {
+  state.phase = 'rolling';
+  render();
+  setTimeout(() => resolveVerdict(), 2700);
+}
+
+function determineVerdict() {
+  const { scenario, picks } = state;
+  const openings = PROTEST_GROUNDS.filter(g => g.triggered(picks, scenario));
+  const nonOpenings = PROTEST_GROUNDS.filter(g => !g.triggered(picks, scenario));
+  const applicableNon = nonOpenings.filter(g => !g.gateFlag || scenario.flags.includes(g.gateFlag));
+
+  let ground, sustained, dismissed = false;
+  if (openings.length > 0 && Math.random() < 0.85) {
+    ground = pickRand(openings);
+    sustained = true;
+  } else {
+    ground = pickRand(applicableNon.length ? applicableNon : PROTEST_GROUNDS);
+    sustained = false;
+    dismissed = Math.random() < 0.25;
+  }
+  return { ground, sustained, dismissed };
+}
+
+function resolveVerdict() {
+  state.phase = 'verdict';
+  state.verdict = determineVerdict();
+
+  const score = loadScore();
+  score.total += 1;
+  if (state.verdict.sustained) {
+    score.streak = 0;
+  } else {
+    score.streak += 1;
+    if (score.streak > score.best) score.best = score.streak;
+  }
+  saveScore(score);
+  paintScore();
+  render();
+}
+
+function renderRoulette() {
+  const wrap = document.createElement('div');
+  wrap.className = 'pr-card roulette';
+  const h = document.createElement('div');
+  h.className = 'heading';
+  h.textContent = 'Protest filed. Drawing ground\u2026';
+  wrap.appendChild(h);
+
+  const reel = document.createElement('div');
+  reel.className = 'reel';
+  const inner = document.createElement('div');
+  inner.className = 'reel-inner';
+
+  const names = PROTEST_GROUNDS.map(g => g.name);
+  const reelItems = [];
+  for (let i = 0; i < 25; i++) reelItems.push(pickRand(names));
+  reelItems.forEach(n => {
+    const it = document.createElement('div');
+    it.className = 'reel-item';
+    it.textContent = n;
+    inner.appendChild(it);
+  });
+  reel.appendChild(inner);
+  wrap.appendChild(reel);
+
+  requestAnimationFrame(() => {
+    const itemHeight = 80;
+    const stopAt = (reelItems.length - 1) * itemHeight;
+    inner.style.transform = 'translateY(-' + stopAt + 'px)';
+  });
+
+  return wrap;
+}
+
+function renderVerdict() {
+  const { ground, sustained, dismissed } = state.verdict;
+  const wrap = document.createElement('div');
+  wrap.className = 'pr-card verdict-card ' + (sustained ? 'sustained' : dismissed ? 'dismissed' : 'denied');
+
+  const label = document.createElement('div');
+  label.className = 'verdict-label';
+  label.textContent = 'GAO Decision';
+  wrap.appendChild(label);
+
+  const headline = document.createElement('div');
+  headline.className = 'verdict-headline';
+  headline.textContent = sustained ? 'Sustained' : (dismissed ? 'Dismissed' : 'Denied');
+  wrap.appendChild(headline);
+
+  const groundName = document.createElement('div');
+  groundName.style.cssText = 'font-family:Rajdhani,sans-serif;font-size:1.2rem;color:#e2e8f0;letter-spacing:0.04em;margin-bottom:0.5rem;';
+  groundName.textContent = ground.name;
+  wrap.appendChild(groundName);
+
+  const narrative = document.createElement('div');
+  narrative.className = 'protest-narrative';
+  const pLine = document.createElement('div');
+  pLine.className = 'protester-line';
+  pLine.textContent = '\u25B8 ' + ground.allegation(state.scenario);
+  narrative.appendChild(pLine);
+  const gLine = document.createElement('div');
+  gLine.className = 'gao-line';
+  gLine.innerHTML = '<strong>GAO: </strong>' + (sustained ? ground.sustain_text : (dismissed ? 'The protest was dismissed on procedural grounds before reaching the merits.' : ground.deny_text));
+  narrative.appendChild(gLine);
+  wrap.appendChild(narrative);
+
+  const lessons = renderLessons();
+  if (lessons) wrap.appendChild(lessons);
+
+  const btn = document.createElement('button');
+  btn.className = 'btn-continue';
+  btn.textContent = sustained ? 'Take the hit \u00B7 Next scenario' : 'Next scenario \u25B8';
+  btn.onclick = newRound;
+  wrap.appendChild(btn);
+
+  return wrap;
+}
+
+function renderLessons() {
+  const picks = state.picks;
+  const s = state.scenario;
+  const flags = [];
+  if (picks.factors === 'slip') flags.push('Slipping an unstated factor into evaluation is a common sustained GAO ground. If the factor matters, amend the solicitation.');
+  if (picks.narrative === 'mechanical') flags.push('SSDDs that roll up adjectival ratings without comparative narrative are the easiest protests to sustain.');
+  if (picks.exchanges === 'selective') flags.push('Once you open exchanges with anyone, hold them with all offerors in the competitive range.');
+  if (picks.basis === 'tradeoff' && picks.award_rationale === 'highest-tech') flags.push('A tradeoff award has to actually trade something off. Awarding straight to the highest technical rating reads as a disguised technical-only evaluation.');
+  if (picks.basis === 'lpta' && s.complexity === 'high' && s.flags.includes('technical-diff')) flags.push('LPTA works for simple, acceptance-based buys. For complex work with real technical variation, tradeoff is the defensible path.');
+  if (s.flags.includes('incumbent') && picks.oci === 'skip') flags.push('Incumbent competing means the OCI review gets documented, even if the conclusion is no conflict.');
+  if (s.flags.includes('set-aside') && picks.size === 'assume') flags.push('On set-asides, verify size status at award and put the verification in the file.');
+  if (flags.length === 0) return null;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'lessons';
+  wrap.innerHTML = '<strong>What this run exposed:</strong><br>\u2022 ' + flags.join('<br>\u2022 ');
+  return wrap;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RENDER
+   ══════════════════════════════════════════════════════════════ */
+
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  app.appendChild(renderScenarioCard());
+  if (state.phase === 'playing') {
+    app.appendChild(renderGates());
+  } else if (state.phase === 'rolling') {
+    app.appendChild(renderRoulette());
+  } else if (state.phase === 'verdict') {
+    app.appendChild(renderVerdict());
+  }
+}
+
+/* init */
+paintScore();
+newRound();
+</script>
+</body>
+</html>
