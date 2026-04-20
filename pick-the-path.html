@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Pick the Path — work a full acquisition scenario end-to-end. Each choice advances the strategy or flags a wrong turn with the reason. Training tool for contracting officers." />
+  <meta name="description" content="Pick the Path — work a full acquisition scenario end-to-end. Real branching consequences, multiple valid strategies, and endings that grade the file you built. Training tool for contracting officers." />
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
@@ -25,6 +25,7 @@
 
     body.pp-page { background: #040d1f; min-height: 100vh; }
 
+    /* ── Hero ───────────────────────────────────────────────────── */
     .pp-hero { padding: 6rem 1.5rem 1.5rem; text-align: center; }
     .pp-hero-tag {
       display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25);
@@ -35,28 +36,27 @@
       font-family: 'Rajdhani', sans-serif; font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 700;
       color: #e2e8f0; margin-bottom: 0.6rem; letter-spacing: 0.5px;
     }
-    .pp-hero p {
-      color: var(--silver); font-size: 1rem; max-width: 640px; margin: 0 auto; line-height: 1.65;
-    }
+    .pp-hero p { color: var(--silver); font-size: 1rem; max-width: 660px; margin: 0 auto; line-height: 1.65; }
 
-    .pp-wrap { max-width: 820px; margin: 0 auto 3rem; padding: 0 1.25rem; }
+    .pp-wrap { max-width: 880px; margin: 0 auto 3rem; padding: 0 1.25rem; }
 
     .pp-card {
       background: rgba(10,22,50,0.65); border: 1px solid rgba(74,158,255,0.15);
       border-radius: 12px; padding: 1.5rem 1.75rem; margin-bottom: 1rem;
     }
 
-    /* Scenario picker */
+    /* ── Scenario picker ────────────────────────────────────────── */
     .scenario-picker h2 {
       font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; font-weight: 600;
-      margin-bottom: 1.25rem; color: #fbbf24;
+      margin-bottom: 0.35rem; color: #fbbf24;
     }
+    .scenario-picker .subh { color: #a7b3c7; font-size: 0.9rem; margin-bottom: 1.25rem; line-height: 1.55; }
     .scenario-btn {
       display: block; width: 100%; text-align: left;
       background: rgba(20,40,80,0.45); border: 1px solid rgba(74,158,255,0.15);
-      color: #e2e8f0; padding: 1rem 1.2rem; border-radius: 10px;
+      color: #e2e8f0; padding: 1.1rem 1.25rem; border-radius: 10px;
       font-family: inherit; font-size: 1rem; cursor: pointer;
-      margin-bottom: 0.6rem; transition: all 0.15s ease;
+      margin-bottom: 0.7rem; transition: all 0.15s ease;
     }
     .scenario-btn:hover {
       background: rgba(74,158,255,0.08); border-color: rgba(74,158,255,0.35);
@@ -64,18 +64,26 @@
     }
     .scenario-btn strong {
       display: block; font-family: 'Rajdhani', sans-serif;
-      font-size: 1.15rem; font-weight: 600; color: #fbbf24; margin-bottom: 0.2rem;
+      font-size: 1.18rem; font-weight: 600; color: #fbbf24; margin-bottom: 0.25rem;
     }
-    .scenario-btn span { display: block; color: #a7b3c7; font-size: 0.9rem; }
+    .scenario-btn .sb-sub { display: block; color: #c8d4e0; font-size: 0.9rem; line-height: 1.5; margin-bottom: 0.5rem; }
+    .scenario-btn .sb-meta {
+      display: inline-flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.15rem;
+    }
+    .scenario-btn .sb-meta span {
+      background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.2);
+      color: #c8d4e0; font-size: 0.72rem; padding: 0.18rem 0.55rem; border-radius: 999px;
+      letter-spacing: 0.02em;
+    }
 
-    /* Scenario header (persists across steps) */
-    .scenario-header { border-left: 3px solid #fbbf24; padding-left: 1rem; margin-bottom: 1.2rem; }
+    /* ── Scenario header ────────────────────────────────────────── */
+    .scenario-header { border-left: 3px solid #fbbf24; padding-left: 1rem; margin-bottom: 1.25rem; }
     .scenario-header h2 {
       font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; font-weight: 600;
       color: #fbbf24; margin-bottom: 0.4rem;
     }
-    .scenario-header p { color: #d6dfec; font-size: 0.95rem; line-height: 1.55; }
-    .facts { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.85rem; }
+    .scenario-header p { color: #d6dfec; font-size: 0.95rem; line-height: 1.6; }
+    .facts { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.9rem; }
     .fact {
       background: rgba(74,158,255,0.08); border: 1px solid rgba(74,158,255,0.22);
       padding: 0.28rem 0.7rem; border-radius: 999px;
@@ -83,51 +91,65 @@
     }
     .fact strong { color: #fbbf24; margin-right: 0.3rem; font-weight: 600; }
 
-    /* Step */
+    /* ── Decision breadcrumb ────────────────────────────────────── */
+    .path-trail {
+      margin: 0 0 1rem; padding: 0.85rem 1rem;
+      background: rgba(10,22,50,0.4); border: 1px solid rgba(74,158,255,0.1);
+      border-radius: 8px;
+    }
+    .path-trail-label {
+      font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; font-weight: 600;
+      color: #8aa4d0; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .path-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .path-chip {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25);
+      color: #d6dfec; font-size: 0.8rem; padding: 0.25rem 0.65rem; border-radius: 6px;
+    }
+    .path-chip-k { color: #8aa4d0; font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; }
+    .path-chip-v { color: #e2e8f0; font-weight: 500; }
+    .path-empty { color: #6f7d96; font-size: 0.85rem; font-style: italic; }
+
+    /* ── Step + options ─────────────────────────────────────────── */
     .step-counter {
-      font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; font-weight: 600;
-      color: #8aa4d0; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.5rem;
+      font-family: 'Rajdhani', sans-serif; font-size: 0.76rem; font-weight: 600;
+      color: #8aa4d0; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.5rem;
     }
     .step-question {
       font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 600;
-      color: #e2e8f0; margin-bottom: 1rem; line-height: 1.3;
+      color: #e2e8f0; margin-bottom: 0.85rem; line-height: 1.3;
     }
     .step-hint {
-      font-size: 0.9rem; color: #a7b3c7; margin-bottom: 1rem;
+      font-size: 0.88rem; color: #a7b3c7; margin-bottom: 1rem;
       padding: 0.75rem 1rem; background: rgba(74,158,255,0.05);
-      border-left: 2px solid rgba(74,158,255,0.4); border-radius: 4px;
+      border-left: 2px solid rgba(74,158,255,0.4); border-radius: 4px; line-height: 1.55;
     }
+    .step-hint strong { color: #4a9eff; }
 
-    .options { display: flex; flex-direction: column; gap: 0.5rem; }
+    .options { display: flex; flex-direction: column; gap: 0.55rem; }
     .option {
       display: block; width: 100%; text-align: left;
-      background: rgba(20,40,80,0.4); border: 1px solid rgba(74,158,255,0.15);
-      color: #e2e8f0; padding: 0.85rem 1.1rem; border-radius: 8px;
-      font-family: inherit; font-size: 0.96rem; cursor: pointer; transition: all 0.15s ease;
+      background: rgba(20,40,80,0.4); border: 1px solid rgba(74,158,255,0.18);
+      color: #e2e8f0; padding: 0.9rem 1.1rem; border-radius: 8px;
+      font-family: inherit; font-size: 0.95rem; line-height: 1.4; cursor: pointer;
+      transition: all 0.15s ease;
     }
-    .option:hover:not(:disabled) {
-      background: rgba(74,158,255,0.08); border-color: rgba(74,158,255,0.35);
+    .option:hover {
+      background: rgba(74,158,255,0.08); border-color: rgba(74,158,255,0.4);
+      transform: translateX(2px);
     }
-    .option:disabled { cursor: default; opacity: 0.55; }
-    .option.correct { background: rgba(74,222,128,0.15); border-color: rgba(74,222,128,0.5); }
-    .option.incorrect { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.4); }
+    .option .opt-tag {
+      display: inline-block; font-size: 0.68rem; color: #8aa4d0;
+      letter-spacing: 0.1em; text-transform: uppercase; margin-right: 0.5rem;
+    }
 
-    .feedback {
-      margin-top: 1rem; padding: 0.95rem 1.15rem; border-radius: 8px;
-      font-size: 0.94rem; line-height: 1.6;
+    .controls {
+      margin-top: 1.25rem; display: flex; gap: 0.75rem; justify-content: space-between; align-items: center; flex-wrap: wrap;
     }
-    .feedback.correct {
-      background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.3); color: #d6f5e3;
-    }
-    .feedback.incorrect {
-      background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.3); color: #fadada;
-    }
-    .feedback strong { color: inherit; font-weight: 600; }
-
-    .controls { margin-top: 1.1rem; display: flex; gap: 0.75rem; justify-content: space-between; align-items: center; }
     .btn-primary {
       background: #fbbf24; color: #040d1f; border: none;
-      font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.95rem;
+      font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.92rem;
       letter-spacing: 0.08em; text-transform: uppercase;
       padding: 0.65rem 1.4rem; border-radius: 6px; cursor: pointer;
       transition: all 0.15s ease;
@@ -136,39 +158,67 @@
     .btn-secondary {
       background: transparent; color: #a7b3c7;
       border: 1px solid rgba(74,158,255,0.3);
-      font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 0.88rem;
-      letter-spacing: 0.05em; text-transform: uppercase;
-      padding: 0.55rem 1rem; border-radius: 6px; cursor: pointer; transition: all 0.15s ease;
+      font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 0.82rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; transition: all 0.15s ease;
     }
     .btn-secondary:hover { color: #e2e8f0; border-color: rgba(251,191,36,0.4); }
 
-    /* Summary */
-    .summary h2 {
-      font-family: 'Rajdhani', sans-serif; font-size: 1.7rem; color: #fbbf24; margin-bottom: 0.5rem;
+    /* ── Ending card ────────────────────────────────────────────── */
+    .ending-card {
+      border-radius: 14px; padding: 1.75rem 1.9rem;
+      background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.2);
+      margin-bottom: 1rem;
     }
-    .summary .lead { color: #d6dfec; margin-bottom: 1.5rem; font-size: 1rem; line-height: 1.55; }
-    .summary-block { margin-bottom: 1.4rem; }
-    .summary-block h3 {
-      font-family: 'Rajdhani', sans-serif; font-size: 1rem; color: #8aa4d0;
-      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem;
-    }
-    .summary-block p { color: #d6dfec; line-height: 1.6; }
+    .ending-card.clean   { border-color: rgba(74,222,128,0.4); background: linear-gradient(180deg, rgba(74,222,128,0.05), rgba(10,22,50,0.7)); }
+    .ending-card.heavy   { border-color: rgba(74,158,255,0.45); background: linear-gradient(180deg, rgba(74,158,255,0.06), rgba(10,22,50,0.7)); }
+    .ending-card.risky   { border-color: rgba(249,115,22,0.5); background: linear-gradient(180deg, rgba(249,115,22,0.06), rgba(10,22,50,0.7)); }
+    .ending-card.deadend { border-color: rgba(239,68,68,0.45); background: linear-gradient(180deg, rgba(239,68,68,0.06), rgba(10,22,50,0.7)); }
 
-    .path-list { list-style: none; padding: 0; }
-    .path-list li {
-      padding: 0.5rem 0 0.5rem 1.3rem; position: relative;
-      border-left: 2px solid rgba(74,158,255,0.25);
-      margin-left: 0.3rem; color: #c8d4e0; font-size: 0.92rem;
+    .verdict-badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.78rem;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      padding: 0.3rem 0.85rem; border-radius: 999px; margin-bottom: 0.85rem;
     }
-    .path-list li:before {
-      content: ''; position: absolute; left: -6px; top: 0.9rem;
+    .verdict-badge.clean   { color: #4ade80; background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.35); }
+    .verdict-badge.heavy   { color: #7cb7ff; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.35); }
+    .verdict-badge.risky   { color: #fb923c; background: rgba(249,115,22,0.1); border: 1px solid rgba(249,115,22,0.4); }
+    .verdict-badge.deadend { color: #f87171; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.4); }
+
+    .ending-title {
+      font-family: 'Rajdhani', sans-serif; font-size: 1.8rem; font-weight: 700;
+      color: #fbbf24; margin-bottom: 0.7rem;
+    }
+    .ending-narrative { color: #d6dfec; font-size: 1rem; line-height: 1.65; margin-bottom: 1.25rem; }
+
+    .section-label {
+      font-family: 'Rajdhani', sans-serif; font-size: 0.78rem; font-weight: 600;
+      color: #8aa4d0; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .file-review { list-style: none; padding: 0; margin-bottom: 1.25rem; }
+    .file-review li {
+      padding: 0.6rem 0 0.6rem 1.4rem; position: relative;
+      border-left: 2px solid rgba(74,158,255,0.22);
+      margin-left: 0.3rem; color: #c8d4e0; font-size: 0.93rem; line-height: 1.55;
+    }
+    .file-review li:before {
+      content: ''; position: absolute; left: -6px; top: 0.95rem;
       width: 10px; height: 10px; border-radius: 50%; background: #fbbf24;
     }
-    .path-list li strong {
-      display: block; color: #e2e8f0; font-size: 0.84rem;
-      font-weight: 600; margin-bottom: 0.15rem;
+    .file-review li strong {
+      display: block; color: #e2e8f0; font-size: 0.85rem;
+      font-weight: 600; margin-bottom: 0.15rem; letter-spacing: 0.02em;
     }
 
+    .counterfactual {
+      padding: 0.9rem 1.1rem; border-radius: 8px;
+      background: rgba(251,191,36,0.05); border: 1px dashed rgba(251,191,36,0.25);
+      color: #d6dfec; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.25rem;
+    }
+    .counterfactual strong { color: #fbbf24; }
+
+    /* ── Disclaimer ─────────────────────────────────────────────── */
     .disclaimer {
       margin-top: 1.5rem; padding: 0.9rem 1.1rem;
       background: rgba(74,158,255,0.04);
@@ -181,6 +231,7 @@
       .pp-hero { padding-top: 5rem; }
       .pp-card { padding: 1.2rem 1.25rem; }
       .step-question { font-size: 1.15rem; }
+      .ending-title { font-size: 1.4rem; }
     }
   </style>
 </head>
@@ -220,9 +271,9 @@
 
 <!-- HERO -->
 <div class="pp-hero">
-  <span class="pp-hero-tag">Intermediate · I-24</span>
+  <span class="pp-hero-tag">Intermediate · I-23</span>
   <h1>Pick the Path</h1>
-  <p>Work a scenario end-to-end. Each decision advances the acquisition strategy or flags a wrong turn with the reason. At the end, you get the full strategy with your decision chain and what gets written.</p>
+  <p>Work a scenario end-to-end. Your early choices change what questions come next and what endings are reachable. There is more than one good strategy, and more than one way to walk into trouble.</p>
 </div>
 
 <!-- APP -->
@@ -230,7 +281,7 @@
   <div id="app"></div>
 
   <div class="disclaimer">
-    <strong>Note.</strong> FAR references reflect the Revolutionary FAR Overhaul. Specific section numbers may shift as the overhaul continues. Use the scenarios to practice the decision pattern, not to quote section numbers verbatim.
+    <strong>Note.</strong> FAR references reflect the Revolutionary FAR Overhaul. Use these scenarios to practice the decision pattern and the shape of tradeoffs, not to quote section numbers verbatim. Thresholds and ceiling values are the ones in effect at the time of writing.
   </div>
 </div>
 
@@ -257,183 +308,739 @@
 
 <script src="main.js"></script>
 <script>
-/* ─────────────────────────────────────────────────────────────
-   Scenarios: each defines a starting brief and a linear chain of
-   decision steps. Every step has options with teaching feedback.
-   ───────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────
+   PICK THE PATH — node-graph engine
+   Each scenario is a directed graph. Options route to another node
+   or to an ending. Some endings are computed from accumulated flags
+   at the terminal node. Multiple valid strategies exist; the ending
+   grades the file you built.
+   ──────────────────────────────────────────────────────────────── */
 
 const SCENARIOS = [
+  /* ══════════════ SCENARIO 1 ══════════════ */
   {
-    id: 'commercial-software',
-    title: 'Data analytics software subscription',
-    setup: 'Your program office wants a 3-year commercial data-analytics subscription. The current vendor is one of several in the market. Estimated value is $1.2M total. Requirement is stable and well-defined. Timeline is normal (no urgency).',
+    id: 'saas-analytics',
+    title: 'Data analytics SaaS subscription',
+    tagline: '$1.2M, 3-year, commercial market, PM wants the incumbent',
+    meta: ['Part 12', 'Competition', 'Set-aside', 'Source selection'],
+    setup: 'Your program office has used DataStack for two years. The analyst team is comfortable with it. The PM pulled you aside and said "just renew it." Market research shows four credible vendors sell comparable SaaS analytics platforms to Fortune 500 and federal buyers. Estimated value: $1.2M over three years. Requirement is stable, timeline is normal.',
     facts: [
-      { k: 'Value', v: '$1.2M (3-year)' },
-      { k: 'Type', v: 'Commercial COTS' },
-      { k: 'Market', v: 'Multiple vendors' },
-      { k: 'Urgency', v: 'Normal' }
+      { k: 'Value', v: '$1.2M / 3 yrs' },
+      { k: 'Type', v: 'SaaS analytics' },
+      { k: 'Market', v: '4+ vendors' },
+      { k: 'Urgency', v: 'Normal' },
+      { k: 'Pressure', v: 'PM wants incumbent' }
     ],
-    steps: [
-      {
-        q: 'Is this a commercial product or service under FAR Part 2?',
+    entryNode: 'commercial_det',
+    nodes: {
+      commercial_det: {
+        q: 'First decision: is this a commercial product under FAR Part 2?',
+        hint: 'The commercial determination cascades through everything. Get it wrong in either direction and you either lose streamlined procedures or pick up a clause set you do not need.',
         options: [
-          { label: 'Yes — commercial item, widely sold to the general public and to the government', advance: true,
-            fb: 'Correct. Because it is commercial, Part 12 procedures apply. That decision cascades through the rest of the strategy: you will use 52.212-series clauses, the commercial SF 1449 form family, and you will not run a Part 15 source selection the way you would for a non-commercial service.' },
-          { label: 'No — government-specific, non-commercial', advance: false,
-            fb: 'A stable off-the-shelf subscription sold to private-sector buyers is the textbook Part 2 commercial definition. If you treat it as non-commercial you lose access to the Part 12 procedures and end up with far more clauses and overhead than the buy needs.' }
+          { label: 'Commercial — sold to private and federal buyers under standard EULA terms',
+            chip: { k: 'Commercial', v: 'Yes' },
+            set: { commercial: true },
+            goto: 'framework' },
+          { label: 'Non-commercial — government will use it for analyst workflows and that makes it government-unique',
+            chip: { k: 'Commercial', v: 'No' },
+            set: { commercial: false },
+            goto: 'noncomm_trap' },
+          { label: 'Run market research first, then decide',
+            chip: { k: 'Approach', v: 'MR first' },
+            set: { did_mr: true },
+            goto: 'market_research' }
         ]
       },
-      {
-        q: 'At $1.2M, which procedural framework fits?',
-        hint: 'Under the RFO, Part 12 commercial procedures extend up to $9M for the streamlined test-program path, well above this buy.',
+      market_research: {
+        q: 'Market research comes back: four vendors sell comparable SaaS platforms on standard commercial terms. No government-unique features required. Call it now.',
         options: [
-          { label: 'Part 13 simplified procedures (under SAT)', advance: false,
-            fb: 'SAT for normal buys is $250K. At $1.2M you are above SAT, so the standard Part 13 simplified path does not apply. The RFO also narrowed the everyday role of Part 13 — most sub-SAT commercial work now runs under Part 12 directly.' },
-          { label: 'Part 12 commercial procedures using simplified procedures for commercial items (up to $9M)', advance: true,
-            fb: 'Yes. The streamlined commercial path is your sweet spot here. You get Part 12 clauses plus simplified procedures without having to run a full Part 15 source selection. Solicitation vehicle is an RFQ on an SF 1449.' },
-          { label: 'Part 15 full source selection', advance: false,
-            fb: 'Part 15 works, but it is heavy for a $1.2M commercial subscription with stable requirements. The RFO pushes you toward the lighter commercial path whenever the buy qualifies.' }
+          { label: 'Commercial item',
+            chip: { k: 'Commercial', v: 'Yes' },
+            set: { commercial: true },
+            goto: 'framework' },
+          { label: 'Still non-commercial — I want the heavier clause protection',
+            chip: { k: 'Commercial', v: 'No (overcautious)' },
+            set: { commercial: false, overcaution: true },
+            goto: 'noncomm_trap' }
         ]
       },
-      {
-        q: 'Competition strategy?',
+      noncomm_trap: {
+        q: 'You declared this non-commercial. At $1.2M that puts you in a Part 15 source selection with the full non-commercial clause set. Proceed or reconsider?',
+        hint: 'The facts point commercial. Declaring non-commercial is not illegal but it imposes real cost: longer PALT, more clauses, heavier administration. This is where overcaution becomes a problem.',
         options: [
-          { label: 'Sole source to the incumbent', advance: false,
-            fb: 'Multiple vendors exist and the requirement is stable. A sole-source action would need a Part 6 exception and a written justification, neither of which is supported by these facts.' },
-          { label: 'Full and open competition via RFQ', advance: true,
-            fb: 'Multiple vendors and a stable requirement point to competed RFQ. That is also the posture that best protects the award from a protest.' },
-          { label: 'Set-aside analysis first, then decide', advance: 'alt',
-            fb: 'Not wrong. Before picking a competition path you owe a small-business analysis under Part 19. For this preview we are assuming the market research showed no small-business rule-of-two. In real life you would document that first.' }
+          { label: 'Proceed under Part 15 as non-commercial',
+            chip: { k: 'Framework', v: 'Part 15 (noncomm)' },
+            set: { framework: 'p15_noncomm' },
+            goto: 'ending:noncomm_misdet' },
+          { label: 'Reconsider — treat it as commercial after all',
+            chip: { k: 'Reconsidered', v: 'Commercial' },
+            set: { commercial: true, reconsidered: true },
+            goto: 'framework' }
         ]
       },
-      {
+      framework: {
+        q: 'Commercial item confirmed. At $1.2M, which procedural framework?',
+        hint: 'Under the RFO, commercial simplified procedures reach $9M. SAT for normal buys is $250K. Pick the lightest path the facts support.',
+        options: [
+          { label: 'Part 13 simplified procedures (under SAT)',
+            chip: { k: 'Framework', v: 'Part 13' },
+            set: { framework: 'p13' },
+            goto: 'ending:over_sat' },
+          { label: 'Part 12 simplified for commercial items ($9M ceiling)',
+            chip: { k: 'Framework', v: 'Part 12 simp.' },
+            set: { framework: 'p12_simp' },
+            goto: 'vehicle' },
+          { label: 'Part 12 wrapped in a full Part 15 source selection',
+            chip: { k: 'Framework', v: 'Part 12+15' },
+            set: { framework: 'p12_p15', heavy: true },
+            goto: 'vehicle' },
+          { label: 'Order off an existing GSA MAS contract',
+            chip: { k: 'Framework', v: 'GSA MAS' },
+            set: { framework: 'mas' },
+            goto: 'mas_path' }
+        ]
+      },
+      vehicle: {
+        q: 'Open-market path. Competition posture?',
+        hint: 'Four vendors sell this. The PM wants the incumbent by name. The right answer here is the one you can defend if the award is protested.',
+        options: [
+          { label: 'Sole source to the incumbent — the PM asked for it',
+            chip: { k: 'Competition', v: 'Sole source' },
+            set: { posture: 'sole' },
+            goto: 'sole_ja' },
+          { label: 'Full and open competition via RFQ',
+            chip: { k: 'Competition', v: 'Full & open' },
+            set: { posture: 'competed' },
+            goto: 'setaside' },
+          { label: 'Brand-name-or-equal RFQ referencing DataStack',
+            chip: { k: 'Competition', v: 'Brand-or-equal' },
+            set: { posture: 'brand' },
+            goto: 'brand_basis' }
+        ]
+      },
+      sole_ja: {
+        q: 'Sole-source requires a Part 6 exception. Which one applies here?',
+        options: [
+          { label: '6.302-1: only one responsible source',
+            chip: { k: 'J&A', v: '302-1 attempted' },
+            set: { ja_tried: '302-1' },
+            goto: 'ending:ja_fail' },
+          { label: '6.302-2: urgent and compelling need',
+            chip: { k: 'J&A', v: '302-2 attempted' },
+            set: { ja_tried: '302-2' },
+            goto: 'ending:ja_fail' },
+          { label: 'None fits — pull back and compete',
+            chip: { k: 'Recovery', v: 'Withdrew J&A' },
+            set: { nearly_sole: true },
+            goto: 'setaside' }
+        ]
+      },
+      brand_basis: {
+        q: 'Brand-name-or-equal needs salient characteristics justifying the brand reference. What is your basis?',
+        hint: 'A brand-name reference is not banned, but it narrows the competition. It has to be tied to documented technical features that only the named brand provides.',
+        options: [
+          { label: 'Incumbent familiarity and switching costs',
+            chip: { k: 'Brand basis', v: 'Familiarity' },
+            goto: 'ending:brand_weak' },
+          { label: 'Specific technical features documented in market research that only DataStack offers',
+            chip: { k: 'Brand basis', v: 'Salient features' },
+            set: { brand_defensible: true },
+            goto: 'setaside' },
+          { label: 'Withdraw brand reference — write a specs-based RFQ',
+            chip: { k: 'Recovery', v: 'Specs-based' },
+            set: { posture: 'competed' },
+            goto: 'setaside' }
+        ]
+      },
+      setaside: {
+        q: 'Before you run competition, Part 19 rule-of-two analysis?',
+        hint: 'The rule-of-two is a pre-decisional analysis. You run it, document the result, then decide the competition posture. Skipping it is a procedural gap that bid protesters love.',
+        options: [
+          { label: 'Skip — jump straight to unrestricted',
+            chip: { k: 'Set-aside', v: 'Skipped' },
+            set: { setaside: 'skipped', skipped_setaside: true },
+            goto: 'source_selection' },
+          { label: 'Analysis finds no qualifying small businesses',
+            chip: { k: 'Set-aside', v: 'None found' },
+            set: { setaside: 'none_found' },
+            goto: 'source_selection' },
+          { label: 'Analysis finds three qualifying small businesses',
+            chip: { k: 'SBs found', v: '3' },
+            goto: 'setaside_found' }
+        ]
+      },
+      setaside_found: {
+        q: 'Three small businesses can meet the requirement at fair market prices. Your call?',
+        options: [
+          { label: 'Set aside for small business',
+            chip: { k: 'Set-aside', v: 'SB' },
+            set: { setaside: 'sb' },
+            goto: 'source_selection' },
+          { label: 'Unrestricted — the PM wants the large incumbent',
+            chip: { k: 'Set-aside', v: 'Violated' },
+            set: { setaside: 'violated' },
+            goto: 'ending:setaside_violation' }
+        ]
+      },
+      source_selection: {
         q: 'Source selection method for the RFQ?',
-        hint: 'Commercial procedures give you broad discretion. The method should match how differentiated the offerors actually are.',
+        hint: 'Commercial procedures give you wide latitude. Match the method to how differentiated the offerors are.',
         options: [
-          { label: 'Lowest Price Technically Acceptable (LPTA)', advance: 'alt',
-            fb: 'Defensible if the COTS products are largely interchangeable. Write the acceptability criteria tightly so "technically acceptable" is not subjective.' },
-          { label: 'Tradeoff / best value', advance: true,
-            fb: 'Good fit when vendors differ on integration, support quality, or feature depth. Build an evaluation scheme with a small number of factors and a clear basis for price-technical tradeoff.' },
-          { label: 'Phased or down-select', advance: false,
-            fb: 'Phased makes sense on large, complex acquisitions with heavy proposal burden on offerors. For a $1.2M commercial subscription it is overkill.' }
+          { label: 'Lowest Price Technically Acceptable (LPTA)',
+            chip: { k: 'Method', v: 'LPTA' },
+            set: { method: 'lpta' },
+            goto: 'contract_type' },
+          { label: 'Tradeoff / best value',
+            chip: { k: 'Method', v: 'Tradeoff' },
+            set: { method: 'tradeoff' },
+            goto: 'contract_type' }
         ]
       },
-      {
-        q: 'Contract type?',
+      contract_type: {
+        q: 'Contract type for a 3-year commercial subscription?',
         options: [
-          { label: 'Firm-Fixed-Price with option years', advance: true,
-            fb: 'Right answer. Commercial subscription with stable scope is textbook FFP. Option years give you flexibility to renew or walk without re-soliciting.' },
-          { label: 'Cost-plus-fixed-fee', advance: false,
-            fb: 'Cost-type is for work where the scope cannot be priced with reasonable certainty. A subscription pricelist is the opposite of that.' },
-          { label: 'Time-and-materials', advance: false,
-            fb: 'T&M is for labor-hour work where the level of effort cannot be estimated in advance. A per-seat license does not look like T&M.' }
+          { label: 'Firm-Fixed-Price with option years',
+            chip: { k: 'Type', v: 'FFP + options' },
+            set: { ctype: 'ffp' },
+            goto: 'compute' },
+          { label: 'Cost-plus-fixed-fee',
+            chip: { k: 'Type', v: 'CPFF' },
+            set: { ctype: 'cpff' },
+            goto: 'ending:wrong_ctype' },
+          { label: 'Time-and-materials',
+            chip: { k: 'Type', v: 'T&M' },
+            set: { ctype: 'tm' },
+            goto: 'ending:wrong_ctype' }
+        ]
+      },
+      mas_path: {
+        q: 'Ordering off GSA MAS. What is the posture against that contract?',
+        hint: 'Under fair opportunity, MAS orders above the micro-purchase threshold require competition among schedule holders unless a limited-sources exception applies.',
+        options: [
+          { label: 'Fair opportunity — compete among MAS holders of the relevant category',
+            chip: { k: 'MAS', v: 'Fair opp' },
+            set: { mas_posture: 'fair_opp' },
+            goto: 'mas_method' },
+          { label: 'Limited sources — only DataStack meets the requirement',
+            chip: { k: 'MAS', v: 'Limited sources' },
+            goto: 'mas_limited' },
+          { label: 'Sole source to incumbent under MAS (no justification beyond PM preference)',
+            chip: { k: 'MAS', v: 'PM preference' },
+            goto: 'ending:mas_sole_unjustified' }
+        ]
+      },
+      mas_limited: {
+        q: 'Limited-sources justification. Basis?',
+        options: [
+          { label: 'Market research shows only the incumbent has the specific feature set required',
+            chip: { k: 'Basis', v: 'Salient features' },
+            set: { mas_posture: 'limited_defensible' },
+            goto: 'contract_type' },
+          { label: 'Switching costs and training investment',
+            chip: { k: 'Basis', v: 'Switching costs' },
+            goto: 'ending:mas_sole_weak' },
+          { label: 'Withdraw limited-sources — run fair opportunity',
+            chip: { k: 'Recovery', v: 'Fair opp' },
+            set: { mas_posture: 'fair_opp' },
+            goto: 'mas_method' }
+        ]
+      },
+      mas_method: {
+        q: 'Three MAS holders quoted. Source selection approach?',
+        options: [
+          { label: 'LPTA against the product spec',
+            chip: { k: 'Method', v: 'LPTA (MAS)' },
+            set: { method: 'lpta' },
+            goto: 'contract_type' },
+          { label: 'Tradeoff weighing features, support, transition cost, and price',
+            chip: { k: 'Method', v: 'Tradeoff (MAS)' },
+            set: { method: 'tradeoff' },
+            goto: 'contract_type' }
         ]
       }
-    ],
-    summary: {
-      strategy: 'Part 12 commercial, simplified procedures for commercial items, competed RFQ, tradeoff best-value source selection, Firm-Fixed-Price with option years.',
-      why: 'The commercial determination unlocked Part 12. The $1.2M value sat below the $9M commercial simplified ceiling, which let you skip the heavier Part 15 machinery. Multiple vendors and stable scope supported a competed FFP with tradeoff evaluation.',
-      docs: [
-        { t: 'Market research memo', d: 'Documents the commercial-item determination and the small-business rule-of-two analysis.' },
-        { t: 'Acquisition plan', d: 'Captures the Part 12 path, the $9M simplified ceiling finding, and the FFP with option years.' },
-        { t: 'Solicitation', d: 'SF 1449 RFQ with 52.212-series clauses, including 52.212-4 and the 52.212-5 clause list.' },
-        { t: 'Source selection plan', d: 'Small factor set, tradeoff basis, and how the evaluators will score technical quality against price.' }
-      ]
+    },
+    /* ──────── Endings ──────── */
+    endings: {
+      over_sat: {
+        verdict: 'deadend',
+        title: 'Over the threshold',
+        narrative: 'Part 13 simplified procedures cap out at the Simplified Acquisition Threshold. For normal buys that is $250K. At $1.2M you are above SAT and Part 13 does not reach. The file will not survive counsel review on page one.',
+        file: [
+          { t: 'Procedural basis', d: 'No valid framework cited for a $1.2M buy.' },
+          { t: 'Recovery path', d: 'Reopen the framework decision — Part 12 simplified reaches $9M under the RFO test program.' }
+        ],
+        counterfactual: 'If you had picked Part 12 simplified procedures at the framework decision, the rest of the chain was reachable.'
+      },
+      noncomm_misdet: {
+        verdict: 'risky',
+        title: 'Non-commercial misdetermination',
+        narrative: 'You ran a full Part 15 source selection on a buy that qualified for Part 12 commercial procedures. The award is legally defensible, but you burned 3-4x the PALT, pulled in a much larger clause set than the commercial market uses, and inherited non-commercial cost and pricing data expectations the vendor may push back on. A protester who compares your market research to the 52.212-series would have an argument about bypassing Part 12.',
+        file: [
+          { t: 'Market research memo', d: 'Should have documented that four vendors sell on standard commercial terms.' },
+          { t: 'Acquisition plan', d: 'Part 15 path chosen despite facts supporting Part 12.' },
+          { t: 'Clause list', d: 'Full non-commercial FAR clause set — far heavier than 52.212-4 + 52.212-5 tailoring.' }
+        ],
+        counterfactual: 'The commercial determination is the first real decision in any buy like this. When the facts support it, take it.'
+      },
+      ja_fail: {
+        verdict: 'deadend',
+        title: 'J&A will not survive',
+        narrative: 'Your justification cites a Part 6 exception that the facts do not support. 6.302-1 requires only one responsible source — market research showed four. 6.302-2 requires urgent and compelling need — the timeline is normal. Counsel sends the J&A back with a request for a defensible basis. At best you lose two weeks; at worst the PM lobbies around you and you end up explaining why the award was set aside by GAO.',
+        file: [
+          { t: 'J&A draft', d: 'Exception cited, facts insufficient to support it.' },
+          { t: 'Market research', d: 'Shows multiple responsible sources.' },
+          { t: 'Recovery', d: 'Withdraw the J&A, run a competed RFQ.' }
+        ],
+        counterfactual: 'The "None fits — pull back and compete" option recovers the chain cleanly.'
+      },
+      brand_weak: {
+        verdict: 'risky',
+        title: 'Brand-name basis will not hold',
+        narrative: 'Switching costs and analyst familiarity are real program concerns but they are not Part 11 salient characteristics. A competing vendor who offers an equal product can protest the brand reference and GAO will look at your market research file. If the documented salient features are not actually unique to DataStack, you lose.',
+        file: [
+          { t: 'Brand-name rationale', d: 'Switching costs cited, not salient technical features.' },
+          { t: 'Market research', d: 'Four vendors offer comparable products.' },
+          { t: 'Protest exposure', d: 'High. Corrective action likely if challenged.' }
+        ],
+        counterfactual: 'Either document actual salient features tied to the brand, or drop the brand reference and write a specs-based RFQ.'
+      },
+      setaside_violation: {
+        verdict: 'risky',
+        title: 'Rule-of-two bypassed',
+        narrative: 'Part 19 requires you to set aside for small business when two or more responsible SBs can meet the requirement at fair market prices. You documented that three qualified — and then awarded unrestricted because the PM wanted the large incumbent. A small-business protester will win this at SBA or GAO. Program pressure is not a Part 19 exception.',
+        file: [
+          { t: 'Rule-of-two memo', d: 'Three qualifying SBs identified.' },
+          { t: 'Award decision', d: 'Unrestricted despite rule-of-two being met.' },
+          { t: 'Protest posture', d: 'Sustain highly likely.' }
+        ],
+        counterfactual: 'Once the rule-of-two is met, the set-aside decision is not discretionary.'
+      },
+      wrong_ctype: {
+        verdict: 'deadend',
+        title: 'Wrong contract type',
+        narrative: 'Cost-plus and T&M are for scopes that cannot be priced with reasonable certainty. A commercial SaaS subscription has a pricelist. FAR Part 16 contract-type analysis rejects cost-reimbursement and T&M when the scope can be priced firm-fixed, and the commercial SaaS market prices this way every day.',
+        file: [
+          { t: 'Contract type analysis', d: 'Does not support CPFF or T&M on these facts.' },
+          { t: 'Vendor response', d: 'Commercial vendors will push back — they do not price this way.' }
+        ],
+        counterfactual: 'FFP with option years is the commercial subscription norm.'
+      },
+      mas_sole_unjustified: {
+        verdict: 'risky',
+        title: 'MAS sole source without basis',
+        narrative: 'You ordered sole-source under MAS citing PM preference. MAS fair opportunity is the default. Sole-source requires a limited-sources justification with facts — not preferences. The award is exposed to both a MAS-level protest and a GAO challenge from a competing schedule holder.',
+        file: [
+          { t: 'Limited-sources justification', d: 'Not drafted or not defensible.' },
+          { t: 'Fair opportunity', d: 'Bypassed without documented exception.' }
+        ],
+        counterfactual: 'Run fair opportunity with three quotes. It is faster than you think.'
+      },
+      mas_sole_weak: {
+        verdict: 'risky',
+        title: 'MAS limited-sources will not hold',
+        narrative: 'Switching costs are a real program consideration and they do not justify bypassing fair opportunity. A competing MAS holder who offers a comparable product can file a task-order protest (above $10M at GAO; smaller at the agency level) and they will win corrective action.',
+        file: [
+          { t: 'Limited-sources basis', d: 'Switching costs cited. Not sufficient.' },
+          { t: 'Market research', d: 'Shows alternatives on MAS.' }
+        ],
+        counterfactual: 'Fair opportunity takes a few extra weeks and removes the protest exposure entirely.'
+      }
+    },
+    /* Flag-based resolver for the terminal contract_type node */
+    resolve: (flags) => {
+      if (flags.ctype !== 'ffp') return null; // handled by ending goto
+
+      const wentMAS = flags.framework === 'mas';
+      const heavy = flags.framework === 'p12_p15';
+      const setaside = flags.setaside;
+      const reconsidered = flags.reconsidered;
+
+      if (wentMAS) {
+        return {
+          id: 'clean_mas',
+          verdict: 'clean',
+          title: 'Clean MAS strategy',
+          narrative: `Fair opportunity under GSA MAS with a ${flags.method === 'tradeoff' ? 'tradeoff' : 'LPTA'} evaluation, FFP with option years. Faster PALT than open-market, same defensibility, and the schedule contract already carries the commercial clauses you need.`,
+          file: [
+            { t: 'Market research memo', d: 'Commercial determination plus Part 19 analysis plus MAS category confirmation.' },
+            { t: 'Fair opportunity documentation', d: 'Three quotes received and evaluated.' },
+            { t: 'Source selection decision', d: `${flags.method === 'tradeoff' ? 'Tradeoff basis with factors tied to offerors\' actual differentiators' : 'LPTA with tight technical acceptability criteria'}.` },
+            { t: 'Task order', d: 'Against the MAS contract, FFP with option years.' }
+          ]
+        };
+      }
+
+      if (flags.setaside === 'sb') {
+        return {
+          id: 'clean_sb',
+          verdict: 'clean',
+          title: 'Small business set-aside, clean file',
+          narrative: `The rule-of-two was met and you set aside. ${heavy ? 'You wrapped the buy in a Part 15 source selection, which is more than the commercial market typically gets — legal, just heavy.' : 'Part 12 simplified, competed RFQ among the three qualifying SBs,'} ${flags.method === 'tradeoff' ? 'tradeoff source selection' : 'LPTA'}, FFP with option years. Part 19 obligation met, PM\'s preference documented but did not drive the decision.`,
+          file: [
+            { t: 'Market research memo', d: 'Commercial determination and Part 19 rule-of-two with three qualifying SBs.' },
+            { t: 'Acquisition plan', d: `${heavy ? 'Part 12 wrapped in Part 15' : 'Part 12 simplified'}, SB set-aside, FFP with options.` },
+            { t: 'Solicitation', d: 'SF 1449 RFQ, set aside for small business, 52.212-series clauses.' },
+            { t: 'Source selection plan', d: `${flags.method === 'tradeoff' ? 'Small factor set, tradeoff basis.' : 'Technical acceptability criteria tightly written.'}` }
+          ],
+          counterfactual: heavy ? 'The Part 12 simplified path would have landed you the same award with less paperwork.' : null
+        };
+      }
+
+      if (heavy) {
+        return {
+          id: 'heavy_defensible',
+          verdict: 'heavy',
+          title: 'Defensible but heavy',
+          narrative: `Part 12 wrapped in a full Part 15 source selection on a $1.2M commercial subscription. The award is clean. You also spent a month or more on process the commercial simplified path would have collapsed into days, and the clause set is thicker than the 52.212-series would have required. Fine if program visibility or source selection documentation was the point; otherwise a waste of cycles.`,
+          file: [
+            { t: 'Market research memo', d: 'Commercial item confirmed, Part 19 addressed.' },
+            { t: 'Acquisition plan', d: 'Part 12 with Part 15 source selection overlay.' },
+            { t: 'Part 15 documentation', d: 'Source selection plan, evaluation record, SSDD.' },
+            { t: 'Award', d: 'FFP with option years. Award basis documented to Part 15 standard.' }
+          ],
+          counterfactual: 'Part 12 simplified procedures reach $9M under the RFO. The full Part 15 machine was not required here.'
+        };
+      }
+
+      if (flags.skipped_setaside) {
+        return {
+          id: 'competed_no_setaside',
+          verdict: 'risky',
+          title: 'Competed, but missed the rule-of-two',
+          narrative: 'You ran an unrestricted competed RFQ and landed a clean award — but you never ran the Part 19 rule-of-two analysis. If a small business had qualified and been denied the set-aside, a protest is sustainable. Even absent a protest, a compliance review will flag the gap.',
+          file: [
+            { t: 'Competition', d: 'Full and open RFQ, multiple offers, FFP.' },
+            { t: 'Part 19 analysis', d: 'Missing. Gap in the file.' },
+            { t: 'Exposure', d: 'Moderate. Depends on whether any SB could have met the requirement.' }
+          ],
+          counterfactual: 'Rule-of-two is a five-line analysis when the answer is "no qualifying SBs." Just document it.'
+        };
+      }
+
+      if (flags.brand_defensible) {
+        return {
+          id: 'clean_brand',
+          verdict: 'clean',
+          title: 'Brand-name-or-equal, defensible',
+          narrative: `Brand reference tied to salient technical features documented in market research. Rule-of-two addressed, ${flags.method === 'tradeoff' ? 'tradeoff' : 'LPTA'} source selection, FFP with option years. Narrower competition than a pure specs-based RFQ, but inside the bounds Part 11 allows when the salient features are real.`,
+          file: [
+            { t: 'Salient characteristics list', d: 'Tied to documented technical features, not switching costs.' },
+            { t: 'Market research', d: 'Confirms which features are unique to the brand.' },
+            { t: 'Solicitation', d: 'Brand-name-or-equal RFQ with salient characteristics.' },
+            { t: 'Award', d: 'FFP with option years.' }
+          ]
+        };
+      }
+
+      if (flags.nearly_sole) {
+        return {
+          id: 'recovery_competed',
+          verdict: 'clean',
+          title: 'Recovered from a sole-source attempt',
+          narrative: `You started down a sole-source J&A path, realized the facts did not support it, and pulled back to full and open competition. ${flags.setaside === 'sb' ? 'Set-aside for small business. ' : ''}${flags.method === 'tradeoff' ? 'Tradeoff' : 'LPTA'} source selection, FFP with option years. The recovery cost a little time but landed you on the defensible strategy.`,
+          file: [
+            { t: 'Market research memo', d: 'Commercial determination and Part 19.' },
+            { t: 'Acquisition plan', d: 'Competed RFQ after sole-source attempt withdrawn.' },
+            { t: 'Solicitation', d: 'SF 1449 RFQ, 52.212-series.' },
+            { t: 'Award', d: 'FFP with option years.' }
+          ]
+        };
+      }
+
+      return {
+        id: 'clean_commercial',
+        verdict: 'clean',
+        title: 'Clean commercial strategy',
+        narrative: `Part 12 simplified procedures, ${flags.setaside === 'none_found' ? 'Part 19 analysis documented unrestricted' : 'unrestricted competition'}, competed RFQ, ${flags.method === 'tradeoff' ? 'tradeoff best value' : 'LPTA'}, FFP with option years. Defensible file, light procedural footprint, aligned to commercial market practice.${reconsidered ? ' Started with a commercial miscall but recovered before it cost you anything.' : ''}`,
+        file: [
+          { t: 'Market research memo', d: 'Documents commercial determination and Part 19 analysis.' },
+          { t: 'Acquisition plan', d: 'Part 12 simplified, $9M commercial ceiling, FFP with options.' },
+          { t: 'Solicitation', d: 'SF 1449 RFQ with 52.212-4 and 52.212-5 clause list.' },
+          { t: 'Source selection plan', d: `${flags.method === 'tradeoff' ? 'Small factor set and tradeoff basis.' : 'Tight technical acceptability criteria.'}` },
+          { t: 'Award', d: 'FFP with option years.' }
+        ]
+      };
     }
   },
 
+  /* ══════════════ SCENARIO 2 ══════════════ */
   {
-    id: 'noncomm-services',
+    id: 'facility-services',
     title: 'Base facility maintenance services',
-    setup: 'You are acquiring routine facility maintenance (HVAC, plumbing, grounds, custodial) for a single installation. Requirement is non-commercial because of location-specific access and security requirements. Estimated value is $900K per year, 5-year ordering period. Requirement is recurring and well-understood.',
+    tagline: '$900K/yr · 5 years · non-commercial services with access overlays',
+    meta: ['Non-commercial', 'IDIQ', 'PWS', 'Set-aside'],
+    setup: 'You are acquiring routine facility maintenance (HVAC, plumbing, grounds, custodial) for a single installation. Location-specific access and security overlays push this outside the commercial-item definition. Estimated value: $900K per year, 5-year ordering period. Scope is recurring and well-understood but volume varies year to year with mission tempo.',
     facts: [
       { k: 'Value', v: '$900K/yr · 5 yrs' },
       { k: 'Type', v: 'Non-commercial services' },
-      { k: 'Nature', v: 'Recurring, well-defined' },
-      { k: 'Urgency', v: 'Normal' }
+      { k: 'Scope', v: 'Recurring, variable volume' },
+      { k: 'Urgency', v: 'Normal' },
+      { k: 'Overlay', v: 'Installation access controls' }
     ],
-    steps: [
-      {
-        q: 'Part 12 commercial procedures apply?',
+    entryNode: 'commercial_recon',
+    nodes: {
+      commercial_recon: {
+        q: 'The facts call it non-commercial because of the access overlays. Stress-test that.',
+        hint: 'Facility services sold on the open market often qualify as commercial. Access controls and security requirements can push a buy outside the commercial-item definition — but only when they materially change the scope, not just the badging.',
         options: [
-          { label: 'Yes, treat it as commercial services', advance: false,
-            fb: 'Facility services sold on the open market often qualify as commercial. In this scenario the access and security overlays take it outside the commercial-item definition. Document why in your market research before closing off Part 12.' },
-          { label: 'No — run it as a non-commercial service acquisition', advance: true,
-            fb: 'Correct based on the facts. That puts you under Part 15 or Part 16 depending on how you structure the contract. You will use the broader FAR clause set, not the 52.212 series.' }
+          { label: 'Confirmed non-commercial — the overlays change scope, not just access',
+            chip: { k: 'Determination', v: 'Non-commercial' },
+            set: { commercial: false },
+            goto: 'vehicle' },
+          { label: 'Call it commercial — tailor Part 12 with supplemental security terms',
+            chip: { k: 'Determination', v: 'Tailored commercial' },
+            set: { commercial: true, tailored: true },
+            goto: 'ending:tailored_commercial' },
+          { label: 'Call it commercial, skip the tailoring — overlays are minor',
+            chip: { k: 'Determination', v: 'Commercial (untailored)' },
+            set: { commercial: true },
+            goto: 'ending:commercial_misdet' }
         ]
       },
-      {
-        q: 'Contract structure for a 5-year recurring services requirement?',
-        hint: 'Think about how predictable the workload is and how much ordering flexibility you need year to year.',
+      vehicle: {
+        q: 'Contract structure for 5 years of recurring services with variable volume?',
+        hint: 'Year-to-year volume is not stable. That matters more than it sounds — it is the difference between locking in a single price and building in ordering flexibility.',
         options: [
-          { label: 'Single-award FFP with option years', advance: 'alt',
-            fb: 'Works if the scope and volume are stable enough to price as a single lump-sum per year. Many services contracts can be structured this way. Documentation burden is lower than IDIQ.' },
-          { label: 'Single-award IDIQ with task orders', advance: true,
-            fb: 'Strong fit when you expect routine recurring work plus variable surge tasks. You lock in pricing on the base contract and order year to year, which handles changing volume without reopening competition.' },
-          { label: 'BPA under an existing schedule', advance: false,
-            fb: 'A BPA is a tool for repeat small buys, not a prime vehicle for a $4.5M five-year installation services contract. Also, BPAs off schedules work best for commercial items, which this is not.' }
+          { label: 'Single-award FFP with option years, priced to expected volume',
+            chip: { k: 'Vehicle', v: 'FFP + options' },
+            set: { vehicle: 'ffp' },
+            goto: 'setaside' },
+          { label: 'Single-award IDIQ with task orders issued yearly',
+            chip: { k: 'Vehicle', v: 'IDIQ' },
+            set: { vehicle: 'idiq' },
+            goto: 'setaside' },
+          { label: 'Multiple-award IDIQ (MAC) with task-order competition',
+            chip: { k: 'Vehicle', v: 'MAC' },
+            set: { vehicle: 'mac' },
+            goto: 'ending:mac_overkill' },
+          { label: 'BPA off an existing MAS',
+            chip: { k: 'Vehicle', v: 'BPA' },
+            goto: 'ending:bpa_wrong' }
         ]
       },
-      {
-        q: 'Small business set-aside analysis?',
+      setaside: {
+        q: 'Part 19 rule-of-two analysis?',
         options: [
-          { label: 'Skip it — too big for small business', advance: false,
-            fb: 'A $900K/yr facility services requirement is well within many small-business size standards. Part 19 requires a rule-of-two analysis before you decide, not after. Do the analysis, then document.' },
-          { label: 'Run the rule-of-two first, then decide', advance: true,
-            fb: 'Right. Do the market research, find whether two or more responsible small businesses can meet the requirement at fair market prices, and document the result. That answer drives the set-aside decision.' }
+          { label: 'Skip — go unrestricted',
+            chip: { k: 'Set-aside', v: 'Skipped' },
+            set: { setaside: 'skipped', skipped_setaside: true },
+            goto: 'source_selection' },
+          { label: 'Analysis finds no qualifying SBs',
+            chip: { k: 'Set-aside', v: 'None found' },
+            set: { setaside: 'none_found' },
+            goto: 'source_selection' },
+          { label: 'Analysis finds two qualifying SBs',
+            chip: { k: 'SBs found', v: '2' },
+            goto: 'setaside_found' }
         ]
       },
-      {
-        q: 'Solicitation and source selection method (assume the set-aside question is resolved)?',
+      setaside_found: {
+        q: 'Two responsible small businesses can meet the requirement at fair market prices.',
         options: [
-          { label: 'RFP under Part 15 tradeoff', advance: true,
-            fb: 'Tradeoff lets you weigh past performance on similar installations, staffing plans, and quality control against price. For services with performance risk, that is usually the right lever.' },
-          { label: 'RFP under LPTA', advance: 'alt',
-            fb: 'Defensible only if you can write tight technical acceptability criteria AND past performance is not a meaningful differentiator. Services work with variable contractor quality rarely meets both tests.' },
-          { label: 'RFQ under simplified procedures', advance: false,
-            fb: 'Simplified procedures are bounded by dollar thresholds and by the commercial-item status. This buy is neither.' }
+          { label: 'Set aside for small business',
+            chip: { k: 'Set-aside', v: 'SB' },
+            set: { setaside: 'sb' },
+            goto: 'source_selection' },
+          { label: 'Unrestricted — incumbent is a large business and PM wants them',
+            chip: { k: 'Set-aside', v: 'Violated' },
+            set: { setaside: 'violated' },
+            goto: 'ending:setaside_violation' }
         ]
       },
-      {
-        q: 'Performance work document?',
-        hint: 'Part 37 favors performance-based approaches for services when you can describe outcomes rather than processes.',
+      source_selection: {
+        q: 'Source selection method?',
+        hint: 'Services with variable contractor quality rarely fit pure LPTA without past performance as a meaningful differentiator.',
         options: [
-          { label: 'Performance Work Statement (PWS) with measurable outcomes', advance: true,
-            fb: 'Right. A PWS with a Performance Requirements Summary and quality-assurance surveillance plan puts the contractor on the hook for results, not hours worked.' },
-          { label: 'Detailed Statement of Work prescribing processes', advance: 'alt',
-            fb: 'SOWs are appropriate when you genuinely need to dictate how the work is done. For routine facility services, a PWS gives you better leverage and less micromanagement risk.' },
-          { label: 'Statement of Objectives (SOO) letting the contractor propose the PWS', advance: 'alt',
-            fb: 'SOOs work on acquisitions where offerors have real latitude to innovate. For routine facility maintenance the solutions space is narrow, so a PWS is usually the cleaner choice.' }
+          { label: 'LPTA with past performance as pass/fail',
+            chip: { k: 'Method', v: 'LPTA' },
+            set: { method: 'lpta' },
+            goto: 'perfdoc' },
+          { label: 'Tradeoff with past performance weighted',
+            chip: { k: 'Method', v: 'Tradeoff' },
+            set: { method: 'tradeoff' },
+            goto: 'perfdoc' }
+        ]
+      },
+      perfdoc: {
+        q: 'Performance document?',
+        hint: 'Part 37 favors performance-based work statements when you can describe outcomes rather than processes.',
+        options: [
+          { label: 'Performance Work Statement (PWS) with PRS and QASP',
+            chip: { k: 'Doc', v: 'PWS + QASP' },
+            set: { perfdoc: 'pws' },
+            goto: 'compute' },
+          { label: 'Detailed SOW prescribing processes and with QASP',
+            chip: { k: 'Doc', v: 'SOW + QASP' },
+            set: { perfdoc: 'sow' },
+            goto: 'compute' },
+          { label: 'Statement of Objectives (SOO) — let offerors propose the PWS',
+            chip: { k: 'Doc', v: 'SOO' },
+            set: { perfdoc: 'soo' },
+            goto: 'ending:soo_mismatch' },
+          { label: 'PWS without a QASP',
+            chip: { k: 'Doc', v: 'PWS (no QASP)' },
+            set: { perfdoc: 'pws_no_qasp' },
+            goto: 'ending:no_qasp' }
         ]
       }
-    ],
-    summary: {
-      strategy: 'Non-commercial services acquisition under Part 15, single-award IDIQ with task orders over a 5-year ordering period, tradeoff source selection, PWS with a QASP.',
-      why: 'Location-specific access overlays knocked out Part 12. Recurring work with expected year-to-year variance fit IDIQ better than a straight FFP. Past-performance differentiation justified tradeoff over LPTA. A PWS with measurable outcomes holds the contractor accountable for results.',
-      docs: [
-        { t: 'Market research memo', d: 'Documents why Part 12 did not apply, size-standard analysis, and the rule-of-two result.' },
-        { t: 'Acquisition plan', d: 'Captures the IDIQ structure, ordering plan, and the tradeoff source selection decision.' },
-        { t: 'PWS + QASP', d: 'Performance requirements, acceptable quality levels, and how surveillance will measure them.' },
-        { t: 'Solicitation', d: 'Part 15 RFP with a clear evaluation scheme and a task-order ordering clause.' }
-      ]
+    },
+    endings: {
+      tailored_commercial: {
+        verdict: 'heavy',
+        title: 'Tailored commercial — legal but not free',
+        narrative: 'You kept Part 12 and layered on security and access clauses as supplemental terms. Defensible when the overlays really are bolt-on rather than scope-changing, and it preserves the lighter commercial clause set. The cost: you now own a tailoring memo and any vendor who pushes back on the supplemental terms has leverage. For a 5-year installation services buy with meaningful access controls, most contracting offices would land on non-commercial for the peace of mind.',
+        file: [
+          { t: 'Tailoring memo', d: 'Documents why Part 12 applies despite the overlays and what supplemental terms are added.' },
+          { t: 'Clause list', d: '52.212-series plus supplemental access/security clauses.' },
+          { t: 'Vendor exposure', d: 'Commercial vendors may push back on supplemental terms during negotiations.' }
+        ],
+        counterfactual: 'Running this non-commercial under Part 15 is the more common outcome. The tailored commercial path is a judgment call, not the default.'
+      },
+      commercial_misdet: {
+        verdict: 'risky',
+        title: 'Commercial determination without tailoring',
+        narrative: 'You called it commercial and applied the 52.212 clause set as-is. If the access controls turn out to matter — contractor escort requirements, background-check lag, site-specific safety — the commercial clauses do not carry the language you need, and the standard 52.212-4 termination and changes clauses behave differently than the non-commercial analogs. The contract admin team will feel it.',
+        file: [
+          { t: 'Determination', d: 'Commercial, overlays not addressed.' },
+          { t: 'Clause list', d: 'Straight 52.212 — no supplemental security terms.' },
+          { t: 'Downstream risk', d: 'Contract admin will hit gaps the commercial clauses do not cover.' }
+        ],
+        counterfactual: 'If the overlays are real, either tailor Part 12 explicitly or run non-commercial from the start.'
+      },
+      mac_overkill: {
+        verdict: 'heavy',
+        title: 'MAC is the wrong scale',
+        narrative: 'A multiple-award IDIQ is for buys where the government wants to keep a pool of qualified contractors competing task orders over time. Routine facility maintenance at a single installation is a single-award problem. A MAC multiplies source selection effort (you pick multiple primes, then compete orders among them) with no corresponding benefit.',
+        file: [
+          { t: 'Vehicle choice', d: 'Multiple-award IDIQ for a single-installation recurring-services buy.' },
+          { t: 'Source selection', d: 'You will run one selection to populate the MAC pool, then a second competition for every order.' },
+          { t: 'Value', d: 'Low. The administrative weight does not pay for itself on this buy.' }
+        ],
+        counterfactual: 'Single-award IDIQ handles variable volume without the MAC overhead. Single-award FFP works if volume is stable enough.'
+      },
+      bpa_wrong: {
+        verdict: 'risky',
+        title: 'BPA off a MAS does not fit',
+        narrative: 'A BPA is an ordering mechanism for recurring small buys against an underlying schedule contract. For a $4.5M five-year non-commercial installation services requirement, a BPA either buries the terms in call orders or replicates what you should have written as a task-order contract. The access overlays are also hard to place cleanly under a MAS BPA when the underlying schedule is commercial.',
+        file: [
+          { t: 'Vehicle', d: 'BPA selected for a non-commercial services requirement.' },
+          { t: 'Admin exposure', d: 'Call orders grow beyond BPA comfort zone; security overlays do not fit MAS-backed commercial terms.' }
+        ],
+        counterfactual: 'Single-award IDIQ or FFP — written to the non-commercial clause set — is the right tool.'
+      },
+      setaside_violation: {
+        verdict: 'risky',
+        title: 'Rule-of-two bypassed',
+        narrative: 'Two qualifying small businesses identified and you went unrestricted anyway. Part 19 is not permissive here. An SB protest is sustainable, and SBA can challenge the acquisition directly. PM preference for the large incumbent is not a 19.502 exception.',
+        file: [
+          { t: 'Rule-of-two memo', d: 'Two qualifying SBs documented.' },
+          { t: 'Award decision', d: 'Unrestricted despite the analysis.' },
+          { t: 'Protest posture', d: 'High sustain probability.' }
+        ],
+        counterfactual: 'When the rule-of-two is met, the set-aside is not optional.'
+      },
+      soo_mismatch: {
+        verdict: 'heavy',
+        title: 'SOO is the wrong instrument',
+        narrative: 'A Statement of Objectives lets offerors propose the PWS. That works on acquisitions where the government wants innovation in the solution space — R&D, complex services with room for methodology differences. Routine facility maintenance has a narrow solutions space. Your offerors will spend proposal cycles reinventing something you could have written in a week, and you will spend evaluation cycles comparing wildly different PWSs to each other.',
+        file: [
+          { t: 'Performance document', d: 'SOO for routine maintenance.' },
+          { t: 'Evaluation burden', d: 'Heavy — comparing proposed PWSs is much harder than comparing responses to one PWS.' }
+        ],
+        counterfactual: 'For recurring services with a stable scope, a PWS you write is cleaner than a PWS the contractor proposes.'
+      },
+      no_qasp: {
+        verdict: 'risky',
+        title: 'PWS without a QASP',
+        narrative: 'A performance-based approach without a Quality Assurance Surveillance Plan is a contract you cannot enforce. The PWS sets the standards; the QASP tells you how you will measure them. Without the QASP you lack both the monitoring framework and the documentation trail for a termination or performance-based reduction if the contractor slips.',
+        file: [
+          { t: 'PWS', d: 'Performance standards and requirements summary.' },
+          { t: 'QASP', d: 'Missing. Monitoring approach undefined.' },
+          { t: 'Enforcement risk', d: 'Contractor performance issues cannot be documented against a standard.' }
+        ],
+        counterfactual: 'PWS and QASP ship together. Adding the QASP is the difference between a performance-based contract you can defend and one you cannot.'
+      }
+    },
+    resolve: (flags) => {
+      const sb = flags.setaside === 'sb';
+      const unrestrictedDoc = flags.setaside === 'none_found';
+      const unrestrictedGap = flags.skipped_setaside;
+      const isSOW = flags.perfdoc === 'sow';
+      const isIDIQ = flags.vehicle === 'idiq';
+      const isFFP = flags.vehicle === 'ffp';
+
+      if (isSOW && flags.method === 'lpta') {
+        return {
+          id: 'heavy_lpta_sow',
+          verdict: 'heavy',
+          title: 'Works, but you gave up leverage',
+          narrative: `LPTA on services with variable contractor quality, plus an SOW prescribing processes. The award is defensible. You have also boxed yourself into the lowest bidder who passed the acceptability bar — and committed to surveilling process compliance rather than outcomes. On a 5-year services buy, outcomes are the lever you wanted.`,
+          file: [
+            { t: 'Market research memo', d: 'Documents non-commercial determination and Part 19 analysis.' },
+            { t: 'Solicitation', d: `${isIDIQ ? 'Single-award IDIQ' : 'Single-award FFP with options'}, LPTA, SOW-based.` },
+            { t: 'SOW + QASP', d: 'Process-prescriptive work statement with surveillance against prescribed procedures.' },
+            { t: 'Award', d: `${isIDIQ ? 'IDIQ with task orders' : 'FFP with option years'}.` }
+          ],
+          counterfactual: 'Tradeoff plus PWS is the higher-leverage combination for recurring services.'
+        };
+      }
+
+      if (unrestrictedGap) {
+        return {
+          id: 'gap_unrestricted',
+          verdict: 'risky',
+          title: 'Clean procurement, missing Part 19',
+          narrative: `Competent ${isIDIQ ? 'IDIQ' : 'FFP'} with a ${flags.method === 'tradeoff' ? 'tradeoff' : 'LPTA'} source selection and ${isSOW ? 'SOW' : 'PWS'} — but you never ran the rule-of-two. Any SB who could have met the requirement has a case, and a compliance review will flag the gap.`,
+          file: [
+            { t: 'Competition', d: 'Unrestricted, competed, awarded.' },
+            { t: 'Part 19', d: 'Analysis missing.' },
+            { t: 'Exposure', d: 'Depends on whether any SB could have qualified.' }
+          ],
+          counterfactual: 'The rule-of-two analysis takes ten minutes when the answer is "no qualifying SBs." Document it.'
+        };
+      }
+
+      const setAsideNote = sb ? ' set-aside for small business,' : (unrestrictedDoc ? ' rule-of-two documented unrestricted,' : ' unrestricted,');
+      const vehicleText = isIDIQ
+        ? 'single-award IDIQ with task orders issued yearly'
+        : 'single-award FFP with option years';
+      const vehicleReason = isIDIQ
+        ? 'IDIQ absorbs the year-to-year volume variance without reopening competition.'
+        : 'FFP with options works when you can price to expected volume and absorb moderate variance inside the fixed price.';
+
+      return {
+        id: 'clean_services',
+        verdict: 'clean',
+        title: `Clean ${isIDIQ ? 'IDIQ' : 'FFP'} services strategy`,
+        narrative: `Non-commercial services under Part 15, ${vehicleText},${setAsideNote} ${flags.method === 'tradeoff' ? 'tradeoff with past-performance weight' : 'LPTA with past-performance pass/fail'}, ${isSOW ? 'SOW' : 'PWS'} with QASP. ${vehicleReason}`,
+        file: [
+          { t: 'Market research memo', d: 'Non-commercial determination, size-standard check, Part 19 analysis.' },
+          { t: 'Acquisition plan', d: `${vehicleText}, ${flags.method === 'tradeoff' ? 'tradeoff' : 'LPTA'} source selection.` },
+          { t: isSOW ? 'SOW + QASP' : 'PWS + QASP', d: isSOW ? 'Process prescription with surveillance plan.' : 'Performance standards, PRS, and how surveillance will measure them.' },
+          { t: 'Solicitation', d: 'Part 15 RFP with clear evaluation scheme and task-order ordering clause.' },
+          { t: 'Award', d: `${isIDIQ ? 'IDIQ — FFP task orders' : 'FFP with option years'}.` }
+        ]
+      };
     }
   }
 ];
 
-const app = document.getElementById('app');
+/* ──────────── Engine ──────────── */
 
+const app = document.getElementById('app');
 const state = {
   scenario: null,
-  stepIdx: 0,
-  path: [],
-  locked: false
+  nodeId: null,
+  flags: {},
+  history: [] // [{nodeId, choiceIdx, chip, flagsBefore}]
 };
 
 function render() {
   app.innerHTML = '';
   if (!state.scenario) return renderPicker();
-  if (state.stepIdx >= state.scenario.steps.length) return renderSummary();
-  renderStep();
+  if (state.nodeId && state.nodeId.startsWith('ending:')) return renderEnding(state.nodeId.slice(7));
+  if (state.nodeId === 'compute') return renderComputedEnding();
+  return renderNode();
 }
 
 function renderPicker() {
@@ -441,179 +1048,240 @@ function renderPicker() {
   const h = document.createElement('h2');
   h.textContent = 'Pick a scenario';
   card.appendChild(h);
+  const sub = document.createElement('p');
+  sub.className = 'subh';
+  sub.textContent = 'Each scenario is a branching decision tree. Multiple valid strategies exist. Your early choices change what comes next and what endings are reachable.';
+  card.appendChild(sub);
+
   SCENARIOS.forEach(s => {
     const btn = document.createElement('button');
     btn.className = 'scenario-btn';
-    btn.innerHTML = '<strong>' + s.title + '</strong><span>' + s.setup.substring(0, 130) + '\u2026</span>';
-    btn.onclick = () => startScenario(s);
+    btn.innerHTML = `
+      <strong>${s.title}</strong>
+      <span class="sb-sub">${s.tagline}</span>
+      <span class="sb-meta">${s.meta.map(m => `<span>${m}</span>`).join('')}</span>
+    `;
+    btn.onclick = () => loadScenario(s.id);
     card.appendChild(btn);
   });
   app.appendChild(card);
 }
 
-function startScenario(s) {
+function loadScenario(id) {
+  const s = SCENARIOS.find(x => x.id === id);
+  if (!s) return;
   state.scenario = s;
-  state.stepIdx = 0;
-  state.path = [];
-  state.locked = false;
+  state.nodeId = s.entryNode;
+  state.flags = {};
+  state.history = [];
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   render();
 }
 
-function renderStep() {
-  const s = state.scenario;
-  const step = s.steps[state.stepIdx];
+function renderScenarioHeader() {
+  const hdr = document.createElement('div');
+  hdr.className = 'pp-card';
+  hdr.innerHTML = `
+    <div class="scenario-header">
+      <h2>${state.scenario.title}</h2>
+      <p>${state.scenario.setup}</p>
+    </div>
+    <div class="facts">
+      ${state.scenario.facts.map(f => `<span class="fact"><strong>${f.k}:</strong>${f.v}</span>`).join('')}
+    </div>
+  `;
+  return hdr;
+}
 
-  const header = makeCard('scenario-current');
-  const sh = document.createElement('div');
-  sh.className = 'scenario-header';
-  sh.innerHTML = '<h2>' + s.title + '</h2><p>' + s.setup + '</p>';
-  const facts = document.createElement('div');
-  facts.className = 'facts';
-  s.facts.forEach(f => {
-    const pill = document.createElement('div');
-    pill.className = 'fact';
-    pill.innerHTML = '<strong>' + f.k + '</strong>' + f.v;
-    facts.appendChild(pill);
-  });
-  sh.appendChild(facts);
-  header.appendChild(sh);
-  app.appendChild(header);
+function renderPathTrail() {
+  const wrap = document.createElement('div');
+  wrap.className = 'path-trail';
+  wrap.innerHTML = `
+    <div class="path-trail-label">Your path</div>
+    <div class="path-chips">
+      ${state.history.length === 0
+        ? '<span class="path-empty">No decisions yet.</span>'
+        : state.history
+            .filter(h => h.chip)
+            .map(h => `<span class="path-chip"><span class="path-chip-k">${h.chip.k}:</span><span class="path-chip-v">${h.chip.v}</span></span>`)
+            .join('')}
+    </div>
+  `;
+  return wrap;
+}
 
-  const card = makeCard('step');
+function renderNode() {
+  app.appendChild(renderScenarioHeader());
+  app.appendChild(renderPathTrail());
+
+  const node = state.scenario.nodes[state.nodeId];
+  if (!node) {
+    app.appendChild(makeErrorCard(`Missing node: ${state.nodeId}`));
+    return;
+  }
+
+  const card = makeCard();
   const counter = document.createElement('div');
   counter.className = 'step-counter';
-  counter.textContent = 'Decision ' + (state.stepIdx + 1) + ' of ' + s.steps.length;
+  counter.textContent = `Decision ${state.history.length + 1}`;
   card.appendChild(counter);
 
-  const qEl = document.createElement('div');
-  qEl.className = 'step-question';
-  qEl.textContent = step.q;
-  card.appendChild(qEl);
+  const q = document.createElement('div');
+  q.className = 'step-question';
+  q.textContent = node.q;
+  card.appendChild(q);
 
-  if (step.hint) {
-    const h = document.createElement('div');
-    h.className = 'step-hint';
-    h.textContent = step.hint;
-    card.appendChild(h);
+  if (node.hint) {
+    const hint = document.createElement('div');
+    hint.className = 'step-hint';
+    hint.innerHTML = node.hint;
+    card.appendChild(hint);
   }
 
   const opts = document.createElement('div');
   opts.className = 'options';
-  step.options.forEach((o, i) => {
+  node.options.forEach((opt, idx) => {
     const b = document.createElement('button');
     b.className = 'option';
-    b.textContent = o.label;
-    b.onclick = () => pickOption(i, b, opts, card);
+    b.textContent = opt.label;
+    b.onclick = () => pickOption(idx);
     opts.appendChild(b);
   });
   card.appendChild(opts);
 
-  app.appendChild(card);
-}
-
-function pickOption(i, btn, opts, card) {
-  if (state.locked) return;
-  const step = state.scenario.steps[state.stepIdx];
-  const opt = step.options[i];
-  const good = !!opt.advance;
-  const advance = opt.advance === true || opt.advance === 'alt';
-
-  [...opts.children].forEach((c, ci) => {
-    c.disabled = true;
-    if (ci === i) c.classList.add(good ? 'correct' : 'incorrect');
-  });
-
-  const fb = document.createElement('div');
-  fb.className = 'feedback ' + (good ? 'correct' : 'incorrect');
-  fb.innerHTML = '<strong>' + (good ? (opt.advance === 'alt' ? 'Defensible.' : 'Right call.') : 'Not this one.') + '</strong> ' + opt.fb;
-  card.appendChild(fb);
-
   const controls = document.createElement('div');
   controls.className = 'controls';
-
-  if (advance) {
-    state.path.push({ q: step.q, choice: opt.label, fb: opt.fb });
-    state.locked = true;
-    const next = document.createElement('button');
-    next.className = 'btn-primary';
-    next.textContent = state.stepIdx + 1 >= state.scenario.steps.length ? 'See the full strategy' : 'Next decision';
-    next.onclick = () => {
-      state.stepIdx++;
-      state.locked = false;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      render();
-    };
-    controls.appendChild(next);
-  } else {
-    const retry = document.createElement('button');
-    retry.className = 'btn-secondary';
-    retry.textContent = 'Try again';
-    retry.onclick = () => {
-      [...opts.children].forEach(c => { c.disabled = false; c.classList.remove('correct', 'incorrect'); });
-      fb.remove();
-      controls.remove();
-    };
-    controls.appendChild(retry);
+  const left = document.createElement('div');
+  if (state.history.length > 0) {
+    const back = document.createElement('button');
+    back.className = 'btn-secondary';
+    back.textContent = '← Reconsider last choice';
+    back.onclick = reconsider;
+    left.appendChild(back);
   }
-  card.appendChild(controls);
-}
-
-function renderSummary() {
-  const s = state.scenario;
-  const card = makeCard('summary');
-  card.innerHTML = '<h2>Recommended strategy</h2>' +
-    '<p class="lead">' + s.summary.strategy + '</p>' +
-    '<div class="summary-block"><h3>Why this path</h3><p>' + s.summary.why + '</p></div>';
-
-  const chainBlock = document.createElement('div');
-  chainBlock.className = 'summary-block';
-  const chainH = document.createElement('h3');
-  chainH.textContent = 'Your decision chain';
-  chainBlock.appendChild(chainH);
-  const list = document.createElement('ol');
-  list.className = 'path-list';
-  state.path.forEach(step => {
-    const li = document.createElement('li');
-    li.innerHTML = '<strong>' + step.q + '</strong>' + step.choice;
-    list.appendChild(li);
-  });
-  chainBlock.appendChild(list);
-  card.appendChild(chainBlock);
-
-  const docsBlock = document.createElement('div');
-  docsBlock.className = 'summary-block';
-  const docsH = document.createElement('h3');
-  docsH.textContent = 'What gets written';
-  docsBlock.appendChild(docsH);
-  const dl = document.createElement('ol');
-  dl.className = 'path-list';
-  s.summary.docs.forEach(d => {
-    const li = document.createElement('li');
-    li.innerHTML = '<strong>' + d.t + '</strong>' + d.d;
-    dl.appendChild(li);
-  });
-  docsBlock.appendChild(dl);
-  card.appendChild(docsBlock);
-
-  const controls = document.createElement('div');
-  controls.className = 'controls';
-  const again = document.createElement('button');
-  again.className = 'btn-primary';
-  again.textContent = 'Try another scenario';
-  again.onclick = () => { state.scenario = null; render(); };
-  controls.appendChild(again);
+  const right = document.createElement('div');
+  const quit = document.createElement('button');
+  quit.className = 'btn-secondary';
+  quit.textContent = 'Pick a different scenario';
+  quit.onclick = () => { resetAll(); };
+  right.appendChild(quit);
+  controls.appendChild(left);
+  controls.appendChild(right);
   card.appendChild(controls);
 
   app.appendChild(card);
 }
 
-function makeCard(cls) {
-  const c = document.createElement('div');
-  c.className = 'pp-card ' + (cls || '');
-  return c;
+function pickOption(idx) {
+  const node = state.scenario.nodes[state.nodeId];
+  const opt = node.options[idx];
+  // Snapshot before we mutate
+  state.history.push({
+    nodeId: state.nodeId,
+    choiceIdx: idx,
+    chip: opt.chip || null,
+    flagsBefore: { ...state.flags }
+  });
+  if (opt.set) Object.assign(state.flags, opt.set);
+  state.nodeId = opt.goto;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  render();
+}
+
+function reconsider() {
+  const last = state.history.pop();
+  if (!last) return;
+  state.flags = last.flagsBefore;
+  state.nodeId = last.nodeId;
+  render();
+}
+
+function resetAll() {
+  state.scenario = null;
+  state.nodeId = null;
+  state.flags = {};
+  state.history = [];
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  render();
+}
+
+function replaySame() {
+  const s = state.scenario;
+  state.nodeId = s.entryNode;
+  state.flags = {};
+  state.history = [];
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  render();
+}
+
+function renderComputedEnding() {
+  const ending = state.scenario.resolve(state.flags);
+  if (!ending) {
+    app.appendChild(makeErrorCard('Resolver returned no ending. Flag combination: ' + JSON.stringify(state.flags)));
+    return;
+  }
+  paintEnding(ending);
+}
+
+function renderEnding(id) {
+  const ending = state.scenario.endings[id];
+  if (!ending) {
+    app.appendChild(makeErrorCard('Missing ending: ' + id));
+    return;
+  }
+  paintEnding({ ...ending, id });
+}
+
+function paintEnding(ending) {
+  app.appendChild(renderScenarioHeader());
+  app.appendChild(renderPathTrail());
+
+  const card = document.createElement('div');
+  card.className = `ending-card ${ending.verdict}`;
+  const verdictLabel = {
+    clean: 'Clean Strategy',
+    heavy: 'Defensible but Heavy',
+    risky: 'Risky Award',
+    deadend: 'Dead End'
+  }[ending.verdict] || ending.verdict;
+
+  card.innerHTML = `
+    <span class="verdict-badge ${ending.verdict}">${verdictLabel}</span>
+    <div class="ending-title">${ending.title}</div>
+    <div class="ending-narrative">${ending.narrative}</div>
+    <div class="section-label">Your file</div>
+    <ul class="file-review">
+      ${ending.file.map(d => `<li><strong>${d.t}</strong>${d.d}</li>`).join('')}
+    </ul>
+    ${ending.counterfactual ? `<div class="counterfactual"><strong>What you would have gotten on the cleaner path:</strong> ${ending.counterfactual}</div>` : ''}
+    <div class="controls">
+      <div>
+        <button class="btn-primary" id="replayBtn">Replay scenario</button>
+      </div>
+      <div>
+        <button class="btn-secondary" id="newScenarioBtn">Pick a different scenario</button>
+      </div>
+    </div>
+  `;
+  app.appendChild(card);
+  document.getElementById('replayBtn').onclick = replaySame;
+  document.getElementById('newScenarioBtn').onclick = resetAll;
+}
+
+function makeCard(extra) {
+  const d = document.createElement('div');
+  d.className = 'pp-card' + (extra ? ' ' + extra : '');
+  return d;
+}
+
+function makeErrorCard(msg) {
+  const d = makeCard();
+  d.innerHTML = `<div style="color:#f87171;font-family:monospace;">${msg}</div>`;
+  return d;
 }
 
 render();
 </script>
+
 </body>
 </html>
