@@ -6,7 +6,7 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="PALT &amp; Milestone Builder — plan acquisition timelines with milestone schedules based on acquisition profile, risk posture, and review cycles." />
+  <meta name="description" content="PALT &amp; Milestone Builder — plan acquisition timelines with milestone schedules based on acquisition profile, schedule buffer, and review cycles." />
   <title>PALT &amp; Milestone Builder — ContractingHQ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -548,6 +548,36 @@
   tr:hover .remove-phase-btn { opacity: .7; }
   .remove-phase-btn:hover { opacity: 1; color: var(--crimson); background: var(--crimson-glow); }
 
+  /* ─── Role Legend ─── */
+  .role-legend {
+    padding: 0 1.5rem .5rem;
+  }
+  .role-legend-toggle {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: none; border: none; cursor: pointer;
+    font-size: .72rem; font-weight: 600; letter-spacing: .5px;
+    text-transform: uppercase; color: var(--text-faint);
+    padding: .2rem 0;
+  }
+  .role-legend-toggle:hover { color: var(--text-soft); }
+  .role-legend-chevron {
+    font-size: .55rem; transition: transform .2s;
+  }
+  .role-legend.open .role-legend-chevron { transform: rotate(90deg); }
+  .role-legend-body {
+    display: none;
+    flex-wrap: wrap; gap: .5rem .75rem;
+    margin-top: .4rem; padding: .5rem .75rem;
+    background: var(--bg-3); border: 1px solid var(--line);
+    border-radius: 8px; font-size: .78rem;
+  }
+  .role-legend.open .role-legend-body { display: flex; }
+  .role-legend-item {
+    display: inline-flex; align-items: center; gap: .35rem;
+    color: var(--text-soft); white-space: nowrap;
+  }
+  @media print { .role-legend { display: none !important; } }
+
   /* ─── Removed Phases List ─── */
   .removed-phases {
     margin-top: .75rem;
@@ -725,6 +755,9 @@
   .needby-warn.visible { display: block; }
   .needby-warn strong { color: var(--crimson); }
 
+  /* ─── Print Header (hidden on screen) ─── */
+  .palt-print-header { display: none; }
+
   /* ─── Disclaimer ─── */
   .palt-disclaimer {
     text-align: center;
@@ -740,7 +773,7 @@
     body.palt-body { background: #fff !important; color: #111 !important; }
     .navbar, .footer, .palt-ambient, .palt-hero-tag, .palt-btn-row,
     .add-phase-btn, .remove-phase-btn, .palt-modal-overlay,
-    .bmc-btn, .palt-preset-row { display: none !important; }
+    .bmc-btn, .palt-preset-row, .gantt-bar { display: none !important; }
     .palt-panel { background: #fff; border-color: #ccc; box-shadow: none; }
     .palt-table th { color: #333; background: #f0f0f0; }
     .palt-table td { color: #111; border-color: #ddd; }
@@ -751,6 +784,18 @@
     .days-cell.overridden { color: #b45309; }
     .date-cell { color: #333; }
     .palt-wrap { padding-top: .5rem; }
+    .palt-print-header {
+      display: block !important;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: .6rem 1rem;
+      margin-bottom: 1rem;
+      font-size: .8rem;
+      color: #333;
+      line-height: 1.6;
+      background: #fafafa;
+    }
+    .palt-print-header strong { color: #111; }
   }
 
   /* ─── Responsive ─── */
@@ -760,6 +805,27 @@
     .palt-summary-row { grid-template-columns: repeat(2, 1fr); }
     .palt-review-grid { grid-template-columns: 1fr 1fr; }
     .palt-table { font-size: .78rem; }
+    /* Hide Gantt bars and date columns on mobile */
+    .palt-table th:nth-child(5),
+    .palt-table td:nth-child(5) { display: none; } /* Timeline */
+    .palt-table th:nth-child(6),
+    .palt-table td:nth-child(6),
+    .palt-table th:nth-child(7),
+    .palt-table td:nth-child(7) { display: none; } /* Start / End */
+    .palt-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .palt-toggle-grid { grid-template-columns: 1fr; }
+    .palt-btn-row { flex-wrap: wrap; }
+  }
+  @media (max-width: 480px) {
+    .palt-summary-row { grid-template-columns: 1fr 1fr; gap: .4rem; }
+    .palt-stat-card { padding: .5rem; }
+    .palt-stat-card .stat-value { font-size: 1.1rem; }
+    .palt-review-grid { grid-template-columns: 1fr; }
+    .palt-hero h1 { font-size: 1.2rem; }
+    .palt-table { font-size: .72rem; }
+    /* Also hide risk column on very small screens */
+    .palt-table th:nth-child(8),
+    .palt-table td:nth-child(8) { display: none; }
   }
 
   /* ─── Smart Toggles ─── */
@@ -771,6 +837,13 @@
     font-size: .7rem; color: var(--text-faint); transition: transform .2s;
   }
   .palt-toggles-header.open .chevron { transform: rotate(90deg); }
+  .toggle-count-badge {
+    display: inline-block; font-family: var(--font-mono);
+    font-size: .65rem; font-weight: 600; color: var(--blue-bright);
+    background: var(--blue-soft); border: 1px solid rgba(96,165,250,0.2);
+    border-radius: 100px; padding: .1rem .45rem; margin-left: .4rem;
+    vertical-align: middle;
+  }
   .palt-toggles-body {
     display: none; padding-top: .75rem;
   }
@@ -957,11 +1030,11 @@
 
   <!-- Smart Toggles -->
   <div class="palt-panel">
-    <div class="palt-toggles-header" id="togglesHeader" onclick="this.classList.toggle('open');document.getElementById('togglesBody').classList.toggle('open');">
-      <div class="palt-panel-title" style="margin-bottom:0;">Schedule Adjustments</div>
+    <div class="palt-toggles-header open" id="togglesHeader" onclick="this.classList.toggle('open');document.getElementById('togglesBody').classList.toggle('open');">
+      <div class="palt-panel-title" style="margin-bottom:0;">Schedule Adjustments <span class="toggle-count-badge" id="toggleCountBadge"></span></div>
       <span class="chevron">&#9654;</span>
     </div>
-    <div class="palt-toggles-body" id="togglesBody">
+    <div class="palt-toggles-body open" id="togglesBody">
       <div class="palt-toggle-grid">
         <div class="palt-toggle-item" id="toggleCombineSynopsisWrap">
           <input type="checkbox" id="togCombineSynopsis">
@@ -1002,6 +1075,9 @@
     </div>
   </div>
 
+  <!-- Print-only Summary (hidden on screen) -->
+  <div class="palt-print-header" id="printHeader"></div>
+
   <!-- Summary Stats -->
   <div class="palt-summary-row" id="summaryRow"></div>
 
@@ -1013,6 +1089,21 @@
         <input type="checkbox" id="showGates" style="accent-color:var(--blue);"> Show gate markers
       </label>
     </div>
+    <div class="role-legend" id="roleLegend">
+      <button class="role-legend-toggle" onclick="this.parentElement.classList.toggle('open')">
+        <span class="role-legend-label">Role Legend</span>
+        <span class="role-legend-chevron">&#9654;</span>
+      </button>
+      <div class="role-legend-body">
+        <span class="role-legend-item"><span class="role-chip cons">CONS</span> Contracting Officer / Specialist</span>
+        <span class="role-legend-item"><span class="role-chip req">REQ</span> Requirements Activity / Customer</span>
+        <span class="role-legend-item"><span class="role-chip fm">FM</span> Financial Management</span>
+        <span class="role-legend-item"><span class="role-chip legal">LEGAL</span> Legal Counsel</span>
+        <span class="role-legend-item"><span class="role-chip clr">CLR</span> Clearance Reviewer</span>
+        <span class="role-legend-item"><span class="role-chip tech">TECH</span> Technical Evaluator / SME</span>
+        <span class="role-legend-item"><span class="role-chip sba">SBA</span> Small Business Advisor</span>
+      </div>
+    </div>
     <div class="palt-table-wrap" style="border:none;border-radius:0;">
       <table class="palt-table" id="milestoneTable">
         <thead>
@@ -1021,6 +1112,7 @@
             <th>Phase / Milestone</th>
             <th>Role</th>
             <th>Days</th>
+            <th style="min-width:80px;">Timeline</th>
             <th>Start</th>
             <th>End</th>
             <th>Risk</th>
@@ -1038,11 +1130,13 @@
     <button class="palt-btn primary" onclick="exportExcel()">Export Excel</button>
     <button class="palt-btn" onclick="window.print()">Print</button>
     <button class="palt-btn success" onclick="copyLink()">Copy Link</button>
+    <button class="palt-btn danger" onclick="resetAll()">Reset All</button>
   </div>
 
   <div class="palt-disclaimer">
     Planning estimates only. Not coordinated with any policy office or official source.<br>
-    Actual timelines depend on local review processes, workload, and organizational requirements.
+    Actual timelines depend on local review processes, workload, and organizational requirements.<br>
+    All phases are shown sequentially. In practice, some phases may run concurrently, resulting in a shorter actual timeline.
   </div>
 </div>
 
@@ -1193,6 +1287,13 @@
     var palWrap = $('togglePreAwardLegalWrap');
     if (isLarge) { palWrap.classList.remove('disabled-look'); togPreAwardLegal.disabled = false; }
     else { palWrap.classList.add('disabled-look'); togPreAwardLegal.disabled = true; }
+
+    // Update active-toggle count badge
+    var active = [togCombineSynopsis, togClearance, togSBA, togDebrief, togPreAwardLegal]
+      .filter(function(t) { return t.checked && !t.disabled; }).length;
+    var total = [togCombineSynopsis, togClearance, togSBA, togDebrief, togPreAwardLegal]
+      .filter(function(t) { return !t.disabled; }).length;
+    $('toggleCountBadge').textContent = active + ' / ' + total + ' active';
   }
 
   // ═══════════════════════════════════════════════
@@ -1272,10 +1373,6 @@
       if (!Array.isArray(roles)) roles = [roles];
       addPhase(id, name, days, roles, { gate: true, risk: 'low' });
     }
-    function addSection(label) {
-      phases.push({ id: '__section_' + label, name: label, isSection: true, days: 0, baseDays: 0, roles: [], builtin: true });
-    }
-
     // ─── Micro-Purchase ───
     if (cat === 'micro') {
 
@@ -1292,7 +1389,7 @@
 
     // ─── Phase 1: Requirements ───
 
-    addPhase('req_receipt',     'Receive & Validate PR Package',       d(3), ['REQ','FM','CONS']);
+    addPhase('req_receipt',     'Receive & Validate PR Package',       d(Math.max(3, fin)), ['REQ','FM','CONS']);
     addPhase('req_review',      'Requirements Review & Coordination',  d(req), ['REQ','CONS'], { risk: req > 7 ? 'high' : req > 4 ? 'med' : 'low' });
     addPhase('market_research', 'Market Research',                     d(isLargeDollar ? 10 : 5), ['REQ','CONS']);
 
@@ -1310,12 +1407,12 @@
 
     // ─── Cost Analysis (CPFF/CPAF) ───
     if (isCostType) {
-      addPhase('cost_analysis', 'Cost Analysis & Audit Coordination', d(isLargeDollar ? 14 : 10), ['FM','CONS'], { risk: 'med' });
+      addPhase('cost_analysis', 'Cost Analysis & Audit Coordination', d(Math.max(isLargeDollar ? 14 : 10, fin)), ['FM','CONS'], { risk: 'med' });
     }
 
     // ─── Labor Rate Analysis (T&M) ───
     if (isTM) {
-      addPhase('labor_rate', 'Labor Rate Analysis', d(isLargeDollar ? 10 : 7), ['FM','CONS'], { risk: 'med' });
+      addPhase('labor_rate', 'Labor Rate Analysis', d(Math.max(isLargeDollar ? 10 : 7, fin)), ['FM','CONS'], { risk: 'med' });
     }
 
     // ─── Ordering Procedures (IDIQ contract type) ───
@@ -1326,7 +1423,9 @@
     // ─── Solicitation Development ───
 
     if (isExistingVeh) {
+      addPhase('fair_opp_review', 'Fair Opportunity / Exceptions Review', d(3), ['CONS','LEGAL']);
       addPhase('call_draft',   'Draft BPA Call / Task Order RFQ', d(isLargeDollar ? 7 : 3), ['CONS']);
+      addPhase('eval_criteria', 'Define Evaluation Criteria & Basis for Award', d(isLargeDollar ? 3 : 2), ['CONS']);
       if (inclClearance) addGate('sol_clearance', 'Clearance Review', d(cs), ['CLR']);
     } else if (isCommercial) {
       var solDays = isLargeDollar ? 10 : 5;
@@ -1367,6 +1466,10 @@
 
     if (isExistingVeh) {
       addPhase('eval_quotes', 'Evaluate Quotes / Proposals', d(isLargeDollar ? 10 : 5), ['CONS','TECH']);
+      addPhase('eval_price_veh', 'Price Analysis', d(Math.max(isLargeDollar ? 5 : 3, fin)), ['CONS','FM']);
+      if (isLargeDollar) {
+        addPhase('eval_past_veh', 'Past Performance Evaluation', d(3), ['CONS']);
+      }
     } else if (isCommercial) {
       var evalDays = isLargeDollar ? 10 : 5;
       addPhase('eval_streamlined', 'Streamlined Evaluation', d(evalDays), ['CONS','TECH'], { risk: evalDays > 7 ? 'med' : 'low' });
@@ -1377,7 +1480,7 @@
       // Non-commercial (Part 15): full formal evaluation
       var evalDays2 = isLargeDollar ? 14 : 10;
       addPhase('eval_tech',   'SSEB Technical Evaluation', d(evalDays2), ['TECH'], { risk: 'med' });
-      addPhase('eval_cost',   'Cost/Price Evaluation', d(isLargeDollar ? 10 : 7), ['FM','CONS']);
+      addPhase('eval_cost',   'Cost/Price Evaluation', d(Math.max(isLargeDollar ? 10 : 7, fin)), ['FM','CONS']);
       addPhase('eval_past',   'Past Performance Evaluation', d(5), ['CONS']);
       addPhase('eval_ssa',    'SSA Briefing & Recommendation', d(3), ['CONS']);
 
@@ -1391,10 +1494,11 @@
     }
 
     // ─── Source Selection / Award Decision ───
-    addSection('Pre-Award');
     if (isSoleSource) {
-      addPhase('price_analysis', 'Price/Cost Analysis', d(isLargeDollar ? 7 : 5), ['CONS','FM'], { risk: 'med' });
+      addPhase('price_analysis', 'Price/Cost Analysis', d(Math.max(isLargeDollar ? 7 : 5, fin)), ['CONS','FM'], { risk: 'med' });
       addPhase('award_decision', 'Award Decision & Documentation', d(3), ['CONS']);
+    } else if (isExistingVeh) {
+      addPhase('award_decision', 'Award / Selection Decision', d(isLargeDollar ? 5 : 2), ['CONS']);
     } else {
       addPhase('award_decision', isCommercial ? 'Best Value Determination' : 'Source Selection Decision', d(isLargeDollar ? 5 : 3), ['CONS']);
     }
@@ -1406,8 +1510,7 @@
     }
 
     // ─── Award ───
-    addSection('Award');
-    addPhase('award_prep', 'Prepare Award Documents', d(isLargeDollar ? 5 : 3), ['CONS']);
+    addPhase('award_prep', isExistingVeh ? 'Prepare Order / Call Documents' : 'Prepare Award Documents', d(isLargeDollar ? 5 : 3), ['CONS']);
 
     // Debriefing / Protest standstill (competitive, non-sole-source, non-existing-vehicle)
     if (!isSoleSource && !isExistingVeh && inclDebrief) {
@@ -1416,7 +1519,7 @@
       addPhase('standstill',       'Protest Standstill Window', d(5), ['CONS','LEGAL'], { risk: 'low' });
     }
 
-    addGate('award_sign', 'Contract Award / CO Signature', d(1), ['CONS']);
+    addGate('award_sign', isExistingVeh ? 'Issue Order / CO Signature' : 'Contract Award / CO Signature', d(1), ['CONS']);
 
     // ─── Post-Award ───
 
@@ -1538,15 +1641,16 @@
 
     // Build table
     let html = '';
+    const maxDays = Math.max(1, ...realPhases.map(p => p.days));
 
     // Add-before-first button
-    html += `<tr class="phase-add-row"><td colspan="8"><button class="add-phase-btn" onclick="openPhaseModal('__start__')" title="Add phase at start">+</button></td></tr>`;
+    html += `<tr class="phase-add-row"><td colspan="9"><button class="add-phase-btn" onclick="openPhaseModal('__start__')" title="Add phase at start">+</button></td></tr>`;
 
     let phaseNum = 0;
     allPhases.forEach((p, i) => {
       // Section header rows
       if (p.isSection) {
-        html += `<tr class="section-row"><td colspan="8"><span class="section-label">${esc(p.name)}</span></td></tr>`;
+        html += `<tr class="section-row"><td colspan="9"><span class="section-label">${esc(p.name)}</span></td></tr>`;
         return;
       }
       phaseNum++;
@@ -1572,6 +1676,7 @@
             ${isOverridden ? '<span class="custom-indicator">(custom)</span><button class="reset-btn" onclick="event.stopPropagation();resetDays(\'' + p.id + '\')" title="Reset to computed">&#x21A9;</button>' : ''}
           </span>
         </td>
+        <td><div class="gantt-bar${p.isGate ? ' gate' : ''}${!p.builtin ? ' custom' : ''}" style="width:${Math.round((p.days / maxDays) * 100)}%"></div></td>
         <td class="date-cell">${formatDate(p.startDate)}</td>
         <td class="date-cell">${formatDate(p.endDate)}</td>
         <td>${riskBadge}</td>
@@ -1579,10 +1684,25 @@
       </tr>`;
 
       // Add phase button after each row
-      html += `<tr class="phase-add-row"><td colspan="8"><button class="add-phase-btn" onclick="openPhaseModal('${p.id}')" title="Add phase after this">+</button></td></tr>`;
+      html += `<tr class="phase-add-row"><td colspan="9"><button class="add-phase-btn" onclick="openPhaseModal('${p.id}')" title="Add phase after this">+</button></td></tr>`;
     });
 
     tbody.innerHTML = html;
+
+    // Populate print-only header
+    var printH = $('printHeader');
+    var catText = catEl.options[catEl.selectedIndex].text;
+    var compText = compEl.options[compEl.selectedIndex].text;
+    var ctypeText = typeEl.options[typeEl.selectedIndex].text;
+    var bufferText = postureLbl.textContent;
+    var prText = prDateEl.value || 'Not set';
+    var nbText = nbDateEl.value || 'Not set';
+    printH.innerHTML = '<strong>PALT & Milestone Schedule</strong> &mdash; ' +
+      catText + ' &bull; ' + compText + ' &bull; ' + ctypeText +
+      ' &bull; Buffer: ' + bufferText +
+      '<br>PR Receipt: ' + prText + ' &bull; Need-by: ' + nbText +
+      ' &bull; ' + totalDays + ' business days / ' + calendarDays + ' calendar days' +
+      ' &bull; Generated ' + new Date().toLocaleDateString();
 
     // Render removed phases
     renderRemovedPhases();
@@ -1749,10 +1869,9 @@
       'cost_analysis': 'Cost Analysis & Audit Coordination',
       'labor_rate': 'Labor Rate Analysis',
       'ordering_proc': 'Ordering Procedures & Fair Opportunity Design',
+      'fair_opp_review': 'Fair Opportunity / Exceptions Review',
+      'eval_criteria': 'Define Evaluation Criteria & Basis for Award',
       'call_draft': 'Draft BPA Call / RFQ',
-      'call_review': 'Contracting Review',
-      'to_draft': 'Draft Task Order Request',
-      'fair_opp': 'Fair Opportunity Notice Period',
       'sol_draft': 'Draft Solicitation',
       'sol_legal': 'Legal Sufficiency Review',
       'sol_clearance': 'Clearance Review',
@@ -1760,6 +1879,8 @@
       'response_period': 'Response Period',
       'amendments': 'Q&A / Amendments',
       'eval_quotes': 'Evaluate Quotes',
+      'eval_price_veh': 'Price Analysis',
+      'eval_past_veh': 'Past Performance Evaluation',
       'eval_streamlined': 'Streamlined Evaluation',
       'eval_past_perf': 'Past Performance Evaluation',
       'eval_tech': 'SSEB Technical Evaluation',
@@ -1842,6 +1963,10 @@
   window.exportExcel = function() {
     if (typeof ExcelJS === 'undefined') { alert('Excel library still loading. Try again in a moment.'); return; }
 
+    // Generate shareable URL for embedding
+    updateHash();
+    var shareUrl = location.href;
+
     // ── Scrape current table data ──
     var phaseData = [];
     var trs = tbody.querySelectorAll('tr:not(.phase-add-row)');
@@ -1853,16 +1978,16 @@
         return;
       }
       var tds = tr.querySelectorAll('td');
-      if (tds.length < 7) return;
+      if (tds.length < 9) return;
       num++;
       phaseData.push({
         num: num,
         phase: tds[1].textContent.trim(),
         role: tds[2].textContent.trim(),
         days: parseInt(tds[3].textContent.replace(/[^\d]/g, ''), 10) || 0,
-        start: tds[4].textContent.trim(),
-        end: tds[5].textContent.trim(),
-        risk: tds[6].textContent.trim()
+        start: tds[5].textContent.trim(),
+        end: tds[6].textContent.trim(),
+        risk: tds[7].textContent.trim()
       });
     });
     var totalDays = phaseData.filter(function(p) { return !p.isSection; }).reduce(function(s, p) { return s + p.days; }, 0);
@@ -2101,6 +2226,16 @@
     addConfigRow(wc, 26, 'PR Receipt Date', prDateEl.value || '(not set)', 'Forward scheduling anchor', false);
     addConfigRow(wc, 27, 'Need-by Date', nbDateEl.value || '(not set)', 'Backward scheduling anchor', true);
 
+    addSectionHeader(wc, 29, 'Rebuild This Schedule Online');
+    var linkRow = wc.getRow(30);
+    linkRow.getCell(1).value = 'Shareable Link';
+    linkRow.getCell(1).font = fontBase;
+    linkRow.getCell(2).value = { text: shareUrl, hyperlink: shareUrl };
+    linkRow.getCell(2).font = { name: 'Arial', size: 9, color: { argb: 'FF3B82F6' }, underline: true };
+    linkRow.getCell(4).value = 'Opens the PALT Builder with these exact settings';
+    linkRow.getCell(4).font = { name: 'Arial', size: 8, italic: true, color: { argb: C.textFaint } };
+    for (var c = 1; c <= 4; c++) { linkRow.getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.dkBlue } }; linkRow.getCell(c).border = borders; }
+
     wc.views = [{ state: 'frozen', ySplit: 4 }];
 
     // ════════════════════════════════════════
@@ -2142,16 +2277,21 @@
       { text: 'Medium  —  Some complexity or dependency that could cause slippage.' },
       { text: 'High  —  Significant schedule risk. Monitor closely and plan contingencies.' },
       { text: '' },
+      { text: 'CONCURRENT PHASES', font: { name: 'Arial', size: 11, bold: true, color: { argb: Ci.sectionText } }, fill: Ci.sectionBg, height: 24 },
+      { text: '' },
+      { text: 'This schedule shows all phases sequentially. In practice, some work happens in parallel. Common examples include market research running alongside SBA coordination, or technical evaluation happening concurrently with cost/price analysis. Your actual timeline may be shorter than the total shown here. Adjust durations or remove phases to reflect your office\'s workflow.' },
+      { text: '' },
       { text: 'CONFIGURATION TAB', font: { name: 'Arial', size: 11, bold: true, color: { argb: Ci.sectionText } }, fill: Ci.sectionBg, height: 24 },
       { text: '' },
       { text: 'Records the settings used to generate this schedule. Use it as a reference to re-run the online tool, or to document your planning assumptions. The "Adjust Here" column lets you track changes without overwriting the original values.' },
       { text: '' },
       { text: 'DISCLAIMER', font: { name: 'Arial', size: 11, bold: true, color: { argb: Ci.warnText } }, fill: Ci.warnBg, height: 24 },
       { text: '' },
-      { text: 'Planning estimates only. Not coordinated with any policy office or official source. Actual timelines depend on local review processes, workload, and organizational requirements.' },
+      { text: 'Planning estimates only. Not coordinated with any policy office or official source. Actual timelines depend on local review processes, workload, and organizational requirements. All phases are shown sequentially; in practice, some may run concurrently, resulting in a shorter actual timeline.' },
       { text: '' },
       { text: 'Generated by ContractingHQ PALT & Milestone Builder', font: { name: 'Arial', size: 10, bold: true, color: { argb: Ci.gray } } },
-      { text: 'https://nhazelett.github.io/ContractingHQ/palt-builder.html', font: { name: 'Arial', size: 9, underline: true, color: { argb: Ci.link } } }
+      { text: 'Rebuild this schedule online:', font: { name: 'Arial', size: 9, color: { argb: Ci.grayLight } } },
+      { text: shareUrl, font: { name: 'Arial', size: 9, underline: true, color: { argb: Ci.link } } }
     ];
 
     instrLines.forEach(function(line, idx) {
@@ -2258,6 +2398,39 @@
   // ═══════════════════════════════════════════════
   //  COPY LINK
   // ═══════════════════════════════════════════════
+  window.resetAll = function() {
+    if (!confirm('Reset everything to defaults? This will clear all custom phases, overrides, and removed phases.')) return;
+    state.overrides = {};
+    state.riskOverrides = {};
+    state.removed = [];
+    state.customPhases = [];
+    // Reset form to defaults
+    catEl.value = 'comm_under9m';
+    compEl.value = 'full_open';
+    typeEl.value = 'ffp';
+    riskEl.value = 3;
+    revLegal.value = 5;
+    revSBA.value = 3;
+    revCS.value = 3;
+    revReq.value = 5;
+    revFinance.value = 3;
+    prDateEl.value = '';
+    nbDateEl.value = '';
+    showGatesEl.checked = false;
+    togCombineSynopsis.checked = false;
+    togClearance.checked = true;
+    togSBA.checked = true;
+    togDebrief.checked = true;
+    togPreAwardLegal.checked = true;
+    // Clear URL hash
+    history.replaceState(null, '', location.pathname);
+    updatePostureLabel();
+    updateMicroInfo();
+    updateToggleStates();
+    buildPhases();
+    showTooltip('Reset!');
+  };
+
   window.copyLink = function() {
     updateHash();
     const url = location.href;
