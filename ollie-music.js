@@ -18,9 +18,10 @@
   var STATE_KEY = 'ollie_music_v1';
   var CFM_KEY   = 'cfm_v1';
 
-  // Target volumes. Music is quiet on purpose so Ollie's beeps ride on top.
+  // Target volumes. Music stays at base volume the whole time — the
+  // talking beeps are already louder, so ducking isn't needed.
   var VOL_BASE = 0.22;
-  var VOL_DUCK = 0.05;
+  var VOL_DUCK = 0.22;
 
   var AUDIO_DIR = 'audio/ollie/';
   var TRACKS = [
