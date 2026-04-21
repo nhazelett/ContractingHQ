@@ -208,7 +208,8 @@
       align-items: center;
     }
     .input-panel button.why-btn,
-    .input-panel button.back-btn {
+    .input-panel button.back-btn,
+    .input-panel button.na-btn {
       background: transparent;
       color: #8fb4d8;
       border: 1px dashed rgba(143,180,216,0.4);
@@ -219,7 +220,8 @@
       margin: 0;
     }
     .input-panel button.why-btn:hover,
-    .input-panel button.back-btn:hover {
+    .input-panel button.back-btn:hover,
+    .input-panel button.na-btn:hover {
       background: rgba(143,180,216,0.1);
       color: #b3cde7;
       transform: none;
@@ -231,6 +233,14 @@
     .input-panel button.back-btn:hover {
       background: rgba(255,180,196,0.1);
       color: #ffc9d6;
+    }
+    .input-panel button.na-btn {
+      color: #b4e0b8;
+      border-color: rgba(180,224,184,0.4);
+    }
+    .input-panel button.na-btn:hover {
+      background: rgba(180,224,184,0.1);
+      color: #cbebcf;
     }
     .review-table td.editable {
       cursor: text;
@@ -444,10 +454,11 @@
     <!-- Submit button for text/textarea/number/date -->
     <button id="inputSubmit" style="display:none;">Submit</button>
 
-    <!-- Meta row: back + why -->
+    <!-- Meta row: back + why + N/A -->
     <div class="input-meta-row">
       <button id="inputBack" class="back-btn" style="display:none;" type="button">&larr; Back</button>
       <button id="inputWhy" class="why-btn" style="display:none;" type="button">? Why do you need this?</button>
+      <button id="inputNA"  class="na-btn"   style="display:none;" type="button">N/A &mdash; skip this one</button>
     </div>
   </div>
 
@@ -973,9 +984,11 @@ const inputReview = document.getElementById('inputReview');
 const inputOutput = document.getElementById('inputOutput');
 const inputWhy = document.getElementById('inputWhy');
 const inputBack = document.getElementById('inputBack');
+const inputNA  = document.getElementById('inputNA');
 
 let currentInputCleanup = null;
 let currentWhyCleanup = null;
+let currentNACleanup  = null;
 
 function hideAllInputs() {
   inputField.style.display = 'none';
@@ -991,8 +1004,10 @@ function hideAllInputs() {
   inputReview.innerHTML = '';
   inputWhy.style.display = 'none';
   inputBack.style.display = 'none';
+  inputNA.style.display = 'none';
   if (currentInputCleanup) { currentInputCleanup(); currentInputCleanup = null; }
   if (currentWhyCleanup) { currentWhyCleanup(); currentWhyCleanup = null; }
+  if (currentNACleanup) { currentNACleanup(); currentNACleanup = null; }
 }
 
 function ask(spec, onSubmit) {
@@ -1021,6 +1036,20 @@ function ask(spec, onSubmit) {
     hideAllInputs();
     onSubmit(val);
   };
+
+  // Optional N/A button: only shown for steps the spec marks optional.
+  // Saves an empty value so downstream renderers fall back to their
+  // "None noted" treatments.
+  if (spec.optional) {
+    inputNA.style.display = '';
+    const naHandler = () => {
+      // Text / textarea / number / date inputs skip validation when N/A.
+      if (spec.type === 'number') done(null);
+      else done('');
+    };
+    inputNA.addEventListener('click', naHandler);
+    currentNACleanup = () => { inputNA.removeEventListener('click', naHandler); };
+  }
 
   switch (spec.type) {
     case 'text':
@@ -1198,6 +1227,8 @@ function blankReq() {
     isIT: false,
     hasHazmat: false,
     quantity: null,
+    unitOfIssue: '',         // 'EA' | 'MO' | 'HR' | 'DAY' | 'YR' | 'LO' | 'other'
+    unitOfIssueOther: '',    // custom unit label when unitOfIssue === 'other'
     unitCost: null,
     totalValue: null,
     threshold: null,         // 'MPT' | 'SAT' | 'OV' (over SAT)
@@ -1233,7 +1264,10 @@ function blankReq() {
     ef_mustHaves: '',
     ef_differentiators: '',
     ef_pastPerfMatters: null,   // boolean
-    ef_pastPerfDetail: '',
+    ef_pastPerfRecency: '',     // '3' | '5' | '10' | 'other'
+    ef_pastPerfRecencyOther: '',// custom number of years when recency === 'other'
+    ef_pastPerfRelevance: '',   // textarea: what makes a past project "similar in scope"
+    ef_pastPerfDetail: '',      // legacy combined field (kept for any old saved state)
     ef_scheduleCritical: null,  // boolean
     ef_other: '',
     // Justify (customer portion) - brand-name (only if hasBrand)
@@ -1409,25 +1443,76 @@ const STEPS = {
     next: () => 'quantity'
   },
   quantity: {
-    speak: [{ text: "How many?" }],
+    speak: [
+      { text: "How many? Just give me a number." },
+      { text: "If you're buying 50 laptops, that's 50. If it's one big project that doesn't break down cleanly, 1 is a fine answer." }
+    ],
     input: {
-      type: 'number', label: 'Quantity', placeholder: 'e.g. 50', min: 1,
+      type: 'number', label: 'Quantity', placeholder: 'e.g. 50 (or 1 for a single project)', min: 1,
       why: [
-        "Quantity drives pricing, packaging, and delivery schedule.",
-        "It also flips the acquisition strategy at certain break points. A hundred laptops is a different buy than ten."
+        "Quantity pairs with the unit of issue I'll ask about next to build the CLIN on the contract.",
+        "If you can count discrete deliverables like laptops, licenses, or desks, use that count.",
+        "If it's one indivisible effort like a construction project, a software build, or a paint job, use 1 and let the unit of issue do the work."
       ]
     },
     save: (v) => { req.quantity = v; },
+    next: () => 'unit_of_issue'
+  },
+  unit_of_issue: {
+    speak: [
+      { text: "Now pick a unit of issue. This is how the contractor gets to bill you." },
+      { text: "Quantity 12 with Month as the unit means the contractor invoices once a month for twelve months." },
+      { text: "Quantity 50 with Each means they get paid per item delivered." },
+      { text: "A whole project can be quantity 1 with Each as the unit. They get paid when it's done." }
+    ],
+    input: {
+      type: 'choice',
+      label: 'Unit of issue',
+      options: [
+        { label: 'Each (EA) \u2013 per item delivered, or one whole project', value: 'EA' },
+        { label: 'Month (MO) \u2013 billed monthly (recurring services, subscriptions)', value: 'MO' },
+        { label: 'Hour (HR) \u2013 billed per labor hour', value: 'HR' },
+        { label: 'Day (DAY) \u2013 billed daily', value: 'DAY' },
+        { label: 'Year (YR) \u2013 billed annually', value: 'YR' },
+        { label: 'Lot or Job (LO/JB) \u2013 priced as a single package', value: 'LO' },
+        { label: 'Other (I\u2019ll type it)', value: 'other' }
+      ],
+      why: [
+        "Unit of issue plus quantity builds the CLIN structure on the contract. The CO cannot invoice against something that isn't there.",
+        "It decides cadence: Month and Year mean recurring invoices. Hour means time-and-materials. Each means pay-on-delivery.",
+        "Recurring services usually land on Month. Labor-heavy work with no fixed deliverable goes Hour. A one-time buy of physical stuff goes Each. Firm-fixed-price projects often go Lot or Job.",
+        "Pick the one that matches how you would naturally want to pay. The CO can adjust if there's a reason to."
+      ]
+    },
+    save: (v) => { req.unitOfIssue = v; },
+    next: () => req.unitOfIssue === 'other' ? 'unit_of_issue_other' : 'unit_cost'
+  },
+  unit_of_issue_other: {
+    speak: [
+      { text: "Cool, what unit should I write down? Short code is fine." }
+    ],
+    input: {
+      type: 'text',
+      label: 'Unit of issue (custom)',
+      placeholder: 'e.g. PK (Package), BX (Box), CS (Case), GA (Gallon)',
+      why: [
+        "Government contracts use standardized short codes for units. PK, BX, CS, GA, LB, FT, and so on.",
+        "If you're not sure, write the word and the CO will map it to the right code."
+      ]
+    },
+    save: (v) => { req.unitOfIssueOther = v; },
     next: () => 'unit_cost'
   },
   unit_cost: {
     speak: [
-      { text: "Ballpark the unit cost in dollars. Doesn't have to be tight. Market research will dial it in." }
+      { text: "Ballpark the price of ONE unit. Just one." },
+      { text: "If you told me 50 computers, price out a single computer. If you told me 12 months of service, price out one month. I will do the multiplication." },
+      { text: "Doesn't need to be tight. A catalog price or a web search is fine at this stage." }
     ],
     input: {
-      type: 'number', label: 'Estimated unit cost ($)', placeholder: 'e.g. 1200', min: 0,
+      type: 'number', label: 'Estimated price for ONE unit ($)', placeholder: 'e.g. 1200 for one computer', min: 0,
       why: [
-        "Unit cost times quantity gives us the total value.",
+        "You give me the per-unit number, I multiply by your quantity to get the total value.",
         "Total value decides the path: micro-purchase, simplified acquisition, or above SAT.",
         "Each band has its own FAR parts, competition rules, and approvals. Ballpark now, firm up later."
       ]
@@ -1768,12 +1853,12 @@ const STEPS = {
   mr_vehicles: {
     speak: [{ text: "Aware of any contract vehicles that already carry this? GSA schedules, SEWP, CIO-SP, a base BPA." }],
     input: {
-      type: 'textarea', label: 'Known contract vehicles (optional)',
-      placeholder: 'e.g. GSA MAS 54151S, SEWP V, 502 FSS IT BPA; or leave blank',
+      type: 'textarea', label: 'Known contract vehicles (optional)', optional: true,
+      placeholder: 'e.g. GSA MAS 54151S, SEWP V, 502 FSS IT BPA; or hit N/A',
       why: [
         "Existing vehicles short-circuit the whole process.",
         "Ordering off a GSA schedule or a base BPA is faster and cheaper than a stand-alone buy.",
-        "If you don't know any, that's OK. Leave it blank and the CO will check."
+        "If you don't know any, that's OK. Hit N/A and the CO will check."
       ]
     },
     save: (v) => { req.mr_vehicles = v; },
@@ -1782,8 +1867,8 @@ const STEPS = {
   mr_price_points: {
     speak: [{ text: "Any prices you've seen? Published catalog, an old quote, a slide from a vendor demo." }],
     input: {
-      type: 'textarea', label: 'Price points seen (optional)',
-      placeholder: 'e.g. Acme catalog lists at $1,150/seat/yr. Old FY22 quote from DataCorp was $985/seat/yr for 100 seats.',
+      type: 'textarea', label: 'Price points seen (optional)', optional: true,
+      placeholder: 'e.g. Acme catalog lists at $1,150/seat/yr. Old FY22 quote from DataCorp was $985/seat/yr for 100 seats. Or hit N/A.',
       why: [
         "Your price points anchor the Independent Government Cost Estimate.",
         "The CO compares vendor quotes to it to judge fairness and reasonableness.",
@@ -1794,14 +1879,18 @@ const STEPS = {
     next: () => 'mr_small_biz'
   },
   mr_small_biz: {
-    speak: [{ text: "Know any small businesses in this space? Any at all." }],
+    speak: [
+      { text: "Know any small businesses in this space? Any at all." },
+      { text: "You'd be surprised what counts as a small business. Some pretty big-looking companies qualify in their category." },
+      { text: "If you don't know, no stress. The CO can look them up. But it's way easier if you have an address or website, so drop that in if you've got it." }
+    ],
     input: {
-      type: 'textarea', label: 'Small business sources (optional)',
-      placeholder: 'e.g. BetaSoft (8(a) certified, spoke with them at industry day), Gamma LLC (WOSB)',
+      type: 'textarea', label: 'Small business sources (optional)', optional: true,
+      placeholder: 'e.g. BetaSoft, 123 Main St, Dayton OH (spoke with them at industry day)\nGamma LLC, gammallc.com\nOr hit N/A if you don\u2019t know any.',
       why: [
         "The CO has to consider small business set-asides under FAR Part 19.",
         "If two or more small businesses can do the work at a fair price, it gets set aside for them.",
-        "Your leads help the CO check whether that's realistic here."
+        "Names are helpful. Names plus an address or website let the CO find them in SAM.gov and check their size status in minutes instead of hours."
       ]
     },
     save: (v) => { req.mr_smallBizSources = v; },
@@ -1824,8 +1913,8 @@ const STEPS = {
   mr_constraints: {
     speak: [{ text: "Any constraints the market has to accommodate? Location, clearance, unusual delivery window, a mandatory certification." }],
     input: {
-      type: 'textarea', label: 'Market constraints (optional)',
-      placeholder: "e.g. Must ship to OCONUS. Installers need Secret clearance. Delivery can't happen during exercise blackout 1-15 Aug.",
+      type: 'textarea', label: 'Market constraints (optional)', optional: true,
+      placeholder: "e.g. Must ship to OCONUS. Installers need Secret clearance. Delivery can't happen during exercise blackout 1-15 Aug. Or hit N/A.",
       why: [
         "Constraints narrow the pool of vendors who can actually compete.",
         "If a constraint kills competition entirely, the CO needs to know early so they can document it in the J&A or rethink the requirement."
@@ -1931,21 +2020,61 @@ const STEPS = {
       ]
     },
     save: (v) => { req.ef_pastPerfMatters = (v === 'yes'); },
-    next: () => req.ef_pastPerfMatters ? 'ef_past_perf_detail' : 'ef_schedule_factor'
+    next: () => req.ef_pastPerfMatters ? 'ef_past_perf_recency' : 'ef_schedule_factor'
   },
-  ef_past_perf_detail: {
-    speak: [{ text: "What kind of past performance matters? Size, scope, customer type, how recent." }],
+  ef_past_perf_recency: {
+    speak: [
+      { text: "Cool. Two pieces to nail down: how RECENT the past performance has to be, and how RELEVANT it has to be. Let's start with recent." },
+      { text: "The CO has to tell offerors how far back to look. If you don't define it, they'll dig up a job from 1998 and call it past performance." },
+      { text: "3 years is the standard default for most buys. 5 years is fair if the work is infrequent or the industry moves slow. 10 years is long, usually only for rare or specialized work." }
+    ],
     input: {
-      type: 'textarea',
-      label: 'Past performance criteria',
-      placeholder: "e.g. At least two DoD customers of similar size in the last three years, each contract worth $500K+, same type of service.",
+      type: 'choice',
+      label: 'How recent must past performance be?',
+      options: [
+        { label: 'Last 3 years (standard default)', value: '3' },
+        { label: 'Last 5 years (infrequent work, slower-moving field)', value: '5' },
+        { label: 'Last 10 years (rare or highly specialized work)', value: '10' },
+        { label: 'Other (I\u2019ll type a number)', value: 'other' }
+      ],
       why: [
-        "The CO uses these criteria to score references.",
-        "Be concrete. 'Experience with federal customers' is too vague. 'Two DoD contracts of $500K or more in the last three years' is usable.",
-        "The narrower the criteria, the fewer offerors can clear it. Balance relevance against competition."
+        "A recency window keeps the evaluation honest. Old wins don't prove the team or the processes still exist.",
+        "Tighter windows favor active, currently-working firms. Looser windows let firms coast on reputation.",
+        "For fast-moving fields like IT, staleness matters. For slow fields like specialty construction, 10 years can be reasonable."
       ]
     },
-    save: (v) => { req.ef_pastPerfDetail = v; },
+    save: (v) => { req.ef_pastPerfRecency = v; },
+    next: () => req.ef_pastPerfRecency === 'other' ? 'ef_past_perf_recency_other' : 'ef_past_perf_relevance'
+  },
+  ef_past_perf_recency_other: {
+    speak: [{ text: "How many years back? Just a number." }],
+    input: {
+      type: 'number', label: 'Recency window (years)', placeholder: 'e.g. 7', min: 1,
+      why: [
+        "Pick a specific number so the CO can write it into Section L and M of the solicitation.",
+        "Offerors will only submit references from inside this window."
+      ]
+    },
+    save: (v) => { req.ef_pastPerfRecencyOther = v; },
+    next: () => 'ef_past_perf_relevance'
+  },
+  ef_past_perf_relevance: {
+    speak: [
+      { text: "Now relevance. What counts as a SIMILAR project?" },
+      { text: "The CO can't score references without a definition of similar. Size of the contract, type of work, type of customer, complexity. Any of those help." },
+      { text: "And here's the trap: if nothing out there is similar to what you're buying, 'similar' collapses to 'exactly the same.' At that point you need to spell out the scope in concrete detail so the CO has something to match against." }
+    ],
+    input: {
+      type: 'textarea',
+      label: 'What makes past performance relevant?',
+      placeholder: "e.g. Federal customer, contract value $500K or more, same type of service (base grounds maintenance on a facility over 200 acres), delivered within the stated recency window.",
+      why: [
+        "The CO uses this to score references. Be concrete. 'Experience with federal customers' is too vague. 'Two DoD contracts of $500K or more for base grounds maintenance' is usable.",
+        "The more specific you are, the fewer offerors can clear the bar. Balance relevance against competition.",
+        "If nothing truly similar exists in the market, the work is one-of-a-kind. In that case describe the scope exhaustively so the CO can score 'identical or nothing.'"
+      ]
+    },
+    save: (v) => { req.ef_pastPerfRelevance = v; },
     next: () => 'ef_schedule_factor'
   },
   ef_schedule_factor: {
@@ -1963,15 +2092,15 @@ const STEPS = {
     next: () => 'ef_other'
   },
   ef_other: {
-    speak: [{ text: "Anything else you want on the table? Small business participation, training plans, transition approach, green products, whatever comes to mind. Leave blank if nothing." }],
+    speak: [{ text: "Anything else you want on the table? Small business participation, training plans, transition approach, green products, whatever comes to mind. Hit N/A if nothing." }],
     input: {
       type: 'textarea',
-      label: 'Other considerations (optional)',
-      placeholder: "e.g. Preference for subcontracting to local small businesses. Vendor provides a 30-day transition plan. Training materials included at no extra cost.",
+      label: 'Other considerations (optional)', optional: true,
+      placeholder: "e.g. Preference for subcontracting to local small businesses. Vendor provides a 30-day transition plan. Training materials included at no extra cost. Or hit N/A.",
       why: [
         "Sometimes there is a consideration that is not strictly technical but still matters to the mission.",
         "Capture it here and the CO will decide whether it belongs as a factor, a subfactor, or a contract requirement.",
-        "If nothing comes to mind, leave it blank."
+        "If nothing comes to mind, hit N/A."
       ]
     },
     save: (v) => { req.ef_other = v; },
@@ -2060,12 +2189,12 @@ const STEPS = {
       { text: "Brand-name only restricts the brand, not the seller. If multiple resellers can sell it, we compete among them.", mood: 'angry' }
     ],
     input: {
-      type: 'textarea', label: 'Known resellers / distributors (optional)',
-      placeholder: "e.g. CDW-G, GovSmart, Presidio. All Cisco Gold Partners, all hold GSA MAS schedules. Any of them can quote us the exact same Cisco SKUs.",
+      type: 'textarea', label: 'Known resellers / distributors (optional)', optional: true,
+      placeholder: "e.g. CDW-G, GovSmart, Presidio. All Cisco Gold Partners, all hold GSA MAS schedules. Any of them can quote us the exact same Cisco SKUs. Or hit N/A.",
       why: [
         "This is the key difference between brand-name and sole-source.",
         "Cisco example again: you want Cisco gear, three authorized Cisco partners all bid on it, you pick the best price. That's still competitive.",
-        "If you can't think of any, leave blank. The CO will check GSA Advantage and SAM for current vendors."
+        "If you can't think of any, hit N/A. The CO will check GSA Advantage and SAM for current vendors."
       ]
     },
     save: (v) => { req.jus_bn_resellers = v; },
@@ -2268,14 +2397,14 @@ const STEPS = {
     next: () => 'fund_estFundDate'
   },
   fund_estFundDate: {
-    speak: [{ text: "Best guess on when funding lands? Rough is fine, or skip if you don't know." }],
+    speak: [{ text: "Best guess on when funding lands? Rough is fine, or hit N/A if you don't know." }],
     input: {
       type: 'date',
-      label: 'Estimated funding date (optional)',
+      label: 'Estimated funding date (optional)', optional: true,
       why: [
         "Helps the CO decide whether to start market research now so the file is ready when money arrives.",
         "Year-end dates (30 Sep) tell the CO a very different story than 'first of next FY.'",
-        "If you truly don't know, leave it blank and rely on the likelihood narrative."
+        "If you truly don't know, hit N/A and rely on the likelihood narrative."
       ]
     },
     save: (v) => { req.fund_estFundDate = v; },
@@ -2352,16 +2481,18 @@ const STEPS = {
   },
   fund_uniqueConstraints: {
     speak: [
-      { text: "Any unique funding constraints? Incremental funding, specific CLIN structure, expiration limits, restrictions on what the money can buy?" }
+      { text: "Any unique funding constraints? Incremental funding, specific CLIN structure, expiration limits, restrictions on what the money can buy?" },
+      { text: "If none of this applies to you, hit N/A and we'll keep moving." }
     ],
     input: {
       type: 'textarea',
       label: 'Unique funding constraints (optional)',
+      optional: true,
       placeholder: "e.g. Incremental funding: $400K now, $400K when next FY opens, $400K in Q3. / Funds must be obligated by 30 Sep or they revert. / Construction funds \u2013 can't be used for equipment not attached to the facility.",
       why: [
         "Incremental funding changes how the CO structures the award. Name it if it applies.",
         "Expiration dates are the most common trap. One-year O&M expires if not obligated.",
-        "If none of this applies, leave blank."
+        "If none of this applies, hit N/A."
       ]
     },
     save: (v) => { req.fund_uniqueConstraints = v; },
@@ -2405,15 +2536,16 @@ const STEPS = {
 
   // ── Both branches converge here ───────────────────────────────────
   fund_anythingElse: {
-    speak: [{ text: "Anything else the CO should know about the funding? Leave blank if nothing." }],
+    speak: [{ text: "Anything else the CO should know about the funding? Hit N/A if nothing comes to mind." }],
     input: {
       type: 'textarea',
       label: 'Anything else (optional)',
+      optional: true,
       placeholder: "e.g. MIPR inbound from another unit, not yet received. / Funds flow through a different base comptroller. / This PR was returned last FY for clarifications, resubmitted this year.",
       why: [
         "Catch-all for anything the prior questions didn't cover.",
         "Cross-service MIPRs, shared buys, prior-year reject-and-resubmits all belong here.",
-        "Leave blank if nothing comes to mind."
+        "Hit N/A if nothing comes to mind."
       ]
     },
     save: (v) => { req.fund_anythingElse = v; },
@@ -2432,11 +2564,11 @@ const STEPS = {
     next: () => null
   },
 
-  // ── Packet station (routing slip / cover sheet) ──────────────────
+  // ── Packet station (full package: cover + all worksheets) ────────
   pkg_intro: {
     speak: [
-      { text: "Final station. Time to build your routing slip." },
-      { text: "One cover sheet that lists every worksheet in your packet, so the CO knows what's in the package and who to call." }
+      { text: "Final station. I'll stitch the whole package into one PDF." },
+      { text: "Cover sheet up front, then every worksheet you just filled out. One file, one hand-off to your CO." }
     ],
     input: null,
     save: () => {},
@@ -2486,15 +2618,15 @@ const STEPS = {
     next: () => 'pkg_review'
   },
   pkg_review: {
-    speak: [{ text: "Here's the full packet. Check that everything's in the box before you hand it off." }],
+    speak: [{ text: "Here's what's going in the package. Check the manifest before I stitch it." }],
     input: null,
     save: () => {},
     next: () => 'pkg_output'
   },
   pkg_output: {
     speak: [
-      { text: "That's the line. Your packet is built." },
-      { text: "Download the cover sheet, staple it to the worksheets you downloaded at each station, and hand the whole thing to your CO." }
+      { text: "That's the line. Your full package is built." },
+      { text: "One PDF, cover sheet plus every worksheet. Hand it to your CO as-is." }
     ],
     input: null,
     save: () => {},
@@ -2765,7 +2897,19 @@ function renderEfReview() {
   body += reviewRow('Past performance matters?',
     req.ef_pastPerfMatters == null ? null : (req.ef_pastPerfMatters ? 'Yes' : 'No'));
   if (req.ef_pastPerfMatters) {
-    body += reviewRow('Past performance criteria', req.ef_pastPerfDetail, 'ef_pastPerfDetail');
+    let recencyLabel = '';
+    if (req.ef_pastPerfRecency === '3') recencyLabel = 'Last 3 years';
+    else if (req.ef_pastPerfRecency === '5') recencyLabel = 'Last 5 years';
+    else if (req.ef_pastPerfRecency === '10') recencyLabel = 'Last 10 years';
+    else if (req.ef_pastPerfRecency === 'other' && req.ef_pastPerfRecencyOther) {
+      recencyLabel = 'Last ' + req.ef_pastPerfRecencyOther + ' years';
+    }
+    if (recencyLabel) body += reviewRow('Recency window', recencyLabel);
+    body += reviewRow('Relevance criteria', req.ef_pastPerfRelevance, 'ef_pastPerfRelevance');
+    // Legacy combined field — only show if the new fields are empty but the old one is populated
+    if (!req.ef_pastPerfRelevance && req.ef_pastPerfDetail) {
+      body += reviewRow('Past performance criteria', req.ef_pastPerfDetail, 'ef_pastPerfDetail');
+    }
   }
   body += reviewRow('Schedule as an evaluation factor?',
     req.ef_scheduleCritical == null ? null : (req.ef_scheduleCritical ? 'Yes' : 'No'));
@@ -2837,10 +2981,17 @@ function startOver() {
 }
 
 /* ──────────── PDF generator (Statement of Requirement) ──────────── */
-function downloadSorPdf() {
-  if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+function downloadSorPdf(opts) {
+  opts = opts || {};
+  const standalone = !opts.doc;
+  let doc;
+  if (standalone) {
+    if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
+    const { jsPDF } = window.jspdf;
+    doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  } else {
+    doc = opts.doc;
+  }
   const M = 54;         // margin pt (~0.75")
   const W = 612 - M*2;  // usable width
   let y = M;
@@ -2967,15 +3118,24 @@ function downloadSorPdf() {
   doc.text('Generated by KTHQ Requirements Builder. Not a sanctioned form. Route through your CO before submission.', M, y);
   doc.setTextColor(0);
 
-  const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
-  doc.save('SOR_' + safeItem + '_' + req.sessionId + '.pdf');
+  if (standalone) {
+    const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
+    doc.save('SOR_' + safeItem + '_' + req.sessionId + '.pdf');
+  }
 }
 
 /* ──────────── PDF generator (Market Research - customer portion) ──────────── */
-function downloadMrPdf() {
-  if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+function downloadMrPdf(opts) {
+  opts = opts || {};
+  const standalone = !opts.doc;
+  let doc;
+  if (standalone) {
+    if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
+    const { jsPDF } = window.jspdf;
+    doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  } else {
+    doc = opts.doc;
+  }
   const M = 54;
   const W = 612 - M*2;
   let y = M;
@@ -3114,15 +3274,24 @@ function downloadMrPdf() {
   doc.text('Generated by KTHQ Requirements Builder. Not a sanctioned form.', M, y);
   doc.setTextColor(0);
 
-  const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
-  doc.save('MR_' + safeItem + '_' + req.sessionId + '.pdf');
+  if (standalone) {
+    const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
+    doc.save('MR_' + safeItem + '_' + req.sessionId + '.pdf');
+  }
 }
 
 /* ──────────── PDF generator (Evaluation Factors - customer portion) ──────────── */
-function downloadEfPdf() {
-  if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+function downloadEfPdf(opts) {
+  opts = opts || {};
+  const standalone = !opts.doc;
+  let doc;
+  if (standalone) {
+    if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
+    const { jsPDF } = window.jspdf;
+    doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  } else {
+    doc = opts.doc;
+  }
   const M = 54;
   const W = 612 - M*2;
   let y = M;
@@ -3223,7 +3392,22 @@ function downloadEfPdf() {
   section(sec4 + '. Past Performance');
   if (req.ef_pastPerfMatters) {
     line('Relevant?', 'Yes');
-    if (req.ef_pastPerfDetail) {
+    // Recency window
+    let recencyLabel = '';
+    if (req.ef_pastPerfRecency === '3') recencyLabel = 'Last 3 years (standard default)';
+    else if (req.ef_pastPerfRecency === '5') recencyLabel = 'Last 5 years';
+    else if (req.ef_pastPerfRecency === '10') recencyLabel = 'Last 10 years';
+    else if (req.ef_pastPerfRecency === 'other' && req.ef_pastPerfRecencyOther) {
+      recencyLabel = 'Last ' + req.ef_pastPerfRecencyOther + ' years';
+    }
+    if (recencyLabel) line('Recency window', recencyLabel);
+    // Relevance criteria
+    if (req.ef_pastPerfRelevance) {
+      doc.setFont('helvetica', 'bold'); doc.text('Relevance criteria:', M, y); y += 14;
+      doc.setFont('helvetica', 'normal');
+      para(req.ef_pastPerfRelevance);
+    } else if (req.ef_pastPerfDetail) {
+      // Legacy field fallback
       doc.setFont('helvetica', 'bold'); doc.text('Relevance criteria:', M, y); y += 14;
       doc.setFont('helvetica', 'normal');
       para(req.ef_pastPerfDetail);
@@ -3270,8 +3454,10 @@ function downloadEfPdf() {
   doc.text('Generated by KTHQ Requirements Builder. Not a sanctioned form.', M, y);
   doc.setTextColor(0);
 
-  const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
-  doc.save('EF_' + safeItem + '_' + req.sessionId + '.pdf');
+  if (standalone) {
+    const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
+    doc.save('EF_' + safeItem + '_' + req.sessionId + '.pdf');
+  }
 }
 
 /* ──────────── Justify renderers (brand-name / sole-source) ──────────── */
@@ -3355,10 +3541,17 @@ function renderJusOutput() {
 }
 
 /* ──────────── PDF generator (Justification worksheet - customer portion) ──────────── */
-function downloadJusPdf() {
-  if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+function downloadJusPdf(opts) {
+  opts = opts || {};
+  const standalone = !opts.doc;
+  let doc;
+  if (standalone) {
+    if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
+    const { jsPDF } = window.jspdf;
+    doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  } else {
+    doc = opts.doc;
+  }
   const M = 54;
   const W = 612 - M*2;
   let y = M;
@@ -3502,11 +3695,13 @@ function downloadJusPdf() {
   doc.text('Generated by KTHQ Requirements Builder. Not a sanctioned form.', M, y);
   doc.setTextColor(0);
 
-  const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
-  const fnamePrefix = req.hasBrand && req.multipleSources === false ? 'JUS_BN_SS' :
-                      req.hasBrand ? 'JUS_BN' :
-                      req.multipleSources === false ? 'JUS_SS' : 'JUS';
-  doc.save(fnamePrefix + '_' + safeItem + '_' + req.sessionId + '.pdf');
+  if (standalone) {
+    const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
+    const fnamePrefix = req.hasBrand && req.multipleSources === false ? 'JUS_BN_SS' :
+                        req.hasBrand ? 'JUS_BN' :
+                        req.multipleSources === false ? 'JUS_SS' : 'JUS';
+    doc.save(fnamePrefix + '_' + safeItem + '_' + req.sessionId + '.pdf');
+  }
 }
 
 /* ──────────── Fund renderers ──────────── */
@@ -3635,27 +3830,34 @@ function renderPkgReview() {
 }
 
 function renderPkgOutput() {
-  ask({ type: 'output', label: 'Packet cover sheet is ready' }, () => {});
+  ask({ type: 'output', label: 'Requirements package is ready' }, () => {});
   const note = document.getElementById('handoffNote');
   const downloadBtn = document.getElementById('btnDownloadPdf');
   const nextBtn = document.getElementById('btnNextStation');
   downloadBtn.style.display = '';
-  downloadBtn.textContent = '\u2193 Download Packet Cover Sheet (PDF)';
+  downloadBtn.textContent = '\u2193 Download Full Package (PDF)';
   downloadBtn.dataset.doc = 'pkg';
 
   // End of the line. Offer Start Over only.
   nextBtn.style.display = 'none';
 
-  let msg = 'That\u2019s the line. Download the cover sheet, staple it on top of every worksheet you grabbed at the earlier stations, and hand the full stack to your CO. ';
-  msg += 'If you want to build another package for a different requirement, use \u201CStart Over\u201D below.';
+  let msg = 'That\u2019s the line. One PDF with the cover sheet and every worksheet stitched together. ';
+  msg += 'Hand it to your CO as-is. If you want to build another package for a different requirement, use \u201CStart Over\u201D below.';
   note.innerHTML = msg;
 }
 
 /* ──────────── PDF generator (Funding Worksheet - customer portion) ──────────── */
-function downloadFundPdf() {
-  if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+function downloadFundPdf(opts) {
+  opts = opts || {};
+  const standalone = !opts.doc;
+  let doc;
+  if (standalone) {
+    if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
+    const { jsPDF } = window.jspdf;
+    doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  } else {
+    doc = opts.doc;
+  }
   const M = 54;
   const W = 612 - M*2;
   let y = M;
@@ -3767,11 +3969,23 @@ function downloadFundPdf() {
   doc.text('Generated by KTHQ Requirements Builder. Not a sanctioned form.', M, y);
   doc.setTextColor(0);
 
-  const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
-  doc.save('FUND_' + safeItem + '_' + req.sessionId + '.pdf');
+  if (standalone) {
+    const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
+    doc.save('FUND_' + safeItem + '_' + req.sessionId + '.pdf');
+  }
 }
 
-/* ──────────── PDF generator (Packet Cover Sheet / Routing Slip) ──────────── */
+/* ──────────── PDF generator (Full Requirements Package) ──────────────
+   Builds ONE consolidated PDF containing:
+     1. Cover sheet + routing slip
+     2. Statement of Requirement (always)
+     3. Market Research Worksheet (if the customer answered anything)
+     4. Evaluation Factors Worksheet (if answered)
+     5. Justification Worksheet (if brand-name and/or sole-source)
+     6. Funding Worksheet (if funded status answered)
+   Each individual downloader still exists for per-station exports;
+   this one calls them with a shared jsPDF doc so they don't save their
+   own file.                                                              */
 function downloadPkgPdf() {
   if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
   const { jsPDF } = window.jspdf;
@@ -3785,9 +3999,9 @@ function downloadPkgPdf() {
   doc.rect(0, 0, 612, 72, 'F');
   doc.setTextColor(255);
   doc.setFont('helvetica', 'bold'); doc.setFontSize(18);
-  doc.text('REQUIREMENTS PACKAGE COVER SHEET', M, 38);
+  doc.text('REQUIREMENTS PACKAGE', M, 38);
   doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
-  doc.text('Routing slip \u2013 verify every worksheet listed below is attached before routing.', M, 56);
+  doc.text('Cover sheet + all worksheets. Route the full file to your CO.', M, 56);
   doc.setTextColor(0);
   y = 96;
 
@@ -3849,19 +4063,21 @@ function downloadPkgPdf() {
   }
   y += 8;
 
-  // Attachments checklist
+  // Contents of this package
   if (y > 620) { doc.addPage(); y = M; }
   doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
-  doc.text('Attachments Checklist', M, y); y += 8;
+  doc.text('Contents of this Package', M, y); y += 8;
   doc.setDrawColor(200); doc.line(M, y, M + W, y); y += 16;
 
   const docs = packetDocList();
   doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
   for (const d of docs) {
     if (y > 740) { doc.addPage(); y = M; }
-    // Checkbox
+    // Bullet
     doc.setDrawColor(80);
-    doc.rect(M, y - 10, 12, 12);
+    doc.setFillColor(d.applies ? 60 : 180, d.applies ? 120 : 180, d.applies ? 70 : 180);
+    doc.circle(M + 6, y - 3, 3, 'F');
+    doc.setFillColor(0);
     doc.setFont('helvetica', 'bold');
     doc.text(d.code, M + 22, y);
     doc.setFont('helvetica', 'normal');
@@ -3907,7 +4123,7 @@ function downloadPkgPdf() {
   sigRow('Commander / Approver');
   sigRow('Received by CO');
 
-  // Footer
+  // Cover-page footer
   if (y > 720) { doc.addPage(); y = M; }
   doc.setDrawColor(180); doc.line(M, y, M + W, y); y += 14;
   doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(120);
@@ -3915,8 +4131,33 @@ function downloadPkgPdf() {
   doc.text('Generated by KTHQ Requirements Builder. Not a sanctioned form. Route through your CO.', M, y);
   doc.setTextColor(0);
 
+  // ── Appended worksheets ────────────────────────────────────────────
+  // SOR always applies (we got here because a requirement exists).
+  doc.addPage();
+  downloadSorPdf({ doc });
+
+  const applies = {};
+  for (const d of docs) { applies[d.code] = d.applies; }
+
+  if (applies.MR) {
+    doc.addPage();
+    downloadMrPdf({ doc });
+  }
+  if (applies.EF) {
+    doc.addPage();
+    downloadEfPdf({ doc });
+  }
+  if (applies.JUS) {
+    doc.addPage();
+    downloadJusPdf({ doc });
+  }
+  if (applies.FUND) {
+    doc.addPage();
+    downloadFundPdf({ doc });
+  }
+
   const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
-  doc.save('COVER_' + safeItem + '_' + req.sessionId + '.pdf');
+  doc.save('REQUIREMENTS_PACKAGE_' + safeItem + '_' + req.sessionId + '.pdf');
 }
 
 /* ──────────── Intro + wire up output buttons ──────────── */
