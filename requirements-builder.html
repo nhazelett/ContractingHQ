@@ -1978,9 +1978,9 @@ function computeThreshold() {
   return 'OV';
 }
 function thresholdLabel(t) {
-  if (t === 'MPT') return 'Micro-purchase (\u2264 $10K)';
-  if (t === 'SAT') return 'Simplified Acquisition (\u2264 $250K)';
-  if (t === 'OV')  return 'Above SAT ( > $250K )';
+  if (t === 'MPT') return 'Micro-purchase (<= $10K)';
+  if (t === 'SAT') return 'Simplified Acquisition (<= $250K)';
+  if (t === 'OV')  return 'Above SAT (> $250K)';
   return '';
 }
 function commercialLabel(c) {
@@ -2258,7 +2258,7 @@ const STEPS = {
     speak: [
       { text: "Now the meat. What must this thing do or have?" },
       { text: "Capabilities, dimensions, materials, interfaces. The stuff that would make the wrong product WRONG." },
-      { text: "Write it as bullets if that helps." }
+      { text: "Write it as bullets if that helps. And if you've got a vendor spec sheet or product datasheet that already captures this, save it and send it with the package." }
     ],
     input: {
       type: 'textarea', label: 'Salient characteristics',
@@ -2266,7 +2266,8 @@ const STEPS = {
       why: [
         "Salient characteristics become the evaluation backbone.",
         "If it's in here, a vendor has to meet it. If it's not, a vendor can skip it and still win.",
-        "Vague language turns into change orders, protests, or a product that doesn't do the job."
+        "Vague language turns into change orders, protests, or a product that doesn't do the job.",
+        "Got a vendor datasheet that lists the specs? Attach it to the final package as a supporting doc."
       ]
     },
     save: (v) => { req.salientChars = v; },
@@ -2303,7 +2304,8 @@ const STEPS = {
   brand_reason: {
     speak: [
       { text: "And why THAT one?", mood: 'angry' },
-      { text: "I need a technical reason. 'We've always used them' won't cut it. Think interoperability, existing spares pool, certification. Something defensible.", mood: 'angry' }
+      { text: "I need a technical reason. 'We've always used them' won't cut it. Think interoperability, existing spares pool, certification. Something defensible.", mood: 'angry' },
+      { text: "If the manufacturer has a spec sheet or white paper that backs up your reason, save it. Attach it to the final package as supporting documentation." }
     ],
     input: {
       type: 'textarea', label: 'Why this brand/model?',
@@ -2311,7 +2313,8 @@ const STEPS = {
       why: [
         "This is the heart of the brand-name justification.",
         "It has to be a technical reason a reviewer can defend if there's a protest.",
-        "Interoperability with existing kit, unique certification, a qualified products list, an exclusive data right. That kind of thing."
+        "Interoperability with existing kit, unique certification, a qualified products list, an exclusive data right. That kind of thing.",
+        "Manufacturer datasheets, interoperability matrices, or OEM letters are great attachments for the final package."
       ]
     },
     save: (v) => { req.brandReason = v; },
@@ -2528,14 +2531,18 @@ const STEPS = {
     next: () => 'mr_known_vendors'
   },
   mr_known_vendors: {
-    speak: [{ text: "Who else do you know that could provide this? Names, websites, trade shows, whatever you've got." }],
+    speak: [
+      { text: "Who else do you know that could provide this? Names, websites, trade shows, whatever you've got." },
+      { text: "If any of them already sent you a quote, a capability statement, or even an email saying what they can do, save those. They ride along as attachments on the final package." }
+    ],
     input: {
       type: 'textarea', label: 'Known vendors / sources',
       placeholder: 'e.g. Acme Analytics (saw at AFCEA), DataCorp (their rep called last month), BetaSoft (GSA schedule)',
       why: [
         "The CO issues a sources sought or RFI to find vendors, but your list seeds it.",
         "Even one name saves days of research. Multiple names help justify competition.",
-        "No list means the CO is starting cold. That slows everything down."
+        "No list means the CO is starting cold. That slows everything down.",
+        "Vendor quotes, capability statements, or emails you've collected make great attachments. Send whatever you have."
       ]
     },
     save: (v) => { req.mr_knownVendors = v; },
@@ -2556,14 +2563,18 @@ const STEPS = {
     next: () => 'mr_price_points'
   },
   mr_price_points: {
-    speak: [{ text: "Any prices you've seen? Published catalog, an old quote, a slide from a vendor demo." }],
+    speak: [
+      { text: "Any prices you've seen? Published catalog, an old quote, a slide from a vendor demo." },
+      { text: "And hey, if you've already got actual contractor quotes in hand, that's amazing. Save the PDFs and send them along with the final package." }
+    ],
     input: {
       type: 'textarea', label: 'Price points seen (optional)', optional: true,
       placeholder: 'e.g. Acme catalog lists at $1,150/seat/yr. Old FY22 quote from DataCorp was $985/seat/yr for 100 seats. Or hit N/A.',
       why: [
         "Your price points anchor the Independent Government Cost Estimate.",
         "The CO compares vendor quotes to it to judge fairness and reasonableness.",
-        "Even rough numbers help. A published catalog price, an old quote, a number a peer unit paid."
+        "Even rough numbers help. A published catalog price, an old quote, a number a peer unit paid.",
+        "If you have real quote PDFs, attach them to the final package. Saves the CO a round of questions."
       ]
     },
     save: (v) => { req.mr_pricePoints = v; },
@@ -2955,7 +2966,8 @@ const STEPS = {
   },
   jus_ss_research: {
     speak: [
-      { text: "What research have you done to confirm nobody else can do this? Be specific about what you checked.", mood: 'angry' }
+      { text: "What research have you done to confirm nobody else can do this? Be specific about what you checked.", mood: 'angry' },
+      { text: "Anything in writing from this? Sources sought responses, RFI replies, vendor 'no can do' emails. Save them. They go with the package as attachments and they save the CO a lot of back-and-forth." }
     ],
     input: {
       type: 'textarea', label: 'Research that confirmed single source',
@@ -2963,7 +2975,8 @@ const STEPS = {
       why: [
         "Market research is a required element of every sole-source justification.",
         "Name what you did, not just that you did something. 'Conducted market research' is not enough.",
-        "Sources sought postings, RFI responses, vendor conversations with dates, GSA Advantage queries, trade-show conversations. Concrete actions, concrete dates."
+        "Sources sought postings, RFI responses, vendor conversations with dates, GSA Advantage queries, trade-show conversations. Concrete actions, concrete dates.",
+        "Any written artifacts (SAM.gov posting screenshots, vendor emails declining, RFI responses) should ride along as attachments to the final package."
       ]
     },
     save: (v) => { req.jus_ss_research = v; },
@@ -3135,7 +3148,10 @@ const STEPS = {
 
   // ── Funded branch ─────────────────────────────────────────────────
   fund_prNumber: {
-    speak: [{ text: "Purchase request number?" }],
+    speak: [
+      { text: "Purchase request number?" },
+      { text: "If the signed PR or MIPR is already a PDF, save a copy. That goes straight on top of the package so the CO sees funding first thing." }
+    ],
     input: {
       type: 'text',
       label: 'Purchase request number',
@@ -3143,7 +3159,8 @@ const STEPS = {
       why: [
         "The CO can't award without a PR. The number ties the acquisition to the funding document.",
         "If the PR is in progress but not yet numbered, leave blank and note it under 'anything else' later.",
-        "Different systems format this differently. Paste whatever your system gives you."
+        "Different systems format this differently. Paste whatever your system gives you.",
+        "Attach the signed PR/MIPR PDF to the final package. That's the funding proof the CO needs before anything else moves."
       ]
     },
     save: (v) => { req.fund_prNumber = v; },
@@ -3331,7 +3348,10 @@ const STEPS = {
   pkg_output: {
     speak: [
       { text: "That's the line. Your full package is built." },
-      { text: "One PDF, cover sheet plus every worksheet. Hand it to your CO as-is." }
+      { text: "One PDF, cover sheet plus every worksheet. Hand it to your CO as-is." },
+      { text: "One more thing before you send it. Round up every supporting document you've got and route them alongside this PDF." },
+      { text: "The usual suspects: contractor quotes, vendor spec sheets or datasheets, the signed PR or MIPR, RFI and sources-sought responses, OEM letters, interoperability matrices. Anything you referenced in the package." },
+      { text: "You don't have to have all of them. Send what exists. Every attachment you can hand over up front is one less round trip between you and the CO." }
     ],
     input: null,
     save: () => {},
