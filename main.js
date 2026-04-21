@@ -48,6 +48,7 @@
     ["naics.html", "NAICS Codes"],
     ["fsc-codes.html", "PSC / FSC Codes"],
     ["purchase-requests.html", "Evaluating Purchase Requests"],
+    ["funding-color-of-money.html", "Funding & Color of Money"],
     ["statements-of-work.html", "Statements of Work"],
     ["performance-work-statements.html", "Performance Work Statements"],
     ["statements-of-objectives.html", "Statements of Objectives"],

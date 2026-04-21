@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Color of money for operational contracting. Purpose, Time, and Amount - the three statutes that decide whether your funds can buy what you need. Appropriation picker and scenario checker included." />
+  <title>Funding & Color of Money | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>
+    .fm-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* Tabs */
+    .fm-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .fm-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .fm-tab:hover { color: var(--white); }
+    .fm-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .fm-panel { display: none; padding: 3rem 1.5rem; max-width: 960px; margin: 0 auto; }
+    .fm-panel.active { display: block; }
+
+    /* Intro */
+    .fm-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .fm-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .fm-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .fm-intro p { color: var(--silver); font-size: 0.9rem; max-width: 700px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* Learn sections (reuse options.html idiom) */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.93rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.9rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.06); border-color: rgba(248,113,113,0.22); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-body .highlight-box.co { background: rgba(139,92,246,0.06); border-color: rgba(139,92,246,0.22); }
+    .learn-body .highlight-box.co strong { color: #c4b5fd; }
+    .learn-body .co-label { display: inline-block; font-family: 'Rajdhani', sans-serif; font-size: 0.65rem; font-weight: 800; letter-spacing: 1.5px; color: #c4b5fd; background: rgba(139,92,246,0.12); padding: 0.1rem 0.55rem; border-radius: 4px; margin-right: 0.45rem; vertical-align: middle; }
+    .learn-body .far-ref { color: var(--accent); font-weight: 600; font-size: 0.82rem; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.5px; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* Three-statute banner */
+    .three-pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0 2rem; }
+    .pillar { background: rgba(10,22,50,0.6); border: 1px solid rgba(74,158,255,0.18); border-radius: 12px; padding: 1.25rem 1.15rem; }
+    .pillar-head { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #8a9bb0; margin-bottom: 0.4rem; }
+    .pillar-name { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.25rem; }
+    .pillar-stat { font-size: 0.78rem; color: var(--accent); font-family: 'Rajdhani', sans-serif; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 0.6rem; }
+    .pillar-body { color: var(--silver); font-size: 0.87rem; line-height: 1.6; }
+
+    /* Picker */
+    .picker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.75rem; margin-bottom: 2rem; }
+    .picker-btn { background: rgba(10,22,50,0.6); border: 1.5px solid rgba(74,158,255,0.18); border-radius: 12px; padding: 1rem 1.1rem; cursor: pointer; text-align: left; font-family: inherit; transition: all 0.18s; }
+    .picker-btn:hover { border-color: rgba(74,158,255,0.45); transform: translateY(-2px); background: rgba(10,22,50,0.85); }
+    .picker-btn.active { border-color: var(--accent); background: rgba(74,158,255,0.08); box-shadow: 0 0 0 1px var(--accent); }
+    .picker-btn .p-title { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); margin-bottom: 0.2rem; }
+    .picker-btn .p-sub { font-size: 0.78rem; color: var(--silver); letter-spacing: 0.3px; }
+    .picker-btn .p-years { font-family: 'Rajdhani', sans-serif; color: var(--accent); font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+    /* Picker result */
+    .picker-result { background: rgba(4,13,31,0.5); border: 1px solid rgba(74,158,255,0.18); border-radius: 14px; padding: 1.75rem 1.75rem 1.25rem; }
+    .picker-result h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--white); margin-bottom: 0.35rem; }
+    .picker-result .pr-sub { color: var(--accent); font-size: 0.85rem; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.8px; margin-bottom: 1.2rem; }
+    .picker-result .pr-stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+    .picker-result .pr-stat { background: rgba(74,158,255,0.06); border: 1px solid rgba(74,158,255,0.14); border-radius: 10px; padding: 0.75rem 0.9rem; }
+    .picker-result .pr-stat-label { font-family: 'Rajdhani', sans-serif; font-size: 0.66rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #8a9bb0; margin-bottom: 0.25rem; }
+    .picker-result .pr-stat-val { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); line-height: 1.25; }
+    .picker-result h5 { font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin: 1.25rem 0 0.5rem; }
+    .picker-result ul { list-style: none; padding: 0; margin: 0 0 0.75rem; }
+    .picker-result ul li { color: var(--silver); font-size: 0.9rem; line-height: 1.65; padding: 0.25rem 0 0.25rem 1.2rem; position: relative; }
+    .picker-result ul li::before { content: '\25B8'; position: absolute; left: 0; top: 0.3rem; color: var(--accent); font-size: 0.75rem; }
+    .picker-empty { text-align: center; color: #6b7a91; font-size: 0.92rem; padding: 3rem 1.5rem; font-style: italic; }
+
+    /* Scenario checker */
+    .sc-form { display: grid; gap: 1.1rem; margin-bottom: 1.75rem; }
+    .sc-field { display: flex; flex-direction: column; gap: 0.4rem; }
+    .sc-field label { font-family: 'Rajdhani', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #8a9bb0; }
+    .sc-field select, .sc-field input { background: rgba(10,22,50,0.6); border: 1.5px solid rgba(74,158,255,0.18); border-radius: 8px; padding: 0.7rem 0.85rem; color: var(--white); font-family: inherit; font-size: 0.92rem; transition: border-color 0.18s; }
+    .sc-field select:focus, .sc-field input:focus { outline: none; border-color: var(--accent); }
+    .sc-date { display: grid; grid-template-columns: 1.35fr 1fr; gap: 0.5rem; }
+    .sc-date select { width: 100%; }
+    .sc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 520px) { .sc-row { grid-template-columns: 1fr; } }
+    .sc-submit { background: var(--accent); color: #0a1428; border: none; border-radius: 10px; padding: 0.9rem 1.4rem; font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: background 0.18s, transform 0.12s; }
+    .sc-submit:hover { background: #6bb4ff; transform: translateY(-1px); }
+
+    .sc-result { background: rgba(4,13,31,0.5); border: 1px solid rgba(74,158,255,0.18); border-radius: 14px; padding: 1.5rem 1.65rem; }
+    .sc-result h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .sc-verdict { display: inline-block; padding: 0.35rem 0.9rem; border-radius: 100px; font-family: 'Rajdhani', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 1rem; }
+    .sc-verdict.v-ok { background: rgba(52,211,153,0.12); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.35); }
+    .sc-verdict.v-warn { background: rgba(251,191,36,0.1); color: #fbbf24; border: 1px solid rgba(251,191,36,0.35); }
+    .sc-verdict.v-bad { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.35); }
+    .sc-issue-list { list-style: none; padding: 0; margin: 0.75rem 0 0; }
+    .sc-issue-list li { padding: 0.85rem 1rem; border-radius: 8px; margin-bottom: 0.6rem; border-left: 3px solid; font-size: 0.88rem; line-height: 1.6; color: var(--silver); }
+    .sc-issue-list li.issue-red { background: rgba(239,68,68,0.06); border-left-color: #f87171; }
+    .sc-issue-list li.issue-red strong { color: #fca5a5; }
+    .sc-issue-list li.issue-yellow { background: rgba(251,191,36,0.06); border-left-color: #fbbf24; }
+    .sc-issue-list li.issue-yellow strong { color: #fde68a; }
+    .sc-issue-list li.issue-green { background: rgba(52,211,153,0.06); border-left-color: #34d399; }
+    .sc-issue-list li.issue-green strong { color: #6ee7b7; }
+
+    /* Look-it-up cards */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+    .lookup-card { background: rgba(10,22,50,0.6); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1.1rem 1.25rem; }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.02rem; font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 0.65rem; }
+    .lookup-card a { color: var(--accent); font-size: 0.82rem; font-weight: 600; text-decoration: none; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.3px; }
+    .lookup-card a:hover { text-decoration: underline; }
+
+    /* Mnemonic box (reused) */
+    .mnemonic-box { background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.25); border-radius: 14px; padding: 1.5rem; margin: 1.5rem 0; text-align: center; }
+    .mnemonic-box .mnemonic-label { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #a78bfa; margin-bottom: 0.75rem; }
+    .mnemonic-box .mnemonic-line { font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--white); margin-bottom: 0.35rem; }
+    .mnemonic-box .mnemonic-sub { color: var(--silver); font-size: 0.85rem; line-height: 1.6; }
+
+    /* Compare table */
+    .compare-table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.87rem; }
+    .compare-table th { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); padding: 0.65rem 0.85rem; text-align: left; border-bottom: 2px solid rgba(74,158,255,0.2); background: rgba(74,158,255,0.04); }
+    .compare-table td { padding: 0.65rem 0.85rem; color: var(--silver); border-bottom: 1px solid rgba(74,158,255,0.06); vertical-align: top; line-height: 1.6; }
+    .compare-table tr:hover td { background: rgba(74,158,255,0.03); }
+  </style>
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="dfars.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="federal-register.html">Federal Register</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Funding</span>
+    <h1 class="page-hero-title">Funding &amp; Color of Money</h1>
+    <p class="page-hero-sub">Every appropriation answers three questions: what it can buy, how long you have to use it, and how much of it can cover what. Get those three right and the package lives. Get them wrong and it goes back, or worse, it becomes an Anti-Deficiency Act problem.</p>
+  </div>
+</div>
+
+<div class="fm-bg">
+
+  <div class="fm-intro">
+    <span class="fm-intro-tag">Training &amp; Tool</span>
+    <h2>Color of Money for Operational Contracting</h2>
+    <p>Plain-language walkthrough for program-office customers, plus picker and scenario tools that work as a quick reference for contracting officers. Covers O&amp;M, RDT&amp;E, Procurement, MilPers, and Working Capital Funds. MILCON gets a brief mention.</p>
+  </div>
+
+  <div class="training-nav-band training-nav-band-top"><div id="training-nav-top" class="training-nav training-nav-top"></div></div>
+
+  <div class="fm-tabs" role="tablist">
+    <button class="fm-tab active" data-tab="learn">&#128218; Learn</button>
+    <button class="fm-tab" data-tab="picker">&#128176; Appropriation Picker</button>
+    <button class="fm-tab" data-tab="scenario">&#129513; Scenario Checker</button>
+    <button class="fm-tab" data-tab="lookup">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="fm-panel active">
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> The Three Statutes</h3>
+      <div class="learn-body">
+        <p>Congress appropriates money with strings attached. Three statutes in Title 31 carry most of those strings, and every funding question a CO asks traces back to one of them.</p>
+
+        <div class="three-pillars">
+          <div class="pillar">
+            <div class="pillar-head">Purpose</div>
+            <div class="pillar-name">What it buys</div>
+            <div class="pillar-stat">31 USC 1301(a)</div>
+            <div class="pillar-body">Appropriations may be used only for the purposes Congress specified. O&amp;M money cannot buy a weapon system. Procurement money cannot pay for the cafeteria contract.</div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-head">Time</div>
+            <div class="pillar-name">When you can use it</div>
+            <div class="pillar-stat">31 USC 1502(a)</div>
+            <div class="pillar-body">Funds are available only to meet a bona fide need arising in the period of availability. One-year O&amp;M has to be obligated for a current-year need, not next year's.</div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-head">Amount</div>
+            <div class="pillar-name">How much you can commit</div>
+            <div class="pillar-stat">31 USC 1341 (ADA)</div>
+            <div class="pillar-body">No officer may make or authorize an obligation in excess of available funds. Bust this one and somebody files an Anti-Deficiency Act violation.</div>
+          </div>
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>The three-question test.</strong> Before you obligate a dollar: (1) is this the right color of money for what I'm buying? (2) is the need arising during the period this money is good for? (3) do I have enough of it on the line to cover the obligation? A no on any one kills the action.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Purpose: What the Money Can Buy</h3>
+      <div class="learn-body">
+        <p>Every appropriation has a title in the law that tells you what Congress bought when they passed it. Operations &amp; Maintenance is for operating and maintaining the force. Procurement is for buying end items. Research, Development, Test &amp; Evaluation is for R&amp;D. Military Construction is for construction. Mix them up and you have a purpose violation.</p>
+
+        <p>Under DoD financial policy, the working line between O&amp;M and Procurement is the <strong>expense/investment threshold</strong>. As of now it sits at <strong>$250,000 per item or system</strong>. Below that, the item is an expense and O&amp;M pays. Above that, it is an investment and Procurement pays.</p>
+
+        <div class="highlight-box">
+          <strong>A few specifics worth memorizing.</strong> RDT&amp;E is always investment, regardless of dollar amount. Centrally-managed items like ammunition and pharmaceuticals are investment no matter the unit price. A weapon system or its major components are investment even if the individual piece is under $250K.
+        </div>
+
+        <div class="highlight-box co">
+          <span class="co-label">CO Note</span><strong>Severable services and O&amp;M.</strong> Services that are consumed as they are rendered (janitorial, security guard, help desk, technical support) are severable and normally ride on O&amp;M even when total dollars are enormous. The expense/investment threshold is about end items, not services.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Time: The Bona Fide Need Rule</h3>
+      <div class="learn-body">
+        <p>An appropriation is available only to satisfy a need that arises during its period of availability. That is the <strong>Bona Fide Need Rule</strong>, and it is the single most audited concept in federal funding. If your FY26 O&amp;M funds a widget you won't need until FY27, that is a BFN violation even if you signed the contract in September.</p>
+
+        <table class="compare-table">
+          <thead>
+            <tr><th>Appropriation</th><th>Period of Availability</th><th>Typical uses</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Military Personnel</strong></td><td>1 year</td><td>Pay and allowances, recruiting, PCS</td></tr>
+            <tr><td><strong>Operations &amp; Maintenance</strong></td><td>1 year</td><td>Day-to-day ops, training, maintenance, most services, expense items under $250K</td></tr>
+            <tr><td><strong>RDT&amp;E</strong></td><td>2 years</td><td>Research, development, prototypes, test and evaluation</td></tr>
+            <tr><td><strong>Procurement</strong></td><td>3 years</td><td>Investment items over the expense/investment threshold, end items, major spares</td></tr>
+            <tr><td><strong>Shipbuilding &amp; Conversion, Navy</strong></td><td>5 years</td><td>Ships. Longer tail because they take years to build.</td></tr>
+            <tr><td><strong>MILCON</strong></td><td>5 years</td><td>New construction, major renovations over the project threshold</td></tr>
+            <tr><td><strong>Working Capital Fund</strong></td><td>No-year</td><td>Depot maintenance, supply, transportation services. Revolving, not annual.</td></tr>
+          </tbody>
+        </table>
+
+        <p>When the period ends, the money does not vanish. It goes <strong>expired</strong> for five years, during which you can adjust existing obligations (make upward adjustments, liquidate accruals) but cannot create new ones. After those five years it goes <strong>closed</strong>, and any remaining balance is permanently gone from that year's appropriation.</p>
+
+        <div class="mnemonic-box">
+          <div class="mnemonic-label">Period-of-Availability Mnemonic</div>
+          <div class="mnemonic-line">MilPers and O&amp;M: <strong>1</strong></div>
+          <div class="mnemonic-line">RDT&amp;E: <strong>2</strong></div>
+          <div class="mnemonic-line">Procurement: <strong>3</strong></div>
+          <div class="mnemonic-line">MILCON: <strong>5</strong></div>
+          <div class="mnemonic-sub" style="margin-top:0.6rem;">Or the old standby: "1, 2, 3, 5, forever" for MilPers/O&amp;M, RDT&amp;E, Procurement, MILCON, and Working Capital Fund.</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Severable Services and the 12-Month Rule</h3>
+      <div class="learn-body">
+        <p>Services that are <strong>severable</strong> (continuing, measurable by time) can cross fiscal years under a statutory exception. Under <strong>10 USC 3133</strong> (formerly 10 USC 2410a), a severable service contract may be funded with money available at the time of award for a period that begins in one fiscal year and ends in the next, up to a maximum of 12 months.</p>
+
+        <p>What this means in practice: if you sign a severable services contract on 1 July 2026 with FY26 O&amp;M money, you can fund up to 30 June 2027. The BFN rule bends, but only for that specific 12-month window, and only for severable services.</p>
+
+        <div class="highlight-box warn">
+          <strong>Non-severable work is different.</strong> If the deliverable is a single end product (a study, a report, a prototype, a piece of software), that is non-severable. It must be fully funded up front with money that is good when the contract is awarded, and the whole period of performance counts against that year's BFN.
+        </div>
+
+        <div class="highlight-box co">
+          <span class="co-label">CO Note</span><strong>52.232-19.</strong> When a severable service contract crosses fiscal years, FAR 52.232-19 (Availability of Funds for the Next Fiscal Year) makes the Government's obligation contingent on funds being available the next year. Include it or the option gets awkward. Also see the options training on this site.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Full Funding vs. Incremental Funding</h3>
+      <div class="learn-body">
+        <p>The <strong>full-funding policy</strong> for procurement says each end item or useful increment must be fully funded in the year of procurement. You cannot buy half an airplane in FY26 and the other half in FY27. The whole thing is funded from one year's Procurement appropriation, usable across its 3-year window.</p>
+
+        <p><strong>Incremental funding</strong> is the legal opposite, and it is allowed for a narrow set of things: RDT&amp;E work that genuinely spans years, non-severable services over certain dollar thresholds when approved, and a few program-specific exceptions. DoD policy on incremental funding for services lives in DFARS 232.703-1 and DoDI 7000.14-R (the DoD FMR).</p>
+
+        <div class="highlight-box tip">
+          <strong>Your resource advisor is the authority here.</strong> Incremental funding is a policy and programmatic decision, not a CO judgment call. Loop them in before you build the funding profile into the solicitation.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> Anti-Deficiency Act: What Happens When You Miss</h3>
+      <div class="learn-body">
+        <p>The <strong>Anti-Deficiency Act</strong> at 31 USC 1341 and 31 USC 1517 makes it unlawful to obligate or expend funds that have not been made available, or to obligate in excess of available funds. An ADA violation is not a paperwork issue. It is a statutory violation that requires formal investigation, a written report, and notice to Congress and the President.</p>
+
+        <p>Penalties include administrative discipline (reprimand, suspension, removal from federal service) and, for knowing and willful violations, criminal fines and up to two years imprisonment under 31 USC 1350. Plenty of them are referred for action every year across the services. Most involve someone cutting a corner or mis-mapping purpose or time.</p>
+
+        <div class="highlight-box warn">
+          <strong>If you suspect an ADA.</strong> Stop the action, document what you know, and notify your supervisor and comptroller chain. Do not try to paper over it by re-obligating against a different appropriation. That usually makes the second ADA worse than the first.
+        </div>
+
+        <div class="highlight-box co">
+          <span class="co-label">CO Note</span><strong>COs are named officers under the ADA.</strong> A warranted CO signing an obligation over available funds is personally on the hook for the violation. This is one of the reasons the CO verifies funding before signing any award, modification, or exercised option.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">7</span> Common Misfires</h3>
+      <div class="learn-body">
+        <p>The patterns that show up again and again across customer-handed-off packages:</p>
+        <ul style="color:var(--silver);font-size:0.9rem;line-height:1.8;padding-left:1.25rem;">
+          <li><strong>O&amp;M for an investment-threshold item.</strong> Customer hands the CO a PR for a $310K piece of test equipment and cites O&amp;M. That is above the $250K expense/investment threshold and needs Procurement.</li>
+          <li><strong>Expiring-year buy for next-year need.</strong> PR cut on 25 September to lock in expiring O&amp;M, but the requirement does not actually start until January. BFN problem.</li>
+          <li><strong>Severable services over 12 months on one year's money.</strong> 10 USC 3133 is a 12-month cap. Options for additional years need that year's money when exercised.</li>
+          <li><strong>Non-severable treated as severable.</strong> A study with a single final report is non-severable. All of it rides on one year's money, and the BFN attaches to the year of award.</li>
+          <li><strong>Mixing colors in one CLIN.</strong> One line item, one color of money. If you need O&amp;M and RDT&amp;E, they go on different CLINs with different accounting classifications.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ PICKER ═══════════════ -->
+  <div id="panel-picker" class="fm-panel">
+    <p style="color:var(--silver);font-size:0.92rem;line-height:1.65;margin-bottom:1.5rem;">Pick an appropriation to see what it covers, how long it's good for, and the common places program offices get it wrong.</p>
+
+    <div class="picker-grid" id="pickerGrid"></div>
+    <div id="pickerResult">
+      <div class="picker-empty">Pick one above to see details.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SCENARIO ═══════════════ -->
+  <div id="panel-scenario" class="fm-panel">
+    <p style="color:var(--silver);font-size:0.92rem;line-height:1.65;margin-bottom:1.5rem;">Describe what you want to buy and the tool flags Purpose, Time, and Amount issues. Does not constitute legal or funding advice. Run it by your resource advisor and your CO.</p>
+
+    <form class="sc-form" id="scForm" onsubmit="return false;">
+      <div class="sc-field">
+        <label for="sc-approp">Appropriation you want to use</label>
+        <select id="sc-approp">
+          <option value="">Pick one...</option>
+          <option value="OM">Operations &amp; Maintenance (O&amp;M, 1-year)</option>
+          <option value="RDTE">Research, Development, Test &amp; Evaluation (RDT&amp;E, 2-year)</option>
+          <option value="PROC">Procurement (3-year)</option>
+          <option value="MILPERS">Military Personnel (1-year)</option>
+          <option value="MILCON">Military Construction (5-year)</option>
+          <option value="WCF">Working Capital Fund (no-year)</option>
+        </select>
+      </div>
+
+      <div class="sc-field">
+        <label for="sc-fy">Fiscal year the funds are from</label>
+        <select id="sc-fy">
+          <option value="">Pick one...</option>
+          <option value="2024">FY24</option>
+          <option value="2025">FY25</option>
+          <option value="2026" selected>FY26</option>
+          <option value="2027">FY27</option>
+        </select>
+      </div>
+
+      <div class="sc-field">
+        <label for="sc-item">What you're buying</label>
+        <select id="sc-item">
+          <option value="">Pick one...</option>
+          <option value="expense">Expense item (supplies, consumables, under $250K)</option>
+          <option value="investment_small">Investment item (end item, $250K or over)</option>
+          <option value="severable">Severable service (recurring: janitorial, help desk, security guard, maintenance)</option>
+          <option value="nonseverable">Non-severable work (single deliverable: study, prototype, report, one-time build)</option>
+          <option value="rdt">R&amp;D effort or test program</option>
+          <option value="construction">Construction or major renovation</option>
+        </select>
+      </div>
+
+      <div class="sc-row">
+        <div class="sc-field">
+          <label>Period of need starts</label>
+          <div class="sc-date">
+            <select id="sc-start-month" aria-label="Start month">
+              <option value="">Month</option>
+            </select>
+            <select id="sc-start-year" aria-label="Start year">
+              <option value="">Year</option>
+            </select>
+          </div>
+        </div>
+        <div class="sc-field">
+          <label>Period of need ends</label>
+          <div class="sc-date">
+            <select id="sc-end-month" aria-label="End month">
+              <option value="">Month</option>
+            </select>
+            <select id="sc-end-year" aria-label="End year">
+              <option value="">Year</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="sc-field">
+        <label for="sc-amount">Estimated total value ($)</label>
+        <input type="number" id="sc-amount" min="0" step="1000" placeholder="e.g. 450000" />
+      </div>
+
+      <button class="sc-submit" id="sc-check-btn" type="button">Check this scenario</button>
+    </form>
+
+    <div id="scResult" style="display:none;"></div>
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="fm-panel">
+    <p style="color:var(--silver);font-size:0.92rem;line-height:1.65;margin-bottom:1.5rem;">Primary sources for the rules above.</p>
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>31 USC 1301(a) &mdash; Purpose Statute</h4>
+        <p>Appropriations may only be applied to the objects for which the appropriations were made, except as otherwise provided by law.</p>
+        <a href="https://www.law.cornell.edu/uscode/text/31/1301" target="_blank" rel="noopener">Open 31 USC 1301 &rarr;</a>
+      </div>
+      <div class="lookup-card">
+        <h4>31 USC 1502(a) &mdash; Bona Fide Need Rule</h4>
+        <p>The balance of a time-limited appropriation is available only for the payment of expenses properly incurred during the period of availability.</p>
+        <a href="https://www.law.cornell.edu/uscode/text/31/1502" target="_blank" rel="noopener">Open 31 USC 1502 &rarr;</a>
+      </div>
+      <div class="lookup-card">
+        <h4>31 USC 1341 &mdash; Anti-Deficiency Act</h4>
+        <p>Prohibits obligations or expenditures in excess of available appropriations.</p>
+        <a href="https://www.law.cornell.edu/uscode/text/31/1341" target="_blank" rel="noopener">Open 31 USC 1341 &rarr;</a>
+      </div>
+      <div class="lookup-card">
+        <h4>31 USC 1517 &mdash; ADA Apportionment</h4>
+        <p>Prohibits obligations in excess of apportionments or allotments, and requires reporting of violations.</p>
+        <a href="https://www.law.cornell.edu/uscode/text/31/1517" target="_blank" rel="noopener">Open 31 USC 1517 &rarr;</a>
+      </div>
+      <div class="lookup-card">
+        <h4>10 USC 3133 &mdash; Severable Services Crossing FYs</h4>
+        <p>Permits a severable services contract period to begin in one FY and end in the next, up to 12 months.</p>
+        <a href="https://www.law.cornell.edu/uscode/text/10/3133" target="_blank" rel="noopener">Open 10 USC 3133 &rarr;</a>
+      </div>
+      <div class="lookup-card">
+        <h4>DoD FMR Vol 2A, Ch 1 &mdash; Expense/Investment Criteria</h4>
+        <p>Defines the expense and investment categories, the $250K threshold, and the exceptions.</p>
+        <a href="https://comptroller.defense.gov/FMR/vol2a_chapters/" target="_blank" rel="noopener">Open DoD FMR Vol 2A &rarr;</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 52.232-19 &mdash; Availability of Funds Next FY</h4>
+        <p>Used on severable services contracts that cross fiscal years.</p>
+        <a href="https://www.acquisition.gov/far/52.232-19" target="_blank" rel="noopener">Open FAR 52.232-19 &rarr;</a>
+      </div>
+      <div class="lookup-card">
+        <h4>GAO Red Book</h4>
+        <p>Principles of Federal Appropriations Law. The canonical reference on purpose, time, and amount.</p>
+        <a href="https://www.gao.gov/legal/appropriations-law/red-book" target="_blank" rel="noopener">Open GAO Red Book &rarr;</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="training-nav-band"><div id="training-nav" class="training-nav"></div></div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="dfars.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ── Tab switching ── */
+document.querySelectorAll('.fm-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.fm-panel').forEach(function(p) { p.classList.remove('active'); });
+    document.querySelectorAll('.fm-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.getElementById('panel-' + tab.getAttribute('data-tab')).classList.add('active');
+    tab.classList.add('active');
+  });
+});
+
+/* ── Appropriation Picker data ── */
+var APPROPS = [
+  {
+    key: 'OM',
+    name: 'Operations & Maintenance',
+    sub: 'O&M  \u2022  1-year money',
+    years: '1 YR',
+    purpose: 'Day-to-day operations, training, maintenance, civilian pay, most services (especially severable), and expense items under the $250K expense/investment threshold.',
+    period: '1 year',
+    expires: 'Expires 30 September of the fiscal year. Then 5 years expired for adjustments only, then closed.',
+    goodFor: [
+      'Severable services (janitorial, security guard, IT help desk, vehicle maintenance, medical support)',
+      'Supplies and consumables under the $250K expense/investment threshold',
+      'Training, TDY, minor repairs, utilities, base support',
+      'Most contract actions at or under the Simplified Acquisition Threshold'
+    ],
+    notGoodFor: [
+      'Investment items or end items at or over $250K per item',
+      'Weapon systems and their major components (regardless of unit cost)',
+      'Research and development',
+      'Construction above the unspecified-minor-construction threshold'
+    ],
+    traps: [
+      'September-rush PRs to "use or lose" O&M where the need is really in October or later. That is a BFN violation even if you get it on contract.',
+      'Funding a severable services option year with the current year\'s money. Each option year needs the year it is exercised in.',
+      'Splitting a single investment item into sub-components to fit under $250K. Auditors catch this one reliably.'
+    ]
+  },
+  {
+    key: 'RDTE',
+    name: 'Research, Development, Test & Evaluation',
+    sub: 'RDT&E  \u2022  2-year money',
+    years: '2 YR',
+    purpose: 'Research, development, prototypes, test articles, test and evaluation activities. All RDT&E is investment regardless of dollar amount.',
+    period: '2 years',
+    expires: 'Available for new obligations for 2 years from the start of the FY. Then 5 years expired, then closed.',
+    goodFor: [
+      'Basic and applied research contracts',
+      'Advanced technology development, prototypes, and test articles',
+      'System development and demonstration efforts',
+      'Test and evaluation services and facilities'
+    ],
+    notGoodFor: [
+      'Production or fielding once a system exits development',
+      'Day-to-day operating costs of the requiring activity',
+      'Routine sustainment and maintenance of fielded systems'
+    ],
+    traps: [
+      'Using RDT&E to fund work that has clearly transitioned to production. The accounting class has to match where in the lifecycle the money actually goes.',
+      'Incremental funding on RDT&E is generally allowed, but the program plan has to support it and the obligations still follow BFN for each increment.'
+    ]
+  },
+  {
+    key: 'PROC',
+    name: 'Procurement',
+    sub: 'Procurement  \u2022  3-year money',
+    years: '3 YR',
+    purpose: 'Investment items over the $250K expense/investment threshold, end items, major spares, initial provisioning, and modifications to fielded systems.',
+    period: '3 years',
+    expires: 'Available for new obligations for 3 years from the start of the FY. Then 5 years expired, then closed.',
+    goodFor: [
+      'End items and major systems over the expense/investment threshold',
+      'Weapon systems and their major components (regardless of unit cost)',
+      'Centrally-managed items (ammunition, pharmaceuticals)',
+      'Initial spares and provisioning for newly-fielded systems'
+    ],
+    notGoodFor: [
+      'Severable services (those ride on O&M)',
+      'Expense items under the threshold',
+      'R&D work (that is RDT&E)',
+      'Construction (that is MILCON)'
+    ],
+    traps: [
+      'Breaking a system into pieces to avoid full funding. The full-funding policy wants each useful end item funded in one year.',
+      'Using Procurement for services that happen to be tied to an investment item. Install-and-integrate labor may ride on Procurement, but the ongoing sustainment is O&M.'
+    ]
+  },
+  {
+    key: 'MILPERS',
+    name: 'Military Personnel',
+    sub: 'MilPers  \u2022  1-year money',
+    years: '1 YR',
+    purpose: 'Pay and allowances for military members, recruiting bonuses, PCS, and personnel-related payments. Rarely a contracting appropriation, but it shows up occasionally for recruiting support contracts and similar.',
+    period: '1 year',
+    expires: 'Same pattern as O&M: FY + 5 years expired, then closed.',
+    goodFor: [
+      'Military pay and allowances',
+      'Recruiting and retention bonuses',
+      'PCS and travel for military members'
+    ],
+    notGoodFor: [
+      'Most contracting actions. Those belong on O&M or Procurement.',
+      'Civilian pay (that is O&M)'
+    ],
+    traps: [
+      'Almost never the right answer for a contract action. If a program office hands you a PR on MilPers funds and the buy is not directly tied to military pay or personnel services, stop and ask the resource advisor.'
+    ]
+  },
+  {
+    key: 'MILCON',
+    name: 'Military Construction',
+    sub: 'MILCON  \u2022  5-year money',
+    years: '5 YR',
+    purpose: 'New facility construction, major renovations over the unspecified-minor-construction threshold, and land acquisition. Covered lightly here because this site focuses on operational contracting.',
+    period: '5 years',
+    expires: '5 years available, then 5 years expired, then closed.',
+    goodFor: [
+      'New construction over the unspecified-minor-construction ceiling',
+      'Major renovations that exceed the sustainment/restoration/modernization threshold',
+      'Land acquisition and major utility projects'
+    ],
+    notGoodFor: [
+      'Minor repairs and routine facility maintenance (those are O&M)',
+      'Equipment installed in the facility (usually Procurement)',
+      'Design-only contracts once they get past a certain point (those may run on MILCON Planning & Design)'
+    ],
+    traps: [
+      'MILCON work is governed by separate authorities (10 USC Chapter 169) and has its own approval and reporting chain. If a MILCON-flavored PR lands on your desk, route to the CE and comptroller experts before anything else.'
+    ]
+  },
+  {
+    key: 'WCF',
+    name: 'Working Capital Fund',
+    sub: 'WCF / DWCF  \u2022  No-year',
+    years: 'NO YR',
+    purpose: 'Revolving fund that sells goods and services (depot maintenance, supply, transportation, fuel) back to the services and other customers. Not an annual appropriation. Customers order on MIPR or order against WCF providers.',
+    period: 'No-year',
+    expires: 'Does not expire in the same way. The fund itself is continuing.',
+    goodFor: [
+      'Depot-level maintenance and overhaul',
+      'Supply, warehousing, and distribution services',
+      'Transportation of materiel (Defense Transportation System)',
+      'Fuel (through DLA Energy)'
+    ],
+    notGoodFor: [
+      'Buying WCF-provided goods or services outside the normal DWCF order channels',
+      'Treating WCF as a workaround for expired annual funds'
+    ],
+    traps: [
+      'Assuming WCF is not subject to Purpose or Amount. It still is. Only Time bends.',
+      'Using a MIPR to a WCF provider to warehouse expiring-year money. The order has to represent a real bona fide need at the time of obligation.'
+    ]
+  }
+];
+
+function renderPicker() {
+  var grid = document.getElementById('pickerGrid');
+  if (!grid) return;
+  APPROPS.forEach(function(a) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'picker-btn';
+    btn.setAttribute('data-key', a.key);
+    btn.innerHTML = '<div class="p-years">' + a.years + '</div>'
+                  + '<div class="p-title">' + a.name + '</div>'
+                  + '<div class="p-sub">' + a.sub + '</div>';
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.picker-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      showPickerResult(a);
+    });
+    grid.appendChild(btn);
+  });
+}
+
+function showPickerResult(a) {
+  var box = document.getElementById('pickerResult');
+  var good = a.goodFor.map(function(g) { return '<li>' + g + '</li>'; }).join('');
+  var bad = a.notGoodFor.map(function(g) { return '<li>' + g + '</li>'; }).join('');
+  var traps = a.traps.map(function(g) { return '<li>' + g + '</li>'; }).join('');
+  box.innerHTML =
+    '<div class="picker-result">'
+    + '<h4>' + a.name + '</h4>'
+    + '<div class="pr-sub">' + a.sub + '</div>'
+    + '<div class="pr-stat-row">'
+    +   '<div class="pr-stat"><div class="pr-stat-label">Period of Availability</div><div class="pr-stat-val">' + a.period + '</div></div>'
+    +   '<div class="pr-stat"><div class="pr-stat-label">What Expires</div><div class="pr-stat-val" style="font-size:0.82rem;line-height:1.4;">' + a.expires + '</div></div>'
+    + '</div>'
+    + '<h5>What it buys</h5><ul>' + good + '</ul>'
+    + '<h5>What it does not buy</h5><ul>' + bad + '</ul>'
+    + '<h5>Common traps</h5><ul>' + traps + '</ul>'
+    + '<div class="highlight-box" style="margin-top:1.25rem;font-size:0.87rem;">'
+    +   '<strong style="color:var(--white);">Purpose:</strong> ' + a.purpose
+    + '</div>'
+    + '</div>';
+}
+
+renderPicker();
+
+/* ── Scenario Checker ── */
+/* Pull the paired year/month selects into a YYYY-MM string (or '' if either side blank) */
+function buildYM(yearId, monthId) {
+  var y = document.getElementById(yearId).value;
+  var m = document.getElementById(monthId).value;
+  if (!y || !m) return '';
+  if (m.length < 2) m = '0' + m;
+  return y + '-' + m;
+}
+
+/* Populate the four period-of-need selects once on load */
+(function populateDateSelects() {
+  var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var monthSelects = ['sc-start-month','sc-end-month'];
+  for (var s = 0; s < monthSelects.length; s++) {
+    var sel = document.getElementById(monthSelects[s]);
+    if (!sel) continue;
+    for (var i = 0; i < 12; i++) {
+      var opt = document.createElement('option');
+      opt.value = String(i + 1);
+      opt.textContent = monthNames[i];
+      sel.appendChild(opt);
+    }
+  }
+  /* Year range: 2 years back through 6 years forward — wide enough for multi-year service contracts, narrow enough to scan */
+  var now = new Date();
+  var curYear = now.getFullYear();
+  var yearSelects = ['sc-start-year','sc-end-year'];
+  for (var y = 0; y < yearSelects.length; y++) {
+    var ysel = document.getElementById(yearSelects[y]);
+    if (!ysel) continue;
+    for (var yr = curYear - 2; yr <= curYear + 6; yr++) {
+      var yopt = document.createElement('option');
+      yopt.value = String(yr);
+      yopt.textContent = String(yr);
+      ysel.appendChild(yopt);
+    }
+  }
+})();
+
+function monthToNum(s) {
+  if (!s) return null;
+  var parts = s.split('-');
+  if (parts.length < 2) return null;
+  var y = parseInt(parts[0], 10);
+  var m = parseInt(parts[1], 10);
+  if (isNaN(y) || isNaN(m)) return null;
+  return y * 12 + (m - 1);
+}
+/* Federal FY: begins 1 October of previous calendar year. FY26 = Oct 2025 - Sep 2026. */
+function fyStartMonthNum(fy) { return (fy - 1) * 12 + 9; }   /* October of prev cal year */
+function fyEndMonthNum(fy)   { return fy * 12 + 8; }         /* September of fy cal year */
+
+function checkScenario() {
+  var approp = document.getElementById('sc-approp').value;
+  var fy = parseInt(document.getElementById('sc-fy').value, 10);
+  var item = document.getElementById('sc-item').value;
+  var startStr = buildYM('sc-start-year', 'sc-start-month');
+  var endStr = buildYM('sc-end-year', 'sc-end-month');
+  var amtStr = document.getElementById('sc-amount').value;
+  var amount = parseFloat(amtStr);
+
+  var missing = [];
+  if (!approp) missing.push('appropriation');
+  if (!fy) missing.push('fiscal year');
+  if (!item) missing.push('what you are buying');
+  if (!startStr) missing.push('period start');
+  if (!endStr) missing.push('period end');
+  if (isNaN(amount) || amount <= 0) missing.push('estimated value');
+
+  var box = document.getElementById('scResult');
+  box.style.display = 'block';
+  if (missing.length) {
+    box.innerHTML = '<div class="sc-result"><h4>Fill in all fields</h4><p style="color:var(--silver);font-size:0.9rem;">Still need: ' + missing.join(', ') + '.</p></div>';
+    return;
+  }
+
+  var startNum = monthToNum(startStr);
+  var endNum = monthToNum(endStr);
+  if (startNum === null || endNum === null) {
+    box.innerHTML = '<div class="sc-result"><h4>Could not parse the dates</h4></div>';
+    return;
+  }
+  if (endNum < startNum) {
+    box.innerHTML = '<div class="sc-result"><h4>End of period is before start</h4><p style="color:var(--silver);font-size:0.9rem;">Flip the dates and try again.</p></div>';
+    return;
+  }
+
+  /* Availability windows (for obligating new work) */
+  var availYears = { OM: 1, MILPERS: 1, RDTE: 2, PROC: 3, MILCON: 5, WCF: 99 };
+  var availYrs = availYears[approp];
+  var availStart = fyStartMonthNum(fy);
+  var availEnd = fyEndMonthNum(fy + (availYrs - 1));
+
+  var issues = [];
+  var verdict = 'v-ok';
+  var verdictText = 'Looks clean';
+  var verdictSummary = 'No blocking issues surfaced. Still run funds through your resource advisor and your CO.';
+
+  /* ── PURPOSE checks ── */
+  var purposeBad = {
+    OM: { expense:false, investment_small:'bad', severable:false, nonseverable:'warn', rdt:'bad', construction:'bad' },
+    RDTE: { expense:'warn', investment_small:'warn', severable:'warn', nonseverable:false, rdt:false, construction:'bad' },
+    PROC: { expense:'bad', investment_small:false, severable:'bad', nonseverable:'warn', rdt:'warn', construction:'bad' },
+    MILPERS: { expense:'warn', investment_small:'bad', severable:'warn', nonseverable:'warn', rdt:'bad', construction:'bad' },
+    MILCON: { expense:'bad', investment_small:'warn', severable:'bad', nonseverable:'warn', rdt:'bad', construction:false },
+    WCF: { expense:'warn', investment_small:'warn', severable:'warn', nonseverable:'warn', rdt:'warn', construction:'warn' }
+  };
+  var purposeHit = purposeBad[approp][item];
+  if (purposeHit === 'bad') {
+    issues.push({ tone:'red', title:'Purpose violation', body: purposeIssueText(approp, item) });
+    verdict = 'v-bad'; verdictText = 'Stop. Wrong color.'; verdictSummary = 'The appropriation does not cover what you described. Fix purpose before anything else.';
+  } else if (purposeHit === 'warn') {
+    issues.push({ tone:'yellow', title:'Purpose: check with your resource advisor', body: purposeIssueText(approp, item) });
+    if (verdict === 'v-ok') { verdict = 'v-warn'; verdictText = 'Check with RA'; verdictSummary = 'Worth a resource-advisor conversation before obligating.'; }
+  }
+
+  /* Expense vs. investment threshold — O&M over $250K on a single end item */
+  if (approp === 'OM' && item === 'expense' && amount >= 250000) {
+    issues.push({ tone:'yellow', title:'Expense/investment threshold', body: 'You picked expense, but $' + fmt(amount) + ' is at or above the $250K expense/investment threshold. If this is a single end item or system, it is Procurement. If it is consumables or a service, the threshold does not apply.' });
+    if (verdict === 'v-ok') { verdict = 'v-warn'; verdictText = 'Threshold check'; verdictSummary = 'Dollar value sits at or above the expense/investment line. Confirm the item type.'; }
+  }
+
+  /* ── TIME checks ── */
+  var periodLenMonths = endNum - startNum + 1;
+
+  /* Severable services 12-month cap under 10 USC 3133 */
+  if (item === 'severable' && approp === 'OM') {
+    if (periodLenMonths > 12) {
+      issues.push({ tone:'red', title:'Severable services exceed 12 months on one year\'s money', body: 'You picked ' + periodLenMonths + ' months of severable services on FY' + (fy % 100 < 10 ? '0' : '') + (fy % 100) + ' O&M. 10 USC 3133 caps a single severable-services funding period at 12 months. Break this into a base period + option years, with each year funded in its own appropriation.' });
+      verdict = 'v-bad'; verdictText = 'Over the 12-month cap';
+      verdictSummary = 'Severable services over 12 months need separate option years, each funded when exercised.';
+    } else if (startNum < availStart || startNum > availEnd + 12) {
+      issues.push({ tone:'yellow', title:'Period start vs. availability', body: 'Severable-services start date is outside the normal obligation window for this year. Double-check BFN attaches to the year you are obligating in.' });
+      if (verdict === 'v-ok') { verdict = 'v-warn'; verdictText = 'BFN timing'; verdictSummary = 'Worth confirming the bona fide need attaches to this year.'; }
+    }
+  }
+
+  /* Non-severable fully in FY availability */
+  if (item === 'nonseverable') {
+    if (endNum > availEnd) {
+      issues.push({ tone:'yellow', title:'Non-severable period extends past the appropriation life', body: 'Non-severable work is fully funded up front against the BFN at award. The period of performance does not have to end within the availability window, but the need must exist at the time of award. Confirm with your resource advisor.' });
+      if (verdict === 'v-ok') { verdict = 'v-warn'; verdictText = 'BFN check'; verdictSummary = 'Non-severable BFN attaches to the year of award. Period of performance can run longer, but validate the need exists now.'; }
+    }
+  }
+
+  /* Generic BFN: period of need starts before availability window (e.g. FY26 O&M for a Jan 2028 start) */
+  if (startNum > availEnd + 12 && approp !== 'WCF') {
+    issues.push({ tone:'red', title:'Bona fide need rule: start date too far in the future', body: 'The period of need starts after this appropriation can reasonably cover it. FY' + (fy % 100) + ' ' + (approp === 'OM' ? 'O&M' : approp) + ' is for current-year needs, not speculative out-year requirements.' });
+    if (verdict !== 'v-bad') { verdict = 'v-bad'; verdictText = 'BFN violation'; verdictSummary = 'Need starts too far after the year being obligated.'; }
+  }
+
+  /* Expired year: period starts after the appropriation went expired */
+  if (approp !== 'WCF' && startNum > availEnd && !(approp === 'OM' && item === 'severable' && periodLenMonths <= 12)) {
+    issues.push({ tone:'yellow', title:'Starting in an expired year', body: 'This year\'s funds expire for new obligations at the end of the availability window. If the period of need starts after that, you probably need the next year\'s money. The one common exception is severable services under the 12-month rule.' });
+    if (verdict === 'v-ok') { verdict = 'v-warn'; verdictText = 'Expired year risk'; verdictSummary = 'Likely needs the next FY\'s money.'; }
+  }
+
+  /* ── AMOUNT: no direct check, but we note it  ── */
+  if (isNaN(amount) || amount <= 0) {
+    issues.push({ tone:'yellow', title:'No estimated value provided', body: 'Amount checks (Antideficiency) cannot run without an estimate. Plug in your IGCE or ROM.' });
+  }
+
+  /* Always add a green confirmation where things look clean */
+  if (verdict === 'v-ok') {
+    issues.push({ tone:'green', title:'Purpose, Time, and Amount surface clean', body: 'Based on what you entered, the appropriation lines up with the item type, the period of need fits the availability window, and the amount does not trigger a threshold flag. Still get your resource advisor and CO to bless it before you obligate.' });
+  }
+
+  renderScenarioResult(verdict, verdictText, verdictSummary, issues);
+}
+
+function purposeIssueText(approp, item) {
+  var m = {
+    'OM|investment_small': 'O&M does not pay for investment items at or over the $250K threshold. That is Procurement.',
+    'OM|rdt': 'O&M does not pay for R&D. That is RDT&E.',
+    'OM|construction': 'O&M does not pay for construction over the unspecified-minor-construction ceiling. That is MILCON.',
+    'OM|nonseverable': 'Non-severable work can live on O&M if it is operational in nature, but the BFN attaches to the year of award. Confirm with your resource advisor.',
+    'RDTE|expense': 'RDT&E is for R&D and test. Plain expense supplies unrelated to an RDT&E effort belong on O&M.',
+    'RDTE|investment_small': 'RDT&E is all investment, but the buy still has to be part of an R&D or T&E effort. Production-grade investment belongs on Procurement.',
+    'RDTE|severable': 'RDT&E can fund services directly tied to an R&D effort. Severable routine services usually belong on O&M.',
+    'RDTE|construction': 'RDT&E does not pay for construction. Test facility construction generally runs on MILCON or a program-specific line.',
+    'PROC|expense': 'Procurement is for investment items at or over the $250K threshold. Expense items are O&M.',
+    'PROC|severable': 'Procurement does not pay for severable services. Those are O&M.',
+    'PROC|nonseverable': 'Procurement can cover install/integration tied to an investment buy, but routine non-severable services live on O&M.',
+    'PROC|rdt': 'Procurement buys production. R&D is RDT&E.',
+    'PROC|construction': 'Procurement does not pay for construction.',
+    'MILPERS|expense': 'MilPers is for military pay and personnel. Most expense buys belong on O&M.',
+    'MILPERS|investment_small': 'MilPers does not pay for investment items.',
+    'MILPERS|severable': 'MilPers is generally not a contracting appropriation. Confirm before obligating.',
+    'MILPERS|nonseverable': 'MilPers is generally not a contracting appropriation. Confirm before obligating.',
+    'MILPERS|rdt': 'MilPers does not pay for R&D.',
+    'MILPERS|construction': 'MilPers does not pay for construction.',
+    'MILCON|expense': 'MILCON is for construction. Expense items are O&M.',
+    'MILCON|investment_small': 'MILCON is for construction. Investment end items are Procurement.',
+    'MILCON|severable': 'MILCON is for construction. Severable services are O&M.',
+    'MILCON|nonseverable': 'MILCON is for construction. Some design work rides on MILCON P&D, but other non-severable work does not.',
+    'MILCON|rdt': 'MILCON is for construction. R&D is RDT&E.',
+    'WCF|expense': 'Working Capital Fund usage is order-channel specific. Expense-type buys through WCF generally need to go through an established WCF provider.',
+    'WCF|investment_small': 'WCF is not a standard path for direct investment buys. Confirm with your comptroller.',
+    'WCF|severable': 'WCF covers specific service lines (depot maintenance, supply, transportation). Outside those lines, use O&M.',
+    'WCF|nonseverable': 'WCF covers specific service lines. Outside those, use the right annual appropriation.',
+    'WCF|rdt': 'WCF is not for R&D. R&D goes on RDT&E.',
+    'WCF|construction': 'WCF does not fund construction.'
+  };
+  return m[approp + '|' + item] || 'Appropriation and item type are an unusual pair. Route through your resource advisor.';
+}
+
+function fmt(n) {
+  return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function renderScenarioResult(verdict, verdictText, summary, issues) {
+  var box = document.getElementById('scResult');
+  var lis = issues.map(function(i) {
+    return '<li class="issue-' + i.tone + '"><strong>' + i.title + '.</strong> ' + i.body + '</li>';
+  }).join('');
+  box.innerHTML =
+    '<div class="sc-result">'
+    + '<h4>Scenario check</h4>'
+    + '<span class="sc-verdict ' + verdict + '">' + verdictText + '</span>'
+    + '<p style="color:var(--silver);font-size:0.92rem;line-height:1.65;margin:0 0 0.5rem;">' + summary + '</p>'
+    + '<ul class="sc-issue-list">' + lis + '</ul>'
+    + '</div>';
+}
+
+document.getElementById('sc-check-btn').addEventListener('click', checkScenario);
+</script>
+</body>
+</html>
