@@ -1,0 +1,4017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Requirements Package Builder. Ollie the axolotl walks you through a requirements package one station at a time. First of a family of tools: requirements, PWS, market research, sole-source and brand-name justifications." />
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-X2RXS78N7K');
+  </script>
+
+  <title>Requirements Package Builder | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+
+    body.rb-page { background: #040d1f; min-height: 100vh; }
+
+    .rb-hero { padding: 6rem 1.5rem 1rem; text-align: center; }
+    .rb-hero-tag {
+      display: inline-block; background: rgba(255,180,196,0.1); border: 1px solid rgba(255,180,196,0.3);
+      color: #ffb4c4; font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      padding: 0.3rem 1rem; border-radius: 100px; margin-bottom: 0.75rem;
+    }
+    .rb-hero h1 {
+      font-family: 'Rajdhani', sans-serif; font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 700;
+      color: #e2e8f0; margin-bottom: 0.5rem; letter-spacing: 0.5px;
+    }
+    .rb-hero p { color: var(--silver); font-size: 1rem; max-width: 640px; margin: 0 auto; line-height: 1.6; }
+
+    .rb-wrap { max-width: 920px; margin: 0 auto 3rem; padding: 0 1rem; }
+
+    /* Scene canvas */
+    .scene-wrap {
+      background: #1a1029;
+      border: 1px solid rgba(255,180,196,0.2);
+      border-radius: 12px;
+      padding: 0;
+      overflow: hidden;
+      margin-bottom: 1rem;
+      box-shadow: 0 0 40px rgba(255,180,196,0.05);
+    }
+    #scene {
+      display: block;
+      width: 100%;
+      height: auto;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    /* Dialogue box - Undertale style */
+    .dialogue {
+      background: #000;
+      border: 4px solid #fff;
+      border-radius: 4px;
+      padding: 1.1rem 1.25rem 1.1rem 5.5rem;
+      min-height: 110px;
+      position: relative;
+      font-family: 'Press Start 2P', monospace;
+      color: #fff;
+      font-size: 0.85rem;
+      line-height: 1.75;
+      letter-spacing: 0.01em;
+      margin-bottom: 0.8rem;
+      cursor: pointer;
+    }
+    .dialogue.hidden { display: none; }
+    .dialogue-name {
+      position: absolute;
+      top: -0.8rem; left: 1rem;
+      background: #000;
+      border: 3px solid #fff;
+      padding: 0.15rem 0.7rem;
+      font-size: 0.62rem;
+      color: #ffb4c4;
+      letter-spacing: 0.1em;
+    }
+    .dialogue-portrait {
+      position: absolute;
+      top: 0.9rem; left: 0.9rem;
+      width: 64px; height: 64px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+    .dialogue-text { min-height: 3.8rem; white-space: pre-wrap; }
+    .dialogue-advance {
+      position: absolute;
+      bottom: 0.5rem; right: 0.8rem;
+      font-size: 0.55rem;
+      color: #ffb4c4;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .dialogue-advance.visible { opacity: 1; animation: pulseAdvance 1s ease-in-out infinite; }
+    @keyframes pulseAdvance {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* Input area */
+    .input-panel {
+      background: rgba(10,22,50,0.7);
+      border: 1px solid rgba(255,180,196,0.25);
+      border-radius: 10px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 0.8rem;
+    }
+    .input-panel.hidden { display: none; }
+    .input-panel label {
+      display: block;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.62rem;
+      color: #ffb4c4;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.6rem;
+    }
+    .input-panel input {
+      width: 100%;
+      background: #040d1f;
+      border: 2px solid rgba(255,180,196,0.35);
+      border-radius: 6px;
+      padding: 0.7rem 0.85rem;
+      color: #e2e8f0;
+      font-family: inherit;
+      font-size: 1rem;
+      margin-bottom: 0.7rem;
+    }
+    .input-panel input:focus {
+      outline: none;
+      border-color: #ffb4c4;
+      box-shadow: 0 0 0 3px rgba(255,180,196,0.15);
+    }
+    .input-panel button {
+      background: #ffb4c4;
+      color: #1a1029;
+      border: none;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 0.92rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.6rem 1.3rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .input-panel button:hover { background: #ffc9d6; transform: translateY(-1px); }
+    .input-panel button.secondary {
+      background: transparent;
+      color: #ffb4c4;
+      border: 2px solid rgba(255,180,196,0.35);
+    }
+    .input-panel button.secondary:hover { background: rgba(255,180,196,0.12); color: #ffc9d6; }
+    .input-panel textarea {
+      width: 100%;
+      background: #040d1f;
+      border: 2px solid rgba(255,180,196,0.35);
+      border-radius: 6px;
+      padding: 0.7rem 0.85rem;
+      color: #e2e8f0;
+      font-family: inherit;
+      font-size: 0.98rem;
+      min-height: 5.5rem;
+      margin-bottom: 0.7rem;
+      resize: vertical;
+    }
+    .input-panel textarea:focus {
+      outline: none;
+      border-color: #ffb4c4;
+      box-shadow: 0 0 0 3px rgba(255,180,196,0.15);
+    }
+    .input-choice-row, .input-choice-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-bottom: 0.6rem;
+    }
+    .input-choice-list { flex-direction: column; }
+    .input-choice-row button, .input-choice-list button {
+      text-transform: none;
+      letter-spacing: 0.01em;
+      padding: 0.7rem 1.1rem;
+      font-size: 0.95rem;
+      text-align: left;
+    }
+    .input-choice-list button { width: 100%; }
+    .input-hint {
+      font-size: 0.82rem;
+      color: #c8d4e0;
+      opacity: 0.7;
+      margin: 0.25rem 0 0.5rem;
+      font-style: italic;
+    }
+    .input-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
+      align-items: center;
+    }
+    .input-panel button.why-btn,
+    .input-panel button.back-btn {
+      background: transparent;
+      color: #8fb4d8;
+      border: 1px dashed rgba(143,180,216,0.4);
+      text-transform: none;
+      letter-spacing: 0.01em;
+      font-size: 0.8rem;
+      padding: 0.35rem 0.75rem;
+      margin: 0;
+    }
+    .input-panel button.why-btn:hover,
+    .input-panel button.back-btn:hover {
+      background: rgba(143,180,216,0.1);
+      color: #b3cde7;
+      transform: none;
+    }
+    .input-panel button.back-btn {
+      color: #ffb4c4;
+      border-color: rgba(255,180,196,0.4);
+    }
+    .input-panel button.back-btn:hover {
+      background: rgba(255,180,196,0.1);
+      color: #ffc9d6;
+    }
+    .review-table td.editable {
+      cursor: text;
+      background: rgba(255,180,196,0.06);
+      border-left: 2px solid rgba(255,180,196,0.3);
+      white-space: pre-wrap;
+    }
+    .review-table td.editable:hover { background: rgba(255,180,196,0.12); }
+    .review-table td.editable:focus {
+      outline: none;
+      background: rgba(255,180,196,0.18);
+      border-left-color: #ffb4c4;
+    }
+    .review-edit-hint {
+      font-size: 0.78rem;
+      color: #c8d4e0;
+      opacity: 0.7;
+      font-style: italic;
+      margin: 0.4rem 0 0.6rem;
+    }
+    .input-threshold-tag {
+      display: inline-block;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.6rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 4px;
+      letter-spacing: 0.1em;
+      margin: 0.4rem 0.4rem 0.4rem 0;
+    }
+    .tag-mpt { background: rgba(74,222,128,0.18); color: #4ade80; border: 1px solid rgba(74,222,128,0.4); }
+    .tag-sat { background: rgba(74,158,255,0.18); color: #4a9eff; border: 1px solid rgba(74,158,255,0.4); }
+    .tag-ov  { background: rgba(255,180,100,0.18); color: #ffb464; border: 1px solid rgba(255,180,100,0.4); }
+
+    /* Review panel */
+    .review-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      margin-bottom: 0.9rem;
+    }
+    .review-table th {
+      text-align: left;
+      background: rgba(255,180,196,0.08);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      color: #ffb4c4;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid rgba(255,180,196,0.25);
+    }
+    .review-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px dashed rgba(255,180,196,0.12);
+      vertical-align: top;
+    }
+    .review-table td:first-child {
+      font-weight: 600;
+      color: #c8d4e0;
+      width: 38%;
+    }
+    .review-table td:last-child { white-space: pre-wrap; }
+    .review-empty { color: #8aa0b5; font-style: italic; }
+
+    /* Packet manifest rows: narrower first column and muted "not applicable" rows */
+    .pkg-manifest td:first-child { width: 32px; text-align: center; font-weight: 700; color: #9ad8a2; }
+    .pkg-manifest td:nth-child(2) { width: 70px; font-family: 'Press Start 2P', monospace; font-size: 0.62rem; letter-spacing: 0.06em; color: #ffb4c4; }
+    .pkg-manifest tr.skip td { color: #8aa0b5; }
+    .pkg-manifest tr.skip td:first-child { color: #6a788a; }
+
+    .next-station-row {
+      display: flex;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+    .handoff-note {
+      margin-top: 0.8rem;
+      padding: 0.8rem 1rem;
+      background: rgba(74,158,255,0.06);
+      border-left: 3px solid #4a9eff;
+      border-radius: 4px;
+      color: #c8d4e0;
+      font-size: 0.9rem;
+    }
+    .handoff-note a { color: #ffb4c4; font-weight: 600; }
+
+    /* Bottom POC note */
+    .poc-note {
+      margin-top: 1.5rem;
+      padding: 1rem 1.15rem;
+      background: rgba(255,180,196,0.04);
+      border: 1px dashed rgba(255,180,196,0.25);
+      border-radius: 8px;
+      color: #c8d4e0;
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+    .poc-note strong { color: #ffb4c4; }
+
+    /* Audio toggle */
+    .audio-toggle {
+      position: absolute; top: 0.7rem; right: 0.7rem;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,180,196,0.35);
+      color: #ffb4c4;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      padding: 0.35rem 0.55rem;
+      border-radius: 4px;
+      cursor: pointer;
+      letter-spacing: 0.08em;
+    }
+    .audio-toggle:hover { background: rgba(255,180,196,0.15); }
+
+    .scene-wrap { position: relative; }
+
+    @media (max-width: 600px) {
+      .rb-hero { padding-top: 5rem; }
+      .dialogue { font-size: 0.72rem; padding-left: 4.5rem; padding-right: 0.9rem; }
+      .dialogue-portrait { width: 48px; height: 48px; }
+      .dialogue-name { font-size: 0.55rem; }
+    }
+  </style>
+</head>
+<body class="rb-page">
+
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="dfars.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="federal-register.html">Federal Register</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="rb-hero">
+  <span class="rb-hero-tag">Proof of Concept</span>
+  <h1>Requirements Package Builder</h1>
+  <p>Meet Ollie. He hosts a family of tools for building out acquisition packages: requirements definition, PWS drafting, market research, sole-source justifications, brand-name justifications. This first preview is the entry to requirements definition.</p>
+</div>
+
+<div class="rb-wrap">
+
+  <div class="scene-wrap">
+    <canvas id="scene" width="720" height="260"></canvas>
+    <button class="audio-toggle" id="audioToggle">AUDIO: ON</button>
+  </div>
+
+  <div class="dialogue" id="dialogue" onclick="advanceDialogue()">
+    <span class="dialogue-name" id="dialogueName">OLLIE</span>
+    <canvas class="dialogue-portrait" id="dialoguePortrait" width="32" height="32"></canvas>
+    <div class="dialogue-text" id="dialogueText"></div>
+    <span class="dialogue-advance" id="dialogueAdvance">▼</span>
+  </div>
+
+  <div class="input-panel hidden" id="inputPanel">
+    <label id="inputLabel">YOUR ANSWER</label>
+    <p class="input-hint" id="inputHint" style="display:none;"></p>
+
+    <!-- Single-line text, number, date -->
+    <input type="text" id="inputField" placeholder="type here..." style="display:none;" />
+
+    <!-- Multi-line text -->
+    <textarea id="inputTextarea" placeholder="type here..." style="display:none;"></textarea>
+
+    <!-- Yes/No buttons -->
+    <div class="input-choice-row" id="inputYesNo" style="display:none;">
+      <button data-val="yes">Yes</button>
+      <button data-val="no" class="secondary">No</button>
+    </div>
+
+    <!-- Multi-choice buttons -->
+    <div class="input-choice-list" id="inputChoices" style="display:none;"></div>
+
+    <!-- Review panel -->
+    <div id="inputReview" style="display:none;"></div>
+
+    <!-- Output panel -->
+    <div id="inputOutput" style="display:none;">
+      <div class="next-station-row">
+        <button id="btnDownloadPdf">&#8595; Download SOR (PDF)</button>
+        <button id="btnNextStation">Next: Market Research &rarr;</button>
+        <button id="btnStartOver" class="secondary">Start over</button>
+      </div>
+      <p class="handoff-note" id="handoffNote"></p>
+    </div>
+
+    <!-- Submit button for text/textarea/number/date -->
+    <button id="inputSubmit" style="display:none;">Submit</button>
+
+    <!-- Meta row: back + why -->
+    <div class="input-meta-row">
+      <button id="inputBack" class="back-btn" style="display:none;" type="button">&larr; Back</button>
+      <button id="inputWhy" class="why-btn" style="display:none;" type="button">? Why do you need this?</button>
+    </div>
+  </div>
+
+  <div class="poc-note">
+    <strong>Early build.</strong> Ollie walks you through a product Statement of Requirement and spits out a clean PDF you can hand to CONS. Services get a short intake then hand off to the PWS builder. Your answers ride the belt to the next station (market research, justifications, evaluation factors) so you don't have to retype anything. Click the dialogue box to advance. Nothing here is a sanctioned form &mdash; it's a working doc to help you think.
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="dfars.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ═════════════════════════════════════════════════════════════════
+   REQUIREMENTS PACKAGE BUILDER — Axolotl POC
+   Canvas scene with Ollie the axolotl, conveyor belt, and Undertale
+   style dialogue engine (typewriter + per-char Web Audio beeps).
+   ═════════════════════════════════════════════════════════════════ */
+
+/* ──────────── Palette ──────────── */
+const PAL = {
+  '.': null,
+  'o': '#2a1a33',   // outline / dark
+  'p': '#ffb4c4',   // main pink
+  'P': '#e8889e',   // shadow pink
+  'H': '#ffd4dc',   // highlight pink
+  'w': '#ffffff',   // white
+  'W': '#e4e0ec',   // off-white shadow
+  'e': '#1a1228',   // eye black
+  's': '#ffffff',   // sparkle
+  'g': '#ff94b8',   // gill pink
+  'G': '#d47395',   // gill shadow
+  'c': '#ffc2d2',   // cheek pink
+  'm': '#6b2a3c',   // mouth
+  'b': '#9a7242',   // box brown
+  'B': '#6d4f2a',   // box shadow
+  'y': '#f2c868',   // box tape/label
+  'Y': '#d4a74c',   // tape shadow
+};
+
+/* ──────────── Sprite definitions ──────────── */
+/* Each sprite is a list of strings. Each character maps to PAL.
+   Sprites are designed on a 32-wide grid; height varies. */
+
+const SPRITE_SRC = {
+  /* Requirement box — a cardboard parcel with tape */
+  req_box: [
+    "................",
+    "..oooooooooooo..",
+    ".obbbbyyybbbbo..",
+    ".obbbbyYybbbbo..",
+    ".obBBByYyBBBbo..",
+    ".obbbbyyybbbbo..",
+    ".obBBbbyybbBBo..",
+    ".obbbbbyybbbbo..",
+    ".obBBbbyybbBBo..",
+    ".obbbbbyybbbbo..",
+    ".obBBbbyybbBBo..",
+    ".obbbbyyybbbbo..",
+    ".oBBBBBBBBBBBo..",
+    "..oooooooooooo..",
+    "................",
+    "................"
+  ]
+};
+
+function parseSprite(lines) {
+  const w = lines[0].length;
+  const h = lines.length;
+  const pixels = [];
+  for (let y = 0; y < h; y++) {
+    const row = [];
+    for (let x = 0; x < w; x++) {
+      row.push(PAL[lines[y][x]] ?? null);
+    }
+    pixels.push(row);
+  }
+  return { w, h, pixels };
+}
+const SPRITES = {};
+for (const k in SPRITE_SRC) SPRITES[k] = parseSprite(SPRITE_SRC[k]);
+
+function drawSprite(ctx, sprite, dx, dy, scale, flip = false) {
+  const { w, h, pixels } = sprite;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const c = pixels[y][x];
+      if (!c) continue;
+      const px = flip ? (w - 1 - x) : x;
+      ctx.fillStyle = c;
+      ctx.fillRect(Math.floor(dx + px * scale), Math.floor(dy + y * scale), scale, scale);
+    }
+  }
+}
+
+/* ──────────── Scene rendering ──────────── */
+const canvas = document.getElementById('scene');
+const ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+
+const portraitCanvas = document.getElementById('dialoguePortrait');
+const portraitCtx = portraitCanvas.getContext('2d');
+portraitCtx.imageSmoothingEnabled = false;
+
+/* Ollie bitmap sprites — 64x34 PNGs, one per expression.
+   talk alternates with neutral while isTalking is true (mouth flap).
+   annoyed = one raised brow + slight frown (triggered on brand-name / sole-source).
+   angry = both brows down + full frown (escalated pry). */
+const OLLIE_SPRITE_W = 64;
+const OLLIE_SPRITE_H = 34;
+const ollieImages = {
+  neutral: new Image(),
+  talk: new Image(),
+  annoyed: new Image(),
+  angry: new Image(),
+};
+ollieImages.neutral.src = 'img/ollie_neutral.png';
+ollieImages.talk.src = 'img/ollie_talk.png';
+ollieImages.annoyed.src = 'img/ollie_annoyed.png';
+ollieImages.angry.src = 'img/ollie_angry.png';
+
+const SCENE = {
+  w: 720,
+  h: 260,
+  groundY: 200,  // where the belt surface sits
+  beltH: 36,
+  scale: 3,
+  beltOffset: 0,
+};
+
+const ollie = {
+  x: -80,           // start off-screen
+  // Sprite is 34 tall but the visible body ends around row 24 (rows 25-33 are
+  // transparent padding). Park the feet on the belt surface.
+  y: SCENE.groundY - 24 * SCENE.scale + 2,
+  targetX: 50,
+  walking: true,
+  facing: 'right',  // 'right' or 'front'
+  frame: 0,         // walk frame counter
+  talkFrame: 0,     // mouth open/closed alternation
+  isTalking: false,
+  expression: 'neutral', // 'neutral' | 'annoyed' | 'angry'
+  bob: 0,
+};
+// Expose for the Ollie music module so it can duck the background track
+// while Ollie's talking beeps are playing.
+window.ollie = ollie;
+
+const reqBox = {
+  visible: false,
+  x: 720,
+  y: 0,
+  targetX: 280,
+  label: '',
+};
+
+// Stations are ordered right-to-left so the box flows naturally down the
+// belt (reqBox enters from the right and slides leftward through each
+// station). Visit order matches the tool's step flow.
+const STATIONS = [
+  { x: 640, label: 'INTAKE',  key: 'intake'  },
+  { x: 540, label: 'MARKET',  key: 'market'  },
+  { x: 440, label: 'EVAL',    key: 'eval'    },
+  { x: 340, label: 'JUSTIFY', key: 'justify' },
+  { x: 240, label: 'FUND',    key: 'fund'    },
+  { x: 140, label: 'PACKET',  key: 'packet'  }
+];
+function stationX(key) {
+  const s = STATIONS.find(s => s.key === key);
+  return s ? s.x - 8 * SCENE.scale : 0;
+}
+function moveBoxToStation(key) {
+  const x = stationX(key);
+  if (x) reqBox.targetX = x;
+}
+
+function drawBackground() {
+  // Vertical gradient sky
+  const grad = ctx.createLinearGradient(0, 0, 0, SCENE.h);
+  grad.addColorStop(0, '#2a1a45');
+  grad.addColorStop(0.6, '#3d2259');
+  grad.addColorStop(1, '#1a1029');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, SCENE.w, SCENE.h);
+
+  // Pixel stars/bubbles scattered
+  ctx.fillStyle = '#ffffff';
+  const starSeeds = [[60,40],[180,25],[310,55],[470,35],[590,20],[680,60],[120,80],[420,70],[540,85],[250,95]];
+  for (const [sx, sy] of starSeeds) {
+    ctx.globalAlpha = 0.5 + 0.5 * Math.sin((sx + performance.now() / 500) * 0.05);
+    ctx.fillRect(sx, sy, 2, 2);
+  }
+  ctx.globalAlpha = 1;
+
+  // Pixel clouds (static)
+  ctx.fillStyle = 'rgba(255,180,196,0.15)';
+  const clouds = [[40,110,60,8],[280,120,70,6],[500,105,80,8],[620,130,50,6]];
+  for (const [cx, cy, cw, ch] of clouds) {
+    ctx.fillRect(cx, cy, cw, ch);
+    ctx.fillRect(cx + 8, cy - 4, cw - 16, 4);
+  }
+}
+
+function drawBelt() {
+  const y = SCENE.groundY;
+
+  // Belt body - dark metallic
+  ctx.fillStyle = '#1e1424';
+  ctx.fillRect(0, y, SCENE.w, SCENE.beltH);
+
+  // Belt top surface - rolling diagonal stripes
+  ctx.fillStyle = '#39293f';
+  const stripeW = 16;
+  const offset = (SCENE.beltOffset) % (stripeW * 2);
+  for (let x = -stripeW * 2 + offset; x < SCENE.w + stripeW * 2; x += stripeW * 2) {
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + stripeW, y);
+    ctx.lineTo(x + stripeW - 8, y + 8);
+    ctx.lineTo(x - 8, y + 8);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Top edge highlight
+  ctx.fillStyle = '#5a4466';
+  ctx.fillRect(0, y, SCENE.w, 2);
+
+  // Rollers (circles at regular intervals)
+  ctx.fillStyle = '#8a6e9c';
+  for (let x = 20; x < SCENE.w; x += 40) {
+    ctx.fillRect(x, y + SCENE.beltH - 10, 12, 8);
+    ctx.fillStyle = '#5a4466';
+    ctx.fillRect(x + 2, y + SCENE.beltH - 8, 8, 4);
+    ctx.fillStyle = '#8a6e9c';
+  }
+
+  // Ground shadow under belt
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
+  ctx.fillRect(0, y + SCENE.beltH, SCENE.w, 6);
+}
+
+function drawStations() {
+  for (const s of STATIONS) {
+    const y = SCENE.groundY;
+    // Station pillar (top)
+    ctx.fillStyle = '#4a9eff';
+    ctx.fillRect(s.x - 22, y - 60, 44, 4);
+    // Pillar struts
+    ctx.fillRect(s.x - 22, y - 60, 4, 56);
+    ctx.fillRect(s.x + 18, y - 60, 4, 56);
+    // Sign
+    ctx.fillStyle = '#040d1f';
+    ctx.fillRect(s.x - 28, y - 82, 56, 20);
+    ctx.strokeStyle = '#4a9eff';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(s.x - 28, y - 82, 56, 20);
+    // Sign text
+    ctx.fillStyle = '#4a9eff';
+    ctx.font = '9px "Press Start 2P", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(s.label, s.x, y - 72);
+    // Blinking indicator light
+    const blink = Math.sin(performance.now() / 250) > 0;
+    ctx.fillStyle = blink ? '#4ade80' : '#1a3a28';
+    ctx.fillRect(s.x - 3, y - 58, 6, 6);
+  }
+}
+
+function pickOllieImage() {
+  // Expressions override the neutral/talk alternation only when not actively talking.
+  // While talking, the mouth flaps (neutral ↔ talk) regardless of mood so users see the
+  // dialogue animate; the flap uses the current expression's base sprite on off-beats.
+  if (ollie.isTalking) {
+    // Mouth flap speed: higher divisor = slower flap (frames per open/close).
+    const flap = Math.floor(ollie.talkFrame / 8) % 2;
+    if (flap === 1) return ollieImages.talk;
+    // On closed beats, show the expression-specific face so mood stays readable.
+    if (ollie.expression === 'annoyed') return ollieImages.annoyed;
+    if (ollie.expression === 'angry') return ollieImages.angry;
+    return ollieImages.neutral;
+  }
+  if (ollie.expression === 'annoyed') return ollieImages.annoyed;
+  if (ollie.expression === 'angry') return ollieImages.angry;
+  return ollieImages.neutral;
+}
+
+function drawOllie() {
+  const img = pickOllieImage();
+  if (!img.complete || img.naturalWidth === 0) return; // not yet loaded
+  const bobY = ollie.walking
+    ? Math.floor(Math.sin(ollie.frame / 4) * 2)
+    : Math.floor(Math.sin(performance.now() / 450) * 1);
+  const dw = OLLIE_SPRITE_W * SCENE.scale;
+  const dh = OLLIE_SPRITE_H * SCENE.scale;
+  const dx = Math.floor(ollie.x);
+  const dy = Math.floor(ollie.y + bobY);
+  // Reference sprite faces right (side view). For 'front' we still draw as-is;
+  // the talking portrait is the same side-view sprite but with mouth flap.
+  if (ollie.facing === 'right' || ollie.facing === 'front') {
+    ctx.drawImage(img, dx, dy, dw, dh);
+  } else {
+    // Flip for a future 'left' facing.
+    ctx.save();
+    ctx.translate(dx + dw, dy);
+    ctx.scale(-1, 1);
+    ctx.drawImage(img, 0, 0, dw, dh);
+    ctx.restore();
+  }
+}
+
+function drawReqBox() {
+  if (!reqBox.visible) return;
+  drawSprite(ctx, SPRITES.req_box, reqBox.x, reqBox.y, SCENE.scale);
+  if (reqBox.label) {
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '10px "Press Start 2P", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    const boxCenterX = reqBox.x + 8 * SCENE.scale;
+    const labelY = reqBox.y + 16 * SCENE.scale + 4;
+    // Clip label length
+    const maxChars = 18;
+    const lbl = reqBox.label.length > maxChars ? reqBox.label.slice(0, maxChars) + '…' : reqBox.label;
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 3;
+    ctx.strokeText(lbl, boxCenterX, labelY);
+    ctx.fillText(lbl, boxCenterX, labelY);
+  }
+}
+
+function renderScene() {
+  drawBackground();
+  drawStations();
+  drawBelt();
+  drawReqBox();
+  drawOllie();
+}
+
+/* ──────────── Portrait rendering ──────────── */
+function renderPortrait() {
+  const PORTRAIT = 64;
+  portraitCanvas.width = PORTRAIT;
+  portraitCanvas.height = PORTRAIT;
+  portraitCtx.imageSmoothingEnabled = false;
+  portraitCtx.clearRect(0, 0, PORTRAIT, PORTRAIT);
+  portraitCtx.fillStyle = '#2a1a33';
+  portraitCtx.fillRect(0, 0, PORTRAIT, PORTRAIT);
+
+  const img = pickOllieImage();
+  if (!img.complete || img.naturalWidth === 0) return;
+
+  // Sprite content spans the full 64x34. Show the whole thing fit to width,
+  // centered vertically, so the gills + face + belly are all visible.
+  const dw = PORTRAIT;
+  const dh = Math.floor(PORTRAIT * OLLIE_SPRITE_H / OLLIE_SPRITE_W);
+  const dy = Math.floor((PORTRAIT - dh) / 2);
+  portraitCtx.drawImage(img, 0, 0, OLLIE_SPRITE_W, OLLIE_SPRITE_H, 0, dy, dw, dh);
+}
+
+/* ──────────── Audio engine (Undertale-style beeps) ──────────── */
+let audioCtx = null;
+let audioOn = true;
+
+function ensureAudio() {
+  if (!audioCtx) {
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (e) {
+      audioCtx = null;
+    }
+  }
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function beep(pitch = 440, duration = 0.04, volume = 0.05) {
+  if (!audioOn || !audioCtx) return;
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'square';
+  osc.frequency.value = pitch;
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(volume, now + 0.005);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start(now);
+  osc.stop(now + duration + 0.01);
+}
+
+document.getElementById('audioToggle').addEventListener('click', () => {
+  audioOn = !audioOn;
+  ensureAudio();
+  document.getElementById('audioToggle').textContent = 'AUDIO: ' + (audioOn ? 'ON' : 'OFF');
+});
+
+/* ──────────── Dialogue engine ──────────── */
+const dialogueEl = document.getElementById('dialogue');
+const dialogueText = document.getElementById('dialogueText');
+const dialogueName = document.getElementById('dialogueName');
+const dialogueAdvance = document.getElementById('dialogueAdvance');
+
+const speakers = {
+  ollie: { name: 'OLLIE', pitch: 520, speed: 55, pitchVariance: 60 },
+};
+
+let dialogueQueue = [];
+let currentRevealTimer = null;
+let dialogueDoneCallback = null;
+let dialogueIsRevealing = false;
+let currentLineText = '';
+let currentLineShown = '';
+
+function queueDialogue(lines, onDone) {
+  dialogueQueue = [...lines];
+  dialogueDoneCallback = onDone || null;
+  dialogueEl.classList.remove('hidden');
+  nextLine();
+}
+
+function nextLine() {
+  if (dialogueQueue.length === 0) {
+    dialogueEl.classList.add('hidden');
+    ollie.isTalking = false;
+    dialogueAdvance.classList.remove('visible');
+    if (dialogueDoneCallback) { const cb = dialogueDoneCallback; dialogueDoneCallback = null; cb(); }
+    return;
+  }
+  const line = dialogueQueue.shift();
+  const speakerId = line.speaker || 'ollie';
+  const speaker = speakers[speakerId] || speakers.ollie;
+  dialogueName.textContent = speaker.name;
+  currentLineText = '* ' + line.text;
+  currentLineShown = '';
+  dialogueText.textContent = '';
+  dialogueAdvance.classList.remove('visible');
+  // Per-line mood: lines can set mood: 'neutral' | 'annoyed' | 'angry'.
+  // Default back to neutral if unspecified so mood doesn't leak across lines.
+  ollie.expression = line.mood || 'neutral';
+  ollie.isTalking = true;
+  dialogueIsRevealing = true;
+  revealChar(speaker);
+}
+
+function revealChar(speaker) {
+  if (!dialogueIsRevealing) return;
+  if (currentLineShown.length >= currentLineText.length) {
+    dialogueIsRevealing = false;
+    ollie.isTalking = false;
+    dialogueAdvance.classList.add('visible');
+    return;
+  }
+  currentLineShown += currentLineText[currentLineShown.length];
+  dialogueText.textContent = currentLineShown;
+  const ch = currentLineShown[currentLineShown.length - 1];
+  if (ch && ch !== ' ' && ch !== '*') {
+    const variance = (Math.random() - 0.5) * speaker.pitchVariance;
+    // Beep volume is boosted so Ollie stays clearly louder than the
+    // background music (which ducks but doesn't fully mute).
+    beep(speaker.pitch + variance, 0.035, 0.09);
+  }
+  currentRevealTimer = setTimeout(() => revealChar(speaker), speaker.speed);
+}
+
+function skipToEnd() {
+  if (!dialogueIsRevealing) return;
+  clearTimeout(currentRevealTimer);
+  currentLineShown = currentLineText;
+  dialogueText.textContent = currentLineShown;
+  dialogueIsRevealing = false;
+  ollie.isTalking = false;
+  dialogueAdvance.classList.add('visible');
+}
+
+function advanceDialogue() {
+  ensureAudio();
+  if (dialogueIsRevealing) { skipToEnd(); return; }
+  nextLine();
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === ' ' || e.key === 'Enter' || e.key === 'z' || e.key === 'Z') {
+    // Don't hijack typing when a field has focus.
+    const ae = document.activeElement;
+    if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.isContentEditable)) return;
+    e.preventDefault();
+    advanceDialogue();
+  }
+});
+
+/* ──────────── Input engine ────────────
+   The panel has several UI variants (text, textarea, number, date, yesno,
+   choice, review, output). ask(spec, onSubmit) shows the right pieces for
+   the requested input type and invokes onSubmit with the captured value. */
+const inputPanel = document.getElementById('inputPanel');
+const inputField = document.getElementById('inputField');
+const inputTextarea = document.getElementById('inputTextarea');
+const inputSubmit = document.getElementById('inputSubmit');
+const inputLabel = document.getElementById('inputLabel');
+const inputHint = document.getElementById('inputHint');
+const inputYesNo = document.getElementById('inputYesNo');
+const inputChoices = document.getElementById('inputChoices');
+const inputReview = document.getElementById('inputReview');
+const inputOutput = document.getElementById('inputOutput');
+const inputWhy = document.getElementById('inputWhy');
+const inputBack = document.getElementById('inputBack');
+
+let currentInputCleanup = null;
+let currentWhyCleanup = null;
+
+function hideAllInputs() {
+  inputField.style.display = 'none';
+  inputTextarea.style.display = 'none';
+  inputSubmit.style.display = 'none';
+  inputYesNo.style.display = 'none';
+  inputChoices.style.display = 'none';
+  inputReview.style.display = 'none';
+  inputOutput.style.display = 'none';
+  inputHint.style.display = 'none';
+  inputHint.textContent = '';
+  inputChoices.innerHTML = '';
+  inputReview.innerHTML = '';
+  inputWhy.style.display = 'none';
+  inputBack.style.display = 'none';
+  if (currentInputCleanup) { currentInputCleanup(); currentInputCleanup = null; }
+  if (currentWhyCleanup) { currentWhyCleanup(); currentWhyCleanup = null; }
+}
+
+function ask(spec, onSubmit) {
+  hideAllInputs();
+  inputLabel.textContent = (spec.label || 'YOUR ANSWER').toUpperCase();
+  if (spec.hint) { inputHint.textContent = spec.hint; inputHint.style.display = ''; }
+  inputPanel.classList.remove('hidden');
+
+  // Back button: visible whenever we have history to pop.
+  if (stepHistory.length > 0 && spec.showBack !== false) {
+    inputBack.style.display = '';
+  }
+
+  // Optional "Why?" button: replays a short explanation without tearing
+  // down the input state, so the user can answer right after hearing it.
+  if (spec.why && spec.why.length) {
+    inputWhy.style.display = '';
+    const whyLines = spec.why.map(t => typeof t === 'string' ? { text: t } : t);
+    const whyHandler = () => { queueDialogue(whyLines, null); };
+    inputWhy.addEventListener('click', whyHandler);
+    currentWhyCleanup = () => { inputWhy.removeEventListener('click', whyHandler); };
+  }
+
+  const done = (val) => {
+    inputPanel.classList.add('hidden');
+    hideAllInputs();
+    onSubmit(val);
+  };
+
+  switch (spec.type) {
+    case 'text':
+    case 'number':
+    case 'date': {
+      inputField.type = spec.type === 'number' ? 'number' : (spec.type === 'date' ? 'date' : 'text');
+      inputField.value = spec.value != null ? String(spec.value) : '';
+      inputField.placeholder = spec.placeholder || 'type here...';
+      if (spec.min != null) inputField.min = spec.min; else inputField.removeAttribute('min');
+      inputField.style.display = '';
+      inputSubmit.style.display = '';
+      inputSubmit.textContent = spec.submitLabel || 'Submit';
+      inputField.focus();
+      const submit = () => {
+        let val = inputField.value.trim();
+        if (!val) return;
+        if (spec.type === 'number') {
+          const n = Number(val);
+          if (!isFinite(n) || (spec.min != null && n < spec.min)) return;
+          val = n;
+        }
+        done(val);
+      };
+      const keyHandler = (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } };
+      inputSubmit.addEventListener('click', submit);
+      inputField.addEventListener('keydown', keyHandler);
+      currentInputCleanup = () => {
+        inputSubmit.removeEventListener('click', submit);
+        inputField.removeEventListener('keydown', keyHandler);
+      };
+      break;
+    }
+    case 'textarea': {
+      inputTextarea.value = spec.value || '';
+      inputTextarea.placeholder = spec.placeholder || 'type here...';
+      inputTextarea.style.display = '';
+      inputSubmit.style.display = '';
+      inputSubmit.textContent = spec.submitLabel || 'Submit';
+      inputTextarea.focus();
+      const submit = () => {
+        const val = inputTextarea.value.trim();
+        if (!val) return;
+        done(val);
+      };
+      const keyHandler = (e) => {
+        // Ctrl/Cmd+Enter submits; plain Enter is a newline in textarea.
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); submit(); }
+      };
+      inputSubmit.addEventListener('click', submit);
+      inputTextarea.addEventListener('keydown', keyHandler);
+      currentInputCleanup = () => {
+        inputSubmit.removeEventListener('click', submit);
+        inputTextarea.removeEventListener('keydown', keyHandler);
+      };
+      break;
+    }
+    case 'yesno': {
+      inputYesNo.style.display = '';
+      const handlers = [];
+      for (const btn of inputYesNo.querySelectorAll('button')) {
+        const h = () => done(btn.dataset.val);
+        btn.addEventListener('click', h);
+        handlers.push([btn, h]);
+      }
+      currentInputCleanup = () => {
+        for (const [btn, h] of handlers) btn.removeEventListener('click', h);
+      };
+      break;
+    }
+    case 'choice': {
+      inputChoices.style.display = '';
+      const handlers = [];
+      for (const opt of spec.options) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'secondary';
+        btn.textContent = opt.label;
+        const h = () => done(opt.value != null ? opt.value : opt.label);
+        btn.addEventListener('click', h);
+        inputChoices.appendChild(btn);
+        handlers.push([btn, h]);
+      }
+      currentInputCleanup = () => {
+        for (const [btn, h] of handlers) btn.removeEventListener('click', h);
+      };
+      break;
+    }
+    case 'review': {
+      inputReview.style.display = '';
+      inputReview.innerHTML = spec.html || '';
+      inputYesNo.style.display = '';
+      // Overload yes/no: spec.yesLabel / noLabel override defaults.
+      const yesLabel = spec.yesLabel || 'Looks good';
+      const noLabel  = spec.noLabel  || 'Start over';
+      for (const btn of inputYesNo.querySelectorAll('button')) {
+        if (btn.dataset.val === 'yes') btn.textContent = yesLabel;
+        else btn.textContent = noLabel;
+      }
+      const handlers = [];
+      for (const btn of inputYesNo.querySelectorAll('button')) {
+        const h = () => {
+          // Reset labels for future yesno use
+          for (const b of inputYesNo.querySelectorAll('button')) {
+            b.textContent = b.dataset.val === 'yes' ? 'Yes' : 'No';
+          }
+          done(btn.dataset.val);
+        };
+        btn.addEventListener('click', h);
+        handlers.push([btn, h]);
+      }
+      currentInputCleanup = () => {
+        for (const [btn, h] of handlers) btn.removeEventListener('click', h);
+      };
+      break;
+    }
+    case 'output': {
+      inputOutput.style.display = '';
+      // Buttons are wired globally below; just show the panel.
+      break;
+    }
+  }
+}
+
+/* ──────────── Game loop ──────────── */
+function tick() {
+  // Belt scroll
+  SCENE.beltOffset += 1.2;
+
+  // Ollie walk-in
+  if (ollie.walking) {
+    if (ollie.x < ollie.targetX) {
+      ollie.x += 2;
+      ollie.frame++;
+    } else {
+      ollie.walking = false;
+      ollie.facing = 'front';
+      // Trigger intro dialogue once
+      if (!sceneState.introStarted) {
+        sceneState.introStarted = true;
+        setTimeout(runIntro, 350);
+      }
+    }
+  } else if (ollie.isTalking) {
+    ollie.talkFrame++;
+  }
+
+  // Req box slide animation - bidirectional.
+  if (reqBox.visible && reqBox.x !== reqBox.targetX) {
+    if (reqBox.x > reqBox.targetX) {
+      reqBox.x = Math.max(reqBox.x - 3, reqBox.targetX);
+    } else {
+      reqBox.x = Math.min(reqBox.x + 3, reqBox.targetX);
+    }
+  }
+
+  renderScene();
+  renderPortrait();
+  requestAnimationFrame(tick);
+}
+
+/* ──────────── Form state (the "package" riding the belt) ──────────── */
+const STORAGE_KEY = 'kthq_req_v1';
+
+function blankReq() {
+  return {
+    // Meta
+    sessionId: 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    completedStations: [],
+    // Intake
+    item: '',
+    kind: null,              // 'product' | 'service'
+    // Product path
+    isIT: false,
+    hasHazmat: false,
+    quantity: null,
+    unitCost: null,
+    totalValue: null,
+    threshold: null,         // 'MPT' | 'SAT' | 'OV' (over SAT)
+    needBy: '',
+    deliveryLocation: '',
+    endUser: '',
+    salientChars: '',
+    hasBrand: null,
+    brandName: '',
+    brandReason: '',
+    multipleSources: null,
+    soleSourceBasis: '',
+    soleSourceStatute: '',
+    soleSourceReason: '',
+    it_hasUI: null,
+    it_sensitivity: '',
+    it_network: '',
+    hazmatDetails: '',
+    // Service path (light)
+    serviceOutcome: '',
+    servicePOP: '',
+    // Market research (customer portion)
+    mr_boughtBefore: null,
+    mr_priorContract: '',
+    mr_knownVendors: '',
+    mr_vehicles: '',
+    mr_pricePoints: '',
+    mr_smallBizSources: '',
+    mr_incumbent: '',
+    mr_constraints: '',
+    // Evaluation factors (customer portion)
+    ef_approach: null,          // 'price' | 'past_performance' | 'technical' | 'unsure'
+    ef_mustHaves: '',
+    ef_differentiators: '',
+    ef_pastPerfMatters: null,   // boolean
+    ef_pastPerfDetail: '',
+    ef_scheduleCritical: null,  // boolean
+    ef_other: '',
+    // Justify (customer portion) - brand-name (only if hasBrand)
+    jus_bn_specFeatures: '',    // what specific features/specs the brand gives you
+    jus_bn_constraint: '',      // the proprietary/integration/certification constraint
+    jus_bn_alternatives: '',    // alternatives evaluated and why rejected
+    jus_bn_impact: '',          // impact of not getting this brand
+    jus_bn_resellers: '',       // known resellers/distributors who could compete for the brand
+    // Justify (customer portion) - sole-source (only if multipleSources === false)
+    jus_ss_unique: '',          // what makes this source unique (data rights, capability)
+    jus_ss_research: '',        // what research confirmed no other source
+    jus_ss_alternatives: '',    // alternatives investigated and responses
+    jus_ss_impact: '',          // quantified impact if forced to compete
+    jus_ss_barriers: '',        // plan to remove restriction next time
+
+    // Fund (customer portion)
+    fund_isFunded: null,          // true = funded, false = unfunded
+    // Unfunded branch
+    fund_priority: '',            // 'high' | 'medium' | 'low'
+    fund_likelihood: '',          // honest assessment + when
+    fund_estFundDate: '',         // when the customer expects funding (optional)
+    fund_dropDead: '',            // drop-dead date to abandon
+    // Funded branch
+    fund_prNumber: '',            // purchase request number
+    fund_fullyFunded: null,       // true/false
+    fund_priceBuffer: '',         // are funds available if price comes in higher
+    fund_uniqueConstraints: '',   // incremental funding, etc.
+    fund_fundType: '',            // 'om' | 'procurement' | 'rdte' | 'other'
+    fund_fundTypeOther: '',       // free text if 'other'
+    // Always-asked
+    fund_anythingElse: '',        // catchall notes for CO
+
+    // Package / routing slip
+    pkg_poc_name: '',
+    pkg_poc_phone: '',
+    pkg_poc_email: ''
+  };
+}
+let req = blankReq();
+
+function saveReq() {
+  req.updatedAt = new Date().toISOString();
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(req)); } catch (e) { /* quota or private mode */ }
+}
+
+function computeThreshold() {
+  const v = req.totalValue;
+  if (v == null) return null;
+  if (v <= 10000) return 'MPT';
+  if (v <= 250000) return 'SAT';
+  return 'OV';
+}
+function thresholdLabel(t) {
+  if (t === 'MPT') return 'Micro-purchase (\u2264 $10K)';
+  if (t === 'SAT') return 'Simplified Acquisition (\u2264 $250K)';
+  if (t === 'OV')  return 'Above SAT ( > $250K )';
+  return '';
+}
+
+/* ──────────── Step engine ──────────── */
+const sceneState = { introStarted: false, currentStep: null };
+let stepHistory = [];     // stack of step ids, for the Back button
+
+function goBack() {
+  if (stepHistory.length === 0) return;
+  const prev = stepHistory.pop();
+  runStep(prev, { skipHistory: true });
+}
+
+/* Each step: speak (lines for queueDialogue), input (spec for ask()),
+   save(val) to mutate req, next() to return the next step id.            */
+const STEPS = {
+  // ── Entry: item + product/service ──────────────────────────────────
+  item: {
+    speak: [{ text: "Alright, easy first question." }, { text: "What are you trying to buy? Keep it short. One to five words." }],
+    input: {
+      type: 'text',
+      label: 'What are you buying?',
+      placeholder: 'e.g. analytics software, HVAC maintenance, copier paper',
+      why: [
+        "A short name gives the whole package a label the rest of the stations can use.",
+        "Long descriptions bury the actual ask. Save the specifics for salient characteristics later."
+      ]
+    },
+    save: (v) => { req.item = v; },
+    next: () => 'kind'
+  },
+  kind: {
+    speak: (r) => [
+      { text: r.item + ". Got it." },
+      { text: "Product or service? It changes which belt you end up on." }
+    ],
+    input: { type: 'choice', label: 'Product or service?', options: [
+      { label: 'Product', value: 'product' },
+      { label: 'Service', value: 'service' }
+    ],
+    why: [
+      "Products and services run on different rule sets.",
+      "Products get a Statement of Requirement. Services get a Performance Work Statement with tasks, standards, and a QASP.",
+      "Different FAR parts, different clauses, different approvals."
+    ]},
+    save: (v) => { req.kind = v; },
+    next: () => req.kind === 'service' ? 'svc_outcome' : 'flag_it'
+  },
+
+  // ── Service path (light stub, hands off to PWS builder) ─────────────
+  svc_outcome: {
+    speak: [
+      { text: "Services go on a different belt. They need a Performance Work Statement instead of an SOR." },
+      { text: "I'll grab a couple quick things here, then hand you off to my PWS builder." },
+      { text: "What outcome do you need? Plain English, one or two sentences." }
+    ],
+    input: {
+      type: 'textarea', label: 'Desired outcome',
+      placeholder: 'e.g. grounds maintained to standard year-round at Building 1234',
+      why: [
+        "Services are bought by outcome, not by hours or tasks.",
+        "Starting with the outcome lets us write performance standards and an AQL the QASP can actually measure."
+      ]
+    },
+    save: (v) => { req.serviceOutcome = v; },
+    next: () => 'svc_pop'
+  },
+  svc_pop: {
+    speak: [{ text: "Rough period of performance? Base year plus options, one-time job, whatever. Just the shape of it." }],
+    input: {
+      type: 'text', label: 'Period of performance',
+      placeholder: 'e.g. 1 base year + 4 option years, or one-time job by 15 Jul',
+      why: [
+        "The PoP shape drives how we structure the contract.",
+        "Multi-year with options means pricing decisions per year and FAR 17.2 compliance. A one-time job doesn't.",
+        "It also ties to funding color and when the money has to be available."
+      ]
+    },
+    save: (v) => { req.servicePOP = v; },
+    next: () => 'svc_handoff'
+  },
+  svc_handoff: {
+    speak: [
+      { text: "That's enough to kick things off. The PWS builder picks up from here." },
+      { text: "It'll walk you through tasks, performance standards, AQLs, deliverables, and the QASP. Meet me over there." }
+    ],
+    input: null,   // terminal; rendered via renderServiceHandoff()
+    save: () => {},
+    next: () => null
+  },
+
+  // ── Product path ────────────────────────────────────────────────────
+  flag_it: {
+    speak: [{ text: "Quick flags so I know what else to ask." }, { text: "Is this information technology? Hardware, software, cloud, or a data service?" }],
+    input: {
+      type: 'yesno', label: 'Is this information technology?',
+      why: [
+        "IT pulls in a whole second stack of requirements.",
+        "Cybersecurity review, ATO or RMF paperwork, Section 508 accessibility, supply chain risk language.",
+        "If the answer is yes, I ask three more questions and the SOR carries an IT section."
+      ]
+    },
+    save: (v) => { req.isIT = (v === 'yes'); },
+    next: () => 'flag_hazmat'
+  },
+  flag_hazmat: {
+    speak: [{ text: "Any chance it's hazardous or needs special handling? Batteries, chemicals, refrigerants, propellants, anything with an SDS." }],
+    input: {
+      type: 'yesno', label: 'Hazardous or special handling?',
+      why: [
+        "Hazmat changes shipping, storage, and disposal.",
+        "Some warehouses won't accept it. Some carriers won't haul it. Lead times stretch.",
+        "If it's hazmat, I capture the details so the CO can line up transportation and the receiving activity."
+      ]
+    },
+    save: (v) => { req.hasHazmat = (v === 'yes'); },
+    next: () => 'quantity'
+  },
+  quantity: {
+    speak: [{ text: "How many?" }],
+    input: {
+      type: 'number', label: 'Quantity', placeholder: 'e.g. 50', min: 1,
+      why: [
+        "Quantity drives pricing, packaging, and delivery schedule.",
+        "It also flips the acquisition strategy at certain break points. A hundred laptops is a different buy than ten."
+      ]
+    },
+    save: (v) => { req.quantity = v; },
+    next: () => 'unit_cost'
+  },
+  unit_cost: {
+    speak: [
+      { text: "Ballpark the unit cost in dollars. Doesn't have to be tight. Market research will dial it in." }
+    ],
+    input: {
+      type: 'number', label: 'Estimated unit cost ($)', placeholder: 'e.g. 1200', min: 0,
+      why: [
+        "Unit cost times quantity gives us the total value.",
+        "Total value decides the path: micro-purchase, simplified acquisition, or above SAT.",
+        "Each band has its own FAR parts, competition rules, and approvals. Ballpark now, firm up later."
+      ]
+    },
+    save: (v) => {
+      req.unitCost = v;
+      req.totalValue = (req.quantity || 0) * v;
+      req.threshold = computeThreshold();
+    },
+    next: () => 'need_by'
+  },
+  need_by: {
+    speak: [{ text: "When do you need it on the dock? Actual need-by, not what you wish." }],
+    input: {
+      type: 'date', label: 'Need-by date',
+      why: [
+        "Everything downstream budgets time from this date backwards.",
+        "Market research, clearances, solicitation period, eval, award, production, shipping.",
+        "A realistic need-by gives the CO room to run a clean buy. A fake one turns into a rush and fewer options."
+      ]
+    },
+    save: (v) => { req.needBy = v; },
+    next: () => 'delivery'
+  },
+  delivery: {
+    speak: [{ text: "Where does it ship? Drop a physical address or a DoDAAC. Either works." }],
+    input: {
+      type: 'textarea',
+      label: 'Delivery location (address or DoDAAC)',
+      hint: 'Address: street, building, room, base, city/state/ZIP.  DoDAAC: 6-character Ship-To code (e.g. FA3016).',
+      placeholder: 'e.g. 1234 Ollie Way, Bldg 5, Room 210, JBSA-Randolph TX 78150\nor:\nDoDAAC FA3016 (502 CONS / 502 FSS)',
+      why: [
+        "The CO has to put a Ship-To on the contract. A DoDAAC is the cleanest way to do that.",
+        "If you don't have one, a full address works. Include the building and room so the driver can actually find the dock.",
+        "Delivery terms, inspection, and risk of loss all key off of this location."
+      ]
+    },
+    save: (v) => { req.deliveryLocation = v; },
+    next: () => 'end_user'
+  },
+  end_user: {
+    speak: [{ text: "Who's the end user? Unit, section, and a POC if you've got one." }],
+    input: {
+      type: 'textarea', label: 'End user',
+      placeholder: 'e.g. 502 FSS/FSMC, SSgt Snuffy, 210-555-0100',
+      why: [
+        "The end user owns acceptance, surveillance, and warranty claims.",
+        "When the CO needs a technical question answered after award, this is who gets the call.",
+        "A named POC with a phone number saves days later."
+      ]
+    },
+    save: (v) => { req.endUser = v; },
+    next: () => 'salient'
+  },
+  salient: {
+    speak: [
+      { text: "Now the meat. What must this thing do or have?" },
+      { text: "Capabilities, dimensions, materials, interfaces. The stuff that would make the wrong product WRONG." },
+      { text: "Write it as bullets if that helps." }
+    ],
+    input: {
+      type: 'textarea', label: 'Salient characteristics',
+      placeholder: "\u2022 Minimum 500 lb load capacity\n\u2022 Stainless steel, NSF-certified\n\u2022 110V standard outlet\n\u2022 Dimensions \u2264 36\" W x 24\" D x 72\" H",
+      why: [
+        "Salient characteristics become the evaluation backbone.",
+        "If it's in here, a vendor has to meet it. If it's not, a vendor can skip it and still win.",
+        "Vague language turns into change orders, protests, or a product that doesn't do the job."
+      ]
+    },
+    save: (v) => { req.salientChars = v; },
+    next: () => 'brand_check'
+  },
+  brand_check: {
+    speak: [{ text: "Is there a specific brand or model you're eyeing?" }],
+    input: {
+      type: 'yesno', label: 'Specific brand or model?',
+      why: [
+        "Competition is the default. Naming a brand restricts it.",
+        "If you want a specific brand, we have to justify it in writing before we can limit competition.",
+        "Saying yes here flips on the brand-name pry-questions. Saying no keeps competition wide open."
+      ]
+    },
+    save: (v) => { req.hasBrand = (v === 'yes'); },
+    next: () => req.hasBrand ? 'brand_name' : 'sources_check'
+  },
+  brand_name: {
+    speak: [
+      { text: "Alright. Which one?", mood: 'angry' }
+    ],
+    input: {
+      type: 'text', label: 'Brand and model',
+      placeholder: 'e.g. Cisco Catalyst 9300-48UXM',
+      why: [
+        "The exact brand and model goes into the brand-name justification.",
+        "Be specific. 'A Cisco switch' won't survive review. 'Cisco Catalyst 9300-48UXM' will."
+      ]
+    },
+    save: (v) => { req.brandName = v; },
+    next: () => 'brand_reason'
+  },
+  brand_reason: {
+    speak: [
+      { text: "And why THAT one?", mood: 'angry' },
+      { text: "I need a technical reason. 'We've always used them' won't cut it. Think interoperability, existing spares pool, certification. Something defensible.", mood: 'angry' }
+    ],
+    input: {
+      type: 'textarea', label: 'Why this brand/model?',
+      placeholder: "e.g. Must integrate with existing Cisco DNA fabric; non-Cisco switches would require a separate management plane and break the SmartNet support contract.",
+      why: [
+        "This is the heart of the brand-name justification.",
+        "It has to be a technical reason a reviewer can defend if there's a protest.",
+        "Interoperability with existing kit, unique certification, a qualified products list, an exclusive data right. That kind of thing."
+      ]
+    },
+    save: (v) => { req.brandReason = v; },
+    next: () => 'sources_check'
+  },
+  sources_check: {
+    speak: [{ text: "Have you identified more than one vendor that could actually provide this?" }],
+    input: {
+      type: 'yesno', label: 'More than one potential source?',
+      why: [
+        "One source means sole-source, which needs a written justification and an approval step.",
+        "Two or more sources means we can run a competitive buy, which is faster, cheaper, and gets less scrutiny.",
+        "Say yes if you know of any other vendor who could realistically do it, even if you prefer someone specific."
+      ]
+    },
+    save: (v) => { req.multipleSources = (v === 'yes'); },
+    next: () => req.multipleSources ? afterSoleSource() : 'sole_basis'
+  },
+  sole_basis: {
+    speak: [
+      { text: "So only one source. Walk me through why.", mood: 'angry' },
+      { text: "Pick the closest reason. We'll flesh it out in the justification tool later.", mood: 'angry' }
+    ],
+    input: { type: 'choice', label: 'Reason only one source can do this', options: [
+      { label: 'Only one responsible source (proprietary, unique capability, data rights)', value: 'only_one_source' },
+      { label: 'Unusual and compelling urgency', value: 'urgency' },
+      { label: 'Industrial mobilization / essential experts', value: 'mobilization' },
+      { label: 'International agreement', value: 'international_agreement' },
+      { label: 'Authorized or required by statute', value: 'statute' },
+      { label: 'National security', value: 'national_security' },
+      { label: 'Public interest', value: 'public_interest' }
+    ],
+    why: [
+      "Each reason has different required content and a different approval level.",
+      "Only one responsible source is by far the common one. Urgency, statute, and international agreement exist for specific situations.",
+      "Pick the closest fit. The CO and the justification tool will stress-test it."
+    ]},
+    save: (v) => { req.soleSourceBasis = v; },
+    next: () => {
+      if (req.soleSourceBasis === 'national_security' ||
+          req.soleSourceBasis === 'public_interest') return 'sole_nope';
+      if (req.soleSourceBasis === 'statute') return 'sole_statute';
+      return 'sole_reason';
+    }
+  },
+  sole_nope: {
+    speak: (r) => {
+      const which = r.soleSourceBasis === 'public_interest' ? 'Public Interest' : 'National Security';
+      return [
+        { text: which + "?! Ha. Good luck with that.", mood: 'angry' },
+        { text: "That one takes an act of Congress. Literally. The head of the agency signs, after the Senior Procurement Executive, after a written determination, after a 30-day Federal Register notice for Public Interest.", mood: 'angry' },
+        { text: "Pick another reason, or punt this to your contracting officer.", mood: 'angry' }
+      ];
+    },
+    input: null, // passthrough: loops back to the basis question
+    save: () => {},
+    next: () => 'sole_basis'
+  },
+  sole_statute: {
+    speak: [
+      { text: "Authorized by statute. OK.", mood: 'angry' },
+      { text: "Which statute? Name it. If you can cite it, cite it.", mood: 'angry' }
+    ],
+    input: {
+      type: 'text', label: 'Statute (name and citation if known)',
+      placeholder: 'e.g. 15 U.S.C. 638 (SBIR/STTR awards); or 10 U.S.C. 2304(c)(5); or "Javits-Wagner-O\u2019Day Act, AbilityOne"',
+      why: [
+        "Statute-based sole-source only works when Congress actually said to buy from this source.",
+        "Common ones: SBIR/STTR awards, AbilityOne (Javits-Wagner-O'Day), Federal Prison Industries.",
+        "If you cannot name the statute, this probably is not the right reason. Consider 'only one responsible source' instead."
+      ]
+    },
+    save: (v) => { req.soleSourceStatute = v; },
+    next: () => 'sole_reason'
+  },
+  sole_reason: {
+    speak: (r) => {
+      const advice = soleBasisAdvice(r.soleSourceBasis);
+      const lines = [];
+      if (advice) lines.push({ text: advice, mood: 'angry' });
+      lines.push({ text: "Now the narrative. Why this basis? Be specific. This is what seeds your justification.", mood: 'angry' });
+      return lines;
+    },
+    input: {
+      type: 'textarea', label: 'Why only this source?',
+      placeholder: "e.g. Proprietary data rights held by XYZ Corp, no alternate source has access to the protocol specification; attempts to obtain license have been denied (correspondence attached).",
+      why: [
+        "The narrative goes into the written justification that someone has to sign.",
+        "Facts and dates, not adjectives. What did you try, who did you talk to, what did they say.",
+        "A sole-source buy without a defensible narrative is a protest waiting to happen."
+      ]
+    },
+    save: (v) => { req.soleSourceReason = v; },
+    next: () => afterSoleSource()
+  },
+
+  // ── IT branch (conditional) ─────────────────────────────────────────
+  it_ui: {
+    speak: [{ text: "IT flag is up. Couple more." }, { text: "Does it have a user interface a warfighter interacts with?" }],
+    input: {
+      type: 'yesno', label: 'User interface?',
+      hint: 'If yes, Section 508 accessibility applies.',
+      why: [
+        "If a federal employee interacts with it, Section 508 accessibility is required.",
+        "That means screen-reader compatibility, keyboard navigation, captions, color contrast, etc.",
+        "Back-end services with no UI still need to be accessible to the admins who maintain them."
+      ]
+    },
+    save: (v) => { req.it_hasUI = (v === 'yes'); },
+    next: () => 'it_sens'
+  },
+  it_sens: {
+    speak: [{ text: "Data sensitivity?" }],
+    input: { type: 'choice', label: 'Data sensitivity', options: [
+      { label: 'Public',        value: 'Public' },
+      { label: 'FOUO / CUI',    value: 'CUI' },
+      { label: 'Secret',        value: 'Secret' },
+      { label: 'Not sure',      value: 'Unknown' }
+    ],
+    why: [
+      "Sensitivity determines the encryption, authentication, and hosting rules.",
+      "CUI pulls in NIST SP 800-171 controls at the vendor. Classified work needs cleared personnel and a DD 254.",
+      "Public data keeps things simple. Guessing wrong here can blow up an ATO."
+    ]},
+    save: (v) => { req.it_sensitivity = v; },
+    next: () => 'it_net'
+  },
+  it_net: {
+    speak: [{ text: "Which network does it touch?" }],
+    input: { type: 'choice', label: 'Network', options: [
+      { label: 'NIPR',       value: 'NIPR' },
+      { label: 'SIPR',       value: 'SIPR' },
+      { label: 'Standalone', value: 'Standalone' },
+      { label: 'Other',      value: 'Other' }
+    ],
+    why: [
+      "The network changes the authorization path.",
+      "NIPR and SIPR each have their own connection approval process and timeline.",
+      "Standalone is the lightest, but it also means no remote patching or monitoring. Pick accordingly."
+    ]},
+    save: (v) => { req.it_network = v; },
+    next: () => afterIT()
+  },
+
+  // ── Hazmat branch (conditional) ─────────────────────────────────────
+  hazmat: {
+    speak: [{ text: "Hazmat flag is up. Give me the storage and shipping picture. Hazard class, temp, flammability, whatever you know." }],
+    input: {
+      type: 'textarea', label: 'Hazmat details',
+      placeholder: "e.g. Lithium-ion batteries, UN3480 Class 9, ambient storage, no airfreight.",
+      why: [
+        "Carriers and warehouses need this information before they'll accept the shipment.",
+        "Hazard class, UN number, temperature, flammability, airfreight restrictions. Whatever you know.",
+        "If you don't know, the SDS will. Ask the vendor for it as part of the quote."
+      ]
+    },
+    save: (v) => { req.hazmatDetails = v; },
+    next: () => 'review'
+  },
+
+  // ── Review + output (SOR) ──────────────────────────────────────────
+  review: {
+    speak: [{ text: "Package is on the cart. Look it over." }, { text: "If anything's wrong, start over and fix it. If it looks good, I'll cut the PDF." }],
+    input: null, // custom: rendered by renderReview()
+    save: () => {},
+    next: () => 'output'
+  },
+  output: {
+    speak: [{ text: "Here she is. Download the SOR whenever you want." }, { text: "Before you take it to CONS though, I need a few more things. Market research is next. Still just your half." }],
+    input: null, // custom: rendered by renderOutput()
+    save: () => {},
+    next: () => 'mr_intro'
+  },
+
+  // ── Market research (customer portion) ─────────────────────────────
+  mr_intro: {
+    speak: [
+      { text: "Alright, market research. The CO runs most of it, but there are pieces only you can answer." },
+      { text: "I'm going to ask what you already know. Nothing fancy, just what's in your head." },
+      { text: "If you want the full picture on what market research is, see the training tab. Here we're just capturing your inputs." }
+    ],
+    input: null, // passthrough
+    save: () => {},
+    next: () => 'mr_bought_before'
+  },
+  mr_bought_before: {
+    speak: [{ text: "Has your unit bought this, or anything like it, before?" }],
+    input: {
+      type: 'yesno', label: 'Bought this before?',
+      why: [
+        "Prior buys are the fastest market data the CO can get.",
+        "A recent contract number gives us the vendor, the price, the clauses, and the lead time in one shot.",
+        "If it's in your squadron history, we use it. If not, we start from scratch."
+      ]
+    },
+    save: (v) => { req.mr_boughtBefore = (v === 'yes'); },
+    next: () => req.mr_boughtBefore ? 'mr_prior_contract' : 'mr_known_vendors'
+  },
+  mr_prior_contract: {
+    speak: [{ text: "Give me what you remember. Contract or PO number, vendor, roughly when." }],
+    input: {
+      type: 'textarea', label: 'Prior contract / vendor / year',
+      placeholder: 'e.g. FA3016-22-P-0123, Acme Analytics, FY22 award; 3-year BPA call, about $1.1M total',
+      why: [
+        "Contract or PO number lets the CO pull the whole file. That file has the RFQ, quotes, and award history.",
+        "If you only remember the vendor and roughly when, that's fine. It's still a starting point."
+      ]
+    },
+    save: (v) => { req.mr_priorContract = v; },
+    next: () => 'mr_known_vendors'
+  },
+  mr_known_vendors: {
+    speak: [{ text: "Who else do you know that could provide this? Names, websites, trade shows, whatever you've got." }],
+    input: {
+      type: 'textarea', label: 'Known vendors / sources',
+      placeholder: 'e.g. Acme Analytics (saw at AFCEA), DataCorp (their rep called last month), BetaSoft (GSA schedule)',
+      why: [
+        "The CO issues a sources sought or RFI to find vendors, but your list seeds it.",
+        "Even one name saves days of research. Multiple names help justify competition.",
+        "No list means the CO is starting cold. That slows everything down."
+      ]
+    },
+    save: (v) => { req.mr_knownVendors = v; },
+    next: () => 'mr_vehicles'
+  },
+  mr_vehicles: {
+    speak: [{ text: "Aware of any contract vehicles that already carry this? GSA schedules, SEWP, CIO-SP, a base BPA." }],
+    input: {
+      type: 'textarea', label: 'Known contract vehicles (optional)',
+      placeholder: 'e.g. GSA MAS 54151S, SEWP V, 502 FSS IT BPA; or leave blank',
+      why: [
+        "Existing vehicles short-circuit the whole process.",
+        "Ordering off a GSA schedule or a base BPA is faster and cheaper than a stand-alone buy.",
+        "If you don't know any, that's OK. Leave it blank and the CO will check."
+      ]
+    },
+    save: (v) => { req.mr_vehicles = v; },
+    next: () => 'mr_price_points'
+  },
+  mr_price_points: {
+    speak: [{ text: "Any prices you've seen? Published catalog, an old quote, a slide from a vendor demo." }],
+    input: {
+      type: 'textarea', label: 'Price points seen (optional)',
+      placeholder: 'e.g. Acme catalog lists at $1,150/seat/yr. Old FY22 quote from DataCorp was $985/seat/yr for 100 seats.',
+      why: [
+        "Your price points anchor the Independent Government Cost Estimate.",
+        "The CO compares vendor quotes to it to judge fairness and reasonableness.",
+        "Even rough numbers help. A published catalog price, an old quote, a number a peer unit paid."
+      ]
+    },
+    save: (v) => { req.mr_pricePoints = v; },
+    next: () => 'mr_small_biz'
+  },
+  mr_small_biz: {
+    speak: [{ text: "Know any small businesses in this space? Any at all." }],
+    input: {
+      type: 'textarea', label: 'Small business sources (optional)',
+      placeholder: 'e.g. BetaSoft (8(a) certified, spoke with them at industry day), Gamma LLC (WOSB)',
+      why: [
+        "The CO has to consider small business set-asides under FAR Part 19.",
+        "If two or more small businesses can do the work at a fair price, it gets set aside for them.",
+        "Your leads help the CO check whether that's realistic here."
+      ]
+    },
+    save: (v) => { req.mr_smallBizSources = v; },
+    next: () => req.kind === 'service' ? 'mr_incumbent' : 'mr_constraints'
+  },
+  mr_incumbent: {
+    speak: [{ text: "For services: who holds the work now, if anyone? Contractor name, expiration if you know it." }],
+    input: {
+      type: 'textarea', label: 'Incumbent (services only)',
+      placeholder: 'e.g. GroundsPro LLC, 5-year BPA expires 30 Sep 2026',
+      why: [
+        "The incumbent shapes everything about the follow-on.",
+        "Their performance history, the phase-in/phase-out plan, and the protest risk all key off of who's in the seat.",
+        "If nobody's on contract today, note that too. It affects the acquisition strategy."
+      ]
+    },
+    save: (v) => { req.mr_incumbent = v; },
+    next: () => 'mr_constraints'
+  },
+  mr_constraints: {
+    speak: [{ text: "Any constraints the market has to accommodate? Location, clearance, unusual delivery window, a mandatory certification." }],
+    input: {
+      type: 'textarea', label: 'Market constraints (optional)',
+      placeholder: "e.g. Must ship to OCONUS. Installers need Secret clearance. Delivery can't happen during exercise blackout 1-15 Aug.",
+      why: [
+        "Constraints narrow the pool of vendors who can actually compete.",
+        "If a constraint kills competition entirely, the CO needs to know early so they can document it in the J&A or rethink the requirement."
+      ]
+    },
+    save: (v) => { req.mr_constraints = v; },
+    next: () => 'mr_review'
+  },
+  mr_review: {
+    speak: [{ text: "That's the customer side of market research. Look it over." }],
+    input: null, // custom
+    save: () => {},
+    next: () => 'mr_output'
+  },
+  mr_output: {
+    speak: [{ text: "Worksheet is ready. Hand it to your CO with the SOR." }],
+    input: null, // custom
+    save: () => {},
+    next: () => null
+  },
+
+  // ── Evaluation factors (customer portion) ─────────────────────────
+  ef_intro: {
+    speak: [
+      { text: "Last piece. Evaluation factors." },
+      { text: "When quotes come in, the CO needs to know what you actually care about. That is what evaluation factors do." },
+      { text: "I will capture your inputs. The CO turns them into the real Section M language." }
+    ],
+    input: null,
+    save: () => {},
+    next: () => 'ef_approach'
+  },
+  ef_approach: {
+    speak: [
+      { text: "First question. What matters most when the CO picks a winner?" },
+      { text: "Price? Past performance of the offeror? Technical features? Or not sure and you want the CO to advise?" }
+    ],
+    input: {
+      type: 'choice',
+      label: 'Most important factor',
+      options: [
+        { label: 'Price \u2013 cheapest offer that meets the requirement wins', value: 'price' },
+        { label: 'Past performance \u2013 who has done this well before', value: 'past_performance' },
+        { label: 'Technical features \u2013 what the product or service actually does', value: 'technical' },
+        { label: 'Not sure \u2013 have the CO advise', value: 'unsure' }
+      ],
+      why: [
+        "Pick the one that would make you say 'yes' the loudest at award.",
+        "Price wins when the requirement is well-defined and any qualified offeror will satisfy it. Pay less, done.",
+        "Past performance wins when track record matters more than the spec sheet. Complex services, high-risk work, anything where execution quality varies.",
+        "Technical features win when capability or quality differences drive real mission value and you'd pay extra for the better one.",
+        "Not sure is a valid answer. The CO will pick the right approach based on value, risk, and what you care about."
+      ]
+    },
+    save: (v) => { req.ef_approach = v; },
+    next: () => 'ef_must_haves'
+  },
+  ef_must_haves: {
+    speak: [
+      { text: "What are the must-haves? The things any offeror has to provide or they are out." },
+      { text: "These become the minimum technical requirements. Bullet points are fine." }
+    ],
+    input: {
+      type: 'textarea',
+      label: 'Must-haves (minimum requirements)',
+      placeholder: "e.g.\n- FedRAMP Moderate at time of award\n- 24x7 helpdesk with CONUS-staffed Tier 2\n- SSO via SAML 2.0\n- License covers 100 named users",
+      why: [
+        "Must-haves are pass/fail gates. Miss one and the offer is unacceptable.",
+        "Keep them tight. Every gate you add shrinks the pool of offerors.",
+        "If you cannot articulate why a requirement is a gate, it probably is not one. Move it to differentiators instead."
+      ]
+    },
+    save: (v) => { req.ef_mustHaves = v; },
+    next: () => req.ef_approach === 'price' ? 'ef_past_perf' : 'ef_differentiators'
+  },
+  ef_differentiators: {
+    speak: [
+      { text: "Now the interesting stuff. What would make one offeror clearly better than another?" },
+      { text: "Things you would pay extra to get. These are what sets a good offer apart from an okay one." }
+    ],
+    input: {
+      type: 'textarea',
+      label: 'Differentiators (what makes one offer better)',
+      placeholder: "e.g.\n- Faster helpdesk response (SLA under 15 min vs. 1 hour)\n- Analytics module included vs. add-on\n- Training package with on-site workshops\n- Longer warranty or free upgrades during period of performance",
+      why: [
+        "Differentiators let the CO pay a premium for real value.",
+        "Pick two or three that you would actually notice in daily use. More than that and the evaluation gets noisy.",
+        "Skip anything every offeror will have. That belongs in must-haves, not here."
+      ]
+    },
+    save: (v) => { req.ef_differentiators = v; },
+    next: () => 'ef_past_perf'
+  },
+  ef_past_perf: {
+    speak: [{ text: "Does past performance matter here? Has the offeror done work like this before, for a customer like you?" }],
+    input: {
+      type: 'yesno',
+      label: 'Past performance matters?',
+      why: [
+        "Past performance is a standard evaluation factor above SAT, and optional below.",
+        "It is more useful when the work is complex, high risk, or service-heavy.",
+        "For commodity buys off a catalog, past performance adds paperwork without much signal."
+      ]
+    },
+    save: (v) => { req.ef_pastPerfMatters = (v === 'yes'); },
+    next: () => req.ef_pastPerfMatters ? 'ef_past_perf_detail' : 'ef_schedule_factor'
+  },
+  ef_past_perf_detail: {
+    speak: [{ text: "What kind of past performance matters? Size, scope, customer type, how recent." }],
+    input: {
+      type: 'textarea',
+      label: 'Past performance criteria',
+      placeholder: "e.g. At least two DoD customers of similar size in the last three years, each contract worth $500K+, same type of service.",
+      why: [
+        "The CO uses these criteria to score references.",
+        "Be concrete. 'Experience with federal customers' is too vague. 'Two DoD contracts of $500K or more in the last three years' is usable.",
+        "The narrower the criteria, the fewer offerors can clear it. Balance relevance against competition."
+      ]
+    },
+    save: (v) => { req.ef_pastPerfDetail = v; },
+    next: () => 'ef_schedule_factor'
+  },
+  ef_schedule_factor: {
+    speak: [{ text: "Is delivery or start date so critical that a faster offeror should get extra credit for it?" }],
+    input: {
+      type: 'yesno',
+      label: 'Schedule as an evaluation factor?',
+      why: [
+        "Most of the time delivery is a must-have, not a differentiator. Everyone has to meet the need-by.",
+        "Say yes only when faster than required actually buys you something. Cover for an exercise, a deployment window, a fiscal year close.",
+        "If the answer is yes, note the earlier date that would matter. The CO will set it up."
+      ]
+    },
+    save: (v) => { req.ef_scheduleCritical = (v === 'yes'); },
+    next: () => 'ef_other'
+  },
+  ef_other: {
+    speak: [{ text: "Anything else you want on the table? Small business participation, training plans, transition approach, green products, whatever comes to mind. Leave blank if nothing." }],
+    input: {
+      type: 'textarea',
+      label: 'Other considerations (optional)',
+      placeholder: "e.g. Preference for subcontracting to local small businesses. Vendor provides a 30-day transition plan. Training materials included at no extra cost.",
+      why: [
+        "Sometimes there is a consideration that is not strictly technical but still matters to the mission.",
+        "Capture it here and the CO will decide whether it belongs as a factor, a subfactor, or a contract requirement.",
+        "If nothing comes to mind, leave it blank."
+      ]
+    },
+    save: (v) => { req.ef_other = v; },
+    next: () => 'ef_review'
+  },
+  ef_review: {
+    speak: [{ text: "Last look. Everything you told me about how to score offers." }],
+    input: null,
+    save: () => {},
+    next: () => 'ef_output'
+  },
+  ef_output: {
+    speak: [{ text: "Eval factors are locked in. Two more stations if anything got flagged earlier." }],
+    input: null,
+    save: () => {},
+    next: () => null
+  },
+
+  // ── Justify station (brand-name / sole-source details) ───────────
+  // Only reached if req.hasBrand OR req.multipleSources === false.
+  jus_intro: {
+    speak: (r) => {
+      const both = r.hasBrand && r.multipleSources === false;
+      const brandOnly = r.hasBrand && r.multipleSources !== false;
+      const soleOnly = !r.hasBrand && r.multipleSources === false;
+      if (both) return [
+        { text: "Justify station. Specific brand AND only one source? That's a combined brand-name sole-source.", mood: 'angry' },
+        { text: "I'll pull the brand detail first, then the sole-source narrative. CO can use both.", mood: 'angry' }
+      ];
+      if (brandOnly) return [
+        { text: "Justify station. You want a specific brand.", mood: 'angry' },
+        { text: "Brand-name is not sole-source. Plenty of brands have resellers who compete to sell that brand. Cisco, for example. Cisco rarely sells direct. Their authorized partners bid on Cisco gear all day long." },
+        { text: "So we're limiting the spec, not the vendor. Competition stays in. Justification is lighter than sole-source but still has to hold up.", mood: 'angry' }
+      ];
+      if (soleOnly) return [
+        { text: "Justify station. One vendor, no competition.", mood: 'angry' },
+        { text: "Sole-source means the CO negotiates directly instead of running a competition. The document has to hold up under scrutiny. Let me pull the details.", mood: 'angry' }
+      ];
+      return [];
+    },
+    input: null,
+    save: () => {},
+    next: () => {
+      if (req.hasBrand) return 'jus_bn_features';
+      if (req.multipleSources === false) return 'jus_ss_unique';
+      return 'jus_review';
+    }
+  },
+
+  // Brand-name detail (walks through commercial brand-name justification content)
+  jus_bn_features: {
+    speak: [
+      { text: "What specific features or specs make THIS brand the one? Not marketing talk. Actual technical differences.", mood: 'angry' }
+    ],
+    input: {
+      type: 'textarea', label: 'Specific features only this brand provides',
+      placeholder: "e.g. Cisco DNA Center fabric membership; AES-256 line-rate encryption at 100G; proprietary Catalyst stack cable required for 480 Gbps stack bandwidth.",
+      why: [
+        "The brand-name justification rises or falls on this answer.",
+        "Name concrete capabilities that competing products don't match. Not 'industry leading' or 'trusted.' Specs, protocols, certifications, integrations.",
+        "If every competing brand has this feature, it probably isn't the reason you need this brand."
+      ]
+    },
+    save: (v) => { req.jus_bn_specFeatures = v; },
+    next: () => 'jus_bn_constraint'
+  },
+  jus_bn_constraint: {
+    speak: [
+      { text: "What's the underlying constraint? Integration with kit you already own, a certification requirement, data rights, something else?", mood: 'angry' }
+    ],
+    input: {
+      type: 'textarea', label: 'Underlying constraint (interoperability, certification, data rights, etc.)',
+      placeholder: "e.g. Existing Cisco DNA fabric in the squadron; non-Cisco switches require a separate management plane and break SmartNet support. / FedRAMP High authorization only held by this vendor.",
+      why: [
+        "A defensible brand-name points to something concrete outside the customer's control: a spec, a license, an existing fielded system, a contract clause.",
+        "'Our folks are trained on it' or 'we've always used it' doesn't clear the bar. Familiarity is not a brand-name reason.",
+        "Name the thing. If you have a cite (DFARS clause, license agreement, ATO memo), mention it."
+      ]
+    },
+    save: (v) => { req.jus_bn_constraint = v; },
+    next: () => 'jus_bn_resellers'
+  },
+  jus_bn_resellers: {
+    speak: [
+      { text: "Resellers or authorized distributors for this brand? Names, if you know any. This matters.", mood: 'angry' },
+      { text: "Brand-name only restricts the brand, not the seller. If multiple resellers can sell it, we compete among them.", mood: 'angry' }
+    ],
+    input: {
+      type: 'textarea', label: 'Known resellers / distributors (optional)',
+      placeholder: "e.g. CDW-G, GovSmart, Presidio. All Cisco Gold Partners, all hold GSA MAS schedules. Any of them can quote us the exact same Cisco SKUs.",
+      why: [
+        "This is the key difference between brand-name and sole-source.",
+        "Cisco example again: you want Cisco gear, three authorized Cisco partners all bid on it, you pick the best price. That's still competitive.",
+        "If you can't think of any, leave blank. The CO will check GSA Advantage and SAM for current vendors."
+      ]
+    },
+    save: (v) => { req.jus_bn_resellers = v; },
+    next: () => 'jus_bn_alternatives'
+  },
+  jus_bn_alternatives: {
+    speak: [
+      { text: "What other brands did you actually look at? Who, what model, why it didn't work.", mood: 'angry' }
+    ],
+    input: {
+      type: 'textarea', label: 'Alternatives evaluated',
+      placeholder: "e.g. Juniper EX4650: lacks StackWise-480; Arista 7050X3: no support for Cisco TrustSec tags required by our security policy; HPE Aruba 6400: no 25G uplinks at this price tier.",
+      why: [
+        "Reviewers want to see you looked at alternatives and name the specific feature each one lacked.",
+        "One or two named alternatives with a one-line reason each is plenty. 'We looked at others' without names is not.",
+        "If you haven't looked at any, say so. The CO may do that research before finishing the justification."
+      ]
+    },
+    save: (v) => { req.jus_bn_alternatives = v; },
+    next: () => 'jus_bn_impact'
+  },
+  jus_bn_impact: {
+    speak: [
+      { text: "If you don't get this specific brand, what happens? Real-world impact, not opinions.", mood: 'angry' }
+    ],
+    input: {
+      type: 'textarea', label: 'Impact if we do not get this brand',
+      placeholder: "e.g. Parallel management plane costs ~$140K/yr and adds a second FTE. Non-compatible switch breaks the security zoning policy and requires a new ATO.",
+      why: [
+        "Impact language tells the approver why this restriction is worth the reduced competition.",
+        "Quantify where you can. Dollars, hours, headcount, downtime, mission impact.",
+        "'It would be inconvenient' is not impact. 'It adds $140K/year in management overhead' is."
+      ]
+    },
+    save: (v) => { req.jus_bn_impact = v; },
+    next: () => (req.multipleSources === false) ? 'jus_ss_unique' : 'jus_review'
+  },
+
+  // Sole-source detail (only reached if multipleSources === false)
+  jus_ss_unique: {
+    speak: (r) => {
+      const both = r.hasBrand;
+      if (both) return [
+        { text: "Now the sole-source half. Why is this the only vendor? Not the only brand. The only vendor who can provide it.", mood: 'angry' }
+      ];
+      return [
+        { text: "What makes this source unique? Proprietary data rights, a capability no one else has, a statutory assignment.", mood: 'angry' }
+      ];
+    },
+    input: {
+      type: 'textarea', label: 'Why only this source',
+      placeholder: "e.g. XYZ Corp holds exclusive data rights to the FOO-3 protocol under CRADA signed 2019. / Vendor is the only firm certified under the ABC standard for Category II work.",
+      why: [
+        "This is the heart of the sole-source justification. Name the concrete thing.",
+        "Data rights, proprietary process, sole-licensee of a patent, a qualification only they hold.",
+        "'Only they understand our systems' or 'they have the institutional knowledge' does not clear the bar. Name the tangible constraint."
+      ]
+    },
+    save: (v) => { req.jus_ss_unique = v; },
+    next: () => 'jus_ss_research'
+  },
+  jus_ss_research: {
+    speak: [
+      { text: "What research have you done to confirm nobody else can do this? Be specific about what you checked.", mood: 'angry' }
+    ],
+    input: {
+      type: 'textarea', label: 'Research that confirmed single source',
+      placeholder: "e.g. Sources sought posted on SAM.gov on 12 Jan 2026, no responses. Called three vendors at AFCEA (names below), none could meet the protocol spec. Reviewed GSA MAS for SIN 54151S, no alternates.",
+      why: [
+        "Market research is a required element of every sole-source justification.",
+        "Name what you did, not just that you did something. 'Conducted market research' is not enough.",
+        "Sources sought postings, RFI responses, vendor conversations with dates, GSA Advantage queries, trade-show conversations. Concrete actions, concrete dates."
+      ]
+    },
+    save: (v) => { req.jus_ss_research = v; },
+    next: () => 'jus_ss_alternatives'
+  },
+  jus_ss_alternatives: {
+    speak: [
+      { text: "Alternatives you actually contacted. Vendor, who you talked to, when, what they said.", mood: 'angry' }
+    ],
+    input: {
+      type: 'textarea', label: 'Alternatives contacted and responses',
+      placeholder: "e.g. Acme Inc. (spoke with Jane Doe, VP Sales, 14 Jan 2026): cannot provide without licensing from XYZ Corp. BetaSoft (emailed Bob Lee, 15 Jan 2026): no expertise in this protocol.",
+      why: [
+        "Reviewers want to see names, dates, and responses. It proves the research.",
+        "If the vendors are too technical to name, summarize the response: 'three vendors declined due to proprietary data rights.'",
+        "No-response sources sought counts too. Say so."
+      ]
+    },
+    save: (v) => { req.jus_ss_alternatives = v; },
+    next: () => 'jus_ss_impact'
+  },
+  jus_ss_impact: {
+    speak: [
+      { text: "If forced to compete this, what happens? Dollars, schedule, mission impact.", mood: 'angry' }
+    ],
+    input: {
+      type: 'textarea', label: 'Impact if forced to compete',
+      placeholder: "e.g. 9-month schedule slip to rebuild the interface against a non-proprietary spec; estimated $380K engineering cost; mission capability offline during transition.",
+      why: [
+        "The impact section tells the approver why the restriction is worth reducing competition.",
+        "Tie it to the mission. Dollars are necessary, but time and capability matter too.",
+        "Be realistic. Overstated impact gets the justification bounced for not passing a smell test."
+      ]
+    },
+    save: (v) => { req.jus_ss_impact = v; },
+    next: () => 'jus_ss_barriers'
+  },
+  jus_ss_barriers: {
+    speak: [
+      { text: "One more. What's the plan to keep the next buy competitive? Sole-source is supposed to be temporary.", mood: 'angry' }
+    ],
+    input: {
+      type: 'textarea', label: 'Plan to remove the restriction for future buys',
+      placeholder: "e.g. Negotiate government rights to the protocol spec in this contract (CLIN 0005). Include data-rights language. Post sources sought 12 months before the next recompete to identify emergent vendors.",
+      why: [
+        "Every sole-source justification needs a barriers-to-competition plan. It's a required element.",
+        "'Continue to monitor the market' is the weakest answer possible. Reviewers reject it.",
+        "Be specific: buy data rights, negotiate escrow, plan an open recompete, fund a second-source development."
+      ]
+    },
+    save: (v) => { req.jus_ss_barriers = v; },
+    next: () => 'jus_review'
+  },
+
+  jus_review: {
+    speak: [{ text: "Look it over. Anything wrong, edit it in place or back up to fix it.", mood: 'angry' }],
+    input: null,
+    save: () => {},
+    next: () => 'jus_output'
+  },
+  jus_output: {
+    speak: [{ text: "Packet has the justify worksheet. Hand it to your CO with the rest.", mood: 'angry' }],
+    input: null,
+    save: () => {},
+    next: () => null
+  },
+
+  // ── Fund station (customer portion) ───────────────────────────────
+  fund_intro: {
+    speak: [
+      { text: "Fund station. Now let's talk money." },
+      { text: "The CO can't do anything without funding in place. Either you've got it or you're building the case to get it." }
+    ],
+    input: null,
+    save: () => {},
+    next: () => 'fund_isFunded'
+  },
+  fund_isFunded: {
+    speak: [{ text: "Is this a funded requirement, or are we still chasing the money?" }],
+    input: {
+      type: 'yesno',
+      label: 'Funded?',
+      yesLabel: 'Funded',
+      noLabel: 'Unfunded',
+      why: [
+        "Funded means the money is obligated and a purchase request is in hand, or close to it.",
+        "Unfunded means the requirement is real but you're still competing for dollars.",
+        "Either answer is fine. They lead to different questions."
+      ]
+    },
+    save: (v) => { req.fund_isFunded = (v === 'yes'); },
+    next: () => req.fund_isFunded ? 'fund_prNumber' : 'fund_priority'
+  },
+
+  // ── Unfunded branch ───────────────────────────────────────────────
+  fund_priority: {
+    speak: [{ text: "Where does this sit in your unit's priority list? Be honest." }],
+    input: {
+      type: 'choice',
+      label: 'Priority',
+      options: [
+        { label: 'High \u2013 mission critical, funded first when money shows up', value: 'high' },
+        { label: 'Medium \u2013 important, not at the top', value: 'medium' },
+        { label: 'Low \u2013 nice to have, fund when there is slack', value: 'low' }
+      ],
+      why: [
+        "Priority drives the order your unit will load the PR once funding hits.",
+        "Calling everything 'High' burns credibility. Keep it real.",
+        "Low isn't an insult. Plenty of valid buys sit in the low tier until year-end money appears."
+      ]
+    },
+    save: (v) => { req.fund_priority = v; },
+    next: () => 'fund_likelihood'
+  },
+  fund_likelihood: {
+    speak: [{ text: "Honest assessment: what's the likelihood this gets funded, and when?" }],
+    input: {
+      type: 'textarea',
+      label: 'Likelihood of funding (honest)',
+      placeholder: "e.g. Likely funded in 4th quarter off year-end sweep \u2013 commander prioritizes this in the top three unfunded. / Low likelihood; competing with three other unit packages and we're not the priority.",
+      why: [
+        "The CO uses this to decide how much effort to spend teeing up the acquisition now.",
+        "Honest is better than hopeful. 'Maybe, depends' helps the CO more than 'definitely.'",
+        "Name the funding source if you know it: year-end sweep, supplemental, NDAA plus-up, reprogramming."
+      ]
+    },
+    save: (v) => { req.fund_likelihood = v; },
+    next: () => 'fund_estFundDate'
+  },
+  fund_estFundDate: {
+    speak: [{ text: "Best guess on when funding lands? Rough is fine, or skip if you don't know." }],
+    input: {
+      type: 'date',
+      label: 'Estimated funding date (optional)',
+      why: [
+        "Helps the CO decide whether to start market research now so the file is ready when money arrives.",
+        "Year-end dates (30 Sep) tell the CO a very different story than 'first of next FY.'",
+        "If you truly don't know, leave it blank and rely on the likelihood narrative."
+      ]
+    },
+    save: (v) => { req.fund_estFundDate = v; },
+    next: () => 'fund_dropDead'
+  },
+  fund_dropDead: {
+    speak: [{ text: "And a drop-dead date. If it's not funded by when, we stop trying?" }],
+    input: {
+      type: 'date',
+      label: 'Drop-dead abandon date',
+      why: [
+        "Every unfunded requirement needs an off-ramp. Otherwise it sits in somebody's inbox forever.",
+        "Set a date that makes sense for the need. After it passes, the requirement expires and goes back for re-validation.",
+        "If the requirement truly has no expiration (long-lead steady-state capability), pick a review date a year out."
+      ]
+    },
+    save: (v) => { req.fund_dropDead = v; },
+    next: () => 'fund_resourceAdvisor'
+  },
+  fund_resourceAdvisor: {
+    speak: [
+      { text: "Quick reminder: talk to your resource advisor. I'm not one, and the CO isn't either." },
+      { text: "RA is the one who knows what colors of money exist and where they live. Loop them in before the package hits the CO." }
+    ],
+    input: null,
+    save: () => {},
+    next: () => 'fund_anythingElse'
+  },
+
+  // ── Funded branch ─────────────────────────────────────────────────
+  fund_prNumber: {
+    speak: [{ text: "Purchase request number?" }],
+    input: {
+      type: 'text',
+      label: 'Purchase request number',
+      placeholder: 'e.g. F3Y12A6123H001',
+      why: [
+        "The CO can't award without a PR. The number ties the acquisition to the funding document.",
+        "If the PR is in progress but not yet numbered, leave blank and note it under 'anything else' later.",
+        "Different systems format this differently. Paste whatever your system gives you."
+      ]
+    },
+    save: (v) => { req.fund_prNumber = v; },
+    next: () => 'fund_fullyFunded'
+  },
+  fund_fullyFunded: {
+    speak: [{ text: "Is the PR fully funded, or only partially?" }],
+    input: {
+      type: 'yesno',
+      label: 'Fully funded?',
+      why: [
+        "Fully funded means the PR covers the entire estimated value.",
+        "Partially funded means incremental funding \u2013 more on that in a moment.",
+        "Severable services sometimes get funded one option year at a time. That still counts as fully funded for the base period."
+      ]
+    },
+    save: (v) => { req.fund_fullyFunded = (v === 'yes'); },
+    next: () => 'fund_priceBuffer'
+  },
+  fund_priceBuffer: {
+    speak: [{ text: "If quotes come in higher than your estimate, is there headroom? Or is the PR the hard cap?" }],
+    input: {
+      type: 'textarea',
+      label: 'Price buffer / headroom',
+      placeholder: "e.g. Estimate is $1.2M, PR is funded at $1.35M so about 12% headroom. / No headroom, PR is funded at exact estimate, will need PR mod if quotes come in higher.",
+      why: [
+        "If the CO negotiates and the price climbs, they need to know whether to mod the PR or reject offers.",
+        "A small buffer saves everyone from a PR mod cycle during award.",
+        "Name the dollar amount if you can. 'Some buffer' is worse than '5% buffer up to $60K.'"
+      ]
+    },
+    save: (v) => { req.fund_priceBuffer = v; },
+    next: () => 'fund_uniqueConstraints'
+  },
+  fund_uniqueConstraints: {
+    speak: [
+      { text: "Any unique funding constraints? Incremental funding, specific CLIN structure, expiration limits, restrictions on what the money can buy?" }
+    ],
+    input: {
+      type: 'textarea',
+      label: 'Unique funding constraints (optional)',
+      placeholder: "e.g. Incremental funding: $400K now, $400K when next FY opens, $400K in Q3. / Funds must be obligated by 30 Sep or they revert. / Construction funds \u2013 can't be used for equipment not attached to the facility.",
+      why: [
+        "Incremental funding changes how the CO structures the award. Name it if it applies.",
+        "Expiration dates are the most common trap. One-year O&M expires if not obligated.",
+        "If none of this applies, leave blank."
+      ]
+    },
+    save: (v) => { req.fund_uniqueConstraints = v; },
+    next: () => 'fund_fundType'
+  },
+  fund_fundType: {
+    speak: [{ text: "What color of money is this?" }],
+    input: {
+      type: 'choice',
+      label: 'Fund type',
+      options: [
+        { label: 'O&M (operation and maintenance)', value: 'om' },
+        { label: 'Procurement', value: 'procurement' },
+        { label: 'RDT&E (research, development, test, evaluation)', value: 'rdte' },
+        { label: 'Other \u2013 I\u2019ll describe', value: 'other' }
+      ],
+      why: [
+        "O&M is one-year money, used for day-to-day operations and sustainment buys.",
+        "Procurement is three-year money for investment items above the expense/investment threshold.",
+        "RDT&E is two-year money for development work.",
+        "If you don't know, say 'other' and the RA/CO will sort it out."
+      ]
+    },
+    save: (v) => { req.fund_fundType = v; },
+    next: () => req.fund_fundType === 'other' ? 'fund_fundTypeOther' : 'fund_anythingElse'
+  },
+  fund_fundTypeOther: {
+    speak: [{ text: "What kind of money is it then? Best guess, or what the RA told you." }],
+    input: {
+      type: 'text',
+      label: 'Fund type (describe)',
+      placeholder: 'e.g. MILCON, working capital fund, reimbursable, MIPR from another service',
+      why: [
+        "Name whatever label the RA or the funding document uses.",
+        "CO will translate it to the proper appropriation code."
+      ]
+    },
+    save: (v) => { req.fund_fundTypeOther = v; },
+    next: () => 'fund_anythingElse'
+  },
+
+  // ── Both branches converge here ───────────────────────────────────
+  fund_anythingElse: {
+    speak: [{ text: "Anything else the CO should know about the funding? Leave blank if nothing." }],
+    input: {
+      type: 'textarea',
+      label: 'Anything else (optional)',
+      placeholder: "e.g. MIPR inbound from another unit, not yet received. / Funds flow through a different base comptroller. / This PR was returned last FY for clarifications, resubmitted this year.",
+      why: [
+        "Catch-all for anything the prior questions didn't cover.",
+        "Cross-service MIPRs, shared buys, prior-year reject-and-resubmits all belong here.",
+        "Leave blank if nothing comes to mind."
+      ]
+    },
+    save: (v) => { req.fund_anythingElse = v; },
+    next: () => 'fund_review'
+  },
+  fund_review: {
+    speak: [{ text: "Look over the funding inputs. Edit anything that's off." }],
+    input: null,
+    save: () => {},
+    next: () => 'fund_output'
+  },
+  fund_output: {
+    speak: [{ text: "Funding worksheet is ready. Hand it over with the rest of the packet." }],
+    input: null,
+    save: () => {},
+    next: () => null
+  },
+
+  // ── Packet station (routing slip / cover sheet) ──────────────────
+  pkg_intro: {
+    speak: [
+      { text: "Final station. Time to build your routing slip." },
+      { text: "One cover sheet that lists every worksheet in your packet, so the CO knows what's in the package and who to call." }
+    ],
+    input: null,
+    save: () => {},
+    next: () => 'pkg_poc_name'
+  },
+  pkg_poc_name: {
+    speak: [{ text: "Who's the point of contact for this requirement? Real name, not a role." }],
+    input: {
+      type: 'text',
+      label: 'Point of contact (name)',
+      placeholder: 'e.g. SSgt Jane Smith',
+      why: [
+        "The CO will call the POC with questions during market research and award.",
+        "Role titles like 'Unit POC' don't help when the CO needs an answer in an hour.",
+        "Use the person who actually knows the requirement, not the commander."
+      ]
+    },
+    save: (v) => { req.pkg_poc_name = v; },
+    next: () => 'pkg_poc_phone'
+  },
+  pkg_poc_phone: {
+    speak: [{ text: "Phone number for the POC?" }],
+    input: {
+      type: 'text',
+      label: 'POC phone',
+      placeholder: 'e.g. DSN 555-1212 or (555) 555-1212',
+      why: [
+        "COs usually call before they email. A live voice solves problems faster.",
+        "DSN is fine if that's what you use. Commercial is fine too."
+      ]
+    },
+    save: (v) => { req.pkg_poc_phone = v; },
+    next: () => 'pkg_poc_email'
+  },
+  pkg_poc_email: {
+    speak: [{ text: "Email?" }],
+    input: {
+      type: 'text',
+      label: 'POC email',
+      placeholder: 'e.g. jane.smith.3@us.af.mil',
+      why: [
+        "For formal back-and-forth that needs to be documented.",
+        "Official .mil address preferred if you have one."
+      ]
+    },
+    save: (v) => { req.pkg_poc_email = v; },
+    next: () => 'pkg_review'
+  },
+  pkg_review: {
+    speak: [{ text: "Here's the full packet. Check that everything's in the box before you hand it off." }],
+    input: null,
+    save: () => {},
+    next: () => 'pkg_output'
+  },
+  pkg_output: {
+    speak: [
+      { text: "That's the line. Your packet is built." },
+      { text: "Download the cover sheet, staple it to the worksheets you downloaded at each station, and hand the whole thing to your CO." }
+    ],
+    input: null,
+    save: () => {},
+    next: () => null
+  }
+};
+
+// Branching helpers
+function afterSoleSource() {
+  if (req.isIT) return 'it_ui';
+  if (req.hasHazmat) return 'hazmat';
+  return 'review';
+}
+function afterIT() {
+  if (req.hasHazmat) return 'hazmat';
+  return 'review';
+}
+
+function runStep(id, options) {
+  options = options || {};
+  // Record the step we're LEAVING (forward move only).
+  if (!options.skipHistory && sceneState.currentStep && sceneState.currentStep !== id) {
+    stepHistory.push(sceneState.currentStep);
+  }
+  sceneState.currentStep = id;
+  saveReq();
+  const step = STEPS[id];
+  if (!step) return;
+  const lines = typeof step.speak === 'function' ? step.speak(req) : step.speak;
+  queueDialogue(lines || [], () => {
+    // Custom renderers for terminal-ish steps
+    if (id === 'review')       return renderReview();
+    if (id === 'output')       return renderOutput();
+    if (id === 'svc_handoff')  return renderServiceHandoff();
+    if (id === 'mr_review')    return renderMrReview();
+    if (id === 'mr_output')    return renderMrOutput();
+    if (id === 'ef_review')    return renderEfReview();
+    if (id === 'ef_output')    return renderEfOutput();
+    if (id === 'jus_review')   return renderJusReview();
+    if (id === 'jus_output')   return renderJusOutput();
+    if (id === 'fund_review')  return renderFundReview();
+    if (id === 'fund_output')  return renderFundOutput();
+    if (id === 'pkg_review')   return renderPkgReview();
+    if (id === 'pkg_output')   return renderPkgOutput();
+    // Pass-through step (no input): advance automatically.
+    // We skip history on the forward jump so Back doesn't loop through the
+    // passthrough (e.g. mr_intro, ef_intro, sole_nope).
+    if (!step.input) {
+      const nextId = step.next();
+      if (nextId) runStep(nextId, { skipHistory: true });
+      return;
+    }
+    ask(step.input, (val) => {
+      step.save(val);
+      saveReq();
+      const nextId = step.next();
+      if (nextId) runStep(nextId);
+    });
+  });
+}
+
+// Wire Back button once; handler hides the current panel and goes back.
+inputBack.addEventListener('click', () => {
+  inputPanel.classList.add('hidden');
+  hideAllInputs();
+  goBack();
+});
+
+/* ──────────── Review + output renderers ──────────── */
+function esc(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function soleBasisLabel(v) {
+  switch (v) {
+    case 'only_one_source': return 'Only one responsible source';
+    case 'urgency': return 'Unusual and compelling urgency';
+    case 'mobilization': return 'Industrial mobilization / essential experts';
+    case 'international_agreement': return 'International agreement';
+    case 'statute': return 'Authorized or required by statute';
+    case 'national_security': return 'National security';
+    case 'public_interest': return 'Public interest';
+    default: return v || '';
+  }
+}
+
+/* Short spoken advice Ollie gives after the basis is picked, before he asks
+   for the narrative. Kept to one line so the dialogue doesn't drag. */
+function soleBasisAdvice(v) {
+  switch (v) {
+    case 'only_one_source':
+      return "Proprietary, data rights, or a capability only one vendor has. The narrative lives and dies on what you tried before picking them.";
+    case 'urgency':
+      return "Urgency means serious and unforeseen. Normal lead time running short doesn't qualify. Be ready to name the damage of delay.";
+    case 'mobilization':
+      return "Mobilization or essential experts. Narrow lane. The narrative has to show why this source is needed for national defense capability or expert testimony.";
+    case 'international_agreement':
+      return "Works when a treaty or government-to-government agreement names the source. Cite the agreement.";
+    case 'statute':
+      return "Statute path only works when Congress actually said buy from this source. Your citation carries the whole justification.";
+    default:
+      return '';
+  }
+}
+
+/* Build one review table row.
+   field = key in req the cell edits. Omit to make the cell read-only. */
+function reviewRow(label, value, field) {
+  if (value == null || value === '' || value === false) return '';
+  if (field) {
+    return '<tr><td>' + esc(label) + '</td>' +
+           '<td class="editable" contenteditable="true" data-field="' + field + '">' +
+           esc(value) + '</td></tr>';
+  }
+  return '<tr><td>' + esc(label) + '</td><td>' + esc(value) + '</td></tr>';
+}
+
+/* Push an edited value back into req. Kept tolerant of blank/bad input. */
+function updateReqField(field, raw) {
+  const val = (raw == null ? '' : String(raw)).trim();
+  if (field === 'quantity' || field === 'unitCost') {
+    const n = Number(val);
+    if (isFinite(n) && n >= 0) {
+      req[field] = n;
+      req.totalValue = (req.quantity || 0) * (req.unitCost || 0);
+      req.threshold = computeThreshold();
+    }
+  } else if (Object.prototype.hasOwnProperty.call(req, field)) {
+    req[field] = val;
+  }
+  saveReq();
+}
+
+/* Wire every editable cell in the current review table. */
+function wireReviewEdits() {
+  inputReview.addEventListener('input', (e) => {
+    const td = e.target.closest('[data-field]');
+    if (!td) return;
+    updateReqField(td.dataset.field, td.textContent);
+  });
+}
+
+function renderReview() {
+  let body = '';
+  body += reviewRow('Item', req.item, 'item');
+  body += reviewRow('Kind', req.kind);                       // read-only (use Back to change)
+  body += reviewRow('Quantity', req.quantity, 'quantity');
+  body += reviewRow('Unit cost', req.unitCost, 'unitCost');
+  body += reviewRow('Total value', req.totalValue != null ? '$' + Number(req.totalValue).toLocaleString() : null);
+  body += reviewRow('Acquisition path', thresholdLabel(req.threshold));
+  body += reviewRow('Need-by', req.needBy, 'needBy');
+  body += reviewRow('Delivery location (address or DoDAAC)', req.deliveryLocation, 'deliveryLocation');
+  body += reviewRow('End user', req.endUser, 'endUser');
+  body += reviewRow('Salient characteristics', req.salientChars, 'salientChars');
+  if (req.hasBrand) {
+    body += reviewRow('Brand / model requested', req.brandName, 'brandName');
+    body += reviewRow('Reason for brand', req.brandReason, 'brandReason');
+  }
+  if (req.multipleSources === false) {
+    body += reviewRow('Sole-source basis', soleBasisLabel(req.soleSourceBasis));   // choice, read-only
+    if (req.soleSourceBasis === 'statute') {
+      body += reviewRow('Statute', req.soleSourceStatute, 'soleSourceStatute');
+    }
+    body += reviewRow('Sole-source rationale', req.soleSourceReason, 'soleSourceReason');
+  }
+  if (req.isIT) {
+    body += reviewRow('IT: user interface', req.it_hasUI ? 'Yes (Section 508 applies)' : 'No');
+    body += reviewRow('IT: data sensitivity', req.it_sensitivity);
+    body += reviewRow('IT: network', req.it_network);
+  }
+  if (req.hasHazmat) {
+    body += reviewRow('Hazmat / special handling', req.hazmatDetails, 'hazmatDetails');
+  }
+  const html =
+    '<p class="review-edit-hint">Click any highlighted value to edit in place. For Yes/No or category answers, use Back.</p>' +
+    '<table class="review-table"><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>' +
+    body + '</tbody></table>';
+  ask({ type: 'review', label: 'Review the package', html }, (val) => {
+    if (val === 'yes') runStep('output');
+    else startOver();
+  });
+  wireReviewEdits();
+}
+
+function renderOutput() {
+  ask({ type: 'output', label: 'SOR is ready' }, () => {});
+  const note = document.getElementById('handoffNote');
+  const downloadBtn = document.getElementById('btnDownloadPdf');
+  const nextBtn = document.getElementById('btnNextStation');
+  downloadBtn.style.display = '';
+  downloadBtn.textContent = '\u2193 Download SOR (PDF)';
+  downloadBtn.dataset.doc = 'sor';
+  nextBtn.style.display = '';
+  nextBtn.textContent = 'Next: Market Research \u2192';
+  nextBtn.dataset.target = 'mr_intro';
+  const parts = [];
+  if (req.hasBrand) parts.push('brand-name justification');
+  if (req.multipleSources === false) parts.push('sole-source justification');
+  let msg = 'Download the SOR anytime. Next up is the customer portion of market research, which I\u2019ll walk you through right here.';
+  if (parts.length) msg += ' After market research, we\u2019ll build the ' + parts.join(' and ') + '.';
+  note.innerHTML = esc(msg);
+}
+
+function renderMrReview() {
+  let body = '';
+  body += reviewRow('Bought this before?',
+    req.mr_boughtBefore == null ? null : (req.mr_boughtBefore ? 'Yes' : 'No'));
+  body += reviewRow('Prior contract / vendor / year', req.mr_priorContract, 'mr_priorContract');
+  body += reviewRow('Known vendors / sources', req.mr_knownVendors, 'mr_knownVendors');
+  body += reviewRow('Known contract vehicles', req.mr_vehicles, 'mr_vehicles');
+  body += reviewRow('Price points seen', req.mr_pricePoints, 'mr_pricePoints');
+  body += reviewRow('Small business sources', req.mr_smallBizSources, 'mr_smallBizSources');
+  if (req.kind === 'service') {
+    body += reviewRow('Incumbent', req.mr_incumbent, 'mr_incumbent');
+  }
+  body += reviewRow('Market constraints', req.mr_constraints, 'mr_constraints');
+  let html = '<p class="review-edit-hint">Click any highlighted value to edit. Yes/No answers use Back to change.</p>';
+  html += '<table class="review-table"><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>';
+  if (!body) {
+    html += '<tr><td colspan="2"><em>No entries. That\u2019s OK. The CO will start from scratch.</em></td></tr>';
+  } else {
+    html += body;
+  }
+  html += '</tbody></table>';
+  ask({ type: 'review', label: 'Review your market research inputs', html,
+        yesLabel: 'Looks good', noLabel: 'Redo my answers' }, (val) => {
+    if (val === 'yes') runStep('mr_output');
+    else runStep('mr_bought_before');
+  });
+  wireReviewEdits();
+}
+
+function renderMrOutput() {
+  ask({ type: 'output', label: 'Market research worksheet is ready' }, () => {});
+  const note = document.getElementById('handoffNote');
+  const downloadBtn = document.getElementById('btnDownloadPdf');
+  const nextBtn = document.getElementById('btnNextStation');
+  downloadBtn.style.display = '';
+  downloadBtn.textContent = '\u2193 Download Market Research (PDF)';
+  downloadBtn.dataset.doc = 'mr';
+
+  // EF is always next after MR now; justify comes after EF.
+  nextBtn.style.display = '';
+  nextBtn.textContent = 'Next: Evaluation Factors \u2192';
+  nextBtn.dataset.target = 'ef_intro';
+
+  let msg = 'Hand the SOR and the market research worksheet to your CO together. ';
+  msg += 'Want to learn how the CO uses all this? See the <a href="training.html">market research training</a>.';
+  note.innerHTML = msg;
+}
+
+function approachLabel(v) {
+  if (v === 'price') return 'Price \u2013 cheapest offer that meets the requirement';
+  if (v === 'past_performance') return 'Past performance \u2013 proven track record';
+  if (v === 'technical') return 'Technical features \u2013 capability / quality differences';
+  if (v === 'unsure') return 'Not sure; CO to advise';
+  return '';
+}
+
+function renderEfReview() {
+  let body = '';
+  body += reviewRow('Evaluation approach', approachLabel(req.ef_approach));
+  body += reviewRow('Must-haves (minimum requirements)', req.ef_mustHaves, 'ef_mustHaves');
+  if (req.ef_approach !== 'price') {
+    body += reviewRow('Differentiators', req.ef_differentiators, 'ef_differentiators');
+  }
+  body += reviewRow('Past performance matters?',
+    req.ef_pastPerfMatters == null ? null : (req.ef_pastPerfMatters ? 'Yes' : 'No'));
+  if (req.ef_pastPerfMatters) {
+    body += reviewRow('Past performance criteria', req.ef_pastPerfDetail, 'ef_pastPerfDetail');
+  }
+  body += reviewRow('Schedule as an evaluation factor?',
+    req.ef_scheduleCritical == null ? null : (req.ef_scheduleCritical ? 'Yes' : 'No'));
+  body += reviewRow('Other considerations', req.ef_other, 'ef_other');
+
+  let html = '<p class="review-edit-hint">Click any highlighted value to edit. Yes/No and approach answers use Back to change.</p>';
+  html += '<table class="review-table"><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>';
+  if (!body) {
+    html += '<tr><td colspan="2"><em>No entries. The CO will build evaluation factors from the SOR alone.</em></td></tr>';
+  } else {
+    html += body;
+  }
+  html += '</tbody></table>';
+
+  ask({ type: 'review', label: 'Review your evaluation factors', html,
+        yesLabel: 'Looks good', noLabel: 'Redo my answers' }, (val) => {
+    if (val === 'yes') runStep('ef_output');
+    else runStep('ef_approach');
+  });
+  wireReviewEdits();
+}
+
+function renderEfOutput() {
+  ask({ type: 'output', label: 'Evaluation factors worksheet is ready' }, () => {});
+  const note = document.getElementById('handoffNote');
+  const downloadBtn = document.getElementById('btnDownloadPdf');
+  const nextBtn = document.getElementById('btnNextStation');
+  downloadBtn.style.display = '';
+  downloadBtn.textContent = '\u2193 Download Evaluation Factors (PDF)';
+  downloadBtn.dataset.doc = 'ef';
+
+  // After EF, go to the in-page JUSTIFY station if brand-name or sole-source applies;
+  // otherwise skip straight to FUND.
+  if (req.hasBrand || req.multipleSources === false) {
+    nextBtn.style.display = '';
+    nextBtn.textContent = 'Next: Justify \u2192';
+    nextBtn.dataset.target = 'jus_intro';
+  } else {
+    nextBtn.style.display = '';
+    nextBtn.textContent = 'Next: Fund \u2192';
+    nextBtn.dataset.target = 'fund_intro';
+  }
+
+  let msg = 'That is your packet. Hand the SOR, the market research worksheet, and the evaluation factors worksheet to your CO together. ';
+  msg += 'For how the CO turns this into Section M language, see the <a href="training.html">evaluation training</a>.';
+  note.innerHTML = msg;
+}
+
+function renderServiceHandoff() {
+  inputPanel.classList.remove('hidden');
+  hideAllInputs();
+  inputLabel.textContent = 'SERVICES \u2192 PWS BUILDER';
+  inputOutput.style.display = '';
+  document.getElementById('btnDownloadPdf').style.display = 'none';
+  document.getElementById('btnNextStation').textContent = 'Go to PWS Builder \u2192';
+  document.getElementById('btnNextStation').dataset.target = 'pws';
+  document.getElementById('handoffNote').innerHTML =
+    'The PWS Builder lives at <a href="pws-builder.html">kthq.org/pws-builder.html</a> (coming soon). Your intake answers are saved, so when that tool is live it\u2019ll pick up where we left off.';
+}
+
+function startOver() {
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  req = blankReq();
+  saveReq();
+  reqBox.visible = false;
+  stepHistory = [];
+  sceneState.currentStep = null;
+  runStep('item');
+}
+
+/* ──────────── PDF generator (Statement of Requirement) ──────────── */
+function downloadSorPdf() {
+  if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  const M = 54;         // margin pt (~0.75")
+  const W = 612 - M*2;  // usable width
+  let y = M;
+
+  // Header
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(16);
+  doc.text('STATEMENT OF REQUIREMENT', M, y); y += 22;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(90);
+  const today = new Date();
+  const dstr = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  doc.text('Generated ' + dstr + ' \u2013 Session ' + req.sessionId, M, y); y += 18;
+  doc.setTextColor(0);
+  doc.setDrawColor(180); doc.line(M, y, M + W, y); y += 16;
+
+  const section = (title) => {
+    if (y > 720) { doc.addPage(); y = M; }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+    doc.text(title, M, y); y += 14;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+  };
+  const line = (label, val) => {
+    if (val == null || val === '' || val === false) return;
+    const labelW = 120;
+    doc.setFont('helvetica', 'bold');
+    doc.text(String(label) + ':', M, y);
+    doc.setFont('helvetica', 'normal');
+    const txt = doc.splitTextToSize(String(val), W - labelW);
+    doc.text(txt, M + labelW, y);
+    y += Math.max(14, txt.length * 13);
+    if (y > 740) { doc.addPage(); y = M; }
+  };
+  const para = (val) => {
+    if (!val) return;
+    const txt = doc.splitTextToSize(String(val), W);
+    for (const row of txt) {
+      if (y > 740) { doc.addPage(); y = M; }
+      doc.text(row, M, y); y += 13;
+    }
+    y += 4;
+  };
+
+  // Section 1: Item
+  section('1. Item Description');
+  line('Item', req.item);
+  line('Kind', req.kind === 'product' ? 'Product (supply/commodity)' : 'Service');
+  if (req.salientChars) {
+    y += 4;
+    doc.setFont('helvetica', 'bold'); doc.text('Salient Characteristics:', M, y); y += 14;
+    doc.setFont('helvetica', 'normal');
+    para(req.salientChars);
+  }
+  y += 6;
+
+  // Section 2: Quantity & schedule
+  section('2. Quantity and Schedule');
+  line('Quantity', req.quantity);
+  line('Need-by date', req.needBy);
+  y += 6;
+
+  // Section 3: Delivery & end user
+  section('3. Delivery and End User');
+  line('Delivery location', req.deliveryLocation);
+  line('End user', req.endUser);
+  y += 6;
+
+  // Section 4: Funding estimate
+  section('4. Estimated Value');
+  line('Unit cost', req.unitCost != null ? '$' + Number(req.unitCost).toLocaleString() : null);
+  line('Total value', req.totalValue != null ? '$' + Number(req.totalValue).toLocaleString() : null);
+  line('Acquisition path', thresholdLabel(req.threshold));
+  y += 6;
+
+  // Section 5: Brand-name (conditional)
+  if (req.hasBrand) {
+    section('5. Brand-Name / Model Request');
+    line('Brand/Model', req.brandName);
+    doc.setFont('helvetica', 'bold'); doc.text('Technical justification:', M, y); y += 14;
+    doc.setFont('helvetica', 'normal');
+    para(req.brandReason);
+    y += 2;
+    doc.setTextColor(120);
+    doc.setFontSize(9);
+    para('A formal brand-name justification will be prepared in the companion tool and attached to this requirement.');
+    doc.setTextColor(0); doc.setFontSize(10);
+    y += 4;
+  }
+
+  // Section 6: Sole-source (conditional)
+  if (req.multipleSources === false) {
+    section(((req.hasBrand ? '6' : '5')) + '. Sole-Source Information');
+    line('Basis', soleBasisLabel(req.soleSourceBasis));
+    if (req.soleSourceBasis === 'statute' && req.soleSourceStatute) {
+      line('Statute', req.soleSourceStatute);
+    }
+    doc.setFont('helvetica', 'bold'); doc.text('Narrative:', M, y); y += 14;
+    doc.setFont('helvetica', 'normal');
+    para(req.soleSourceReason);
+    doc.setTextColor(120); doc.setFontSize(9);
+    para('A full sole-source justification will be prepared in the companion tool.');
+    doc.setTextColor(0); doc.setFontSize(10);
+    y += 4;
+  }
+
+  // Section IT
+  if (req.isIT) {
+    section('IT Considerations');
+    line('User interface', req.it_hasUI ? 'Yes. Section 508 accessibility applies.' : 'No');
+    line('Data sensitivity', req.it_sensitivity);
+    line('Network', req.it_network);
+    y += 6;
+  }
+
+  // Section Hazmat
+  if (req.hasHazmat) {
+    section('Hazardous / Special Handling');
+    para(req.hazmatDetails);
+    y += 4;
+  }
+
+  // Footer
+  if (y > 720) { doc.addPage(); y = M; }
+  doc.setDrawColor(180); doc.line(M, y, M + W, y); y += 14;
+  doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(120);
+  doc.text('Generated by KTHQ Requirements Builder. Not a sanctioned form. Route through your CO before submission.', M, y);
+  doc.setTextColor(0);
+
+  const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
+  doc.save('SOR_' + safeItem + '_' + req.sessionId + '.pdf');
+}
+
+/* ──────────── PDF generator (Market Research - customer portion) ──────────── */
+function downloadMrPdf() {
+  if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  const M = 54;
+  const W = 612 - M*2;
+  let y = M;
+
+  // Header
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(16);
+  doc.text('MARKET RESEARCH WORKSHEET', M, y); y += 20;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(90);
+  doc.text('Customer-provided inputs', M, y); y += 14;
+  const today = new Date();
+  const dstr = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  doc.text('Generated ' + dstr + ' \u2013 Session ' + req.sessionId, M, y); y += 16;
+  doc.setTextColor(0);
+  doc.setDrawColor(180); doc.line(M, y, M + W, y); y += 16;
+
+  const section = (title) => {
+    if (y > 720) { doc.addPage(); y = M; }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+    doc.text(title, M, y); y += 14;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+  };
+  const line = (label, val) => {
+    if (val == null || val === '' || val === false) return;
+    const labelW = 150;
+    doc.setFont('helvetica', 'bold');
+    doc.text(String(label) + ':', M, y);
+    doc.setFont('helvetica', 'normal');
+    const txt = doc.splitTextToSize(String(val), W - labelW);
+    doc.text(txt, M + labelW, y);
+    y += Math.max(14, txt.length * 13);
+    if (y > 740) { doc.addPage(); y = M; }
+  };
+  const para = (val) => {
+    if (!val) return;
+    const txt = doc.splitTextToSize(String(val), W);
+    for (const row of txt) {
+      if (y > 740) { doc.addPage(); y = M; }
+      doc.text(row, M, y); y += 13;
+    }
+    y += 4;
+  };
+  const noteRow = (msg) => {
+    doc.setTextColor(120); doc.setFontSize(9); doc.setFont('helvetica', 'italic');
+    para(msg);
+    doc.setTextColor(0); doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+  };
+
+  // Associated requirement
+  section('Requirement');
+  line('Item', req.item);
+  line('Kind', req.kind === 'product' ? 'Product' : 'Service');
+  if (req.totalValue != null) line('Estimated value', '$' + Number(req.totalValue).toLocaleString());
+  if (req.threshold) line('Acquisition path', thresholdLabel(req.threshold));
+  y += 6;
+
+  // Section 1: Prior experience
+  section('1. Prior Unit Experience');
+  if (req.mr_boughtBefore) {
+    line('Bought this before?', 'Yes');
+    if (req.mr_priorContract) {
+      doc.setFont('helvetica', 'bold'); doc.text('Prior contract / vendor / year:', M, y); y += 14;
+      doc.setFont('helvetica', 'normal');
+      para(req.mr_priorContract);
+    }
+  } else if (req.mr_boughtBefore === false) {
+    line('Bought this before?', 'No');
+  } else {
+    noteRow('Not answered.');
+  }
+  y += 6;
+
+  // Section 2: Known sources
+  section('2. Known Sources');
+  if (req.mr_knownVendors) {
+    para(req.mr_knownVendors);
+  } else {
+    noteRow('Customer did not identify any known vendors. CO will run sources sought / RFI.');
+  }
+  y += 4;
+
+  // Section 3: Contract vehicles
+  section('3. Known Contract Vehicles');
+  if (req.mr_vehicles) {
+    para(req.mr_vehicles);
+  } else {
+    noteRow('No vehicles identified by customer. CO will check GSA Advantage / SAM / local BPAs.');
+  }
+  y += 4;
+
+  // Section 4: Price points
+  section('4. Customer Price Points');
+  if (req.mr_pricePoints) {
+    para(req.mr_pricePoints);
+    noteRow('Use as an input to the Independent Government Cost Estimate. Validate against fresh quotes.');
+  } else {
+    noteRow('No prior price data from customer. CO will build IGCE from market quotes only.');
+  }
+  y += 4;
+
+  // Section 5: Small business sources
+  section('5. Small Business Sources');
+  if (req.mr_smallBizSources) {
+    para(req.mr_smallBizSources);
+    noteRow('CO will evaluate set-aside potential under FAR Part 19 using these and other leads.');
+  } else {
+    noteRow('No small business sources identified by customer. CO will run a sources sought for small business.');
+  }
+  y += 4;
+
+  // Section 6: Incumbent (services only)
+  if (req.kind === 'service') {
+    section('6. Incumbent');
+    if (req.mr_incumbent) {
+      para(req.mr_incumbent);
+    } else {
+      noteRow('No incumbent identified.');
+    }
+    y += 4;
+  }
+
+  // Section 7: Constraints
+  const constraintsNum = (req.kind === 'service') ? '7' : '6';
+  section(constraintsNum + '. Market Constraints');
+  if (req.mr_constraints) {
+    para(req.mr_constraints);
+  } else {
+    noteRow('None noted by customer.');
+  }
+  y += 4;
+
+  // Footer
+  if (y > 720) { doc.addPage(); y = M; }
+  doc.setDrawColor(180); doc.line(M, y, M + W, y); y += 14;
+  doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(120);
+  doc.text('Customer portion only. The CO completes the remaining market research separately.', M, y); y += 12;
+  doc.text('Generated by KTHQ Requirements Builder. Not a sanctioned form.', M, y);
+  doc.setTextColor(0);
+
+  const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
+  doc.save('MR_' + safeItem + '_' + req.sessionId + '.pdf');
+}
+
+/* ──────────── PDF generator (Evaluation Factors - customer portion) ──────────── */
+function downloadEfPdf() {
+  if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  const M = 54;
+  const W = 612 - M*2;
+  let y = M;
+
+  // Header
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(16);
+  doc.text('EVALUATION FACTORS WORKSHEET', M, y); y += 20;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(90);
+  doc.text('Customer-provided inputs', M, y); y += 14;
+  const today = new Date();
+  const dstr = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  doc.text('Generated ' + dstr + ' \u2013 Session ' + req.sessionId, M, y); y += 16;
+  doc.setTextColor(0);
+  doc.setDrawColor(180); doc.line(M, y, M + W, y); y += 16;
+
+  const section = (title) => {
+    if (y > 720) { doc.addPage(); y = M; }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+    doc.text(title, M, y); y += 14;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+  };
+  const line = (label, val) => {
+    if (val == null || val === '' || val === false) return;
+    const labelW = 170;
+    doc.setFont('helvetica', 'bold');
+    doc.text(String(label) + ':', M, y);
+    doc.setFont('helvetica', 'normal');
+    const txt = doc.splitTextToSize(String(val), W - labelW);
+    doc.text(txt, M + labelW, y);
+    y += Math.max(14, txt.length * 13);
+    if (y > 740) { doc.addPage(); y = M; }
+  };
+  const para = (val) => {
+    if (!val) return;
+    const txt = doc.splitTextToSize(String(val), W);
+    for (const row of txt) {
+      if (y > 740) { doc.addPage(); y = M; }
+      doc.text(row, M, y); y += 13;
+    }
+    y += 4;
+  };
+  const noteRow = (msg) => {
+    doc.setTextColor(120); doc.setFontSize(9); doc.setFont('helvetica', 'italic');
+    para(msg);
+    doc.setTextColor(0); doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+  };
+
+  // Associated requirement
+  section('Requirement');
+  line('Item', req.item);
+  line('Kind', req.kind === 'product' ? 'Product' : 'Service');
+  if (req.totalValue != null) line('Estimated value', '$' + Number(req.totalValue).toLocaleString());
+  if (req.threshold) line('Acquisition path', thresholdLabel(req.threshold));
+  y += 6;
+
+  // Section 1: Approach
+  section('1. Evaluation Approach');
+  if (req.ef_approach) {
+    line('Customer recommendation', approachLabel(req.ef_approach));
+    if (req.ef_approach === 'price') {
+      noteRow('Customer prioritizes price. CO will likely structure as LPTA if the requirement is well-defined and risk is low; otherwise the minimum-requirements must still be tight.');
+    } else if (req.ef_approach === 'past_performance') {
+      noteRow('Customer prioritizes past performance. CO will weight past performance heavily and structure Section M to evaluate it as a significant factor.');
+    } else if (req.ef_approach === 'technical') {
+      noteRow('Customer prioritizes technical capability. CO will build a best-value tradeoff with technical factors as the primary discriminator against price.');
+    } else {
+      noteRow('Customer asked for CO guidance on the approach. CO will pick LPTA or tradeoff based on value, risk, and mission drivers.');
+    }
+  } else {
+    noteRow('No approach selected.');
+  }
+  y += 4;
+
+  // Section 2: Must-haves
+  section('2. Must-Haves (Minimum Requirements)');
+  if (req.ef_mustHaves) {
+    para(req.ef_mustHaves);
+    noteRow('These are pass/fail gates. CO will convert into Section L submission requirements and Section M acceptability criteria.');
+  } else {
+    noteRow('No must-haves identified by customer.');
+  }
+  y += 4;
+
+  // Section 3: Differentiators (anything other than price-only)
+  if (req.ef_approach !== 'price') {
+    section('3. Differentiators (Non-Price Factors)');
+    if (req.ef_differentiators) {
+      para(req.ef_differentiators);
+      noteRow('CO will convert into non-price evaluation factors and subfactors.');
+    } else {
+      noteRow('No differentiators identified by customer.');
+    }
+    y += 4;
+  }
+
+  // Section 4: Past performance
+  const sec4 = (req.ef_approach !== 'price') ? '4' : '3';
+  section(sec4 + '. Past Performance');
+  if (req.ef_pastPerfMatters) {
+    line('Relevant?', 'Yes');
+    if (req.ef_pastPerfDetail) {
+      doc.setFont('helvetica', 'bold'); doc.text('Relevance criteria:', M, y); y += 14;
+      doc.setFont('helvetica', 'normal');
+      para(req.ef_pastPerfDetail);
+    }
+    noteRow('CO will score references against these criteria. Above SAT, past performance is a standard factor.');
+  } else if (req.ef_pastPerfMatters === false) {
+    line('Relevant?', 'No');
+    noteRow('Customer did not flag past performance as relevant. CO will decide based on dollar value and complexity.');
+  } else {
+    noteRow('Not answered.');
+  }
+  y += 4;
+
+  // Section 5: Schedule
+  const sec5 = (req.ef_approach !== 'price') ? '5' : '4';
+  section(sec5 + '. Schedule as an Evaluation Factor');
+  if (req.ef_scheduleCritical) {
+    line('Faster = better?', 'Yes');
+    noteRow('CO will consider schedule as an evaluation factor rather than only a threshold requirement.');
+  } else if (req.ef_scheduleCritical === false) {
+    line('Faster = better?', 'No');
+    noteRow('Schedule will be handled as a must-have delivery date, not an evaluation factor.');
+  } else {
+    noteRow('Not answered.');
+  }
+  y += 4;
+
+  // Section 6: Other
+  const sec6 = (req.ef_approach !== 'price') ? '6' : '5';
+  section(sec6 + '. Other Considerations');
+  if (req.ef_other) {
+    para(req.ef_other);
+    noteRow('CO will decide whether these belong as factors, subfactors, or contract requirements.');
+  } else {
+    noteRow('None noted by customer.');
+  }
+  y += 4;
+
+  // Footer
+  if (y > 720) { doc.addPage(); y = M; }
+  doc.setDrawColor(180); doc.line(M, y, M + W, y); y += 14;
+  doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(120);
+  doc.text('Customer inputs only. The CO drafts Section L and Section M language.', M, y); y += 12;
+  doc.text('Generated by KTHQ Requirements Builder. Not a sanctioned form.', M, y);
+  doc.setTextColor(0);
+
+  const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
+  doc.save('EF_' + safeItem + '_' + req.sessionId + '.pdf');
+}
+
+/* ──────────── Justify renderers (brand-name / sole-source) ──────────── */
+function renderJusReview() {
+  let body = '';
+  // Brand-name rows
+  if (req.hasBrand) {
+    body += reviewRow('Brand / Model', req.brandName, 'brandName');
+    body += reviewRow('Specific features only this brand provides', req.jus_bn_specFeatures, 'jus_bn_specFeatures');
+    body += reviewRow('Underlying constraint', req.jus_bn_constraint, 'jus_bn_constraint');
+    body += reviewRow('Known resellers / distributors', req.jus_bn_resellers, 'jus_bn_resellers');
+    body += reviewRow('Alternatives evaluated', req.jus_bn_alternatives, 'jus_bn_alternatives');
+    body += reviewRow('Impact if we do not get this brand', req.jus_bn_impact, 'jus_bn_impact');
+  }
+  // Sole-source rows
+  if (req.multipleSources === false) {
+    body += reviewRow('Sole-source basis', soleBasisLabel(req.soleSourceBasis));
+    if (req.soleSourceBasis === 'statute' && req.soleSourceStatute) {
+      body += reviewRow('Statute cited', req.soleSourceStatute, 'soleSourceStatute');
+    }
+    body += reviewRow('Why only this source', req.jus_ss_unique, 'jus_ss_unique');
+    body += reviewRow('Research that confirmed single source', req.jus_ss_research, 'jus_ss_research');
+    body += reviewRow('Alternatives contacted', req.jus_ss_alternatives, 'jus_ss_alternatives');
+    body += reviewRow('Impact if forced to compete', req.jus_ss_impact, 'jus_ss_impact');
+    body += reviewRow('Plan to remove the restriction next time', req.jus_ss_barriers, 'jus_ss_barriers');
+  }
+
+  let html = '<p class="review-edit-hint">Click any highlighted value to edit. Basis and Yes/No answers use Back to change.</p>';
+  html += '<table class="review-table"><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>';
+  if (!body) {
+    html += '<tr><td colspan="2"><em>No justification inputs. The CO will build the justification from scratch.</em></td></tr>';
+  } else {
+    html += body;
+  }
+  html += '</tbody></table>';
+
+  ask({ type: 'review', label: 'Review your justification inputs', html,
+        yesLabel: 'Looks good', noLabel: 'Redo my answers' }, (val) => {
+    if (val === 'yes') runStep('jus_output');
+    else {
+      // Redo: go to whichever half was filled out first
+      if (req.hasBrand) runStep('jus_bn_features');
+      else runStep('jus_ss_unique');
+    }
+  });
+  wireReviewEdits();
+}
+
+function renderJusOutput() {
+  ask({ type: 'output', label: 'Justification worksheet is ready' }, () => {});
+  const note = document.getElementById('handoffNote');
+  const downloadBtn = document.getElementById('btnDownloadPdf');
+  const nextBtn = document.getElementById('btnNextStation');
+  downloadBtn.style.display = '';
+  downloadBtn.textContent = '\u2193 Download Justification (PDF)';
+  downloadBtn.dataset.doc = 'jus';
+
+  // FUND station comes next.
+  nextBtn.style.display = '';
+  nextBtn.textContent = 'Next: Fund \u2192';
+  nextBtn.dataset.target = 'fund_intro';
+
+  let msg = 'Hand this worksheet to your CO along with the SOR, market research, and evaluation factors. ';
+  msg += 'The CO will finalize the formal justification document using this. ';
+  msg += 'Want to see what the CO deals with on the back end? ';
+  if (req.hasBrand && req.multipleSources === false) {
+    msg += 'See the <a href="far-part6-competition.html">Part 6 competition</a>, ';
+    msg += '<a href="far-part8-limiting-sources.html">Part 8 limited sources</a>, and ';
+    msg += '<a href="far-part12-restricting-competition.html">Part 12 restricting competition</a> training.';
+  } else if (req.hasBrand) {
+    msg += 'See the <a href="far-part12-restricting-competition.html">Part 12 restricting competition</a> and ';
+    msg += '<a href="far-part6-competition.html">Part 6 competition</a> training.';
+  } else if (req.multipleSources === false) {
+    msg += 'See the <a href="far-part6-competition.html">Part 6 competition</a>, ';
+    msg += '<a href="far-part8-limiting-sources.html">Part 8 limited sources</a>, and ';
+    msg += '<a href="far-part12-restricting-competition.html">Part 12 restricting competition</a> training.';
+  } else {
+    msg += 'See the <a href="training.html">training library</a>.';
+  }
+  note.innerHTML = msg;
+}
+
+/* ──────────── PDF generator (Justification worksheet - customer portion) ──────────── */
+function downloadJusPdf() {
+  if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  const M = 54;
+  const W = 612 - M*2;
+  let y = M;
+
+  // Header
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(16);
+  doc.text('JUSTIFICATION WORKSHEET', M, y); y += 20;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(90);
+  const subtitleParts = [];
+  if (req.hasBrand) subtitleParts.push('Brand-name');
+  if (req.multipleSources === false) subtitleParts.push('Sole-source');
+  doc.text((subtitleParts.join(' + ') || 'Justification') + ' \u2013 customer-provided inputs', M, y); y += 14;
+  const today = new Date();
+  const dstr = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  doc.text('Generated ' + dstr + ' \u2013 Session ' + req.sessionId, M, y); y += 16;
+  doc.setTextColor(0);
+  doc.setDrawColor(180); doc.line(M, y, M + W, y); y += 16;
+
+  const section = (title) => {
+    if (y > 720) { doc.addPage(); y = M; }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+    doc.text(title, M, y); y += 14;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+  };
+  const line = (label, val) => {
+    if (val == null || val === '' || val === false) return;
+    const labelW = 170;
+    doc.setFont('helvetica', 'bold');
+    doc.text(String(label) + ':', M, y);
+    doc.setFont('helvetica', 'normal');
+    const txt = doc.splitTextToSize(String(val), W - labelW);
+    doc.text(txt, M + labelW, y);
+    y += Math.max(14, txt.length * 13);
+    if (y > 740) { doc.addPage(); y = M; }
+  };
+  const para = (val) => {
+    if (!val) return;
+    const txt = doc.splitTextToSize(String(val), W);
+    for (const row of txt) {
+      if (y > 740) { doc.addPage(); y = M; }
+      doc.text(row, M, y); y += 13;
+    }
+    y += 4;
+  };
+  const noteRow = (msg) => {
+    doc.setTextColor(120); doc.setFontSize(9); doc.setFont('helvetica', 'italic');
+    para(msg);
+    doc.setTextColor(0); doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+  };
+  const subhead = (label) => {
+    if (y > 730) { doc.addPage(); y = M; }
+    doc.setFont('helvetica', 'bold');
+    doc.text(label, M, y); y += 14;
+    doc.setFont('helvetica', 'normal');
+  };
+
+  // Associated requirement
+  section('Requirement');
+  line('Item', req.item);
+  line('Kind', req.kind === 'product' ? 'Product' : 'Service');
+  if (req.totalValue != null) line('Estimated value', '$' + Number(req.totalValue).toLocaleString());
+  if (req.threshold) line('Acquisition path', thresholdLabel(req.threshold));
+  y += 6;
+
+  let sectionNum = 1;
+
+  // Brand-name section (if applicable)
+  if (req.hasBrand) {
+    section(sectionNum + '. Brand-Name Justification Inputs');
+    line('Brand / Model', req.brandName);
+    y += 4;
+
+    subhead('Specific features only this brand provides:');
+    if (req.jus_bn_specFeatures) { para(req.jus_bn_specFeatures); }
+    else { noteRow('Not provided.'); }
+
+    subhead('Underlying constraint (interoperability, certification, data rights, etc.):');
+    if (req.jus_bn_constraint) { para(req.jus_bn_constraint); }
+    else { noteRow('Not provided.'); }
+
+    subhead('Known resellers / distributors:');
+    if (req.jus_bn_resellers) {
+      para(req.jus_bn_resellers);
+      noteRow('Multiple authorized resellers means competition is preserved at the vendor level.');
+    } else {
+      noteRow('None identified by customer. CO will check GSA Advantage and SAM for authorized resellers.');
+    }
+
+    subhead('Alternatives evaluated:');
+    if (req.jus_bn_alternatives) { para(req.jus_bn_alternatives); }
+    else { noteRow('No alternatives named. CO may need to document market research before approval.'); }
+
+    subhead('Impact if the brand is not secured:');
+    if (req.jus_bn_impact) { para(req.jus_bn_impact); }
+    else { noteRow('Not provided.'); }
+
+    noteRow('CO will use these inputs to draft the formal brand-name justification under FAR Part 12 / 11.104 (commercial) or the applicable authority for the acquisition path.');
+    y += 4;
+    sectionNum += 1;
+  }
+
+  // Sole-source section (if applicable)
+  if (req.multipleSources === false) {
+    section(sectionNum + '. Sole-Source Justification Inputs');
+    line('Basis', soleBasisLabel(req.soleSourceBasis));
+    if (req.soleSourceBasis === 'statute' && req.soleSourceStatute) {
+      line('Statute cited', req.soleSourceStatute);
+    }
+    y += 4;
+
+    subhead('Why only this source:');
+    if (req.jus_ss_unique) { para(req.jus_ss_unique); }
+    else { noteRow('Not provided.'); }
+
+    subhead('Research that confirmed single source:');
+    if (req.jus_ss_research) { para(req.jus_ss_research); }
+    else { noteRow('Not provided. CO will need to document additional market research.'); }
+
+    subhead('Alternatives contacted and responses:');
+    if (req.jus_ss_alternatives) { para(req.jus_ss_alternatives); }
+    else { noteRow('None named. CO may post a sources sought before finalizing the justification.'); }
+
+    subhead('Impact if forced to compete:');
+    if (req.jus_ss_impact) { para(req.jus_ss_impact); }
+    else { noteRow('Not provided.'); }
+
+    subhead('Plan to remove the restriction for future buys:');
+    if (req.jus_ss_barriers) { para(req.jus_ss_barriers); }
+    else { noteRow('Not provided. A barriers-to-competition plan is a required element of the justification.'); }
+
+    noteRow('CO will convert these inputs into the formal justification. Commercial buys under FAR Part 12 use 41 U.S.C. 1901/1903 authority rather than 6.302; GSA schedule orders use a Limited-Sources Justification under FAR 8.405-6. Approval thresholds depend on dollar value.');
+    y += 4;
+    sectionNum += 1;
+  }
+
+  // Footer
+  if (y > 720) { doc.addPage(); y = M; }
+  doc.setDrawColor(180); doc.line(M, y, M + W, y); y += 14;
+  doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(120);
+  doc.text('Customer inputs only. The CO drafts and routes the formal justification for approval.', M, y); y += 12;
+  doc.text('Generated by KTHQ Requirements Builder. Not a sanctioned form.', M, y);
+  doc.setTextColor(0);
+
+  const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
+  const fnamePrefix = req.hasBrand && req.multipleSources === false ? 'JUS_BN_SS' :
+                      req.hasBrand ? 'JUS_BN' :
+                      req.multipleSources === false ? 'JUS_SS' : 'JUS';
+  doc.save(fnamePrefix + '_' + safeItem + '_' + req.sessionId + '.pdf');
+}
+
+/* ──────────── Fund renderers ──────────── */
+function priorityLabel(v) {
+  if (v === 'high')   return 'High \u2013 mission critical';
+  if (v === 'medium') return 'Medium';
+  if (v === 'low')    return 'Low \u2013 fund when slack available';
+  return v || '';
+}
+function fundTypeLabel(v) {
+  if (v === 'om')          return 'O&M (operation and maintenance)';
+  if (v === 'procurement') return 'Procurement';
+  if (v === 'rdte')        return 'RDT&E';
+  if (v === 'other')       return 'Other';
+  return v || '';
+}
+
+function renderFundReview() {
+  let body = '';
+  body += reviewRow('Funded?',
+    req.fund_isFunded == null ? null : (req.fund_isFunded ? 'Yes \u2013 funded' : 'No \u2013 unfunded'));
+
+  if (req.fund_isFunded === false) {
+    body += reviewRow('Priority', priorityLabel(req.fund_priority));
+    body += reviewRow('Likelihood of funding', req.fund_likelihood, 'fund_likelihood');
+    body += reviewRow('Estimated funding date', req.fund_estFundDate, 'fund_estFundDate');
+    body += reviewRow('Drop-dead abandon date', req.fund_dropDead, 'fund_dropDead');
+  } else if (req.fund_isFunded === true) {
+    body += reviewRow('PR number', req.fund_prNumber, 'fund_prNumber');
+    body += reviewRow('Fully funded?',
+      req.fund_fullyFunded == null ? null : (req.fund_fullyFunded ? 'Yes' : 'No \u2013 partial'));
+    body += reviewRow('Price buffer / headroom', req.fund_priceBuffer, 'fund_priceBuffer');
+    body += reviewRow('Unique funding constraints', req.fund_uniqueConstraints, 'fund_uniqueConstraints');
+    body += reviewRow('Fund type', fundTypeLabel(req.fund_fundType));
+    if (req.fund_fundType === 'other') {
+      body += reviewRow('Fund type (described)', req.fund_fundTypeOther, 'fund_fundTypeOther');
+    }
+  }
+  body += reviewRow('Anything else', req.fund_anythingElse, 'fund_anythingElse');
+
+  let html = '<p class="review-edit-hint">Click any highlighted value to edit. Yes/No and choice answers use Back to change.</p>';
+  html += '<table class="review-table"><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>';
+  if (!body) {
+    html += '<tr><td colspan="2"><em>No funding entries.</em></td></tr>';
+  } else {
+    html += body;
+  }
+  html += '</tbody></table>';
+
+  ask({ type: 'review', label: 'Review your funding inputs', html,
+        yesLabel: 'Looks good', noLabel: 'Redo my answers' }, (val) => {
+    if (val === 'yes') runStep('fund_output');
+    else runStep('fund_isFunded');
+  });
+  wireReviewEdits();
+}
+
+function renderFundOutput() {
+  ask({ type: 'output', label: 'Funding worksheet is ready' }, () => {});
+  const note = document.getElementById('handoffNote');
+  const downloadBtn = document.getElementById('btnDownloadPdf');
+  const nextBtn = document.getElementById('btnNextStation');
+  downloadBtn.style.display = '';
+  downloadBtn.textContent = '\u2193 Download Funding Worksheet (PDF)';
+  downloadBtn.dataset.doc = 'fund';
+
+  nextBtn.style.display = '';
+  nextBtn.textContent = 'Next: Packet \u2192';
+  nextBtn.dataset.target = 'pkg_intro';
+
+  let msg;
+  if (req.fund_isFunded === false) {
+    msg = 'Get with your resource advisor before this lands on the CO\u2019s desk. ';
+    msg += 'The CO can\u2019t award against an unfunded requirement, but they can help shape the package so it\u2019s ready to move once funding arrives.';
+  } else {
+    msg = 'Hand the funding worksheet to your CO with the rest of the packet. ';
+    msg += 'If the PR number is pending, let the CO know when you expect it.';
+  }
+  note.innerHTML = msg;
+}
+
+/* ──────────── Packet renderers (routing slip / cover sheet) ──────────── */
+// Build the list of docs the customer produced in this session.
+function packetDocList() {
+  const docs = [
+    { code: 'SOR',  label: 'Statement of Requirement', applies: !!req.item },
+    { code: 'MR',   label: 'Market Research Worksheet (customer portion)',
+      applies: !!(req.mr_boughtBefore != null || req.mr_knownVendors || req.mr_vehicles ||
+                  req.mr_pricePoints || req.mr_smallBizSources || req.mr_incumbent || req.mr_constraints) },
+    { code: 'EF',   label: 'Evaluation Factors Worksheet (customer portion)',
+      applies: !!(req.ef_approach || req.ef_mustHaves || req.ef_differentiators ||
+                  req.ef_pastPerfMatters != null || req.ef_scheduleCritical != null || req.ef_other) },
+    { code: 'JUS',  label: 'Justification Worksheet (brand-name / sole-source)',
+      applies: !!(req.hasBrand || req.multipleSources === false) },
+    { code: 'FUND', label: 'Funding Worksheet',
+      applies: req.fund_isFunded != null }
+  ];
+  return docs;
+}
+
+function renderPkgReview() {
+  const docs = packetDocList();
+  let rows = '';
+  for (const d of docs) {
+    const mark = d.applies ? '\u2713' : '\u2014';
+    const cls = d.applies ? 'applies' : 'skip';
+    rows += '<tr class="' + cls + '"><td>' + mark + '</td><td>' + d.code + '</td><td>' + esc(d.label) + '</td></tr>';
+  }
+  let html = '<p class="review-edit-hint">This is the manifest the CO will use to confirm the packet is complete.</p>';
+  html += '<table class="review-table pkg-manifest"><thead><tr><th>\u00A0</th><th>Doc</th><th>Worksheet</th></tr></thead><tbody>';
+  html += rows;
+  html += '</tbody></table>';
+  html += '<p class="review-edit-hint" style="margin-top:12px;">POC information (edit if needed):</p>';
+  html += '<table class="review-table"><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>';
+  html += reviewRow('POC name',  req.pkg_poc_name,  'pkg_poc_name');
+  html += reviewRow('POC phone', req.pkg_poc_phone, 'pkg_poc_phone');
+  html += reviewRow('POC email', req.pkg_poc_email, 'pkg_poc_email');
+  html += '</tbody></table>';
+
+  ask({ type: 'review', label: 'Packet manifest', html,
+        yesLabel: 'Ship it', noLabel: 'Redo POC info' }, (val) => {
+    if (val === 'yes') runStep('pkg_output');
+    else runStep('pkg_poc_name');
+  });
+  wireReviewEdits();
+}
+
+function renderPkgOutput() {
+  ask({ type: 'output', label: 'Packet cover sheet is ready' }, () => {});
+  const note = document.getElementById('handoffNote');
+  const downloadBtn = document.getElementById('btnDownloadPdf');
+  const nextBtn = document.getElementById('btnNextStation');
+  downloadBtn.style.display = '';
+  downloadBtn.textContent = '\u2193 Download Packet Cover Sheet (PDF)';
+  downloadBtn.dataset.doc = 'pkg';
+
+  // End of the line. Offer Start Over only.
+  nextBtn.style.display = 'none';
+
+  let msg = 'That\u2019s the line. Download the cover sheet, staple it on top of every worksheet you grabbed at the earlier stations, and hand the full stack to your CO. ';
+  msg += 'If you want to build another package for a different requirement, use \u201CStart Over\u201D below.';
+  note.innerHTML = msg;
+}
+
+/* ──────────── PDF generator (Funding Worksheet - customer portion) ──────────── */
+function downloadFundPdf() {
+  if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  const M = 54;
+  const W = 612 - M*2;
+  let y = M;
+
+  // Header
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(16);
+  doc.text('FUNDING WORKSHEET', M, y); y += 20;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(90);
+  doc.text('Customer-provided inputs', M, y); y += 14;
+  const today = new Date();
+  const dstr = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  doc.text('Generated ' + dstr + ' \u2013 Session ' + req.sessionId, M, y); y += 16;
+  doc.setTextColor(0);
+  doc.setDrawColor(180); doc.line(M, y, M + W, y); y += 16;
+
+  const section = (title) => {
+    if (y > 720) { doc.addPage(); y = M; }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+    doc.text(title, M, y); y += 14;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+  };
+  const line = (label, val) => {
+    if (val == null || val === '' || val === false) return;
+    const labelW = 170;
+    doc.setFont('helvetica', 'bold');
+    doc.text(String(label) + ':', M, y);
+    doc.setFont('helvetica', 'normal');
+    const txt = doc.splitTextToSize(String(val), W - labelW);
+    doc.text(txt, M + labelW, y);
+    y += Math.max(14, txt.length * 13);
+    if (y > 740) { doc.addPage(); y = M; }
+  };
+  const para = (val) => {
+    if (!val) return;
+    const txt = doc.splitTextToSize(String(val), W);
+    for (const row of txt) {
+      if (y > 740) { doc.addPage(); y = M; }
+      doc.text(row, M, y); y += 13;
+    }
+    y += 4;
+  };
+  const noteRow = (msg) => {
+    doc.setTextColor(120); doc.setFontSize(9); doc.setFont('helvetica', 'italic');
+    para(msg);
+    doc.setTextColor(0); doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+  };
+
+  // Associated requirement
+  section('Requirement');
+  line('Item', req.item);
+  if (req.totalValue != null) line('Estimated value', '$' + Number(req.totalValue).toLocaleString());
+  if (req.threshold) line('Acquisition path', thresholdLabel(req.threshold));
+  y += 6;
+
+  // Funded status
+  section('1. Funded Status');
+  if (req.fund_isFunded === true) {
+    line('Status', 'Funded');
+    line('Purchase request number', req.fund_prNumber || '\u2014 (pending)');
+    line('Fully funded?', req.fund_fullyFunded == null ? null : (req.fund_fullyFunded ? 'Yes' : 'No \u2013 partial / incremental'));
+    line('Fund type', fundTypeLabel(req.fund_fundType));
+    if (req.fund_fundType === 'other' && req.fund_fundTypeOther) {
+      line('Fund type detail', req.fund_fundTypeOther);
+    }
+  } else if (req.fund_isFunded === false) {
+    line('Status', 'Unfunded \u2013 in pursuit');
+    line('Priority', priorityLabel(req.fund_priority));
+    line('Estimated funding date', req.fund_estFundDate);
+    line('Drop-dead abandon date', req.fund_dropDead);
+  } else {
+    noteRow('Funded status not answered.');
+  }
+  y += 4;
+
+  if (req.fund_isFunded === false) {
+    section('2. Likelihood Assessment');
+    if (req.fund_likelihood) { para(req.fund_likelihood); }
+    else { noteRow('No likelihood assessment provided. The CO will estimate effort accordingly.'); }
+    noteRow('Customer is reminded to coordinate with the Resource Advisor before the package is routed for award.');
+    y += 4;
+  } else if (req.fund_isFunded === true) {
+    section('2. Price Buffer / Headroom');
+    if (req.fund_priceBuffer) { para(req.fund_priceBuffer); }
+    else { noteRow('Not provided. CO will assume PR dollar value is a hard cap.'); }
+    y += 4;
+
+    section('3. Unique Funding Constraints');
+    if (req.fund_uniqueConstraints) {
+      para(req.fund_uniqueConstraints);
+      noteRow('Incremental funding, expiration dates, and CLIN-specific constraints shape how the CO structures the award.');
+    } else {
+      noteRow('None noted.');
+    }
+    y += 4;
+  }
+
+  // Anything else
+  const finalSec = (req.fund_isFunded === true) ? '4' : (req.fund_isFunded === false) ? '3' : '2';
+  section(finalSec + '. Additional Notes');
+  if (req.fund_anythingElse) { para(req.fund_anythingElse); }
+  else { noteRow('None.'); }
+  y += 4;
+
+  // Footer
+  if (y > 720) { doc.addPage(); y = M; }
+  doc.setDrawColor(180); doc.line(M, y, M + W, y); y += 14;
+  doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(120);
+  doc.text('Customer inputs only. Resource Advisor and CO will finalize appropriation and obligation details.', M, y); y += 12;
+  doc.text('Generated by KTHQ Requirements Builder. Not a sanctioned form.', M, y);
+  doc.setTextColor(0);
+
+  const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
+  doc.save('FUND_' + safeItem + '_' + req.sessionId + '.pdf');
+}
+
+/* ──────────── PDF generator (Packet Cover Sheet / Routing Slip) ──────────── */
+function downloadPkgPdf() {
+  if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library failed to load.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  const M = 54;
+  const W = 612 - M*2;
+  let y = M;
+
+  // Header band
+  doc.setFillColor(40, 55, 95);
+  doc.rect(0, 0, 612, 72, 'F');
+  doc.setTextColor(255);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(18);
+  doc.text('REQUIREMENTS PACKAGE COVER SHEET', M, 38);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+  doc.text('Routing slip \u2013 verify every worksheet listed below is attached before routing.', M, 56);
+  doc.setTextColor(0);
+  y = 96;
+
+  const today = new Date();
+  const dstr = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  // Requirement summary block
+  const line = (label, val) => {
+    if (val == null || val === '' || val === false) return;
+    const labelW = 160;
+    doc.setFont('helvetica', 'bold');
+    doc.text(String(label) + ':', M, y);
+    doc.setFont('helvetica', 'normal');
+    const txt = doc.splitTextToSize(String(val), W - labelW);
+    doc.text(txt, M + labelW, y);
+    y += Math.max(14, txt.length * 13);
+    if (y > 740) { doc.addPage(); y = M; }
+  };
+
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+  doc.text('Requirement', M, y); y += 16;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+  line('Item',              req.item);
+  line('Kind',              req.kind === 'product' ? 'Product' : (req.kind === 'service' ? 'Service' : null));
+  line('Quantity',          req.quantity);
+  line('Estimated value',   req.totalValue != null ? '$' + Number(req.totalValue).toLocaleString() : null);
+  line('Acquisition path',  req.threshold ? thresholdLabel(req.threshold) : null);
+  line('Need-by date',      req.needBy);
+  line('Delivery location', req.deliveryLocation);
+  line('End user',          req.endUser);
+  y += 6;
+
+  // Point of contact block
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+  doc.text('Point of Contact', M, y); y += 16;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+  line('Name',  req.pkg_poc_name);
+  line('Phone', req.pkg_poc_phone);
+  line('Email', req.pkg_poc_email);
+  y += 10;
+
+  // Funding summary
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+  doc.text('Funding', M, y); y += 16;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+  if (req.fund_isFunded === true) {
+    line('Status',       'Funded');
+    line('PR number',    req.fund_prNumber || '(pending)');
+    line('Fully funded', req.fund_fullyFunded == null ? null : (req.fund_fullyFunded ? 'Yes' : 'No \u2013 partial'));
+    line('Fund type',    fundTypeLabel(req.fund_fundType));
+  } else if (req.fund_isFunded === false) {
+    line('Status',            'Unfunded \u2013 in pursuit');
+    line('Priority',          priorityLabel(req.fund_priority));
+    line('Drop-dead date',    req.fund_dropDead);
+  } else {
+    doc.setFont('helvetica', 'italic'); doc.setTextColor(120);
+    doc.text('Funding status not captured.', M, y); y += 14;
+    doc.setTextColor(0); doc.setFont('helvetica', 'normal');
+  }
+  y += 8;
+
+  // Attachments checklist
+  if (y > 620) { doc.addPage(); y = M; }
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+  doc.text('Attachments Checklist', M, y); y += 8;
+  doc.setDrawColor(200); doc.line(M, y, M + W, y); y += 16;
+
+  const docs = packetDocList();
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+  for (const d of docs) {
+    if (y > 740) { doc.addPage(); y = M; }
+    // Checkbox
+    doc.setDrawColor(80);
+    doc.rect(M, y - 10, 12, 12);
+    doc.setFont('helvetica', 'bold');
+    doc.text(d.code, M + 22, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(d.label, M + 70, y);
+    if (!d.applies) {
+      doc.setTextColor(140); doc.setFontSize(9);
+      doc.text('(not applicable to this requirement)', M + 70, y + 12);
+      doc.setTextColor(0); doc.setFontSize(10);
+      y += 12;
+    }
+    y += 22;
+  }
+
+  // Routing / signature block
+  y += 14;
+  if (y > 660) { doc.addPage(); y = M; }
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+  doc.text('Routing', M, y); y += 8;
+  doc.setDrawColor(200); doc.line(M, y, M + W, y); y += 18;
+
+  const sigRow = (label) => {
+    if (y > 740) { doc.addPage(); y = M; }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
+    doc.text(label, M, y);
+    doc.setFont('helvetica', 'normal');
+    doc.setDrawColor(120);
+    // Name line
+    doc.line(M + 120, y, M + 340, y);
+    doc.setFontSize(8); doc.setTextColor(120);
+    doc.text('Name / signature', M + 120, y + 10);
+    // Date line
+    doc.setFontSize(10); doc.setTextColor(0);
+    doc.line(M + 360, y, M + W, y);
+    doc.setFontSize(8); doc.setTextColor(120);
+    doc.text('Date', M + 360, y + 10);
+    doc.setFontSize(10); doc.setTextColor(0);
+    y += 34;
+  };
+
+  sigRow('Requirements Owner');
+  sigRow('Unit POC');
+  sigRow('Resource Advisor');
+  sigRow('Commander / Approver');
+  sigRow('Received by CO');
+
+  // Footer
+  if (y > 720) { doc.addPage(); y = M; }
+  doc.setDrawColor(180); doc.line(M, y, M + W, y); y += 14;
+  doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(120);
+  doc.text('Generated ' + dstr + ' \u2013 Session ' + req.sessionId, M, y); y += 12;
+  doc.text('Generated by KTHQ Requirements Builder. Not a sanctioned form. Route through your CO.', M, y);
+  doc.setTextColor(0);
+
+  const safeItem = (req.item || 'requirement').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 40);
+  doc.save('COVER_' + safeItem + '_' + req.sessionId + '.pdf');
+}
+
+/* ──────────── Intro + wire up output buttons ──────────── */
+function runIntro() {
+  queueDialogue([
+    { text: "Howdy! I'm Ollie. Welcome to the requirements line." },
+    { text: "Don't mind me, I'm going to axolotl questions while we put this requirement together." },
+    { text: "We'll run it through intake, check a couple of pry-points, and I'll hand you a clean SOR at the other end." },
+    { text: "Your answers ride the belt, so market research and the justification tools will pick up where we leave off." },
+    { text: "Alright, eyes forward." }
+  ], () => {
+    // Drop the req box on the belt and kick off the tree
+    reqBox.label = 'TBD';
+    reqBox.x = SCENE.w + 20;
+    reqBox.y = SCENE.groundY - 16 * SCENE.scale + 2;
+    reqBox.targetX = stationX('intake');
+    reqBox.visible = true;
+    runStep('item');
+  });
+}
+
+document.getElementById('btnDownloadPdf').addEventListener('click', () => {
+  const doc = document.getElementById('btnDownloadPdf').dataset.doc || 'sor';
+  if (doc === 'mr') return downloadMrPdf();
+  if (doc === 'ef') return downloadEfPdf();
+  if (doc === 'jus') return downloadJusPdf();
+  if (doc === 'fund') return downloadFundPdf();
+  if (doc === 'pkg') return downloadPkgPdf();
+  return downloadSorPdf();
+});
+document.getElementById('btnStartOver').addEventListener('click', startOver);
+document.getElementById('btnNextStation').addEventListener('click', () => {
+  saveReq();
+  const btn = document.getElementById('btnNextStation');
+  const t = btn.dataset.target;
+  // In-page transitions (no navigation) come first:
+  if (t === 'mr_intro') {
+    inputPanel.classList.add('hidden');
+    hideAllInputs();
+    moveBoxToStation('market');
+    runStep('mr_intro');
+    return;
+  }
+  if (t === 'ef_intro') {
+    inputPanel.classList.add('hidden');
+    hideAllInputs();
+    moveBoxToStation('eval');
+    runStep('ef_intro');
+    return;
+  }
+  if (t === 'jus_intro') {
+    inputPanel.classList.add('hidden');
+    hideAllInputs();
+    moveBoxToStation('justify');
+    runStep('jus_intro');
+    return;
+  }
+  if (t === 'fund_intro') {
+    inputPanel.classList.add('hidden');
+    hideAllInputs();
+    moveBoxToStation('fund');
+    runStep('fund_intro');
+    return;
+  }
+  if (t === 'pkg_intro') {
+    inputPanel.classList.add('hidden');
+    hideAllInputs();
+    moveBoxToStation('packet');
+    runStep('pkg_intro');
+    return;
+  }
+  // Cross-page handoffs to future tools:
+  if (t === 'pws')            { window.location.href = 'pws-builder.html'; return; }
+  if (t === 'sole_source')    { window.location.href = 'sole-source-justification.html'; return; }
+  if (t === 'brand_name_jus') { window.location.href = 'brand-name-justification.html'; return; }
+  if (t === 'eval_factors')   { window.location.href = 'evaluation-factors.html'; return; }
+  // Fallback (shouldn't hit)
+  window.location.href = 'training.html';
+});
+
+// Update the req box label whenever item changes
+function syncBoxLabel() {
+  if (req.item) { reqBox.label = req.item.toUpperCase().slice(0, 18); }
+}
+setInterval(syncBoxLabel, 400);
+
+/* ──────────── Kick it off ──────────── */
+// Small delay so layout settles
+setTimeout(() => { tick(); }, 50);
+
+// First click on the page unlocks audio context (browser policy)
+document.addEventListener('click', ensureAudio, { once: true });
+
+</script>
+<script src="ollie-music.js" defer></script>
+
+</body>
+</html>
