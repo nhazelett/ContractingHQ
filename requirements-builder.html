@@ -1223,6 +1223,7 @@ function blankReq() {
     // Intake
     item: '',
     kind: null,              // 'product' | 'service'
+    isCommercial: '',        // 'yes' | 'no' | 'unknown' - is it a commercial product/service available to non-gov buyers?
     // Product path
     isIT: false,
     hasHazmat: false,
@@ -1326,6 +1327,12 @@ function thresholdLabel(t) {
   if (t === 'OV')  return 'Above SAT ( > $250K )';
   return '';
 }
+function commercialLabel(c) {
+  if (c === 'yes')     return 'Yes \u2013 commercial (FAR Part 12 path likely)';
+  if (c === 'no')      return 'No \u2013 government-unique';
+  if (c === 'unknown') return "Unknown \u2013 CO will make the determination";
+  return '';
+}
 
 /* ──────────── Step engine ──────────── */
 const sceneState = { introStarted: false, currentStep: null };
@@ -1370,6 +1377,30 @@ const STEPS = {
       "Different FAR parts, different clauses, different approvals."
     ]},
     save: (v) => { req.kind = v; },
+    next: () => 'commercial'
+  },
+  commercial: {
+    speak: (r) => [
+      { text: "One more gating question before the belt splits." },
+      { text: "Is this a commercial " + (r.kind === 'service' ? 'service' : 'product') + "? Meaning: can a private company or a regular consumer buy the same thing, used the same way, on the open market?" },
+      { text: "If you don't know, that's a valid answer. The CO will sort it out." }
+    ],
+    input: {
+      type: 'choice',
+      label: 'Commercial item?',
+      options: [
+        { label: 'Yes \u2013 non-government buyers can get the same thing', value: 'yes' },
+        { label: 'No \u2013 it\u2019s government-unique', value: 'no' },
+        { label: "I don\u2019t know", value: 'unknown' }
+      ],
+      why: [
+        "Commercial items and services run under FAR Part 12 with a much lighter set of clauses. Non-commercial runs the heavier Part 15 rules.",
+        "A COTS laptop, a landscaping service, an off-the-shelf software subscription \u2013 all commercial.",
+        "A custom-built weapons system, a classified intel product, a service that only DoD buys \u2013 not commercial.",
+        "If you pick 'I don't know,' the CO does the commercial determination. No harm, no foul."
+      ]
+    },
+    save: (v) => { req.isCommercial = v; },
     next: () => req.kind === 'service' ? 'svc_outcome' : 'flag_it'
   },
 
@@ -1787,7 +1818,11 @@ const STEPS = {
 
   // ── Review + output (SOR) ──────────────────────────────────────────
   review: {
-    speak: [{ text: "Package is on the cart. Look it over." }, { text: "If anything's wrong, start over and fix it. If it looks good, I'll cut the PDF." }],
+    speak: [
+      { text: "Package is on the cart. Look it over." },
+      { text: "Any highlighted value below is click-to-edit. No need to walk back through the whole conversation to fix a typo." },
+      { text: "If it looks good, I'll cut the PDF." }
+    ],
     input: null, // custom: rendered by renderReview()
     save: () => {},
     next: () => 'output'
@@ -1924,7 +1959,10 @@ const STEPS = {
     next: () => 'mr_review'
   },
   mr_review: {
-    speak: [{ text: "That's the customer side of market research. Look it over." }],
+    speak: [
+      { text: "That's the customer side of market research. Look it over." },
+      { text: "Tap any highlighted value to edit it right there. Beats walking back through the conversation." }
+    ],
     input: null, // custom
     save: () => {},
     next: () => 'mr_output'
@@ -2107,7 +2145,10 @@ const STEPS = {
     next: () => 'ef_review'
   },
   ef_review: {
-    speak: [{ text: "Last look. Everything you told me about how to score offers." }],
+    speak: [
+      { text: "Last look. Everything you told me about how to score offers." },
+      { text: "Highlighted values are click-to-edit. Change anything in place without starting over." }
+    ],
     input: null,
     save: () => {},
     next: () => 'ef_output'
@@ -2322,7 +2363,9 @@ const STEPS = {
   },
 
   jus_review: {
-    speak: [{ text: "Look it over. Anything wrong, edit it in place or back up to fix it.", mood: 'angry' }],
+    speak: [
+      { text: "Look it over. Click any highlighted value to edit in place \u2013 no need to retrace the whole conversation.", mood: 'angry' }
+    ],
     input: null,
     save: () => {},
     next: () => 'jus_output'
@@ -2552,7 +2595,10 @@ const STEPS = {
     next: () => 'fund_review'
   },
   fund_review: {
-    speak: [{ text: "Look over the funding inputs. Edit anything that's off." }],
+    speak: [
+      { text: "Look over the funding inputs." },
+      { text: "Any highlighted value is click-to-edit. Fix it right here instead of backing up through the questions." }
+    ],
     input: null,
     save: () => {},
     next: () => 'fund_output'
@@ -2618,7 +2664,10 @@ const STEPS = {
     next: () => 'pkg_review'
   },
   pkg_review: {
-    speak: [{ text: "Here's what's going in the package. Check the manifest before I stitch it." }],
+    speak: [
+      { text: "Here's what's going in the package. Check the manifest before I stitch it." },
+      { text: "POC info is click-to-edit right here if you need to tweak it. And if anything else in the package is off, every station's review let you fix it in place too." }
+    ],
     input: null,
     save: () => {},
     next: () => 'pkg_output'
@@ -2774,6 +2823,7 @@ function renderReview() {
   let body = '';
   body += reviewRow('Item', req.item, 'item');
   body += reviewRow('Kind', req.kind);                       // read-only (use Back to change)
+  body += reviewRow('Commercial item?', commercialLabel(req.isCommercial));  // read-only
   body += reviewRow('Quantity', req.quantity, 'quantity');
   body += reviewRow('Unit cost', req.unitCost, 'unitCost');
   body += reviewRow('Total value', req.totalValue != null ? '$' + Number(req.totalValue).toLocaleString() : null);
@@ -3037,6 +3087,7 @@ function downloadSorPdf(opts) {
   section('1. Item Description');
   line('Item', req.item);
   line('Kind', req.kind === 'product' ? 'Product (supply/commodity)' : 'Service');
+  line('Commercial item?', commercialLabel(req.isCommercial));
   if (req.salientChars) {
     y += 4;
     doc.setFont('helvetica', 'bold'); doc.text('Salient Characteristics:', M, y); y += 14;
@@ -4026,6 +4077,7 @@ function downloadPkgPdf() {
   doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
   line('Item',              req.item);
   line('Kind',              req.kind === 'product' ? 'Product' : (req.kind === 'service' ? 'Service' : null));
+  line('Commercial item?',  commercialLabel(req.isCommercial));
   line('Quantity',          req.quantity);
   line('Estimated value',   req.totalValue != null ? '$' + Number(req.totalValue).toLocaleString() : null);
   line('Acquisition path',  req.threshold ? thresholdLabel(req.threshold) : null);
