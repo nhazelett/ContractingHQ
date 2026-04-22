@@ -26,7 +26,7 @@ const FAR_UPDATES = [
     title: "Inflation Adjustments to Acquisition Thresholds",
     status: "Final Rule",
     farCase: "FAR Case 2023-010",
-    summary: "Effective January 2025, several key acquisition thresholds have been adjusted for inflation per statutory requirements. The micro-purchase threshold remains at $10,000; the simplified acquisition threshold remains at $250,000; the Truth in Negotiations Act threshold increases to $2.5M.",
+    summary: "Effective January 2025, several key acquisition thresholds have been adjusted for inflation per statutory requirements. The micro-purchase threshold remains at $10,000; the simplified acquisition threshold is now $350,000 (effective Oct 1, 2025); the Truth in Negotiations Act threshold increases to $2.5M.",
     practitionerNote: "The TINA threshold change is the one to bookmark. Verify current thresholds any time you're drafting a solicitation above $1M — these change periodically and the consequences of using the wrong threshold (especially for certified cost or pricing data requirements) can be significant."
   }
 ];
