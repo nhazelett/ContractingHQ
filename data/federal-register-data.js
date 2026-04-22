@@ -1,11 +1,16 @@
 /* ============================================================
    Federal Register FAR & DFARS Digest
-   Updated: March 26, 2026
+   Updated: April 20, 2026
    Pattern: newest digest at index 0, older digests pushed down.
    Nothing is ever deleted — old digests stay for the archive.
    ============================================================ */
 
 var FR_DIGESTS = [
+  {
+    weekOf: "April 20, 2026",
+    intro: "A quiet week for FAR and DFARS rulemaking — no new final rules, proposed rules, or notices from the FAR Council or DARS appeared in the Federal Register. Several CAS, CMMC, and trade agreement items from earlier in the year remain in comment or implementation phases.",
+    entries: []
+  },
   {
     weekOf: "March 24, 2026",
     intro: "This week's Federal Register activity includes a new FAR final rule adjusting trade agreement thresholds and two proposed CAS rules. Several DFARS final and proposed rules from late 2025 remain in implementation.",

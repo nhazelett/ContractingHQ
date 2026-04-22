@@ -1,6 +1,6 @@
 /* ============================================================
    ASBCA Decisions Digest
-   Updated: March 26, 2026
+   Updated: April 20, 2026
    Pattern: newest digest at index 0, older digests pushed down.
    Nothing is ever deleted — old digests stay for the archive.
    ============================================================ */
@@ -8,8 +8,20 @@
 var ASBCA_DECISIONS = [
   {
     weekOf: "March 2026",
-    intro: "This month's ASBCA digest covers five decisions from February and March 2026 — including a constructive termination win for a contractor at Malmstrom AFB, a motion for reconsideration denied on a failed delivery case, and several jurisdictional rulings that remind COs how standing and claim requirements work at the Board.",
+    intro: "This month's ASBCA digest covers six decisions from February and March 2026 — including a constructive termination win for a contractor at Malmstrom AFB, a motion for reconsideration denied on a failed delivery case, several jurisdictional rulings that remind COs how standing and claim requirements work at the Board, and a USACE construction case where the Board refused to let a bilateral modification sweep away a separate delay claim.",
     decisions: [
+      {
+        caseNumber: "ASBCA No. 64176",
+        caseName: "Group III Management, Inc.",
+        date: "March 2, 2026",
+        judge: "Laufgraben",
+        outcome: "procedural",
+        decisionType: "Non-Dispositive (Motion to Dismiss / Summary Judgment)",
+        link: "https://www.asbca.mil/Portals/143/Decisions/2026/64176%20Group%20III%20Mgt%203.2.26%20Decision.pdf",
+        summary: "USACE awarded Group III a firm-fixed-price contract for construction at the Berkeley Gate Entry Control Point at Seymour Johnson AFB. During performance, a drainage design defect triggered a change, but USACE's funding process pushed the modification past the date Group III had assumed in its proposal. The parties later signed Modification P00003, which added 115 days and $515,693 and recited that the adjustment was compensation in full for the drainage-revision work. Group III then submitted an 84-day claim for the issuing delay — the gap between the assumed and actual modification dates — and USACE moved to dismiss on jurisdictional grounds and, alternatively, argued accord and satisfaction.",
+        bottomLine: "USACE's motion to dismiss for lack of jurisdiction and for failure to state a claim, and for summary judgment, is denied. The Contracting Officer's January 9, 2023 letter — treating additional delays of funding as a separate issue — and the parties' continued consideration of the issuing-delay claim after Modification P00003 raise genuine fact issues about whether the parties intended the modification to cover that claim, and an accord and satisfaction defense cannot be resolved on summary judgment when intent is disputed.",
+        takeaway: "A closing-statement \"compensation in full\" clause does not automatically swallow every adjacent claim — especially when the CO has said in writing that the delay is a separate issue. If you are signing a bilateral mod for an underlying scope change, either explicitly release the adjacent delay claims in the mod text or expect the contractor to pursue them later. And once the mod is signed, stop negotiating the claim if you actually intend the release to end it — continued negotiations will be held against you on intent."
+      },
       {
         caseNumber: "ASBCA No. 64008-ADR",
         caseName: "Allserv, Inc.",

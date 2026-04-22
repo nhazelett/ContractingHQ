@@ -6,6 +6,31 @@
 
 var GAO_UPDATES = [
   {
+    weekOf: "April 20, 2026",
+    decisions: [
+      {
+        caseNumber: "B-423993; B-423993.2",
+        caseName: "Effective Communication Strategies, LLC",
+        date: "February 18, 2026",
+        outcome: "sustained",
+        link: "https://www.gao.gov/products/b-423993,b-423993.2",
+        summary: "The Army Corps of Engineers issued a FAR Part 13 simplified acquisition RFQ for replacement appliances at Navy installations, then amended it ten times over several weeks. Amendments carried response deadlines as short as one hour — some issued over weekends — and repeatedly changed substantive technical requirements, including dimensions, Energy Star certification, and TAA compliance. Effective Communication Strategies was found technically unacceptable, in part because the evolving specs kept moving. GAO sustained the protest, finding the agency never gave vendors a reasonable opportunity to respond and that the shifting requirements may have created a de facto brand-name preference for a Turkish-manufactured product.",
+        bottomLine: "FAR 5.203(b) and FAR 13.003(h)(2) require contracting officers to afford offerors a reasonable opportunity to respond. The agency's approach did not permit sufficient time to even submit responses to amendments, much less time to sufficiently address the agency's many technical revisions.",
+        takeaway: "Even simplified acquisitions have a reasonableness floor on response times. If you are amending a solicitation materially — dimensions, certifications, compliance — extend the response clock accordingly. And when repeated spec changes narrow the field to one product, look hard for a de facto brand-name situation before you award."
+      },
+      {
+        caseNumber: "B-423898; B-423898.2; B-423898.3; B-423898.4",
+        caseName: "Amentum Technology Inc.; SOS International LLC",
+        date: "January 27, 2026",
+        outcome: "sustained",
+        link: "https://www.gao.gov/products/b-423898,b-423898.2,b-423898.3,b-423898.4",
+        summary: "The Defense Intelligence Agency awarded a contract to GDIT over Amentum and SOS International. GAO sustained on two grounds. First, DIA held Amentum to a higher standard than GDIT — assigning Amentum a weakness while crediting GDIT with a strength for a comparable, and in places inferior, approach. Second, DIA assigned SOSi a weakness based on a discussion of decommissioned networks that the written record and audio recordings showed SOSi never actually had. The evaluators' notes were not traceable to anything the offeror said.",
+        bottomLine: "Unfair treatment exists when an agency fails to treat all offerors equally and evaluate their proposals evenhandedly. The record did not support the weakness assigned to SOSi, and the agency unreasonably failed to explain why substantially similar approaches were treated differently between GDIT and Amentum.",
+        takeaway: "Disparate-treatment protests are winnable when the comparison is concrete — same feature, different rating. Keep your evaluators on consistent application of criteria, and make sure every weakness is traceable to something the offeror actually said in the proposal, discussions, or orals. If your audio and transcripts don't back the evaluator's note, that weakness will not survive review."
+      }
+    ]
+  },
+  {
     weekOf: "March 24, 2026",
     decisions: [
       {
