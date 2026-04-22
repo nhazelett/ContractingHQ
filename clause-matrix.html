@@ -1220,6 +1220,15 @@
 
       <div id="filterContent">
 
+        <!-- ========= DOD QUESTION (must be answered first) ========= -->
+        <div class="filter-section" style="border-bottom:1px solid var(--border-color);padding-bottom:1.25rem;margin-bottom:1.25rem;">
+          <label style="grid-column:1/-1;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--accent);letter-spacing:0.03em;">Is this a DoD contract? <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted);margin-left:0.5rem;">Drives the SAT value, DFARS visibility, and DoD-specific clause handling</span></label>
+          <div class="filter-pills" id="dodFilter">
+            <button class="pill" data-filter="dod" data-value="yes" title="DoD acquisition — SAT is $350K, DFARS applies, not-dod FAR clauses hidden">Yes (DoD)</button>
+            <button class="pill" data-filter="dod" data-value="no" title="Civilian acquisition — SAT is $250K, DFARS hidden entirely">No (Civilian)</button>
+          </div>
+        </div>
+
         <!-- ========= PHASE 1: BUILD ========= -->
         <div class="filter-section" style="border-bottom:1px solid var(--border-color);padding-bottom:1.25rem;margin-bottom:1.25rem;">
           <label style="grid-column:1/-1;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--accent);letter-spacing:0.03em;">Build <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted);margin-left:0.5rem;">Select the clause families that apply to your acquisition</span></label>
@@ -1228,27 +1237,45 @@
             <button class="pill" data-filter="build" data-value="construction">Construction</button>
             <button class="pill" data-filter="build" data-value="services">Services</button>
             <button class="pill" data-filter="build" data-value="sap" title="FAR Part 13 simplified acquisition procedures for non-commercial buys under the SAT">SAP (Non-Commercial)</button>
-            <button class="pill" data-filter="build" data-value="sealed-bid">Sealed Bid</button>
-            <button class="pill" data-filter="build" data-value="options">Options</button>
             <button class="pill" data-filter="build" data-value="idiq">IDIQ/Requirements</button>
+            <button class="pill" data-filter="build" data-value="options">Options</button>
+            <button class="pill" data-filter="build" data-value="cots">COTS</button>
+            <button class="pill" data-filter="build" data-value="uca">UCAs/Letter</button>
             <button class="pill" data-filter="build" data-value="contingency">Contingency Ops</button>
             <button class="pill" data-filter="build" data-value="a-e">A-E</button>
-            <button class="pill" data-filter="build" data-value="r-and-d">R&amp;D</button>
-            <button class="pill" data-filter="build" data-value="major-defense">Major Defense</button>
-            <button class="pill" data-filter="build" data-value="litigation">Litigation Support</button>
-            <button class="pill" data-filter="build" data-value="cots">COTS</button>
-            <button class="pill" data-filter="build" data-value="higher-ed">Higher Ed</button>
-            <button class="pill" data-filter="build" data-value="ccpd">CCPD Required</button>
-            <button class="pill" data-filter="build" data-value="fms">FMS</button>
-            <button class="pill" data-filter="build" data-value="vessels">Vessel Alteration</button>
-            <button class="pill" data-filter="build" data-value="uca">UCAs/Letter</button>
-            <button class="pill" data-filter="build" data-value="demo">Demo Project</button>
             <button class="pill" data-filter="build" data-value="buy-american">Buy American</button>
             <button class="pill" data-filter="build" data-value="lease">Lease</button>
-            <button class="pill" data-filter="build" data-value="multiple-year" title="Contracts crossing fiscal years / incremental funding (not multi-year authority, which is Options)">Multiple Year</button>
             <button class="pill" data-filter="build" data-value="set-aside">Set-Asides</button>
             <button class="pill" data-filter="build" data-value="gpc" title="Payment by Governmentwide Commercial Purchase Card">GPC</button>
+          </div>
+          <label style="grid-column:1/-1;font-family:'Rajdhani',sans-serif;font-size:0.85rem;font-weight:600;color:var(--text-muted);letter-spacing:0.03em;margin-top:0.9rem;display:block;">Less common</label>
+          <div class="filter-pills" id="buildFilterMore" style="margin-top:0.35rem;">
+            <button class="pill" data-filter="build" data-value="sealed-bid">Sealed Bid</button>
+            <button class="pill" data-filter="build" data-value="higher-ed">Higher Education</button>
+            <button class="pill" data-filter="build" data-value="ccpd">Certified Cost or Pricing Data Required</button>
+            <button class="pill" data-filter="build" data-value="fms">FMS</button>
+            <button class="pill" data-filter="build" data-value="vessels">Vessel Alteration</button>
+            <button class="pill" data-filter="build" data-value="demo">Demonstration Project</button>
+            <button class="pill" data-filter="build" data-value="r-and-d">R&amp;D</button>
+            <button class="pill" data-filter="build" data-value="major-defense">Major Defense System</button>
+            <button class="pill" data-filter="build" data-value="litigation">Litigation Support</button>
+            <button class="pill" data-filter="build" data-value="multiple-year" title="Contracts crossing fiscal years / incremental funding (not multi-year authority, which is Options)">Multiple Year</button>
             <button class="pill" data-filter="build" data-value="data-rights" title="IP, technical data, computer software, and patent rights clauses">Data Rights</button>
+          </div>
+        </div>
+
+        <!-- ========= DOLLAR VALUE ========= -->
+        <div class="filter-section" style="border-bottom:1px solid var(--border-color);padding-bottom:1.25rem;margin-bottom:1.25rem;">
+          <label style="grid-column:1/-1;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--accent);letter-spacing:0.03em;">Dollar Value <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted);margin-left:0.5rem;">Your estimated contract value &mdash; higher tiers include everything required at lower tiers</span></label>
+          <div class="filter-pills" id="dollarFilter">
+            <button class="pill active" data-filter="dollar" data-value="any" title="Show all clauses regardless of dollar threshold">Any / Unknown</button>
+            <button class="pill" data-filter="dollar" data-value="mpt" title="At or below the micro-purchase threshold ($10K)">&le; $10K (MPT)</button>
+            <button class="pill" data-filter="dollar" data-value="sat" title="Between MPT and the simplified acquisition threshold">$10K &ndash; $250K (SAT)</button>
+            <button class="pill" data-filter="dollar" data-value="sub750" title="Between SAT and the subcontracting plan threshold">$250K &ndash; $750K</button>
+            <button class="pill" data-filter="dollar" data-value="tina" title="Between subcontracting plan and TINA certified cost or pricing data threshold">$750K &ndash; $2M</button>
+            <button class="pill" data-filter="dollar" data-value="comsap" title="Between TINA and commercial SAP / CAS full coverage">$2M &ndash; $7.5M</button>
+            <button class="pill" data-filter="dollar" data-value="15m" title="Between CAS full coverage and contingency commercial SAP ceiling">$7.5M &ndash; $15M</button>
+            <button class="pill" data-filter="dollar" data-value="major" title="Major acquisition above the contingency commercial SAP ceiling">&gt; $15M (Major)</button>
           </div>
         </div>
 
@@ -1257,12 +1284,8 @@
           <label style="grid-column:1/-1;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--text-muted);letter-spacing:0.03em;">Narrow <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted);margin-left:0.5rem;">Select what applies to your acquisition and we'll remove the rest</span></label>
           <div class="filter-pills" id="trimFilter">
             <button class="pill" data-filter="trim" data-value="oconus" title="Remove domestic-only clauses">OCONUS</button>
-            <button class="pill" data-filter="trim" data-value="above-sat" title="Remove clauses that only apply below the SAT">Above SAT</button>
-            <button class="pill" data-filter="trim" data-value="below-sat" title="Remove clauses that only apply above the SAT">Below SAT</button>
-            <button class="pill" data-filter="trim" data-value="flowdown" title="Keep only clauses with subcontract flowdown requirements">Subcontract Flowdown</button>
             <button class="pill" data-filter="trim" data-value="sca-exempt" title="Remove Service Contract Labor Standards clauses">Not SCA</button>
             <button class="pill" data-filter="trim" data-value="db-exempt" title="Remove Davis-Bacon / Construction Wage Rate clauses">Not Davis-Bacon</button>
-            <button class="pill" data-filter="trim" data-value="dod" title="Remove FAR clauses not applicable to DoD">DoD</button>
             <button class="pill" data-filter="trim" data-value="not-covid" title="Remove coronavirus relief clauses">Not Coronavirus</button>
           </div>
         </div>
@@ -1470,10 +1493,14 @@ class ClauseMatrix {
 
     // Filter state
     this.filters = {
+      // DoD question (single-select; null = unanswered)
+      dod: null,           // null | 'yes' | 'no'
       // Phase 1: Build (additive, stackable)
       build: new Set(),    // 'commercial','construction','services','sap','sealed-bid','options','idiq','contingency','a-e'
       // Phase 2: Trim (subtractive)
-      trim: new Set(['not-covid']),     // 'oconus','above-sat','below-sat','flowdown','not-covid'
+      trim: new Set(['not-covid']),     // 'oconus','not-covid','sca-exempt','db-exempt','hide-ibr','hide-ft'
+      // Dollar Value (single-select cascading tier)
+      dollar: 'any',       // 'any','mpt','sat','sub750','tina','comsap','15m','major'
       // Structural
       regulation: new Set(),
       type: 'all',
@@ -1493,6 +1520,11 @@ class ClauseMatrix {
     document.querySelectorAll('.pill[data-filter="trim"]').forEach(p => {
       if (this.filters.trim.has(p.dataset.value)) p.classList.add('active');
     });
+    // Activate default dollar pill
+    document.querySelectorAll('.pill[data-filter="dollar"]').forEach(p => {
+      p.classList.toggle('active', p.dataset.value === this.filters.dollar);
+    });
+    this.updateDollarLabels();
     this.render();
   }
 
@@ -1580,11 +1612,21 @@ class ClauseMatrix {
     const filterType = pill.dataset.filter;
     const value = pill.dataset.value;
 
-    if (filterType === 'type') {
+    if (filterType === 'type' || filterType === 'dollar') {
       // Single-select
       document.querySelectorAll(`[data-filter="${filterType}"]`).forEach(p => p.classList.remove('active'));
       pill.classList.add('active');
       this.filters[filterType] = value;
+    } else if (filterType === 'dod') {
+      // Toggle single-select: clicking the active pill deactivates (null); otherwise select
+      const isActive = pill.classList.contains('active');
+      document.querySelectorAll(`[data-filter="dod"]`).forEach(p => p.classList.remove('active'));
+      if (isActive) {
+        this.filters.dod = null;
+      } else {
+        pill.classList.add('active');
+        this.filters.dod = value;
+      }
     } else if (filterType === 'build' || filterType === 'trim' || filterType === 'ct' || filterType === 'regulation') {
       // Multi-select toggle
       pill.classList.toggle('active');
@@ -1595,7 +1637,19 @@ class ClauseMatrix {
       }
     }
 
+    this.updateDollarLabels();
     this.applyFilters();
+  }
+
+  // When the user answers "Yes (DoD)", the simplified acquisition threshold is $350K
+  // (FAR 2.101 DoD SAT). Civilian / unanswered = $250K.
+  updateDollarLabels() {
+    const isDoD = this.filters.dod === 'yes';
+    const satCeiling = isDoD ? '$350K' : '$250K';
+    const satPill = document.querySelector('[data-filter="dollar"][data-value="sat"]');
+    const sub750Pill = document.querySelector('[data-filter="dollar"][data-value="sub750"]');
+    if (satPill) satPill.innerHTML = `$10K \u2013 ${satCeiling} (SAT)`;
+    if (sub750Pill) sub750Pill.innerHTML = `${satCeiling} \u2013 $750K`;
   }
 
   handleSearch(e) {
@@ -1619,8 +1673,10 @@ class ClauseMatrix {
 
   clearAllFilters() {
     this.filters = {
+      dod: null,
       build: new Set(),
       trim: new Set(['not-covid']),
+      dollar: 'any',
       regulation: new Set(),
       type: 'all',
       ct: new Set(),
@@ -1630,12 +1686,14 @@ class ClauseMatrix {
     // Reset UI
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('[data-filter="type"][data-value="all"]')[0].classList.add('active');
+    document.querySelectorAll('[data-filter="dollar"][data-value="any"]')[0].classList.add('active');
     // Re-activate default trim pills
     document.querySelectorAll('.pill[data-filter="trim"]').forEach(p => {
       if (this.filters.trim.has(p.dataset.value)) p.classList.add('active');
     });
     this.searchInput.value = '';
 
+    this.updateDollarLabels();
     this.applyFilters();
   }
 
@@ -1673,19 +1731,44 @@ class ClauseMatrix {
   // Each trim type maps to a function that returns true if the clause should be REMOVED
   static TRIM_RULES = {
     'oconus': c => c.tags && c.tags.includes('domestic-only'),
-    'above-sat': c => c.tags && c.tags.includes('below-sat') && !(c.tags && c.tags.includes('above-sat')),
-    'below-sat': c => c.tags && c.tags.includes('above-sat') && !(c.tags && c.tags.includes('below-sat')),
-    'flowdown': c => !c.flow || (!c.flow.com && !c.flow.ncom),
     'sca-exempt': c => c.tags && c.tags.includes('sca'),
     'db-exempt': c => c.tags && c.tags.includes('davis-bacon'),
-    'dod': c => c.tags && c.tags.includes('not-dod'),
     'not-covid': c => c.tags && c.tags.includes('coronavirus'),
     'hide-ibr': c => c.ibr === 'Yes' || c.ibr === 'Yes*',
     'hide-ft': c => c.ibr === 'No' || c.ibr === 'N' || c.ibr === null,
   };
 
+  // ===== Dollar Value tiers (cascading, single-select) =====
+  // For each selected tier, these tags cause exclusion (clause doesn't apply at that value).
+  // Floors:   tier-over-mpt(>$10K), above-sat(>SAT), tier-over-750k-nonconstr(>$750K),
+  //           tier-over-1-5m-constr(>$1.5M construction), tier-over-tina(>$2M),
+  //           tier-over-com-sap(>$7.5M), tier-over-15m(>$15M)
+  // Ceilings: tier-under-mpt(<$10K), below-sat(<SAT)
+  // Subcontracting-plan threshold is selected at runtime based on whether Construction
+  // is the active build filter: non-construction uses $750K, construction uses $1.5M.
+  static DOLLAR_EXCLUDE = {
+    'any':    [],
+    'mpt':    ['tier-over-mpt', 'above-sat', 'tier-over-750k-nonconstr', 'tier-over-1-5m-constr', 'tier-over-tina', 'tier-over-com-sap', 'tier-over-15m'],
+    'sat':    ['above-sat', 'tier-over-750k-nonconstr', 'tier-over-1-5m-constr', 'tier-over-tina', 'tier-over-com-sap', 'tier-over-15m', 'tier-under-mpt'],
+    'sub750': ['tier-over-750k-nonconstr', 'tier-over-1-5m-constr', 'tier-over-tina', 'tier-over-com-sap', 'tier-over-15m', 'tier-under-mpt', 'below-sat'],
+    'tina':   ['tier-over-tina', 'tier-over-com-sap', 'tier-over-15m', 'tier-under-mpt', 'below-sat'],
+    'comsap': ['tier-over-com-sap', 'tier-over-15m', 'tier-under-mpt', 'below-sat'],
+    '15m':    ['tier-over-15m', 'tier-under-mpt', 'below-sat'],
+    'major':  ['tier-under-mpt', 'below-sat'],
+  };
+
   applyFilters() {
     this.filteredClauses = this.allClauses.filter(clause => {
+
+      // ---- DoD question (gates DFARS visibility + not-dod clauses) ----
+      if (this.filters.dod === 'yes') {
+        // DoD path: hide FAR clauses tagged not-dod
+        if (clause.tags && clause.tags.includes('not-dod')) return false;
+      } else if (this.filters.dod === 'no') {
+        // Civilian path: hide DFARS entirely (both 252.xxx regulator and reg === 'DFARS')
+        if (clause.reg === 'DFARS') return false;
+        if (clause.id && clause.id.startsWith('252.')) return false;
+      }
 
       // ---- Phase 1: BUILD (additive) ----
       // If any build filters are active, the clause must match at least one of them
@@ -1713,6 +1796,18 @@ class ClauseMatrix {
       for (const trimType of this.filters.trim) {
         const rule = ClauseMatrix.TRIM_RULES[trimType];
         if (rule && rule(clause)) return false;
+      }
+
+      // ---- Dollar Value tier (cascading) ----
+      // A selected tier excludes clauses tagged with thresholds above or below it.
+      // Core (universally-required) clauses are exempt.
+      if (this.filters.dollar && this.filters.dollar !== 'any') {
+        const excludeTags = ClauseMatrix.DOLLAR_EXCLUDE[this.filters.dollar] || [];
+        if (clause.tags && !clause.tags.includes('core')) {
+          for (const t of excludeTags) {
+            if (clause.tags.includes(t)) return false;
+          }
+        }
       }
 
       // ---- Structural filters ----
