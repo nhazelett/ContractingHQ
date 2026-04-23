@@ -1229,6 +1229,15 @@
           </div>
         </div>
 
+        <!-- ========= FOB QUESTION ========= -->
+        <div class="filter-section" style="border-bottom:1px solid var(--border-color);padding-bottom:1.25rem;margin-bottom:1.25rem;">
+          <label style="grid-column:1/-1;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--accent);letter-spacing:0.03em;">FOB point <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted);margin-left:0.5rem;">Pick one &mdash; the other family of shipping clauses will be hidden</span></label>
+          <div class="filter-pills" id="fobFilter">
+            <button class="pill" data-filter="fob" data-value="origin" title="Title passes at the shipping point; contractor hands off at origin">FOB Origin</button>
+            <button class="pill" data-filter="fob" data-value="destination" title="Title and risk of loss pass at the destination; contractor delivers to the government's receiving point">FOB Destination</button>
+          </div>
+        </div>
+
         <!-- ========= PHASE 1: BUILD ========= -->
         <div class="filter-section" style="border-bottom:1px solid var(--border-color);padding-bottom:1.25rem;margin-bottom:1.25rem;">
           <label style="grid-column:1/-1;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--accent);letter-spacing:0.03em;">Build <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted);margin-left:0.5rem;">Select the clause families that apply to your acquisition</span></label>
@@ -1261,6 +1270,8 @@
             <button class="pill" data-filter="build" data-value="litigation">Litigation Support</button>
             <button class="pill" data-filter="build" data-value="multiple-year" title="Contracts crossing fiscal years / incremental funding (not multi-year authority, which is Options)">Multiple Year</button>
             <button class="pill" data-filter="build" data-value="data-rights" title="IP, technical data, computer software, and patent rights clauses">Data Rights</button>
+            <button class="pill" data-filter="build" data-value="performance-bond" title="Performance and payment bond clauses (FAR 28)">Performance Bonds Required</button>
+            <button class="pill" data-filter="build" data-value="local-area-set-aside" title="Disaster/emergency local-area set-aside (FAR 26.2)">Local Area Set-Aside</button>
           </div>
         </div>
 
@@ -1495,6 +1506,8 @@ class ClauseMatrix {
     this.filters = {
       // DoD question (single-select; null = unanswered)
       dod: null,           // null | 'yes' | 'no'
+      // FOB question (single-select; null = unanswered)
+      fob: null,           // null | 'origin' | 'destination'
       // Phase 1: Build (additive, stackable)
       build: new Set(),    // 'commercial','construction','services','sap','sealed-bid','options','idiq','contingency','a-e'
       // Phase 2: Trim (subtractive)
@@ -1617,15 +1630,15 @@ class ClauseMatrix {
       document.querySelectorAll(`[data-filter="${filterType}"]`).forEach(p => p.classList.remove('active'));
       pill.classList.add('active');
       this.filters[filterType] = value;
-    } else if (filterType === 'dod') {
+    } else if (filterType === 'dod' || filterType === 'fob') {
       // Toggle single-select: clicking the active pill deactivates (null); otherwise select
       const isActive = pill.classList.contains('active');
-      document.querySelectorAll(`[data-filter="dod"]`).forEach(p => p.classList.remove('active'));
+      document.querySelectorAll(`[data-filter="${filterType}"]`).forEach(p => p.classList.remove('active'));
       if (isActive) {
-        this.filters.dod = null;
+        this.filters[filterType] = null;
       } else {
         pill.classList.add('active');
-        this.filters.dod = value;
+        this.filters[filterType] = value;
       }
     } else if (filterType === 'build' || filterType === 'trim' || filterType === 'ct' || filterType === 'regulation') {
       // Multi-select toggle
@@ -1674,6 +1687,7 @@ class ClauseMatrix {
   clearAllFilters() {
     this.filters = {
       dod: null,
+      fob: null,
       build: new Set(),
       trim: new Set(['not-covid']),
       dollar: 'any',
@@ -1725,6 +1739,8 @@ class ClauseMatrix {
     'set-aside': c => c.id.startsWith('52.219') || c.id.startsWith('252.219') || c.id.startsWith('52.226') || c.id.startsWith('252.226') || (c.tags && c.tags.includes('set-aside')),
     'gpc': c => c.id === '52.232-36' || c.id === '252.232-7009' || (c.tags && c.tags.includes('gpc')),
     'data-rights': c => c.id.startsWith('252.227') || (c.tags && c.tags.includes('ip-data')),
+    'performance-bond': c => c.tags && c.tags.includes('performance-bond'),
+    'local-area-set-aside': c => c.tags && c.tags.includes('local-area-set-aside'),
   };
 
   // ===== Phase 2: Trim rules =====
@@ -1768,6 +1784,13 @@ class ClauseMatrix {
         // Civilian path: hide DFARS entirely (both 252.xxx regulator and reg === 'DFARS')
         if (clause.reg === 'DFARS') return false;
         if (clause.id && clause.id.startsWith('252.')) return false;
+      }
+
+      // ---- FOB question (hide the opposite family of shipping clauses) ----
+      if (this.filters.fob === 'origin') {
+        if (clause.tags && clause.tags.includes('fob-destination')) return false;
+      } else if (this.filters.fob === 'destination') {
+        if (clause.tags && clause.tags.includes('fob-origin')) return false;
       }
 
       // ---- Phase 1: BUILD (additive) ----
@@ -1840,6 +1863,22 @@ class ClauseMatrix {
         if (!cid.includes(s) && !ctitle.includes(s) && !cst.includes(s)) return false;
       }
 
+      return true;
+    });
+
+    // ---- Dependency pass: drop clauses whose `requires-clause:X` parent didn't survive ----
+    // Pattern: any tag of the form `requires-clause:52.xxx-y` means the clause only applies
+    // when the named clause is also present in the filtered set. If the parent is missing,
+    // the dependent disappears too (e.g. 52.204-13 SAM Maintenance requires 52.204-7 SAM).
+    const survivingIds = new Set(this.filteredClauses.map(c => c.id));
+    this.filteredClauses = this.filteredClauses.filter(clause => {
+      if (!clause.tags) return true;
+      for (const tag of clause.tags) {
+        if (tag.startsWith('requires-clause:')) {
+          const parentId = tag.slice('requires-clause:'.length);
+          if (!survivingIds.has(parentId)) return false;
+        }
+      }
       return true;
     });
 

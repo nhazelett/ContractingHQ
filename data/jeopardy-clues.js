@@ -122,7 +122,7 @@ window.CLUE_BANK_DATA = {
         { "clue": "When canceling a solicitation, the CO documents this key element before issuing the cancellation notice.", "answer": "the rationale for cancellation" }
       ],
       "3": [
-        { "clue": "This provision required in most commercial solicitations collects the offeror's representations and certifications.", "answer": "52.212-3" },
+        { "clue": "Under the RFO, commercial reps and certs flow from this central database rather than a consolidated solicitation provision.", "answer": "SAM.gov" },
         { "clue": "In a commercial solicitation, this clause incorporates the government's terms and conditions for commercial items.", "answer": "52.212-4" },
         { "clue": "A synopsis is not required for acquisitions at or below this threshold, the SAT.", "answer": "the simplified acquisition threshold" },
         { "clue": "The CO includes evaluation factors in this section of a Part 15 RFP.", "answer": "Section M" }
@@ -155,8 +155,8 @@ window.CLUE_BANK_DATA = {
       ],
       "3": [
         { "clue": "The clause that incorporates the government's commercial terms and conditions, including termination and inspection, is this number.", "answer": "52.212-4" },
-        { "clue": "This provision lists the addenda of clauses activated by specific policies in commercial solicitations.", "answer": "52.212-5" },
-        { "clue": "The provision collecting commercial offeror representations and certifications is this number.", "answer": "52.212-3" },
+        { "clue": "Under the RFO, statutory flow-down clauses for commercial buys are prescribed individually through this Part 12 table rather than the old 52.212-5.", "answer": "Table 12-3" },
+        { "clue": "The RFO eliminated this consolidated reps-and-certs provision that once appeared in every commercial solicitation.", "answer": "52.212-3" },
         { "clue": "The provision stating commercial solicitation instructions to offerors is this number.", "answer": "52.212-1" }
       ],
       "4": [
@@ -421,7 +421,7 @@ window.CLUE_BANK_DATA = {
     { "category": "PRICING", "clue": "Adequate price competition is one exception to submission of certified cost or pricing data under this FAR part.", "answer": "Part 15" },
     { "category": "PRICING", "clue": "Under a T&M contract, this figure caps the government's total exposure and cannot be exceeded without a mod.", "answer": "the ceiling price (NTE)" },
     { "category": "COMMERCIAL", "clue": "On a commercial contract, terminations for cause and for convenience are handled under this clause's paragraphs.", "answer": "52.212-4 (paragraphs (l) and (m))" },
-    { "category": "COMMERCIAL", "clue": "A commercial item solicitation typically uses this provision to collect offeror reps and certs.", "answer": "52.212-3" },
+    { "category": "COMMERCIAL", "clue": "Under the RFO, the old 52.212-3 consolidated reps provision is gone; commercial reps now pull from this central database.", "answer": "SAM.gov" },
     { "category": "COMMERCIAL", "clue": "Under the RFO, the commercial simplified procedures ceiling for contingency and emergency operations rises to roughly this figure.", "answer": "the contingency ceiling (approximately $15 million)" },
     { "category": "COMMERCIAL", "clue": "A commercial item determination must be supported by this type of evidence, developed under Part 10.", "answer": "market research" },
     { "category": "COMMERCIAL", "clue": "Under the RFO, micro-purchases for commercial items route to this FAR part, while noncommercial micro-purchases stay in Part 13.", "answer": "Part 12" },
