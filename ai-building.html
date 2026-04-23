@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="How I built ContractingHQ with AI, from brainstorm to live site. The brainstorm-prototype-tweak loop, getting your work onto GitHub, buying a domain, and a live demo dashboard built in one prompt." />
+
+  <title>Building Tools with AI | AI in Acquisitions | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .article-bg { background: #040d1f; padding: 3rem 1.5rem 6rem; }
+    .article-wrap { max-width: 760px; margin: 0 auto; }
+
+    .breadcrumb { font-size: .78rem; color: var(--text-muted); margin-bottom: 1.8rem; letter-spacing: .3px; }
+    .breadcrumb a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb-sep { margin: 0 .45rem; color: #475569; }
+    .breadcrumb-current { color: var(--silver); }
+
+    .article h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.6rem; font-weight: 700;
+      color: var(--white);
+      margin: 2.8rem 0 .6rem;
+      line-height: 1.25;
+      letter-spacing: .2px;
+    }
+    .article h2:first-of-type { margin-top: 0; }
+    .article h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.15rem; font-weight: 700;
+      color: #e2e8f0;
+      margin: 1.6rem 0 .5rem;
+      letter-spacing: .3px;
+    }
+    .article p {
+      font-size: 1rem; line-height: 1.75;
+      color: var(--silver);
+      margin: 0 0 1.1rem;
+    }
+    .article p strong { color: #e2e8f0; font-weight: 600; }
+    .article a { color: var(--accent); text-decoration: underline; }
+
+    .article ul, .article ol {
+      color: var(--silver);
+      line-height: 1.7;
+      padding-left: 1.3rem;
+      margin: 0 0 1.2rem;
+    }
+    .article li { margin-bottom: .35rem; }
+
+    .pull-quote {
+      margin: 1.6rem 0;
+      padding: 1rem 1.3rem;
+      border-left: 3px solid var(--accent);
+      background: rgba(74,158,255,0.06);
+      border-radius: 0 8px 8px 0;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.15rem; font-weight: 600;
+      color: #e2e8f0;
+      line-height: 1.45;
+    }
+
+    .loop-card {
+      margin: 1.4rem 0 2rem;
+      padding: 1.3rem 1.4rem;
+      background: rgba(74,158,255,0.05);
+      border: 1px solid rgba(74,158,255,0.22);
+      border-radius: 10px;
+    }
+    .loop-card h4 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .78rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 .7rem;
+    }
+    .loop-steps {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: .8rem;
+    }
+    @media (max-width: 620px){ .loop-steps { grid-template-columns: 1fr; } }
+    .loop-step {
+      background: rgba(10,22,50,0.55);
+      border: 1px solid rgba(74,158,255,0.12);
+      border-radius: 8px;
+      padding: .85rem .95rem;
+    }
+    .loop-step-num {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .7rem; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: .2rem;
+    }
+    .loop-step-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.05rem; font-weight: 700;
+      color: var(--white);
+      margin-bottom: .25rem;
+    }
+    .loop-step-body { font-size: .85rem; color: var(--silver); line-height: 1.55; margin: 0; }
+
+    .prompt-box {
+      margin: 1.5rem 0;
+      padding: 1.2rem 1.35rem;
+      background: #0a1632;
+      border: 1px solid rgba(74,158,255,0.3);
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: .92rem;
+      color: #e2e8f0;
+      line-height: 1.55;
+    }
+    .prompt-box .prompt-label {
+      display: block;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .68rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: .6rem;
+    }
+
+    .result-card {
+      margin: 1.8rem 0 2rem;
+      padding: 1.4rem 1.5rem;
+      background: rgba(74,222,128,0.06);
+      border: 1px solid rgba(74,222,128,0.28);
+      border-radius: 12px;
+    }
+    .result-card h3 {
+      font-family: 'Rajdhani', sans-serif;
+      margin: 0 0 .4rem;
+      font-size: 1.15rem;
+      color: #bbf7d0;
+      letter-spacing: .3px;
+    }
+    .result-card p { margin: 0 0 .8rem; font-size: .95rem; color: var(--silver); }
+    .result-card p:last-child { margin-bottom: 0; }
+    .result-stats {
+      display: flex; flex-wrap: wrap; gap: 1.4rem;
+      margin-top: .8rem;
+      padding-top: .9rem;
+      border-top: 1px solid rgba(74,222,128,0.22);
+    }
+    .result-stat-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .68rem; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: #86efac;
+    }
+    .result-stat-value {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.2rem; font-weight: 700;
+      color: var(--white);
+    }
+    .result-cta {
+      display: inline-block;
+      margin-top: .9rem;
+      padding: .65rem 1.2rem;
+      background: var(--accent);
+      color: #0a1632 !important;
+      border-radius: 8px;
+      font-weight: 700;
+      text-decoration: none !important;
+      font-size: .9rem;
+      letter-spacing: .3px;
+    }
+    .result-cta:hover { opacity: .92; }
+
+    .tldr-box {
+      margin: 2.2rem 0;
+      padding: 1.3rem 1.5rem;
+      background: rgba(74,222,128,0.05);
+      border: 1px solid rgba(74,222,128,0.25);
+      border-left: 3px solid #4ade80;
+      border-radius: 0 10px 10px 0;
+    }
+    .tldr-box h3 {
+      font-family: 'Rajdhani', sans-serif;
+      margin: 0 0 .5rem;
+      font-size: 1rem;
+      color: #bbf7d0;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    .tldr-box ul { margin: 0; padding-left: 1.2rem; font-size: .93rem; }
+    .tldr-box li { margin-bottom: .35rem; color: var(--silver); }
+
+    .article-footer-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 3.5rem; padding-top: 1.8rem;
+      border-top: 1px solid rgba(74,158,255,0.12);
+      font-size: .88rem;
+      gap: 1rem;
+    }
+    .article-footer-nav a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .article-footer-nav a:hover { text-decoration: underline; }
+
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+
+  <meta property="og:type"        content="article" />
+  <meta property="og:site_name"   content="ContractingHQ" />
+  <meta property="og:title"       content="Building Tools with AI | AI in Acquisitions" />
+  <meta property="og:description" content="How this site got built with Claude, from brainstorm to domain, plus a live USAspending dashboard built in one prompt." />
+  <meta property="og:url"         content="https://kthq.org/ai-building.html" />
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:site"        content="@ContractingHQ" />
+  <meta name="twitter:title"       content="Building Tools with AI" />
+  <meta name="twitter:description" content="The path from idea to shipped tool, without touching a backend." />
+  <link rel="canonical"            href="https://kthq.org/ai-building.html" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="customer-education.html">Customer Education</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="links.html">Links</a></li>
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Hands-On</span>
+    <h1 class="page-hero-title">Building Tools with AI</h1>
+    <p class="page-hero-sub">How this whole site got built, step by step. Steal the approach, apply it to your own ideas.</p>
+  </div>
+</div>
+
+<div class="article-bg">
+  <div class="article-wrap">
+
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="ai-acquisitions.html">AI in Acquisitions</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">Building Tools with AI</span>
+    </div>
+
+    <div class="article">
+
+      <h2>Talk to it like an engineer</h2>
+
+      <p>The loop that built this site is simple. I brainstormed an idea with Claude in chat. I asked it to build me a concept. Then I spoke with it, fine-tuning the product and the way I wanted it to feel. You phrase things like an engineer talking to another engineer: "I want the user to experience X, Y, and Z." That changes the output more than any clever prompt.</p>
+
+      <p>You can see the result of that loop all over this site. At one point I told Claude I didn't want this to feel like a corporate training portal and asked what we could add. I mentioned I mess around with Suno for music. Claude suggested a music player to tie it together. That is how <strong>ContractingFM</strong> ended up on the homepage. I was engineering a site and thinking about what an outsider shows up for. It is genuinely addicting.</p>
+
+      <div class="loop-card">
+        <h4>The Loop</h4>
+        <div class="loop-steps">
+          <div class="loop-step">
+            <div class="loop-step-num">Step 1</div>
+            <div class="loop-step-name">Brainstorm</div>
+            <p class="loop-step-body">Talk through the idea with the model. Let it poke holes. Let it suggest stuff you didn't ask for.</p>
+          </div>
+          <div class="loop-step">
+            <div class="loop-step-num">Step 2</div>
+            <div class="loop-step-name">Prototype</div>
+            <p class="loop-step-body">Tell it to actually build a working version. Crude is fine. You want something to react to.</p>
+          </div>
+          <div class="loop-step">
+            <div class="loop-step-num">Step 3</div>
+            <div class="loop-step-name">Tweak</div>
+            <p class="loop-step-body">Use the prototype. Tell the model what feels off. Repeat until it clicks.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2>Getting it to other people</h2>
+
+      <p>Once you've got a landing page or a tool, you have to ship it so other humans can actually use it. Claude will lay out your options (GitHub Pages, Vercel, Netlify, and a few others) and walk you through picking one. I landed on GitHub. I went to github.com, got completely lost, and then leaned on Claude's browser feature that can drive Google Chrome for you.</p>
+
+      <p>I watched it upload my pages into GitHub the first couple of times. Now I do it without AI's help, because the browser takeover is what taught me the process. If you don't want a model driving your browser, feed it screenshots instead. Use your computer's snipping tool, grab a few shots, paste them in, and Claude will walk you through each click.</p>
+
+      <h2>Fill in the frame</h2>
+
+      <p>Once the landing page was live, the question became features. First thought: training. I put a bunch of empty placeholders on a training page and filled them in over time. Claude generated the code. I provided the text and the edits. That pattern, skeleton first and content-second, has held up well as the site has grown.</p>
+
+      <p>With training in place, the question shifted. What else could I build? Tools. What had I actually wanted over 14 years of contracting that nobody ever gave me? I used to try to build the perfect combined synopsis/solicitation, but it always went stale within a year of FAR changes. So I built one here, walked down the FAR to find the compliance touchpoints, and dumbed it down for a brand-new CO so it would line up with the training on this same site. Maintaining that becomes part of the fun instead of a chore.</p>
+
+      <h2>Actually putting a flag on it</h2>
+
+      <p>Then I asked Claude how to buy a domain and transfer the site over. I bought <strong>KTHQ</strong>, followed the instructions step by step, and that is why the URL you're reading this on is kthq.org. Beyond the Claude subscription and seven dollars for the domain, this didn't really cost anything.</p>
+
+      <div class="pull-quote">
+        It's addicting, it's exciting, and it almost costs nothing. The only real investment is your attention.
+      </div>
+
+      <h2>Just go try something</h2>
+
+      <p>I could drop a step-by-step guide here. The better move is to get into it yourself. Look at the small inconveniences in your day and ask whether AI can help fix them. It does not have to be work. A digital cookbook. A calorie-counter that actually matches how you eat. Whatever you keep wishing existed. You learn faster building three weird little things than reading about building one good one.</p>
+
+      <h2>APIs as a force multiplier</h2>
+
+      <p>A lot of public sites and services expose what's called an <strong>API</strong>, which is basically a pipe your site can pull from. Point Claude at one of those pipes and the data maintains itself. You build the frame once and the content updates on its own. No cron jobs, no overnight scripts, no "I forgot to update the spreadsheet" moments. The page just shows you whatever is true right now.</p>
+
+      <h2>The live demo</h2>
+
+      <p>In fact, I'm going to try one while writing this. One prompt. Here's what I handed Claude:</p>
+
+      <div class="prompt-box">
+        <span class="prompt-label">My prompt</span>
+        Claude, I want a dashboard for USAspending.gov for the most up-to-date status of federal spending and I want it to update automatically throughout the year. It needs to be interesting to anyone in the acquisition community, to include where federal spending is at, and a comparison to what it was last year. Go.
+      </div>
+
+      <p>I'll time it, and I'll let you know how it goes, dear reader.</p>
+
+      <div class="result-card">
+        <h3>Result</h3>
+        <p>Claude wrote the whole page in one shot. It pulls live from the USAspending.gov public API on every page load. No backend, no database, no cron job. Just a static HTML file and two fetch calls. It shows current-FY contract obligations, the same window from last FY for comparison, a monthly trend chart, and a top-10 awarding agencies table.</p>
+        <p>Go poke it. Refresh it in a week and you'll see new numbers.</p>
+        <div class="result-stats">
+          <div>
+            <div class="result-stat-label">Time to working dashboard</div>
+            <div class="result-stat-value">~3 minutes</div>
+          </div>
+          <div>
+            <div class="result-stat-label">Lines of code written by me</div>
+            <div class="result-stat-value">Zero</div>
+          </div>
+          <div>
+            <div class="result-stat-label">Ongoing maintenance</div>
+            <div class="result-stat-value">None</div>
+          </div>
+        </div>
+        <a href="usaspending-dashboard.html" class="result-cta">View the live dashboard &rarr;</a>
+      </div>
+
+      <p>That is the whole point of pairing Claude with an API. You spent one session and got a page that will keep working past the day you built it. The underlying data changes, the page updates, you did nothing extra.</p>
+
+      <div class="tldr-box">
+        <h3>TL;DR</h3>
+        <ul>
+          <li>Brainstorm the idea with the model. Prototype. Tweak. Ship.</li>
+          <li>Talk to it like another engineer, not a customer service rep.</li>
+          <li>Claude will drive your browser or walk you through with screenshots to help you ship to GitHub.</li>
+          <li>Skeleton first, content second. Placeholders you can fill in beat a blank page.</li>
+          <li>Domain plus static hosting plus an AI subscription costs almost nothing.</li>
+          <li>Point it at an API and the data maintains itself.</li>
+          <li>The best way to learn this is to go try it tonight on something you actually want.</li>
+        </ul>
+      </div>
+
+      <div class="article-footer-nav">
+        <a href="ai-types.html">&larr; Types of AI</a>
+        <a href="ai-acquisitions.html">Back to AI in Acquisitions</a>
+        <a href="usaspending-dashboard.html">See the live demo &rarr;</a>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="customer-education.html">Customer Education</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+<script src="main.js"></script>
+<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script src="player.js"></script>
+</body>
+</html>

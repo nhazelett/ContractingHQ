@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Live federal contract obligations dashboard pulled directly from USAspending.gov. Current fiscal year vs. prior year, top agencies, and monthly trend." />
+  <title>USAspending Live Dashboard | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>
+    .dash-bg { background: #040d1f; padding: 3rem 1.5rem 6rem; min-height: 80vh; }
+    .dash-wrap { max-width: 1080px; margin: 0 auto; }
+
+    .breadcrumb { font-size: .78rem; color: var(--text-muted); margin-bottom: 1.8rem; letter-spacing: .3px; }
+    .breadcrumb a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb-sep { margin: 0 .45rem; color: #475569; }
+    .breadcrumb-current { color: var(--silver); }
+
+    .dash-meta {
+      display: flex; justify-content: space-between; align-items: baseline;
+      flex-wrap: wrap; gap: .6rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid rgba(74,158,255,0.12);
+    }
+    .dash-meta-source { color: var(--text-muted); font-size: .82rem; }
+    .dash-meta-source a { color: var(--accent); text-decoration: underline; }
+    .dash-meta-updated { color: var(--silver); font-size: .82rem; font-family: 'Rajdhani', sans-serif; letter-spacing: .5px; }
+    .dash-meta-updated span { color: var(--accent); font-weight: 700; }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2.8rem;
+    }
+    @media (max-width: 820px) { .stat-row { grid-template-columns: 1fr; } }
+
+    .stat-card {
+      background: rgba(10,22,50,0.6);
+      border: 1px solid rgba(74,158,255,0.18);
+      border-radius: 12px;
+      padding: 1.4rem 1.35rem;
+    }
+    .stat-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #8a9bb0;
+      margin-bottom: .45rem;
+    }
+    .stat-value {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2rem; font-weight: 700;
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: .35rem;
+    }
+    .stat-sub { color: var(--silver); font-size: .82rem; }
+    .stat-card.highlight { border-color: rgba(74,158,255,0.45); background: rgba(74,158,255,0.05); }
+    .stat-card.highlight .stat-label { color: var(--accent); }
+
+    .delta-up { color: #86efac; font-weight: 700; }
+    .delta-down { color: #fca5a5; font-weight: 700; }
+    .delta-flat { color: #cbd5e1; font-weight: 700; }
+
+    .dash-section-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.35rem; font-weight: 700;
+      color: var(--white);
+      margin: 0 0 1rem;
+      letter-spacing: .3px;
+    }
+    .dash-section-note { color: var(--text-muted); font-size: .82rem; margin-bottom: 1.2rem; }
+
+    .agency-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2.8rem;
+      background: rgba(10,22,50,0.55);
+      border: 1px solid rgba(74,158,255,0.15);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .agency-table th, .agency-table td {
+      text-align: left;
+      padding: .75rem 1rem;
+      font-size: .88rem;
+      border-bottom: 1px solid rgba(74,158,255,0.08);
+    }
+    .agency-table th {
+      background: rgba(74,158,255,0.08);
+      color: var(--accent);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+    .agency-table td { color: var(--silver); }
+    .agency-table tr:last-child td { border-bottom: none; }
+    .agency-table .num { text-align: right; font-variant-numeric: tabular-nums; font-family: 'Rajdhani', sans-serif; color: var(--white); font-weight: 600; }
+    .agency-table .pct { color: #86efac; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+    .chart-wrap {
+      background: rgba(10,22,50,0.55);
+      border: 1px solid rgba(74,158,255,0.15);
+      border-radius: 10px;
+      padding: 1.4rem 1.3rem 1.2rem;
+      margin-bottom: 2.8rem;
+    }
+    .chart-legend { display: flex; gap: 1.2rem; font-size: .78rem; color: var(--silver); margin-bottom: .8rem; }
+    .chart-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: middle; margin-right: .35rem; }
+    .chart-svg { width: 100%; height: 280px; display: block; }
+
+    .status-banner {
+      padding: 1rem 1.2rem;
+      border-radius: 8px;
+      font-size: .9rem;
+      margin-bottom: 1.5rem;
+    }
+    .status-banner.loading { background: rgba(74,158,255,0.08); border: 1px solid rgba(74,158,255,0.25); color: var(--silver); }
+    .status-banner.error { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.3); color: #fca5a5; }
+    .status-banner.hidden { display: none; }
+
+    .build-note {
+      margin-top: 3rem;
+      padding: 1.1rem 1.3rem;
+      background: rgba(74,222,128,0.05);
+      border: 1px solid rgba(74,222,128,0.22);
+      border-left: 3px solid #4ade80;
+      border-radius: 0 8px 8px 0;
+      font-size: .88rem;
+      color: var(--silver);
+    }
+    .build-note strong { color: #bbf7d0; font-weight: 700; }
+    .build-note a { color: var(--accent); }
+
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="ContractingHQ" />
+  <meta property="og:title"       content="USAspending Live Dashboard" />
+  <meta property="og:description" content="Live federal contract obligations, refreshed from USAspending.gov every time you open the page." />
+  <meta property="og:url"         content="https://kthq.org/usaspending-dashboard.html" />
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:site"        content="@ContractingHQ" />
+  <meta name="twitter:title"       content="USAspending Live Dashboard" />
+  <meta name="twitter:description" content="Live federal contract obligations, straight from USAspending.gov." />
+  <link rel="canonical"            href="https://kthq.org/usaspending-dashboard.html" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="customer-education.html">Customer Education</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="links.html">Links</a></li>
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Live Data</span>
+    <h1 class="page-hero-title">USAspending Live Dashboard</h1>
+    <p class="page-hero-sub">Federal contract obligations, refreshed from USAspending.gov every time you open this page. Built in one prompt to Claude. See the write-up on <a href="ai-building.html" style="color:var(--accent);">Building Tools with AI</a>.</p>
+  </div>
+</div>
+
+<div class="dash-bg">
+  <div class="dash-wrap">
+
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="ai-acquisitions.html">AI in Acquisitions</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="ai-building.html">Building Tools with AI</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">USAspending Dashboard</span>
+    </div>
+
+    <div class="dash-meta">
+      <div class="dash-meta-source">
+        Source: <a href="https://www.usaspending.gov/" target="_blank" rel="noopener">USAspending.gov</a> public API
+        &bull; Contract obligations (award type codes A, B, C, D) &bull; FY runs Oct 1 through Sep 30.
+      </div>
+      <div class="dash-meta-updated">Updated: <span id="updatedAt">&hellip;</span></div>
+    </div>
+
+    <div id="statusBanner" class="status-banner loading">Pulling live data from USAspending.gov&hellip;</div>
+
+    <div class="stat-row">
+      <div class="stat-card highlight">
+        <div class="stat-label" id="statCurrLabel">Current FY to date</div>
+        <div class="stat-value" id="statCurrValue">&hellip;</div>
+        <div class="stat-sub" id="statCurrSub">Contract obligations through today</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label" id="statPriorLabel">Prior FY same period</div>
+        <div class="stat-value" id="statPriorValue">&hellip;</div>
+        <div class="stat-sub" id="statPriorSub">Comparison window</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Year over year</div>
+        <div class="stat-value" id="statDeltaValue">&hellip;</div>
+        <div class="stat-sub" id="statDeltaSub">Change vs. same period last FY</div>
+      </div>
+    </div>
+
+    <h2 class="dash-section-title">Monthly contract obligations</h2>
+    <p class="dash-section-note">Current FY bars sit next to the same month from last FY. Helps you see if the spend curve is running ahead or behind last year.</p>
+    <div class="chart-wrap">
+      <div class="chart-legend">
+        <span><span class="chart-swatch" style="background:#4a9eff;"></span><span id="chartLegendCurrent">Current FY</span></span>
+        <span><span class="chart-swatch" style="background:#475569;"></span><span id="chartLegendPrior">Prior FY</span></span>
+      </div>
+      <svg id="monthlyChart" class="chart-svg" viewBox="0 0 1000 320" preserveAspectRatio="none"></svg>
+    </div>
+
+    <h2 class="dash-section-title">Top 10 awarding agencies (current FY)</h2>
+    <p class="dash-section-note">Ranked by obligated contract dollars so far this fiscal year.</p>
+    <table class="agency-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Agency</th>
+          <th class="num">Obligations FY to date</th>
+          <th class="num">Share of top 10</th>
+        </tr>
+      </thead>
+      <tbody id="agencyBody">
+        <tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:1.5rem;">Loading&hellip;</td></tr>
+      </tbody>
+    </table>
+
+    <div class="build-note">
+      <p><strong>How this page works.</strong> Every time this page loads, it hits the public USAspending.gov API and renders whatever it sees. No backend, no database, no cron job. The whole thing is a single static HTML file plus a couple of fetch calls. Claude wrote it in one pass from a single prompt. See the <a href="ai-building.html">Building Tools with AI</a> write-up for the prompt and the full story.</p>
+    </div>
+
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="customer-education.html">Customer Education</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+<script src="main.js"></script>
+<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script src="player.js"></script>
+
+<script>
+// ---------- USAspending live dashboard ----------
+(function(){
+  const API_BASE = 'https://api.usaspending.gov/api/v2';
+  const CONTRACT_TYPES = ['A','B','C','D']; // definitive contract award types
+
+  // ---------- Date math ----------
+  function pad(n){ return n < 10 ? '0'+n : ''+n; }
+  function ymd(d){ return d.getUTCFullYear() + '-' + pad(d.getUTCMonth()+1) + '-' + pad(d.getUTCDate()); }
+
+  function buildPeriods(){
+    const today = new Date();
+    const y = today.getUTCFullYear();
+    const m = today.getUTCMonth() + 1; // 1-12
+    // FY starts Oct 1. If we're in Oct-Dec, FY = y+1. Else FY = y.
+    const currentFY = m >= 10 ? y + 1 : y;
+    const priorFY   = currentFY - 1;
+
+    const currentStart = (currentFY - 1) + '-10-01';
+    const currentEnd   = ymd(today);
+
+    const priorStart   = (currentFY - 2) + '-10-01';
+    const priorEndDate = new Date(Date.UTC(today.getUTCFullYear()-1, today.getUTCMonth(), today.getUTCDate()));
+    const priorEnd     = ymd(priorEndDate);
+
+    return { currentFY, priorFY, currentStart, currentEnd, priorStart, priorEnd };
+  }
+
+  // ---------- Fetch helpers ----------
+  async function post(endpoint, body){
+    const res = await fetch(API_BASE + endpoint, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error('API ' + res.status);
+    return res.json();
+  }
+
+  function timeSeries(startDate, endDate){
+    return post('/search/spending_over_time/', {
+      group: 'month',
+      filters: {
+        time_period: [{ start_date: startDate, end_date: endDate }],
+        award_type_codes: CONTRACT_TYPES
+      }
+    });
+  }
+
+  function topAgencies(startDate, endDate){
+    return post('/search/spending_by_category/awarding_agency/', {
+      filters: {
+        time_period: [{ start_date: startDate, end_date: endDate }],
+        award_type_codes: CONTRACT_TYPES
+      },
+      limit: 10
+    });
+  }
+
+  // ---------- Formatters ----------
+  function fmtDollars(n){
+    if (n == null || isNaN(n)) return '…';
+    const abs = Math.abs(n);
+    if (abs >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
+    if (abs >= 1e9)  return '$' + (n/1e9).toFixed(1)  + 'B';
+    if (abs >= 1e6)  return '$' + (n/1e6).toFixed(1)  + 'M';
+    if (abs >= 1e3)  return '$' + (n/1e3).toFixed(0)  + 'K';
+    return '$' + Math.round(n).toLocaleString();
+  }
+  function fmtPct(n){
+    if (n == null || isNaN(n)) return '…';
+    const s = n >= 0 ? '+' : '';
+    return s + n.toFixed(1) + '%';
+  }
+  // Fiscal month -> calendar month label. FM 1 = Oct.
+  const FM_LABELS = ['Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep'];
+  function fmLabel(fm){ return FM_LABELS[Math.max(0, Math.min(11, fm - 1))]; }
+
+  // ---------- Render ----------
+  function setStatus(text, kind){
+    const el = document.getElementById('statusBanner');
+    if (!text){ el.classList.add('hidden'); return; }
+    el.className = 'status-banner ' + kind;
+    el.textContent = text;
+  }
+
+  function renderStats(p, currTotal, priorTotal){
+    document.getElementById('statCurrLabel').textContent = 'FY' + String(p.currentFY).slice(-2) + ' to date';
+    document.getElementById('statCurrValue').textContent = fmtDollars(currTotal);
+    document.getElementById('statCurrSub').textContent = 'Contract obligations, ' + p.currentStart + ' through ' + p.currentEnd;
+
+    document.getElementById('statPriorLabel').textContent = 'FY' + String(p.priorFY).slice(-2) + ' same period';
+    document.getElementById('statPriorValue').textContent = fmtDollars(priorTotal);
+    document.getElementById('statPriorSub').textContent = p.priorStart + ' through ' + p.priorEnd;
+
+    let deltaPct = null, kind = 'delta-flat';
+    if (priorTotal > 0){
+      deltaPct = ((currTotal - priorTotal) / priorTotal) * 100;
+      kind = deltaPct > 0.5 ? 'delta-up' : (deltaPct < -0.5 ? 'delta-down' : 'delta-flat');
+    }
+    const deltaEl = document.getElementById('statDeltaValue');
+    deltaEl.textContent = deltaPct == null ? '…' : fmtPct(deltaPct);
+    deltaEl.className = 'stat-value ' + kind;
+    const deltaDollars = currTotal - priorTotal;
+    document.getElementById('statDeltaSub').textContent = (deltaDollars >= 0 ? '+' : '') + fmtDollars(deltaDollars) + ' vs. same period last FY';
+
+    document.getElementById('chartLegendCurrent').textContent = 'FY' + String(p.currentFY).slice(-2);
+    document.getElementById('chartLegendPrior').textContent   = 'FY' + String(p.priorFY).slice(-2);
+  }
+
+  function renderAgencies(agencies){
+    const body = document.getElementById('agencyBody');
+    if (!agencies || agencies.length === 0){
+      body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:1.5rem;">No data returned.</td></tr>';
+      return;
+    }
+    const total = agencies.reduce(function(s,a){ return s + (a.amount || 0); }, 0);
+    body.innerHTML = agencies.map(function(a, i){
+      const pct = total > 0 ? ((a.amount/total)*100).toFixed(1) + '%' : '…';
+      return '<tr>' +
+        '<td>'+(i+1)+'</td>' +
+        '<td>'+escapeHtml(a.name || '…')+'</td>' +
+        '<td class="num">'+fmtDollars(a.amount)+'</td>' +
+        '<td class="num pct">'+pct+'</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+    });
+  }
+
+  // Build side-by-side monthly bar chart. Pairs fiscal month 1..N across the two series.
+  function renderChart(currSeries, priorSeries){
+    const svg = document.getElementById('monthlyChart');
+    svg.innerHTML = '';
+    // Normalize to maps keyed by fiscal month int
+    function toMap(series){
+      const m = {};
+      (series || []).forEach(function(row){
+        if (row && row.time_period && row.time_period.month){
+          const k = parseInt(row.time_period.month, 10);
+          m[k] = row.aggregated_amount || 0;
+        }
+      });
+      return m;
+    }
+    const curr = toMap(currSeries);
+    const prior = toMap(priorSeries);
+
+    // Only show months for which we have at least some data in the current FY.
+    const months = [];
+    for (let fm = 1; fm <= 12; fm++){
+      if (curr[fm] != null) months.push(fm);
+    }
+    if (months.length === 0){
+      svg.innerHTML = '<text x="500" y="160" fill="#8a9bb0" text-anchor="middle" font-family="Inter, sans-serif" font-size="14">No monthly data yet.</text>';
+      return;
+    }
+
+    const W = 1000, H = 320;
+    const padL = 60, padR = 16, padT = 16, padB = 40;
+    const plotW = W - padL - padR;
+    const plotH = H - padT - padB;
+
+    const maxVal = Math.max.apply(null,
+      months.map(function(fm){ return Math.max(curr[fm] || 0, prior[fm] || 0); })
+    ) || 1;
+
+    const groupW = plotW / months.length;
+    const barW   = (groupW * 0.38);
+    const gap    = groupW * 0.06;
+
+    // Y gridlines + labels (5 steps)
+    const steps = 4;
+    let grid = '';
+    for (let i = 0; i <= steps; i++){
+      const v = (maxVal * i) / steps;
+      const y = padT + plotH - (plotH * (v / maxVal));
+      grid += '<line x1="'+padL+'" y1="'+y+'" x2="'+(W-padR)+'" y2="'+y+'" stroke="rgba(74,158,255,0.1)" stroke-width="1"/>';
+      grid += '<text x="'+(padL-8)+'" y="'+(y+4)+'" fill="#8a9bb0" font-family="Inter, sans-serif" font-size="11" text-anchor="end">'+fmtDollars(v)+'</text>';
+    }
+
+    // Bars + month labels
+    let bars = '';
+    months.forEach(function(fm, idx){
+      const cx = padL + (idx * groupW) + (groupW/2);
+      const c = curr[fm] || 0;
+      const p = prior[fm] || 0;
+
+      const cH = plotH * (c / maxVal);
+      const pH = plotH * (p / maxVal);
+
+      const cX = cx - barW - gap/2;
+      const pX = cx + gap/2;
+
+      bars += '<rect x="'+cX+'" y="'+(padT + plotH - cH)+'" width="'+barW+'" height="'+cH+'" fill="#4a9eff" rx="2"/>';
+      bars += '<rect x="'+pX+'" y="'+(padT + plotH - pH)+'" width="'+barW+'" height="'+pH+'" fill="#475569" rx="2"/>';
+
+      bars += '<text x="'+cx+'" y="'+(H - padB + 20)+'" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">'+fmLabel(fm)+'</text>';
+    });
+
+    // Axis baseline
+    const baseY = padT + plotH;
+    const axis = '<line x1="'+padL+'" y1="'+baseY+'" x2="'+(W-padR)+'" y2="'+baseY+'" stroke="rgba(74,158,255,0.25)" stroke-width="1"/>';
+
+    svg.innerHTML = grid + bars + axis;
+  }
+
+  // ---------- Go ----------
+  async function run(){
+    const p = buildPeriods();
+    const now = new Date();
+    document.getElementById('updatedAt').textContent = now.toLocaleString(undefined, {
+      year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
+    });
+
+    try {
+      const [currTime, priorTime, agencies] = await Promise.all([
+        timeSeries(p.currentStart, p.currentEnd),
+        timeSeries(p.priorStart, p.priorEnd),
+        topAgencies(p.currentStart, p.currentEnd)
+      ]);
+
+      const currTotal  = (currTime.results  || []).reduce(function(s,r){ return s + (r.aggregated_amount || 0); }, 0);
+      const priorTotal = (priorTime.results || []).reduce(function(s,r){ return s + (r.aggregated_amount || 0); }, 0);
+
+      renderStats(p, currTotal, priorTotal);
+      renderAgencies(agencies.results || []);
+      renderChart(currTime.results || [], priorTime.results || []);
+      setStatus(null);
+    } catch (err) {
+      console.error('Dashboard load failed', err);
+      setStatus('Could not reach USAspending.gov right now. The API may be rate-limiting or briefly down. Try refreshing in a minute.', 'error');
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+})();
+</script>
+</body>
+</html>
