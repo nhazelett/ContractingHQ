@@ -872,6 +872,21 @@
       cursor: pointer; font-size: 0.85rem; opacity: 0.5;
     }
     .ft-remove:hover { opacity: 1; }
+    .fill-to-ibr, .ibr-to-fill, .ft-to-ibr, .ibr-to-ft {
+      background: rgba(74,158,255,0.1);
+      border: 1px solid rgba(74,158,255,0.35);
+      color: #8ab8ff;
+      cursor: pointer;
+      font-size: 0.72rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      margin-right: 0.35rem;
+      white-space: nowrap;
+    }
+    .fill-to-ibr:hover, .ibr-to-fill:hover, .ft-to-ibr:hover, .ibr-to-ft:hover {
+      background: rgba(74,158,255,0.2);
+      color: #c7ddff;
+    }
 
     /* Prescription cell in tables */
     .prescription-cell {
@@ -1500,6 +1515,11 @@ class ClauseMatrix {
     this.allClauses = CLAUSE_DATA || [];
     this.filteredClauses = [...this.allClauses];
     this.selectedIds = new Set();
+    // Per-clause classification overrides the CO can toggle from the preview.
+    // ibrOverrides forces a clause into the IBR table; ftOverrides forces it
+    // into the full-text table. A clause can be in at most one at a time.
+    this.ibrOverrides = new Set();
+    this.ftOverrides = new Set();
     this.expandedId = null;
 
     // Filter state
@@ -2175,7 +2195,16 @@ class ClauseMatrix {
 
     // IBR = Yes or Yes*; Full Text = No, N, or null
     // Fill-In = detected from clause text patterns or rfo === 'RFO X'
-    const isIbr = c => c.ibr === 'Yes' || c.ibr === 'Yes*';
+    // Fill-ins override IBR by default: if a clause has fill-in blanks it
+    // needs to be editable and printed in full text. The CO can override
+    // classification per-clause via the "Use as IBR" / "Use Full Text"
+    // buttons in the preview (ibrOverrides / ftOverrides).
+    const isIbr = c => {
+      const uid = c._uid || c.id;
+      if (this.ibrOverrides.has(uid)) return true;
+      if (this.ftOverrides.has(uid)) return false;
+      return (c.ibr === 'Yes' || c.ibr === 'Yes*') && !this.hasFillIn(c);
+    };
 
     const ibrClauses = selected.filter(c => isIbr(c));
     const ftClauses = selected.filter(c => !isIbr(c));
@@ -2190,9 +2219,30 @@ class ClauseMatrix {
     const removeHandler = (container, selector) => {
       container.querySelectorAll(selector).forEach(btn => {
         btn.addEventListener('click', () => {
-          this.selectedIds.delete(btn.dataset.uid);
+          const uid = btn.dataset.uid;
+          this.selectedIds.delete(uid);
+          // reset any classification overrides if the clause is removed
+          this.ibrOverrides.delete(uid);
+          this.ftOverrides.delete(uid);
           this.openPreview();
           this.updateSelectionBar();
+        });
+      });
+    };
+
+    // Helper: bind classification-flip buttons (IBR ↔ Full Text)
+    const bindFlip = (container, selector, target) => {
+      container.querySelectorAll(selector).forEach(btn => {
+        btn.addEventListener('click', () => {
+          const uid = btn.dataset.uid;
+          if (target === 'ibr') {
+            this.ftOverrides.delete(uid);
+            this.ibrOverrides.add(uid);
+          } else {
+            this.ibrOverrides.delete(uid);
+            this.ftOverrides.add(uid);
+          }
+          this.openPreview();
         });
       });
     };
@@ -2204,14 +2254,17 @@ class ClauseMatrix {
         const uid = c._uid || c.id;
         const det = getDet(c);
         const sp = (det && det.sp) || '';
+        const hasFill = this.hasFillIn(c);
+        const flipBtn = `<button class="ibr-to-ft" data-uid="${uid}" title="Move this clause to the Full Text section">Use Full Text</button>`;
         return `<tr data-uid="${uid}">
-          <td>${c.id}${this.hasFillIn(c) ? ' <span style="color:#f59e0b;font-size:0.7rem;" title="Fill-in required">&#9998;</span>' : ''}</td>
+          <td>${c.id}${hasFill ? ' <span style="color:#f59e0b;font-size:0.7rem;" title="Fill-in required — edit in the Fill-In section below">&#9998;</span>' : ''}</td>
           <td>${c.title || ''}</td>
           <td class="prescription-cell">${sp}</td>
-          <td><button class="ibr-remove" data-uid="${uid}" title="Remove">&times;</button></td>
+          <td style="white-space:nowrap;">${flipBtn}<button class="ibr-remove" data-uid="${uid}" title="Remove">&times;</button></td>
         </tr>`;
       }).join('');
       removeHandler(this.ibrTableBody, '.ibr-remove');
+      bindFlip(this.ibrTableBody, '.ibr-to-ft', 'ft');
     } else {
       this.prevIbrSection.style.display = 'none';
     }
@@ -2223,14 +2276,16 @@ class ClauseMatrix {
         const uid = c._uid || c.id;
         const det = getDet(c);
         const sp = (det && det.sp) || '';
+        const flipBtn = `<button class="ft-to-ibr" data-uid="${uid}" title="List this clause as Incorporated by Reference instead">Use as IBR</button>`;
         return `<tr data-uid="${uid}">
           <td>${c.id}${this.hasFillIn(c) ? ' <span style="color:#f59e0b;font-size:0.7rem;" title="Fill-in required">&#9998;</span>' : ''}</td>
           <td>${c.title || ''}</td>
           <td class="prescription-cell">${sp}</td>
-          <td><button class="ibr-remove" data-uid="${uid}" title="Remove">&times;</button></td>
+          <td style="white-space:nowrap;">${flipBtn}<button class="ibr-remove" data-uid="${uid}" title="Remove">&times;</button></td>
         </tr>`;
       }).join('');
       removeHandler(this.ftTableBody, '.ibr-remove');
+      bindFlip(this.ftTableBody, '.ft-to-ibr', 'ibr');
     } else {
       this.prevFtSection.style.display = 'none';
     }
@@ -2270,7 +2325,10 @@ class ClauseMatrix {
               <span class="fill-card-title">${c.st || c.title || ''}</span>
               ${blankCount ? `<span class="fill-count-badge">${blankCount} fill-in${blankCount > 1 ? 's' : ''}</span>` : ''}
             </div>
-            <button class="ft-remove" data-uid="${uid}" title="Remove">&times;</button>
+            <div style="display:flex;gap:0.4rem;align-items:center;">
+              <button class="fill-to-ibr" data-uid="${uid}" title="Skip filling this in — list as Incorporated by Reference instead">Use as IBR</button>
+              <button class="ft-remove" data-uid="${uid}" title="Remove">&times;</button>
+            </div>
           </div>
           <div class="fill-card-body">
             ${sp ? `<div class="fill-prescription">${sp}</div>` : ''}
@@ -2288,6 +2346,8 @@ class ClauseMatrix {
         </div>`;
       }).join('');
       removeHandler(this.fillCardsList, '.ft-remove');
+      // "Use as IBR" — flip this clause to the IBR table
+      bindFlip(this.fillCardsList, '.fill-to-ibr', 'ibr');
       // Toggle edit mode on fill-in cards
       this.fillCardsList.querySelectorAll('.fill-edit-toggle').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -2456,7 +2516,14 @@ class ClauseMatrix {
       return;
     }
 
-    const isIbr = c => c.ibr === 'Yes' || c.ibr === 'Yes*';
+    // Fill-ins override IBR by default; ibrOverrides / ftOverrides let the
+    // CO flip classification per clause from the preview.
+    const isIbr = c => {
+      const uid = c._uid || c.id;
+      if (this.ibrOverrides.has(uid)) return true;
+      if (this.ftOverrides.has(uid)) return false;
+      return (c.ibr === 'Yes' || c.ibr === 'Yes*') && !this.hasFillIn(c);
+    };
 
     const ibrClauses = selected.filter(c => isIbr(c));
     const ftClauses = selected.filter(c => !isIbr(c));
