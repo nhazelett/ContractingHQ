@@ -382,20 +382,147 @@ body.has-cfm-player { padding-bottom: 68px; }
 }
 .cfm-sb-name span { color: #4a9eff; }
 .cfm-sb-art-wrap {
-  width: 100%; padding-top: 58%; position: relative;
-  background: rgba(255,255,255,0.025);
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  width: 100%; padding-top: 62%; position: relative;
+  background:
+    linear-gradient(180deg, rgba(10,30,50,0.85), rgba(12,21,43,0.78)),
+    radial-gradient(circle at center, rgba(86,167,255,0.1), transparent 60%);
+  border-bottom: 1px solid rgba(74,158,255,0.14);
+  overflow: hidden;
 }
 .cfm-sb-art {
   position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 3.5rem;
-  transition: background 0.4s, box-shadow 0.4s;
+  display: block;
+  transition: box-shadow 0.4s;
 }
 .cfm-sb-art.playing {
   animation: cfm-sb-glow 3s ease-in-out infinite;
 }
+.cfm-sb-art-grid {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(rgba(146,181,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(146,181,255,0.06) 1px, transparent 1px);
+  background-size: 20px 20px;
+  -webkit-mask-image: radial-gradient(circle at center, black 22%, transparent 78%);
+          mask-image: radial-gradient(circle at center, black 22%, transparent 78%);
+  pointer-events: none;
+}
+.cfm-sb-art-arc {
+  position: absolute; left: 50%; top: 50%;
+  border: 1px solid rgba(115,151,237,0.18);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.cfm-sb-art-arc.cfm-sb-arc-a { width: 120px; height: 120px; }
+.cfm-sb-art-arc.cfm-sb-arc-b { width: 172px; height: 172px; border-style: dashed; border-color: rgba(115,151,237,0.14); }
+.cfm-sb-art-arc.cfm-sb-arc-c { width: 88px; height: 88px; border-color: rgba(68,224,211,0.22); }
+.cfm-sb-art-orbital {
+  position: absolute;
+  width: 8px; height: 8px; border-radius: 50%;
+  box-shadow: 0 0 14px currentColor;
+  pointer-events: none;
+}
+.cfm-sb-art-orbital.cfm-sb-orbital-a {
+  top: 22px; left: 30px;
+  color: #44e0d3;
+  background: radial-gradient(circle at 30% 30%, #defffb, #44e0d3);
+}
+.cfm-sb-art-orbital.cfm-sb-orbital-b {
+  right: 30px; bottom: 22px;
+  color: #ff9a5f;
+  background: radial-gradient(circle at 30% 30%, #ffe5d7, #ff9a5f);
+}
+.cfm-sb-art-core {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+}
+.cfm-sb-art-eq {
+  position: absolute; inset: 0;
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: 6px;
+  padding: 22px 18px 16px;
+  pointer-events: none;
+}
+.cfm-sb-art-eq span {
+  width: 7px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(68,224,211,0.95), rgba(86,167,255,0.22));
+  box-shadow: 0 0 12px rgba(68,224,211,0.2);
+  transform-origin: bottom;
+}
+.cfm-sb-art-eq span:nth-child(1) { height: 18px; }
+.cfm-sb-art-eq span:nth-child(2) { height: 38px; }
+.cfm-sb-art-eq span:nth-child(3) { height: 26px; }
+.cfm-sb-art-eq span:nth-child(4) { height: 48px; }
+.cfm-sb-art-eq span:nth-child(5) { height: 32px; }
+.cfm-sb-art-eq span:nth-child(6) { height: 44px; }
+.cfm-sb-art-eq span:nth-child(7) { height: 24px; }
+.cfm-sb-art-eq span:nth-child(8) { height: 36px; }
+.cfm-sb-art-disc {
+  position: relative;
+  width: 74px; height: 74px;
+  display: grid; place-items: center;
+}
+.cfm-sb-art-ring {
+  position: absolute; inset: 0;
+  border: 1px solid rgba(86,167,255,0.22);
+  border-radius: 50%;
+  box-shadow: inset 0 0 22px rgba(86,167,255,0.1);
+}
+.cfm-sb-art-ring.cfm-sb-art-ring-b {
+  inset: 10px;
+  border-color: rgba(68,224,211,0.22);
+  box-shadow: inset 0 0 16px rgba(68,224,211,0.08);
+}
+.cfm-sb-art-center {
+  position: absolute; inset: 20px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), rgba(86,167,255,0.18)),
+    linear-gradient(180deg, rgba(34,74,149,0.95), rgba(12,29,73,0.95));
+  border: 1px solid rgba(126,168,243,0.22);
+  box-shadow:
+    0 8px 18px rgba(6,14,36,0.32),
+    inset 0 1px 0 rgba(255,255,255,0.14);
+}
+.cfm-sb-art.playing .cfm-sb-art-eq span:nth-child(1) { animation: cfm-sb-eq 1.1s ease-in-out infinite; }
+.cfm-sb-art.playing .cfm-sb-art-eq span:nth-child(2) { animation: cfm-sb-eq 0.9s ease-in-out infinite 0.1s; }
+.cfm-sb-art.playing .cfm-sb-art-eq span:nth-child(3) { animation: cfm-sb-eq 1.2s ease-in-out infinite 0.16s; }
+.cfm-sb-art.playing .cfm-sb-art-eq span:nth-child(4) { animation: cfm-sb-eq 0.84s ease-in-out infinite 0.08s; }
+.cfm-sb-art.playing .cfm-sb-art-eq span:nth-child(5) { animation: cfm-sb-eq 1.15s ease-in-out infinite 0.18s; }
+.cfm-sb-art.playing .cfm-sb-art-eq span:nth-child(6) { animation: cfm-sb-eq 0.96s ease-in-out infinite 0.14s; }
+.cfm-sb-art.playing .cfm-sb-art-eq span:nth-child(7) { animation: cfm-sb-eq 1.18s ease-in-out infinite 0.06s; }
+.cfm-sb-art.playing .cfm-sb-art-eq span:nth-child(8) { animation: cfm-sb-eq 1.02s ease-in-out infinite 0.12s; }
+.cfm-sb-art.playing .cfm-sb-art-ring { animation: cfm-sb-spin 7s linear infinite; }
+.cfm-sb-art.playing .cfm-sb-art-ring.cfm-sb-art-ring-b { animation-duration: 4.4s; animation-direction: reverse; }
+.cfm-sb-art.playing .cfm-sb-art-orbital.cfm-sb-orbital-a { animation: cfm-sb-orbit-a 6s linear infinite; }
+.cfm-sb-art.playing .cfm-sb-art-orbital.cfm-sb-orbital-b { animation: cfm-sb-orbit-b 7.4s linear infinite reverse; }
 @keyframes cfm-sb-glow { 0%,100% { box-shadow: inset 0 0 40px rgba(74,158,255,0.07); } 50% { box-shadow: inset 0 0 80px rgba(74,158,255,0.14); } }
+@keyframes cfm-sb-eq { 0%,100% { transform: scaleY(0.6); } 50% { transform: scaleY(1.12); } }
+@keyframes cfm-sb-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes cfm-sb-orbit-a {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(14px, 8px); }
+  50%  { transform: translate(32px, 26px); }
+  75%  { transform: translate(10px, 46px); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes cfm-sb-orbit-b {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-12px, -8px); }
+  50%  { transform: translate(-28px, -22px); }
+  75%  { transform: translate(-8px, -42px); }
+  100% { transform: translate(0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cfm-sb-art.playing,
+  .cfm-sb-art.playing .cfm-sb-art-eq span,
+  .cfm-sb-art.playing .cfm-sb-art-ring,
+  .cfm-sb-art.playing .cfm-sb-art-orbital {
+    animation: none !important;
+  }
+}
 .cfm-sb-now {
   padding: 0.7rem 1rem 0.2rem; text-align: center;
 }
@@ -416,21 +543,22 @@ body.has-cfm-player { padding-bottom: 68px; }
 }
 .cfm-sb-controls {
   display: flex; align-items: center; justify-content: center;
-  gap: 0.35rem; padding: 0.55rem 1rem;
+  gap: 0.6rem; padding: 0.55rem 1rem;
 }
 .cfm-sb-btn {
   background: none; border: none; cursor: pointer;
-  color: #8a9bb0; font-size: 0.85rem;
+  color: #8a9bb0; font-size: 0.75rem; line-height: 1;
   width: 30px; height: 30px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
+  overflow: hidden; flex-shrink: 0;
   transition: color 0.18s, background 0.18s, transform 0.15s;
 }
 .cfm-sb-btn:hover { color: #fff; background: rgba(255,255,255,0.07); }
 .cfm-sb-btn.cfm-active { color: #4a9eff; }
 .cfm-sb-play-btn {
-  width: 42px; height: 42px; font-size: 1.05rem;
+  width: 42px; height: 42px; font-size: 0.95rem; line-height: 1;
   background: #4a9eff; color: #040d1f; border-radius: 50%;
-  border: none; cursor: pointer;
+  border: none; cursor: pointer; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   transition: all 0.18s;
   box-shadow: 0 4px 16px rgba(74,158,255,0.25);
@@ -690,7 +818,25 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
           '<span class="cfm-on-air">On Air</span>',
         '</div>',
         '<div class="cfm-sb-art-wrap">',
-          '<div class="cfm-sb-art" id="cfm-sb-art">&#127911;</div>',
+          '<div class="cfm-sb-art" id="cfm-sb-art">',
+            '<div class="cfm-sb-art-grid"></div>',
+            '<div class="cfm-sb-art-arc cfm-sb-arc-a"></div>',
+            '<div class="cfm-sb-art-arc cfm-sb-arc-b"></div>',
+            '<div class="cfm-sb-art-arc cfm-sb-arc-c"></div>',
+            '<div class="cfm-sb-art-orbital cfm-sb-orbital-a"></div>',
+            '<div class="cfm-sb-art-orbital cfm-sb-orbital-b"></div>',
+            '<div class="cfm-sb-art-core">',
+              '<div class="cfm-sb-art-eq">',
+                '<span></span><span></span><span></span><span></span>',
+                '<span></span><span></span><span></span><span></span>',
+              '</div>',
+              '<div class="cfm-sb-art-disc">',
+                '<span class="cfm-sb-art-ring"></span>',
+                '<span class="cfm-sb-art-ring cfm-sb-art-ring-b"></span>',
+                '<span class="cfm-sb-art-center"></span>',
+              '</div>',
+            '</div>',
+          '</div>',
         '</div>',
         '<div class="cfm-sb-now">',
           '<div class="cfm-sb-title" id="cfm-sb-title">Select a track</div>',
