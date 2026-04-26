@@ -2155,7 +2155,10 @@ const STEPS = {
     next: () => 'svc_security'
   },
   svc_security: {
-    speak: [{ text: "Last one. Sensitivity profile of the work overall? This sets defaults for base access, AT/FP, CUI handling, and OPSEC in the PWS builder." }],
+    speak: [
+      { text: "Last one in this batch. Sensitivity profile of the work overall? This sets defaults for base access, AT/FP, CUI handling, and OPSEC in the PWS builder." },
+      { text: "After this we'll keep the belt moving — market research and evaluation factors before we hand you off to the PWS builder." }
+    ],
     input: {
       type: 'choice', label: 'Sensitivity profile',
       options: [
@@ -2170,7 +2173,9 @@ const STEPS = {
       ]
     },
     save: (v) => { req.svcSecurityProfile = v; },
-    next: () => 'svc_handoff'
+    // Services need MR + EF before the PWS handoff. After EF, renderEfOutput
+    // routes services to svc_handoff (PWS Builder) instead of Justify / Fund.
+    next: () => 'mr_intro'
   },
   svc_handoff: {
     speak: [
@@ -3747,9 +3752,14 @@ function renderEfOutput() {
   downloadBtn.textContent = '\u2193 Download Evaluation Factors (PDF)';
   downloadBtn.dataset.doc = 'ef';
 
-  // After EF, go to the in-page JUSTIFY station if brand-name or sole-source applies;
-  // otherwise skip straight to FUND.
-  if (req.hasBrand || req.multipleSources === false) {
+  // Services flow ends at the PWS Builder handoff (Justify / Fund don't apply
+  // to a typical services PWS the same way they do to product packages).
+  // Product flow continues: Justify if brand-name or sole-source, else Fund.
+  if (req.kind === 'service') {
+    nextBtn.style.display = '';
+    nextBtn.textContent = 'Next: PWS Builder \u2192';
+    nextBtn.dataset.target = 'svc_handoff';
+  } else if (req.hasBrand || req.multipleSources === false) {
     nextBtn.style.display = '';
     nextBtn.textContent = 'Next: Justify \u2192';
     nextBtn.dataset.target = 'jus_intro';
@@ -3759,8 +3769,14 @@ function renderEfOutput() {
     nextBtn.dataset.target = 'fund_intro';
   }
 
-  let msg = 'That is your packet. Hand the SOR, the market research worksheet, and the evaluation factors worksheet to your CO together. ';
-  msg += 'For how the CO turns this into Section M language, see the <a href="training.html">evaluation training</a>.';
+  let msg;
+  if (req.kind === 'service') {
+    msg = 'Belt is full. Market research and evaluation factors are saved &mdash; the PWS Builder will pre-fill the matching fields when you hand off. ';
+    msg += 'For how the CO turns this into Section M language, see the <a href="training.html">evaluation training</a>.';
+  } else {
+    msg = 'That is your packet. Hand the SOR, the market research worksheet, and the evaluation factors worksheet to your CO together. ';
+    msg += 'For how the CO turns this into Section M language, see the <a href="training.html">evaluation training</a>.';
+  }
   note.innerHTML = msg;
 }
 
@@ -5035,6 +5051,14 @@ document.getElementById('btnNextStation').addEventListener('click', () => {
     hideAllInputs();
     moveBoxToStation('packet');
     runStep('pkg_intro');
+    return;
+  }
+  if (t === 'svc_handoff') {
+    // Services flow returning from EF — show the handoff screen, then user
+    // clicks again to actually navigate to PWS Builder.
+    inputPanel.classList.add('hidden');
+    hideAllInputs();
+    runStep('svc_handoff');
     return;
   }
   // Cross-page handoffs to future tools:
