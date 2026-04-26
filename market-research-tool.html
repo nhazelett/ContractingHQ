@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Market research tool for federal contracting officers. One keyword pulls live data from USAspending, SAM.gov, GLEIF, OpenCorporates, OpenSanctions, USPTO, Federal Register, and NewsAPI in parallel. Generates a Word memo." />
+  <title>Market Research Tool | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>
+    .mr-bg { background: #040d1f; padding: 2.5rem 1.5rem 6rem; min-height: 80vh; }
+    .mr-wrap { max-width: 1180px; margin: 0 auto; }
+
+    .breadcrumb { font-size: .78rem; color: var(--text-muted); margin-bottom: 1.4rem; letter-spacing: .3px; }
+    .breadcrumb a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb-sep { margin: 0 .45rem; color: #475569; }
+    .breadcrumb-current { color: var(--silver); }
+
+    /* === Search panel === */
+    .search-panel {
+      background: rgba(10,22,50,0.55);
+      border: 1px solid rgba(74,158,255,0.2);
+      border-radius: 12px;
+      padding: 1.6rem 1.5rem 1.4rem;
+      margin-bottom: 2rem;
+    }
+    .search-row { display: flex; gap: .8rem; align-items: stretch; flex-wrap: wrap; }
+    .search-input {
+      flex: 1 1 320px;
+      background: rgba(4, 13, 31, 0.7);
+      border: 1px solid rgba(74,158,255,0.3);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      padding: .85rem 1rem;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .search-input::placeholder { color: #5b6f8a; }
+
+    .search-btn {
+      background: var(--accent); color: #04102a;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700; font-size: .98rem;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      padding: 0 1.6rem; border-radius: 8px; border: none;
+      cursor: pointer; transition: opacity .15s, transform .15s;
+      min-width: 140px;
+    }
+    .search-btn:hover:not(:disabled) { opacity: .9; transform: translateY(-1px); }
+    .search-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    .memo-btn {
+      background: transparent; color: var(--accent);
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700; font-size: .92rem;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      padding: 0 1.2rem; border-radius: 8px;
+      border: 1px solid rgba(74,158,255,0.5);
+      cursor: pointer; transition: background .15s;
+    }
+    .memo-btn:hover:not(:disabled) { background: rgba(74,158,255,0.08); }
+    .memo-btn:disabled { opacity: .35; cursor: not-allowed; border-color: rgba(74,158,255,0.2); }
+
+    .advanced-toggle {
+      margin-top: 1rem;
+      display: inline-flex; align-items: center; gap: .35rem;
+      background: none; border: none;
+      color: var(--accent); font-family: 'Inter', sans-serif;
+      font-size: .82rem; font-weight: 600; cursor: pointer;
+      padding: 0;
+    }
+    .advanced-toggle:hover { text-decoration: underline; }
+    .advanced-toggle .chev { transition: transform .15s; display: inline-block; }
+    .advanced-toggle.open .chev { transform: rotate(180deg); }
+
+    .advanced-grid {
+      display: none;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: .9rem;
+      margin-top: 1rem;
+      padding-top: 1.1rem;
+      border-top: 1px solid rgba(74,158,255,0.12);
+    }
+    .advanced-grid.open { display: grid; }
+    .field-label {
+      display: block;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .68rem; font-weight: 700;
+      letter-spacing: 1.4px; text-transform: uppercase;
+      color: #8a9bb0; margin-bottom: .35rem;
+    }
+    .field-input {
+      width: 100%;
+      background: rgba(4,13,31,0.7);
+      border: 1px solid rgba(74,158,255,0.22);
+      color: var(--silver);
+      font-family: 'Inter', sans-serif;
+      font-size: .88rem;
+      padding: .55rem .7rem;
+      border-radius: 6px;
+      outline: none;
+      box-sizing: border-box;
+    }
+    .field-input:focus { border-color: var(--accent); }
+
+    /* === Result sections === */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.2rem;
+    }
+    @media (max-width: 900px) { .results-grid { grid-template-columns: 1fr; } }
+
+    .result-section {
+      background: rgba(10,22,50,0.55);
+      border: 1px solid rgba(74,158,255,0.15);
+      border-radius: 10px;
+      padding: 1.2rem 1.3rem 1rem;
+      min-height: 140px;
+    }
+    .result-section.full-width { grid-column: 1 / -1; }
+
+    .section-head {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: .8rem;
+      padding-bottom: .55rem;
+      border-bottom: 1px solid rgba(74,158,255,0.1);
+    }
+    .section-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--white);
+      margin: 0; letter-spacing: .3px;
+    }
+    .section-source {
+      font-size: .72rem; color: var(--text-muted);
+      font-family: 'Rajdhani', sans-serif;
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+    .section-count { color: var(--accent); font-weight: 700; }
+
+    .result-list { list-style: none; padding: 0; margin: 0; }
+    .result-item {
+      padding: .65rem 0;
+      border-bottom: 1px solid rgba(74,158,255,0.06);
+      font-size: .88rem;
+      color: var(--silver);
+    }
+    .result-item:last-child { border-bottom: none; }
+    .result-item .ri-title {
+      color: var(--white);
+      font-weight: 600;
+      display: block;
+      margin-bottom: .2rem;
+    }
+    .result-item .ri-title a {
+      color: var(--white); text-decoration: none;
+      border-bottom: 1px dotted rgba(74,158,255,0.3);
+    }
+    .result-item .ri-title a:hover {
+      color: var(--accent); border-bottom-color: var(--accent);
+    }
+    .result-item .ri-meta {
+      font-size: .76rem;
+      color: var(--text-muted);
+      margin-top: .2rem;
+    }
+    .result-item .ri-meta strong { color: var(--silver); font-weight: 600; }
+    .result-item .ri-amount {
+      color: #86efac;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: .92rem;
+    }
+    .result-item .ri-snippet {
+      color: var(--text-muted);
+      font-size: .8rem;
+      margin-top: .25rem;
+      line-height: 1.5;
+    }
+
+    .section-status {
+      font-size: .82rem;
+      color: var(--text-muted);
+      padding: .8rem 0;
+      text-align: center;
+    }
+    .section-status.error { color: #fca5a5; }
+    .section-status.warn { color: #fbbf24; }
+    .section-status.muted { color: #5b6f8a; font-style: italic; }
+
+    .result-section.has-flag { border-color: rgba(248,113,113,0.45); }
+    .result-section.has-flag .section-title { color: #fca5a5; }
+
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(74,158,255,0.3);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: mr-spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: .5rem;
+    }
+    @keyframes mr-spin { to { transform: rotate(360deg); } }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--text-muted);
+      font-size: .92rem;
+    }
+    .empty-state svg { opacity: .4; margin-bottom: 1rem; }
+    .empty-state strong { color: var(--silver); display: block; margin-bottom: .35rem; font-size: 1rem; }
+
+    .config-warn {
+      background: rgba(251,191,36,0.06);
+      border: 1px solid rgba(251,191,36,0.25);
+      border-left: 3px solid #fbbf24;
+      border-radius: 0 8px 8px 0;
+      padding: .9rem 1.1rem;
+      font-size: .85rem;
+      color: #fbe28b;
+      margin-bottom: 1.5rem;
+    }
+    .config-warn strong { color: #fbbf24; }
+    .config-warn code {
+      background: rgba(0,0,0,0.4);
+      padding: 1px 6px; border-radius: 3px;
+      font-size: .82rem;
+    }
+
+    .build-note {
+      margin-top: 3rem;
+      padding: 1.1rem 1.3rem;
+      background: rgba(74,222,128,0.05);
+      border: 1px solid rgba(74,222,128,0.22);
+      border-left: 3px solid #4ade80;
+      border-radius: 0 8px 8px 0;
+      font-size: .88rem;
+      color: var(--silver);
+    }
+    .build-note strong { color: #bbf7d0; font-weight: 700; }
+    .build-note a { color: var(--accent); }
+
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="ContractingHQ" />
+  <meta property="og:title"       content="Market Research Tool" />
+  <meta property="og:description" content="One keyword, nine federal/identity sources. USAspending, SAM, GLEIF, OpenCorporates, OpenSanctions, USPTO, Federal Register, NewsAPI." />
+  <meta property="og:url"         content="https://kthq.org/market-research-tool.html" />
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:site"        content="@ContractingHQ" />
+  <meta name="twitter:title"       content="Market Research Tool" />
+  <meta name="twitter:description" content="One keyword, nine federal/identity sources." />
+  <link rel="canonical"            href="https://kthq.org/market-research-tool.html" />
+
+  <!-- docx.js for memo generation -->
+  <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+  <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="customer-education.html">Customer Education</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="links.html">Links</a></li>
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Live Data</span>
+    <h1 class="page-hero-title">Market Research Tool</h1>
+    <p class="page-hero-sub">One keyword, nine federal and identity sources, all at once. Type a vendor, product, or capability term and get spend history, active opportunities, entity registrations, sanctions, patents, regulations, and news in parallel. Generate a market research memo when you are done.</p>
+  </div>
+</div>
+
+<div class="mr-bg">
+  <div class="mr-wrap">
+
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="tools.html">Tools</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">Market Research Tool</span>
+    </div>
+
+    <div id="configWarn" class="config-warn" style="display:none;">
+      <strong>Proxy not configured.</strong> Set <code>PROXY_BASE</code> at the top of the script block in this page to your Cloudflare Worker URL. See <code>market-research-worker/README.md</code> for setup.
+    </div>
+
+    <div class="search-panel">
+      <div class="search-row">
+        <input id="keywordInput" type="text" class="search-input"
+               placeholder="Vendor name, product, capability, or term — e.g., Palantir, AN/PRC-163, Hesco barriers"
+               autofocus />
+        <button id="searchBtn" class="search-btn">Search</button>
+        <button id="memoBtn" class="memo-btn" disabled title="Run a search first, then generate the memo">Memo</button>
+      </div>
+
+      <button id="advancedToggle" class="advanced-toggle" type="button">
+        <span class="chev">&#9660;</span> Advanced filters (NAICS, PSC, agency, dollar range, dates)
+      </button>
+
+      <div id="advancedGrid" class="advanced-grid">
+        <div>
+          <label class="field-label" for="naicsInput">NAICS Code</label>
+          <input id="naicsInput" type="text" class="field-input" placeholder="e.g., 541511" />
+        </div>
+        <div>
+          <label class="field-label" for="pscInput">PSC / Class Code</label>
+          <input id="pscInput" type="text" class="field-input" placeholder="e.g., D302" />
+        </div>
+        <div>
+          <label class="field-label" for="agencyInput">Awarding Agency</label>
+          <input id="agencyInput" type="text" class="field-input" placeholder="e.g., Department of Defense" />
+        </div>
+        <div>
+          <label class="field-label" for="minInput">Min Award ($)</label>
+          <input id="minInput" type="number" class="field-input" placeholder="0" />
+        </div>
+        <div>
+          <label class="field-label" for="maxInput">Max Award ($)</label>
+          <input id="maxInput" type="number" class="field-input" placeholder="No limit" />
+        </div>
+        <div>
+          <label class="field-label" for="fromInput">From</label>
+          <input id="fromInput" type="date" class="field-input" />
+        </div>
+        <div>
+          <label class="field-label" for="toInput">To</label>
+          <input id="toInput" type="date" class="field-input" />
+        </div>
+      </div>
+    </div>
+
+    <div id="resultsContainer">
+      <div class="empty-state">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <circle cx="11" cy="11" r="7"/>
+          <line x1="21" y1="21" x2="16.5" y2="16.5"/>
+        </svg>
+        <strong>Type a term and hit Search.</strong>
+        Pull as much or as little as you have. The tool fans out in parallel.
+      </div>
+    </div>
+
+    <div class="build-note">
+      <p><strong>How this works.</strong> The page calls a small Cloudflare Worker proxy that holds the API keys for SAM.gov, NewsAPI, and OpenCorporates. The proxy hits all nine sources in parallel and normalizes them to one shape. Results stream back as each source responds. The memo button assembles whatever loaded into a Word doc you can drop in the contract file. Source code on <a href="https://github.com/nhazelett/ContractingHQ" target="_blank" rel="noopener">GitHub</a>.</p>
+    </div>
+
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="customer-education.html">Customer Education</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script src="player.js"></script>
+
+<script>
+// ============================================================
+// Market Research Tool — front-end orchestration
+// ============================================================
+
+// CONFIGURE: replace with your deployed Cloudflare Worker URL.
+// e.g., 'https://kthq-market-research.YOURSUB.workers.dev'
+// Once you bind a custom domain it becomes 'https://mr.kthq.org'.
+const PROXY_BASE = 'https://kthq-market-research.nickhazelett.workers.dev';
+
+// Source registry. Each entry maps to one Worker route + UI section.
+// `paramKeys` says which form fields get forwarded.
+const SOURCES = [
+  { key: 'sam-entity', route: '/entity/sam', title: 'Vendor Identity (SAM.gov)', sourceLabel: 'SAM.gov', paramKeys: ['q'], render: renderSamEntity },
+  { key: 'gleif', route: '/entity/lei', title: 'Legal Entity (GLEIF)', sourceLabel: 'GLEIF', paramKeys: ['q'], render: renderGleif },
+  { key: 'opencorporates', route: '/entity/oc', title: 'Corporate Registry', sourceLabel: 'OpenCorporates', paramKeys: ['q'], render: renderOpenCorporates },
+  { key: 'opensanctions', route: '/entity/sanctions', title: 'Sanctions / Watchlist Check', sourceLabel: 'OpenSanctions', paramKeys: ['q'], render: renderSanctions, flagWhenResults: true },
+  { key: 'usaspending', route: '/search/spend', title: 'Federal Spend History', sourceLabel: 'USAspending.gov', paramKeys: ['q', 'naics', 'psc', 'agency', 'from', 'to', 'min', 'max'], render: renderSpend, fullWidth: true },
+  { key: 'sam-opps', route: '/search/opps', title: 'Active Opportunities', sourceLabel: 'SAM.gov', paramKeys: ['q', 'naics', 'psc', 'agency', 'from', 'to'], render: renderOpps, fullWidth: true },
+  { key: 'federal-register', route: '/search/regulations', title: 'Regulations & Notices', sourceLabel: 'Federal Register', paramKeys: ['q'], render: renderRegulations },
+  { key: 'uspto', route: '/search/patents', title: 'Patents', sourceLabel: 'USPTO', paramKeys: ['q'], render: renderPatents },
+  { key: 'newsapi', route: '/search/news', title: 'Recent News', sourceLabel: 'NewsAPI', paramKeys: ['q'], render: renderNews, fullWidth: true },
+];
+
+const state = { query: null, filters: null, bySource: {}, searchedAt: null };
+
+const els = {
+  configWarn: document.getElementById('configWarn'),
+  keyword: document.getElementById('keywordInput'),
+  searchBtn: document.getElementById('searchBtn'),
+  memoBtn: document.getElementById('memoBtn'),
+  advancedToggle: document.getElementById('advancedToggle'),
+  advancedGrid: document.getElementById('advancedGrid'),
+  results: document.getElementById('resultsContainer'),
+  naics: document.getElementById('naicsInput'),
+  psc: document.getElementById('pscInput'),
+  agency: document.getElementById('agencyInput'),
+  min: document.getElementById('minInput'),
+  max: document.getElementById('maxInput'),
+  from: document.getElementById('fromInput'),
+  to: document.getElementById('toInput'),
+};
+
+if (!PROXY_BASE) els.configWarn.style.display = 'block';
+
+els.searchBtn.addEventListener('click', runSearch);
+els.keyword.addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
+els.advancedToggle.addEventListener('click', () => {
+  const open = els.advancedGrid.classList.toggle('open');
+  els.advancedToggle.classList.toggle('open', open);
+});
+els.memoBtn.addEventListener('click', generateMemo);
+
+async function runSearch() {
+  const q = els.keyword.value.trim();
+  if (!q) { els.keyword.focus(); return; }
+  if (!PROXY_BASE) {
+    alert('Proxy not configured. Set PROXY_BASE in market-research-tool.html.');
+    return;
+  }
+  const filters = collectFilters();
+  state.query = q;
+  state.filters = filters;
+  state.bySource = {};
+  state.searchedAt = new Date();
+
+  els.searchBtn.disabled = true;
+  els.searchBtn.textContent = 'Searching…';
+  els.memoBtn.disabled = true;
+
+  renderSectionSkeletons();
+
+  const promises = SOURCES.map(s => fetchSource(s, q, filters));
+  await Promise.allSettled(promises);
+
+  els.searchBtn.disabled = false;
+  els.searchBtn.textContent = 'Search';
+  const anyResults = Object.values(state.bySource).some(r => r.ok && r.results && r.results.length);
+  els.memoBtn.disabled = !anyResults;
+}
+
+function collectFilters() {
+  return {
+    naics: els.naics.value.trim(),
+    psc: els.psc.value.trim(),
+    agency: els.agency.value.trim(),
+    min: els.min.value.trim(),
+    max: els.max.value.trim(),
+    from: els.from.value,
+    to: els.to.value,
+  };
+}
+
+function buildUrl(source, q, filters) {
+  const url = new URL(PROXY_BASE.replace(/\/$/, '') + source.route);
+  for (const key of source.paramKeys) {
+    let val;
+    if (key === 'q') val = q;
+    else val = filters[key];
+    if (val) url.searchParams.set(key, val);
+  }
+  return url.toString();
+}
+
+async function fetchSource(source, q, filters) {
+  const url = buildUrl(source, q, filters);
+  try {
+    const r = await fetch(url);
+    const data = await r.json();
+    state.bySource[source.key] = data;
+    renderSection(source, data);
+  } catch (e) {
+    state.bySource[source.key] = { ok: false, source: source.key, error: e.message };
+    renderSection(source, state.bySource[source.key]);
+  }
+}
+
+// ===== Rendering =====
+function renderSectionSkeletons() {
+  els.results.innerHTML = '<div class="results-grid" id="resultsGrid"></div>';
+  const grid = document.getElementById('resultsGrid');
+  for (const source of SOURCES) {
+    const sec = document.createElement('div');
+    sec.className = 'result-section' + (source.fullWidth ? ' full-width' : '');
+    sec.id = `sec-${source.key}`;
+    sec.innerHTML = `
+      <div class="section-head">
+        <h3 class="section-title">${escapeHtml(source.title)}</h3>
+        <span class="section-source">${escapeHtml(source.sourceLabel)}</span>
+      </div>
+      <div class="section-status"><span class="spinner"></span>Searching…</div>
+    `;
+    grid.appendChild(sec);
+  }
+}
+
+function renderSection(source, data) {
+  const sec = document.getElementById(`sec-${source.key}`);
+  if (!sec) return;
+  const head = `
+    <div class="section-head">
+      <h3 class="section-title">${escapeHtml(source.title)}</h3>
+      <span class="section-source">${escapeHtml(source.sourceLabel)}${data.ok && data.count != null ? `<span class="section-count"> · ${data.count}</span>` : ''}</span>
+    </div>
+  `;
+  if (!data.ok) {
+    const cls = data.disabled ? 'muted' : 'error';
+    const label = data.disabled
+      ? `Not configured · ${data.error || 'API key missing'}`
+      : (data.error || 'Source unavailable');
+    sec.innerHTML = head + `<div class="section-status ${cls}">${escapeHtml(label)}</div>`;
+    return;
+  }
+  if (!data.results || data.results.length === 0) {
+    sec.innerHTML = head + `<div class="section-status muted">No matches.</div>`;
+    return;
+  }
+  if (source.flagWhenResults) sec.classList.add('has-flag');
+  sec.innerHTML = head + source.render(data.results, data.meta || {});
+}
+
+function renderSamEntity(rows) {
+  return ulOf(rows.slice(0, 5).map(r => `
+    <li class="result-item">
+      <span class="ri-title">${linkOrText(r.url, r.name || '(no legal name)')}</span>
+      <div class="ri-meta">
+        UEI <strong>${escapeHtml(r.uei || '—')}</strong> ·
+        CAGE <strong>${escapeHtml(r.cage || '—')}</strong> ·
+        ${escapeHtml(r.registrationStatus || 'status unknown')}
+      </div>
+      ${r.address ? `<div class="ri-snippet">${escapeHtml(r.address)}</div>` : ''}
+    </li>`));
+}
+function renderGleif(rows) {
+  return ulOf(rows.slice(0, 6).map(r => `
+    <li class="result-item">
+      <span class="ri-title">${linkOrText(r.url, r.name || '(unnamed entity)')}</span>
+      <div class="ri-meta">
+        LEI <strong>${escapeHtml(r.lei || '—')}</strong> ·
+        ${escapeHtml(r.jurisdiction || '—')} · ${escapeHtml(r.status || '—')}
+      </div>
+      ${r.address ? `<div class="ri-snippet">${escapeHtml(r.address)}</div>` : ''}
+    </li>`));
+}
+function renderOpenCorporates(rows) {
+  return ulOf(rows.slice(0, 8).map(r => `
+    <li class="result-item">
+      <span class="ri-title">${linkOrText(r.url, r.name || '(unnamed)')}</span>
+      <div class="ri-meta">
+        ${escapeHtml(r.jurisdiction || '—')} · #${escapeHtml(r.number || '—')} · ${escapeHtml(r.status || '—')}
+        ${r.incorporated ? ` · inc. ${escapeHtml(r.incorporated)}` : ''}
+      </div>
+    </li>`));
+}
+function renderSanctions(rows) {
+  return ulOf(rows.slice(0, 8).map(r => `
+    <li class="result-item">
+      <span class="ri-title">${linkOrText(r.url, r.name || '(unnamed)')}</span>
+      <div class="ri-meta">
+        ${escapeHtml((r.datasets || []).slice(0, 3).join(', '))} ·
+        ${escapeHtml((r.topics || []).slice(0, 3).join(', '))}
+        ${r.score ? ` · score ${(r.score).toFixed(2)}` : ''}
+      </div>
+    </li>`));
+}
+function renderSpend(rows, meta) {
+  const top = rows.slice(0, 10);
+  const total = top.reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
+  const totalLine = `<div class="ri-meta" style="padding:.5rem 0 1rem;">
+    Top ${top.length} awards shown.
+    Combined value <span class="ri-amount">${fmtCurrency(total)}</span>
+    ${meta.from ? `from ${escapeHtml(meta.from)} to ${escapeHtml(meta.to)}` : ''}.
+  </div>`;
+  return totalLine + ulOf(top.map(r => `
+    <li class="result-item">
+      <span class="ri-title">${linkOrText(r.url, r.title || '(unknown recipient)')}</span>
+      <div class="ri-meta">
+        <span class="ri-amount">${fmtCurrency(r.amount)}</span> ·
+        ${escapeHtml(r.agency || '—')}
+        ${r.naics ? ` · NAICS ${escapeHtml(r.naics)}` : ''}
+        ${r.psc ? ` · PSC ${escapeHtml(r.psc)}` : ''}
+        ${r.start ? ` · ${escapeHtml(r.start)} → ${escapeHtml(r.end || '—')}` : ''}
+      </div>
+      ${r.description ? `<div class="ri-snippet">${escapeHtml(truncate(r.description, 220))}</div>` : ''}
+    </li>`));
+}
+function renderOpps(rows) {
+  return ulOf(rows.slice(0, 12).map(r => `
+    <li class="result-item">
+      <span class="ri-title">${linkOrText(r.url, r.title || '(untitled notice)')}</span>
+      <div class="ri-meta">
+        ${escapeHtml(r.type || '—')} ·
+        Sol# <strong>${escapeHtml(r.solicitationNumber || '—')}</strong> ·
+        ${escapeHtml([r.department, r.office].filter(Boolean).join(' / ') || '—')}
+        ${r.naics ? ` · NAICS ${escapeHtml(r.naics)}` : ''}
+        ${r.setAside ? ` · ${escapeHtml(r.setAside)}` : ''}
+      </div>
+      <div class="ri-meta">
+        Posted ${escapeHtml(r.postedDate || '—')}
+        ${r.responseDeadline ? ` · response by ${escapeHtml(r.responseDeadline)}` : ''}
+      </div>
+    </li>`));
+}
+function renderRegulations(rows) {
+  return ulOf(rows.slice(0, 6).map(r => `
+    <li class="result-item">
+      <span class="ri-title">${linkOrText(r.url, r.title || '(untitled)')}</span>
+      <div class="ri-meta">
+        ${escapeHtml(r.type || '—')} · ${escapeHtml(r.agency || '—')}
+        ${r.publishedDate ? ` · ${escapeHtml(r.publishedDate)}` : ''}
+      </div>
+      ${r.abstract ? `<div class="ri-snippet">${escapeHtml(truncate(r.abstract, 180))}</div>` : ''}
+    </li>`));
+}
+function renderPatents(rows) {
+  return ulOf(rows.slice(0, 6).map(r => `
+    <li class="result-item">
+      <span class="ri-title">${linkOrText(r.url, r.title || '(untitled)')}</span>
+      <div class="ri-meta">
+        ${r.id ? `Patent <strong>${escapeHtml(r.id)}</strong>` : ''}
+        ${r.date ? ` · ${escapeHtml(r.date)}` : ''}
+        ${r.assignees && r.assignees.length ? ` · ${escapeHtml(r.assignees.join(', '))}` : ''}
+      </div>
+      ${r.abstract ? `<div class="ri-snippet">${escapeHtml(truncate(r.abstract, 180))}</div>` : ''}
+    </li>`));
+}
+function renderNews(rows) {
+  return ulOf(rows.slice(0, 8).map(r => `
+    <li class="result-item">
+      <span class="ri-title">${linkOrText(r.url, r.title || '(untitled)')}</span>
+      <div class="ri-meta">
+        ${escapeHtml(r.source || '—')}
+        ${r.author ? ` · ${escapeHtml(r.author)}` : ''}
+        ${r.publishedAt ? ` · ${escapeHtml(r.publishedAt.slice(0, 10))}` : ''}
+      </div>
+      ${r.description ? `<div class="ri-snippet">${escapeHtml(truncate(r.description, 200))}</div>` : ''}
+    </li>`));
+}
+
+// ===== Memo (DOCX) =====
+async function generateMemo() {
+  if (!state.query || !window.docx) return;
+  const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } = window.docx;
+
+  const heading = (text, level = HeadingLevel.HEADING_1) =>
+    new Paragraph({ heading: level, children: [new TextRun({ text, bold: true })] });
+  const body = (text) => new Paragraph({ children: [new TextRun({ text })] });
+  const blank = () => new Paragraph({ children: [new TextRun({ text: '' })] });
+
+  const children = [];
+  children.push(new Paragraph({
+    alignment: AlignmentType.CENTER,
+    children: [new TextRun({ text: 'MARKET RESEARCH MEMORANDUM', bold: true, size: 28 })],
+  }));
+  children.push(blank());
+  children.push(body(`Subject: Market research — ${state.query}`));
+  children.push(body(`Date: ${state.searchedAt.toLocaleDateString()}`));
+  children.push(body(`Prepared using ContractingHQ Market Research Tool (kthq.org)`));
+  children.push(blank());
+
+  const filterLines = filterSummaryLines(state.filters);
+  let sectionNum = 1;
+  if (filterLines.length) {
+    children.push(heading(`${sectionNum}. Search Parameters`, HeadingLevel.HEADING_2));
+    children.push(body(`Keyword: ${state.query}`));
+    for (const line of filterLines) children.push(body(line));
+    children.push(blank());
+    sectionNum++;
+  }
+
+  for (const source of SOURCES) {
+    const data = state.bySource[source.key];
+    if (!data || !data.ok || !data.results || !data.results.length) continue;
+    children.push(heading(`${sectionNum}. ${source.title} (${source.sourceLabel})`, HeadingLevel.HEADING_2));
+    for (const item of memoLinesFor(source, data.results)) children.push(body(item));
+    children.push(blank());
+    sectionNum++;
+  }
+
+  children.push(heading(`${sectionNum}. Determination`, HeadingLevel.HEADING_2));
+  children.push(body('[Contracting Officer: summarize what the data shows about availability of sources, price reasonableness reference points, set-aside potential, and any flags from the sanctions/exclusions check.]'));
+  children.push(blank());
+
+  children.push(heading(`${sectionNum + 1}. Sources Consulted`, HeadingLevel.HEADING_2));
+  for (const source of SOURCES) {
+    const data = state.bySource[source.key];
+    if (!data) continue;
+    const status = data.ok
+      ? `${data.count} record${data.count === 1 ? '' : 's'}`
+      : `unavailable (${data.error || 'error'})`;
+    children.push(body(`• ${source.sourceLabel} — ${status}`));
+  }
+
+  const doc = new Document({ sections: [{ children }] });
+  const blob = await Packer.toBlob(doc);
+  const fname = `market-research_${slug(state.query)}_${state.searchedAt.toISOString().slice(0,10)}.docx`;
+  saveAs(blob, fname);
+}
+
+function filterSummaryLines(f) {
+  const out = [];
+  if (f.naics) out.push(`NAICS: ${f.naics}`);
+  if (f.psc) out.push(`PSC: ${f.psc}`);
+  if (f.agency) out.push(`Agency: ${f.agency}`);
+  if (f.from || f.to) out.push(`Date range: ${f.from || '—'} to ${f.to || '—'}`);
+  if (f.min || f.max) out.push(`Award range: ${f.min ? '$' + f.min : '—'} to ${f.max ? '$' + f.max : '—'}`);
+  return out;
+}
+
+function memoLinesFor(source, rows) {
+  const limit = source.fullWidth ? 10 : 5;
+  return rows.slice(0, limit).map(r => {
+    switch (source.key) {
+      case 'sam-entity':
+        return `${r.name || '(unnamed)'} — UEI ${r.uei || '—'}, CAGE ${r.cage || '—'}, ${r.registrationStatus || 'status unknown'}. ${r.address || ''}`;
+      case 'gleif':
+        return `${r.name || '(unnamed)'} — LEI ${r.lei || '—'}, ${r.jurisdiction || '—'}, ${r.status || '—'}.`;
+      case 'opencorporates':
+        return `${r.name || '(unnamed)'} — ${r.jurisdiction || '—'} #${r.number || '—'}, ${r.status || '—'}${r.incorporated ? ', incorporated ' + r.incorporated : ''}.`;
+      case 'opensanctions':
+        return `${r.name || '(unnamed)'} — datasets: ${(r.datasets || []).join(', ')}; topics: ${(r.topics || []).join(', ')}.`;
+      case 'usaspending':
+        return `${r.title || '(unnamed)'} — ${fmtCurrency(r.amount)} from ${r.agency || '—'} (${r.start || '?'} → ${r.end || '?'}). ${truncate(r.description || '', 200)}`;
+      case 'sam-opps':
+        return `${r.title || '(untitled)'} — ${r.type || '—'}, Sol# ${r.solicitationNumber || '—'}, ${r.department || '—'}; posted ${r.postedDate || '—'}${r.responseDeadline ? ', response by ' + r.responseDeadline : ''}.`;
+      case 'federal-register':
+        return `${r.title || '(untitled)'} — ${r.type || '—'}, ${r.agency || '—'}, ${r.publishedDate || ''}. ${truncate(r.abstract || '', 220)}`;
+      case 'uspto':
+        return `${r.title || '(untitled)'} — Patent ${r.id || '—'}, ${r.date || '—'}; assignee(s): ${(r.assignees || []).join(', ')}.`;
+      case 'newsapi':
+        return `${r.title || '(untitled)'} — ${r.source || '—'}, ${r.publishedAt ? r.publishedAt.slice(0, 10) : ''}. ${truncate(r.description || '', 220)}`;
+      default:
+        return JSON.stringify(r);
+    }
+  });
+}
+
+// ===== Helpers =====
+function ulOf(items) { return `<ul class="result-list">${items.join('')}</ul>`; }
+function linkOrText(url, text) {
+  if (!url) return escapeHtml(text);
+  return `<a href="${escapeAttr(url)}" target="_blank" rel="noopener">${escapeHtml(text)}</a>`;
+}
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function escapeAttr(s) { return escapeHtml(s); }
+function truncate(s, n) {
+  if (!s) return '';
+  return s.length > n ? s.slice(0, n - 1).trim() + '…' : s;
+}
+function fmtCurrency(amount) {
+  const n = Number(amount);
+  if (!isFinite(n) || !n) return '$0';
+  if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
+  if (n >= 1e3) return '$' + (n / 1e3).toFixed(1) + 'K';
+  return '$' + n.toLocaleString();
+}
+function slug(s) {
+  return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
+}
+</script>
+
+</body>
+</html>
