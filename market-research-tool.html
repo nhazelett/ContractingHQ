@@ -330,7 +330,7 @@
       </div>
 
       <button id="advancedToggle" class="advanced-toggle" type="button">
-        <span class="chev">&#9660;</span> Advanced filters (NAICS, PSC, agency, dollar range, dates)
+        <span class="chev">&#9660;</span> Advanced filters (NAICS, PSC, agency, dollar range)
       </button>
 
       <div id="advancedGrid" class="advanced-grid">
@@ -354,15 +354,10 @@
           <label class="field-label" for="maxInput">Max Award ($)</label>
           <input id="maxInput" type="number" class="field-input" placeholder="No limit" />
         </div>
-        <div>
-          <label class="field-label" for="fromInput">From</label>
-          <input id="fromInput" type="date" class="field-input" />
-        </div>
-        <div>
-          <label class="field-label" for="toInput">To</label>
-          <input id="toInput" type="date" class="field-input" />
-        </div>
       </div>
+      <p style="margin: .8rem 0 0; font-size: .76rem; color: var(--text-muted);">
+        Spend &amp; opportunity searches default to the last year. SAM.gov caps date ranges at 1 year, so we keep both sources aligned to that window.
+      </p>
     </div>
 
     <div id="resultsContainer">
@@ -425,8 +420,8 @@ const SOURCES = [
   { key: 'gleif', route: '/entity/lei', title: 'Legal Entity (GLEIF)', sourceLabel: 'GLEIF', paramKeys: ['q'], render: renderGleif },
   { key: 'opencorporates', route: '/entity/oc', title: 'Corporate Registry', sourceLabel: 'OpenCorporates', paramKeys: ['q'], render: renderOpenCorporates },
   { key: 'sam-exclusions', route: '/entity/sanctions', title: 'Federal Exclusions / Debarment', sourceLabel: 'SAM.gov', paramKeys: ['q'], render: renderSanctions, flagWhenResults: true, note: 'Public information per FAR 9.404 \u2014 same data as <a href="https:\/\/sam.gov\/exclusions-new\/" target="_blank" rel="noopener" style="color:var(--accent);">sam.gov\/exclusions-new<\/a>.' },
-  { key: 'usaspending', route: '/search/spend', title: 'Federal Spend History', sourceLabel: 'USAspending.gov', paramKeys: ['q', 'naics', 'psc', 'agency', 'from', 'to', 'min', 'max'], render: renderSpend, fullWidth: true },
-  { key: 'sam-opps', route: '/search/opps', title: 'Active Opportunities', sourceLabel: 'SAM.gov', paramKeys: ['q', 'naics', 'psc', 'agency', 'from', 'to'], render: renderOpps, fullWidth: true },
+  { key: 'usaspending', route: '/search/spend', title: 'Federal Spend History', sourceLabel: 'USAspending.gov', paramKeys: ['q', 'naics', 'psc', 'agency', 'min', 'max'], render: renderSpend, fullWidth: true },
+  { key: 'sam-opps', route: '/search/opps', title: 'Active Opportunities', sourceLabel: 'SAM.gov', paramKeys: ['q', 'naics', 'psc', 'agency'], render: renderOpps, fullWidth: true },
   { key: 'federal-register', route: '/search/regulations', title: 'Regulations & Notices', sourceLabel: 'Federal Register', paramKeys: ['q'], render: renderRegulations },
   { key: 'uspto', route: '/search/patents', title: 'Patents', sourceLabel: 'USPTO', paramKeys: ['q'], render: renderPatents },
   { key: 'newsapi', route: '/search/news', title: 'Recent News', sourceLabel: 'NewsAPI', paramKeys: ['q'], render: renderNews, fullWidth: true },
@@ -447,8 +442,6 @@ const els = {
   agency: document.getElementById('agencyInput'),
   min: document.getElementById('minInput'),
   max: document.getElementById('maxInput'),
-  from: document.getElementById('fromInput'),
-  to: document.getElementById('toInput'),
 };
 
 if (!PROXY_BASE) els.configWarn.style.display = 'block';
@@ -496,8 +489,6 @@ function collectFilters() {
     agency: els.agency.value.trim(),
     min: els.min.value.trim(),
     max: els.max.value.trim(),
-    from: els.from.value,
-    to: els.to.value,
   };
 }
 
@@ -758,8 +749,8 @@ function filterSummaryLines(f) {
   if (f.naics) out.push(`NAICS: ${f.naics}`);
   if (f.psc) out.push(`PSC: ${f.psc}`);
   if (f.agency) out.push(`Agency: ${f.agency}`);
-  if (f.from || f.to) out.push(`Date range: ${f.from || '—'} to ${f.to || '—'}`);
   if (f.min || f.max) out.push(`Award range: ${f.min ? '$' + f.min : '—'} to ${f.max ? '$' + f.max : '—'}`);
+  out.push('Date range: prior 12 months');
   return out;
 }
 
