@@ -2088,6 +2088,88 @@ const STEPS = {
       ]
     },
     save: (v) => { req.servicePOP = v; },
+    next: () => 'svc_hours'
+  },
+  svc_hours: {
+    speak: [
+      { text: "A few more quick ones, then I'll hand you off." },
+      { text: "What hours does the contractor need to cover?" }
+    ],
+    input: {
+      type: 'text', label: 'Hours of operation / coverage',
+      placeholder: "e.g. 24/7/365, or Mon-Fri 0700-1700, or during exercises only",
+      why: [
+        "Coverage drives the staffing model and the price more than almost anything else on a service contract.",
+        "24/7 means three shifts plus holiday coverage. Mon-Fri 0700-1700 means one. Big difference in proposed price.",
+        "Pre-award, the CO needs to know what 'the work' actually looks like in time."
+      ]
+    },
+    save: (v) => { req.svcHours = v; },
+    next: () => 'svc_surge'
+  },
+  svc_surge: {
+    speak: [{ text: "Any surge requirement? Like, 'must scale to 150% within 4 hours'? If not, type 'none'." }],
+    input: {
+      type: 'text', label: 'Surge / scaling requirement',
+      placeholder: "e.g. surge to 150% within 4 hours of notification, or 'none'",
+      why: [
+        "Surge requirements add real cost. The contractor has to maintain bench strength, on-call capacity, or recall procedures.",
+        "If you don't actually need surge, say 'none' and save the customer money.",
+        "If you do, be specific: how much, how fast, and triggered by whom."
+      ]
+    },
+    save: (v) => { req.svcSurge = v; },
+    next: () => 'svc_personnel'
+  },
+  svc_personnel: {
+    speak: [{ text: "Any key personnel positions you need named, with minimum experience or certifications?" }],
+    input: {
+      type: 'textarea', label: 'Key personnel & minimum qualifications',
+      placeholder: "e.g. Project Manager with 5 yrs food service experience; Site Supervisor as primary COR interface; all food handlers must hold current certs. Or 'no key personnel' if the contractor proposes the staffing.",
+      why: [
+        "Key personnel are positions where the CO needs the right of refusal on individual hires.",
+        "Naming too many key personnel restricts the contractor's flexibility and drives price up.",
+        "Naming none gives the contractor full latitude. Pick the few positions where you genuinely need that control."
+      ]
+    },
+    save: (v) => { req.svcPersonnel = v; },
+    next: () => 'svc_clearance'
+  },
+  svc_clearance: {
+    speak: [{ text: "Clearance level needed? Most service work doesn't need one." }],
+    input: {
+      type: 'choice', label: 'Clearance requirement',
+      options: [
+        { label: 'No clearance required',                              value: 'no' },
+        { label: 'Favorable background investigation only',           value: 'favorably' },
+        { label: 'SECRET clearance required (all personnel)',          value: 'secret' },
+        { label: 'TOP SECRET required (some or all personnel)',        value: 'ts' }
+      ],
+      why: [
+        "Clearance requirements limit the pool of contractors who can bid and the pool of personnel they can offer.",
+        "Asking for SECRET when 'favorable background' would do is one of the most common ways to inflate price and shrink competition.",
+        "Be honest about what the work actually requires."
+      ]
+    },
+    save: (v) => { req.svcClearance = v; },
+    next: () => 'svc_security'
+  },
+  svc_security: {
+    speak: [{ text: "Last one. Sensitivity profile of the work overall? This sets defaults for base access, AT/FP, CUI handling, and OPSEC in the PWS builder." }],
+    input: {
+      type: 'choice', label: 'Sensitivity profile',
+      options: [
+        { label: 'Routine — standard base access, no CUI, standard OPSEC',                value: 'routine' },
+        { label: 'Sensitive — CAC required, CUI handling, OPSEC plan',                    value: 'sensitive' },
+        { label: 'Classified or high-threat — enhanced AT/FP, classified handling',       value: 'classified' }
+      ],
+      why: [
+        "These four PWS fields (base access, AT/FP, CUI, OPSEC) are usually moved together.",
+        "Picking a profile here sets sensible defaults in the PWS builder. You can adjust each one individually once you're there.",
+        "Most service work is 'Routine.' Choose 'Sensitive' if the contractor handles CUI or sensitive operational data. 'Classified' is rare and means you've already coordinated with security."
+      ]
+    },
+    save: (v) => { req.svcSecurityProfile = v; },
     next: () => 'svc_handoff'
   },
   svc_handoff: {

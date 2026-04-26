@@ -303,6 +303,61 @@
     border-left: 4px solid;
   }
   .alert-info { background: #e8f0fe; border-color: var(--af-blue); color: var(--af-blue); }
+
+  /* Ollie handoff banner + hydrated-field indicator */
+  .ollie-handoff-banner {
+    display: none;
+    background: rgba(74, 158, 255, 0.08);
+    border: 1px solid rgba(74, 158, 255, 0.45);
+    border-left: 4px solid var(--af-blue);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 0 0 18px;
+    color: #1a3a6f;
+  }
+  .ollie-handoff-banner.visible { display: block; }
+  .ollie-handoff-banner h4 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--af-blue);
+  }
+  .ollie-handoff-banner p {
+    margin: 0 0 8px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .ollie-handoff-banner .ollie-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .ollie-handoff-banner button {
+    background: var(--af-blue);
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .ollie-handoff-banner button.secondary {
+    background: transparent;
+    color: var(--af-blue);
+    border: 1px solid var(--af-blue);
+  }
+  .ollie-handoff-banner button:hover { opacity: 0.88; }
+
+  /* Visual indicator that a field was pre-filled from Ollie */
+  input.from-ollie, textarea.from-ollie, select.from-ollie {
+    border-left: 3px solid var(--af-blue) !important;
+    background: rgba(74, 158, 255, 0.04);
+  }
+  input.from-ollie:focus, textarea.from-ollie:focus, select.from-ollie:focus {
+    background: #fff;
+  }
   .alert-warn { background: #fff8e6; border-color: var(--af-gold); color: #7a5c00; }
   .alert-good { background: #e6f4ea; border-color: var(--green); color: var(--green); }
 
@@ -679,6 +734,16 @@
   <div class="step-title">Contract Type</div>
   <div class="step-sub">SELECT THE PRIMARY CONTRACT TYPE — THIS DRIVES THE ENTIRE PWS STRUCTURE</div>
 
+  <div id="ollieHandoffBanner" class="ollie-handoff-banner">
+    <h4>Pre-filled from your Ollie session</h4>
+    <p>I copied your answers from the Requirements Builder into the matching fields below — they're highlighted with a blue stripe. <strong>Verify everything before exporting.</strong> Anything Ollie didn't ask you about is still empty for you to fill in.</p>
+    <p style="font-size:11px; color:#5b6f8a; margin-bottom:0;"><span id="ollieHandoffMeta"></span></p>
+    <div class="ollie-actions">
+      <button type="button" onclick="dismissOllieBanner()">Got it</button>
+      <button type="button" class="secondary" onclick="clearOllieData()">Start fresh (clear pre-fills)</button>
+    </div>
+  </div>
+
   <div class="alert alert-info"><strong>Tip:</strong> Every field accepts <code style="background:#fff;padding:1px 5px;border:1px solid var(--border);border-radius:3px;font-family:var(--mono);font-size:11px;">[TBD]</code> as an input. Put a placeholder in anything you don't know yet, keep moving, and come back to it in the review step &mdash; the editor flags every open [TBD] so you won't forget.</div>
 
   <div class="tile-row" id="type-tiles">
@@ -732,21 +797,7 @@
   <div class="step-sub">IDENTIFY THE CONTRACT AND OPERATIONAL CONTEXT</div>
 
   <div class="card-group">
-    <h3>Contract Identification</h3>
-    <div class="form-grid triple">
-      <div class="field">
-        <label>Contract / Solicitation Number<span class="req">*</span></label>
-        <input type="text" id="contract_number" placeholder="FA####-##-X-####">
-      </div>
-      <div class="field">
-        <label>Date of PWS<span class="req">*</span></label>
-        <input type="date" id="pws_date">
-      </div>
-      <div class="field">
-        <label>PWS Version</label>
-        <input type="text" id="pws_version" value="1.0">
-      </div>
-    </div>
+    <h3>Requiring Organization</h3>
     <div class="form-grid">
       <div class="field">
         <label>Requiring Activity / Unit<span class="req">*</span></label>
@@ -924,31 +975,6 @@
       <h3>Line Items / CLINs</h3>
       <div id="clin-list"></div>
       <button class="add-row-btn" onclick="addClinRow()">+ Add CLIN / Item</button>
-    </div>
-    <div class="card-group">
-      <h3>Technical Requirements</h3>
-      <div class="form-grid">
-        <div class="field">
-          <label>Inspection / Acceptance Location</label>
-          <select id="sup_acceptance">
-            <option>Destination — government installation</option>
-            <option>Origin — contractor facility</option>
-            <option>In-transit inspection required</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Packaging Requirements</label>
-          <input type="text" id="sup_packaging" value="Commercial packaging acceptable unless otherwise specified. HAZMAT items shall be packaged per 49 CFR.">
-        </div>
-      </div>
-      <div class="form-grid single">
-        <div class="field">
-          <label>Special Technical Specifications</label>
-          <textarea id="sup_specs">All items shall meet the technical specifications and standards listed below. Items with applicable National Stock Numbers (NSN) shall conform to the requirements of the applicable Federal Supply Class. The contractor shall provide manufacturer data sheets, certificates of conformance, and test reports as required by the COR. Items failing to meet specifications will be rejected and replaced at no cost to the government within [X] calendar days of rejection notification.
-
-[LIST APPLICABLE SPECIFICATIONS, STANDARDS, NSNs, OR PART NUMBERS HERE]</textarea>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -1681,7 +1707,6 @@ function v(id) {
 function buildReviewSummary() {
   const items = [
     ['Contract Type', state.contractTypeLabel || '(not selected)'],
-    ['Contract Number', v('contract_number') || '(not entered)'],
     ['Contract Title', v('contract_title') || '(not entered)'],
     ['Installation / Location', v('installation') || '(not entered)'],
     ['Contracting Office', v('contracting_office') || '(not entered)'],
@@ -1713,15 +1738,15 @@ function ul(items) {
 // ══════════════════════════════════════════════════════════════════
 function buildPWS() {
   const today = new Date();
-  const pwsDate = v('pws_date') ? new Date(v('pws_date')).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : today.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  // Auto-generated; PWSs don't have an authoring date the user enters &mdash;
+  // contract number / version get added at award, not at PWS authoring.
+  const pwsDate = today.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
 
   // Gather all data
   const D = {
     type:         state.contractTypeLabel || 'SERVICES',
     typeLc:       state.contractType || 'services',
-    contractNum:  tbd(v('contract_number'),'[CONTRACT NUMBER]'),
     pwsDate,
-    version:      v('pws_version')||'1.0',
     title:        tbd(v('contract_title'),'[CONTRACT TITLE]'),
     reqActivity:  tbd(v('requiring_activity'),'[REQUIRING ACTIVITY]'),
     contrOffice:  tbd(v('contracting_office'),'[CONTRACTING OFFICE]'),
@@ -1941,8 +1966,6 @@ function buildPWS() {
   <div class="pws-doc-title">${D.title}</div>
   <div class="pws-doc-sub">${D.installation}</div>
   <div class="pws-meta">
-    Contract / Solicitation No.: ${D.contractNum} &nbsp;|&nbsp;
-    Version: ${D.version} &nbsp;|&nbsp;
     Date: ${D.pwsDate}<br>
     Contracting Office: ${D.contrOffice} &nbsp;|&nbsp;
     Requiring Activity: ${D.reqActivity}
@@ -2086,7 +2109,7 @@ function buildPWS() {
   <p style="font-size:12px; color:#444; font-style:italic; font-family:'Courier New',monospace">
     END OF PERFORMANCE WORK STATEMENT<br>
     ${D.title}<br>
-    ${D.contractNum} | Version ${D.version} | ${pwsDate}<br>
+    ${pwsDate}<br>
     Generated by PWS Builder — KTHQ.org
   </p>
 </div>`;
@@ -2094,7 +2117,7 @@ function buildPWS() {
   // Display
   const docEl = document.getElementById('pws-document');
   docEl.innerHTML = html;
-  document.getElementById('pws-doc-label').textContent = 'PWS — ' + D.contractNum;
+  document.getElementById('pws-doc-label').textContent = 'PWS — ' + D.title;
   document.getElementById('pws-output-wrap').style.display = 'block';
 
   // Wire live stats
@@ -2330,16 +2353,10 @@ function restartBuilder() {
 
 // ── INIT ──────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Set today's date as default for pws_date
-  document.getElementById('pws_date').valueAsDate = new Date();
-
   // Mark all pre-filled fields
   document.querySelectorAll('input[value], textarea').forEach(el => {
     const val = el.tagName === 'TEXTAREA' ? el.value : el.getAttribute('value');
-    if (val && val.trim() && 
-        !['1.0','1'].includes(val.trim()) &&
-        el.id !== 'pws_version' &&
-        el.type !== 'date') {
+    if (val && val.trim() && el.type !== 'date') {
       el.classList.add('prefilled');
     }
   });
@@ -2358,7 +2375,119 @@ document.addEventListener('DOMContentLoaded', () => {
   // Add initial rows for common lists
   addDeliverableRow();
   addClinRow();
+
+  // Ollie handoff: hydrate from kthq_req_v1 if a service-path session is in localStorage
+  hydrateFromOllie();
 });
+
+// ══════════════════════════════════════════════════════════════════
+// OLLIE HANDOFF — read kthq_req_v1 from localStorage and pre-fill
+// matching PWS Builder fields when the user came from the
+// requirements-builder service path.
+// ══════════════════════════════════════════════════════════════════
+
+// Maps a single Ollie security profile pick → multiple PWS Builder dropdowns.
+const OLLIE_SECURITY_PROFILES = {
+  routine:    { base_access: 'badge', atfp: 'standard', cui_yn: 'no',          opsec: 'standard' },
+  sensitive:  { base_access: 'cac',   atfp: 'standard', cui_yn: 'cui',         opsec: 'plan'     },
+  classified: { base_access: 'cac',   atfp: 'enhanced', cui_yn: 'classified',  opsec: 'enhanced' },
+};
+
+function hydrateFromOllie() {
+  let req;
+  try {
+    const raw = localStorage.getItem('kthq_req_v1');
+    if (!raw) return;                          // No Ollie session — skip silently.
+    req = JSON.parse(raw);
+  } catch (e) {
+    return;                                    // Corrupted entry — skip silently.
+  }
+
+  // Only hydrate for the service path. Product path doesn't end here.
+  if (!req || req.kind !== 'service') return;
+
+  // Pick the services contract type for the user (clicks the tile so the
+  // Services-specific section reveals).
+  const servicesTile = document.querySelector('.tile[onclick*="services"]');
+  if (servicesTile) servicesTile.click();
+
+  // Direct text/textarea field map: Ollie value → PWS Builder field ID.
+  const textMap = {
+    contract_title: req.item,
+    installation:   req.deliveryLocation,
+    perf_location:  req.deliveryLocation,
+    svc_scope:      req.serviceOutcome,
+    svc_hours:      req.svcHours,
+    svc_surge:      req.svcSurge,
+    svc_personnel:  req.svcPersonnel,
+    min_quals:      req.svcPersonnel,        // dual-fill — use the same answer
+    ra_poc:         req.pkg_poc_name,
+  };
+
+  let filledCount = 0;
+  Object.entries(textMap).forEach(([id, val]) => {
+    if (!val || !String(val).trim()) return;
+    const el = document.getElementById(id);
+    if (!el) return;
+    // Don't overwrite anything the user has actively edited — only fill if
+    // the field is empty OR still holds its original sample text.
+    const current = (el.value || '').trim();
+    if (current && !el.classList.contains('prefilled')) return;
+    el.value = String(val).trim();
+    el.classList.remove('prefilled');
+    el.classList.add('from-ollie');
+    el.dispatchEvent(new Event('input'));    // Notify any listeners.
+    filledCount++;
+  });
+
+  // Dropdown fills.
+  if (req.svcClearance) {
+    const sel = document.getElementById('clearance_req');
+    if (sel) {
+      sel.value = req.svcClearance;
+      sel.classList.add('from-ollie');
+      filledCount++;
+    }
+  }
+
+  // Security profile → fan out to 4 PWS dropdowns.
+  if (req.svcSecurityProfile && OLLIE_SECURITY_PROFILES[req.svcSecurityProfile]) {
+    const profile = OLLIE_SECURITY_PROFILES[req.svcSecurityProfile];
+    Object.entries(profile).forEach(([id, val]) => {
+      const sel = document.getElementById(id);
+      if (!sel) return;
+      sel.value = val;
+      sel.classList.add('from-ollie');
+      filledCount++;
+    });
+  }
+
+  if (filledCount === 0) return;             // Nothing matched — don't show banner.
+
+  // Show the banner with timestamp from Ollie's last save.
+  const banner = document.getElementById('ollieHandoffBanner');
+  const meta   = document.getElementById('ollieHandoffMeta');
+  if (banner) banner.classList.add('visible');
+  if (meta && req.updatedAt) {
+    try {
+      const when = new Date(req.updatedAt);
+      meta.textContent = 'Filled from your Ollie session on ' +
+        when.toLocaleDateString() + ' at ' + when.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) +
+        ' — ' + filledCount + ' field' + (filledCount === 1 ? '' : 's') + ' pre-filled.';
+    } catch (e) { /* ignore */ }
+  }
+}
+
+function dismissOllieBanner() {
+  const banner = document.getElementById('ollieHandoffBanner');
+  if (banner) banner.classList.remove('visible');
+}
+
+function clearOllieData() {
+  if (!confirm('Clear all pre-filled data from Ollie and start fresh? You will need to re-enter anything Ollie filled in.')) return;
+  try { localStorage.removeItem('kthq_req_v1'); } catch (e) { /* ignore */ }
+  location.reload();
+}
 </script>
 
 
