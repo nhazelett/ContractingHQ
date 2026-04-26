@@ -205,3 +205,27 @@
   // Initial sync
   syncBottom();
 })();
+
+/* ──────────────────────────────────────────────────────────────────
+ * Buy Me a Coffee click tracking
+ *
+ * Fires a `click_bmc` GA4 event whenever any Buy Me a Coffee button
+ * is clicked anywhere on the site. Uses event delegation on the
+ * `.bmc-btn` class so this works on every page without per-page
+ * wiring. Mark `click_bmc` as a Key Event in GA4 Admin once it has
+ * fired a few times so it shows up in conversion dashboards.
+ * ────────────────────────────────────────────────────────────────── */
+(function () {
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('.bmc-btn');
+    if (!btn) return;
+    if (typeof window.gtag !== 'function') return;
+    try {
+      window.gtag('event', 'click_bmc', {
+        link_url: btn.href || '',
+        link_text: (btn.textContent || '').trim(),
+        page_path: window.location.pathname
+      });
+    } catch (err) { /* never block the click */ }
+  }, true);
+})();
