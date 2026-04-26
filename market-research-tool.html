@@ -199,6 +199,24 @@
     .section-status.warn { color: #fbbf24; }
     .section-status.muted { color: #5b6f8a; font-style: italic; }
 
+    .section-retry {
+      display: inline-block;
+      margin-top: .65rem;
+      background: rgba(248,113,113,0.08);
+      border: 1px solid rgba(248,113,113,0.35);
+      color: #fca5a5;
+      cursor: pointer;
+      font-size: .76rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: .35rem .9rem;
+      border-radius: 6px;
+      transition: background .15s;
+    }
+    .section-retry:hover { background: rgba(248,113,113,0.18); color: #fee2e2; }
+
     .result-section.has-flag { border-color: rgba(248,113,113,0.45); }
     .result-section.has-flag .section-title { color: #fca5a5; }
 
@@ -553,7 +571,27 @@ function renderSection(source, data) {
     const label = data.disabled
       ? `Not configured · ${data.error || 'API key missing'}`
       : (data.error || 'Source unavailable');
-    sec.innerHTML = head + `<div class="section-status ${cls}">${escapeHtml(label)}</div>`;
+    // No retry on `disabled` (API key missing) — that won't change on retry.
+    const retryBtn = data.disabled
+      ? ''
+      : `<div style="text-align:center;"><button class="section-retry" data-key="${escapeAttr(source.key)}">Retry</button></div>`;
+    sec.innerHTML = head + `<div class="section-status ${cls}">${escapeHtml(label)}</div>${retryBtn}`;
+    if (!data.disabled) {
+      const btn = sec.querySelector('.section-retry');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          // Show the spinner state and re-fetch only this source
+          sec.innerHTML = `
+            <div class="section-head">
+              <h3 class="section-title">${escapeHtml(source.title)}</h3>
+              <span class="section-source">${escapeHtml(source.sourceLabel)}</span>
+            </div>
+            <div class="section-status"><span class="spinner"></span>Retrying\u2026</div>
+          `;
+          fetchSource(source, state.query, state.filters);
+        });
+      }
+    }
     return;
   }
   if (!data.results || data.results.length === 0) {
