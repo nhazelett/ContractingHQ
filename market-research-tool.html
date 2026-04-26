@@ -424,7 +424,7 @@ const SOURCES = [
   { key: 'sam-entity', route: '/entity/sam', title: 'Vendor Identity (SAM.gov)', sourceLabel: 'SAM.gov', paramKeys: ['q'], render: renderSamEntity },
   { key: 'gleif', route: '/entity/lei', title: 'Legal Entity (GLEIF)', sourceLabel: 'GLEIF', paramKeys: ['q'], render: renderGleif },
   { key: 'opencorporates', route: '/entity/oc', title: 'Corporate Registry', sourceLabel: 'OpenCorporates', paramKeys: ['q'], render: renderOpenCorporates },
-  { key: 'opensanctions', route: '/entity/sanctions', title: 'Sanctions / Watchlist Check', sourceLabel: 'OpenSanctions', paramKeys: ['q'], render: renderSanctions, flagWhenResults: true },
+  { key: 'sam-exclusions', route: '/entity/sanctions', title: 'Federal Exclusions / Debarment', sourceLabel: 'SAM.gov', paramKeys: ['q'], render: renderSanctions, flagWhenResults: true, note: 'Public information per FAR 9.404 \u2014 same data as <a href="https://sam.gov/exclusions-new/" target="_blank" rel="noopener" style="color:var(--accent);">sam.gov/exclusions-new</a>.' },
   { key: 'usaspending', route: '/search/spend', title: 'Federal Spend History', sourceLabel: 'USAspending.gov', paramKeys: ['q', 'naics', 'psc', 'agency', 'from', 'to', 'min', 'max'], render: renderSpend, fullWidth: true },
   { key: 'sam-opps', route: '/search/opps', title: 'Active Opportunities', sourceLabel: 'SAM.gov', paramKeys: ['q', 'naics', 'psc', 'agency', 'from', 'to'], render: renderOpps, fullWidth: true },
   { key: 'federal-register', route: '/search/regulations', title: 'Regulations & Notices', sourceLabel: 'Federal Register', paramKeys: ['q'], render: renderRegulations },
@@ -547,11 +547,15 @@ function renderSectionSkeletons() {
 function renderSection(source, data) {
   const sec = document.getElementById(`sec-${source.key}`);
   if (!sec) return;
+  const noteHtml = source.note
+    ? `<div class="ri-meta" style="margin:-.4rem 0 .6rem;font-size:.74rem;">${source.note}</div>`
+    : '';
   const head = `
     <div class="section-head">
       <h3 class="section-title">${escapeHtml(source.title)}</h3>
       <span class="section-source">${escapeHtml(source.sourceLabel)}${data.ok && data.count != null ? `<span class="section-count"> · ${data.count}</span>` : ''}</span>
     </div>
+    ${noteHtml}
   `;
   if (!data.ok) {
     const cls = data.disabled ? 'muted' : 'error';
@@ -607,10 +611,12 @@ function renderSanctions(rows) {
     <li class="result-item">
       <span class="ri-title">${linkOrText(r.url, r.name || '(unnamed)')}</span>
       <div class="ri-meta">
-        ${escapeHtml((r.datasets || []).slice(0, 3).join(', '))} ·
-        ${escapeHtml((r.topics || []).slice(0, 3).join(', '))}
-        ${r.score ? ` · score ${(r.score).toFixed(2)}` : ''}
+        ${escapeHtml(r.exclusionType || r.classificationType || 'Excluded')}
+        ${r.excludingAgency ? ` · ${escapeHtml(r.excludingAgency)}` : ''}
+        ${r.activationDate ? ` · active ${escapeHtml(r.activationDate)}` : ''}
+        ${r.terminationDate ? ` → ${escapeHtml(r.terminationDate)}` : ''}
       </div>
+      ${r.address ? `<div class="ri-snippet">${escapeHtml(r.address)}</div>` : ''}
     </li>`));
 }
 function renderSpend(rows, meta) {
@@ -767,8 +773,8 @@ function memoLinesFor(source, rows) {
         return `${r.name || '(unnamed)'} — LEI ${r.lei || '—'}, ${r.jurisdiction || '—'}, ${r.status || '—'}.`;
       case 'opencorporates':
         return `${r.name || '(unnamed)'} — ${r.jurisdiction || '—'} #${r.number || '—'}, ${r.status || '—'}${r.incorporated ? ', incorporated ' + r.incorporated : ''}.`;
-      case 'opensanctions':
-        return `${r.name || '(unnamed)'} — datasets: ${(r.datasets || []).join(', ')}; topics: ${(r.topics || []).join(', ')}.`;
+      case 'sam-exclusions':
+        return `${r.name || '(unnamed)'} — ${r.exclusionType || r.classificationType || 'excluded'}; excluded by ${r.excludingAgency || '—'}; active ${r.activationDate || '—'}${r.terminationDate ? ' to ' + r.terminationDate : ''}. ${r.address || ''}`;
       case 'usaspending':
         return `${r.title || '(unnamed)'} — ${fmtCurrency(r.amount)} from ${r.agency || '—'} (${r.start || '?'} → ${r.end || '?'}). ${truncate(r.description || '', 200)}`;
       case 'sam-opps':
@@ -811,9 +817,4 @@ function fmtCurrency(amount) {
   return '$' + n.toLocaleString();
 }
 function slug(s) {
-  return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
-}
-</script>
-
-</body>
-</html>
+  return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|
