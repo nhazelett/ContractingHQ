@@ -1063,10 +1063,29 @@ const GALAXIES = [
 
 // Galaxies appear in the sky shortly after the welcome arrives. They use the
 // same arrival animation as stars so they feel like part of the constellation.
-const galaxies = GALAXIES.map(g => ({
+const GALAXY_VISUAL_STYLES = [
+  "grand-spiral",
+  "barred-spiral",
+  "edge-on",
+  "ring",
+  "elliptical",
+  "emission-nebula",
+  "horsehead-nebula",
+  "starburst",
+  "blue-cluster",
+  "lenticular",
+  "irregular",
+  "pinwheel",
+  "twin-core",
+  "polar-ring",
+  "comet-nebula",
+];
+
+const galaxies = GALAXIES.map((g, index) => ({
   ...g,
   _revealAt: SESSION_START + VEIL_MS + 1800,
   _rotSeed: Math.random() * Math.PI * 2,
+  _visualStyle: GALAXY_VISUAL_STYLES[index % GALAXY_VISUAL_STYLES.length],
 }));
 
 // ---------- view state --------------------------------------------------
@@ -1152,7 +1171,13 @@ window.addEventListener("resize", resize);
 // ---------- sky background ----------------------------------------------
 // Pure black. The earned stars themselves will become the night sky.
 function drawNebula() {
-  xNeb.fillStyle = "#000000";
+  const cx = W * 0.52;
+  const cy = H * 0.48;
+  const g = xNeb.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * 0.72);
+  g.addColorStop(0, "rgba(8, 12, 30, 1)");
+  g.addColorStop(0.46, "rgba(2, 4, 14, 1)");
+  g.addColorStop(1, "rgba(0, 0, 4, 1)");
+  xNeb.fillStyle = g;
   xNeb.fillRect(0, 0, W, H);
 }
 
@@ -1160,7 +1185,22 @@ function drawNebula() {
 // The user's earned constellation IS the night sky. No random parallax
 // stars in the background — the sky stays pure black until the first
 // earned star arrives.
-function buildBackgroundStars() { /* intentionally empty */ }
+const flightStars = [];
+
+function buildBackgroundStars() {
+  flightStars.length = 0;
+  const count = Math.floor(Math.min(620, Math.max(260, (W * H) / 4200)));
+  for (let i = 0; i < count; i++) {
+    flightStars.push({
+      x: Math.random() * 2 - 1,
+      y: Math.random() * 2 - 1,
+      z: Math.random(),
+      speed: 0.00012 + Math.random() * 0.00018,
+      size: 0.45 + Math.random() * 1.3,
+      tint: Math.random(),
+    });
+  }
+}
 
 // ---------- earned stars (the meaningful ones) --------------------------
 // state.stars looks like: [{ id, x: 0..1, y: 0..1, born }]
@@ -1218,8 +1258,150 @@ window.addEventListener("mousemove", e => {
   mouse.my = (e.clientY / H - 0.5) * 2;
 });
 
-function drawBackgroundStars() {
+function hashUnit(value) {
+  const str = String(value || "");
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return ((h >>> 0) % 10000) / 10000;
+}
+
+function flightCenter() {
+  return {
+    x: W / 2 - mouse.mx * 28,
+    y: H / 2 - mouse.my * 20,
+  };
+}
+
+function flightDepth(seed, speed) {
+  let z = seed - (t * speed);
+  z = z - Math.floor(z);
+  return z < 0 ? z + 1 : z;
+}
+
+function projectFlightPoint(nx, ny, seed, cs, speed) {
+  const center = flightCenter();
+  const z = flightDepth(seed, speed);
+  const near = 1 - z;
+  const perspective = 0.58 + near * 1.48;
+  const edgeFade = near > 0.9 ? Math.max(0, 1 - (near - 0.9) / 0.1) : 1;
+  const farFade = z > 0.94 ? Math.max(0, 1 - (z - 0.94) / 0.06) : 1;
+
+  return {
+    x: center.x + (nx - 0.5) * W * cs * perspective,
+    y: center.y + (ny - 0.5) * H * cs * perspective,
+    centerX: center.x,
+    centerY: center.y,
+    scale: perspective,
+    alpha: Math.max(0.12, edgeFade * farFade),
+  };
+}
+
+function drawMotionTrail(ctx, x, y, cx, cy, length, alpha, color) {
+  const dx = x - cx;
+  const dy = y - cy;
+  const d = Math.max(1, Math.sqrt(dx * dx + dy * dy));
+  const ux = dx / d;
+  const uy = dy / d;
+  const tx = x - ux * length;
+  const ty = y - uy * length;
+  const grad = ctx.createLinearGradient(tx, ty, x, y);
+  grad.addColorStop(0, "rgba(255,255,255,0)");
+  grad.addColorStop(1, color + alpha + ")");
+  ctx.strokeStyle = grad;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(tx, ty);
+  ctx.lineTo(x, y);
+  ctx.stroke();
+}
+
+const GALAXY_FLYBY_MS = 84000;
+const GALAXY_VISIBLE_PORTION = 0.34;
+
+function galaxyFlybyProjection(g, index, total, cs) {
+  const phase = index / Math.max(1, total);
+  const progress = ((t / GALAXY_FLYBY_MS + phase) % 1);
+  if (progress > GALAXY_VISIBLE_PORTION) return null;
+
+  const u = progress / GALAXY_VISIBLE_PORTION;
+  const eased = u * u * (3 - 2 * u);
+  const lane = hashUnit("galaxy-lane-" + g.id);
+  const lift = hashUnit("galaxy-lift-" + g.id);
+  const center = flightCenter();
+  const angle = -0.78 + lane * 1.56;
+  const farDriftX = (lane - 0.5) * W * 0.12;
+  const farDriftY = (lift - 0.5) * H * 0.10;
+  const passDistance = Math.max(W, H) * (0.62 + lane * 0.22);
+  const curve = Math.sin(u * Math.PI) * (lift - 0.5) * H * 0.18;
+
+  const x = center.x + farDriftX + Math.cos(angle) * passDistance * eased;
+  const y = center.y + farDriftY + Math.sin(angle) * passDistance * eased + curve;
+  const growth = Math.max(0, (u - 0.16) / 0.84);
+  const scale = 0.035 + Math.pow(growth, 1.85) * 2.42;
+  const burst = Math.max(0, 1 - u / 0.30);
+  const fadeIn = Math.min(1, u / 0.16);
+  const fadeOut = u > 0.78 ? Math.max(0, 1 - (u - 0.78) / 0.22) : 1;
+
+  return {
+    x,
+    y,
+    centerX: center.x,
+    centerY: center.y,
+    scale,
+    burst,
+    alpha: fadeIn * fadeOut,
+    u,
+  };
+}
+
+function drawBackgroundStars(flightAlpha) {
+  flightAlpha = flightAlpha == null ? 1 : Math.max(0, Math.min(1, flightAlpha));
   xBg.clearRect(0, 0, W, H);
+  const center = flightCenter();
+  const wash = xBg.createRadialGradient(center.x, center.y, 0, center.x, center.y, Math.max(W, H) * 0.66);
+  wash.addColorStop(0, "rgba(24, 36, 82, " + (0.10 + 0.14 * flightAlpha) + ")");
+  wash.addColorStop(0.42, "rgba(4, 8, 24, " + (0.08 + 0.04 * flightAlpha) + ")");
+  wash.addColorStop(1, "rgba(0, 0, 0, 0)");
+  xBg.fillStyle = wash;
+  xBg.fillRect(0, 0, W, H);
+
+  // In galaxy view the ship is stopped. Keep a quiet observatory glow, but
+  // remove the forward-motion streaks so the selected galaxy can breathe.
+  if (flightAlpha <= 0.02) {
+    const still = xBg.createRadialGradient(center.x, center.y, 0, center.x, center.y, Math.max(W, H) * 0.46);
+    still.addColorStop(0, "rgba(255, 222, 166, 0.045)");
+    still.addColorStop(0.35, "rgba(92, 116, 190, 0.032)");
+    still.addColorStop(1, "rgba(0, 0, 0, 0)");
+    xBg.fillStyle = still;
+    xBg.fillRect(0, 0, W, H);
+    return;
+  }
+
+  for (const s of flightStars) {
+    const z = flightDepth(s.z, s.speed);
+    const near = 1 - z;
+    const scale = 0.22 + near * 3.2;
+    const x = center.x + s.x * W * 0.44 * scale;
+    const y = center.y + s.y * H * 0.44 * scale;
+    if (x < -80 || x > W + 80 || y < -80 || y > H + 80) continue;
+
+    const fadeIn = z > 0.95 ? (1 - z) / 0.05 : 1;
+    const fadeOut = near > 0.94 ? Math.max(0, 1 - (near - 0.94) / 0.06) : 1;
+    const alpha = Math.max(0, Math.min(1, (0.12 + near * 0.86) * fadeIn * fadeOut * flightAlpha));
+    const cool = s.tint < 0.72 ? "rgba(220,232,255," : (s.tint < 0.9 ? "rgba(170,210,255," : "rgba(245,225,180,");
+    const trail = (18 + near * 150) * (0.35 + 0.65 * flightAlpha);
+
+    xBg.lineWidth = Math.max(0.4, s.size * (0.55 + near * 1.35));
+    drawMotionTrail(xBg, x, y, center.x, center.y, trail, alpha * 0.65, cool);
+
+    xBg.fillStyle = cool + Math.min(1, alpha * 1.1) + ")";
+    xBg.beginPath();
+    xBg.arc(x, y, Math.max(0.5, s.size * (0.55 + near * 1.15)), 0, Math.PI * 2);
+    xBg.fill();
+  }
 }
 
 // hit testing for earned stars
@@ -1239,10 +1421,6 @@ function crowdScale() {
 
 function drawForegroundStars() {
   xFg.clearRect(0, 0, W, H);
-  // gentle camera drift
-  const driftX = Math.sin(t * 0.00005) * 8 - mouse.mx * 10;
-  const driftY = Math.cos(t * 0.00007) * 6 - mouse.my * 10;
-
   const cs = crowdScale();
   const allStars = state.stars.concat(sessionStars);
   for (const s of allStars) {
@@ -1256,9 +1434,11 @@ function drawForegroundStars() {
       : CONTENT.find(c => c.id === s.id);
     if (!c) continue;
 
-    // crowd-aware position: shrink toward center as the sky fills
-    const x = (s.x - 0.5) * W * cs + W / 2 + driftX;
-    const y = (s.y - 0.5) * H * cs + H / 2 + driftY;
+    // crowd-aware position, projected through a slow forward-flight camera.
+    const seed = hashUnit(s.id || s.welcomeText || "first-light-star");
+    const projected = projectFlightPoint(s.x, s.y, seed, cs, 0.000010);
+    const x = projected.x;
+    const y = projected.y;
     const isHover = hovered && hovered.id === s.id;
 
     // ---- unified arrival animation ----
@@ -1283,10 +1463,14 @@ function drawForegroundStars() {
     }
 
     const twinkle = 0.85 + 0.15 * Math.sin(t * 0.0018 + (s.x + s.y) * 12);
-    const baseAlpha = twinkle * introBoost;                      // arriving stars are brighter
+    const baseAlpha = twinkle * introBoost * projected.alpha;    // arriving stars are brighter
     const hoverBoost = isHover ? 1.2 : 1.0;
-    const r = (c.kind === "welcome" ? 2.6 : 2.0) * hoverBoost * introScale * cs;
-    const haloR = 60 * hoverBoost * introScale * cs;
+    const flightScale = Math.min(1.8, projected.scale);
+    const r = (c.kind === "welcome" ? 2.6 : 2.0) * hoverBoost * introScale * cs * flightScale;
+    const haloR = 60 * hoverBoost * introScale * cs * flightScale;
+
+    xFg.lineWidth = Math.max(0.5, 1.2 * cs * flightScale);
+    drawMotionTrail(xFg, x, y, projected.centerX, projected.centerY, 30 + 80 * flightScale, Math.min(0.35, baseAlpha * 0.18), halo);
 
     // outer glow rings
     const ringAlpha = Math.min(1, baseAlpha * (isHover ? 0.55 : 0.32));
@@ -1391,66 +1575,949 @@ function drawShootingStars() {
 }
 
 // ---------- galaxies: rendering ----------------------------------------
-// A small procedural spiral. Bright core, two arms made of small stars,
-// slow rotation. Used both as a tiny element in the sky view and as a
-// large centerpiece in the zoomed-in galaxy view.
-function drawGalaxy(g, cx, cy, scale, opts) {
+function galaxyRand(g, key) {
+  return hashUnit((g.id || g.title || "galaxy") + ":" + key);
+}
+
+// Procedural spiral galaxy: layered bloom, dust lanes, star knots, and
+// deterministic texture so every FAR galaxy keeps its own personality.
+function drawSpiralGalaxy(g, cx, cy, scale, opts) {
   opts = opts || {};
   const alpha = opts.alpha == null ? 1 : opts.alpha;
   const isHover = !!opts.hover;
-  const rotation = (t * 0.00005) + (g._rotSeed || 0);
+  const rotationSpeed = opts.rotationSpeed == null ? 0.00005 : opts.rotationSpeed;
+  const rotation = (t * rotationSpeed) + (g._rotSeed || 0);
 
-  // bright core: radial gradient
-  const coreR = 14 * scale * (isHover ? 1.15 : 1.0);
-  const coreGrad = xFg.createRadialGradient(cx, cy, 0, cx, cy, coreR * 4);
-  coreGrad.addColorStop(0, g.tint.core + (0.95 * alpha) + ")");
-  coreGrad.addColorStop(0.25, g.tint.core + (0.45 * alpha) + ")");
-  coreGrad.addColorStop(0.6, g.tint.arm + (0.18 * alpha) + ")");
-  coreGrad.addColorStop(1, g.tint.arm + "0)");
-  xFg.fillStyle = coreGrad;
-  xFg.beginPath();
-  xFg.arc(cx, cy, coreR * 4, 0, Math.PI * 2);
-  xFg.fill();
+  const hoverLift = isHover ? 1.08 : 1;
+  const tilt = 0.50 + galaxyRand(g, "tilt") * 0.12;
+  const discR = 104 * scale * hoverLift;
+  const coreR = 12 * scale * hoverLift;
+  const armTwist = 5.15 + galaxyRand(g, "twist") * 0.85;
+  const armSpread = 0.94 + galaxyRand(g, "spread") * 0.18;
 
-  // bright central pip
-  xFg.fillStyle = "rgba(255,255,255," + (0.85 * alpha) + ")";
-  xFg.beginPath();
-  xFg.arc(cx, cy, 1.6 * scale, 0, Math.PI * 2);
-  xFg.fill();
-
-  // two spiral arms. Logarithmic spiral: r = a * e^(b*theta). We sample
-  // points along it and draw small dots, with a gentle outward thinning.
-  const arms = 2;
-  const samplesPerArm = Math.floor(60 * Math.min(scale, 2.2));
-  const a = 1.6 * scale;
-  const b = 0.32;
-  for (let arm = 0; arm < arms; arm++) {
-    const armOffset = (Math.PI * 2 * arm) / arms;
-    for (let i = 1; i < samplesPerArm; i++) {
-      const theta = i * 0.16;
-      const r = a * Math.exp(b * theta);
-      if (r > 90 * scale) break;
+  function traceArm(arm, angleNudge, radiusNudge) {
+    xFg.beginPath();
+    const armOffset = arm * Math.PI;
+    const steps = 92;
+    for (let i = 0; i <= steps; i++) {
+      const u = i / steps;
+      const theta = 0.34 + u * armTwist + angleNudge;
+      const r = (5 + Math.pow(u, 1.08) * 95 * armSpread + radiusNudge) * scale;
       const ang = theta + armOffset + rotation;
       const px = cx + Math.cos(ang) * r;
-      const py = cy + Math.sin(ang) * r * 0.55; // flatten a touch
-      // brightness fades along the arm
-      const armAlpha = Math.max(0.05, 0.85 - i * 0.012) * alpha;
-      const dotR = Math.max(0.4, (1.4 - i * 0.012) * scale * 0.5);
-      xFg.fillStyle = g.tint.arm + armAlpha + ")";
+      const py = cy + Math.sin(ang) * r * tilt;
+      if (i === 0) xFg.moveTo(px, py);
+      else xFg.lineTo(px, py);
+    }
+  }
+
+  // Outer aura.
+  const aura = xFg.createRadialGradient(cx, cy, 0, cx, cy, discR * 1.45);
+  aura.addColorStop(0, g.tint.core + (0.18 * alpha) + ")");
+  aura.addColorStop(0.34, g.tint.arm + (0.08 * alpha) + ")");
+  aura.addColorStop(1, g.tint.arm + "0)");
+  xFg.fillStyle = aura;
+  xFg.beginPath();
+  xFg.arc(cx, cy, discR * 1.45, 0, Math.PI * 2);
+  xFg.fill();
+
+  // Tilted luminous disk.
+  xFg.save();
+  xFg.globalCompositeOperation = "lighter";
+  xFg.translate(cx, cy);
+  xFg.rotate(rotation * 0.34);
+  xFg.scale(1, tilt);
+  const disk = xFg.createRadialGradient(0, 0, coreR * 0.4, 0, 0, discR);
+  disk.addColorStop(0, "rgba(255, 248, 226, " + (0.30 * alpha) + ")");
+  disk.addColorStop(0.18, g.tint.core + (0.34 * alpha) + ")");
+  disk.addColorStop(0.52, g.tint.arm + (0.13 * alpha) + ")");
+  disk.addColorStop(1, g.tint.arm + "0)");
+  xFg.fillStyle = disk;
+  xFg.beginPath();
+  xFg.arc(0, 0, discR, 0, Math.PI * 2);
+  xFg.fill();
+  xFg.restore();
+
+  // Broad luminous arm ribbons.
+  xFg.save();
+  xFg.globalCompositeOperation = "lighter";
+  xFg.lineCap = "round";
+  xFg.lineJoin = "round";
+  for (let arm = 0; arm < 2; arm++) {
+    traceArm(arm, 0, 0);
+    xFg.strokeStyle = g.tint.arm + (0.13 * alpha) + ")";
+    xFg.lineWidth = Math.max(0.8, 8.5 * scale);
+    xFg.stroke();
+
+    traceArm(arm, -0.05, -2.6);
+    xFg.strokeStyle = "rgba(255, 244, 210, " + (0.10 * alpha) + ")";
+    xFg.lineWidth = Math.max(0.45, 2.1 * scale);
+    xFg.stroke();
+  }
+  xFg.restore();
+
+  // Dust lanes cut through the glow and keep the galaxy from looking flat.
+  xFg.save();
+  xFg.lineCap = "round";
+  xFg.lineJoin = "round";
+  for (let arm = 0; arm < 2; arm++) {
+    traceArm(arm, 0.10, 4.6);
+    xFg.strokeStyle = "rgba(1, 3, 15, " + (0.19 * alpha) + ")";
+    xFg.lineWidth = Math.max(0.7, 3.6 * scale);
+    xFg.stroke();
+  }
+  xFg.restore();
+
+  // Star texture along the arms.
+  xFg.save();
+  xFg.globalCompositeOperation = "lighter";
+  const samplesPerArm = Math.max(42, Math.min(178, Math.floor(68 * scale)));
+  for (let arm = 0; arm < 2; arm++) {
+    const armOffset = arm * Math.PI;
+    for (let i = 0; i < samplesPerArm; i++) {
+      const u = i / Math.max(1, samplesPerArm - 1);
+      const rn = galaxyRand(g, "star-r-" + arm + "-" + i);
+      const tn = galaxyRand(g, "star-t-" + arm + "-" + i);
+      const cn = galaxyRand(g, "star-c-" + arm + "-" + i);
+      const theta = 0.38 + u * armTwist + (tn - 0.5) * (0.16 + u * 0.16);
+      const r = (6 + Math.pow(u, 1.08) * 94 * armSpread + (rn - 0.5) * (5 + u * 18)) * scale;
+      const ang = theta + armOffset + rotation;
+      const px = cx + Math.cos(ang) * r;
+      const py = cy + Math.sin(ang) * r * tilt;
+      const fade = Math.pow(1 - u, 0.58);
+      const starAlpha = (0.09 + fade * (0.50 + cn * 0.35)) * alpha;
+      const dotR = Math.max(0.18, (0.13 + cn * 0.52) * scale * (1 - u * 0.38));
+      const starColor = cn < 0.13
+        ? "rgba(255, 213, 154, "
+        : (cn > 0.82 ? "rgba(180, 214, 255, " : g.tint.arm);
+      xFg.fillStyle = starColor + starAlpha + ")";
       xFg.beginPath();
       xFg.arc(px, py, dotR, 0, Math.PI * 2);
       xFg.fill();
     }
   }
 
-  // a thin halo ring on hover, just to telegraph clickability
+  // A few color knots make the galaxies feel less generic.
+  const clusterCount = scale > 0.7 ? 5 : 3;
+  const clusterColors = ["rgba(106, 187, 255, ", "rgba(255, 176, 121, ", "rgba(192, 158, 255, "];
+  for (let k = 0; k < clusterCount; k++) {
+    const arm = k % 2;
+    const u = 0.22 + galaxyRand(g, "cluster-u-" + k) * 0.56;
+    const theta = 0.42 + u * armTwist + (galaxyRand(g, "cluster-t-" + k) - 0.5) * 0.35;
+    const r = (8 + Math.pow(u, 1.08) * 90 * armSpread) * scale;
+    const ang = theta + arm * Math.PI + rotation;
+    const px = cx + Math.cos(ang) * r;
+    const py = cy + Math.sin(ang) * r * tilt;
+    const cr = (3.8 + galaxyRand(g, "cluster-r-" + k) * 4.5) * scale;
+    const cg = xFg.createRadialGradient(px, py, 0, px, py, cr);
+    const cc = clusterColors[k % clusterColors.length];
+    cg.addColorStop(0, cc + (0.25 * alpha) + ")");
+    cg.addColorStop(0.55, cc + (0.075 * alpha) + ")");
+    cg.addColorStop(1, cc + "0)");
+    xFg.fillStyle = cg;
+    xFg.beginPath();
+    xFg.arc(px, py, cr, 0, Math.PI * 2);
+    xFg.fill();
+  }
+
+  // Bright core and compact stellar nucleus.
+  xFg.save();
+  xFg.globalCompositeOperation = "lighter";
+  xFg.translate(cx, cy);
+  xFg.rotate(rotation * 0.58);
+  xFg.scale(1.35, 0.46);
+  const coreGrad = xFg.createRadialGradient(0, 0, 0, 0, 0, coreR * 4.2);
+  coreGrad.addColorStop(0, "rgba(255, 255, 255, " + (0.82 * alpha) + ")");
+  coreGrad.addColorStop(0.17, "rgba(255, 226, 164, " + (0.58 * alpha) + ")");
+  coreGrad.addColorStop(0.46, g.tint.core + (0.34 * alpha) + ")");
+  coreGrad.addColorStop(1, g.tint.arm + "0)");
+  xFg.fillStyle = coreGrad;
+  xFg.beginPath();
+  xFg.arc(0, 0, coreR * 4.2, 0, Math.PI * 2);
+  xFg.fill();
+  xFg.fillStyle = "rgba(255,255,255," + (0.88 * alpha) + ")";
+  xFg.beginPath();
+  xFg.arc(0, 0, Math.max(0.8, coreR * 0.25), 0, Math.PI * 2);
+  xFg.fill();
+  xFg.restore();
+  xFg.restore();
+
+  // A thin halo ring on hover, just to telegraph clickability.
   if (isHover) {
     xFg.strokeStyle = g.tint.arm + (0.35 * alpha) + ")";
     xFg.lineWidth = 1;
     xFg.beginPath();
-    xFg.arc(cx, cy, 60 * scale, 0, Math.PI * 2);
+    xFg.ellipse(cx, cy, discR * 0.72, discR * 0.72 * tilt, rotation * 0.34, 0, Math.PI * 2);
     xFg.stroke();
   }
+}
+
+function galaxyStyle(g) {
+  return g._visualStyle || "grand-spiral";
+}
+
+function drawBarredSpiralGalaxy(g, cx, cy, scale, opts) {
+  opts = opts || {};
+  drawSpiralGalaxy(g, cx, cy, scale * 0.94, opts);
+  const alpha = opts.alpha == null ? 1 : opts.alpha;
+  const rotationSpeed = opts.rotationSpeed == null ? 0.00005 : opts.rotationSpeed;
+  const rotation = (t * rotationSpeed) + (g._rotSeed || 0) + 0.45;
+  const barLen = 64 * scale;
+  const barH = 10 * scale;
+
+  xFg.save();
+  xFg.globalCompositeOperation = "lighter";
+  xFg.translate(cx, cy);
+  xFg.rotate(rotation);
+  const bar = xFg.createRadialGradient(0, 0, 0, 0, 0, barLen);
+  bar.addColorStop(0, "rgba(255, 248, 224, " + (0.50 * alpha) + ")");
+  bar.addColorStop(0.46, g.tint.core + (0.25 * alpha) + ")");
+  bar.addColorStop(1, g.tint.arm + "0)");
+  xFg.fillStyle = bar;
+  xFg.beginPath();
+  xFg.ellipse(0, 0, barLen, barH, 0, 0, Math.PI * 2);
+  xFg.fill();
+  xFg.strokeStyle = "rgba(1, 3, 15, " + (0.22 * alpha) + ")";
+  xFg.lineWidth = Math.max(0.6, 2.3 * scale);
+  xFg.beginPath();
+  xFg.moveTo(-barLen * 0.88, 0);
+  xFg.lineTo(barLen * 0.88, 0);
+  xFg.stroke();
+  xFg.restore();
+}
+
+function drawEdgeOnGalaxy(g, cx, cy, scale, opts, lenticular) {
+  opts = opts || {};
+  const alpha = opts.alpha == null ? 1 : opts.alpha;
+  const isHover = !!opts.hover;
+  const rotationSpeed = opts.rotationSpeed == null ? 0.00005 : opts.rotationSpeed;
+  const rotation = (t * rotationSpeed * 0.55) + (g._rotSeed || 0) + galaxyRand(g, "edge-angle") * 0.7;
+  const rx = (lenticular ? 118 : 134) * scale;
+  const ry = (lenticular ? 22 : 15) * scale;
+
+  xFg.save();
+  xFg.translate(cx, cy);
+  xFg.rotate(rotation);
+
+  let halo = xFg.createRadialGradient(0, 0, 0, 0, 0, rx * 1.1);
+  halo.addColorStop(0, g.tint.core + (0.20 * alpha) + ")");
+  halo.addColorStop(0.45, g.tint.arm + (0.12 * alpha) + ")");
+  halo.addColorStop(1, g.tint.arm + "0)");
+  xFg.fillStyle = halo;
+  xFg.beginPath();
+  xFg.ellipse(0, 0, rx * 1.12, ry * (lenticular ? 3.8 : 4.9), 0, 0, Math.PI * 2);
+  xFg.fill();
+
+  xFg.globalCompositeOperation = "lighter";
+  const disk = xFg.createLinearGradient(-rx, 0, rx, 0);
+  disk.addColorStop(0, g.tint.arm + "0)");
+  disk.addColorStop(0.22, g.tint.arm + (0.20 * alpha) + ")");
+  disk.addColorStop(0.5, "rgba(255, 244, 218, " + (0.42 * alpha) + ")");
+  disk.addColorStop(0.78, g.tint.arm + (0.20 * alpha) + ")");
+  disk.addColorStop(1, g.tint.arm + "0)");
+  xFg.fillStyle = disk;
+  xFg.beginPath();
+  xFg.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+  xFg.fill();
+
+  const core = xFg.createRadialGradient(0, 0, 0, 0, 0, 38 * scale);
+  core.addColorStop(0, "rgba(255, 255, 255, " + (0.65 * alpha) + ")");
+  core.addColorStop(0.25, "rgba(255, 225, 170, " + (0.42 * alpha) + ")");
+  core.addColorStop(1, g.tint.core + "0)");
+  xFg.fillStyle = core;
+  xFg.beginPath();
+  xFg.ellipse(0, 0, 42 * scale, (lenticular ? 18 : 26) * scale, 0, 0, Math.PI * 2);
+  xFg.fill();
+
+  xFg.globalCompositeOperation = "source-over";
+  xFg.strokeStyle = "rgba(0, 2, 12, " + (0.55 * alpha) + ")";
+  xFg.lineWidth = Math.max(0.7, (lenticular ? 2.5 : 4.0) * scale);
+  xFg.beginPath();
+  xFg.moveTo(-rx * 0.92, 0);
+  xFg.lineTo(rx * 0.92, 0);
+  xFg.stroke();
+
+  xFg.globalCompositeOperation = "lighter";
+  const specks = Math.max(18, Math.min(90, Math.floor(32 * scale)));
+  for (let i = 0; i < specks; i++) {
+    const n = galaxyRand(g, "edge-speck-" + i);
+    const m = galaxyRand(g, "edge-speck-y-" + i);
+    const x = (n * 2 - 1) * rx * 0.92;
+    const y = (m - 0.5) * ry * 1.25;
+    const fade = 1 - Math.abs(x) / rx;
+    xFg.fillStyle = "rgba(230, 240, 255, " + ((0.12 + 0.45 * fade) * alpha) + ")";
+    xFg.beginPath();
+    xFg.arc(x, y, Math.max(0.25, 0.42 * scale * fade), 0, Math.PI * 2);
+    xFg.fill();
+  }
+
+  if (isHover) {
+    xFg.strokeStyle = g.tint.arm + (0.34 * alpha) + ")";
+    xFg.lineWidth = 1;
+    xFg.beginPath();
+    xFg.ellipse(0, 0, rx * 0.92, ry * 4.2, 0, 0, Math.PI * 2);
+    xFg.stroke();
+  }
+  xFg.restore();
+}
+
+function drawRingGalaxy(g, cx, cy, scale, opts) {
+  opts = opts || {};
+  const alpha = opts.alpha == null ? 1 : opts.alpha;
+  const isHover = !!opts.hover;
+  const rotationSpeed = opts.rotationSpeed == null ? 0.00005 : opts.rotationSpeed;
+  const rotation = (t * rotationSpeed * 0.7) + (g._rotSeed || 0);
+  const rx = 82 * scale;
+  const ry = rx * (0.58 + galaxyRand(g, "ring-tilt") * 0.14);
+
+  xFg.save();
+  xFg.translate(cx, cy);
+  xFg.rotate(rotation);
+  xFg.globalCompositeOperation = "lighter";
+  xFg.lineCap = "round";
+  xFg.strokeStyle = g.tint.arm + (0.19 * alpha) + ")";
+  xFg.lineWidth = Math.max(1, 19 * scale);
+  xFg.beginPath();
+  xFg.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+  xFg.stroke();
+  xFg.strokeStyle = "rgba(255, 238, 190, " + (0.22 * alpha) + ")";
+  xFg.lineWidth = Math.max(0.5, 4.5 * scale);
+  xFg.beginPath();
+  xFg.ellipse(0, 0, rx * 0.98, ry * 0.98, 0, 0, Math.PI * 2);
+  xFg.stroke();
+
+  const knots = 11;
+  for (let i = 0; i < knots; i++) {
+    const a = (Math.PI * 2 * i) / knots + galaxyRand(g, "ring-knot-" + i) * 0.32;
+    const px = Math.cos(a) * rx;
+    const py = Math.sin(a) * ry;
+    const kr = (4 + galaxyRand(g, "ring-knot-r-" + i) * 6) * scale;
+    const kg = xFg.createRadialGradient(px, py, 0, px, py, kr * 2.5);
+    kg.addColorStop(0, "rgba(255,255,255," + (0.26 * alpha) + ")");
+    kg.addColorStop(0.4, g.tint.arm + (0.18 * alpha) + ")");
+    kg.addColorStop(1, g.tint.arm + "0)");
+    xFg.fillStyle = kg;
+    xFg.beginPath();
+    xFg.arc(px, py, kr * 2.5, 0, Math.PI * 2);
+    xFg.fill();
+  }
+
+  xFg.globalCompositeOperation = "source-over";
+  xFg.fillStyle = "rgba(0, 2, 14, " + (0.36 * alpha) + ")";
+  xFg.beginPath();
+  xFg.ellipse(0, 0, rx * 0.53, ry * 0.53, 0, 0, Math.PI * 2);
+  xFg.fill();
+
+  xFg.globalCompositeOperation = "lighter";
+  const core = xFg.createRadialGradient(rx * 0.12, -ry * 0.08, 0, rx * 0.12, -ry * 0.08, 18 * scale);
+  core.addColorStop(0, "rgba(255,255,255," + (0.62 * alpha) + ")");
+  core.addColorStop(0.45, g.tint.core + (0.25 * alpha) + ")");
+  core.addColorStop(1, g.tint.core + "0)");
+  xFg.fillStyle = core;
+  xFg.beginPath();
+  xFg.arc(rx * 0.12, -ry * 0.08, 18 * scale, 0, Math.PI * 2);
+  xFg.fill();
+
+  if (isHover) {
+    xFg.strokeStyle = g.tint.arm + (0.36 * alpha) + ")";
+    xFg.lineWidth = 1;
+    xFg.beginPath();
+    xFg.ellipse(0, 0, rx * 1.08, ry * 1.18, 0, 0, Math.PI * 2);
+    xFg.stroke();
+  }
+  xFg.restore();
+}
+
+function drawEllipticalGalaxy(g, cx, cy, scale, opts) {
+  opts = opts || {};
+  const alpha = opts.alpha == null ? 1 : opts.alpha;
+  const isHover = !!opts.hover;
+  const rotationSpeed = opts.rotationSpeed == null ? 0.00005 : opts.rotationSpeed;
+  const rotation = (t * rotationSpeed * 0.24) + (g._rotSeed || 0);
+  const rx = 94 * scale;
+  const ry = 58 * scale;
+
+  xFg.save();
+  xFg.translate(cx, cy);
+  xFg.rotate(rotation);
+  xFg.globalCompositeOperation = "lighter";
+  const glow = xFg.createRadialGradient(0, 0, 0, 0, 0, rx);
+  glow.addColorStop(0, "rgba(255, 246, 222, " + (0.56 * alpha) + ")");
+  glow.addColorStop(0.22, g.tint.core + (0.34 * alpha) + ")");
+  glow.addColorStop(0.62, g.tint.arm + (0.15 * alpha) + ")");
+  glow.addColorStop(1, g.tint.arm + "0)");
+  xFg.fillStyle = glow;
+  xFg.beginPath();
+  xFg.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+  xFg.fill();
+
+  const stars = Math.max(18, Math.min(85, Math.floor(30 * scale)));
+  for (let i = 0; i < stars; i++) {
+    const a = galaxyRand(g, "ell-a-" + i) * Math.PI * 2;
+    const d = Math.sqrt(galaxyRand(g, "ell-d-" + i));
+    const px = Math.cos(a) * rx * d * 0.82;
+    const py = Math.sin(a) * ry * d * 0.82;
+    const fade = 1 - d * 0.72;
+    xFg.fillStyle = "rgba(255, 246, 220, " + ((0.08 + fade * 0.32) * alpha) + ")";
+    xFg.beginPath();
+    xFg.arc(px, py, Math.max(0.18, 0.34 * scale * fade), 0, Math.PI * 2);
+    xFg.fill();
+  }
+
+  if (isHover) {
+    xFg.strokeStyle = g.tint.arm + (0.30 * alpha) + ")";
+    xFg.lineWidth = 1;
+    xFg.beginPath();
+    xFg.ellipse(0, 0, rx * 0.85, ry * 0.86, 0, 0, Math.PI * 2);
+    xFg.stroke();
+  }
+  xFg.restore();
+}
+
+function drawCloudNebula(g, cx, cy, scale, opts, kind) {
+  opts = opts || {};
+  const alpha = opts.alpha == null ? 1 : opts.alpha;
+  const isHover = !!opts.hover;
+  const rotationSpeed = opts.rotationSpeed == null ? 0.00005 : opts.rotationSpeed;
+  const rotation = (t * rotationSpeed * 0.38) + (g._rotSeed || 0);
+  const palette = kind === "blue"
+    ? ["rgba(82, 183, 255, ", "rgba(116, 92, 255, ", "rgba(220, 246, 255, "]
+    : kind === "horse"
+      ? ["rgba(255, 119, 68, ", "rgba(255, 190, 92, ", "rgba(164, 71, 255, "]
+      : ["rgba(255, 128, 158, ", "rgba(86, 188, 255, ", "rgba(255, 213, 125, "];
+
+  xFg.save();
+  xFg.translate(cx, cy);
+  xFg.rotate(rotation);
+  xFg.globalCompositeOperation = "lighter";
+  const blobs = kind === "irregular" ? 11 : 8;
+  for (let i = 0; i < blobs; i++) {
+    const a = galaxyRand(g, kind + "-blob-a-" + i) * Math.PI * 2;
+    const d = Math.pow(galaxyRand(g, kind + "-blob-d-" + i), 0.7) * 62 * scale;
+    const bx = Math.cos(a) * d;
+    const by = Math.sin(a) * d * (0.62 + galaxyRand(g, kind + "-blob-flat-" + i) * 0.22);
+    const br = (28 + galaxyRand(g, kind + "-blob-r-" + i) * 45) * scale;
+    const color = palette[i % palette.length];
+    const bg = xFg.createRadialGradient(bx, by, 0, bx, by, br);
+    bg.addColorStop(0, color + ((0.16 + galaxyRand(g, kind + "-blob-hot-" + i) * 0.14) * alpha) + ")");
+    bg.addColorStop(0.55, color + (0.07 * alpha) + ")");
+    bg.addColorStop(1, color + "0)");
+    xFg.fillStyle = bg;
+    xFg.beginPath();
+    xFg.ellipse(bx, by, br * (0.9 + galaxyRand(g, kind + "-blob-rx-" + i) * 0.8), br * (0.45 + galaxyRand(g, kind + "-blob-ry-" + i) * 0.55), galaxyRand(g, kind + "-blob-rot-" + i) * Math.PI, 0, Math.PI * 2);
+    xFg.fill();
+  }
+
+  xFg.strokeStyle = palette[1] + (0.12 * alpha) + ")";
+  xFg.lineWidth = Math.max(0.5, 1.4 * scale);
+  xFg.lineCap = "round";
+  for (let i = 0; i < 5; i++) {
+    const a = galaxyRand(g, kind + "-filament-" + i) * Math.PI * 2;
+    const len = (42 + galaxyRand(g, kind + "-filament-l-" + i) * 62) * scale;
+    xFg.beginPath();
+    xFg.moveTo(Math.cos(a) * 12 * scale, Math.sin(a) * 8 * scale);
+    xFg.bezierCurveTo(
+      Math.cos(a + 0.5) * len * 0.35, Math.sin(a + 0.3) * len * 0.22,
+      Math.cos(a + 0.8) * len * 0.75, Math.sin(a - 0.2) * len * 0.50,
+      Math.cos(a + 1.0) * len, Math.sin(a + 0.2) * len * 0.62
+    );
+    xFg.stroke();
+  }
+
+  const stars = Math.max(20, Math.min(120, Math.floor(42 * scale)));
+  for (let i = 0; i < stars; i++) {
+    const a = galaxyRand(g, kind + "-star-a-" + i) * Math.PI * 2;
+    const d = Math.sqrt(galaxyRand(g, kind + "-star-d-" + i)) * 86 * scale;
+    const px = Math.cos(a) * d;
+    const py = Math.sin(a) * d * 0.66;
+    const hot = galaxyRand(g, kind + "-star-hot-" + i);
+    xFg.fillStyle = (hot > 0.82 ? palette[2] : "rgba(240, 248, 255, ") + ((0.16 + hot * 0.55) * alpha) + ")";
+    xFg.beginPath();
+    xFg.arc(px, py, Math.max(0.22, (0.25 + hot * 0.55) * scale), 0, Math.PI * 2);
+    xFg.fill();
+  }
+
+  if (isHover) {
+    xFg.strokeStyle = palette[0] + (0.28 * alpha) + ")";
+    xFg.lineWidth = 1;
+    xFg.beginPath();
+    xFg.ellipse(0, 0, 96 * scale, 58 * scale, 0, 0, Math.PI * 2);
+    xFg.stroke();
+  }
+  xFg.restore();
+}
+
+function drawHorseheadNebula(g, cx, cy, scale, opts) {
+  opts = opts || {};
+  const alpha = opts.alpha == null ? 1 : opts.alpha;
+  const rotationSpeed = opts.rotationSpeed == null ? 0.00005 : opts.rotationSpeed;
+  const rotation = (t * rotationSpeed * 0.22) + (g._rotSeed || 0) * 0.3;
+  drawCloudNebula(g, cx, cy, scale, opts, "horse");
+
+  xFg.save();
+  xFg.translate(cx, cy);
+  xFg.rotate(rotation);
+  xFg.scale(scale, scale);
+  xFg.fillStyle = "rgba(0, 2, 12, " + (0.82 * alpha) + ")";
+  xFg.beginPath();
+  xFg.moveTo(-18, 48);
+  xFg.bezierCurveTo(-36, 28, -27, 3, -18, -18);
+  xFg.bezierCurveTo(-10, -38, 2, -52, 20, -50);
+  xFg.bezierCurveTo(10, -38, 15, -24, 34, -17);
+  xFg.bezierCurveTo(19, -14, 9, -7, 8, 5);
+  xFg.bezierCurveTo(7, 22, 23, 34, 16, 52);
+  xFg.bezierCurveTo(4, 44, -5, 43, -18, 48);
+  xFg.fill();
+  xFg.fillStyle = "rgba(255, 220, 150, " + (0.14 * alpha) + ")";
+  xFg.beginPath();
+  xFg.arc(19, -30, 2.2, 0, Math.PI * 2);
+  xFg.fill();
+  xFg.restore();
+}
+
+function drawTwinCoreGalaxy(g, cx, cy, scale, opts) {
+  opts = opts || {};
+  const alpha = opts.alpha == null ? 1 : opts.alpha;
+  const isHover = !!opts.hover;
+  const rotationSpeed = opts.rotationSpeed == null ? 0.00005 : opts.rotationSpeed;
+  const rotation = (t * rotationSpeed * 0.52) + (g._rotSeed || 0);
+
+  xFg.save();
+  xFg.translate(cx, cy);
+  xFg.rotate(rotation);
+  xFg.globalCompositeOperation = "lighter";
+  const sep = 34 * scale;
+  for (let side = -1; side <= 1; side += 2) {
+    const gx = side * sep;
+    const glow = xFg.createRadialGradient(gx, 0, 0, gx, 0, 58 * scale);
+    glow.addColorStop(0, "rgba(255,255,255," + (0.48 * alpha) + ")");
+    glow.addColorStop(0.25, g.tint.core + (0.28 * alpha) + ")");
+    glow.addColorStop(1, g.tint.arm + "0)");
+    xFg.fillStyle = glow;
+    xFg.beginPath();
+    xFg.ellipse(gx, 0, 54 * scale, 34 * scale, side * 0.45, 0, Math.PI * 2);
+    xFg.fill();
+  }
+  xFg.strokeStyle = g.tint.arm + (0.18 * alpha) + ")";
+  xFg.lineWidth = Math.max(0.8, 9 * scale);
+  xFg.lineCap = "round";
+  xFg.beginPath();
+  xFg.moveTo(-sep * 1.2, 0);
+  xFg.bezierCurveTo(-sep * 0.5, -22 * scale, sep * 0.5, 22 * scale, sep * 1.2, 0);
+  xFg.stroke();
+
+  const stars = Math.max(22, Math.min(110, Math.floor(42 * scale)));
+  for (let i = 0; i < stars; i++) {
+    const a = galaxyRand(g, "twin-a-" + i) * Math.PI * 2;
+    const d = Math.sqrt(galaxyRand(g, "twin-d-" + i)) * 82 * scale;
+    const px = Math.cos(a) * d;
+    const py = Math.sin(a) * d * 0.52;
+    xFg.fillStyle = "rgba(230, 242, 255, " + ((0.12 + galaxyRand(g, "twin-hot-" + i) * 0.42) * alpha) + ")";
+    xFg.beginPath();
+    xFg.arc(px, py, Math.max(0.18, 0.38 * scale), 0, Math.PI * 2);
+    xFg.fill();
+  }
+
+  if (isHover) {
+    xFg.strokeStyle = g.tint.arm + (0.32 * alpha) + ")";
+    xFg.lineWidth = 1;
+    xFg.beginPath();
+    xFg.ellipse(0, 0, 98 * scale, 54 * scale, 0, 0, Math.PI * 2);
+    xFg.stroke();
+  }
+  xFg.restore();
+}
+
+function drawPinwheelGalaxy(g, cx, cy, scale, opts) {
+  opts = opts || {};
+  drawSpiralGalaxy(g, cx, cy, scale * 0.92, opts);
+  const alpha = opts.alpha == null ? 1 : opts.alpha;
+  const rotationSpeed = opts.rotationSpeed == null ? 0.00005 : opts.rotationSpeed;
+  const rotation = (t * rotationSpeed) + (g._rotSeed || 0);
+  xFg.save();
+  xFg.translate(cx, cy);
+  xFg.rotate(rotation);
+  xFg.globalCompositeOperation = "lighter";
+  xFg.lineCap = "round";
+  for (let arm = 0; arm < 4; arm++) {
+    const offset = arm * Math.PI * 0.5;
+    xFg.beginPath();
+    for (let i = 0; i <= 42; i++) {
+      const u = i / 42;
+      const r = (9 + u * 90) * scale;
+      const a = offset + u * 2.35;
+      const px = Math.cos(a) * r;
+      const py = Math.sin(a) * r * 0.56;
+      if (i === 0) xFg.moveTo(px, py);
+      else xFg.lineTo(px, py);
+    }
+    xFg.strokeStyle = (arm % 2 ? "rgba(110, 190, 255, " : "rgba(255, 210, 130, ") + (0.09 * alpha) + ")";
+    xFg.lineWidth = Math.max(0.5, 3.4 * scale);
+    xFg.stroke();
+  }
+  xFg.restore();
+}
+
+function drawPolarRingGalaxy(g, cx, cy, scale, opts) {
+  opts = opts || {};
+  drawEllipticalGalaxy(g, cx, cy, scale * 0.72, opts);
+  const alpha = opts.alpha == null ? 1 : opts.alpha;
+  const isHover = !!opts.hover;
+  const rotationSpeed = opts.rotationSpeed == null ? 0.00005 : opts.rotationSpeed;
+  const rotation = (t * rotationSpeed * 0.56) + (g._rotSeed || 0) + Math.PI * 0.5;
+  const rx = 92 * scale;
+  const ry = 28 * scale;
+
+  xFg.save();
+  xFg.translate(cx, cy);
+  xFg.rotate(rotation);
+  xFg.globalCompositeOperation = "lighter";
+  xFg.lineCap = "round";
+  xFg.strokeStyle = g.tint.arm + (0.18 * alpha) + ")";
+  xFg.lineWidth = Math.max(0.8, 8 * scale);
+  xFg.beginPath();
+  xFg.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+  xFg.stroke();
+  xFg.strokeStyle = "rgba(255, 245, 210, " + (0.19 * alpha) + ")";
+  xFg.lineWidth = Math.max(0.5, 2.2 * scale);
+  xFg.beginPath();
+  xFg.ellipse(0, 0, rx * 0.98, ry * 0.98, 0, 0, Math.PI * 2);
+  xFg.stroke();
+
+  for (let i = 0; i < 10; i++) {
+    const a = (Math.PI * 2 * i) / 10 + galaxyRand(g, "polar-knot-" + i) * 0.22;
+    const px = Math.cos(a) * rx;
+    const py = Math.sin(a) * ry;
+    xFg.fillStyle = "rgba(225, 242, 255, " + ((0.18 + galaxyRand(g, "polar-hot-" + i) * 0.42) * alpha) + ")";
+    xFg.beginPath();
+    xFg.arc(px, py, Math.max(0.28, 0.72 * scale), 0, Math.PI * 2);
+    xFg.fill();
+  }
+
+  if (isHover) {
+    xFg.strokeStyle = g.tint.arm + (0.32 * alpha) + ")";
+    xFg.lineWidth = 1;
+    xFg.beginPath();
+    xFg.ellipse(0, 0, rx * 1.08, ry * 1.45, 0, 0, Math.PI * 2);
+    xFg.stroke();
+  }
+  xFg.restore();
+}
+
+function drawCometNebula(g, cx, cy, scale, opts) {
+  opts = opts || {};
+  const alpha = opts.alpha == null ? 1 : opts.alpha;
+  const isHover = !!opts.hover;
+  const rotationSpeed = opts.rotationSpeed == null ? 0.00005 : opts.rotationSpeed;
+  const rotation = (t * rotationSpeed * 0.28) + (g._rotSeed || 0);
+
+  xFg.save();
+  xFg.translate(cx, cy);
+  xFg.rotate(rotation);
+  xFg.globalCompositeOperation = "lighter";
+
+  const tail = xFg.createLinearGradient(-110 * scale, 0, 38 * scale, 0);
+  tail.addColorStop(0, g.tint.arm + "0)");
+  tail.addColorStop(0.28, "rgba(82, 174, 255, " + (0.08 * alpha) + ")");
+  tail.addColorStop(0.68, g.tint.arm + (0.17 * alpha) + ")");
+  tail.addColorStop(1, "rgba(255, 244, 216, " + (0.24 * alpha) + ")");
+  xFg.fillStyle = tail;
+  xFg.beginPath();
+  xFg.moveTo(-116 * scale, -18 * scale);
+  xFg.bezierCurveTo(-72 * scale, -42 * scale, -18 * scale, -34 * scale, 42 * scale, -8 * scale);
+  xFg.bezierCurveTo(15 * scale, 10 * scale, -52 * scale, 32 * scale, -116 * scale, 18 * scale);
+  xFg.closePath();
+  xFg.fill();
+
+  const head = xFg.createRadialGradient(38 * scale, 0, 0, 38 * scale, 0, 42 * scale);
+  head.addColorStop(0, "rgba(255,255,255," + (0.72 * alpha) + ")");
+  head.addColorStop(0.22, "rgba(255, 219, 146, " + (0.38 * alpha) + ")");
+  head.addColorStop(0.58, g.tint.core + (0.20 * alpha) + ")");
+  head.addColorStop(1, g.tint.arm + "0)");
+  xFg.fillStyle = head;
+  xFg.beginPath();
+  xFg.arc(38 * scale, 0, 42 * scale, 0, Math.PI * 2);
+  xFg.fill();
+
+  xFg.strokeStyle = "rgba(185, 218, 255, " + (0.12 * alpha) + ")";
+  xFg.lineWidth = Math.max(0.45, 1.1 * scale);
+  for (let i = 0; i < 6; i++) {
+    const y = (-18 + i * 7 + galaxyRand(g, "comet-fil-y-" + i) * 4) * scale;
+    xFg.beginPath();
+    xFg.moveTo((34 - galaxyRand(g, "comet-fil-x-" + i) * 8) * scale, y * 0.3);
+    xFg.bezierCurveTo(-10 * scale, y, -48 * scale, y * 1.5, -105 * scale, y * 0.85);
+    xFg.stroke();
+  }
+
+  const sparks = Math.max(16, Math.min(70, Math.floor(28 * scale)));
+  for (let i = 0; i < sparks; i++) {
+    const x = (galaxyRand(g, "comet-x-" + i) * -132 + 48) * scale;
+    const y = (galaxyRand(g, "comet-y-" + i) - 0.5) * 46 * scale;
+    const hot = galaxyRand(g, "comet-hot-" + i);
+    xFg.fillStyle = "rgba(230, 244, 255, " + ((0.14 + hot * 0.46) * alpha) + ")";
+    xFg.beginPath();
+    xFg.arc(x, y, Math.max(0.16, (0.25 + hot * 0.42) * scale), 0, Math.PI * 2);
+    xFg.fill();
+  }
+
+  if (isHover) {
+    xFg.strokeStyle = g.tint.arm + (0.30 * alpha) + ")";
+    xFg.lineWidth = 1;
+    xFg.beginPath();
+    xFg.ellipse(-24 * scale, 0, 112 * scale, 42 * scale, 0, 0, Math.PI * 2);
+    xFg.stroke();
+  }
+  xFg.restore();
+}
+
+function stellarColor(g, style, n) {
+  const palettes = {
+    "grand-spiral": ["rgba(255, 226, 146, ", "rgba(122, 196, 255, ", "rgba(255, 145, 190, ", g.tint.arm],
+    "barred-spiral": ["rgba(255, 220, 138, ", "rgba(116, 178, 255, ", "rgba(205, 170, 255, ", g.tint.arm],
+    "pinwheel": ["rgba(105, 204, 255, ", "rgba(255, 238, 170, ", "rgba(255, 130, 176, ", g.tint.arm],
+    "edge-on": ["rgba(255, 235, 184, ", "rgba(194, 224, 255, ", "rgba(255, 168, 118, ", g.tint.arm],
+    "lenticular": ["rgba(255, 238, 198, ", "rgba(210, 225, 255, ", "rgba(255, 196, 132, ", g.tint.arm],
+    "ring": ["rgba(112, 211, 255, ", "rgba(255, 203, 116, ", "rgba(255, 112, 182, ", g.tint.arm],
+    "polar-ring": ["rgba(116, 220, 255, ", "rgba(255, 227, 156, ", "rgba(178, 150, 255, ", g.tint.arm],
+    "elliptical": ["rgba(255, 232, 184, ", "rgba(255, 248, 224, ", "rgba(210, 224, 255, ", g.tint.arm],
+    "emission-nebula": ["rgba(255, 96, 164, ", "rgba(78, 190, 255, ", "rgba(255, 204, 108, ", "rgba(188, 126, 255, "],
+    "horsehead-nebula": ["rgba(255, 126, 70, ", "rgba(255, 192, 88, ", "rgba(132, 172, 255, ", "rgba(218, 118, 255, "],
+    "starburst": ["rgba(80, 208, 255, ", "rgba(255, 95, 137, ", "rgba(255, 230, 138, ", "rgba(178, 128, 255, "],
+    "blue-cluster": ["rgba(112, 214, 255, ", "rgba(190, 236, 255, ", "rgba(150, 150, 255, ", "rgba(255, 246, 210, "],
+    "irregular": ["rgba(255, 145, 92, ", "rgba(88, 206, 255, ", "rgba(255, 104, 176, ", "rgba(214, 176, 255, "],
+    "twin-core": ["rgba(255, 224, 158, ", "rgba(120, 198, 255, ", "rgba(255, 135, 176, ", g.tint.arm],
+    "comet-nebula": ["rgba(118, 214, 255, ", "rgba(255, 239, 180, ", "rgba(184, 146, 255, ", g.tint.arm],
+  };
+  const palette = palettes[style] || palettes["grand-spiral"];
+  if (n < 0.18) return g.tint.core;
+  if (n < 0.36) return g.tint.arm;
+  return palette[Math.floor(n * palette.length) % palette.length];
+}
+
+function stellarNoise(g, key) {
+  return galaxyRand(g, key);
+}
+
+function stellarBand(v) {
+  return (v - 0.5) + Math.sin(v * 18.8495559215) * 0.18;
+}
+
+function stellarPoint(g, style, i, count, scale) {
+  const r1 = stellarNoise(g, "stellar-a-" + style + "-" + i);
+  const r2 = stellarNoise(g, "stellar-b-" + style + "-" + i);
+  const r3 = stellarNoise(g, "stellar-c-" + style + "-" + i);
+  const r4 = stellarNoise(g, "stellar-d-" + style + "-" + i);
+  const r5 = stellarNoise(g, "stellar-e-" + style + "-" + i);
+  const tilt = 0.48 + stellarNoise(g, "stellar-tilt-" + style) * 0.20;
+
+  function spiralPoint(arms, twist, bar) {
+    if (bar && i < count * 0.15) {
+      const bx = stellarBand(r1) * 86 * scale;
+      const by = stellarBand(r2) * 14 * scale;
+      return { x: bx, y: by, heat: 0.9 - Math.abs(bx) / (118 * scale), color: r3 };
+    }
+    const arm = i % arms;
+    const u = Math.pow(r1, 0.72);
+    const spread = stellarBand(r2) * (7 + 30 * u) * scale;
+    const radius = (4 + Math.pow(u, 1.05) * (112 + stellarNoise(g, "stellar-spread-" + style) * 22)) * scale;
+    const theta = 0.36 + u * twist + (Math.PI * 2 * arm) / arms + stellarBand(r3) * 0.22;
+    const px = Math.cos(theta) * radius + Math.cos(theta + Math.PI / 2) * spread;
+    const py = (Math.sin(theta) * radius + Math.sin(theta + Math.PI / 2) * spread) * tilt;
+    return { x: px, y: py, heat: 1 - u * 0.72, color: r4 };
+  }
+
+  switch (style) {
+    case "barred-spiral":
+      return spiralPoint(2, 5.6, true);
+    case "pinwheel":
+      return spiralPoint(4, 3.8, false);
+    case "edge-on":
+    case "lenticular": {
+      const width = (style === "edge-on" ? 138 : 118) * scale;
+      const thin = (style === "edge-on" ? 18 : 32) * scale;
+      const x = stellarBand(r1) * width;
+      const taper = Math.max(0.18, 1 - Math.abs(x) / width);
+      const y = stellarBand((r2 + r3) % 1) * thin * taper + stellarBand(r4) * 5 * scale;
+      const core = Math.exp(-(x * x) / (2 * Math.pow(34 * scale, 2)));
+      return { x, y, heat: 0.25 + core * 0.75, color: r5 };
+    }
+    case "ring":
+    case "polar-ring": {
+      if (i < count * 0.18) {
+        const a = r1 * Math.PI * 2;
+        const d = Math.pow(r2, 1.8) * 34 * scale;
+        return { x: Math.cos(a) * d, y: Math.sin(a) * d * 0.62, heat: 0.86, color: r3 };
+      }
+      const a = r1 * Math.PI * 2;
+      const ring = (style === "polar-ring" ? 82 : 88) * scale;
+      const thickness = stellarBand(r2) * 20 * scale;
+      const rx = ring + thickness;
+      const ry = rx * (style === "polar-ring" ? 0.34 : 0.62);
+      const rot = style === "polar-ring" ? Math.PI * 0.55 : 0;
+      const x0 = Math.cos(a) * rx;
+      const y0 = Math.sin(a) * ry;
+      return {
+        x: Math.cos(rot) * x0 - Math.sin(rot) * y0,
+        y: Math.sin(rot) * x0 + Math.cos(rot) * y0,
+        heat: 0.42 + Math.abs(stellarBand(r3)) * 0.58,
+        color: r4,
+      };
+    }
+    case "elliptical": {
+      const a = r1 * Math.PI * 2;
+      const d = Math.pow(r2, 1.45) * 98 * scale;
+      return { x: Math.cos(a) * d, y: Math.sin(a) * d * 0.62, heat: 1 - d / (120 * scale), color: r3 };
+    }
+    case "twin-core": {
+      const side = i % 2 ? -1 : 1;
+      const a = r1 * Math.PI * 2;
+      const d = Math.pow(r2, 1.25) * 54 * scale;
+      const bridge = i % 7 === 0;
+      return {
+        x: bridge ? stellarBand(r1) * 78 * scale : side * 34 * scale + Math.cos(a) * d,
+        y: bridge ? stellarBand(r2) * 18 * scale : Math.sin(a) * d * 0.58,
+        heat: bridge ? 0.48 : 0.86 - d / (90 * scale),
+        color: r4,
+      };
+    }
+    case "comet-nebula": {
+      const head = i < count * 0.38;
+      const x = head ? 36 * scale + stellarBand(r1) * 38 * scale : 38 * scale - Math.pow(r1, 0.72) * 154 * scale;
+      const tailWidth = head ? 34 * scale : (8 + Math.pow(Math.max(0, (38 * scale - x) / (154 * scale)), 0.7) * 42) * scale;
+      return { x, y: stellarBand(r2) * tailWidth, heat: head ? 0.92 : 0.42 + r3 * 0.32, color: r4 };
+    }
+    case "emission-nebula":
+    case "horsehead-nebula":
+    case "starburst":
+    case "blue-cluster":
+    case "irregular": {
+      const clusters = style === "blue-cluster" ? 5 : 7;
+      const c = i % clusters;
+      const ca = stellarNoise(g, "cluster-angle-" + style + "-" + c) * Math.PI * 2;
+      const cd = Math.pow(stellarNoise(g, "cluster-dist-" + style + "-" + c), 0.72) * 74 * scale;
+      const cx = Math.cos(ca) * cd;
+      const cy = Math.sin(ca) * cd * 0.62;
+      const spread = (14 + stellarNoise(g, "cluster-size-" + style + "-" + c) * 36) * scale;
+      let x = cx + stellarBand(r1) * spread;
+      let y = cy + stellarBand(r2) * spread * (0.52 + r3 * 0.38);
+      if (style === "horsehead-nebula" && x > -22 * scale && x < 32 * scale && y > -58 * scale && y < 46 * scale) {
+        x += (x < 0 ? -1 : 1) * 34 * scale;
+        y += stellarBand(r4) * 18 * scale;
+      }
+      return { x, y, heat: 0.35 + r5 * 0.65, color: r3 };
+    }
+    default:
+      return spiralPoint(2, 5.8, false);
+  }
+}
+
+function drawStellarGalaxy(g, cx, cy, scale, opts) {
+  opts = opts || {};
+  const alpha = opts.alpha == null ? 1 : opts.alpha;
+  if (alpha <= 0 || scale <= 0) return;
+  const style = galaxyStyle(g);
+  const isHover = !!opts.hover;
+  const rotationSpeed = opts.rotationSpeed == null ? 0.00005 : opts.rotationSpeed;
+  const rotation = (t * rotationSpeed) + (g._rotSeed || 0);
+  const visibleScale = Math.min(1, Math.max(0.12, scale / 1.8));
+  const count = Math.floor(90 + 720 * visibleScale);
+
+  xFg.save();
+  xFg.globalCompositeOperation = "lighter";
+
+  const aura = xFg.createRadialGradient(cx, cy, 0, cx, cy, 118 * scale);
+  aura.addColorStop(0, g.tint.core + (0.10 * alpha) + ")");
+  aura.addColorStop(0.38, g.tint.arm + (0.05 * alpha) + ")");
+  aura.addColorStop(1, g.tint.arm + "0)");
+  xFg.fillStyle = aura;
+  xFg.beginPath();
+  xFg.arc(cx, cy, 118 * scale, 0, Math.PI * 2);
+  xFg.fill();
+
+  for (let i = 0; i < count; i++) {
+    const p = stellarPoint(g, style, i, count, scale);
+    const xr = Math.cos(rotation) * p.x - Math.sin(rotation) * p.y;
+    const yr = Math.sin(rotation) * p.x + Math.cos(rotation) * p.y;
+    const hot = stellarNoise(g, "stellar-hot-" + style + "-" + i);
+    const color = stellarColor(g, style, p.color);
+    const starAlpha = Math.min(1, (0.10 + p.heat * 0.48 + hot * 0.26) * alpha);
+    const starR = Math.max(0.18, (0.20 + hot * 0.80 + p.heat * 0.22) * Math.sqrt(scale));
+
+    if (hot > 0.965 || i % 53 === 0) {
+      const gr = starR * (6 + hot * 8);
+      const glow = xFg.createRadialGradient(cx + xr, cy + yr, 0, cx + xr, cy + yr, gr);
+      glow.addColorStop(0, color + (0.22 * alpha) + ")");
+      glow.addColorStop(0.45, color + (0.075 * alpha) + ")");
+      glow.addColorStop(1, color + "0)");
+      xFg.fillStyle = glow;
+      xFg.beginPath();
+      xFg.arc(cx + xr, cy + yr, gr, 0, Math.PI * 2);
+      xFg.fill();
+    }
+
+    xFg.fillStyle = color + starAlpha + ")";
+    xFg.beginPath();
+    xFg.arc(cx + xr, cy + yr, starR, 0, Math.PI * 2);
+    xFg.fill();
+  }
+
+  const coreCount = Math.floor(28 + 38 * visibleScale);
+  for (let i = 0; i < coreCount; i++) {
+    const a = stellarNoise(g, "core-a-" + style + "-" + i) * Math.PI * 2;
+    const d = Math.pow(stellarNoise(g, "core-d-" + style + "-" + i), 1.8) * 24 * scale;
+    const x = cx + Math.cos(a + rotation * 0.45) * d;
+    const y = cy + Math.sin(a + rotation * 0.45) * d * 0.62;
+    const hot = stellarNoise(g, "core-hot-" + style + "-" + i);
+    xFg.fillStyle = (hot > 0.55 ? "rgba(255,255,255," : "rgba(255, 224, 152, ") + ((0.30 + hot * 0.55) * alpha) + ")";
+    xFg.beginPath();
+    xFg.arc(x, y, Math.max(0.3, (0.45 + hot * 0.9) * Math.sqrt(scale)), 0, Math.PI * 2);
+    xFg.fill();
+  }
+
+  if (isHover) {
+    for (let i = 0; i < 18; i++) {
+      const a = (Math.PI * 2 * i) / 18 + rotation * 0.2;
+      const r = (88 + (i % 3) * 7) * scale;
+      xFg.fillStyle = g.tint.arm + (0.30 * alpha) + ")";
+      xFg.beginPath();
+      xFg.arc(cx + Math.cos(a) * r, cy + Math.sin(a) * r * 0.58, Math.max(0.35, 0.8 * scale), 0, Math.PI * 2);
+      xFg.fill();
+    }
+  }
+
+  xFg.restore();
+}
+
+function drawGalaxy(g, cx, cy, scale, opts) {
+  drawStellarGalaxy(g, cx, cy, scale, opts);
+}
+
+function drawGalaxyArrivalBurst(g, cx, cy, alpha, intensity) {
+  if (alpha <= 0 || intensity <= 0) return;
+  const pulse = 0.72 + 0.28 * Math.sin(t * 0.006 + galaxyRand(g, "burst") * Math.PI * 2);
+  const r = (7 + 18 * intensity) * pulse;
+  xFg.save();
+  xFg.globalCompositeOperation = "lighter";
+  const glow = xFg.createRadialGradient(cx, cy, 0, cx, cy, r * 2.8);
+  glow.addColorStop(0, "rgba(255,255,255," + (0.72 * alpha) + ")");
+  glow.addColorStop(0.18, g.tint.core + (0.40 * alpha) + ")");
+  glow.addColorStop(0.58, g.tint.arm + (0.16 * alpha) + ")");
+  glow.addColorStop(1, g.tint.arm + "0)");
+  xFg.fillStyle = glow;
+  xFg.beginPath();
+  xFg.arc(cx, cy, r * 2.8, 0, Math.PI * 2);
+  xFg.fill();
+
+  xFg.strokeStyle = "rgba(255, 244, 210, " + (0.30 * alpha * intensity) + ")";
+  xFg.lineWidth = 0.8;
+  xFg.lineCap = "round";
+  xFg.beginPath();
+  xFg.moveTo(cx - r * 1.25, cy);
+  xFg.lineTo(cx + r * 1.25, cy);
+  xFg.moveTo(cx, cy - r * 0.72);
+  xFg.lineTo(cx, cy + r * 0.72);
+  xFg.stroke();
+  xFg.restore();
 }
 
 // In the sky view, draw each galaxy small. Skip during fadeIn (we're
@@ -1458,46 +2525,55 @@ function drawGalaxy(g, cx, cy, scale, opts) {
 function drawGalaxiesSky(alpha) {
   if (alpha <= 0) return;
   const cs = crowdScale();
-  const driftX = Math.sin(t * 0.00005) * 8 - mouse.mx * 10;
-  const driftY = Math.cos(t * 0.00007) * 6 - mouse.my * 10;
-  for (const g of galaxies) {
+  galaxies.forEach((g, index) => {
     if (g._revealAt == null || Date.now() < g._revealAt) {
       g._sx = null;
-      continue;
+      return;
     }
-    const cx = (g.x - 0.5) * W * cs + W / 2 + driftX;
-    const cy = (g.y - 0.5) * H * cs + H / 2 + driftY;
+    const flyby = galaxyFlybyProjection(g, index, galaxies.length, cs);
+    if (!flyby || flyby.alpha <= 0.02) {
+      g._sx = null;
+      return;
+    }
+    const cx = flyby.x;
+    const cy = flyby.y;
 
     // arrival animation: same model as stars
     const age = Date.now() - g._revealAt;
     const introT = Math.min(1, age / INTRO_MS);
     const eased = 1 - Math.pow(1 - introT, 3);
-    const introScale = 1 + (1 - eased) * 4.0;
+    const introScale = 1 + (1 - eased) * 0.35;
     const introAlpha = Math.min(1, 0.4 + eased * 0.6);
 
     const isHover = hoveredGalaxy && hoveredGalaxy.id === g.id;
-    const baseScale = 0.55 * cs * introScale;
+    const baseScale = 0.48 * cs * introScale * flyby.scale;
 
-    drawGalaxy(g, cx, cy, baseScale, {
-      alpha: introAlpha * alpha,
-      hover: isHover,
-    });
+    xFg.lineWidth = Math.max(0.5, 1.0 * flyby.scale);
+    drawMotionTrail(xFg, cx, cy, flyby.centerX, flyby.centerY, 38 + 78 * flyby.scale, 0.10 * flyby.alpha * alpha, g.tint.arm);
+    drawGalaxyArrivalBurst(g, cx, cy, introAlpha * alpha * flyby.alpha, flyby.burst);
+
+    if (baseScale > 0.035) {
+      drawGalaxy(g, cx, cy, baseScale, {
+        alpha: introAlpha * alpha * flyby.alpha * Math.min(1, (flyby.u - 0.10) / 0.20),
+        hover: isHover,
+      });
+    }
 
     // small italic label, only on hover
     if (isHover) {
       xFg.font = 'italic 300 16px "Cormorant Garamond", serif';
-      xFg.fillStyle = "rgba(220, 232, 255, " + (0.85 * alpha) + ")";
+      xFg.fillStyle = "rgba(220, 232, 255, " + (0.85 * alpha * flyby.alpha) + ")";
       xFg.textAlign = "center";
       xFg.fillText(g.title, cx, cy + 70 * cs);
       xFg.font = '300 10px "Inter", sans-serif';
-      xFg.fillStyle = "rgba(180, 195, 220, " + (0.6 * alpha) + ")";
+      xFg.fillStyle = "rgba(180, 195, 220, " + (0.6 * alpha * flyby.alpha) + ")";
       xFg.fillText(g.subtitle.toUpperCase(), cx, cy + 86 * cs);
     }
 
     g._sx = cx;
     g._sy = cy;
-    g._sr = 60 * baseScale; // hit radius
-  }
+    g._sr = 52 * baseScale; // hit radius
+  });
 }
 
 // Inside the galaxy view: a big central spiral, with the nodes orbiting
@@ -1505,18 +2581,36 @@ function drawGalaxiesSky(alpha) {
 // existing reveal panel.
 function drawGalaxyDetail(g, alpha) {
   if (alpha <= 0) return;
-  const cx = W / 2 + Math.sin(t * 0.00006) * 8;
-  const cy = H / 2 + 30 + Math.cos(t * 0.00008) * 6;
+  const cx = W / 2;
+  const cy = H / 2 + 28;
 
-  // the centerpiece spiral, large
-  drawGalaxy(g, cx, cy, 3.2, { alpha: alpha });
+  // The observation view should feel still, not like the ship is screaming
+  // past it. Keep only a slow, almost museum-display rotation.
+  drawGalaxy(g, cx, cy, 2.25, { alpha: alpha, rotationSpeed: 0.000012 });
 
-  // node ring(s). For 10 nodes we put them on a single ellipse around the
-  // galaxy core, evenly spaced, with a slow shared rotation.
-  const ringRx = Math.min(W, H) * 0.36;
-  const ringRy = ringRx * 0.62;
-  const ringRot = t * 0.00003;
+  // Node lights keep orbiting after arrival. The ship stops; the galaxy
+  // system still has life.
+  const ringRx = Math.min(W, H) * 0.39;
+  const ringRy = ringRx * 0.58;
+  const ringRot = (g._rotSeed || 0) * 0.22 + t * 0.00007;
   const n = g.nodes.length;
+
+  // A faint constellation track makes the surrounding stars read as
+  // intentional information points instead of decorative background stars.
+  xFg.save();
+  xFg.globalCompositeOperation = "lighter";
+  for (let k = 0; k < n * 4; k++) {
+    const markerAng = (Math.PI * 2 * k) / (n * 4) + ringRot;
+    const mx = cx + Math.cos(markerAng) * ringRx;
+    const my = cy + Math.sin(markerAng) * ringRy;
+    const markerPulse = 0.55 + 0.45 * Math.sin(t * 0.0016 + k * 0.8);
+    xFg.fillStyle = g.tint.arm + ((0.075 + markerPulse * 0.055) * alpha) + ")";
+    xFg.beginPath();
+    xFg.arc(mx, my, Math.max(0.6, 1.0 * alpha), 0, Math.PI * 2);
+    xFg.fill();
+  }
+  xFg.restore();
+
   for (let i = 0; i < n; i++) {
     const node = g.nodes[i];
     const ang = (Math.PI * 2 * i) / n + ringRot;
@@ -1524,35 +2618,51 @@ function drawGalaxyDetail(g, alpha) {
     const ny = cy + Math.sin(ang) * ringRy;
 
     const isHover = hoveredNode === node;
-    const r = (isHover ? 4.2 : 2.8);
-    const haloR = isHover ? 70 : 48;
+    const pulse = 0.86 + 0.14 * Math.sin(t * 0.003 + i * 1.7);
+    const r = (isHover ? 6.8 : 4.3) * pulse;
+    const haloR = isHover ? 86 : 50;
 
     // halo
     const grad = xFg.createRadialGradient(nx, ny, 0, nx, ny, haloR);
-    grad.addColorStop(0, "rgba(220, 232, 255, " + (0.55 * alpha) + ")");
-    grad.addColorStop(0.3, "rgba(180, 200, 255, " + (0.20 * alpha) + ")");
+    grad.addColorStop(0, "rgba(255, 255, 255, " + ((isHover ? 0.68 : 0.36) * alpha) + ")");
+    grad.addColorStop(0.22, g.tint.core + ((isHover ? 0.35 : 0.15) * alpha) + ")");
+    grad.addColorStop(0.46, g.tint.arm + ((isHover ? 0.18 : 0.08) * alpha) + ")");
     grad.addColorStop(1, "rgba(180, 200, 255, 0)");
     xFg.fillStyle = grad;
     xFg.beginPath();
     xFg.arc(nx, ny, haloR, 0, Math.PI * 2);
     xFg.fill();
 
+    xFg.strokeStyle = isHover
+      ? "rgba(255, 244, 210, " + (0.70 * alpha) + ")"
+      : g.tint.arm + (0.34 * alpha) + ")";
+    xFg.lineWidth = isHover ? 1.6 : 1.0;
+    xFg.beginPath();
+    xFg.arc(nx, ny, isHover ? 15 : 10, 0, Math.PI * 2);
+    xFg.stroke();
+
     // core
-    xFg.fillStyle = "rgba(255, 255, 255, " + (0.95 * alpha) + ")";
+    xFg.fillStyle = "rgba(255, 255, 255, " + ((isHover ? 1.0 : 0.86) * alpha) + ")";
     xFg.beginPath();
     xFg.arc(nx, ny, r, 0, Math.PI * 2);
     xFg.fill();
 
-    // label, always visible but gentle
-    xFg.font = '300 10px "Inter", sans-serif';
-    xFg.fillStyle = isHover
-      ? "rgba(232, 240, 255, " + (0.95 * alpha) + ")"
-      : "rgba(180, 195, 220, " + (0.55 * alpha) + ")";
-    xFg.textAlign = "center";
-    // place label outside the ring (radial)
-    const lx = cx + Math.cos(ang) * (ringRx + 22);
-    const ly = cy + Math.sin(ang) * (ringRy + 22) + 4;
-    xFg.fillText(node.label.toUpperCase(), lx, ly);
+    xFg.fillStyle = g.tint.arm + ((isHover ? 0.95 : 0.55) * alpha) + ")";
+    xFg.beginPath();
+    xFg.arc(nx - r * 0.25, ny - r * 0.25, Math.max(1.1, r * 0.34), 0, Math.PI * 2);
+    xFg.fill();
+
+    if (isHover) {
+      xFg.font = '600 11px "Inter", sans-serif';
+      xFg.fillStyle = "rgba(232, 240, 255, " + (0.95 * alpha) + ")";
+      xFg.textAlign = "center";
+      xFg.shadowColor = "rgba(0, 0, 0, " + (0.65 * alpha) + ")";
+      xFg.shadowBlur = 12;
+      const lx = cx + Math.cos(ang) * (ringRx + 22);
+      const ly = cy + Math.sin(ang) * (ringRy + 22) + 4;
+      xFg.fillText(node.label.toUpperCase(), lx, ly);
+      xFg.shadowBlur = 0;
+    }
 
     node._sx = nx;
     node._sy = ny;
@@ -1588,8 +2698,6 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
 
 function tick(now) {
   t = now || performance.now();
-  drawBackgroundStars();
-  xFg.clearRect(0, 0, W, H);
 
   // figure out per-mode alphas based on transition state
   let alphaSky = 0;
@@ -1613,6 +2721,9 @@ function tick(now) {
       thawHeartbeat();
     }
   }
+
+  drawBackgroundStars(alphaSky);
+  xFg.clearRect(0, 0, W, H);
 
   // sky layer
   if (alphaSky > 0) {
@@ -1721,9 +2832,11 @@ function positionReveal(e) {
 
 cFg.addEventListener("mousemove", (e) => {
   // ---- galaxy view: hit-test the orbiting nodes ----
+  // Orbiting nodes are moving targets, so hover behaves like focus: once a
+  // node opens the reading card, it stays open while the orbit continues.
   if (viewMode === "galaxy" && activeGalaxy) {
     let foundNode = null;
-    let bestD = 28 * 28;
+    let bestD = 48 * 48;
     for (const node of activeGalaxy.nodes) {
       if (node._sx == null) continue;
       const dx = e.clientX - node._sx;
@@ -1735,12 +2848,10 @@ cFg.addEventListener("mousemove", (e) => {
       hoveredNode = foundNode;
       cFg.style.cursor = "pointer";
       showRevealForNode(foundNode);
-    } else if (!foundNode && hoveredNode) {
-      hoveredNode = null;
-      cFg.style.cursor = "default";
-      clearReveal();
+    } else {
+      cFg.style.cursor = foundNode ? "pointer" : "default";
     }
-    // pinned reveal panel — no cursor follow
+    // pinned reveal panel — no cursor follow, no chasing the orbiting node
     return;
   }
 
@@ -1761,13 +2872,14 @@ cFg.addEventListener("mousemove", (e) => {
 
   // galaxy hit-test (use a more generous radius — galaxies are bigger)
   let foundGalaxy = null;
-  let bestGD = 64 * 64;
+  let bestGD = Infinity;
   for (const g of galaxies) {
     if (g._sx == null) continue;
     const dx = e.clientX - g._sx;
     const dy = e.clientY - g._sy;
     const d = dx*dx + dy*dy;
-    if (d < bestGD) { bestGD = d; foundGalaxy = g; }
+    const hitR = Math.max(28, Math.min(110, g._sr || 64));
+    if (d < hitR * hitR && d < bestGD) { bestGD = d; foundGalaxy = g; }
   }
   // a star directly under the cursor wins over the galaxy
   if (found) foundGalaxy = null;
@@ -1793,6 +2905,25 @@ cFg.addEventListener("mousemove", (e) => {
 
 // click: enter a galaxy if one is hovered in sky view
 cFg.addEventListener("click", (e) => {
+  if (viewMode === "galaxy" && activeGalaxy) {
+    let clickedNode = null;
+    let bestD = 48 * 48;
+    for (const node of activeGalaxy.nodes) {
+      if (node._sx == null) continue;
+      const dx = e.clientX - node._sx;
+      const dy = e.clientY - node._sy;
+      const d = dx*dx + dy*dy;
+      if (d < bestD) { bestD = d; clickedNode = node; }
+    }
+    if (clickedNode) {
+      hoveredNode = clickedNode;
+      showRevealForNode(clickedNode);
+    } else if (hoveredNode) {
+      hoveredNode = null;
+      clearReveal();
+    }
+    return;
+  }
   if (viewMode === "sky" && hoveredGalaxy) {
     enterGalaxy(hoveredGalaxy);
   }
