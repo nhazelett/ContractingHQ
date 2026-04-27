@@ -2031,6 +2031,17 @@
           </div>
         </a>
 
+        <!-- PALT &amp; Milestone Builder -->
+        <a href="palt-builder.html" class="tool-card ref-card">
+          <span class="tool-card-badge badge-live">Live</span>
+          <div class="tool-card-icon">&#128197;</div>
+          <div class="tool-card-body">
+            <div class="tool-card-phase">Acquisition Planning</div>
+            <div class="tool-card-name">PALT &amp; Milestone Builder</div>
+            <p class="tool-card-desc">Generate a realistic acquisition milestone schedule from your acquisition profile: dollar threshold, competition approach, risk posture, and review cycle times.</p>
+          </div>
+        </a>
+
       </div>
     </div>
 
@@ -2080,19 +2091,19 @@
     icon.addEventListener("focus", pulse);
   })();
 
-  // PWS + Solicitation icons: hover/focus activation (is-active class)
-  (function () {
-    ["pwsIcon", "solicitationIcon", "builder1449Icon", "manualModIcon", "jeopardyIcon"].forEach(function (id) {
-      var icon = document.getElementById(id);
-      if (!icon) return;
-      var activate = function () { icon.classList.add("is-active"); };
-      var deactivate = function () { icon.classList.remove("is-active"); };
-      icon.addEventListener("mouseenter", activate);
-      icon.addEventListener("mouseleave", deactivate);
-      icon.addEventListener("focus", activate);
-      icon.addEventListener("blur", deactivate);
-    });
-  })();
+  // PWS, Solicitation, Manual Mod, Jeopardy: same pulse pattern
+  ['pwsIcon', 'solicitationIcon', 'manualModIcon', 'jeopardyIcon'].forEach(function (id) {
+    var icon = document.getElementById(id);
+    if (!icon) return;
+    var pulseTimer;
+    var pulse = function () {
+      icon.classList.add('is-pulsing');
+      window.clearTimeout(pulseTimer);
+      pulseTimer = window.setTimeout(function () { icon.classList.remove('is-pulsing'); }, 520);
+    };
+    icon.addEventListener('mouseenter', pulse);
+    icon.addEventListener('focus', pulse);
+  });
 </script>
 </body>
 </html>
