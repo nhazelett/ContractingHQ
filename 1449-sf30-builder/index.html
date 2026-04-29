@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SF 1449 Generator</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <a href="../cco-training-tools.html" style="color:#5b9dff;text-decoration:none;font-size:0.78rem;font-weight:600;display:inline-block;margin-bottom:0.2rem;">&larr; CCO Training Tools</a>
+      <strong>SF 1449 Generator</strong>
+      <span>Training contract builder</span>
+    </div>
+    <div class="actions">
+      <button type="button" id="sampleBtn" class="ghost">Sample</button>
+      <button type="button" id="saveDraftBtn" class="ghost">Save Draft</button>
+      <button type="button" id="exportBtn" class="ghost">Export JSON</button>
+      <label class="file-button">
+        Import JSON
+        <input type="file" id="importInput" accept="application/json">
+      </label>
+      <button type="button" id="printBtn" class="primary">Save to PDF</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <form id="editor" class="editor">
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>Document</h2>
+          <span id="draftStatus">Unsaved</span>
+        </div>
+        <div class="field-grid two">
+          <label>
+            Instrument type
+            <select data-field="document.instrumentType">
+              <option value="SOLICITATION">Solicitation</option>
+              <option value="CONTRACT" selected>Contract</option>
+              <option value="ORDER">Order</option>
+            </select>
+          </label>
+          <label>
+            Contract profile
+            <select data-field="document.profile">
+              <option value="ffp">Firm-fixed-price</option>
+              <option value="idiq">IDIQ</option>
+              <option value="requirements">Requirements</option>
+              <option value="optionYear">Base plus options</option>
+            </select>
+          </label>
+        </div>
+        <div class="field-grid three">
+          <label>
+            Form 9 / requisition no.
+            <input data-field="document.requisitionNumber" placeholder="FA4867-F9-20XX-0001">
+          </label>
+          <label>
+            Contract no.
+            <input data-field="document.contractNumber" readonly>
+          </label>
+          <label>
+            Award/effective date
+            <input data-field="document.awardDate" placeholder="04/29/20XX">
+          </label>
+          <label>
+            Order no.
+            <input data-field="document.orderNumber">
+          </label>
+          <label>
+            Solicitation no.
+            <input data-field="document.solicitationNumber" placeholder="FA4867XXQ0001">
+          </label>
+          <label>
+            Issue date
+            <input data-field="document.issueDate" placeholder="03/15/20XX">
+          </label>
+        </div>
+        <div class="inline-tools">
+          <button type="button" id="generateContractPiidBtn" class="small">Randomize contract serial</button>
+          <button type="button" id="generateSolicitationPiidBtn" class="small">Randomize solicitation serial</button>
+          <span>Updates only the last two digits after `00`.</span>
+        </div>
+        <div class="field-grid three">
+          <label>
+            Offer due date
+            <input data-field="document.offerDueDate" placeholder="04/08/20XX">
+          </label>
+          <label>
+            Local time
+            <input data-field="document.offerDueTime" placeholder="3:00 PM ET">
+          </label>
+          <label>
+            Method
+            <select data-field="document.method">
+              <option value="IFB">IFB</option>
+              <option value="RFP" selected>RFP</option>
+              <option value="RFQ">RFQ</option>
+            </select>
+          </label>
+        </div>
+        <div class="field-grid three">
+          <label>
+            NAICS
+            <input data-field="acquisition.naics" readonly>
+          </label>
+          <label>
+            Size standard
+            <input data-field="acquisition.sizeStandard" readonly>
+          </label>
+          <label>
+            Set-aside
+            <select data-field="acquisition.setAside">
+              <option value="UNRESTRICTED">Unrestricted</option>
+            </select>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <label><input type="checkbox" data-field="document.trainingWatermark"> Training watermark</label>
+          <label><input type="checkbox" data-field="acquisition.fobDestination"> FOB destination</label>
+          <label><input type="checkbox" data-field="acquisition.dpasRated"> DPAS rated order</label>
+        </div>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>Government</h2>
+        </div>
+        <div class="field-grid two">
+          <label>
+            Government user / CO
+            <select data-field="government.contactName" id="contactSelect">
+              <option value="SSgt Maya Reyes">SSgt Maya Reyes</option>
+              <option value="SrA Jordan Kim">SrA Jordan Kim</option>
+              <option value="TSgt Avery Brooks">TSgt Avery Brooks</option>
+              <option value="MSgt Elena Carter">MSgt Elena Carter</option>
+              <option value="Lt Marcus Hale">Lt Marcus Hale</option>
+              <option value="Capt Nadia Sullivan">Capt Nadia Sullivan</option>
+            </select>
+          </label>
+          <label>
+            Phone
+            <input data-field="government.contactPhone" readonly>
+          </label>
+        </div>
+        <div class="field-grid two">
+          <label>
+            Issued by code
+            <input data-field="government.issuedByCode" readonly>
+          </label>
+          <label>
+            Issued by office
+            <input data-field="government.issuedByName" readonly>
+          </label>
+        </div>
+        <label>
+          Issued by address
+          <textarea rows="3" data-field="government.issuedByAddress" readonly></textarea>
+        </label>
+        <div class="field-grid two">
+          <label>
+            Deliver to code
+            <input data-field="government.deliverToCode" readonly>
+          </label>
+          <label>
+            Deliver to
+            <input data-field="government.deliverToName" readonly>
+          </label>
+        </div>
+        <div class="field-with-action wide">
+          <label>
+            Deliver to address
+            <textarea rows="3" data-field="government.deliverToAddress" readonly></textarea>
+          </label>
+          <button type="button" id="generateDeliveryBtn" class="small">Randomize Delivery</button>
+        </div>
+        <div class="field-grid two">
+          <label>
+            Administered by code
+            <input data-field="government.adminCode" readonly>
+          </label>
+          <label>
+            Administered by
+            <input data-field="government.adminName" readonly>
+          </label>
+        </div>
+        <label>
+          Administered by address
+          <textarea rows="3" data-field="government.adminAddress" readonly></textarea>
+        </label>
+        <div class="field-grid two">
+          <label>
+            Payment office code
+            <input data-field="government.paymentCode" readonly>
+          </label>
+          <label>
+            Payment office
+            <input data-field="government.paymentName" readonly>
+          </label>
+        </div>
+        <label>
+          Payment address
+          <textarea rows="3" data-field="government.paymentAddress" readonly></textarea>
+        </label>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>Contractor</h2>
+        </div>
+        <label>
+          Contractor roster
+          <select id="contractorSelect"></select>
+        </label>
+        <div class="field-grid two">
+          <label>
+            UEI / code
+            <input data-field="contractor.code" readonly>
+          </label>
+          <label>
+            Facility code
+            <input data-field="contractor.facilityCode" readonly>
+          </label>
+        </div>
+        <label>
+          Contractor / offeror
+          <input data-field="contractor.name" readonly>
+        </label>
+        <label>
+          Address
+          <textarea rows="4" data-field="contractor.address" readonly></textarea>
+        </label>
+        <div class="field-grid two">
+          <label>
+            Phone
+            <input data-field="contractor.phone" readonly>
+          </label>
+          <label>
+            Discount terms
+            <input data-field="contractor.discountTerms" readonly>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <label><input type="checkbox" data-field="contractor.remittanceDifferent"> Different remittance address</label>
+        </div>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>CLIN Structure</h2>
+          <button type="button" id="addClinBtn" class="small">Add CLIN</button>
+        </div>
+        <div id="clinEditor" class="clin-editor"></div>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>UCF Sections</h2>
+        </div>
+        <div class="toggle-row">
+          <label><input type="checkbox" data-field="ucf.includeKLM"> Include solicitation sections K, L, and M</label>
+          <label><input type="checkbox" data-field="ucf.showBlankSections"> Keep sparse sections visible</label>
+        </div>
+        <label>
+          Section C - Description / specs / work statement
+          <textarea rows="5" data-field="ucf.sectionC"></textarea>
+        </label>
+        <label>
+          Section D - Packaging and marking
+          <textarea rows="3" data-field="ucf.sectionD"></textarea>
+        </label>
+        <label>
+          Section E - Inspection and acceptance
+          <textarea rows="3" data-field="ucf.sectionE"></textarea>
+        </label>
+        <label>
+          Section F - Deliveries or performance
+          <textarea rows="4" data-field="ucf.sectionF"></textarea>
+        </label>
+        <label>
+          Section G - Contract administration data
+          <textarea rows="4" data-field="ucf.sectionG"></textarea>
+        </label>
+        <label>
+          Section H - Special contract requirements
+          <textarea rows="4" data-field="ucf.sectionH"></textarea>
+        </label>
+        <div class="section-heading subheading">
+          <h2>Section J - Attachments</h2>
+          <button type="button" id="addAttachmentBtn" class="small">Add Attachment</button>
+        </div>
+        <div id="attachmentEditor" class="attachment-editor"></div>
+        <label class="solicitation-only-field">
+          Section K - Representations, certifications, and statements
+          <textarea rows="4" data-field="ucf.sectionK"></textarea>
+        </label>
+        <label class="solicitation-only-field">
+          Section L - Instructions, conditions, and notices
+          <textarea rows="5" data-field="ucf.sectionL"></textarea>
+        </label>
+        <label class="solicitation-only-field">
+          Section M - Evaluation factors for award
+          <textarea rows="5" data-field="ucf.sectionM"></textarea>
+        </label>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>Clauses</h2>
+          <button type="button" id="applyProfileBtn" class="small">Apply Profile</button>
+        </div>
+        <div id="clauseEditor" class="clause-editor"></div>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>Award</h2>
+        </div>
+        <div class="field-grid two">
+          <label>
+            Fund type
+            <select data-field="award.fundType">
+              <option value="om">O&amp;M, Air Force</option>
+              <option value="procurement">Other Procurement, Air Force</option>
+            </select>
+          </label>
+          <div class="field-with-action wide">
+            <button type="button" id="generateFundingBtn" class="small">Randomize funding data</button>
+          </div>
+        </div>
+        <label>
+          Accounting and appropriation data
+          <textarea rows="6" data-field="award.accountingData" readonly></textarea>
+        </label>
+        <div class="field-grid two">
+          <label>
+            Referenced offer date
+            <input data-field="award.offerDate" placeholder="04/08/20XX">
+          </label>
+          <label>
+            Accepted items (auto)
+            <input data-field="award.acceptedItems" readonly>
+          </label>
+        </div>
+        <div class="field-grid two">
+          <label>
+            Contractor signer
+            <input data-field="award.contractorSigner">
+          </label>
+          <label>
+            Contractor date
+            <input data-field="award.contractorDate" placeholder="04/26/20XX">
+          </label>
+          <label>
+            Contracting officer
+            <input data-field="award.contractingOfficer" readonly>
+          </label>
+          <label>
+            CO date
+            <input data-field="award.coDate" placeholder="04/29/20XX">
+          </label>
+        </div>
+        <div class="signature-controls">
+          <div class="inline-tools">
+            <button type="button" id="applySignaturesBtn" class="small">Apply required signatures</button>
+            <button type="button" id="clearSignaturesBtn" class="small">Clear signatures</button>
+          </div>
+          <div class="toggle-row">
+            <label><input type="checkbox" data-field="signatures.contractor"> Contractor signed</label>
+            <label><input type="checkbox" data-field="signatures.government"> Government signed</label>
+          </div>
+        </div>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>SF 30 Modification</h2>
+          <button type="button" id="randomizeModBtn" class="small">Randomize Mod No.</button>
+        </div>
+        <div class="field-grid three">
+          <label>
+            Mod no.
+            <input data-field="mod.modNumber">
+          </label>
+          <label>
+            Effective date
+            <input data-field="mod.effectiveDate" placeholder="05/01/20XX">
+          </label>
+          <label>
+            Form 9 / requisition no.
+            <input data-field="mod.requisitionNumber">
+          </label>
+        </div>
+        <div class="inline-tools">
+          <button type="button" id="matchModReqBtn" class="small">Match award Form 9</button>
+          <span>Use a different Form 9 here for option or funding mods.</span>
+        </div>
+        <div class="field-grid two">
+          <label>
+            Mod type
+            <select data-field="mod.modType">
+              <option value="administrative">Administrative change</option>
+              <option value="supplemental">Supplemental agreement</option>
+              <option value="unilateral">Unilateral change order</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+          <label>
+            Authority
+            <input data-field="mod.authority">
+          </label>
+        </div>
+        <div class="toggle-row">
+          <label><input type="checkbox" data-field="mod.contractorSignatureRequired"> Contractor signature required</label>
+        </div>
+        <label>
+          Description of amendment/modification
+          <textarea rows="6" data-field="mod.description"></textarea>
+        </label>
+      </section>
+    </form>
+
+    <section class="preview-shell">
+      <div class="preview-top">
+        <div>
+          <strong id="previewTitle">Preview</strong>
+          <span id="pageCount"></span>
+        </div>
+        <div class="view-tabs">
+          <button type="button" id="previewAwardBtn" class="view-tab active">SF 1449</button>
+          <button type="button" id="previewModBtn" class="view-tab">SF 30</button>
+        </div>
+        <div class="zoom-control">
+          <label>
+            Zoom
+            <input type="range" id="zoomInput" min="55" max="110" value="78">
+          </label>
+        </div>
+      </div>
+      <div id="preview" class="preview"></div>
+    </section>
+  </main>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>
