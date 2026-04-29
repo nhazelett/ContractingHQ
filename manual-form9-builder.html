@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Form 9 builder for CCO capstone training. Generates a Form 9 PDF that visually matches the AF Form 9 layout, with auto-generated PR numbers and dates." />
+  <title>Form 9 Builder | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>.bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}</style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    .bldr-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+    .bldr-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .bldr-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .bldr-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .bldr-intro p { color: var(--silver); font-size: 0.9rem; max-width: 660px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    .bldr-form { max-width: 800px; margin: 2rem auto; padding: 0 1.5rem; }
+
+    .bldr-section { background: rgba(10,22,50,0.4); border: 1px solid rgba(74,158,255,0.15); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .bldr-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.5rem; }
+    .bldr-section .sec-desc { color: var(--silver); font-size: 0.82rem; margin-bottom: 1rem; line-height: 1.5; }
+    .bldr-section label { display: block; color: var(--silver); font-size: 0.82rem; font-weight: 600; margin-bottom: 0.3rem; margin-top: 0.75rem; }
+    .bldr-section input[type="text"], .bldr-section input[type="number"] {
+      width: 100%; box-sizing: border-box; background: rgba(4,13,31,0.8); border: 1px solid rgba(74,158,255,0.2); color: var(--white); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.88rem; font-family: inherit;
+    }
+    .bldr-section textarea {
+      width: 100%; box-sizing: border-box; background: rgba(4,13,31,0.8); border: 1px solid rgba(74,158,255,0.2); color: var(--white); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.85rem; font-family: inherit; min-height: 70px; resize: vertical; line-height: 1.6;
+    }
+    .bldr-section select {
+      width: 100%; box-sizing: border-box; background: rgba(4,13,31,0.8); border: 1px solid rgba(74,158,255,0.2); color: var(--white); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.88rem; font-family: inherit;
+      appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a9eff' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; padding-right: 2rem; cursor: pointer;
+    }
+    .bldr-section select option { background: #0a1632; color: #e2eaf4; padding: 0.4rem; }
+    .bldr-section input:focus, .bldr-section textarea:focus, .bldr-section select:focus { outline: none; border-color: var(--accent); }
+    .bldr-section .optional-tag { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: #fcd34d; opacity: 0.7; font-weight: 700; }
+
+    /* Item rows */
+    .item-row { display: grid; grid-template-columns: 50px 1fr 60px 60px 90px 36px; gap: 0.5rem; align-items: start; margin-bottom: 0.5rem; }
+    @media (max-width: 700px) { .item-row { grid-template-columns: 1fr 1fr; } .item-row .item-desc { grid-column: 1 / -1; } }
+    .item-row input { margin-top: 0 !important; }
+    .item-header { display: grid; grid-template-columns: 50px 1fr 60px 60px 90px 36px; gap: 0.5rem; margin-bottom: 0.35rem; font-size: 0.72rem; color: var(--silver); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    @media (max-width: 700px) { .item-header { display: none; } }
+
+    .item-remove { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; border-radius: 6px; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700; transition: background 0.12s; margin-top: 0; }
+    .item-remove:hover { background: rgba(248,113,113,0.2); }
+
+    .add-btn { background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.2); color: var(--accent); border-radius: 8px; padding: 0.45rem 0.9rem; cursor: pointer; font-size: 0.8rem; font-weight: 600; font-family: inherit; transition: background 0.12s; margin-top: 0.5rem; }
+    .add-btn:hover { background: rgba(74,158,255,0.2); }
+
+    .pair-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 500px) { .pair-row { grid-template-columns: 1fr; } }
+
+    /* Buttons */
+    .btn-row { display: flex; gap: 0.75rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap; }
+    .gen-btn { background: var(--accent); color: #040d1f; border: none; border-radius: 10px; padding: 0.75rem 2rem; font-size: 0.95rem; font-weight: 700; font-family: 'Rajdhani', sans-serif; cursor: pointer; letter-spacing: 0.5px; transition: opacity 0.12s; }
+    .gen-btn:hover { opacity: 0.85; }
+    .preview-btn { background: rgba(52,211,153,0.15); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.3); border-radius: 10px; padding: 0.75rem 2rem; font-size: 0.95rem; font-weight: 700; font-family: 'Rajdhani', sans-serif; cursor: pointer; transition: opacity 0.12s; }
+    .preview-btn:hover { opacity: 0.85; }
+
+    /* Preview area */
+    .preview-area { background: #fff; color: #000; border-radius: 10px; padding: 0; margin-top: 1.5rem; max-height: 800px; overflow: auto; display: flex; justify-content: center; }
+
+    /* Hidden PDF content */
+    #pdf-content { display: none; }
+    #pdf-content.rendering { display: block; position: fixed; top: -9999px; left: -9999px; }
+
+    .capstone-note { background: rgba(252,211,77,0.08); border: 1px solid rgba(252,211,77,0.2); border-radius: 10px; padding: 0.85rem 1rem; margin: 1rem auto 0; max-width: 800px; color: #fde68a; font-size: 0.82rem; line-height: 1.5; }
+    .capstone-note strong { color: #fcd34d; }
+
+    /* Form 9 facsimile — used in preview and PDF render */
+    .f9-doc { background: #fff; color: #000; font-family: Arial, Helvetica, sans-serif; width: 215.9mm; height: 279.4mm; position: relative; box-sizing: border-box; }
+    .f9-doc * { box-sizing: border-box; }
+    .f9-label { position: absolute; font-size: 7pt; line-height: 1.05; color: #000; }
+    .f9-line-h { position: absolute; height: 0; border-top: 0.3mm solid #000; }
+    .f9-line-v { position: absolute; width: 0; border-left: 0.3mm solid #000; }
+    .f9-rect { position: absolute; border: 0.3mm solid #000; }
+    .f9-val { position: absolute; font-size: 9pt; line-height: 1.1; font-family: 'Courier New', monospace; color: #000; padding: 0.3mm 0.5mm; overflow: hidden; }
+    .f9-val.center { text-align: center; }
+    .f9-val.right { text-align: right; }
+  </style>
+</head>
+<body>
+<!-- NAV -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="bldr-bg">
+  <div class="bldr-intro">
+    <div class="bldr-intro-tag">CCO Capstone Tool</div>
+    <h2>Form 9 Builder</h2>
+    <p>Generates a Request for Purchase (Form 9) PDF that visually matches the real form layout. PR numbers and dates auto-generate so you don't have to handjam them &mdash; each click produces a fresh document with a unique F2D3J&#8209;prefixed PR number and frozen, plausible-looking dates.</p>
+  </div>
+
+  <div class="capstone-note">
+    <strong>Capstone use:</strong> Build a few of these to represent prior workload an outgoing CCO would have left behind. Pair them with matching 1449s, BPAs, and IDIQs so trainees walking in have a real office to work in.
+  </div>
+
+  <div style="max-width:800px;margin:0.6rem auto 0;padding:0 1.5rem;font-size:0.72rem;color:#7a8290;font-family:'Inter',system-ui,sans-serif;font-style:italic;">Note: Don't enter CUI or other sensitive information &mdash; ContractingHQ is hosted on public infrastructure and isn't authorized for protected data. This is a training tool only; use fictional data.</div>
+
+  <div class="bldr-form">
+
+    <!-- Header / Origins -->
+    <div class="bldr-section">
+      <h3>Origins &amp; Routing</h3>
+      <div class="sec-desc">Where the requirement is coming from and the offices on the routing chain. PR Number and the form date are auto-generated when you click Generate.</div>
+      <label>Installation</label>
+      <input type="text" id="f9-instal" placeholder="e.g., Al Udeid AB, Qatar" />
+      <label>Through (routing)</label>
+      <input type="text" id="f9-through" placeholder="e.g., 379 ECES/CC" />
+      <label>Contracting Office</label>
+      <input type="text" id="f9-contoff" placeholder="e.g., 379 ECONS/LGCA" />
+      <label>Class</label>
+      <select id="f9-class">
+        <option value="ROUTINE">ROUTINE</option>
+        <option value="URGENT">URGENT</option>
+        <option value="EMERGENCY">EMERGENCY</option>
+      </select>
+      <label>From (Requesting Activity)</label>
+      <input type="text" id="f9-from" placeholder="e.g., 379 ECES/CEOSF, Bldg 1421" />
+    </div>
+
+    <!-- Body header -->
+    <div class="bldr-section">
+      <h3>Purchase &amp; Delivery</h3>
+      <div class="sec-desc">Three-up header above the line items.</div>
+      <label>Purchased For</label>
+      <input type="text" id="f9-for" placeholder="e.g., 379 ECES/CEOSF" />
+      <label>For Delivery To</label>
+      <input type="text" id="f9-deliverto" placeholder="e.g., Bldg 1421, Al Udeid AB, Qatar" />
+      <div class="sec-desc" style="margin-top:0.75rem;">"Not Later Than" date auto-generates as form date plus 30&#8211;90 days.</div>
+    </div>
+
+    <!-- Items -->
+    <div class="bldr-section">
+      <h3>Items / Services Requested</h3>
+      <div class="sec-desc">The 1977 Form 9 fits roughly 21 lines. Anything beyond that overflows to "see attached list." Keep it tight or use the Description column to lump related buys onto one line.</div>
+
+      <div class="item-header">
+        <span>Item</span><span>Description</span><span>Qty</span><span>Unit</span><span>Unit Price</span><span></span>
+      </div>
+      <div id="item-list">
+        <div class="item-row" id="item-0">
+          <input type="text" value="1" />
+          <input type="text" class="item-desc" placeholder="e.g., HVAC preventive maintenance, base period (12 months)" />
+          <input type="number" placeholder="Qty" min="0" step="1" />
+          <input type="text" placeholder="EA / LO / MO" />
+          <input type="text" placeholder="$0.00" />
+          <button class="item-remove" onclick="removeItem('item-0')">&times;</button>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addItem()">+ Add Item</button>
+    </div>
+
+    <!-- Purpose -->
+    <div class="bldr-section">
+      <h3>Purpose</h3>
+      <div class="sec-desc">The narrative justifying the buy. This is where capstone inject hooks live &mdash; sole-source rationale, urgency, prior contractor history.</div>
+      <textarea id="f9-purpose" placeholder="e.g., Required to maintain mission-essential climate control in maintenance hangar. Loss of HVAC degrades aircraft component storage and creates a safety hazard during summer ops. Existing contract expires; gap in coverage cannot be tolerated."></textarea>
+    </div>
+
+    <!-- Signatures -->
+    <div class="bldr-section">
+      <h3>Signature Blocks</h3>
+      <div class="sec-desc">Typed names that print under the signature lines. Signature dates auto-generate and stay close to the form date. Leave any block empty to print blank for hand-jamming.</div>
+
+      <label>Typed Name &amp; Grade of Requesting Official</label>
+      <input type="text" id="f9-req-name" placeholder="e.g., JOHN A. SMITH, SSgt, USAF" />
+      <label>Telephone No.</label>
+      <input type="text" id="f9-req-phone" placeholder="e.g., DSN 318-455-1234" />
+
+      <label>Typed Name &amp; Grade of Approving Official</label>
+      <input type="text" id="f9-app-name" placeholder="e.g., JANE B. DOE, Lt Col, USAF" />
+
+      <label>Accounting Classification</label>
+      <input type="text" id="f9-acctclass" placeholder="e.g., 5723400 320 13G2 667100 503000 F&Q 503000" />
+      <label>Amount</label>
+      <input type="text" id="f9-acctamt" placeholder="$0.00 (auto if blank)" />
+
+      <label>Typed Name &amp; Grade of Certifying Official</label>
+      <input type="text" id="f9-ctf-name" placeholder="e.g., MICHAEL R. JONES, GS-12" />
+    </div>
+
+    <div class="btn-row">
+      <button class="preview-btn" onclick="showPreview()">Preview</button>
+      <button class="gen-btn" onclick="generatePDF()">Generate PDF</button>
+    </div>
+
+    <div id="preview-container" style="display:none;">
+      <div class="preview-area" id="form9-preview"></div>
+    </div>
+
+    <div id="pdf-content"></div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+  /* ==========================================================
+     FORM 9 LAYOUT — extracted from the AF IMT 9 (1977-03-01)
+     XFA template. Coordinates in millimeters from page top-left.
+     ========================================================== */
+
+  // [y, x, "TEXT", "extra-css"]
+  var F9_LABELS = [
+    [13.4, 158.1, "NO.", ""],
+    [15.5, 62.0, "REQUEST FOR PURCHASE", "font-weight:bold;font-size:11pt;letter-spacing:0.3pt;"],
+    [21.9, 13.5, "INSTALLATION", ""],
+    [21.9, 158.1, "DATE", ""],
+    [30.3, 158.1, "CLASS", ""],
+    [38.8, 13.5, "THROUGH:", "font-weight:bold;"],
+    [38.8, 158.0, "CONTRACT, PURCHASE ORDER OR<br/>DELIVERY ORDER NO.", ""],
+    [49.9, 13.5, "FROM:", "font-weight:bold;"],
+    [56.0, 34.4, "IT IS REQUESTED THAT THE SUPPLIES AND SERVICES ENUMERATED BELOW AND IN THE ATTACHED LIST, BE", "font-size:6.5pt;"],
+    [60.0, 13.5, "PURCHASED FOR", ""],
+    [60.0, 84.7, "FOR DELIVERY TO", ""],
+    [60.0, 158.1, "NOT LATER THAN", ""],
+    [68.7, 181.5, "ESTIMATED<br/>TOTAL COST", "text-align:center;width:18mm;"],
+    [70.6, 16.1, "ITEM", ""],
+    [70.6, 60.0, "DESCRIPTION OF MATERIAL OR SERVICES TO BE PURCHASED", ""],
+    [70.6, 128.2, "QUANTITY", ""],
+    [70.6, 144.8, "UNIT", ""],
+    [193.3, 164.7, "TOTAL", "font-weight:bold;"],
+    [198.6, 13.5, "PURPOSE", "font-weight:bold;"],
+    [208.4, 13.5, "DATE", ""],
+    [208.6, 54.2, "TYPED NAME AND GRADE OF REQUESTING OFFICIAL", ""],
+    [208.4, 127.8, "SIGNATURE", ""],
+    [216.4, 127.8, "TELEPHONE NO.", ""],
+    [224.9, 13.5, "DATE", ""],
+    [224.9, 54.2, "TYPED NAME AND GRADE OF APPROVING OFFICIAL", ""],
+    [224.9, 127.8, "SIGNATURE", ""],
+    [238.0, 16.6, "I certify that the supplies and services listed above and in the attached list are properly chargeable to the following allotments, the available balances of which are sufficient to cover the cost thereof, and funds have been committed.", "font-size:6.5pt;width:172mm;line-height:1.3;"],
+    [246.2, 13.5, "ACCOUNTING CLASSIFICATION", ""],
+    [246.2, 156.0, "AMOUNT", ""],
+    [254.7, 13.5, "DATE", ""],
+    [254.7, 127.8, "SIGNATURE", ""],
+    [255.0, 54.2, "TYPED NAME AND GRADE OF CERTIFYING OFFICIAL", ""],
+    [267.4, 13.5, "AF IMT 9, 19770301, V2", "font-size:6pt;"]
+  ];
+
+  // [y, x, length, orientation] orientation = "h" or "v"
+  var F9_LINES = [
+    [21.12, 157.33, 45.69, "h"],
+    [21.11, 12.86, 144.78, "h"],
+    [29.72, 12.78, 190.35, "h"],
+    [38.18, 12.78, 190.35, "h"],
+    [46.63, 12.78, 144.53, "h"],
+    [55.12, 12.78, 190.35, "h"],
+    [59.33, 12.78, 190.35, "h"],
+    [67.82, 12.78, 190.35, "h"],
+    [75.59, 12.78, 190.35, "h"],
+    [191.59, 12.78, 190.35, "h"],
+    [197.51, 12.78, 190.35, "h"],
+    [207.92, 12.78, 190.35, "h"],
+    [215.72, 126.82, 76.30, "h"],
+    [224.18, 12.78, 190.35, "h"],
+    [236.88, 12.78, 190.35, "h"],
+    [245.62, 12.78, 190.35, "h"],
+    [254.08, 12.78, 190.35, "h"],
+    [67.82, 25.22, 123.77, "v"],
+    [207.92, 53.42, 28.96, "v"],
+    [254.08, 53.42, 12.72, "v"],
+    [59.33, 83.64, 8.46, "v"],
+    [67.82, 126.82, 123.77, "v"],
+    [207.92, 126.82, 28.96, "v"],
+    [254.08, 126.82, 12.72, "v"],
+    [67.82, 142.32, 123.77, "v"],
+    [245.62, 155.02, 8.46, "v"],
+    [12.88, 157.68, 8.07, "v"],
+    [67.82, 175.08, 129.72, "v"],
+    [59.33, 153.06, 132.26, "v"],
+    [21.12, 157.50, 34.01, "v"]
+  ];
+
+  // Outer rectangle
+  var F9_RECT = { x: 12.70, y: 12.88, w: 190.50, h: 254.00 };
+
+  // Field positions (where data values render)
+  var F9_FIELDS = {
+    NUMBER:   { x: 158.6, y: 16.0,  w: 43.5, h: 4.5 },
+    INSTAL:   { x: 13.2,  y: 24.5,  w: 143.7, h: 4.8 },
+    DATE_2:   { x: 164.8, y: 24.5,  w: 32.5, h: 4.8 },
+    CONTOFF:  { x: 13.2,  y: 32.9,  w: 143.7, h: 4.8 },
+    CLASS:    { x: 158.6, y: 32.9,  w: 43.5, h: 4.8 },
+    THROUGH:  { x: 13.2,  y: 41.4,  w: 143.7, h: 4.8 },
+    PONUMBER: { x: 158.3, y: 46.7,  w: 43.5, h: 7.9 },
+    FROM:     { x: 13.2,  y: 49.9,  w: 143.7, h: 4.5 },
+    FOR:      { x: 13.2,  y: 62.6,  w: 68.9, h: 4.5 },
+    DELIVERTO:{ x: 84.4,  y: 62.6,  w: 68.1, h: 4.5 },
+    NLTDATE:  { x: 157.7, y: 62.6,  w: 43.6, h: 4.5 },
+    GRNDTOT:  { x: 175.6, y: 192.6, w: 27.1, h: 4.2 },
+    PURPOSE:  { x: 26.0,  y: 198.2, w: 176.6, h: 9.2 },
+    RQSTDATE: { x: 16.5,  y: 219.0, w: 33.0, h: 4.5 },
+    REQNAME:  { x: 54.3,  y: 219.0, w: 71.6, h: 4.5 },
+    PHONE:    { x: 127.3, y: 219.3, w: 75.4, h: 4.2 },
+    APPRDATE: { x: 17.1,  y: 231.8, w: 33.0, h: 4.5 },
+    APPRNAME: { x: 54.0,  y: 231.8, w: 71.6, h: 4.5 },
+    ACCTCLASS:{ x: 13.2,  y: 249.1, w: 141.4, h: 4.4 },
+    ACCTAMT:  { x: 155.5, y: 249.1, w: 47.2, h: 4.4 },
+    CTFYDATE: { x: 16.5,  y: 261.8, w: 33.0, h: 4.5 },
+    CTFYNAME: { x: 54.1,  y: 261.8, w: 71.6, h: 4.5 }
+  };
+
+  // Item rows (21 visible rows)
+  var F9_ITEM_ROW_HEIGHT = 5.5;
+  var F9_ITEM_FIRST_Y = 76.6;
+
+  /* ==========================================================
+     Form input handling
+     ========================================================== */
+  var itemCount = 1;
+
+  function addItem() {
+    var id = 'item-' + itemCount++;
+    var row = document.createElement('div');
+    row.className = 'item-row';
+    row.id = id;
+    row.innerHTML = '<input type="text" value="' + itemCount + '" /><input type="text" class="item-desc" placeholder="Description" /><input type="number" placeholder="Qty" min="0" step="1" /><input type="text" placeholder="EA" /><input type="text" placeholder="$0.00" /><button class="item-remove" onclick="removeItem(\'' + id + '\')">&times;</button>';
+    document.getElementById('item-list').appendChild(row);
+  }
+  function removeItem(id) {
+    var el = document.getElementById(id);
+    if (el) el.remove();
+  }
+
+  function escHtml(s) {
+    var d = document.createElement('div');
+    d.textContent = s == null ? '' : s;
+    return d.innerHTML;
+  }
+
+  function parseDollar(s) {
+    if (!s) return 0;
+    return parseFloat(s.replace(/[^0-9.\-]/g, '')) || 0;
+  }
+
+  function fmtDollar(n) {
+    return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function getVal(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+  /* ==========================================================
+     Random PR Number + Date generation
+     ========================================================== */
+  function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+  // F2D3J + 7 alphanumeric chars (typical AF PR number format)
+  function genPRNumber() {
+    var chars = 'ABCDEFGHJKLMNPRTUWXY0123456789';
+    var suffix = '';
+    for (var i = 0; i < 7; i++) suffix += chars.charAt(randInt(0, chars.length - 1));
+    return 'F2D3J' + suffix;
+  }
+
+  // Random date 90 to 540 days prior to today, returned as Date object.
+  // Output format will be applied later (DD MMM YYYY for visible fields).
+  function genFormDate() {
+    var now = new Date();
+    var daysBack = randInt(90, 540);
+    var d = new Date(now.getTime() - daysBack * 86400000);
+    return d;
+  }
+  function addDays(d, n) {
+    return new Date(d.getTime() + n * 86400000);
+  }
+  function fmtDateYYYYMMDD(d) {
+    if (!d) return '';
+    var y = d.getFullYear();
+    var m = String(d.getMonth() + 1).padStart(2, '0');
+    var dd = String(d.getDate()).padStart(2, '0');
+    return y + m + dd;
+  }
+  function fmtDateDDMMMYYYY(d) {
+    if (!d) return '';
+    var months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    var dd = String(d.getDate()).padStart(2, '0');
+    return dd + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  /* ==========================================================
+     Collect form input
+     ========================================================== */
+  function collectFormData() {
+    var formDate = genFormDate();
+    var nltDate = addDays(formDate, randInt(30, 90));
+    var rqstDate = addDays(formDate, randInt(0, 2));
+    var apprDate = addDays(rqstDate, randInt(0, 4));
+    var ctfyDate = addDays(apprDate, randInt(0, 4));
+
+    var data = {
+      number: genPRNumber(),
+      formDate: formDate,
+      nltDate: nltDate,
+      rqstDate: rqstDate,
+      apprDate: apprDate,
+      ctfyDate: ctfyDate,
+      instal: getVal('f9-instal'),
+      through: getVal('f9-through'),
+      contoff: getVal('f9-contoff'),
+      cls: getVal('f9-class'),
+      from: getVal('f9-from'),
+      forr: getVal('f9-for'),
+      deliverto: getVal('f9-deliverto'),
+      items: [],
+      purpose: getVal('f9-purpose'),
+      reqName: getVal('f9-req-name'),
+      reqPhone: getVal('f9-req-phone'),
+      appName: getVal('f9-app-name'),
+      acctClass: getVal('f9-acctclass'),
+      acctAmt: parseDollar(getVal('f9-acctamt')),
+      ctfName: getVal('f9-ctf-name')
+    };
+    document.querySelectorAll('#item-list .item-row').forEach(function(row) {
+      var inputs = row.querySelectorAll('input');
+      var num = inputs[0].value.trim();
+      var desc = inputs[1].value.trim();
+      var qty = parseFloat(inputs[2].value) || 0;
+      var unit = inputs[3].value.trim();
+      var unitCost = parseDollar(inputs[4].value);
+      if (num || desc) data.items.push({ num: num, desc: desc, qty: qty, unit: unit, unitCost: unitCost });
+    });
+    return data;
+  }
+
+  /* ==========================================================
+     Render form 9 facsimile to HTML string
+     ========================================================== */
+  function buildFormHTML(d) {
+    var grandTotal = 0;
+    d.items.forEach(function(i) { grandTotal += (i.qty * i.unitCost); });
+
+    var h = '<div class="f9-doc">';
+
+    // Outer rectangle
+    h += '<div class="f9-rect" style="left:' + F9_RECT.x + 'mm;top:' + F9_RECT.y + 'mm;width:' + F9_RECT.w + 'mm;height:' + F9_RECT.h + 'mm;"></div>';
+
+    // Lines
+    F9_LINES.forEach(function(L) {
+      var y = L[0], x = L[1], len = L[2], dir = L[3];
+      if (dir === 'h') {
+        h += '<div class="f9-line-h" style="left:' + x + 'mm;top:' + y + 'mm;width:' + len + 'mm;"></div>';
+      } else {
+        h += '<div class="f9-line-v" style="left:' + x + 'mm;top:' + y + 'mm;height:' + len + 'mm;"></div>';
+      }
+    });
+
+    // Static labels
+    F9_LABELS.forEach(function(L) {
+      var y = L[0], x = L[1], txt = L[2], css = L[3] || '';
+      h += '<div class="f9-label" style="left:' + x + 'mm;top:' + y + 'mm;' + css + '">' + txt + '</div>';
+    });
+
+    // Filled values — use a helper
+    function val(field, text, cls) {
+      var f = F9_FIELDS[field];
+      if (!f || !text && text !== 0) return '';
+      var extra = cls ? ' ' + cls : '';
+      return '<div class="f9-val' + extra + '" style="left:' + f.x + 'mm;top:' + (f.y + 0.4) + 'mm;width:' + f.w + 'mm;height:' + f.h + 'mm;">' + escHtml(String(text)) + '</div>';
+    }
+    function valHtml(field, html, cls) {
+      var f = F9_FIELDS[field];
+      if (!f) return '';
+      var extra = cls ? ' ' + cls : '';
+      return '<div class="f9-val' + extra + '" style="left:' + f.x + 'mm;top:' + (f.y + 0.4) + 'mm;width:' + f.w + 'mm;height:' + f.h + 'mm;">' + html + '</div>';
+    }
+
+    h += val('NUMBER', d.number, 'center');
+    h += val('INSTAL', d.instal);
+    h += val('DATE_2', fmtDateYYYYMMDD(d.formDate), 'center');
+    h += val('CONTOFF', d.contoff);
+    h += val('CLASS', d.cls, 'center');
+    h += val('THROUGH', d.through);
+    h += val('FROM', d.from);
+    h += val('FOR', d.forr);
+    h += val('DELIVERTO', d.deliverto);
+    h += val('NLTDATE', fmtDateYYYYMMDD(d.nltDate), 'center');
+
+    // Items — render up to 21 rows
+    var maxRows = 21;
+    var rows = d.items.slice(0, maxRows);
+    rows.forEach(function(it, idx) {
+      var rowY = F9_ITEM_FIRST_Y + (idx * F9_ITEM_ROW_HEIGHT);
+      // ITEM column (x 13.2-25.0)
+      h += '<div class="f9-val center" style="left:13.2mm;top:' + rowY + 'mm;width:11.7mm;height:5mm;">' + escHtml(it.num) + '</div>';
+      // DESCRIPTION (x 25.7-126.5)
+      h += '<div class="f9-val" style="left:25.7mm;top:' + rowY + 'mm;width:100.8mm;height:5mm;">' + escHtml(it.desc) + '</div>';
+      // QTY (x 127.3-141.9)
+      h += '<div class="f9-val right" style="left:127.3mm;top:' + rowY + 'mm;width:14.6mm;height:5mm;">' + (it.qty || '') + '</div>';
+      // UNIT (x 142.9-152.7)
+      h += '<div class="f9-val center" style="left:142.9mm;top:' + rowY + 'mm;width:9.8mm;height:5mm;">' + escHtml(it.unit) + '</div>';
+      // UNITPRC (x 153.6-174.7)
+      h += '<div class="f9-val right" style="left:153.6mm;top:' + rowY + 'mm;width:21.1mm;height:5mm;">' + (it.unitCost ? fmtDollar(it.unitCost) : '') + '</div>';
+      // TOTLCST (x 175.6-202.7)
+      var ext = it.qty * it.unitCost;
+      h += '<div class="f9-val right" style="left:175.6mm;top:' + rowY + 'mm;width:27.1mm;height:5mm;">' + (ext ? fmtDollar(ext) : '') + '</div>';
+    });
+    // If items were truncated, indicate "see attached"
+    if (d.items.length > maxRows) {
+      var rowY = F9_ITEM_FIRST_Y + (maxRows * F9_ITEM_ROW_HEIGHT) - 4;
+      h += '<div class="f9-val" style="left:25.7mm;top:' + rowY + 'mm;width:100mm;height:5mm;font-style:italic;">...see attached list (' + (d.items.length - maxRows) + ' additional items)</div>';
+    }
+
+    // Grand total
+    h += val('GRNDTOT', fmtDollar(grandTotal), 'right');
+
+    // Purpose (multi-line, allow wrapping)
+    var purposeHtml = escHtml(d.purpose).replace(/\n/g, '<br/>');
+    h += valHtml('PURPOSE', '<div style="font-size:8pt;line-height:1.25;white-space:pre-wrap;">' + purposeHtml + '</div>');
+
+    // Signature blocks
+    h += val('RQSTDATE', fmtDateYYYYMMDD(d.rqstDate), 'center');
+    h += val('REQNAME', d.reqName);
+    h += val('PHONE', d.reqPhone);
+    h += val('APPRDATE', fmtDateYYYYMMDD(d.apprDate), 'center');
+    h += val('APPRNAME', d.appName);
+    h += val('ACCTCLASS', d.acctClass);
+    var amt = d.acctAmt > 0 ? d.acctAmt : grandTotal;
+    h += val('ACCTAMT', fmtDollar(amt), 'right');
+    h += val('CTFYDATE', fmtDateYYYYMMDD(d.ctfyDate), 'center');
+    h += val('CTFYNAME', d.ctfName);
+
+    h += '</div>'; // .f9-doc
+    return h;
+  }
+
+  /* ==========================================================
+     Preview + PDF generation
+     ========================================================== */
+  function showPreview() {
+    var d = collectFormData();
+    var container = document.getElementById('preview-container');
+    document.getElementById('form9-preview').innerHTML = buildFormHTML(d);
+    container.style.display = 'block';
+    container.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function generatePDF() {
+    var d = collectFormData();
+    var target = document.getElementById('pdf-content');
+    target.innerHTML = buildFormHTML(d);
+    target.className = 'rendering';
+
+    var safeName = d.number;
+    var filename = 'Form9_' + safeName + '.pdf';
+
+    html2pdf().set({
+      margin: 0,
+      filename: filename,
+      html2canvas: { scale: 2, useCORS: true, windowWidth: 816 },
+      jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    }).from(target.querySelector('.f9-doc') || target).save().then(function() {
+      target.className = '';
+      target.innerHTML = '';
+    });
+  }
+</script>
+<script src="player.js"></script>
+</body>
+</html>
