@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BPA Generator</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <a href="../cco-training-tools.html" style="color:#5b9dff;text-decoration:none;font-size:0.78rem;font-weight:600;display:inline-block;margin-bottom:0.2rem;">&larr; CCO Training Tools</a>
+      <strong>BPA Generator</strong>
+      <span>training sample builder</span>
+    </div>
+    <div class="actions">
+      <button type="button" id="sampleBtn" class="ghost small">Reset Sample</button>
+      <button type="button" id="saveDraftBtn" class="small">Save Draft</button>
+      <button type="button" id="exportBtn" class="small">Export JSON</button>
+      <label class="file-button small">
+        Import JSON
+        <input type="file" id="importInput" accept="application/json">
+      </label>
+      <button type="button" id="printBtn" class="primary">Save to PDF</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="editor" id="editor">
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>Document</h2>
+          <span id="draftStatus">Unsaved</span>
+        </div>
+        <div class="field-grid two">
+          <label>
+            Preview
+            <select data-field="previewMode">
+              <option value="bpa">BPA</option>
+              <option value="call">BPA Call</option>
+            </select>
+          </label>
+          <label>
+            BPA type
+            <select data-field="document.bpaType">
+              <option value="FAR13">Open market BPA</option>
+              <option value="FSS">Federal Supply Schedule BPA</option>
+            </select>
+          </label>
+          <label>
+            Arrangement
+            <select data-field="document.arrangement">
+              <option value="single">Single-award BPA</option>
+              <option value="multiple">Multiple-award BPA</option>
+            </select>
+          </label>
+          <label>
+            Requirement title
+            <input data-field="document.title">
+          </label>
+        </div>
+        <div class="field-grid three">
+          <label>
+            BPA no.
+            <input data-field="document.bpaNumber" readonly>
+          </label>
+          <label>
+            Effective date
+            <input data-field="document.effectiveDate" placeholder="05/01/20XX">
+          </label>
+          <label>
+            Expiration date
+            <input data-field="document.expirationDate" placeholder="04/30/20XX">
+          </label>
+          <label>
+            Call no.
+            <input data-field="call.callNumber" readonly>
+          </label>
+          <label class="field-span-two">
+            Form 9 / requisition no.
+            <input data-field="call.requisitionNumber" placeholder="F2D3JC-F9-20XX-0001">
+          </label>
+        </div>
+        <div class="inline-tools">
+          <button type="button" id="randomBpaBtn" class="small">Randomize BPA</button>
+          <button type="button" id="randomCallBtn" class="small">Randomize call</button>
+          <button type="button" id="randomForm9Btn" class="small">Randomize Form 9</button>
+          <span>BPA/call buttons update the final two PIID digits; Form 9 updates the final four-digit serial.</span>
+        </div>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>Government</h2>
+        </div>
+        <div class="field-grid two">
+          <label>
+            Contracting contact
+            <select data-field="government.contactName" id="contactSelect"></select>
+          </label>
+          <label>
+            Phone
+            <input data-field="government.contactPhone" readonly>
+          </label>
+          <label>
+            Issued by code
+            <input data-field="government.issuedByCode" readonly>
+          </label>
+          <label>
+            Payment office
+            <input data-field="government.paymentCode" readonly>
+          </label>
+        </div>
+        <label>
+          Issued by address
+          <textarea data-field="government.issuedByAddress" rows="3" readonly></textarea>
+        </label>
+        <div class="field-grid two">
+          <label>
+            Deliver to code
+            <input data-field="government.deliverToCode" readonly>
+          </label>
+          <label>
+            Deliver to
+            <input data-field="government.deliverToName" readonly>
+          </label>
+        </div>
+        <label>
+          Deliver to address
+          <textarea data-field="government.deliverToAddress" rows="3"></textarea>
+        </label>
+        <button type="button" id="randomDeliveryBtn" class="small">Randomize delivery address</button>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>Supplier</h2>
+        </div>
+        <label>
+          Supplier / UEI
+          <select id="supplierSelect"></select>
+        </label>
+        <div class="field-grid two">
+          <label>
+            UEI
+            <input data-field="supplier.code" readonly>
+          </label>
+          <label>
+            CAGE
+            <input data-field="supplier.facilityCode" readonly>
+          </label>
+        </div>
+        <label>
+          Supplier address
+          <textarea data-field="supplier.address" rows="3"></textarea>
+        </label>
+        <div class="field-grid two">
+          <label>
+            Phone
+            <input data-field="supplier.phone">
+          </label>
+          <label>
+            Discount terms
+            <input data-field="supplier.discountTerms">
+          </label>
+        </div>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>BPA Terms</h2>
+        </div>
+        <div class="field-grid two">
+          <label>
+            Optional aggregate note
+            <input data-field="terms.aggregateLimit" placeholder="Leave blank unless the BPA needs a stated limit">
+          </label>
+          <label>
+            FSS schedule contract
+            <input data-field="terms.fssScheduleContract" placeholder="GS-00F-20XX1">
+          </label>
+          <label>
+            Individual purchase limit
+            <input data-field="terms.purchaseLimit" placeholder="the simplified acquisition threshold">
+          </label>
+          <label>
+            Billing cycle
+            <input data-field="terms.billingCycle">
+          </label>
+          <label>
+            Annual review date
+            <input data-field="terms.reviewDate">
+          </label>
+        </div>
+        <label>
+          Authorized callers
+          <textarea data-field="terms.authorizedCallers" rows="4"></textarea>
+        </label>
+        <label>
+          Agreement description
+          <textarea data-field="terms.description" rows="4"></textarea>
+        </label>
+        <label>
+          Ordering procedures
+          <textarea data-field="terms.orderingProcedures" rows="5"></textarea>
+        </label>
+        <label>
+          Delivery ticket language
+          <textarea data-field="terms.deliveryTickets" rows="5"></textarea>
+        </label>
+        <label>
+          Invoice language
+          <textarea data-field="terms.invoices" rows="5"></textarea>
+        </label>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>BPA Call</h2>
+        </div>
+        <div class="field-grid two">
+          <label>
+            Call date
+            <input data-field="call.callDate" placeholder="05/02/20XX">
+          </label>
+          <label>
+            Delivery/performance date
+            <input data-field="call.deliveryDate" placeholder="05/30/20XX">
+          </label>
+          <label>
+            Authorized caller
+            <input data-field="call.callerName">
+          </label>
+          <label>
+            Fund type
+            <select data-field="call.fundType">
+              <option value="om">O&M, Air Force</option>
+              <option value="procurement">Other Procurement, Air Force</option>
+            </select>
+          </label>
+          <label>
+            Schedule mode
+            <select data-field="call.scheduleMode">
+              <option value="attached">Attached price list</option>
+              <option value="lines">Priced lines</option>
+            </select>
+          </label>
+          <label>
+            Total call amount
+            <input data-field="call.totalAmount" placeholder="12850">
+          </label>
+        </div>
+        <label>
+          Price list / catalog attachment
+          <input data-field="call.attachedPriceListTitle" placeholder="Attached BPA Price List">
+        </label>
+        <label>
+          Call description
+          <textarea data-field="call.description" rows="4"></textarea>
+        </label>
+        <label>
+          Place of performance / delivery
+          <textarea data-field="call.placeOfPerformance" rows="3"></textarea>
+        </label>
+        <label>
+          Accounting and appropriation data
+          <textarea data-field="call.accountingData" rows="5" readonly></textarea>
+        </label>
+        <button type="button" id="randomFundingBtn" class="small">Randomize funding</button>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>Call Schedule</h2>
+          <button type="button" id="addLineBtn" class="small">Add line</button>
+        </div>
+        <div id="lineEditor"></div>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>Clauses and References</h2>
+          <button type="button" id="applyProfileBtn" class="small">Apply BPA Profile</button>
+        </div>
+        <div id="clauseEditor"></div>
+      </section>
+    </aside>
+
+    <section class="preview-shell">
+      <div class="preview-top">
+        <div>
+          <strong id="previewTitle">SF 1449-Style BPA Preview</strong>
+          <span id="pageCount">0 pages</span>
+        </div>
+        <div class="preview-tabs">
+          <button type="button" id="previewBpaBtn" class="active">SF 1449 BPA</button>
+          <button type="button" id="previewCallBtn">OF 347 Call</button>
+        </div>
+        <label class="zoom-control">
+          Zoom
+          <input type="range" id="zoomInput" min="55" max="115" value="82">
+        </label>
+      </div>
+      <div class="preview" id="preview"></div>
+    </section>
+  </main>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>
