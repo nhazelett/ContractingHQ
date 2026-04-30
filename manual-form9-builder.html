@@ -101,6 +101,45 @@
     .f9-val.center { text-align: center; }
     .f9-val.right { text-align: right; }
   </style>
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="ContractingHQ" />
+  <meta property="og:title"       content="Form 9 Builder - ContractingHQ" />
+  <meta property="og:description" content="Form 9 builder for CCO capstone training. Generates a Form 9 PDF that visually matches the AF Form 9 layout, with auto-generated PR numbers and dates." />
+  <meta property="og:url"         content="https://kthq.org/manual-form9-builder.html" />
+  <meta property="og:image"       content="https://kthq.org/og-image.png" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@ContractingHQ" />
+  <meta name="twitter:title"       content="Form 9 Builder - ContractingHQ" />
+  <meta name="twitter:description" content="Form 9 builder for CCO capstone training. Generates a Form 9 PDF that visually matches the AF Form 9 layout, with auto-generated PR numbers and dates." />
+  <meta name="twitter:image"       content="https://kthq.org/og-image.png" />
+  <link rel="canonical"            href="https://kthq.org/manual-form9-builder.html" />
+  <!-- Structured data: SoftwareApplication -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Form 9 Builder",
+  "url": "https://kthq.org/manual-form9-builder.html",
+  "description": "Form 9 builder for CCO capstone training. Generates a Form 9 PDF that visually matches the AF Form 9 layout, with auto-generated PR numbers and dates.",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web Browser, any modern browser",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "inLanguage": "en-US",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "@id": "https://kthq.org/#organization",
+    "name": "KTHQ ContractingHQ",
+    "url": "https://kthq.org/"
+  }
+}
+  </script>
 </head>
 <body>
 <!-- NAV -->
@@ -713,6 +752,54 @@
     });
   }
 
+  function nameToSeed(name) {
+    var s = 31;
+    for (var i = 0; i < name.length; i++) {
+      s = (s * 17 + name.charCodeAt(i)) | 0;
+    }
+    return Math.abs(s) || 1;
+  }
+
+  function drawSignature(pdf, name, boxX, boxY, boxW, boxH) {
+    if (!name) return;
+    var state = nameToSeed(name);
+    function r() {
+      state = (state * 1103515245 + 12345) | 0;
+      return (Math.abs(state) % 100000) / 100000;
+    }
+
+    pdf.setLineWidth(0.35);
+    pdf.setDrawColor(20, 30, 90);
+
+    var sigWidth = boxW * (0.55 + r() * 0.3);
+    var startX = boxX + 2;
+    var startY = boxY + boxH * 0.55 + (r() - 0.5) * boxH * 0.15;
+
+    var nSeg = 5 + Math.floor(r() * 4);
+
+    var prevX = startX;
+    var prevY = startY;
+    var curves = [];
+    for (var i = 0; i < nSeg; i++) {
+      var t = (i + 1) / nSeg;
+      var nextX = startX + sigWidth * t;
+      var nextY = startY + (r() - 0.5) * boxH * 0.55;
+      var c1dx = (nextX - prevX) * (0.2 + r() * 0.3);
+      var c1dy = (r() - 0.5) * boxH * 0.75;
+      var c2dx = (nextX - prevX) * (0.55 + r() * 0.25);
+      var c2dy = (r() - 0.5) * boxH * 0.75;
+      curves.push([c1dx, c1dy, c2dx, c2dy, nextX - prevX, nextY - prevY]);
+      prevX = nextX;
+      prevY = nextY;
+    }
+
+    pdf.lines(curves, startX, startY, [1, 1], "S", false);
+
+    // Reset to black ink for any subsequent draws
+    pdf.setDrawColor(0);
+    pdf.setLineWidth(0.3);
+  }
+
   function drawValue(pdf, field, text, align) {
     if (text === '' || text == null) return;
     var f = F9_FIELDS[field];
@@ -810,14 +897,17 @@
     // Sig values
     drawValue(pdf, 'RQSTDATE', fmtDateYYYYMMDD(d.rqstDate), 'center');
     drawValue(pdf, 'REQNAME', d.reqName);
+    drawSignature(pdf, d.reqName, 127.8, 209, 75, 6);
     drawValue(pdf, 'PHONE', d.reqPhone);
     drawValue(pdf, 'APPRDATE', fmtDateYYYYMMDD(d.apprDate), 'center');
     drawValue(pdf, 'APPRNAME', d.appName);
+    drawSignature(pdf, d.appName, 127.8, 225.5, 75, 9.5);
     drawValue(pdf, 'ACCTCLASS', d.acctClass);
     var amt = d.acctAmt > 0 ? d.acctAmt : grandTotal;
     drawValue(pdf, 'ACCTAMT', fmtDollar(amt), 'right');
     drawValue(pdf, 'CTFYDATE', fmtDateYYYYMMDD(d.ctfyDate), 'center');
     drawValue(pdf, 'CTFYNAME', d.ctfName);
+    drawSignature(pdf, d.ctfName, 127.8, 255, 75, 10);
 
     pdf.save('Form9_' + d.number + '.pdf');
   }
