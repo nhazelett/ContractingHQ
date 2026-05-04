@@ -1279,7 +1279,7 @@
           <label style="grid-column:1/-1;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--accent);letter-spacing:0.03em;">Is this a DoD contract? <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted);margin-left:0.5rem;">Drives the SAT value, DFARS visibility, and DoD-specific clause handling</span></label>
           <div class="filter-pills" id="dodFilter">
             <button class="pill" data-filter="dod" data-value="yes" title="DoD acquisition — SAT is $350K, DFARS applies, not-dod FAR clauses hidden">Yes (DoD)</button>
-            <button class="pill" data-filter="dod" data-value="no" title="Civilian acquisition — SAT is $250K, DFARS hidden entirely">No (Civilian)</button>
+            <button class="pill" data-filter="dod" data-value="no" title="Civilian acquisition — SAT is $350K, DFARS hidden entirely">No (Civilian)</button>
           </div>
         </div>
 
@@ -1334,13 +1334,13 @@
           <label style="grid-column:1/-1;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--accent);letter-spacing:0.03em;">Dollar Value <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted);margin-left:0.5rem;">Your estimated contract value &mdash; higher tiers include everything required at lower tiers</span></label>
           <div class="filter-pills" id="dollarFilter">
             <button class="pill active" data-filter="dollar" data-value="any" title="Show all clauses regardless of dollar threshold">Any / Unknown</button>
-            <button class="pill" data-filter="dollar" data-value="mpt" title="At or below the micro-purchase threshold ($10K)">&le; $10K (MPT)</button>
-            <button class="pill" data-filter="dollar" data-value="sat" title="Between MPT and the simplified acquisition threshold">$10K &ndash; $250K (SAT)</button>
-            <button class="pill" data-filter="dollar" data-value="sub750" title="Between SAT and the subcontracting plan threshold">$250K &ndash; $750K</button>
+            <button class="pill" data-filter="dollar" data-value="mpt" title="At or below the ordinary micro-purchase threshold ($15K)">&le; $15K (MPT)</button>
+            <button class="pill" data-filter="dollar" data-value="sat" title="Between MPT and the simplified acquisition threshold">$15K &ndash; $350K (SAT)</button>
+            <button class="pill" data-filter="dollar" data-value="sub750" title="Between SAT and the subcontracting plan threshold">$350K &ndash; $750K</button>
             <button class="pill" data-filter="dollar" data-value="tina" title="Between subcontracting plan and TINA certified cost or pricing data threshold">$750K &ndash; $2M</button>
-            <button class="pill" data-filter="dollar" data-value="comsap" title="Between TINA and commercial SAP / CAS full coverage">$2M &ndash; $7.5M</button>
-            <button class="pill" data-filter="dollar" data-value="15m" title="Between CAS full coverage and contingency commercial SAP ceiling">$7.5M &ndash; $15M</button>
-            <button class="pill" data-filter="dollar" data-value="major" title="Major acquisition above the contingency commercial SAP ceiling">&gt; $15M (Major)</button>
+            <button class="pill" data-filter="dollar" data-value="comsap" title="Between TINA and the ordinary FAR 12.201-1 commercial simplified procedures ceiling">$2M &ndash; $9M</button>
+            <button class="pill" data-filter="dollar" data-value="15m" title="Between the ordinary and contingency/emergency commercial simplified procedures ceilings">$9M &ndash; $15M</button>
+            <button class="pill" data-filter="dollar" data-value="major" title="Major acquisition above the contingency/emergency commercial simplified procedures ceiling">&gt; $15M (Major)</button>
           </div>
         </div>
 
@@ -1713,14 +1713,12 @@ class ClauseMatrix {
     this.applyFilters();
   }
 
-  // When the user answers "Yes (DoD)", the simplified acquisition threshold is $350K
-  // (FAR 2.101 DoD SAT). Civilian / unanswered = $250K.
+  // The ordinary simplified acquisition threshold is $350K.
   updateDollarLabels() {
-    const isDoD = this.filters.dod === 'yes';
-    const satCeiling = isDoD ? '$350K' : '$250K';
+    const satCeiling = '$350K';
     const satPill = document.querySelector('[data-filter="dollar"][data-value="sat"]');
     const sub750Pill = document.querySelector('[data-filter="dollar"][data-value="sub750"]');
-    if (satPill) satPill.innerHTML = `$10K \u2013 ${satCeiling} (SAT)`;
+    if (satPill) satPill.innerHTML = `$15K \u2013 ${satCeiling} (SAT)`;
     if (sub750Pill) sub750Pill.innerHTML = `${satCeiling} \u2013 $750K`;
   }
 
@@ -1815,10 +1813,10 @@ class ClauseMatrix {
 
   // ===== Dollar Value tiers (cascading, single-select) =====
   // For each selected tier, these tags cause exclusion (clause doesn't apply at that value).
-  // Floors:   tier-over-mpt(>$10K), above-sat(>SAT), tier-over-750k-nonconstr(>$750K),
+  // Floors:   tier-over-mpt(>$15K), above-sat(>SAT), tier-over-750k-nonconstr(>$750K),
   //           tier-over-1-5m-constr(>$1.5M construction), tier-over-tina(>$2M),
-  //           tier-over-com-sap(>$7.5M), tier-over-15m(>$15M)
-  // Ceilings: tier-under-mpt(<$10K), below-sat(<SAT)
+  //           tier-over-com-sap(>$9M), tier-over-15m(>$15M)
+  // Ceilings: tier-under-mpt(<$15K), below-sat(<SAT)
   // Subcontracting-plan threshold is selected at runtime based on whether Construction
   // is the active build filter: non-construction uses $750K, construction uses $1.5M.
   static DOLLAR_EXCLUDE = {

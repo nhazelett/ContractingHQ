@@ -53,10 +53,10 @@
         {
           id: 'dollarBand',
           label: 'Estimated dollar range',
-          help: 'Bands are safer than exact amounts and good enough for this check. Thresholds reflect the current ordinary SAT of $350K and RFO Part 12 simplified commercial procedures up to $9M.',
+          help: 'Bands are safer than exact amounts and good enough for this check. Thresholds reflect the current ordinary MPT of $15K, SAT of $350K, and RFO Part 12 simplified commercial procedures up to $9M.',
           options: [
-            ['mpt', '$10K or less'],
-            ['10k-350k', '$10K to $350K'],
+            ['mpt', '$15K or less'],
+            ['10k-350k', '$15K to $350K'],
             ['350k-9m', '$350K to $9M'],
             ['9m-25m', '$9M to $25M'],
             ['25m-plus', '$25M+'],
