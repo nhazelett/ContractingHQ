@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Acquisition Package Preflight checks whether a federal acquisition package is ready to solicit, flags gaps, and routes users to KTHQ tools and training. Free, browser-only, no login required." />
+  <title>Acquisition Package Preflight | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>
+    .preflight-bg {
+      background: #040d1f;
+      min-height: 80vh;
+      padding: 5.25rem 1.5rem 6rem;
+    }
+    .preflight-wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    .breadcrumb {
+      font-size: .78rem;
+      color: var(--text-muted);
+      margin-bottom: 1.15rem;
+      letter-spacing: .3px;
+    }
+    .breadcrumb a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb-sep {
+      margin: 0 .45rem;
+      color: #475569;
+    }
+    .breadcrumb-current { color: var(--silver); }
+    .preflight-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1.8fr) minmax(280px, .8fr);
+      gap: 1rem;
+      align-items: stretch;
+      margin-bottom: 1rem;
+    }
+    .preflight-intro,
+    .preflight-side,
+    .preflight-panel {
+      background: rgba(10,22,50,.72);
+      border: 1px solid rgba(74,158,255,.16);
+      border-radius: 12px;
+      box-shadow: 0 18px 46px rgba(0,0,0,.22);
+    }
+    .preflight-intro {
+      padding: 1.45rem 1.55rem;
+    }
+    .preflight-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      color: #7ab8ff;
+      background: rgba(74,158,255,.1);
+      border: 1px solid rgba(74,158,255,.22);
+      border-radius: 999px;
+      padding: .26rem .75rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .76rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: .7rem;
+    }
+    .preflight-intro h1 {
+      font-family: 'Rajdhani', sans-serif;
+      color: var(--white);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1;
+      margin: 0 0 .55rem;
+    }
+    .preflight-intro p {
+      color: var(--silver);
+      font-size: .98rem;
+      line-height: 1.65;
+      max-width: 760px;
+      margin: 0 0 1rem;
+    }
+    .preflight-actions {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .preflight-btn,
+    .preflight-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: .7rem 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(74,158,255,.32);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .9rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform .15s, border-color .15s, background .15s;
+    }
+    .preflight-btn {
+      background: var(--accent);
+      color: #04102a;
+      border-color: transparent;
+    }
+    .preflight-secondary {
+      background: transparent;
+      color: var(--accent);
+    }
+    .preflight-btn:hover,
+    .preflight-secondary:hover {
+      transform: translateY(-1px);
+    }
+    .preflight-secondary:hover {
+      background: rgba(74,158,255,.08);
+      border-color: rgba(74,158,255,.55);
+    }
+    .preflight-side {
+      padding: 1.15rem;
+      display: grid;
+      gap: .75rem;
+    }
+    .preflight-side-item {
+      padding: .85rem .9rem;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 9px;
+      background: rgba(4,13,31,.42);
+    }
+    .preflight-side-label {
+      color: var(--text-muted);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+      margin-bottom: .2rem;
+    }
+    .preflight-side-value {
+      color: var(--white);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.08rem;
+      font-weight: 700;
+    }
+    .privacy-bar {
+      position: sticky;
+      top: 74px;
+      z-index: 50;
+      margin: 1rem 0;
+      background: rgba(251,191,36,.08);
+      border: 1px solid rgba(251,191,36,.35);
+      border-left: 4px solid #fbbf24;
+      border-radius: 10px;
+      padding: .9rem 1rem;
+      color: #f8e6ad;
+      font-size: .88rem;
+      line-height: 1.55;
+      box-shadow: 0 10px 24px rgba(0,0,0,.18);
+    }
+    .privacy-bar strong {
+      color: #fff1bf;
+    }
+    .preflight-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+      padding: 1rem;
+      background: rgba(10,22,50,.55);
+      border: 1px solid rgba(74,158,255,.12);
+      border-radius: 10px;
+    }
+    .check-panel {
+      margin: 1rem 0;
+      padding: 1.05rem 1.1rem;
+      background: rgba(10,22,50,.58);
+      border: 1px solid rgba(74,158,255,.14);
+      border-radius: 10px;
+    }
+    .check-panel h2 {
+      margin: 0 0 .45rem;
+      color: var(--white);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.15rem;
+      line-height: 1.2;
+    }
+    .check-panel p {
+      margin: 0;
+      color: var(--silver);
+      font-size: .86rem;
+      line-height: 1.6;
+    }
+    .preflight-anchor {
+      scroll-margin-top: 92px;
+    }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      color: var(--silver);
+      font-size: .86rem;
+      line-height: 1.4;
+    }
+    .toggle-row input {
+      width: 18px;
+      height: 18px;
+      accent-color: #4a9eff;
+      flex: 0 0 auto;
+    }
+    .preflight-form {
+      display: grid;
+      gap: .85rem;
+    }
+    .preflight-section {
+      background: rgba(10,22,50,.66);
+      border: 1px solid rgba(74,158,255,.14);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .preflight-section summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 1rem 1.15rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      border-bottom: 1px solid rgba(74,158,255,.09);
+    }
+    .preflight-section summary::-webkit-details-marker {
+      display: none;
+    }
+    .section-title-line {
+      min-width: 0;
+    }
+    .section-kicker {
+      display: block;
+      color: var(--accent);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      margin-bottom: .15rem;
+    }
+    .section-heading {
+      display: block;
+      color: var(--white);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.22rem;
+      font-weight: 700;
+    }
+    .section-desc {
+      display: block;
+      color: var(--text-muted);
+      font-size: .82rem;
+      line-height: 1.45;
+      margin-top: .12rem;
+    }
+    .section-chevron {
+      color: #7ab8ff;
+      font-size: 1.1rem;
+      transform: rotate(0deg);
+      transition: transform .15s;
+      flex: 0 0 auto;
+    }
+    .preflight-section[open] .section-chevron {
+      transform: rotate(180deg);
+    }
+    .question-grid {
+      display: grid;
+      gap: 1rem;
+      padding: 1.05rem 1.15rem 1.2rem;
+    }
+    .question {
+      background: rgba(4,13,31,.42);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+    .question-head {
+      display: flex;
+      justify-content: space-between;
+      gap: .9rem;
+      margin-bottom: .65rem;
+    }
+    .question label,
+    .question legend {
+      color: var(--white);
+      font-size: .94rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    .question-help {
+      color: var(--text-muted);
+      font-size: .8rem;
+      line-height: 1.55;
+      margin: .35rem 0 .65rem;
+      display: none;
+    }
+    .concierge-on .question-help {
+      display: block;
+    }
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: .55rem;
+    }
+    .option-pill {
+      display: flex;
+      align-items: flex-start;
+      gap: .55rem;
+      min-height: 44px;
+      padding: .65rem .72rem;
+      border: 1px solid rgba(74,158,255,.14);
+      border-radius: 8px;
+      background: rgba(10,22,50,.58);
+      color: var(--silver);
+      font-size: .84rem;
+      line-height: 1.35;
+      cursor: pointer;
+      transition: border-color .15s, background .15s, color .15s;
+    }
+    .option-pill:hover {
+      border-color: rgba(74,158,255,.42);
+      color: var(--white);
+    }
+    .option-pill input {
+      margin-top: .1rem;
+      accent-color: #4a9eff;
+      flex: 0 0 auto;
+    }
+    .option-pill:has(input:checked) {
+      border-color: rgba(74,158,255,.72);
+      background: rgba(74,158,255,.14);
+      color: var(--white);
+    }
+    .date-input {
+      width: min(100%, 260px);
+      background: rgba(10,22,50,.78);
+      border: 1px solid rgba(74,158,255,.26);
+      border-radius: 8px;
+      color: var(--white);
+      font: inherit;
+      padding: .72rem .8rem;
+      outline: none;
+    }
+    .date-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(74,158,255,.12);
+    }
+    .preflight-runbar {
+      position: sticky;
+      bottom: 4.4rem;
+      z-index: 45;
+      margin: 1rem 0 1.35rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: .85rem;
+      flex-wrap: wrap;
+      padding: .85rem;
+      background: rgba(5,14,31,.94);
+      border: 1px solid rgba(74,158,255,.22);
+      border-radius: 12px;
+      box-shadow: 0 16px 34px rgba(0,0,0,.34);
+    }
+    .runbar-note {
+      color: var(--text-muted);
+      font-size: .82rem;
+      line-height: 1.4;
+    }
+    .button-row {
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+    }
+    .preflight-results {
+      display: none;
+      margin-top: 1.25rem;
+    }
+    .preflight-results.is-visible {
+      display: block;
+    }
+    .score-card {
+      background: rgba(10,22,50,.76);
+      border: 1px solid rgba(74,158,255,.18);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .score-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .score-number {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4.25rem);
+      font-weight: 700;
+      line-height: .9;
+      color: var(--white);
+    }
+    .score-label {
+      color: var(--text-muted);
+      font-size: .8rem;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-top: .35rem;
+    }
+    .score-status {
+      text-align: right;
+      min-width: 220px;
+    }
+    .status-word {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      margin-bottom: .4rem;
+    }
+    .status-word.good { color: #86efac; }
+    .status-word.caution { color: #facc15; }
+    .status-word.danger { color: #fca5a5; }
+    .score-pips {
+      display: flex;
+      justify-content: flex-end;
+      gap: .25rem;
+    }
+    .score-pip {
+      width: 18px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .score-pip.is-filled.good { background: #22c55e; border-color: #22c55e; }
+    .score-pip.is-filled.caution { background: #eab308; border-color: #eab308; }
+    .score-pip.is-filled.danger { background: #ef4444; border-color: #ef4444; }
+    .score-math {
+      margin-top: 1rem;
+      color: var(--text-muted);
+      font-size: .82rem;
+      line-height: 1.55;
+    }
+    .score-math ul {
+      margin: .55rem 0 0;
+      padding-left: 1.1rem;
+    }
+    .score-math li {
+      margin: .22rem 0;
+    }
+    .findings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .finding-panel {
+      background: rgba(10,22,50,.66);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      overflow: hidden;
+    }
+    .finding-panel.showstopper { border-color: rgba(248,113,113,.34); }
+    .finding-panel.gap { border-color: rgba(251,191,36,.27); }
+    .finding-panel.strength { border-color: rgba(74,222,128,.24); }
+    .finding-panel h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.05rem;
+      color: var(--white);
+      padding: .9rem 1rem;
+      margin: 0;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .finding-list {
+      display: grid;
+      gap: .75rem;
+      padding: .85rem;
+    }
+    .finding-card {
+      background: rgba(4,13,31,.48);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 9px;
+      padding: .9rem;
+    }
+    .finding-card h3 {
+      color: var(--white);
+      font-size: .92rem;
+      line-height: 1.35;
+      margin: 0 0 .45rem;
+    }
+    .finding-card p {
+      color: var(--silver);
+      font-size: .82rem;
+      line-height: 1.55;
+      margin: 0 0 .55rem;
+    }
+    .finding-cite {
+      color: #9fb3c8;
+      font-size: .76rem;
+      line-height: 1.45;
+      margin-bottom: .6rem;
+    }
+    .finding-cite strong { color: #d8e5f2; }
+    .fix-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+    }
+    .fix-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: .34rem .58rem;
+      border-radius: 6px;
+      color: var(--accent);
+      border: 1px solid rgba(74,158,255,.24);
+      background: rgba(74,158,255,.07);
+      text-decoration: none;
+      font-size: .74rem;
+      font-weight: 700;
+    }
+    .fix-link:hover {
+      border-color: rgba(74,158,255,.56);
+      color: var(--white);
+    }
+    .related-link {
+      border-color: rgba(74,222,128,.22);
+      background: rgba(74,222,128,.06);
+      color: #a7f3d0;
+    }
+    .link-prefix {
+      color: var(--text-muted);
+      margin-right: .3rem;
+      font-weight: 700;
+    }
+    .empty-finding {
+      color: var(--text-muted);
+      font-size: .82rem;
+      line-height: 1.5;
+      padding: .85rem;
+    }
+    .recommendations {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .rec-panel {
+      background: rgba(10,22,50,.66);
+      border: 1px solid rgba(74,158,255,.14);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+    .rec-panel h2 {
+      color: var(--white);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.08rem;
+      margin: 0 0 .65rem;
+    }
+    .rec-list {
+      display: grid;
+      gap: .55rem;
+    }
+    .rec-item {
+      display: block;
+      color: var(--silver);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 8px;
+      padding: .7rem .75rem;
+      background: rgba(4,13,31,.42);
+    }
+    .rec-item:hover {
+      border-color: rgba(74,158,255,.42);
+    }
+    .rec-item strong {
+      display: block;
+      color: var(--white);
+      font-size: .88rem;
+      margin-bottom: .18rem;
+    }
+    .rec-item span {
+      color: var(--text-muted);
+      font-size: .76rem;
+      line-height: 1.35;
+    }
+    .memo-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: .8rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 10px;
+    }
+    .memo-note {
+      color: var(--text-muted);
+      font-size: .82rem;
+      line-height: 1.45;
+      max-width: 680px;
+    }
+    .print-only {
+      display: none;
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+    @media (max-width: 920px) {
+      .preflight-top,
+      .findings-grid,
+      .recommendations {
+        grid-template-columns: 1fr;
+      }
+      .score-status {
+        text-align: left;
+      }
+      .score-pips {
+        justify-content: flex-start;
+      }
+      .privacy-bar {
+        position: static;
+      }
+    }
+    @media (max-width: 620px) {
+      .preflight-bg {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      .preflight-intro,
+      .preflight-side,
+      .preflight-panel {
+        border-radius: 10px;
+      }
+      .option-grid {
+        grid-template-columns: 1fr;
+      }
+      .preflight-runbar {
+        bottom: 5.2rem;
+      }
+      .preflight-btn,
+      .preflight-secondary {
+        width: 100%;
+      }
+      .button-row {
+        width: 100%;
+      }
+    }
+    @media print {
+      @page {
+        margin: .55in;
+      }
+      body {
+        background: #fff !important;
+        color: #111827 !important;
+      }
+      .navbar,
+      .preflight-nonprint,
+      .preflight-top,
+      .privacy-bar,
+      .preflight-controls,
+      .preflight-form,
+      .preflight-runbar,
+      .memo-actions,
+      .footer,
+      script {
+        display: none !important;
+      }
+      .preflight-bg {
+        background: #fff !important;
+        padding: 0 !important;
+      }
+      .preflight-wrap {
+        max-width: none;
+      }
+      .preflight-results {
+        display: block !important;
+        margin: 0;
+      }
+      .score-card,
+      .finding-panel,
+      .rec-panel,
+      .finding-card,
+      .rec-item {
+        box-shadow: none !important;
+        background: #fff !important;
+        border-color: #d1d5db !important;
+        color: #111827 !important;
+      }
+      .score-number,
+      .score-label,
+      .score-math,
+      .finding-panel h2,
+      .finding-card h3,
+      .finding-card p,
+      .finding-cite,
+      .rec-panel h2,
+      .rec-item,
+      .rec-item strong,
+      .rec-item span,
+      .status-word,
+      .print-only {
+        color: #111827 !important;
+      }
+      .findings-grid,
+      .recommendations {
+        grid-template-columns: 1fr;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .finding-panel,
+      .rec-panel,
+      .score-card {
+        break-inside: avoid;
+        margin-bottom: .25in;
+      }
+      .fix-link,
+      .related-link {
+        color: #0645ad !important;
+        border: none !important;
+        padding: 0 !important;
+        background: transparent !important;
+      }
+    }
+  </style>
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="ContractingHQ" />
+  <meta property="og:title"       content="Acquisition Package Preflight | ContractingHQ" />
+  <meta property="og:description" content="Browser-only package readiness checker for federal acquisitions. Flags gaps, showstoppers, and next steps before solicitation." />
+  <meta property="og:url"         content="https://kthq.org/preflight.html" />
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:site"        content="@ContractingHQ" />
+  <meta name="twitter:title"       content="Acquisition Package Preflight" />
+  <meta name="twitter:description" content="Check whether an acquisition package is ready to solicit. Free, no login, no sensitive-data uploads." />
+  <link rel="canonical"            href="https://kthq.org/preflight.html" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html" class="active">Tools</a></li>
+      <li><a href="customer-education.html">Customer Education</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="links.html">Links</a></li>
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<main class="preflight-bg">
+  <div class="preflight-wrap">
+    <div class="breadcrumb preflight-nonprint">
+      <a href="index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="tools.html">Tools</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">Acquisition Package Preflight</span>
+    </div>
+
+    <section class="preflight-top preflight-nonprint" aria-labelledby="preflightTitle">
+      <div class="preflight-intro">
+        <span class="preflight-tag">Package Readiness</span>
+        <h1 id="preflightTitle">Acquisition Package Preflight</h1>
+        <p>Run a structured check before you solicit. Preflight looks for missing requirement documents, funding and schedule tension, justification gaps, surveillance issues, and common "this will come back from legal" problems. It runs in your browser and routes every gap back into KTHQ tools or training.</p>
+        <div class="preflight-actions">
+          <button class="preflight-btn" type="button" id="startBtn">Start a Preflight</button>
+          <a class="preflight-secondary" href="#what-we-check">What we check</a>
+        </div>
+      </div>
+      <aside class="preflight-side" aria-label="Tool constraints">
+        <div class="preflight-side-item">
+          <div class="preflight-side-label">Data posture</div>
+          <div class="preflight-side-value">Structured inputs only</div>
+        </div>
+        <div class="preflight-side-item">
+          <div class="preflight-side-label">Output</div>
+          <div class="preflight-side-value">Printable memo</div>
+        </div>
+        <div class="preflight-side-item">
+          <div class="preflight-side-label">Current thresholds</div>
+          <div class="preflight-side-value">SAT $350K / 13.5 $9M</div>
+        </div>
+      </aside>
+    </section>
+
+    <div class="privacy-bar preflight-nonprint" role="note">
+      <strong>Privacy check:</strong> do not enter proprietary information, source-selection sensitive material, CUI, proposal content, or anything your shop would not want on a public website. This version uses structured answers only; keep it generic and use your judgment.
+    </div>
+
+    <section id="what-we-check" class="check-panel preflight-anchor preflight-nonprint">
+      <h2>What this tool checks</h2>
+      <p>Requirement documents, IGCE status, market research, justification readiness, funding posture and bona fide need, schedule against need date, COR designation and training, surveillance/QASP, OCI exposure, commerciality support, contract-type risk, brand-name salient characteristics, construction protection, and common package edge cases. The output is a printable memo with score, gaps, showstoppers, strengths, and links to KTHQ tools or training that help fix each finding.</p>
+    </section>
+
+    <section class="preflight-controls preflight-nonprint" aria-label="Preflight options">
+      <label class="toggle-row">
+        <input type="checkbox" id="conciergeToggle" />
+        <span><strong>Concierge mode.</strong> Show extra explanations under each question.</span>
+      </label>
+      <label class="toggle-row">
+        <input type="checkbox" id="saveToggle" />
+        <span><strong>Save answers locally.</strong> Optional, browser-only. Leave off on shared machines.</span>
+      </label>
+    </section>
+
+    <form id="preflightForm" class="preflight-form preflight-nonprint" autocomplete="off"></form>
+
+    <div class="preflight-runbar preflight-nonprint">
+      <div class="runbar-note">Use "I don't know" honestly. The tool treats uncertainty as a thing to route, not a failure.</div>
+      <div class="button-row">
+        <button class="preflight-secondary" id="resetBtn" type="button">Reset</button>
+        <button class="preflight-btn" id="runBtn" type="button">Run Preflight</button>
+      </div>
+    </div>
+
+    <section id="results" class="preflight-results" aria-live="polite"></section>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="customer-education.html">Customer Education</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script src="player.js"></script>
+<script src="preflight.js"></script>
+</body>
+</html>
