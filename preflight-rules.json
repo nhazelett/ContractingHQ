@@ -3,7 +3,7 @@
     "name": "KTHQ Acquisition Package Preflight Rules",
     "version": "1.0.0",
     "lastReviewed": "2026-05-04",
-    "thresholdNotes": "Ordinary simplified acquisition threshold treated as $350,000. FAR 13.5 commercial simplified procedures treated as up to $9,000,000, or $15,000,000 for listed contingencies/emergencies.",
+    "thresholdNotes": "Ordinary simplified acquisition threshold treated as $350,000. Under the RFO model, FAR 12.201-1 commercial simplified procedures are treated as up to $9,000,000, or $15,000,000 for listed contingencies/emergencies; FAR Part 13 is treated as noncommercial SAP at or below the SAT.",
     "schemaNotes": "Required rule fields: id, section, severity, matches or any, title, explanation. Optional fields: scoreImpact, capScore, phase, cite, concierge, fixWith, clearedBy, evidence. phase can be stop, funding-authority, requirement-doc, research-justification, surveillance-admin, or risk-flags."
   },
   "rules": [
@@ -16,7 +16,7 @@
         "dollarBand": "unknown"
       },
       "title": "Dollar range is unknown",
-      "explanation": "Most Preflight checks calibrate to dollar thresholds like the MPT, SAT, and FAR 13.5. Without a rough band, the tool cannot apply several important rules.",
+      "explanation": "Most Preflight checks calibrate to dollar thresholds like the MPT, SAT, and FAR 12.201-1 commercial simplified procedures. Without a rough band, the tool cannot apply several important rules.",
       "cite": "FAR 7.105(a)(3)",
       "concierge": "You do not need an exact number yet, but the package should know whether this is tiny, under the SAT, above the SAT, or a large action.",
       "fixWith": [
@@ -327,7 +327,7 @@
       },
       "title": "Sole-source path lacks a ready justification",
       "explanation": "A restricted action above the SAT needs the correct justification path moving before solicitation. If the package says one source but the justification is not started or is unsure, the acquisition approach is not ready.",
-      "cite": "FAR 6.303; FAR 13.501; FAR 8.405-6; FAR 16.505(b)(2)",
+      "cite": "FAR/RFO 12.102; FAR 6.303; FAR 8.405-6; FAR 16.505(b)(2)",
       "concierge": "If you are not competing, the file must explain why competition is not available or not required under the chosen authority.",
       "phase": "stop",
       "clearedBy": [
@@ -378,7 +378,7 @@
       },
       "title": "Justification document is complete",
       "explanation": "The restricted-competition record is already built, which should reduce review churn if the facts and authority line up.",
-      "cite": "FAR 6.303; FAR 8.405-6; FAR 13.501; FAR 16.505(b)(2)",
+      "cite": "FAR/RFO 12.102; FAR 6.303; FAR 8.405-6; FAR 16.505(b)(2)",
       "fixWith": [
         {
           "kind": "training",
@@ -399,7 +399,7 @@
       },
       "title": "Brand-related buy lacks salient characteristics",
       "explanation": "Brand-name and brand-name-or-equal packages need documented minimum characteristics. Without them, the file cannot explain what equal means or why the named item is necessary.",
-      "cite": "FAR 11.104; FAR 13.501; FAR 6.302-1",
+      "cite": "FAR 11.104; FAR/RFO 12.102; FAR 6.302-1",
       "concierge": "Do not just name the product. Explain the features the Government actually needs.",
       "phase": "research-justification",
       "clearedBy": [
@@ -1367,17 +1367,68 @@
       ]
     },
     {
-      "id": "commercial-above-sat-no-determination",
-      "section": "risk",
-      "severity": "gap",
-      "scoreImpact": 7,
+      "id": "far13-but-commercial-rfo-mismatch",
+      "section": "authority",
+      "severity": "showstopper",
+      "scoreImpact": 18,
+      "capScore": 50,
       "matches": {
-        "commercialAboveSAT": true
+        "nonCommercialPathButCommercial": true
       },
-      "title": "Commercial path above SAT needs commerciality support",
-      "explanation": "If using commercial or FAR 13.5 procedures above the SAT, the file should show market research and a reasonable basis for expecting commercial products or services.",
-      "cite": "FAR 12.101; FAR 13.500",
-      "concierge": "FAR 13.5 can be powerful, but only when the commercial-products/services foundation is real.",
+      "title": "FAR 13 path conflicts with commercial treatment",
+      "explanation": "Under the RFO model, FAR Part 13 SAP is for noncommercial acquisitions. Commercial products and commercial services use FAR Part 12, including the simplified procedures at FAR 12.201-1. Either change the authority track to FAR 12, or revisit whether the action is genuinely commercial.",
+      "cite": "RFO 12.000; RFO 12.201-1; RFO 13.000",
+      "concierge": "Pre-RFO, commercial simplified procedures lived in FAR 13.5. Under the RFO model, commercial goes to FAR Part 12 and noncommercial SAP goes to FAR Part 13.",
+      "phase": "stop",
+      "clearedBy": [
+        {
+          "answer": "authorityTrack",
+          "set": [
+            "far12"
+          ],
+          "label": "Change authority track to FAR Part 12 if the action is commercial."
+        },
+        {
+          "answer": "commercialDetermination",
+          "set": [
+            "not_applicable",
+            "unsure"
+          ],
+          "label": "If the action is not commercial, change commercial support away from yes."
+        }
+      ],
+      "evidence": [
+        "Commercial product or commercial service determination, if using FAR Part 12",
+        "Market research showing whether commercial products or services meet the need",
+        "Authority-track note explaining why Part 12 or Part 13 is the right lane"
+      ],
+      "fixWith": [
+        {
+          "kind": "training",
+          "label": "Commercial Item D&F",
+          "url": "commercial-item-df.html",
+          "description": "Review FAR 2.101 commercial definitions and the RFO change."
+        },
+        {
+          "kind": "training",
+          "label": "FAR Overhaul Tracker",
+          "url": "far-overhaul.html",
+          "description": "Review the current RFO structure."
+        }
+      ]
+    },
+    {
+      "id": "far12-no-commerciality-support",
+      "section": "authority",
+      "severity": "gap",
+      "scoreImpact": 8,
+      "matches": {
+        "commercialPathNoSupport": true
+      },
+      "title": "FAR 12 path lacks commerciality support",
+      "explanation": "If using FAR Part 12 procedures, the file should establish that the product or service meets a FAR 2.101 commercial definition or another statutory treatment path. For DoD FAR Part 12 actions above the SAT, DFARS 212.102 requires a written commercial product or commercial service determination unless an exception applies.",
+      "cite": "FAR/RFO 12.101; FAR 2.101; DFARS 212.102",
+      "concierge": "The RFO model moves simplified commercial procedures into Part 12. That lane is powerful, but the file still needs a real commercial-products/services foundation.",
       "phase": "research-justification",
       "clearedBy": [
         {
@@ -1389,10 +1440,10 @@
         }
       ],
       "evidence": [
+        "FAR 2.101 commercial product or commercial service definition identified",
         "Market research supporting commercial product or service treatment",
-        "Commerciality analysis or determination, if required locally",
         "Price references from the commercial marketplace or prior buys",
-        "Acquisition strategy showing why commercial procedures fit"
+        "Commercial product or commercial service determination per FAR 2.101, including DFARS 212.102 written determination for DoD above-SAT FAR Part 12 actions when required"
       ],
       "fixWith": [
         {
@@ -1406,6 +1457,42 @@
           "label": "Market Research Tool",
           "url": "market-research-tool.html",
           "description": "Build market research support."
+        }
+      ]
+    },
+    {
+      "id": "far13-above-sat-no-deviation",
+      "section": "authority",
+      "severity": "gap",
+      "scoreImpact": 9,
+      "matches": {
+        "far13AboveSAT": true
+      },
+      "not": {
+        "nonCommercialPathButCommercial": true
+      },
+      "title": "FAR 13 selected for an above-SAT action",
+      "explanation": "Under the RFO model, FAR Part 13 SAP is for noncommercial products and services valued at or below the simplified acquisition threshold. Above the SAT, the likely path is FAR Part 12 for commercial actions or FAR Part 14/15 for noncommercial actions, unless a specific deviation or emergency authority applies.",
+      "cite": "RFO 13.000; RFO 13.001; RFO 12.201-1",
+      "concierge": "This is the post-RFO distinction that trips people up: commercial simplified procedures moved to Part 12; Part 13 is no longer the commercial above-SAT shortcut.",
+      "phase": "funding-authority",
+      "clearedBy": [
+        {
+          "answer": "authorityTrack",
+          "set": [
+            "far12",
+            "far14",
+            "far15"
+          ],
+          "label": "Change authority to a path that reaches above the SAT if no deviation applies."
+        }
+      ],
+      "fixWith": [
+        {
+          "kind": "training",
+          "label": "Pick the Path",
+          "url": "pick-the-path.html",
+          "description": "Practice acquisition-path decisions."
         }
       ]
     },

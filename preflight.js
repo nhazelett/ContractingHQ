@@ -53,7 +53,7 @@
         {
           id: 'dollarBand',
           label: 'Estimated dollar range',
-          help: 'Bands are safer than exact amounts and good enough for this check. Thresholds reflect the current ordinary SAT of $350K and FAR 13.5 commercial simplified procedures up to $9M.',
+          help: 'Bands are safer than exact amounts and good enough for this check. Thresholds reflect the current ordinary SAT of $350K and RFO Part 12 simplified commercial procedures up to $9M.',
           options: [
             ['mpt', '$10K or less'],
             ['10k-350k', '$10K to $350K'],
@@ -101,13 +101,24 @@
       desc: 'How you expect to buy it, compete it, and document the path.',
       questions: [
         {
+          id: 'commercialDetermination',
+          label: 'Commercial product/service support',
+          help: 'Under the RFO, commercial products and services use FAR Part 12, including simplified procedures at FAR 12.201-1. FAR Part 13 SAP is for noncommercial actions.',
+          options: [
+            ['yes', 'Yes - commercial product/service support exists'],
+            ['no', 'No - not documented'],
+            ['not_applicable', 'No - noncommercial / not a FAR 12 action'],
+            ['unsure', 'Unsure']
+          ]
+        },
+        {
           id: 'authorityTrack',
           label: 'Primary authority track',
-          help: 'This does not lock you in. It helps the tool spot when the package is missing the documentation that goes with the path.',
+          help: 'Pick FAR Part 12 for commercial products or services. Pick FAR Part 13 only for noncommercial SAP under the SAT. This does not lock you in; it helps the tool spot documentation gaps.',
           options: [
             ['far8', 'FAR Part 8 / FSS'],
-            ['far12', 'FAR Part 12 / commercial'],
-            ['far13', 'FAR Part 13 / SAP'],
+            ['far12', 'FAR Part 12 / commercial, incl. 12.201-1 simplified'],
+            ['far13', 'FAR Part 13 / noncommercial SAP only'],
             ['far14', 'FAR Part 14 / sealed bid'],
             ['far15', 'FAR Part 15 / negotiated'],
             ['far16', 'FAR Part 16 / IDIQ or BPA call'],
@@ -510,17 +521,6 @@
           ]
         },
         {
-          id: 'commercialDetermination',
-          label: 'Commercial product/service determination considered?',
-          help: 'Especially important when using commercial procedures above the SAT under FAR 13.5.',
-          options: [
-            ['yes', 'Yes'],
-            ['no', 'No'],
-            ['not_applicable', 'Not applicable'],
-            ['unsure', 'Unsure']
-          ]
-        },
-        {
           id: 'performanceBond',
           label: 'Construction bond / protection considered?',
           help: 'Construction requirements bring bonding, insurance, wage, site, and safety concerns into the file.',
@@ -548,52 +548,89 @@
 
   var quickStarts = [
     {
-      id: 'services-under-sat',
-      label: 'Services under SAT',
-      description: 'Simplified services buy, usually FAR Part 13 with a service requirement document still needed.',
+      id: 'commercial-services-under-sat',
+      label: 'Commercial services under SAT',
+      description: 'Commercial service buy under the SAT where RFO Part 12 simplified procedures may fit and the service requirement still needs shape.',
       presets: {
         requirementType: 'services',
         requirementSubject: 'professional_services',
         dollarBand: '10k-350k',
+        commercialDetermination: 'yes',
+        authorityTrack: 'far12',
+        competitionApproach: 'full_open',
+        contractType: 'ffp',
+        performanceBond: 'not_applicable'
+      }
+    },
+    {
+      id: 'services-under-sat',
+      label: 'Noncommercial services under SAT',
+      description: 'Noncommercial services buy under the SAT where FAR Part 13 may apply and a service requirement document is still needed.',
+      presets: {
+        requirementType: 'services',
+        requirementSubject: 'professional_services',
+        dollarBand: '10k-350k',
+        commercialDetermination: 'not_applicable',
         authorityTrack: 'far13',
         competitionApproach: 'full_open',
         contractType: 'ffp',
-        performanceBond: 'not_applicable',
-        commercialDetermination: 'not_applicable'
+        performanceBond: 'not_applicable'
       }
     },
     {
       id: 'services-above-sat',
       label: 'Services above SAT',
-      description: 'Larger services package where requirement quality, IGCE, market research, COR, and QASP matter early.',
+      description: 'Larger services package where commerciality, requirement quality, IGCE, market research, COR, and QASP matter early. Authority depends on whether the service is commercial.',
       presets: {
         requirementType: 'services',
         requirementSubject: 'professional_services',
         dollarBand: '350k-9m',
-        authorityTrack: 'far15',
+        commercialDetermination: 'unsure',
         competitionApproach: 'full_open',
         contractType: 'ffp',
-        performanceBond: 'not_applicable',
-        commercialDetermination: 'not_applicable'
+        performanceBond: 'not_applicable'
       }
     },
     {
       id: 'brand-name-supply',
       label: 'Brand-name supply buy',
-      description: 'Supply or equipment package where salient characteristics and brand-name justification posture matter.',
+      description: 'Supply or equipment package where brand restriction, salient characteristics, and justification posture matter. Procedural lane still depends on vehicle and dollar value.',
       presets: {
         requirementType: 'supplies',
         requirementSubject: 'other',
-        authorityTrack: 'far13',
         competitionApproach: 'brand_name',
         contractType: 'ffp',
         reqDoc: 'purchase_desc',
         brandFlag: 'yes',
         soleSourceFlag: 'no',
+        justification: 'required_not_started',
+        commercialDetermination: 'unsure',
         performanceBond: 'not_applicable',
         qasp: 'not_applicable',
         corStatus: 'not_applicable',
         corTraining: 'not_applicable'
+      }
+    },
+    {
+      id: 'open-market-product',
+      label: 'Open-market product buy',
+      description: 'Competitive commercial product or equipment purchase without a required brand-name lane.',
+      presets: {
+        requirementType: 'supplies',
+        requirementSubject: 'other',
+        authorityTrack: 'far12',
+        competitionApproach: 'full_open',
+        contractType: 'ffp',
+        reqDoc: 'purchase_desc',
+        brandFlag: 'no',
+        soleSourceFlag: 'no',
+        justification: 'not_required',
+        salientCharacteristics: 'yes',
+        performanceBond: 'not_applicable',
+        qasp: 'not_applicable',
+        corStatus: 'not_applicable',
+        corTraining: 'not_applicable',
+        commercialDetermination: 'yes'
       }
     },
     {
@@ -660,6 +697,7 @@
         requirementSubject: 'software',
         authorityTrack: 'far12',
         contractType: 'ffp',
+        commercialDetermination: 'yes',
         novelTerms: 'yes',
         performanceBond: 'not_applicable'
       }
@@ -699,7 +737,7 @@
   var derivedLabels = {
     aboveSAT: 'Estimated dollar range is above the SAT',
     aboveMPT: 'Estimated dollar range is above the micro-purchase threshold',
-    over9M: 'Estimated dollar range is over the ordinary FAR 13.5 ceiling',
+    over9M: 'Estimated dollar range is over the ordinary commercial simplified procedures ceiling',
     highDollar: 'Estimated dollar range is high-dollar',
     needWithin30: 'Need date is within 30 days',
     needWithin60: 'Need date is within 60 days',
@@ -725,7 +763,10 @@
     annualMoneyCrossFy: 'Annual money crosses fiscal years',
     isHighRiskContractType: 'Contract type has elevated surveillance risk',
     isTMLH: 'Contract type is T&M or labor-hour',
-    commercialAboveSAT: 'Commercial path above SAT needs support',
+    commercialPathNoSupport: 'FAR Part 12 path lacks commerciality support',
+    nonCommercialPathButCommercial: 'FAR Part 13 path conflicts with commerciality support',
+    far13AboveSAT: 'FAR Part 13 is selected above the SAT',
+    commercialAboveSAT: 'Commercial Part 12 path above SAT needs support',
     needsCor: 'Requirement likely needs COR/surveillance planning',
     noCor: 'COR is not identified',
     noQasp: 'Surveillance plan or QASP is missing'
@@ -1041,9 +1082,12 @@
     var annualMoneyCrossFy = answers.colorMoney === 'om' && answers.crossesFiscalYears === 'yes';
     var isHighRiskContractType = ['tm_lh', 'cost'].indexOf(answers.contractType) !== -1;
     var isTMLH = answers.contractType === 'tm_lh';
-    var commercialAboveSAT = aboveSAT &&
-      (answers.authorityTrack === 'far12' || answers.authorityTrack === 'far13') &&
+    var commercialPathNoSupport = answers.authorityTrack === 'far12' &&
       answers.commercialDetermination !== 'yes';
+    var nonCommercialPathButCommercial = answers.authorityTrack === 'far13' &&
+      answers.commercialDetermination === 'yes';
+    var far13AboveSAT = aboveSAT && answers.authorityTrack === 'far13';
+    var commercialAboveSAT = aboveSAT && commercialPathNoSupport;
     var needsCor = isServices || isConstruction || answers.performanceLocation === 'govt_site' || answers.performanceLocation === 'mixed';
     var noCor = needsCor && ['not_started', 'unknown', ''].indexOf(answers.corStatus) !== -1;
     var noQasp = isServices && ['no', 'unknown', ''].indexOf(answers.qasp) !== -1;
@@ -1079,6 +1123,9 @@
       annualMoneyCrossFy: annualMoneyCrossFy,
       isHighRiskContractType: isHighRiskContractType,
       isTMLH: isTMLH,
+      commercialPathNoSupport: commercialPathNoSupport,
+      nonCommercialPathButCommercial: nonCommercialPathButCommercial,
+      far13AboveSAT: far13AboveSAT,
       commercialAboveSAT: commercialAboveSAT,
       needsCor: needsCor,
       noCor: noCor,
