@@ -546,6 +546,191 @@
     }
   ];
 
+  var quickStarts = [
+    {
+      id: 'services-under-sat',
+      label: 'Services under SAT',
+      description: 'Simplified services buy, usually FAR Part 13 with a service requirement document still needed.',
+      presets: {
+        requirementType: 'services',
+        requirementSubject: 'professional_services',
+        dollarBand: '10k-350k',
+        authorityTrack: 'far13',
+        competitionApproach: 'full_open',
+        contractType: 'ffp',
+        performanceBond: 'not_applicable',
+        commercialDetermination: 'not_applicable'
+      }
+    },
+    {
+      id: 'services-above-sat',
+      label: 'Services above SAT',
+      description: 'Larger services package where requirement quality, IGCE, market research, COR, and QASP matter early.',
+      presets: {
+        requirementType: 'services',
+        requirementSubject: 'professional_services',
+        dollarBand: '350k-9m',
+        authorityTrack: 'far15',
+        competitionApproach: 'full_open',
+        contractType: 'ffp',
+        performanceBond: 'not_applicable',
+        commercialDetermination: 'not_applicable'
+      }
+    },
+    {
+      id: 'brand-name-supply',
+      label: 'Brand-name supply buy',
+      description: 'Supply or equipment package where salient characteristics and brand-name justification posture matter.',
+      presets: {
+        requirementType: 'supplies',
+        requirementSubject: 'other',
+        authorityTrack: 'far13',
+        competitionApproach: 'brand_name',
+        contractType: 'ffp',
+        reqDoc: 'purchase_desc',
+        brandFlag: 'yes',
+        soleSourceFlag: 'no',
+        performanceBond: 'not_applicable',
+        qasp: 'not_applicable',
+        corStatus: 'not_applicable',
+        corTraining: 'not_applicable'
+      }
+    },
+    {
+      id: 'sole-source',
+      label: 'Sole-source action',
+      description: 'Restricted-source path where justification, alternatives, market research, and approval posture carry the file.',
+      presets: {
+        competitionApproach: 'sole_source',
+        soleSourceFlag: 'yes',
+        justification: 'required_not_started',
+        alternativesAnalysis: 'partial',
+        smallBusinessConsidered: 'yes'
+      }
+    },
+    {
+      id: 'gsa-fss-order',
+      label: 'GSA / FSS order (FAR 8)',
+      description: 'Federal Supply Schedule order pattern with FAR Part 8 ordering logic.',
+      presets: {
+        authorityTrack: 'far8',
+        competitionApproach: 'fair_opportunity',
+        contractType: 'ffp',
+        existingVehicle: 'yes',
+        brandFlag: 'no',
+        soleSourceFlag: 'no',
+        performanceBond: 'not_applicable'
+      }
+    },
+    {
+      id: 'idiq-task-order',
+      label: 'IDIQ task order (FAR 16)',
+      description: 'Task or delivery order under an IDIQ/BPA-style vehicle where ordering scope and fair opportunity matter.',
+      presets: {
+        authorityTrack: 'far16',
+        competitionApproach: 'fair_opportunity',
+        contractType: 'idiq',
+        existingVehicle: 'yes',
+        brandFlag: 'no',
+        soleSourceFlag: 'no',
+        performanceBond: 'not_applicable'
+      }
+    },
+    {
+      id: 'construction',
+      label: 'Construction (FAR 36)',
+      description: 'Construction package where drawings/specs, bonds, wage, site, and safety issues matter early.',
+      presets: {
+        requirementType: 'construction',
+        requirementSubject: 'construction_repair',
+        authorityTrack: 'far36',
+        contractType: 'ffp',
+        reqDoc: 'specs_drawings',
+        qasp: 'draft',
+        performanceBond: 'yes',
+        commercialDetermination: 'not_applicable'
+      }
+    },
+    {
+      id: 'software-saas',
+      label: 'Software / SaaS',
+      description: 'IT software package where commerciality, cybersecurity, data rights, access, and 508 issues deserve review.',
+      presets: {
+        requirementType: 'it',
+        requirementSubject: 'software',
+        authorityTrack: 'far12',
+        contractType: 'ffp',
+        novelTerms: 'yes',
+        performanceBond: 'not_applicable'
+      }
+    },
+    {
+      id: 'recompete',
+      label: 'Recompete',
+      description: 'Follow-on package where the old file helps, but fresh market research and schedule planning still matter.',
+      presets: {
+        recurring: 'recompete',
+        existingVehicle: 'maybe',
+        marketResearch: 'not_started',
+        paltPlanned: 'no',
+        firstTime: 'no',
+        performanceBond: 'not_applicable'
+      }
+    },
+    {
+      id: 'it-hardware',
+      label: 'IT hardware buy',
+      description: 'Commercial IT equipment package where salient characteristics and brand-neutral specs matter.',
+      presets: {
+        requirementType: 'supplies',
+        requirementSubject: 'it_hardware',
+        authorityTrack: 'far12',
+        contractType: 'ffp',
+        reqDoc: 'purchase_desc',
+        commercialDetermination: 'yes',
+        performanceBond: 'not_applicable',
+        qasp: 'not_applicable',
+        corStatus: 'not_applicable',
+        corTraining: 'not_applicable'
+      }
+    }
+  ];
+
+  var derivedLabels = {
+    aboveSAT: 'Estimated dollar range is above the SAT',
+    aboveMPT: 'Estimated dollar range is above the micro-purchase threshold',
+    over9M: 'Estimated dollar range is over the ordinary FAR 13.5 ceiling',
+    highDollar: 'Estimated dollar range is high-dollar',
+    needWithin30: 'Need date is within 30 days',
+    needWithin60: 'Need date is within 60 days',
+    needWithin90: 'Need date is within 90 days',
+    needDatePast: 'Need date is in the past',
+    isServices: 'Requirement is services-like',
+    isSupplies: 'Requirement is supplies-like',
+    isConstruction: 'Requirement is construction-like',
+    isIT: 'Requirement is IT/cyber-related',
+    hasRequirementDoc: 'A requirement document exists',
+    noRequirementDoc: 'No requirement document is selected',
+    hasServiceRequirementDoc: 'A services requirement document exists',
+    hasSupplyRequirementDoc: 'A supplies requirement document exists',
+    fundingNotReady: 'Funding is not ready',
+    fundedAndClean: 'Funding and bona fide need posture look clean',
+    marketResearchNotDone: 'Market research is not started or unknown',
+    marketResearchFormal: 'Formal market research is complete',
+    isBrandRelated: 'Brand-name or brand-name-or-equal is involved',
+    isSoleRelated: 'Single-source or sole-source path is involved',
+    isUrgent: 'Urgency is involved',
+    isFairOpportunityException: 'IDIQ path may need fair-opportunity documentation',
+    justificationNotReady: 'Justification is not ready',
+    annualMoneyCrossFy: 'Annual money crosses fiscal years',
+    isHighRiskContractType: 'Contract type has elevated surveillance risk',
+    isTMLH: 'Contract type is T&M or labor-hour',
+    commercialAboveSAT: 'Commercial path above SAT needs support',
+    needsCor: 'Requirement likely needs COR/surveillance planning',
+    noCor: 'COR is not identified',
+    noQasp: 'Surveillance plan or QASP is missing'
+  };
+
   var form = document.getElementById('preflightForm');
   var resultsEl = document.getElementById('results');
   var conciergeToggle = document.getElementById('conciergeToggle');
@@ -553,11 +738,16 @@
   var runBtn = document.getElementById('runBtn');
   var resetBtn = document.getElementById('resetBtn');
   var startBtn = document.getElementById('startBtn');
+  var quickStartSelect = document.getElementById('quickStartSelect');
+  var quickStartDesc = document.getElementById('quickStartDesc');
+  var clearQuickStartBtn = document.getElementById('clearQuickStartBtn');
+  var quickStartState = null;
 
   init();
 
   function init() {
     renderQuestions();
+    renderQuickStarts();
     restorePreferences();
     loadSavedAnswers();
     wireEvents();
@@ -580,9 +770,18 @@
     }).join('');
   }
 
+  function renderQuickStarts() {
+    if (!quickStartSelect) return;
+    quickStartSelect.innerHTML = '<option value="">None - answer everything myself</option>' +
+      quickStarts.map(function (item) {
+        return '<option value="' + escapeAttr(item.id) + '">' + escapeHtml(item.label) + '</option>';
+      }).join('');
+  }
+
   function renderQuestion(q) {
     if (q.type === 'date') {
       return '<div class="question" data-question="' + escapeAttr(q.id) + '">' +
+        '<div class="question-pill" data-pill="' + escapeAttr(q.id) + '"></div>' +
         '<div class="question-head"><label for="' + escapeAttr(q.id) + '">' + escapeHtml(q.label) + '</label></div>' +
         '<p class="question-help">' + escapeHtml(q.help || '') + '</p>' +
         '<input class="date-input" id="' + escapeAttr(q.id) + '" name="' + escapeAttr(q.id) + '" type="date" />' +
@@ -590,6 +789,7 @@
     }
 
     return '<fieldset class="question" data-question="' + escapeAttr(q.id) + '">' +
+      '<div class="question-pill" data-pill="' + escapeAttr(q.id) + '"></div>' +
       '<div class="question-head"><legend>' + escapeHtml(q.label) + '</legend></div>' +
       '<p class="question-help">' + escapeHtml(q.help || '') + '</p>' +
       '<div class="option-grid">' +
@@ -640,14 +840,93 @@
       }
     });
 
-    form.addEventListener('change', function () {
+    form.addEventListener('change', function (event) {
+      var question = eventTargetQuestionId(event.target);
+      if (question && quickStartState) {
+        quickStartState.touched[question] = true;
+        updateQuickStartPills();
+      }
       if (saveToggle.checked) saveAnswers();
     });
 
     runBtn.addEventListener('click', runPreflight);
     resetBtn.addEventListener('click', resetForm);
+    clearQuickStartBtn.addEventListener('click', function () {
+      clearQuickStart(true);
+    });
+    quickStartSelect.addEventListener('change', function () {
+      if (!quickStartSelect.value) {
+        clearQuickStart(false);
+        return;
+      }
+      applyQuickStart(quickStartSelect.value);
+    });
+    resultsEl.addEventListener('click', function (event) {
+      var button = event.target.closest && event.target.closest('.copy-evidence-btn');
+      if (!button) return;
+      copyEvidence(button.getAttribute('data-rule-id'), button);
+    });
     startBtn.addEventListener('click', function () {
       document.getElementById('section-basics').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  function eventTargetQuestionId(target) {
+    if (!target || !target.name) return '';
+    return target.name;
+  }
+
+  function applyQuickStart(id) {
+    var quickStart = quickStarts.filter(function (item) { return item.id === id; })[0];
+    if (!quickStart) return;
+    form.reset();
+    quickStartState = {
+      id: id,
+      presetFields: Object.assign({}, quickStart.presets),
+      touched: {}
+    };
+    setAnswers(quickStart.presets, true);
+    quickStartDesc.textContent = quickStart.description + ' Pre-filled answers are suggestions; override anything that does not fit.';
+    updateQuickStartPills();
+    if (saveToggle.checked) saveAnswers();
+  }
+
+  function clearQuickStart(resetAnswers) {
+    quickStartState = null;
+    quickStartSelect.value = '';
+    quickStartDesc.textContent = 'Pick a common package pattern to pre-fill the obvious answers. Nothing is locked; change anything that does not fit.';
+    clearQuickStartPills();
+    if (resetAnswers) resetForm();
+  }
+
+  function updateQuickStartPills() {
+    if (!quickStartState) {
+      clearQuickStartPills();
+      return;
+    }
+    var answers = getAnswers();
+    getAllQuestions().forEach(function (q) {
+      var pill = form.querySelector('[data-pill="' + cssEscape(q.id) + '"]');
+      if (!pill) return;
+      pill.className = 'question-pill';
+      pill.textContent = '';
+      if (quickStartState.touched[q.id]) return;
+      if (Object.prototype.hasOwnProperty.call(quickStartState.presetFields, q.id)) {
+        pill.textContent = 'Pre-filled by quick start - change if needed';
+        pill.classList.add('is-visible', 'is-prefilled');
+        return;
+      }
+      if (!answers[q.id]) {
+        pill.textContent = 'Needs your answer';
+        pill.classList.add('is-visible', 'is-needed');
+      }
+    });
+  }
+
+  function clearQuickStartPills() {
+    form.querySelectorAll('.question-pill').forEach(function (pill) {
+      pill.className = 'question-pill';
+      pill.textContent = '';
     });
   }
 
@@ -698,6 +977,10 @@
 
   function resetForm() {
     form.reset();
+    quickStartState = null;
+    if (quickStartSelect) quickStartSelect.value = '';
+    if (quickStartDesc) quickStartDesc.textContent = 'Pick a common package pattern to pre-fill the obvious answers. Nothing is locked; change anything that does not fit.';
+    clearQuickStartPills();
     resultsEl.classList.remove('is-visible');
     resultsEl.innerHTML = '';
     lastResult = null;
@@ -891,6 +1174,7 @@
         renderAnswerSummary(result.answers) +
       '</div>' +
       renderScore(scoreData) +
+      renderFixPlan(findings, scoreData) +
       '<div class="findings-grid">' +
         renderFindingPanel('showstopper', 'Showstoppers (' + showstoppers.length + ')', showstoppers, 'No showstoppers triggered. That does not mean the package is approved; it means this ruleset did not find a hard stop.') +
         renderFindingPanel('gap', 'Gaps to Address (' + gaps.length + ')', gaps, 'No gaps triggered. Good. Still read the file like someone else has to defend it.') +
@@ -941,6 +1225,97 @@
     '</section>';
   }
 
+  function renderFixPlan(findings, scoreData) {
+    var actionItems = findings
+      .filter(function (finding) { return finding.severity !== 'strength'; })
+      .slice()
+      .sort(compareFixPlanItems);
+
+    if (!actionItems.length) {
+      return '<section class="fix-plan">' +
+        '<div class="fix-plan-head">' +
+          '<div><h2>Fix Plan</h2><p class="fix-plan-summary">No action findings triggered. Keep the package file current and rerun Preflight if the facts change.</p></div>' +
+          '<div class="fix-plan-delta">' + scoreData.score + ' / 100</div>' +
+        '</div>' +
+      '</section>';
+    }
+
+    var visible = actionItems.slice(0, 5);
+    var hidden = actionItems.slice(5);
+    var recovered = Math.min(100, scoreData.score + visible.reduce(function (sum, item) {
+      return sum + Number(item.scoreImpact || (item.severity === 'showstopper' ? 15 : 7));
+    }, 0));
+
+    return '<section class="fix-plan">' +
+      '<div class="fix-plan-head">' +
+        '<div>' +
+          '<h2>Fix Plan</h2>' +
+          '<p class="fix-plan-summary">Work these in order. The list favors stop issues first, then funding and authority, then requirement quality, research, surveillance, and risk cleanup.</p>' +
+        '</div>' +
+        '<div class="fix-plan-delta">' + scoreData.score + ' -> ' + recovered + '</div>' +
+      '</div>' +
+      '<div class="fix-plan-list">' + visible.map(renderFixPlanItem).join('') + '</div>' +
+      (hidden.length ? '<details class="fix-plan-more"><summary>Show ' + hidden.length + ' more item' + (hidden.length === 1 ? '' : 's') + '</summary><div class="fix-plan-list" style="margin-top:.55rem;counter-reset:fixplan ' + visible.length + ';">' + hidden.map(renderFixPlanItem).join('') + '</div></details>' : '') +
+    '</section>';
+  }
+
+  function compareFixPlanItems(a, b) {
+    var severityOrder = { showstopper: 0, gap: 1 };
+    var aSeverity = severityOrder[a.severity] == null ? 9 : severityOrder[a.severity];
+    var bSeverity = severityOrder[b.severity] == null ? 9 : severityOrder[b.severity];
+    if (aSeverity !== bSeverity) return aSeverity - bSeverity;
+
+    var phaseOrder = {
+      stop: 0,
+      'funding-authority': 1,
+      'requirement-doc': 2,
+      'research-justification': 3,
+      'surveillance-admin': 4,
+      'risk-flags': 5
+    };
+    var aPhase = phaseOrder[findingPhase(a)] == null ? 9 : phaseOrder[findingPhase(a)];
+    var bPhase = phaseOrder[findingPhase(b)] == null ? 9 : phaseOrder[findingPhase(b)];
+    if (aPhase !== bPhase) return aPhase - bPhase;
+
+    return Number(b.scoreImpact || 0) - Number(a.scoreImpact || 0);
+  }
+
+  function findingPhase(finding) {
+    if (finding.phase) return finding.phase;
+    if (finding.severity === 'showstopper') return 'stop';
+    if (finding.section === 'funding' || finding.section === 'authority') return 'funding-authority';
+    if (finding.section === 'quality') {
+      return /market|justification|brand|sole|source/i.test(finding.title || '') ? 'research-justification' : 'requirement-doc';
+    }
+    if (finding.section === 'customer') return 'surveillance-admin';
+    return 'risk-flags';
+  }
+
+  function renderFixPlanItem(finding) {
+    var impact = Number(finding.scoreImpact || (finding.severity === 'showstopper' ? 15 : 7));
+    var primary = (finding.fixWith || [])[0];
+    return '<div class="fix-plan-item">' +
+      '<div class="fix-plan-index" aria-hidden="true"></div>' +
+      '<div>' +
+        '<div class="fix-plan-title">' + escapeHtml(finding.title) + '</div>' +
+        '<div class="fix-plan-meta">' + escapeHtml(phaseLabel(findingPhase(finding))) + ' / ' + escapeHtml(finding.severity) + '</div>' +
+        (primary ? '<div class="fix-list" style="margin-top:.45rem;"><a class="fix-link" href="' + escapeAttr(primary.url) + '"><span class="link-prefix">Fix</span>' + escapeHtml(primary.label) + '</a></div>' : '') +
+      '</div>' +
+      '<div class="fix-plan-points">+' + impact + ' pts</div>' +
+    '</div>';
+  }
+
+  function phaseLabel(phase) {
+    return {
+      stop: 'Stop issue',
+      'funding-authority': 'Funding / authority',
+      'requirement-doc': 'Requirement document',
+      'research-justification': 'Research / justification',
+      'surveillance-admin': 'Surveillance / admin',
+      'risk-flags': 'Risk flags'
+    }[phase] || 'Action';
+  }
+
   function renderFindingPanel(type, title, list, emptyText) {
     return '<section class="finding-panel ' + type + '">' +
       '<h2>' + escapeHtml(title) + '</h2>' +
@@ -961,9 +1336,113 @@
       '<h3>' + escapeHtml(finding.title) + '</h3>' +
       '<p>' + escapeHtml(finding.explanation) + '</p>' +
       (finding.cite ? '<div class="finding-cite"><strong>Cite / hook:</strong> ' + escapeHtml(finding.cite) + '</div>' : '') +
+      renderEvidenceList(finding) +
+      renderTriggerDrawer(finding) +
       (conciergeToggle.checked && finding.concierge ? '<p><strong>Plain English:</strong> ' + escapeHtml(finding.concierge) + '</p>' : '') +
       (fixes ? '<div class="fix-list">' + fixes + '</div>' : '') +
     '</article>';
+  }
+
+  function renderTriggerDrawer(finding) {
+    var context = lastResult ? lastResult.context : {};
+    var triggerItems = triggerItemsFor(finding, context);
+    var clearedItems = (finding.clearedBy || []).map(function (item) {
+      return '<li>' + escapeHtml(item.label || clearLabelFor(item)) + '</li>';
+    });
+    if (!clearedItems.length) {
+      clearedItems.push('<li>Change one of the matched answers above so this rule no longer applies.</li>');
+    }
+    var header = finding.severity === 'strength' ? 'Awarded because' : 'Triggered because';
+    return '<details class="trigger-drawer preflight-nonprint">' +
+      '<summary>Why did this trigger?</summary>' +
+      '<div class="trigger-drawer-body">' +
+        '<div><h4>' + header + '</h4><ul>' + triggerItems.join('') + '</ul></div>' +
+        '<div><h4>' + (finding.severity === 'strength' ? 'What would remove this strength' : 'What would clear it') + '</h4><ul>' + clearedItems.join('') + '</ul></div>' +
+        (finding.cite ? '<div><h4>Cite / hook</h4><div>' + escapeHtml(finding.cite) + '</div></div>' : '') +
+      '</div>' +
+    '</details>';
+  }
+
+  function triggerItemsFor(finding, context) {
+    var sets = [];
+    if (finding.matches) sets.push(finding.matches);
+    if (finding.any && Array.isArray(finding.any)) {
+      finding.any.forEach(function (set) {
+        if (matchSet(set, context)) sets.push(set);
+      });
+    }
+    if (!sets.length) return ['<li>This rule matched the current package profile.</li>'];
+    var seen = {};
+    var items = [];
+    sets.forEach(function (set) {
+      Object.keys(set).forEach(function (key) {
+        var expected = set[key];
+        var dedupe = key + ':' + JSON.stringify(expected);
+        if (seen[dedupe]) return;
+        seen[dedupe] = true;
+        items.push('<li>' + escapeHtml(triggerTextFor(key, expected, context)) + '</li>');
+      });
+    });
+    return items.length ? items : ['<li>This rule matched the current package profile.</li>'];
+  }
+
+  function triggerTextFor(key, expected, context) {
+    var q = getQuestionById(key);
+    if (q) {
+      return q.label + ': ' + labelFor(key, context[key] || expected);
+    }
+    var expectedText = Array.isArray(expected)
+      ? expected.map(function (value) { return String(value); }).join(', ')
+      : String(expected);
+    var actual = context[key];
+    var label = derivedLabels[key] || key;
+    if (typeof actual === 'boolean') return label + ': ' + (actual ? 'Yes' : 'No');
+    if (actual != null && actual !== '') return label + ': ' + String(actual);
+    return label + ': ' + expectedText;
+  }
+
+  function clearLabelFor(item) {
+    if (!item || !item.answer) return 'Change the relevant answer to clear this finding.';
+    var q = getQuestionById(item.answer);
+    if (!q) return 'Change ' + item.answer + ' to one of: ' + (item.set || []).join(', ');
+    var values = (item.set || []).map(function (value) { return labelFor(item.answer, value); }).join(', ');
+    return 'Set ' + q.label + ' to: ' + values;
+  }
+
+  function renderEvidenceList(finding) {
+    if (!finding.evidence || !finding.evidence.length) return '';
+    return '<div class="evidence-list">' +
+      '<h4>Evidence to keep in the file</h4>' +
+      '<ul>' + finding.evidence.map(function (item) { return '<li>' + escapeHtml(item) + '</li>'; }).join('') + '</ul>' +
+      '<button type="button" class="copy-evidence-btn preflight-nonprint" data-rule-id="' + escapeAttr(finding.id) + '">Copy as outline</button>' +
+    '</div>';
+  }
+
+  function copyEvidence(ruleId, button) {
+    var finding = lastResult && lastResult.findings.filter(function (item) { return item.id === ruleId; })[0];
+    if (!finding || !finding.evidence || !finding.evidence.length) return;
+    var text = finding.title + '\n' + finding.evidence.map(function (item) { return '- ' + item; }).join('\n');
+    copyText(text).then(function () {
+      var old = button.textContent;
+      button.textContent = 'Copied';
+      window.setTimeout(function () { button.textContent = old; }, 1200);
+    });
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    var textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    return Promise.resolve();
   }
 
   function collectRecommendations(findings) {
@@ -1005,10 +1484,14 @@
   }
 
   function labelFor(questionId, value) {
-    var q = getAllQuestions().filter(function (item) { return item.id === questionId; })[0];
+    var q = getQuestionById(questionId);
     if (!q || q.type === 'date') return value || 'TBD';
     var opt = (q.options || []).filter(function (item) { return item[0] === value; })[0];
     return opt ? opt[1] : value;
+  }
+
+  function getQuestionById(questionId) {
+    return getAllQuestions().filter(function (item) { return item.id === questionId; })[0];
   }
 
   function getAllQuestions() {

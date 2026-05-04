@@ -3,7 +3,8 @@
     "name": "KTHQ Acquisition Package Preflight Rules",
     "version": "1.0.0",
     "lastReviewed": "2026-05-04",
-    "thresholdNotes": "Ordinary simplified acquisition threshold treated as $350,000. FAR 13.5 commercial simplified procedures treated as up to $9,000,000, or $15,000,000 for listed contingencies/emergencies."
+    "thresholdNotes": "Ordinary simplified acquisition threshold treated as $350,000. FAR 13.5 commercial simplified procedures treated as up to $9,000,000, or $15,000,000 for listed contingencies/emergencies.",
+    "schemaNotes": "Required rule fields: id, section, severity, matches or any, title, explanation. Optional fields: scoreImpact, capScore, phase, cite, concierge, fixWith, clearedBy, evidence. phase can be stop, funding-authority, requirement-doc, research-justification, surveillance-admin, or risk-flags."
   },
   "rules": [
     {
@@ -167,6 +168,24 @@
       "explanation": "For a services acquisition above the SAT, the package needs a structured requirement path before solicitation: PWS, SOW, or SOO. Without it, offerors cannot price or perform against a coherent need.",
       "cite": "FAR 37.601; FAR 7.105(a)(4)",
       "concierge": "A service buy needs to say what the contractor must accomplish, how success will be measured, and what the Government will inspect.",
+      "phase": "requirement-doc",
+      "clearedBy": [
+        {
+          "answer": "reqDoc",
+          "set": [
+            "pws",
+            "sow",
+            "soo"
+          ],
+          "label": "Select PWS, SOW, or SOO under Requirement document status."
+        }
+      ],
+      "evidence": [
+        "PWS, SOW, or SOO approved by the requiring activity",
+        "Clear scope, tasks, performance standards, and deliverables",
+        "Government review notes showing the requirement is ready for acquisition",
+        "Attachments or exhibits referenced by the requirement document"
+      ],
       "fixWith": [
         {
           "kind": "tool",
@@ -244,6 +263,23 @@
       "explanation": "This is a serious package gap. The estimate supports funding, price analysis, negotiation posture, and acquisition planning. Treat this as a fix-before-solicitation item unless your local process has a documented alternate path.",
       "cite": "FAR 7.105(a)(3); FAR 15.404-1",
       "concierge": "The IGCE is the Government's own estimate. It helps you know whether the proposed price later makes sense.",
+      "phase": "funding-authority",
+      "clearedBy": [
+        {
+          "answer": "igce",
+          "set": [
+            "complete",
+            "in_progress"
+          ],
+          "label": "Move IGCE status to in progress or complete."
+        }
+      ],
+      "evidence": [
+        "IGCE or rough-order estimate with assumptions",
+        "Basis for quantities, labor categories, materials, and rates",
+        "Source data used to estimate price or cost",
+        "Reviewer or customer approval, if required locally"
+      ],
       "fixWith": [
         {
           "kind": "training",
@@ -293,6 +329,31 @@
       "explanation": "A restricted action above the SAT needs the correct justification path moving before solicitation. If the package says one source but the justification is not started or is unsure, the acquisition approach is not ready.",
       "cite": "FAR 6.303; FAR 13.501; FAR 8.405-6; FAR 16.505(b)(2)",
       "concierge": "If you are not competing, the file must explain why competition is not available or not required under the chosen authority.",
+      "phase": "stop",
+      "clearedBy": [
+        {
+          "answer": "justification",
+          "set": [
+            "complete",
+            "in_progress"
+          ],
+          "label": "Move the justification to in progress or complete."
+        },
+        {
+          "answer": "competitionApproach",
+          "set": [
+            "full_open",
+            "set_aside"
+          ],
+          "label": "Use a competitive approach if the facts support competition."
+        }
+      ],
+      "evidence": [
+        "Draft or approved J&A, LSJ, brand-name justification, or fair-opportunity exception",
+        "Market research showing available sources and why alternatives do or do not meet the need",
+        "Authority citation and approval path",
+        "Facts supporting the restriction, not just conclusions"
+      ],
       "fixWith": [
         {
           "kind": "training",
@@ -340,6 +401,23 @@
       "explanation": "Brand-name and brand-name-or-equal packages need documented minimum characteristics. Without them, the file cannot explain what equal means or why the named item is necessary.",
       "cite": "FAR 11.104; FAR 13.501; FAR 6.302-1",
       "concierge": "Do not just name the product. Explain the features the Government actually needs.",
+      "phase": "research-justification",
+      "clearedBy": [
+        {
+          "answer": "salientCharacteristics",
+          "set": [
+            "yes",
+            "partial"
+          ],
+          "label": "Document salient characteristics or minimum specifications."
+        }
+      ],
+      "evidence": [
+        "Minimum salient characteristics or specifications",
+        "Explanation of why each characteristic matters to the requirement",
+        "Market research showing whether equivalent products can meet the need",
+        "Brand-name or brand-name-or-equal justification, if required"
+      ],
       "fixWith": [
         {
           "kind": "tool",
@@ -473,6 +551,25 @@
       "explanation": "Market research informs commerciality, competition, set-aside potential, pricing context, and vehicle selection. Not starting it early usually creates rework.",
       "cite": "FAR Part 10; FAR 7.102",
       "concierge": "Market research is not just a memo. It is how you learn whether the requirement and acquisition strategy make sense.",
+      "phase": "research-justification",
+      "clearedBy": [
+        {
+          "answer": "marketResearch",
+          "set": [
+            "formal",
+            "informal"
+          ],
+          "label": "Conduct market research and move the status to formal or informal."
+        }
+      ],
+      "evidence": [
+        "Sources checked and dates searched",
+        "Vendors or products identified with capability notes",
+        "Set-aside analysis and small business consideration",
+        "Commerciality notes and vehicle options",
+        "Price references or prior-award context",
+        "Market research recommendation or memo"
+      ],
       "fixWith": [
         {
           "kind": "tool",
@@ -519,6 +616,23 @@
       "explanation": "For services, construction, mixed performance, or Government-site work, identify the surveillance owner early. Waiting until award creates avoidable administration risk.",
       "cite": "FAR 1.604; FAR 37.604",
       "concierge": "If no one is assigned to watch performance, the contract may be easy to award and hard to manage.",
+      "phase": "surveillance-admin",
+      "clearedBy": [
+        {
+          "answer": "corStatus",
+          "set": [
+            "designated",
+            "nominated"
+          ],
+          "label": "Nominate or designate the COR."
+        }
+      ],
+      "evidence": [
+        "COR nomination or designation documentation",
+        "COR training status",
+        "COR duties tied to the specific contract",
+        "Communication plan between CO, COR, and requiring activity"
+      ],
       "fixWith": [
         {
           "kind": "training",
@@ -593,6 +707,23 @@
       "explanation": "If the Government cannot describe how performance will be assessed, the requirement is not ready for clean administration.",
       "cite": "FAR 37.601(b)(2); FAR 46.401",
       "concierge": "A QASP is the Government's plan for checking whether the contractor is doing what the contract requires.",
+      "phase": "surveillance-admin",
+      "clearedBy": [
+        {
+          "answer": "qasp",
+          "set": [
+            "yes",
+            "draft"
+          ],
+          "label": "Create a surveillance plan or QASP draft."
+        }
+      ],
+      "evidence": [
+        "Surveillance plan or QASP",
+        "Performance standards and inspection method",
+        "Acceptance process and responsible Government personnel",
+        "Reporting cadence and documentation expectations"
+      ],
       "fixWith": [
         {
           "kind": "tool",
@@ -640,6 +771,23 @@
       "explanation": "If the contract may create an employer-employee relationship, stop and review the structure before solicitation. This can be a real legal and acquisition strategy problem.",
       "cite": "FAR 37.104",
       "concierge": "Contractor personnel should not be managed like Government employees unless the acquisition is authorized as personal services.",
+      "phase": "stop",
+      "clearedBy": [
+        {
+          "answer": "personalServices",
+          "set": [
+            "no",
+            "not_applicable"
+          ],
+          "label": "Resolve the structure so personal services concerns are removed or not applicable."
+        }
+      ],
+      "evidence": [
+        "Analysis of supervision, direction, and control",
+        "Description of contractor independence and deliverable-based work",
+        "Legal or policy review if concerns remain",
+        "Requirement language revised to avoid unauthorized personal services"
+      ],
       "fixWith": [
         {
           "kind": "training",
@@ -682,6 +830,23 @@
       "explanation": "A known mismatch between the need and the funds is a stop-and-get-help issue. Do not paper over it with schedule pressure.",
       "cite": "31 U.S.C. 1502(a); FAR 32.702",
       "concierge": "The Government generally must use funds for a legitimate need of the period for which those funds are available.",
+      "phase": "stop",
+      "clearedBy": [
+        {
+          "answer": "bonaFideNeed",
+          "set": [
+            "yes",
+            "not_applicable"
+          ],
+          "label": "Resolve the fiscal-law issue so the bona fide need posture is yes or not applicable."
+        }
+      ],
+      "evidence": [
+        "Funding document or resource advisor confirmation",
+        "Bona fide need analysis tied to period of performance or delivery",
+        "Appropriation type and fiscal year",
+        "Legal or fiscal review if the timing is unusual"
+      ],
       "fixWith": [
         {
           "kind": "tool",
@@ -798,6 +963,22 @@
       "explanation": "Time-and-materials and labor-hour contracts are higher-risk. The package needs a ceiling and active surveillance logic before solicitation.",
       "cite": "FAR 16.601",
       "concierge": "T&M pays for labor hours, so the Government needs a firm ceiling and a real plan to watch the work.",
+      "phase": "stop",
+      "clearedBy": [
+        {
+          "answer": "tmCeilingSurveillance",
+          "set": [
+            "yes"
+          ],
+          "label": "Define the T&M/LH ceiling and surveillance approach."
+        }
+      ],
+      "evidence": [
+        "Ceiling amount and basis",
+        "D&F or approval required for T&M/LH use",
+        "Surveillance plan showing how hours and deliverables will be monitored",
+        "Rationale for why a lower-risk contract type is not suitable"
+      ],
       "fixWith": [
         {
           "kind": "training",
@@ -846,6 +1027,14 @@
       "title": "IT/cyber terms are not yet understood",
       "explanation": "IT requirements often carry Section 508, cybersecurity, access, data, or IP concerns. If the package is unsure, bring technical and clause review in early.",
       "cite": "FAR 39.2; FAR 39.101",
+      "phase": "risk-flags",
+      "evidence": [
+        "Section 508 applicability decision",
+        "Cybersecurity, access, or hosting requirements",
+        "Data rights, IP, or license terms if applicable",
+        "Technical reviewer input",
+        "Clause/profile assumptions for IT and cyber terms"
+      ],
       "fixWith": [
         {
           "kind": "tool",
@@ -894,6 +1083,22 @@
       "title": "Construction package has not considered bonds/protection",
       "explanation": "Construction packages should consider bonding, payment protection, wage, safety, site, and performance requirements before solicitation.",
       "cite": "FAR Part 28; FAR Part 36",
+      "phase": "risk-flags",
+      "clearedBy": [
+        {
+          "answer": "performanceBond",
+          "set": [
+            "yes"
+          ],
+          "label": "Document construction bond or payment protection consideration."
+        }
+      ],
+      "evidence": [
+        "Bond or payment protection determination",
+        "Construction specs, drawings, and site information",
+        "Wage determination or labor standards review",
+        "Safety, access, and notice-to-proceed assumptions"
+      ],
       "fixWith": [
         {
           "kind": "tool",
@@ -1104,6 +1309,22 @@
       "title": "OCI exposure needs review",
       "explanation": "Known or uncertain organizational conflict of interest exposure should be addressed before solicitation. The solicitation may need mitigation, disclosure, or evaluation language.",
       "cite": "FAR Subpart 9.5",
+      "phase": "risk-flags",
+      "clearedBy": [
+        {
+          "answer": "oci",
+          "set": [
+            "no"
+          ],
+          "label": "Resolve OCI exposure or document why no OCI concern remains."
+        }
+      ],
+      "evidence": [
+        "OCI screening notes or analysis",
+        "Known relationships, prior work, or access concerns",
+        "Mitigation plan, disclosure language, or evaluation approach if needed",
+        "Legal or policy review when exposure is material"
+      ],
       "fixWith": [
         {
           "kind": "training",
@@ -1157,6 +1378,22 @@
       "explanation": "If using commercial or FAR 13.5 procedures above the SAT, the file should show market research and a reasonable basis for expecting commercial products or services.",
       "cite": "FAR 12.101; FAR 13.500",
       "concierge": "FAR 13.5 can be powerful, but only when the commercial-products/services foundation is real.",
+      "phase": "research-justification",
+      "clearedBy": [
+        {
+          "answer": "commercialDetermination",
+          "set": [
+            "yes"
+          ],
+          "label": "Document commercial product or commercial service support."
+        }
+      ],
+      "evidence": [
+        "Market research supporting commercial product or service treatment",
+        "Commerciality analysis or determination, if required locally",
+        "Price references from the commercial marketplace or prior buys",
+        "Acquisition strategy showing why commercial procedures fit"
+      ],
       "fixWith": [
         {
           "kind": "training",
@@ -1238,6 +1475,23 @@
       "title": "Deliverables are not defined",
       "explanation": "Services packages need clear deliverables, reporting, meetings, data, or products when applicable. Undefined deliverables create evaluation and administration trouble.",
       "cite": "FAR 37.601(b)(1)-(2)",
+      "phase": "requirement-doc",
+      "clearedBy": [
+        {
+          "answer": "deliverables",
+          "set": [
+            "yes",
+            "partial"
+          ],
+          "label": "Define deliverables or at least move the deliverables list into draft."
+        }
+      ],
+      "evidence": [
+        "Deliverables list with due dates or frequencies",
+        "Format, content, and acceptance requirements for each deliverable",
+        "Government reviewer or acceptance official",
+        "Data, report, meeting, and product delivery assumptions"
+      ],
       "fixWith": [
         {
           "kind": "tool",
@@ -1258,6 +1512,23 @@
       "title": "Acceptance criteria are not defined",
       "explanation": "The Government needs to know what acceptance looks like before solicitation. Vague acceptance criteria tend to become invoice, inspection, and cure-notice problems.",
       "cite": "FAR 46.102; FAR 46.401",
+      "phase": "requirement-doc",
+      "clearedBy": [
+        {
+          "answer": "acceptanceCriteria",
+          "set": [
+            "yes",
+            "partial"
+          ],
+          "label": "Define acceptance criteria or at least move them into draft."
+        }
+      ],
+      "evidence": [
+        "Acceptance criteria for each major deliverable or performance outcome",
+        "Inspection method and responsible Government role",
+        "Timing for review, rejection, correction, and acceptance",
+        "Connection between acceptance and invoice approval"
+      ],
       "fixWith": [
         {
           "kind": "tool",
