@@ -1453,11 +1453,23 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   // Soft navigation keeps this Audio object alive while simple site pages swap.
   var softNavReady = false;
   var softNavBusy = false;
+  var softNavPending = null;
   var softHeadMarked = false;
   var softChromeBound = false;
   var SOFT_NAV_PAGES = [
     'index.html',
     'tools.html',
+    'pws-builder.html',
+    'far-comparator.html',
+    'templates.html',
+    'market-research-tool.html',
+    'palt-builder.html',
+    'preflight.html',
+    'manual-1449-builder.html',
+    'manual-mod-builder.html',
+    'manual-form9-builder.html',
+    'solicitation-builder.html',
+    'clause-matrix.html',
     'training.html',
     'annual-cor-file-reviews.html',
     'award-decision-documents.html',
@@ -1632,7 +1644,32 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       return 'try { window[' + JSON.stringify(name) + '] = ' + name + '; } catch (e) {}';
     }).join('\n');
     var wrapped = source + (exports ? '\n' + exports : '');
-    Function('window', 'document', wrapped).call(window, window, document);
+    var domReadyCallbacks = [];
+    var hadOwnDocumentListener = Object.prototype.hasOwnProperty.call(document, 'addEventListener');
+    var originalDocumentListener = document.addEventListener;
+
+    document.addEventListener = function (type, listener, options) {
+      if (type === 'DOMContentLoaded' && listener) {
+        domReadyCallbacks.push(listener);
+        return;
+      }
+      return originalDocumentListener.call(document, type, listener, options);
+    };
+
+    try {
+      Function('window', 'document', wrapped).call(window, window, document);
+    } finally {
+      if (hadOwnDocumentListener) document.addEventListener = originalDocumentListener;
+      else delete document.addEventListener;
+    }
+
+    domReadyCallbacks.forEach(function (listener) {
+      if (typeof listener === 'function') {
+        listener.call(document, new Event('DOMContentLoaded'));
+      } else if (listener && typeof listener.handleEvent === 'function') {
+        listener.handleEvent.call(listener, new Event('DOMContentLoaded'));
+      }
+    });
   }
 
   function runSoftScript(script, pageUrl) {
@@ -1732,7 +1769,10 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   }
 
   async function softNavigateTo(url, push) {
-    if (softNavBusy) return;
+    if (softNavBusy) {
+      softNavPending = { href: url.href, push: !!push };
+      return;
+    }
     softNavBusy = true;
     try {
       markCurrentSoftHead();
@@ -1765,6 +1805,14 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       window.location.href = url.href;
     } finally {
       softNavBusy = false;
+      if (softNavPending) {
+        var pending = softNavPending;
+        softNavPending = null;
+        var pendingUrl = new URL(pending.href, window.location.href);
+        if (pendingUrl.href !== window.location.href) {
+          softNavigateTo(pendingUrl, pending.push);
+        }
+      }
     }
   }
 
