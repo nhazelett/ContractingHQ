@@ -6,42 +6,443 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Plain-English weekly summaries of GAO bid protest and appropriations law decisions for contracting professionals." />
+  <meta name="description" content="Automated GAO protest watch for contracting professionals. Recent bid protest decisions, official GAO synopsis text, outcomes when available, and practitioner triage notes." />
 
-  <title>GAO Decision Summaries — ContractingHQ</title>
+  <title>GAO Protest Watch | ContractingHQ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
-<style>.bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}    .announce-list{display:flex;flex-direction:column;gap:.85rem;}
-    .announce-item{display:flex;gap:1rem;align-items:flex-start;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:.9rem 1.1rem;}
-    .announce-meta{display:flex;flex-direction:column;gap:.3rem;min-width:95px;}
-    .announce-date{font-size:.72rem;color:#777;white-space:nowrap;}
-    .announce-badge{font-size:.62rem;font-weight:700;padding:.18rem .45rem;border-radius:3px;text-transform:uppercase;width:fit-content;}
-    .badge-new{background:rgba(74,158,255,.18);color:#4a9eff;}
-    .badge-update{background:rgba(100,220,150,.18);color:#64dc96;}
-    .announce-text{font-size:.9rem;color:#c0cdd8;line-height:1.55;}
-    .announce-text a{color:#4a9eff;}
-    .far-feed{display:flex;flex-direction:column;gap:.7rem;}
-    .far-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:.85rem 1rem;}
-    .far-item-title a{color:#e2e8f0;text-decoration:none;font-size:.9rem;font-weight:500;}
-    .far-item-title a:hover{color:#4a9eff;}
-    .far-item-meta{font-size:.75rem;color:#777;margin-top:.3rem;}
-    .far-item-badge{font-size:.66rem;font-weight:700;padding:.12rem .42rem;border-radius:3px;background:rgba(74,158,255,.15);color:#4a9eff;text-transform:uppercase;margin-right:.4rem;}
-    .far-loading{color:#777;font-style:italic;padding:.5rem 0;}
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+
+  <style>
+    :root {
+      --gao-ink: #eaf2ff;
+      --gao-muted: #96a9c4;
+      --gao-line: rgba(139, 171, 218, 0.18);
+      --gao-panel: rgba(11, 24, 50, 0.78);
+      --gao-panel-2: rgba(18, 37, 73, 0.74);
+      --gao-blue: #4a9eff;
+      --gao-cyan: #2dd4bf;
+      --gao-gold: #fbbf24;
+      --gao-green: #34d399;
+      --gao-red: #f87171;
+      --gao-violet: #a78bfa;
+    }
+
+    .bmc-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: #FFDD00;
+      color: #000;
+      border-radius: 8px;
+      padding: .45rem 1rem;
+      font-weight: 700;
+      font-size: .83rem;
+      text-decoration: none;
+      transition: opacity .2s, transform .15s;
+    }
+
+    .bmc-btn:hover { opacity: .88; transform: translateY(-1px); }
+
+    .gao-shell {
+      min-height: 100vh;
+      background:
+        linear-gradient(180deg, rgba(14, 37, 76, .92) 0, rgba(4, 12, 28, .98) 320px),
+        #040c1c;
+      color: var(--gao-ink);
+      padding: 6.2rem 1.25rem 3.75rem;
+    }
+
+    .gao-wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .gao-topline {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .gao-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      color: var(--gao-cyan);
+      font-family: "Rajdhani", sans-serif;
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      margin-bottom: .7rem;
+    }
+
+    .gao-kicker::before {
+      content: "";
+      width: 34px;
+      height: 2px;
+      background: var(--gao-cyan);
+      display: inline-block;
+    }
+
+    .gao-title {
+      font-family: "Rajdhani", sans-serif;
+      font-size: clamp(2.15rem, 5vw, 4.2rem);
+      line-height: .92;
+      margin: 0;
+      letter-spacing: 0;
+      color: #f8fbff;
+    }
+
+    .gao-deck {
+      max-width: 680px;
+      margin: .9rem 0 0;
+      color: #c4d2e6;
+      line-height: 1.65;
+      font-size: 1rem;
+    }
+
+    .gao-source {
+      flex: 0 0 310px;
+      border: 1px solid var(--gao-line);
+      background: rgba(3, 10, 24, .45);
+      border-radius: 8px;
+      padding: .95rem 1rem;
+    }
+
+    .gao-source-label {
+      font-family: "Rajdhani", sans-serif;
+      color: var(--gao-gold);
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      font-size: .72rem;
+      margin-bottom: .4rem;
+    }
+
+    .gao-source-text {
+      color: var(--gao-muted);
+      font-size: .82rem;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .gao-source-text a { color: var(--gao-blue); text-decoration: none; }
+    .gao-source-text a:hover { text-decoration: underline; }
+
+    .gao-stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: .75rem;
+      margin: 1.5rem 0 1rem;
+    }
+
+    .gao-stat {
+      min-height: 92px;
+      border: 1px solid var(--gao-line);
+      background: linear-gradient(180deg, rgba(18, 40, 78, .78), rgba(9, 20, 42, .82));
+      border-radius: 8px;
+      padding: .9rem;
+    }
+
+    .gao-stat-value {
+      font-family: "Rajdhani", sans-serif;
+      font-weight: 700;
+      font-size: 2rem;
+      line-height: 1;
+      color: #fff;
+    }
+
+    .gao-stat-label {
+      color: var(--gao-muted);
+      font-size: .76rem;
+      line-height: 1.35;
+      margin-top: .45rem;
+    }
+
+    .gao-controls {
+      position: sticky;
+      top: 64px;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto auto;
+      gap: .7rem;
+      align-items: center;
+      border: 1px solid var(--gao-line);
+      background: rgba(4, 12, 28, .94);
+      backdrop-filter: blur(12px);
+      border-radius: 8px;
+      padding: .75rem;
+      margin: 1rem 0 1.2rem;
+    }
+
+    .gao-search,
+    .gao-select {
+      width: 100%;
+      min-height: 42px;
+      border-radius: 7px;
+      border: 1px solid rgba(139, 171, 218, .22);
+      background: rgba(255, 255, 255, .055);
+      color: var(--gao-ink);
+      padding: .65rem .8rem;
+      font: inherit;
+      outline: none;
+    }
+
+    .gao-select { min-width: 178px; }
+    .gao-search:focus,
+    .gao-select:focus { border-color: rgba(74, 158, 255, .72); box-shadow: 0 0 0 3px rgba(74, 158, 255, .14); }
+
+    .gao-segment {
+      display: inline-grid;
+      grid-auto-flow: column;
+      gap: .35rem;
+      align-items: center;
+      border: 1px solid rgba(139, 171, 218, .18);
+      background: rgba(255, 255, 255, .035);
+      border-radius: 8px;
+      padding: .28rem;
+    }
+
+    .gao-filter {
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--gao-muted);
+      min-height: 34px;
+      padding: .45rem .7rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .gao-filter.active {
+      color: #061225;
+      background: var(--gao-cyan);
+    }
+
+    .gao-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      color: var(--gao-muted);
+      font-size: .82rem;
+      margin: 0 0 .9rem;
+    }
+
+    .gao-status strong { color: #dce8fa; }
+
+    .gao-list {
+      display: grid;
+      gap: .9rem;
+    }
+
+    .gao-card {
+      border: 1px solid var(--gao-line);
+      background: linear-gradient(180deg, var(--gao-panel), rgba(7, 17, 38, .9));
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, .18);
+    }
+
+    .gao-card-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+      align-items: start;
+      margin-bottom: .75rem;
+    }
+
+    .gao-case {
+      font-family: "Rajdhani", sans-serif;
+      font-size: 1.24rem;
+      font-weight: 700;
+      color: #f8fbff;
+      line-height: 1.1;
+    }
+
+    .gao-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem .8rem;
+      color: var(--gao-muted);
+      font-size: .78rem;
+      margin-top: .35rem;
+    }
+
+    .gao-outcome {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      min-width: 104px;
+      border-radius: 7px;
+      padding: .35rem .65rem;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      border: 1px solid rgba(255, 255, 255, .12);
+    }
+
+    .outcome-sustained { color: #062117; background: var(--gao-green); }
+    .outcome-denied { color: #fff; background: rgba(74, 158, 255, .28); border-color: rgba(74, 158, 255, .45); }
+    .outcome-dismissed { color: #25090c; background: var(--gao-red); }
+    .outcome-mixed { color: #1d1400; background: var(--gao-gold); }
+    .outcome-reconsideration { color: #fff; background: rgba(167, 139, 250, .32); border-color: rgba(167, 139, 250, .48); }
+    .outcome-unclassified { color: #d8e2f2; background: rgba(255, 255, 255, .08); }
+
+    .gao-synopsis {
+      color: #c8d5e8;
+      line-height: 1.62;
+      margin: .75rem 0;
+      font-size: .94rem;
+    }
+
+    .gao-decision-line,
+    .gao-digest,
+    .gao-note {
+      border-radius: 8px;
+      padding: .82rem .9rem;
+      margin-top: .75rem;
+    }
+
+    .gao-decision-line {
+      background: rgba(74, 158, 255, .08);
+      border-left: 3px solid var(--gao-blue);
+      color: #d7e6fa;
+      font-size: .88rem;
+      line-height: 1.6;
+    }
+
+    .gao-digest {
+      background: rgba(45, 212, 191, .065);
+      border-left: 3px solid var(--gao-cyan);
+      color: #c9e8e3;
+      font-size: .88rem;
+      line-height: 1.6;
+    }
+
+    .gao-note {
+      background: rgba(251, 191, 36, .075);
+      border-left: 3px solid var(--gao-gold);
+      color: #ead9ac;
+      font-size: .87rem;
+      line-height: 1.58;
+    }
+
+    .gao-mini-label {
+      display: block;
+      font-family: "Rajdhani", sans-serif;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: .28rem;
+    }
+
+    .gao-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .42rem;
+      margin-top: .85rem;
+    }
+
+    .gao-tag {
+      border: 1px solid rgba(139, 171, 218, .2);
+      background: rgba(255, 255, 255, .045);
+      color: #bdd0e9;
+      border-radius: 999px;
+      padding: .24rem .55rem;
+      font-size: .72rem;
+      font-weight: 700;
+    }
+
+    .gao-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      margin-top: .9rem;
+      padding-top: .8rem;
+      border-top: 1px solid rgba(139, 171, 218, .13);
+    }
+
+    .gao-link {
+      color: var(--gao-blue);
+      text-decoration: none;
+      font-weight: 800;
+      font-size: .86rem;
+    }
+
+    .gao-link:hover { text-decoration: underline; }
+
+    .gao-source-chip {
+      color: var(--gao-muted);
+      font-size: .72rem;
+    }
+
+    .gao-empty {
+      border: 1px dashed rgba(139, 171, 218, .28);
+      border-radius: 8px;
+      padding: 2rem;
+      color: var(--gao-muted);
+      text-align: center;
+      background: rgba(255, 255, 255, .035);
+    }
+
+    .gao-legacy {
+      margin-top: 1rem;
+      padding: .9rem 1rem;
+      border: 1px solid rgba(139, 171, 218, .14);
+      background: rgba(255, 255, 255, .035);
+      border-radius: 8px;
+      color: var(--gao-muted);
+      font-size: .82rem;
+      line-height: 1.55;
+    }
+
+    .gao-legacy a { color: var(--gao-blue); text-decoration: none; font-weight: 700; }
+    .gao-legacy a:hover { text-decoration: underline; }
+
+    @media (max-width: 920px) {
+      .gao-topline { display: block; }
+      .gao-source { margin-top: 1rem; }
+      .gao-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .gao-controls { grid-template-columns: 1fr; position: static; }
+      .gao-segment { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .gao-filter { width: 100%; }
+      .gao-select { min-width: 0; }
+    }
+
+    @media (max-width: 560px) {
+      .gao-shell { padding: 5.25rem 1rem 3.25rem; }
+      .gao-title { font-size: 2.35rem; }
+      .gao-stats { grid-template-columns: 1fr; }
+      .gao-card-head { grid-template-columns: 1fr; }
+      .gao-outcome { width: fit-content; }
+      .gao-status { display: block; }
+      .bmc-btn { width: 38px; height: 38px; justify-content: center; padding: 0; overflow: hidden; color: transparent; }
+      .bmc-btn::first-letter { color: #000; }
+    }
   </style>
 
-  <!-- SEO: Open Graph & Twitter Card -->
   <meta property="og:type"        content="website" />
   <meta property="og:site_name"   content="ContractingHQ" />
-  <meta property="og:title"       content="GAO Decision Summaries — ContractingHQ" />
-  <meta property="og:description" content="Plain-English weekly summaries of GAO bid protest and appropriations law decisions for contracting professionals." />
+  <meta property="og:title"       content="GAO Protest Watch | ContractingHQ" />
+  <meta property="og:description" content="Automated watch page for recent GAO bid protest decisions, official synopsis text, and practitioner triage notes." />
   <meta property="og:url"         content="https://kthq.org/gao-decisions.html" />
   <meta name="twitter:card"        content="summary" />
   <meta name="twitter:site"        content="@ContractingHQ" />
-  <meta name="twitter:title"       content="GAO Decision Summaries — ContractingHQ" />
-  <meta name="twitter:description" content="Plain-English weekly summaries of GAO bid protest and appropriations law decisions for contracting professionals." />
+  <meta name="twitter:title"       content="GAO Protest Watch | ContractingHQ" />
+  <meta name="twitter:description" content="Automated watch page for recent GAO bid protest decisions, official synopsis text, and practitioner triage notes." />
   <link rel="canonical"            href="https://kthq.org/gao-decisions.html" />
 </head>
 <body>
@@ -73,24 +474,70 @@
     <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
   </div>
 </nav>
-<main>
-  <section class="section" id="gao">
-<div class="container" style="padding-top:1rem;padding-bottom:.25rem;font-size:.82rem;color:#888;">
-  <a href="index.html" style="color:#4a9eff;text-decoration:none;">&#8592; Home</a>
-</div>
-    <div class="container">
-    <div class="section-header">
-      <span class="section-tag">GAO Updates</span>
-      <h2>Weekly GAO Decision Summaries</h2>
-      <p class="section-desc">The most relevant bid protest decisions &mdash; summarized in plain language with verbatim GAO holdings. Updated every week.</p>
+
+<main class="gao-shell">
+  <div class="gao-wrap">
+    <section class="gao-topline" aria-labelledby="gaoTitle">
+      <div>
+        <div class="gao-kicker">Automated GAO Protest Watch</div>
+        <h1 class="gao-title" id="gaoTitle">Recent Bid Protest Decisions</h1>
+        <p class="gao-deck">A daily pull of recent GAO protest-style legal products, cleaned up for working acquisition teams. Official GAO text stays intact; KTHQ adds only deterministic triage tags and practitioner prompts.</p>
+      </div>
+      <aside class="gao-source" aria-label="Source status">
+        <div class="gao-source-label">Source</div>
+        <p class="gao-source-text" id="gaoSourceText">Loading GAO data...</p>
+      </aside>
+    </section>
+
+    <section class="gao-stats" aria-label="GAO protest watch stats">
+      <div class="gao-stat">
+        <div class="gao-stat-value" id="statTotal">--</div>
+        <div class="gao-stat-label">Recent protest-style decisions tracked</div>
+      </div>
+      <div class="gao-stat">
+        <div class="gao-stat-value" id="statLatest">--</div>
+        <div class="gao-stat-label">Latest decision date in this feed</div>
+      </div>
+      <div class="gao-stat">
+        <div class="gao-stat-value" id="statSustained">--</div>
+        <div class="gao-stat-label">Sustained or mixed outcomes identified</div>
+      </div>
+      <div class="gao-stat">
+        <div class="gao-stat-value" id="statDismissed">--</div>
+        <div class="gao-stat-label">Dismissals identified</div>
+      </div>
+      <div class="gao-stat">
+        <div class="gao-stat-value" id="statUpdated">--</div>
+        <div class="gao-stat-label">Last automated update</div>
+      </div>
+    </section>
+
+    <section class="gao-controls" aria-label="Decision filters">
+      <input class="gao-search" id="gaoSearch" type="search" placeholder="Search case, B-number, topic, or synopsis" />
+      <select class="gao-select" id="gaoTopic">
+        <option value="">All topics</option>
+      </select>
+      <div class="gao-segment" role="group" aria-label="Outcome filter">
+        <button class="gao-filter active" type="button" data-outcome="">All</button>
+        <button class="gao-filter" type="button" data-outcome="sustained">Sustained</button>
+        <button class="gao-filter" type="button" data-outcome="denied">Denied</button>
+        <button class="gao-filter" type="button" data-outcome="dismissed">Dismissed</button>
+      </div>
+    </section>
+
+    <div class="gao-status">
+      <span id="gaoResultCount">Loading decisions...</span>
+      <span id="gaoDataNote"></span>
     </div>
-    <div class="gao-current" id="gaoCurrentWeek"></div>
-    <div class="gao-archive-link">
-      <a href="gao-archive.html" class="archive-page-link">View all past decisions &rarr;</a>
+
+    <section class="gao-list" id="gaoList" aria-live="polite"></section>
+
+    <div class="gao-legacy">
+      Older hand-written summaries remain available in the <a href="gao-archive.html">legacy GAO archive</a>. This page is the daily automated feed.
     </div>
   </div>
-  </section>
 </main>
+
 <footer class="footer">
   <div class="container footer-inner">
     <div class="footer-brand">
@@ -111,9 +558,184 @@
   </div>
 </footer>
 
-<script src="data/gao.js"></script>
-<script src="data/gao-render.js"></script>
-<script src="data/far.js"></script>
+<script src="data/gao-live.js"></script>
+<script>
+(function () {
+  var data = window.KTHQ_GAO_DATA || { items: [], stats: {}, source: {} };
+  var items = Array.isArray(data.items) ? data.items : [];
+  var state = { search: "", topic: "", outcome: "" };
+
+  function esc(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function shortDate(value) {
+    if (!value) return "--";
+    var d = new Date(/^\d{4}-\d{2}-\d{2}$/.test(value) ? value + "T12:00:00Z" : value);
+    if (Number.isNaN(d.getTime())) return value;
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric", timeZone: "UTC" });
+  }
+
+  function fullDateTime(value) {
+    if (!value) return "Not generated yet";
+    var d = new Date(value);
+    if (Number.isNaN(d.getTime())) return value;
+    return d.toLocaleString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
+  }
+
+  function textFor(item) {
+    return [
+      item.caseName,
+      item.title,
+      item.bNumberText,
+      item.officialSynopsis,
+      item.digest,
+      item.decisionLine,
+      item.practitionerNote,
+      (item.tags || []).join(" ")
+    ].join(" ").toLowerCase();
+  }
+
+  function allTopics() {
+    var found = {};
+    items.forEach(function (item) {
+      (item.tags || []).forEach(function (tag) { found[tag] = true; });
+    });
+    return Object.keys(found).sort();
+  }
+
+  function visibleItems() {
+    var q = state.search.trim().toLowerCase();
+    return items.filter(function (item) {
+      if (state.outcome && item.outcome !== state.outcome && !(state.outcome === "sustained" && item.outcome === "mixed")) return false;
+      if (state.topic && (item.tags || []).indexOf(state.topic) === -1) return false;
+      if (q && textFor(item).indexOf(q) === -1) return false;
+      return true;
+    });
+  }
+
+  function renderStats() {
+    var stats = data.stats || {};
+    var enriched = stats.sourceStatus && stats.sourceStatus.productPages ? stats.sourceStatus.productPages.enriched : 0;
+    var recentOk = !!(stats.sourceStatus && stats.sourceStatus.recentPage && stats.sourceStatus.recentPage.ok);
+    var legacyEntries = stats.sourceStatus && stats.sourceStatus.legacyCache ? stats.sourceStatus.legacyCache.entries : 0;
+    var sourceText = 'Official GAO RSS feed';
+    if (recentOk || enriched > 0) {
+      sourceText += ', enriched with GAO page text where available.';
+    } else {
+      sourceText += '. GAO blocked automated page enrichment during the last run, so some outcomes may require opening the decision.';
+    }
+    if (legacyEntries) {
+      sourceText += ' Matching legacy KTHQ holding text is used where available.';
+    }
+
+    document.getElementById("statTotal").textContent = stats.total || items.length || 0;
+    document.getElementById("statLatest").textContent = shortDate(stats.latestDecisionDate);
+    document.getElementById("statSustained").textContent = (stats.sustained || 0) + (stats.mixed || 0);
+    document.getElementById("statDismissed").textContent = stats.dismissed || 0;
+    document.getElementById("statUpdated").textContent = shortDate(data.generatedAt);
+    document.getElementById("gaoSourceText").innerHTML = esc(sourceText) + ' <a href="' + esc(data.source && data.source.rssUrl || 'https://www.gao.gov/rss/reportslegal.xml') + '" target="_blank" rel="noopener">GAO RSS</a>';
+    document.getElementById("gaoDataNote").textContent = "Updated " + fullDateTime(data.generatedAt);
+  }
+
+  function renderTopics() {
+    var select = document.getElementById("gaoTopic");
+    allTopics().forEach(function (topic) {
+      var opt = document.createElement("option");
+      opt.value = topic;
+      opt.textContent = topic;
+      select.appendChild(opt);
+    });
+  }
+
+  function card(item) {
+    var tags = (item.tags || []).map(function (tag) {
+      return '<span class="gao-tag">' + esc(tag) + '</span>';
+    }).join("");
+    var decisionLine = item.decisionLine
+      ? '<div class="gao-decision-line"><span class="gao-mini-label">GAO decision line</span>' + esc(item.decisionLine) + '</div>'
+      : '';
+    var digest = item.digest
+      ? '<div class="gao-digest"><span class="gao-mini-label">GAO digest</span>' + esc(item.digest) + '</div>'
+      : '';
+    var fallback = !item.digest && !item.decisionLine
+      ? '<div class="gao-decision-line"><span class="gao-mini-label">Official source note</span>Only the GAO RSS synopsis was available during the last automated pull. Open the full decision for the holding and complete reasoning.</div>'
+      : '';
+
+    return '<article class="gao-card" data-outcome="' + esc(item.outcome) + '">' +
+      '<div class="gao-card-head">' +
+        '<div>' +
+          '<div class="gao-case">' + esc(item.caseName || item.title) + '</div>' +
+          '<div class="gao-meta">' +
+            '<span>' + esc(item.bNumberText || "GAO product") + '</span>' +
+            '<span>' + esc(item.displayDate || item.decisionDate || item.publicationDate || "") + '</span>' +
+            '<span>' + esc(item.outcomeSource || "") + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<span class="gao-outcome outcome-' + esc(item.outcome || "unclassified") + '">' + esc(item.outcomeLabel || "Read Decision") + '</span>' +
+      '</div>' +
+      '<p class="gao-synopsis">' + esc(item.officialSynopsis || "No GAO synopsis was available for this item.") + '</p>' +
+      decisionLine +
+      digest +
+      fallback +
+      '<div class="gao-note"><span class="gao-mini-label">Practitioner prompt</span>' + esc(item.practitionerNote || "") + '</div>' +
+      (tags ? '<div class="gao-tags">' + tags + '</div>' : '') +
+      '<div class="gao-actions">' +
+        '<a class="gao-link" href="' + esc(item.link) + '" target="_blank" rel="noopener">Open GAO decision</a>' +
+        '<span class="gao-source-chip">' + esc(item.sourceStatusLabel || "GAO source") + '</span>' +
+      '</div>' +
+    '</article>';
+  }
+
+  function renderList() {
+    var list = document.getElementById("gaoList");
+    var current = visibleItems();
+    document.getElementById("gaoResultCount").innerHTML = '<strong>' + current.length + '</strong> decisions shown';
+    if (!current.length) {
+      list.innerHTML = '<div class="gao-empty">No GAO decisions match the current filters.</div>';
+      return;
+    }
+    list.innerHTML = current.map(card).join("");
+  }
+
+  function bindControls() {
+    document.getElementById("gaoSearch").addEventListener("input", function (e) {
+      state.search = e.target.value;
+      renderList();
+    });
+    document.getElementById("gaoTopic").addEventListener("change", function (e) {
+      state.topic = e.target.value;
+      renderList();
+    });
+    document.querySelectorAll(".gao-filter").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        document.querySelectorAll(".gao-filter").forEach(function (el) { el.classList.remove("active"); });
+        btn.classList.add("active");
+        state.outcome = btn.getAttribute("data-outcome") || "";
+        renderList();
+      });
+    });
+  }
+
+  function init() {
+    renderStats();
+    renderTopics();
+    bindControls();
+    renderList();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+</script>
 <script src="main.js"></script>
 <script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <script src="player.js"></script>
