@@ -187,7 +187,10 @@
 
   // ── DETECT PAGE / PLATFORM ───────────────────────────────────────
   var path = window.location.pathname;
-  var isHome = path === '/' || path.endsWith('/index.html') || path.endsWith('/');
+  function isHomePath(value) {
+    return value === '/' || value.endsWith('/index.html') || value.endsWith('/');
+  }
+  var isHome = isHomePath(path);
   var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
   // ── CSS ──────────────────────────────────────────────────────────
@@ -887,6 +890,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
 `;
 
   var styleEl = document.createElement('style');
+  styleEl.id = 'cfm-player-styles';
   styleEl.textContent = css;
   document.head.appendChild(styleEl);
 
@@ -960,6 +964,26 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
 
     bindFloat();
     renderDrawer();
+    updateAll();
+  }
+
+  function unmountPlayerDom() {
+    var currentFloat = document.getElementById('cfm-float');
+    var currentDrawer = document.getElementById('cfm-drawer');
+    if (currentFloat && currentFloat.parentNode) currentFloat.parentNode.removeChild(currentFloat);
+    if (currentDrawer && currentDrawer.parentNode) currentDrawer.parentNode.removeChild(currentDrawer);
+    document.body.classList.remove('has-cfm-player');
+    floatEl = null;
+    drawerEl = null;
+    drawerOpen = false;
+  }
+
+  function mountPlayerForCurrentPage() {
+    path = window.location.pathname;
+    isHome = isHomePath(path);
+    unmountPlayerDom();
+    if (isHome) buildHome();
+    else buildFloat();
     updateAll();
   }
 
@@ -1426,6 +1450,236 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     else icon.innerHTML = '&#128266;';
   }
 
+  // Soft navigation keeps this Audio object alive while simple site pages swap.
+  var softNavReady = false;
+  var softNavBusy = false;
+  var softHeadMarked = false;
+  var softChromeBound = false;
+  var SOFT_NAV_PAGES = [
+    'index.html',
+    'tools.html',
+    'training.html',
+    'links.html',
+    'about.html',
+    'contact.html',
+    'customer-education.html',
+    'industry.html',
+    'federal-register.html',
+    'gao-decisions.html',
+    'asbca.html',
+    'far-overhaul.html'
+  ];
+
+  function softPageName(url) {
+    var name = (url.pathname.split('/').pop() || 'index.html').toLowerCase();
+    return name || 'index.html';
+  }
+
+  function isSoftPage(url) {
+    return SOFT_NAV_PAGES.indexOf(softPageName(url)) > -1;
+  }
+
+  function canSoftNavigate(link, url) {
+    if (!link || !url) return false;
+    if (window.location.protocol === 'file:') return false;
+    if (link.hasAttribute('download') || link.hasAttribute('data-full-reload')) return false;
+    if (link.target && link.target !== '_self') return false;
+    if (url.origin !== window.location.origin) return false;
+    if (!/^https?:$/.test(url.protocol)) return false;
+    if (!isSoftPage(url)) return false;
+    if (url.pathname === window.location.pathname && url.search === window.location.search) return false;
+    return true;
+  }
+
+  function markCurrentSoftHead() {
+    if (softHeadMarked) return;
+    softHeadMarked = true;
+    document.querySelectorAll('head style, head meta[name="description"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]').forEach(function (node) {
+      if (node.id === 'cfm-player-styles') return;
+      node.setAttribute('data-kthq-soft-head', 'true');
+    });
+  }
+
+  function updateSoftHead(doc) {
+    document.title = doc.title || document.title;
+    document.querySelectorAll('[data-kthq-soft-head]').forEach(function (node) {
+      if (node.parentNode) node.parentNode.removeChild(node);
+    });
+    doc.querySelectorAll('head style, head meta[name="description"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]').forEach(function (node) {
+      var clone = node.cloneNode(true);
+      clone.setAttribute('data-kthq-soft-head', 'true');
+      document.head.appendChild(clone);
+    });
+  }
+
+  function shouldSkipSoftScript(script) {
+    var rawSrc = script.getAttribute('src') || '';
+    if (!rawSrc) return false;
+    var src = rawSrc.toLowerCase();
+    return src.indexOf('main.js') > -1 ||
+      src.indexOf('player.js') > -1 ||
+      src.indexOf('googletagmanager.com') > -1 ||
+      src.indexOf('gc.zgo.at') > -1;
+  }
+
+  function runSoftScript(script, pageUrl) {
+    return new Promise(function (resolve) {
+      if (shouldSkipSoftScript(script)) { resolve(); return; }
+      var src = script.getAttribute('src');
+      var next = document.createElement('script');
+      Array.prototype.forEach.call(script.attributes, function (attr) {
+        if (attr.name !== 'src') next.setAttribute(attr.name, attr.value);
+      });
+      next.setAttribute('data-kthq-soft-script', 'true');
+      if (src) {
+        next.async = false;
+        next.src = new URL(src, pageUrl.href).href;
+        next.onload = function () { resolve(); };
+        next.onerror = function () { resolve(); };
+        document.body.appendChild(next);
+      } else {
+        next.text = script.textContent || '';
+        document.body.appendChild(next);
+        if (next.parentNode) next.parentNode.removeChild(next);
+        resolve();
+      }
+    });
+  }
+
+  async function runSoftPageScripts(scripts, pageUrl) {
+    for (var i = 0; i < scripts.length; i += 1) {
+      await runSoftScript(scripts[i], pageUrl);
+    }
+  }
+
+  function initSoftPageChrome() {
+    var navbar = document.getElementById('navbar');
+    if (navbar) navbar.classList.toggle('scrolled', window.scrollY > 10);
+
+    if (!window.__kthqSoftScrollBound) {
+      window.__kthqSoftScrollBound = true;
+      window.addEventListener('scroll', function () {
+        var currentNavbar = document.getElementById('navbar');
+        if (currentNavbar) currentNavbar.classList.toggle('scrolled', window.scrollY > 10);
+      });
+    }
+
+    var toggle = document.getElementById('navToggle');
+    var links = document.getElementById('navLinks');
+    if (toggle && links && !toggle.getAttribute('data-kthq-soft-bound')) {
+      toggle.setAttribute('data-kthq-soft-bound', 'true');
+      toggle.addEventListener('click', function () {
+        links.classList.toggle('open');
+      });
+    }
+
+    document.querySelectorAll('.nav-more-toggle').forEach(function (btn) {
+      if (btn.getAttribute('data-kthq-soft-bound')) return;
+      btn.setAttribute('data-kthq-soft-bound', 'true');
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        var parent = btn.closest('.nav-more');
+        if (parent) parent.classList.toggle('open');
+      });
+    });
+
+    if (!softChromeBound) {
+      softChromeBound = true;
+      document.addEventListener('click', function (e) {
+        var currentLinks = document.getElementById('navLinks');
+        if (!e.target.closest('.nav-more')) {
+          document.querySelectorAll('.nav-more.open').forEach(function (el) {
+            el.classList.remove('open');
+          });
+        }
+        if (!e.target.closest('.navbar') && currentLinks) {
+          currentLinks.classList.remove('open');
+        }
+      });
+    }
+  }
+
+  function updateSoftAnalytics() {
+    var pagePath = window.location.pathname + window.location.search;
+    try {
+      if (typeof window.gtag === 'function') {
+        window.gtag('config', 'G-X2RXS78N7K', {
+          page_path: pagePath,
+          page_title: document.title
+        });
+      }
+    } catch (e) {}
+    try {
+      if (window.goatcounter && typeof window.goatcounter.count === 'function') {
+        window.goatcounter.count({ path: pagePath, title: document.title });
+      }
+    } catch (e) {}
+  }
+
+  async function softNavigateTo(url, push) {
+    if (softNavBusy) return;
+    softNavBusy = true;
+    try {
+      markCurrentSoftHead();
+      var res = await fetch(url.href, { credentials: 'same-origin' });
+      if (!res.ok) throw new Error('Soft navigation failed: ' + res.status);
+      var html = await res.text();
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      var scripts = Array.prototype.slice.call(doc.body.querySelectorAll('script'));
+      scripts.forEach(function (script) {
+        if (script.parentNode) script.parentNode.removeChild(script);
+      });
+
+      updateSoftHead(doc);
+      document.body.className = doc.body.className || '';
+      document.body.innerHTML = doc.body.innerHTML;
+      if (push) window.history.pushState({ kthqSoftNav: true }, '', url.href);
+
+      initSoftPageChrome();
+      mountPlayerForCurrentPage();
+      await runSoftPageScripts(scripts, url);
+      updateSoftAnalytics();
+
+      if (url.hash) {
+        var target = document.getElementById(url.hash.slice(1));
+        if (target) target.scrollIntoView();
+      } else {
+        window.scrollTo(0, 0);
+      }
+    } catch (err) {
+      window.location.href = url.href;
+    } finally {
+      softNavBusy = false;
+    }
+  }
+
+  function initSoftNavigation() {
+    if (softNavReady || !window.history || !window.fetch || !window.DOMParser) return;
+    if (!isSoftPage(new URL(window.location.href))) return;
+    softNavReady = true;
+    initSoftPageChrome();
+    if (window.location.protocol !== 'file:') {
+      try { window.history.replaceState({ kthqSoftNav: true }, '', window.location.href); } catch (e) {}
+    }
+
+    document.addEventListener('click', function (e) {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var link = e.target.closest && e.target.closest('a[href]');
+      if (!link) return;
+      var url;
+      try { url = new URL(link.getAttribute('href'), window.location.href); } catch (err) { return; }
+      if (!canSoftNavigate(link, url)) return;
+      e.preventDefault();
+      softNavigateTo(url, true);
+    });
+
+    window.addEventListener('popstate', function () {
+      var url = new URL(window.location.href);
+      if (isSoftPage(url)) softNavigateTo(url, false);
+      else window.location.reload();
+    });
+  }
+
   // ── INIT ─────────────────────────────────────────────────────────
   function resumeAudio() {
     var targetTime = state.time;
@@ -1479,6 +1733,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       buildFloat();
       if (state.wasPlaying) resumeAudio();
     }
+    initSoftNavigation();
   }
 
   if (document.readyState === 'loading') {
