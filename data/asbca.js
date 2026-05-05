@@ -1,6 +1,6 @@
 /* ============================================================
    ASBCA Decisions Digest
-   Updated: April 20, 2026
+   Updated: April 27, 2026
    Pattern: newest digest at index 0, older digests pushed down.
    Nothing is ever deleted — old digests stay for the archive.
    ============================================================ */
@@ -8,8 +8,56 @@
 var ASBCA_DECISIONS = [
   {
     weekOf: "March 2026",
-    intro: "This month's ASBCA digest covers six decisions from February and March 2026 — including a constructive termination win for a contractor at Malmstrom AFB, a motion for reconsideration denied on a failed delivery case, several jurisdictional rulings that remind COs how standing and claim requirements work at the Board, and a USACE construction case where the Board refused to let a bilateral modification sweep away a separate delay claim.",
+    intro: "This month's ASBCA digest covers ten substantive decisions from January through March 2026 — including a $98M Lockheed Martin cross-motions ruling on foreign-flag transportation cost allowability, a successful motion for reconsideration in a multi-contract IDIQ case (Sayar Development), an EAJA application denied as untimely (CB Portable Toilet), a $95K consent judgment for Pacific West Builders, a constructive termination win at Malmstrom AFB, and several jurisdictional rulings that remind COs how standing, certification, and sum-certain requirements work at the Board.",
     decisions: [
+      {
+        caseNumber: "ASBCA Nos. 63871, 63894",
+        caseName: "Sayar Development, Inc.",
+        date: "March 17, 2026",
+        judge: "D'Alessandris",
+        outcome: "procedural",
+        decisionType: "Motion for Reconsideration",
+        link: "https://www.asbca.mil/Decisions/2026/",
+        summary: "SDI sought reconsideration of the Board's August 2025 decision dismissing its claim that the Army failed to order minimum quantities under a 2010 D-2006 IDIQ for material handling equipment. The original dismissal was based on SDI's failure to first submit the claim to the contracting officer. On reconsideration, SDI argued the dismissal should have rested on a different jurisdictional defect — that the claim was uncertified. The Board agreed, granted reconsideration, and re-issued the dismissal of ASBCA No. 63894 on the corrected ground.",
+        bottomLine: "We agree, and grant appellant's motion for reconsideration, and dismiss ASBCA No. 63894 on the basis that SDI's claim was not certified.",
+        takeaway: "A reconsideration motion can succeed when the original decision rested on an incorrect jurisdictional rationale, even when the result (dismissal) stays the same. For COs: when you write a final decision on a contractor claim, identify clearly whether the issue is failure to certify (a CDA jurisdictional defect under 41 U.S.C. § 7103) or failure to first present the claim to the CO. Different grounds, different remedies available to the contractor."
+      },
+      {
+        caseNumber: "ASBCA No. 64382",
+        caseName: "Pacific West Builders",
+        date: "March 17, 2026",
+        judge: "Eyester",
+        outcome: "sustained",
+        decisionType: "Consent Judgment",
+        link: "https://www.asbca.mil/Decisions/2026/",
+        summary: "Pacific West Builders appealed an Air Force contract dispute under contract FA4427-20-C-0021. The parties negotiated a resolution and jointly requested the Board enter a consent judgment in favor of appellant.",
+        bottomLine: "It is the Board's decision, pursuant to 41 U.S.C. §§ 7105(e), 7108(b), and the parties' stipulation and agreement, that the appeal is sustained. In the nature of a consent judgment, the Board makes a monetary award to appellant in the amount of $95,000. This amount is inclusive of Contract Disputes Act interest.",
+        takeaway: "Consent judgments are a routine off-ramp from full litigation. When a CO faces a clear exposure on a contract claim, negotiating a stipulated judgment can be faster and cheaper than a merits decision — and it definitively resolves the dispute with CDA interest baked in."
+      },
+      {
+        caseNumber: "ASBCA No. 63449-EAJA",
+        caseName: "CB Portable Toilet Rental and Services",
+        date: "March 10, 2026",
+        judge: "Melnick",
+        outcome: "denied",
+        decisionType: "EAJA Decision",
+        link: "https://www.asbca.mil/Decisions/2026/",
+        summary: "After CB Portable prevailed on its underlying contract appeal in 2023–2024 (entitlement and quantum), Mr. Onyems — the company's sole owner — filed an Equal Access to Justice Act application seeking fees and costs. The Board denied. First, Mr. Onyems is not a prevailing party qualified to submit an EAJA application under the Lasmer Industries precedent — only the contractor entity is. Second, even if construed as filed by CB Portable itself, the application was untimely: the 30-day EAJA filing window started when the underlying decision became final on January 23, 2025 (30 days after the 120-day Federal Circuit appeal window expired). The August 1, 2025 application was over six months late.",
+        bottomLine: "Mr. Onyems has not shown he is a prevailing party qualified to submit an EAJA application. Accordingly, his application is denied. Second, even if the application is more properly construed to be from CB Portable, it is untimely and we lack jurisdiction.",
+        takeaway: "Two strict EAJA reminders for contractor counsel and COs alike. First, the 'prevailing party' for EAJA purposes is the contractor entity, not the individual owner — file in the company's name. Second, the 30-day EAJA filing clock starts when the underlying Board decision becomes final and unappealable, which is 120 days after the Board's quantum decision. Calendar carefully."
+      },
+      {
+        caseNumber: "ASBCA Nos. 63621 et al.",
+        caseName: "Lockheed Martin Aeronautics Company",
+        date: "March 10, 2026",
+        judge: "Melnick",
+        outcome: "procedural",
+        decisionType: "Non-Dispositive (Cross-Motions for Summary Judgment)",
+        link: "https://www.asbca.mil/Decisions/2026/",
+        summary: "Lockheed appealed CO final decisions disallowing $98 million in indirect costs related to foreign-flag international shipping that Lockheed had charged to indirect overhead pools. The government argued the contracts' clauses requiring use of domestic air and ocean transportation services made those costs unallowable. Lockheed sought summary judgment that the clauses don't apply to international shipping charged as indirect; the government cross-moved that all of Lockheed's international shipping costs were unallowable. The Board denied both motions, finding genuine factual disputes precluded summary judgment for either side.",
+        bottomLine: "The government has already had access to Lockheed's records through audits and concluded it had sufficient evidence to prove formal monetary claims that Lockheed has breached its contracts by violating the clauses. For whatever reason, it has failed to present adequate evidence of those claims to support summary judgment.",
+        takeaway: "On a government claim alleging breach and seeking cost disallowance, the government carries the burden of proof. If your CO is asserting cost unallowability based on contract-clause violation, the contract file must contain enough evidence to actually prove the breach — audit findings alone may not be enough on summary judgment. With $98M at stake, expect a substantive merits opinion later in this docket."
+      },
       {
         caseNumber: "ASBCA No. 64176",
         caseName: "Group III Management, Inc.",

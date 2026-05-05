@@ -6,38 +6,473 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Curated FAR and DFARS rulemaking digest with plain-English summaries and CO impact notes, plus a live Federal Register feed." />
+  <meta name="description" content="Automated FAR, DFARS, CAS, and acquisition rulemaking watch for contracting officers and contract specialists. Daily Federal Register data with KTHQ triage guidance." />
 
-  <title>Federal Register — FAR &amp; DFARS Digest | ContractingHQ</title>
+  <title>FAR &amp; DFARS Rulemaking Watch | ContractingHQ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
-<style>.bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}</style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+
+    .watch-hero {
+      padding: 5rem 0 3.5rem;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(180deg, rgba(255,255,255,.025) 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(135deg, #08111f 0%, #102743 58%, #0d1b2e 100%);
+      border-bottom: 1px solid rgba(214,226,241,.14);
+    }
+    .watch-hero > .container,
+    .watch-body > .container {
+      width: min(1200px, calc(100% - 2rem));
+    }
+    .watch-hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 2rem;
+      align-items: end;
+    }
+    .watch-kicker,
+    .watch-section-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      color: #36d4c7;
+      font-size: .78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .watch-kicker::before,
+    .watch-section-kicker::before {
+      content: "";
+      width: 2.2rem;
+      height: 2px;
+      background: currentColor;
+    }
+    .watch-title {
+      margin: 1rem 0 .9rem;
+      color: #f5efe3;
+      font-family: "Arial Narrow", "Rajdhani", Impact, sans-serif;
+      font-size: clamp(3.2rem, 7vw, 6.4rem);
+      line-height: .9;
+      letter-spacing: 0;
+    }
+    .watch-lede {
+      max-width: 760px;
+      margin: 0;
+      color: #d8e4ef;
+      font-size: clamp(1.02rem, 1.7vw, 1.28rem);
+      line-height: 1.55;
+    }
+    .watch-status-card {
+      border: 1px solid rgba(214,226,241,.18);
+      border-radius: 8px;
+      background: rgba(8,17,31,.56);
+      box-shadow: 0 24px 70px rgba(2,7,15,.32);
+      padding: 1.1rem;
+    }
+    .watch-status-card h2 {
+      margin: 0 0 .8rem;
+      color: #f5efe3;
+      font-size: 1.15rem;
+      line-height: 1.15;
+    }
+    .watch-status-card p {
+      margin: 0 0 1rem;
+      color: #b7c5d6;
+      font-size: .92rem;
+      line-height: 1.5;
+    }
+    .watch-status-list {
+      display: grid;
+      gap: .55rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .watch-status-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      border-top: 1px solid rgba(214,226,241,.12);
+      padding-top: .55rem;
+      color: #d7e4f2;
+      font-size: .85rem;
+    }
+    .watch-status-list strong {
+      color: #e6b84c;
+    }
+    .watch-body {
+      padding: 3rem 0 4.5rem;
+      background: #08111f;
+    }
+    .watch-grid {
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: 1.4rem;
+      align-items: start;
+    }
+    .watch-sidebar {
+      position: sticky;
+      top: 84px;
+      display: grid;
+      gap: 1rem;
+    }
+    .watch-panel {
+      border: 1px solid rgba(214,226,241,.18);
+      border-radius: 8px;
+      background: rgba(16,36,58,.72);
+      padding: 1rem;
+    }
+    .watch-panel h2,
+    .watch-panel h3 {
+      margin: 0 0 .55rem;
+      color: #f5efe3;
+      font-size: 1.1rem;
+      line-height: 1.1;
+    }
+    .watch-panel p,
+    .watch-panel li {
+      color: #b7c5d6;
+      font-size: .9rem;
+      line-height: 1.48;
+    }
+    .watch-panel p { margin: 0; }
+    .watch-panel ol,
+    .watch-panel ul {
+      margin: .7rem 0 0;
+      padding-left: 1.1rem;
+    }
+    .watch-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .6rem;
+    }
+    .watch-stat {
+      border: 1px solid rgba(214,226,241,.14);
+      border-radius: 8px;
+      background: rgba(255,255,255,.035);
+      padding: .75rem;
+    }
+    .watch-stat strong {
+      display: block;
+      color: #f5efe3;
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+    .watch-stat span {
+      display: block;
+      margin-top: .35rem;
+      color: #9fb1c7;
+      font-size: .73rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .watch-controls {
+      display: grid;
+      gap: .8rem;
+      margin-bottom: 1.1rem;
+    }
+    .watch-search {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid rgba(214,226,241,.2);
+      border-radius: 8px;
+      background: rgba(255,255,255,.045);
+      color: #f7fbff;
+      padding: 0 .9rem;
+      font: inherit;
+    }
+    .watch-search::placeholder { color: #74869d; }
+    .watch-filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+    }
+    .watch-filter {
+      border: 1px solid rgba(214,226,241,.2);
+      border-radius: 999px;
+      background: rgba(255,255,255,.035);
+      color: #d8e4ef;
+      cursor: pointer;
+      font: inherit;
+      font-size: .78rem;
+      font-weight: 850;
+      padding: .42rem .7rem;
+    }
+    .watch-filter.active {
+      border-color: rgba(54,212,199,.52);
+      background: rgba(54,212,199,.12);
+      color: #f5efe3;
+    }
+    .watch-feed-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: end;
+      margin-bottom: 1rem;
+    }
+    .watch-feed-heading h2 {
+      margin: .55rem 0 0;
+      color: #f5efe3;
+      font-size: clamp(1.8rem, 3vw, 3.2rem);
+      line-height: 1;
+    }
+    .watch-feed-count {
+      color: #9fb1c7;
+      font-size: .88rem;
+      white-space: nowrap;
+    }
+    .watch-priority {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .8rem;
+      margin-bottom: 1.2rem;
+    }
+    .priority-card {
+      border: 1px solid rgba(214,226,241,.18);
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(230,184,76,.12), rgba(16,36,58,.62));
+      padding: .9rem;
+      min-height: 132px;
+    }
+    .priority-card.monitor {
+      background: linear-gradient(180deg, rgba(54,212,199,.1), rgba(16,36,58,.62));
+    }
+    .priority-card.watch {
+      background: linear-gradient(180deg, rgba(73,163,255,.12), rgba(16,36,58,.62));
+    }
+    .priority-card span {
+      color: #36d4c7;
+      font-size: .7rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .priority-card h3 {
+      margin: .5rem 0 .35rem;
+      color: #f5efe3;
+      font-size: 1.05rem;
+      line-height: 1.18;
+    }
+    .priority-card p {
+      margin: 0;
+      color: #b7c5d6;
+      font-size: .84rem;
+      line-height: 1.42;
+    }
+    .watch-feed {
+      display: grid;
+      gap: .9rem;
+    }
+    .rule-card {
+      border: 1px solid rgba(214,226,241,.16);
+      border-left: 4px solid rgba(73,163,255,.64);
+      border-radius: 8px;
+      background: rgba(16,36,58,.62);
+      padding: 1rem;
+    }
+    .rule-card.action { border-left-color: #e6b84c; }
+    .rule-card.active { border-left-color: #36d4c7; }
+    .rule-card.monitor { border-left-color: #7e8da3; }
+    .rule-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: .8rem;
+      align-items: start;
+    }
+    .rule-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-bottom: .55rem;
+    }
+    .rule-chip,
+    .rule-action {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      font-size: .68rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      padding: .22rem .48rem;
+    }
+    .rule-chip {
+      border: 1px solid rgba(214,226,241,.18);
+      color: #c9d7e8;
+      background: rgba(255,255,255,.045);
+    }
+    .rule-chip.system-far { color: #8fc7ff; }
+    .rule-chip.system-dfars { color: #36d4c7; }
+    .rule-chip.system-cas { color: #e6b84c; }
+    .rule-action {
+      border: 1px solid rgba(230,184,76,.4);
+      color: #e6b84c;
+      background: rgba(230,184,76,.1);
+      white-space: nowrap;
+    }
+    .rule-action.monitor {
+      border-color: rgba(214,226,241,.22);
+      color: #b7c5d6;
+      background: rgba(255,255,255,.035);
+    }
+    .rule-action.active {
+      border-color: rgba(54,212,199,.45);
+      color: #36d4c7;
+      background: rgba(54,212,199,.1);
+    }
+    .rule-title {
+      margin: 0;
+      color: #f5efe3;
+      font-size: 1.18rem;
+      line-height: 1.22;
+    }
+    .rule-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .rule-title a:hover { color: #4a9eff; }
+    .rule-summary {
+      margin: .8rem 0;
+      color: #c1d1e4;
+      font-size: .94rem;
+      line-height: 1.58;
+    }
+    .rule-triage {
+      border: 1px solid rgba(54,212,199,.18);
+      border-radius: 8px;
+      background: rgba(54,212,199,.07);
+      padding: .85rem;
+      margin: .8rem 0;
+    }
+    .rule-triage strong {
+      display: block;
+      margin-bottom: .35rem;
+      color: #36d4c7;
+      font-size: .72rem;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+    .rule-triage p {
+      margin: 0;
+      color: #e2edf8;
+      font-size: .9rem;
+      line-height: 1.5;
+    }
+    .rule-next {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .45rem;
+      margin: .8rem 0;
+      padding: 0;
+      list-style: none;
+    }
+    .rule-next li {
+      border: 1px solid rgba(214,226,241,.14);
+      border-radius: 8px;
+      background: rgba(255,255,255,.035);
+      color: #b7c5d6;
+      font-size: .82rem;
+      line-height: 1.38;
+      padding: .55rem;
+    }
+    .rule-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem .9rem;
+      color: #8fa4bd;
+      font-size: .78rem;
+    }
+    .rule-bottom a { color: #4a9eff; }
+    .rule-details {
+      margin-top: .8rem;
+      border-top: 1px solid rgba(214,226,241,.12);
+      padding-top: .7rem;
+    }
+    .rule-details summary {
+      color: #9fb1c7;
+      cursor: pointer;
+      font-size: .82rem;
+      font-weight: 800;
+    }
+    .rule-details dl {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr);
+      gap: .45rem .8rem;
+      margin: .7rem 0 0;
+      color: #b7c5d6;
+      font-size: .82rem;
+    }
+    .rule-details dt { color: #7f95af; font-weight: 800; }
+    .watch-empty {
+      border: 1px dashed rgba(214,226,241,.24);
+      border-radius: 8px;
+      color: #b7c5d6;
+      padding: 1.2rem;
+      text-align: center;
+    }
+    .watch-load {
+      justify-self: center;
+      margin-top: .8rem;
+      border: 1px solid rgba(73,163,255,.38);
+      border-radius: 8px;
+      background: rgba(73,163,255,.12);
+      color: #f7fbff;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 850;
+      padding: .72rem 1rem;
+    }
+    .automation-note {
+      border: 1px dashed rgba(230,184,76,.34);
+      background: rgba(230,184,76,.08);
+    }
+    @media (max-width: 1050px) {
+      .watch-hero-grid,
+      .watch-grid { grid-template-columns: 1fr; }
+      .watch-sidebar { position: static; }
+      .watch-priority { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 680px) {
+      .watch-hero { padding: 3.4rem 0 2.5rem; }
+      .watch-status-card { display: none; }
+      .watch-feed-heading {
+        display: grid;
+        gap: .55rem;
+      }
+      .watch-feed-count { white-space: normal; }
+      .rule-top { grid-template-columns: 1fr; }
+      .rule-action { justify-self: start; }
+      .rule-next { grid-template-columns: 1fr; }
+      .rule-details dl { grid-template-columns: 1fr; }
+    }
+  </style>
 
   <!-- SEO: Open Graph & Twitter Card -->
   <meta property="og:type"        content="website" />
   <meta property="og:site_name"   content="ContractingHQ" />
-  <meta property="og:title"       content="Federal Register — FAR & DFARS Digest | ContractingHQ" />
-  <meta property="og:description" content="Curated FAR and DFARS rulemaking digest with plain-English summaries and CO impact notes, plus a live Federal Register feed." />
+  <meta property="og:title"       content="FAR &amp; DFARS Rulemaking Watch | ContractingHQ" />
+  <meta property="og:description" content="Automated Federal Register rulemaking watch for FAR, DFARS, CAS, and acquisition policy items with KTHQ triage guidance." />
   <meta property="og:url"         content="https://kthq.org/federal-register.html" />
   <meta name="twitter:card"        content="summary" />
   <meta name="twitter:site"        content="@ContractingHQ" />
-  <meta name="twitter:title"       content="Federal Register — FAR & DFARS Digest | ContractingHQ" />
-  <meta name="twitter:description" content="Curated FAR and DFARS rulemaking digest with plain-English summaries and CO impact notes, plus a live Federal Register feed." />
+  <meta name="twitter:title"       content="FAR &amp; DFARS Rulemaking Watch | ContractingHQ" />
+  <meta name="twitter:description" content="Automated Federal Register rulemaking watch for FAR, DFARS, CAS, and acquisition policy items with KTHQ triage guidance." />
   <link rel="canonical"            href="https://kthq.org/federal-register.html" />
 </head>
 <body>
 
 <!-- NAV -->
-<nav class="navbar" id="navbar">
+<nav class="navbar" id="navbar" aria-label="Primary">
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">
       <span class="logo-kthq">KTHQ</span>
       <span class="logo-full">ContractingHQ</span>
     </a>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Toggle menu">
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="navLinks">
@@ -60,58 +495,88 @@
   </div>
 </nav>
 
-<!-- PAGE HERO -->
-<div class="page-hero">
-  <div class="container">
-    <span class="hero-badge">Federal Register</span>
-    <h1 class="page-hero-title">FAR &amp; DFARS Updates</h1>
-    <p class="page-hero-sub">Curated rulemaking digest with CO impact notes, plus a live DARS feed from the Federal Register.</p>
+<header class="watch-hero">
+  <div class="container watch-hero-grid">
+    <div>
+      <span class="watch-kicker">Automated rulemaking watch</span>
+      <h1 class="watch-title">FAR &amp; DFARS Updates</h1>
+      <p class="watch-lede">Daily Federal Register data, translated into a practical triage board for contracting officers and new contract specialists. No hand-maintained digest; just source data plus repeatable KTHQ reading guidance.</p>
+    </div>
+    <aside class="watch-status-card" aria-labelledby="automation-title">
+      <h2 id="automation-title">How this page stays current</h2>
+      <p>GitHub Actions refreshes the data file daily from FederalRegister.gov. The cards below are generated from document type, topic, due dates, and affected acquisition system.</p>
+      <ul class="watch-status-list">
+        <li><span>Data source</span><strong>Federal Register API</strong></li>
+        <li><span>Refresh</span><strong>Daily</strong></li>
+        <li><span>Analysis type</span><strong>Automated triage</strong></li>
+      </ul>
+    </aside>
   </div>
-</div>
+</header>
 
-<!-- CURATED DIGEST SECTION -->
-<section class="section" id="digest">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-tag">Weekly Digest</span>
-      <h2>FAR &amp; DFARS Rulemaking Digest</h2>
-      <p class="section-desc">The most impactful rulemaking &mdash; summarized in plain language with CO impact notes. Updated weekly.</p>
-    </div>
-    <div id="frCurrentDigest"></div>
-    <div class="fr-archive-link">
-      <a href="federal-register-archive.html" class="archive-page-link">View all past digests &rarr;</a>
-    </div>
-  </div>
-</section>
+<main class="watch-body">
+  <div class="container watch-grid">
+    <aside class="watch-sidebar" aria-label="Rulemaking guide">
+      <section class="watch-panel automation-note">
+        <h2>Practitioner voice, no babysitting.</h2>
+        <p>The source items are raw Federal Register records. KTHQ adds deterministic guidance like comment windows, template-update risk, and monitor-only notices.</p>
+      </section>
 
-<!-- LIVE DARS FEED SECTION -->
-<section class="section section-alt" id="dfars">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-tag">Live Feed</span>
-      <h2>DARS Regulatory Updates</h2>
-      <p class="section-desc">Recent Defense Acquisition Regulations System notices — final rules, proposed rules, and interim rules — pulled live from the Federal Register.</p>
-    </div>
+      <section class="watch-panel">
+        <h2>Stats</h2>
+        <div class="watch-stat-grid">
+          <div class="watch-stat"><strong id="statTotal">--</strong><span>Tracked</span></div>
+          <div class="watch-stat"><strong id="statComments">--</strong><span>Open comments</span></div>
+          <div class="watch-stat"><strong id="statRules">--</strong><span>Rules</span></div>
+          <div class="watch-stat"><strong id="statLatest">--</strong><span>Latest item</span></div>
+        </div>
+      </section>
 
-    <div class="dfars-meta-bar">
-      <span class="dfars-source-note">Source: <a href="https://www.federalregister.gov/agencies/defense-acquisition-regulations-system" target="_blank" rel="noopener">FederalRegister.gov — DARS</a></span>
-      <span id="dfarsCount" class="dfars-count-note"></span>
-    </div>
+      <section class="watch-panel">
+        <h2>How to read it</h2>
+        <ol>
+          <li><strong>Final or interim rule:</strong> check effective date and update templates if needed.</li>
+          <li><strong>Proposed rule:</strong> not binding yet; watch the comment due date.</li>
+          <li><strong>Information collection:</strong> usually admin burden, reps/certs, forms, or reporting.</li>
+          <li><strong>Notice:</strong> monitor unless it touches your current buying lane.</li>
+        </ol>
+      </section>
 
-    <div id="dfarsFeed" class="dfars-feed">
-      <div class="dfars-loading">Loading Federal Register notices&hellip;</div>
-    </div>
+      <section class="watch-panel">
+        <h2>Automation boundary</h2>
+        <p>This page is a triage aid, not legal advice. It does not replace agency policy, acquisition letters, legal review, or the actual Federal Register document.</p>
+      </section>
+    </aside>
 
-    <!-- FAR OVERHAUL CALLOUT -->
-    <div style="margin-top:2.5rem;padding:1.25rem 1.5rem;background:rgba(74,158,255,0.06);border:1px solid rgba(74,158,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
-      <div>
-        <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.05rem;color:var(--af-blue-dark);">&#128736; Looking for the FAR Overhaul Tracker?</div>
-        <div style="font-size:.85rem;color:var(--text-muted);margin-top:.3rem;">Track the Revolutionary FAR Overhaul &mdash; what&rsquo;s changing, what it means, and what to watch.</div>
+    <section aria-labelledby="feed-title">
+      <div class="watch-feed-heading">
+        <div>
+          <span class="watch-section-kicker">Current watch</span>
+          <h2 id="feed-title">What needs attention?</h2>
+        </div>
+        <div class="watch-feed-count" id="feedMeta">Loading rulemaking data...</div>
       </div>
-      <a href="far-overhaul.html" class="btn btn-primary" style="font-size:.88rem;white-space:nowrap;">View FAR Overhaul Page &#8594;</a>
-    </div>
+
+      <div class="watch-priority" id="priorityCards"></div>
+
+      <div class="watch-controls">
+        <input class="watch-search" id="watchSearch" type="search" aria-label="Search rulemaking feed" placeholder="Search title, topic, FAR, DFARS, CMMC, payments, small business..." />
+        <div class="watch-filter-row" id="watchFilters" role="group" aria-label="Filter rulemaking feed">
+          <button class="watch-filter active" type="button" data-filter="all">All</button>
+          <button class="watch-filter" type="button" data-filter="action">Action</button>
+          <button class="watch-filter" type="button" data-filter="comments">Open comments</button>
+          <button class="watch-filter" type="button" data-filter="FAR">FAR</button>
+          <button class="watch-filter" type="button" data-filter="DFARS">DFARS</button>
+          <button class="watch-filter" type="button" data-filter="CAS">CAS</button>
+          <button class="watch-filter" type="button" data-filter="monitor">Monitor</button>
+        </div>
+      </div>
+
+      <div class="watch-feed" id="ruleFeed"></div>
+      <button class="watch-load" id="loadMoreRules" type="button">Load more</button>
+    </section>
   </div>
-</section>
+</main>
 
 <!-- FOOTER -->
 <footer class="footer">
@@ -120,7 +585,7 @@
       <span class="logo-kthq">KTHQ</span>
       <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
     </div>
-    <nav class="footer-nav">
+    <nav class="footer-nav" aria-label="Footer">
       <a href="index.html">Home</a>
       <a href="training.html">Training</a>
       <a href="gao-decisions.html">GAO Decisions</a>
@@ -135,94 +600,216 @@
   </div>
 </footer>
 
-<script src="data/federal-register-data.js"></script>
-<script src="data/federal-register-render.js"></script>
-<script src="data/far.js"></script>
+<script src="data/federal-register-live.js"></script>
 <script src="main.js"></script>
 <script>
-/* ===== Live DARS Feed (from dfars.html) ===== */
 (function () {
-  var TYPE_MAP = {
-    'Rule': 'FINAL RULE',
-    'Proposed Rule': 'PROPOSED',
-    'Interim Rule': 'INTERIM',
-    'Notice': 'NOTICE',
-    'Presidential Document': 'PRES. DOC'
-  };
-  var TYPE_CLASS = {
-    'Rule': 'dfars-type-final',
-    'Proposed Rule': 'dfars-type-proposed',
-    'Interim Rule': 'dfars-type-interim',
-    'Notice': 'dfars-type-notice',
-    'Presidential Document': 'dfars-type-notice'
-  };
+  var data = window.KTHQ_FEDREG_DATA || { items: [], stats: {} };
+  var items = data.items || [];
+  var activeFilter = "all";
+  var searchTerm = "";
+  var visibleLimit = 24;
 
-  function fmtDate(d) {
-    if (!d) return '';
-    var parts = d.split('-');
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return months[parseInt(parts[1],10)-1] + ' ' + parseInt(parts[2],10) + ', ' + parts[0];
+  var feed = document.getElementById("ruleFeed");
+  var feedMeta = document.getElementById("feedMeta");
+  var priorityCards = document.getElementById("priorityCards");
+  var search = document.getElementById("watchSearch");
+  var filters = document.getElementById("watchFilters");
+  var loadMore = document.getElementById("loadMoreRules");
+
+  function esc(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
-  function extractCase(doc) {
-    if (doc.regulation_id_numbers && doc.regulation_id_numbers.length) {
-      var match;
-      for (var i = 0; i < doc.regulation_id_numbers.length; i++) {
-        if (/dfars|dars/i.test(doc.regulation_id_numbers[i])) { match = doc.regulation_id_numbers[i]; break; }
-      }
-      return match || doc.regulation_id_numbers[0];
-    }
-    return '';
+  function fmtDate(value) {
+    if (!value) return "";
+    var parts = value.split("-");
+    if (parts.length !== 3) return value;
+    var d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
   }
 
-  function shortenTitle(title) {
-    return title
-      .replace(/^Defense Federal Acquisition Regulation Supplement[;:\s]*/i, 'DFARS: ')
-      .replace(/^Defense Acquisition Regulations System[;:\s]*/i, 'DARS: ')
-      .replace(/Defense Federal Acquisition Regulation Supplement[;:\s]*/gi, 'DFARS \u2014 ')
-      .replace(/Defense Acquisition Regulations System[;:\s]*/gi, 'DARS \u2014 ')
-      .replace(/\s{2,}/g, ' ')
-      .trim();
+  function shortGenerated(value) {
+    if (!value) return "unknown";
+    var d = new Date(value);
+    if (Number.isNaN(d.getTime())) return value;
+    return d.toLocaleString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
   }
 
-  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function isOpenComment(item) {
+    if (!item.commentsCloseDate) return false;
+    var today = new Date().toISOString().slice(0, 10);
+    return item.commentsCloseDate >= today;
+  }
 
-  function loadDFARS() {
-    var feed = document.getElementById('dfarsFeed');
-    var countEl = document.getElementById('dfarsCount');
-    if (!feed) return;
+  function matchesFilter(item) {
+    if (activeFilter === "all") return true;
+    if (activeFilter === "action") return item.actionTone === "action" || item.actionTone === "active";
+    if (activeFilter === "comments") return isOpenComment(item);
+    if (activeFilter === "monitor") return item.actionTone === "monitor";
+    return item.system === activeFilter;
+  }
 
-    fetch('https://www.federalregister.gov/api/v1/documents.json'
-      + '?conditions[agencies][]=defense-acquisition-regulations-system'
-      + '&per_page=20'
-      + '&fields[]=document_number&fields[]=title&fields[]=type&fields[]=publication_date&fields[]=html_url&fields[]=regulation_id_numbers'
-      + '&order=newest')
-    .then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
-    .then(function(data) {
-      var docs = data.results || [];
-      if (!docs.length) { feed.innerHTML = '<p class="dfars-empty">No recent notices found.</p>'; return; }
-      if (countEl) countEl.textContent = docs.length + ' most recent notices';
+  function matchesSearch(item) {
+    if (!searchTerm) return true;
+    var haystack = [
+      item.title,
+      item.shortTitle,
+      item.system,
+      item.stage,
+      item.topic,
+      item.summary,
+      item.practitionerNote,
+      item.cfrReferences,
+      (item.regulationIds || []).join(" "),
+      (item.agencies || []).join(" ")
+    ].join(" ").toLowerCase();
+    return haystack.indexOf(searchTerm) !== -1;
+  }
 
-      feed.innerHTML = docs.map(function(doc) {
-        var typeLabel = TYPE_MAP[doc.type] || doc.type || 'NOTICE';
-        var typeClass = TYPE_CLASS[doc.type] || 'dfars-type-notice';
-        var caseNum = extractCase(doc);
-        var title = shortenTitle(doc.title || '');
-        return '<div class="dfars-row">' +
-          '<span class="dfars-date">' + fmtDate(doc.publication_date) + '</span>' +
-          '<span class="dfars-type ' + typeClass + '">' + typeLabel + '</span>' +
-          (caseNum ? '<span class="dfars-case">' + esc(caseNum) + '</span>' : '') +
-          '<a href="' + esc(doc.html_url) + '" class="dfars-title-link" target="_blank" rel="noopener">' + esc(title) + '</a>' +
-        '</div>';
-      }).join('');
-    })
-    .catch(function() {
-      feed.innerHTML = '<div class="dfars-error"><p>Could not load Federal Register data. ' +
-        '<a href="https://www.federalregister.gov/agencies/defense-acquisition-regulations-system" target="_blank" rel="noopener">View directly on FederalRegister.gov &rarr;</a></p></div>';
+  function filteredItems() {
+    return items.filter(function (item) {
+      return matchesFilter(item) && matchesSearch(item);
     });
   }
 
-  document.addEventListener('DOMContentLoaded', loadDFARS);
+  function renderStats() {
+    var stats = data.stats || {};
+    document.getElementById("statTotal").textContent = stats.total || items.length || 0;
+    document.getElementById("statComments").textContent = stats.openCommentWindows || 0;
+    document.getElementById("statRules").textContent = stats.rules || 0;
+    document.getElementById("statLatest").textContent = stats.latestPublicationDate ? fmtDate(stats.latestPublicationDate).replace(/, \d{4}/, "") : "--";
+  }
+
+  function renderPriority() {
+    var openComment = items.find(isOpenComment);
+    var updateItem = items.find(function (item) { return item.actionTone === "action"; });
+    var watchItem = items.find(function (item) { return item.actionTone === "watch"; });
+    var cards = [
+      {
+        cls: "active",
+        label: openComment ? "Comment window" : "No open comments",
+        title: openComment ? openComment.shortTitle : "No current comment deadline found",
+        text: openComment ? "Comments due " + fmtDate(openComment.commentsCloseDate) + "." : "The feed will surface proposed rules here when a comment window is open."
+      },
+      {
+        cls: "action",
+        label: "Template risk",
+        title: updateItem ? updateItem.shortTitle : "No template update flagged",
+        text: updateItem ? updateItem.practitionerNote : "Final and interim rules that may require local updates appear here."
+      },
+      {
+        cls: "watch",
+        label: "Policy watch",
+        title: watchItem ? watchItem.shortTitle : "No policy watch item",
+        text: watchItem ? watchItem.practitionerNote : "Executive actions and proposed changes appear here for awareness."
+      }
+    ];
+
+    priorityCards.innerHTML = cards.map(function (card) {
+      return '<article class="priority-card ' + esc(card.cls) + '">' +
+        '<span>' + esc(card.label) + '</span>' +
+        '<h3>' + esc(card.title) + '</h3>' +
+        '<p>' + esc(card.text) + '</p>' +
+      '</article>';
+    }).join("");
+  }
+
+  function chipClass(system) {
+    return "system-" + String(system || "").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  }
+
+  function renderItem(item) {
+    var details = [
+      ["Published", fmtDate(item.publicationDate)],
+      ["Effective", fmtDate(item.effectiveDate)],
+      ["Comments due", fmtDate(item.commentsCloseDate)],
+      ["Citation", item.citation],
+      ["Document", item.documentNumber],
+      ["Reg IDs", (item.regulationIds || []).join(", ")],
+      ["CFR", item.cfrReferences],
+      ["Agencies", (item.agencies || []).join("; ")]
+    ].filter(function (row) { return row[1]; });
+
+    return '<article class="rule-card ' + esc(item.actionTone || "") + '">' +
+      '<div class="rule-top">' +
+        '<div>' +
+          '<div class="rule-meta">' +
+            '<span class="rule-chip ' + chipClass(item.system) + '">' + esc(item.system) + '</span>' +
+            '<span class="rule-chip">' + esc(item.stage) + '</span>' +
+            '<span class="rule-chip">' + esc(item.topic) + '</span>' +
+            (item.publicationDate ? '<span class="rule-chip">' + esc(fmtDate(item.publicationDate)) + '</span>' : '') +
+          '</div>' +
+          '<h3 class="rule-title"><a href="' + esc(item.htmlUrl) + '" target="_blank" rel="noopener">' + esc(item.shortTitle || item.title) + '</a></h3>' +
+        '</div>' +
+        '<span class="rule-action ' + esc(item.actionTone || "") + '">' + esc(item.actionLevel) + '</span>' +
+      '</div>' +
+      '<p class="rule-summary">' + esc(item.summary) + '</p>' +
+      '<div class="rule-triage"><strong>KTHQ triage</strong><p>' + esc(item.practitionerNote) + '</p></div>' +
+      '<ul class="rule-next">' + (item.nextSteps || []).map(function (step) { return '<li>' + esc(step) + '</li>'; }).join("") + '</ul>' +
+      '<div class="rule-bottom">' +
+        (item.htmlUrl ? '<a href="' + esc(item.htmlUrl) + '" target="_blank" rel="noopener">Federal Register source</a>' : '') +
+        (item.pdfUrl ? '<a href="' + esc(item.pdfUrl) + '" target="_blank" rel="noopener">PDF</a>' : '') +
+        (item.datesText ? '<span>' + esc(item.datesText) + '</span>' : '') +
+      '</div>' +
+      '<details class="rule-details">' +
+        '<summary>Source details</summary>' +
+        '<dl>' + details.map(function (row) { return '<dt>' + esc(row[0]) + '</dt><dd>' + esc(row[1]) + '</dd>'; }).join("") + '</dl>' +
+      '</details>' +
+    '</article>';
+  }
+
+  function renderFeed() {
+    var results = filteredItems();
+    var visible = results.slice(0, visibleLimit);
+    feedMeta.textContent = results.length + " matching items; data refreshed " + shortGenerated(data.generatedAt);
+    if (!visible.length) {
+      feed.innerHTML = '<div class="watch-empty">No matching Federal Register items. Try clearing the search or changing the filter.</div>';
+    } else {
+      feed.innerHTML = visible.map(renderItem).join("");
+    }
+    loadMore.style.display = results.length > visible.length ? "inline-flex" : "none";
+  }
+
+  function setFilter(value) {
+    activeFilter = value;
+    visibleLimit = 24;
+    Array.prototype.forEach.call(filters.querySelectorAll(".watch-filter"), function (btn) {
+      btn.classList.toggle("active", btn.getAttribute("data-filter") === value);
+    });
+    renderFeed();
+  }
+
+  if (!items.length) {
+    feed.innerHTML = '<div class="watch-empty">No automated data file loaded. Run scripts/fetch_federal_register.js or trigger the GitHub Action.</div>';
+    if (loadMore) loadMore.style.display = "none";
+    return;
+  }
+
+  renderStats();
+  renderPriority();
+  renderFeed();
+
+  search.addEventListener("input", function () {
+    searchTerm = search.value.trim().toLowerCase();
+    visibleLimit = 24;
+    renderFeed();
+  });
+
+  filters.addEventListener("click", function (event) {
+    var btn = event.target.closest(".watch-filter");
+    if (!btn) return;
+    setFilter(btn.getAttribute("data-filter"));
+  });
+
+  loadMore.addEventListener("click", function () {
+    visibleLimit += 24;
+    renderFeed();
+  });
 })();
 </script>
 <script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>

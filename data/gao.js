@@ -6,6 +6,126 @@
 
 var GAO_UPDATES = [
   {
+    weekOf: "May 4, 2026",
+    decisions: [
+      {
+        caseNumber: "B-423821.2; B-423821.3",
+        caseName: "J&J Maintenance, Inc., dba J&J Worldwide Services",
+        date: "April 20, 2026",
+        outcome: "denied",
+        link: "https://www.gao.gov/products/b-423821.2,b-423821.3",
+        summary: "J&J protested the Army Corps of Engineers' award of a task order to King and George (K&G) under the Operation and Maintenance Engineering Enhancement IDIQ MATOC for facilities support at Defense Health Agency sites in Germany, Belgium, and Italy. J&J argued K&G's proposal failed three material requirements: it didn't initiate the Italian anti-mafia white-list registration before final proposals (K&G's Italian counsel had emailed the prefect about registration but submitted the documentation a day after final proposals were due); its organizational chart identified personnel by role/position rather than by name; and it didn't list specific subcontractors. GAO denied — for the white-list issue, contacting the prefect through counsel was a reasonable way to 'initiate' the process; for the org-chart and subcontractor naming claims, the solicitation language was patently ambiguous (waived by failure to challenge pre-bid) and J&J couldn't show competitive prejudice in any event.",
+        bottomLine: "Protest alleging that the awardee's proposal failed to meet material requirements of the solicitation is denied where either the agency's evaluation was reasonable or the protester failed to demonstrate any competitive prejudice arising from the agency's waiver or relaxation of solicitation requirements.",
+        takeaway: "Two big lessons: write your solicitation in unambiguous language up front — patent ambiguities that aren't challenged before bids close get the protester nothing later. And when an evaluator works from a sanitized proposal that strips company names anyway, missing subcontractor names can't have been material to the evaluation. If you want named subcontractors to matter, say so explicitly in section M and don't sanitize them out of the evaluator's copy."
+      },
+      {
+        caseNumber: "B-423281.4",
+        caseName: "Owl International Inc., d/b/a Global, a 1st Flagship Company",
+        date: "April 24, 2026",
+        outcome: "sustained in part / denied in part",
+        link: "https://www.gao.gov/products/b-423281.4",
+        summary: "Owl protested the Navy's RFP for the Navy's emergency ship salvage material system and oil/hazardous-substance spill-response program — a single-award IDIQ with a $315M ceiling. The Navy had amended the RFP to remove the FAR 52.222-46 professional compensation evaluation provision, restricted final proposal revisions to cost/price only, and Owl argued the solicitation contained a latent ambiguity. GAO sustained the second ground only — restricting offerors to revising cost/price after a material technical-side amendment was unreasonable when the solicitation itself warned that proposals could be rejected if cost/price was inconsistent with the technical proposal. The other two grounds were denied.",
+        bottomLine: "1. Protest that agency improperly removed provision from solicitation providing for the evaluation of professional compensation is denied where the record showed a reasonable basis for the agency's determination that performance of the requirement would not require meaningful numbers of professional employees. 2. Protest that agency unreasonably restricted offerors to revising only their cost/price proposals is sustained where the record shows the effect of amending the solicitation to remove the evaluation of professional compensation would have a material impact on aspects of an offeror's technical proposal and where the solicitation provided that a proposal could be rejected if the cost/price proposal was inconsistent with the technical proposal. 3. Protest that the solicitation contained a latent ambiguity is denied where the terms of the solicitation were subject to only one reasonable reading.",
+        takeaway: "When a corrective-action amendment changes the technical evaluation regime — even by removing a single provision — give offerors a chance to revise their technical proposals, not just price. Locking offerors to price-only revisions while their technical approach is now misaligned creates the very inconsistency your own RFP threatens to reject."
+      },
+      {
+        caseNumber: "B-424221",
+        caseName: "Threat Tec, LLC",
+        date: "April 23, 2026",
+        outcome: "dismissed",
+        link: "https://www.gao.gov/products/b-424221",
+        summary: "Threat Tec, the prior incumbent's joint-venture parent, protested an Army Transformation and Training Command sole-source bridge contract awarded to Chitra Productions under the SBIR Phase III authority — Chitra had purchased technology assets from a Phase II contractor and the Army awarded as successor-in-interest. Threat Tec's initial protest argued the award violated CICA and the Procurement Integrity Act. After the agency's D&F disclosed the SBIR Phase III rationale on January 28, Threat Tec waited until February 17 to argue Chitra was ineligible — well past the 10-day window in 4 C.F.R. § 21.2(a)(2). GAO dismissed the SBIR-eligibility supplemental as untimely and treated the successor-in-interest follow-on as derivative of an already-untimely argument. The PIA grounds were dismissed as premature and lacking a legally sufficient basis.",
+        bottomLine: "1. Protest that the agency improperly issued a sole-source award to another firm under the Small Business Innovation Research program is dismissed as untimely, and the supplemental protest deriving from this untimely protest is also untimely. 2. Protest that the agency violated the Procurement Integrity Act is dismissed as premature and, in any event, lacks a legally sufficient basis.",
+        takeaway: "GAO's 10-day clock is not negotiable. When the agency report or D&F first reveals the legal theory the agency used — here, SBIR Phase III successor-in-interest — that's the date the clock starts on a supplemental protest grounded in that theory. Waiting for the full agency report before filing forfeits the argument. On your side: when you make a sole-source award under an unusual authority, document the rationale clearly in the D&F so the basis is findable on day one."
+      },
+      {
+        caseNumber: "B-423066.3",
+        caseName: "Bailey's Premier Services, LLC",
+        date: "April 15, 2026",
+        outcome: "denied",
+        link: "https://www.gao.gov/products/b-423066.3",
+        summary: "Bailey's protested its non-selection for an Air Force CFT LASR multi-award IDIQ for contractor field maintenance services. The Air Force rated Bailey's proposal unacceptable under the Small Business Participation Commitment Document subfactor because Bailey's placed the SBPCD in a different volume of the proposal rather than the technical volume — and the RFP explicitly stated the technical volume would be evaluated stand-alone, with information not in the technical volume 'assumed to have been omitted.' Bailey's argued the agency should have considered its proposal 'as a whole.' GAO denied — the solicitation language was unambiguous, and disagreement with a reasonable evaluation is not enough.",
+        bottomLine: "Protest challenging the agency's evaluation of the protester's proposal is denied where the evaluation was reasonable and in accordance with the terms of the solicitation.",
+        takeaway: "If your RFP says the technical volume is evaluated stand-alone and missing information will be treated as omitted, the agency can take you at your word. For COs, this is a useful reminder to be explicit about volume-by-volume evaluation rules — and to enforce them consistently. For offerors reading along: file your documents in the volume the RFP says they belong in, even if you think the substance is also visible elsewhere."
+      },
+      {
+        caseNumber: "B-422717.4; B-422717.5",
+        caseName: "KriaaNet, Inc.",
+        date: "April 23, 2026",
+        outcome: "denied",
+        link: "https://www.gao.gov/products/b-422717.4,b-422717.5",
+        summary: "Treasury's Bureau of Engraving and Printing terminated KriaaNet's task order for default after the firm failed to deliver five of its proposed key personnel within the required timeframe. BEP then reprocured the same security-systems O&M services from LBO Technology under the same RFQ structure. KriaaNet protested the reprocurement on multiple grounds — that BEP needed a new J&A, that LBO's proposal had impermissibly changed, and that the reprocurement should have been re-competed beyond the original offerors. GAO denied — the agency's reprocurement approach was consistent with FAR 49.402-6 and applicable FSS procedures.",
+        bottomLine: "Protest challenging the agency's issuance of a reprocurement task order is denied where the record reflects that the agency's approach was consistent with applicable requirements.",
+        takeaway: "After a default termination, the FAR gives you broad latitude to reprocure — including from a prior offeror under the original solicitation — without restarting the competition from scratch. Document the reprocurement rationale and tie it to FAR 49.402-6, and the protest record will support you. The harder lesson is upstream: a defaulted contractor protesting its own reprocurement rarely wins, but it can still slow you down. Stay disciplined on cure-notice timing and make sure the default determination is well-supported."
+      }
+    ]
+  },
+  {
+    weekOf: "April 27, 2026",
+    decisions: [
+      {
+        caseNumber: "B-424243; B-424243.2",
+        caseName: "SupplyCore, Inc.",
+        date: "April 9, 2026",
+        outcome: "denied",
+        link: "https://www.gao.gov/products/b-424243,b-424243.2",
+        summary: "GSA awarded an IDIQ contract for logistics operations support services in Japan to Amentum Services over the incumbent SupplyCore. SupplyCore challenged the operational quality assurance evaluation on two grounds: that GSA failed to document why specific proposal features were not assigned strengths, and that GSA unreasonably penalized SupplyCore for submitting its supporting warehouse lease in Japanese without an English translation. GAO denied. The agency's evaluation was adequately documented because it described what proposal material it considered under each component, and an agency is not required to explain why a feature was merely adequate. GAO also held that GSA could reasonably require English-language supporting documents in a procurement conducted entirely in English, even though the RFP did not expressly say so.",
+        bottomLine: "Protest that the agency unreasonably evaluated proposals is denied where the record shows the evaluation was reasonable and consistent with the terms of the solicitation and applicable procurement statutes and regulations.",
+        takeaway: "Two CO points. First, you only have to document the reasoning behind strengths, weaknesses, and deficiencies — not why a feature was 'merely adequate.' GAO's recent Island Peer Review (IPRO) decision does not change this; that case turned on the agency's evaluation conclusion not being supported by the proposal text it cited. Second, even when an RFP does not expressly require English-language supporting documents, GAO will read that requirement into a procurement conducted entirely in English. If you ever face this issue, document the inference in writing."
+      },
+      {
+        caseNumber: "B-424392",
+        caseName: "Metro East Joint Venture, LLC",
+        date: "April 21, 2026",
+        outcome: "dismissed",
+        link: "https://www.gao.gov/products/b-424392",
+        summary: "HHS/CDC issued a sole-source contract modification extending Chenega Global Protection's incumbent guard services contract at the CDC's Atlanta and Fort Collins campuses. Metro East challenged the modification as contrary to law and alleged organizational conflicts of interest, and also argued the agency had unduly delayed implementing corrective action from a prior protest. GAO dismissed as untimely — the protest was filed more than 10 days after CDC posted the original sole-source notice that disclosed the option period under challenge.",
+        bottomLine: "Protest challenging the agency's issuance of a contract modification that exercises an option period under the incumbent sole-source contract is dismissed as untimely where the protest was filed more than 10 days after the agency posted the original notice indicating that the agency could exercise the option period under challenge and the protester failed to timely challenge the inclusion of the option.",
+        takeaway: "When your sole-source notice discloses an option period, the 10-day protest clock for challenging that option starts running from the original notice — not from the day you eventually exercise the option. For COs: when you publish a sole-source J&A, list every option period clearly. That clarity protects your later option exercise from collateral attack."
+      },
+      {
+        caseNumber: "B-419947.4",
+        caseName: "Harper Construction Company, Inc.—Reconsideration",
+        date: "April 15, 2026",
+        outcome: "denied",
+        link: "https://www.gao.gov/products/b-419947.4",
+        summary: "Harper Construction requested reconsideration of GAO's earlier denial of its protest concerning a Navy NAVFAC task order to Clark Construction for repairs to five bachelor enlisted quarters. Harper argued GAO had erred in the underlying decision. GAO denied the reconsideration request, finding Harper had not shown any error of fact or law warranting reversal or modification.",
+        bottomLine: "Request for reconsideration is denied where the requester has not shown that our prior decision contained an error of fact or law warranting reversal or modification.",
+        takeaway: "Reconsideration at GAO is a narrow remedy. You need a real error of fact or law in the prior decision — not a different framing of the same arguments. If your protest is denied, file a reconsideration request only when you can point to something the original decision got demonstrably wrong."
+      },
+      {
+        caseNumber: "B-423066.2",
+        caseName: "LOGMET LLC",
+        date: "April 15, 2026",
+        outcome: "denied",
+        link: "https://www.gao.gov/products/b-423066.2",
+        summary: "LOGMET, a service-disabled veteran-owned small business, protested its non-selection for a multiple-award IDIQ for Air Force maintenance services. LOGMET argued the agency unreasonably evaluated its proposal as technically unacceptable and should have conducted discussions to give it an opportunity to cure the deficiency. GAO denied. The evaluation was reasonable and aligned with the RFP's terms, and the solicitation expressly stated the agency intended to make award without discussions.",
+        bottomLine: "Protest that the agency should have conducted discussions to allow the protester to cure its proposal's technical unacceptability is denied where the solicitation expressly stated that the agency intended to award without discussions.",
+        takeaway: "If your RFP states award will be made without discussions, you do not owe offerors an opportunity to fix unacceptable proposals. Make that intent explicit up front in the solicitation — it preserves your discretion and forecloses post-award arguments that you should have opened discussions to save a non-compliant proposal."
+      },
+      {
+        caseNumber: "B-424040.2; B-424040.3",
+        caseName: "Identity One, LLC",
+        date: "April 13, 2026",
+        outcome: "denied",
+        link: "https://www.gao.gov/products/b-424040.2,b-424040.3",
+        summary: "Identity One challenged the scope of corrective action taken by DHS/Coast Guard in connection with a re-solicitation for hand-held biometric reader hardware, software, and maintenance services. Because of a government shutdown, the original Parroco contract had been substantially performed before Identity One filed its protest, and the agency issued a stop work order on the remaining requirement. GAO denied — re-soliciting only the unperformed remainder was reasonable in those unique circumstances.",
+        bottomLine: "Protest challenging the implementation and scope of agency corrective action that includes issuing a new solicitation for only the remainder of the requirement is denied where, due to unique circumstances related to a government shutdown, a substantial portion of the requirement was performed before the protest was filed and the agency issued a stop work order.",
+        takeaway: "Agencies have broad discretion to scope corrective action. When circumstances make a full re-competition infeasible — significant performance already complete, shutdowns, etc. — it is permissible to re-solicit only the unperformed remainder. Document the operational reasons for the narrower scope in your contract file; that record is what GAO will look at."
+      },
+      {
+        caseNumber: "B-422249.5",
+        caseName: "CSlope Solutions, LLC",
+        date: "April 8, 2026",
+        outcome: "denied",
+        link: "https://www.gao.gov/products/b-422249.5",
+        summary: "CSlope requested reconsideration of GAO's December 2025 denial of its protest concerning the Army's task order to JCS Solutions for customer care support services at Arlington National Cemetery. CSlope argued the original decision contained errors of fact and law. GAO denied — the requester did not identify any factual or legal error warranting reversal of the prior decision.",
+        bottomLine: "Request for reconsideration is denied where the requester has not shown that our prior decision contains an error of fact or law warranting reversal or modification.",
+        takeaway: "Same narrow standard as Harper above. If you are a CO defending an awarded contract that survived a protest, a reconsideration request is unlikely to disturb the original outcome unless the protester points to a genuine error in GAO's analysis."
+      }
+    ]
+  },
+  {
     weekOf: "April 20, 2026",
     decisions: [
       {
