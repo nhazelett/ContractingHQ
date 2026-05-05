@@ -724,6 +724,431 @@
     .badge-update { background: rgba(100,220,150,.18); color: #64dc96; }
     .announce-text { font-size: .88rem; color: #c0cdd8; line-height: 1.45; }
     .announce-text a { color: #4a9eff; }
+
+    /* Homepage redesign prototype graft: visual shell only. Existing nav, analytics, player.js, announcements, and footer remain active. */
+    body { overflow-x: hidden; }
+    .navbar {
+      background: rgba(8,17,31,.9);
+      border-bottom: 1px solid rgba(214,226,241,.16);
+      backdrop-filter: blur(18px);
+    }
+    .navbar.scrolled { background: rgba(8,17,31,.96); }
+    .nav-inner { max-width: 1180px; }
+    .nav-links a {
+      border: 1px solid transparent;
+      border-radius: 7px;
+      padding: .58rem .76rem;
+    }
+    .nav-links a:hover,
+    .nav-links a.active {
+      border-color: rgba(73,163,255,.34);
+      background: rgba(73,163,255,.14);
+    }
+    .home-redesign-hero {
+      position: relative;
+      min-height: 74svh;
+      overflow: hidden;
+      isolation: isolate;
+      background: #08111f;
+    }
+    .home-redesign-media {
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+      background-image: url("images/kthq-hero-ops-desk.png");
+      background-position: center right;
+      background-size: cover;
+      transform: scale(1.015);
+    }
+    .home-redesign-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(90deg, rgba(6,13,25,.96) 0%, rgba(8,17,31,.82) 38%, rgba(8,17,31,.38) 74%, rgba(8,17,31,.7) 100%),
+        linear-gradient(180deg, rgba(8,17,31,.26) 0%, rgba(8,17,31,.18) 54%, #08111f 100%);
+    }
+    .home-redesign-hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      z-index: -1;
+      height: 13rem;
+      background: linear-gradient(180deg, transparent, #08111f);
+    }
+    .home-redesign-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      align-items: end;
+      gap: 4rem;
+      width: min(1180px, calc(100% - 2rem));
+      min-height: calc(74svh - 66px);
+      margin: 0 auto;
+      padding: clamp(4.8rem, 11vh, 8rem) 0 clamp(2.8rem, 6vh, 4.2rem);
+    }
+    .home-redesign-copy { min-width: 0; width: 100%; max-width: 720px; }
+    .home-redesign-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      margin: 0 0 1rem;
+      color: #36d4c7;
+      font-size: .77rem;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+    .home-redesign-eyebrow::before {
+      content: "";
+      width: 2.2rem;
+      height: 2px;
+      background: currentColor;
+    }
+    .home-redesign-title {
+      max-width: 100%;
+      margin: 0 0 1rem;
+      color: #f5efe3;
+      font-family: "Arial Narrow", "Rajdhani", Impact, sans-serif;
+      font-size: clamp(4.1rem, 8.2vw, 6.8rem);
+      font-weight: 900;
+      line-height: .86;
+      letter-spacing: 0;
+      overflow-wrap: normal;
+    }
+    .home-redesign-title span { display: block; }
+    .home-redesign-lede {
+      max-width: 640px;
+      margin: 0 0 2rem;
+      color: #d8e4ef;
+      font-size: clamp(1.05rem, 1.8vw, 1.34rem);
+      line-height: 1.48;
+      overflow-wrap: break-word;
+    }
+    .home-redesign-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .9rem;
+    }
+    .home-redesign-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .55rem;
+      min-height: 48px;
+      border-radius: 8px;
+      padding: 0 1.08rem;
+      font-weight: 850;
+      text-decoration: none;
+    }
+    .home-redesign-btn svg,
+    .home-redesign-strip svg {
+      width: 1.1em;
+      height: 1.1em;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2;
+    }
+    .home-redesign-btn.primary {
+      background: #f5efe3;
+      color: #08111f;
+    }
+    .home-redesign-btn.secondary {
+      border: 1px solid rgba(245,239,227,.38);
+      background: rgba(245,239,227,.08);
+      color: #f5efe3;
+    }
+    .home-redesign-brief {
+      align-self: center;
+      overflow: hidden;
+      border: 1px solid rgba(214,226,241,.18);
+      border-radius: 8px;
+      background: rgba(13,33,56,.72);
+      box-shadow: 0 24px 70px rgba(2,7,15,.42);
+      backdrop-filter: blur(16px);
+    }
+    .home-redesign-brief-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(214,226,241,.18);
+      padding: 1rem;
+      color: #f5efe3;
+      font-size: .78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .home-redesign-brief-header time { color: #e6b84c; }
+    .home-redesign-brief-list { display: grid; }
+    .home-redesign-brief-list a {
+      display: grid;
+      gap: .34rem;
+      border-bottom: 1px solid rgba(214,226,241,.12);
+      padding: 1rem;
+      color: #d7e4f2;
+      font-size: .92rem;
+      text-decoration: none;
+    }
+    .home-redesign-brief-list a:last-child { border-bottom: 0; }
+    .home-redesign-brief-list a:hover { background: rgba(245,239,227,.06); }
+    .home-redesign-kicker {
+      color: #36d4c7;
+      font-size: .72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .home-redesign-strip {
+      border-block: 1px solid rgba(214,226,241,.15);
+      background: #f5efe3;
+      color: #08111f;
+    }
+    .home-redesign-strip-inner {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: .74rem 0;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+    .home-redesign-strip-label {
+      flex: 0 0 auto;
+      color: #755c19;
+      font-size: .72rem;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+    .home-redesign-strip a {
+      flex: 0 0 auto;
+      border: 1px solid rgba(8,17,31,.18);
+      border-radius: 999px;
+      padding: .34rem .7rem;
+      color: #142033;
+      font-size: .82rem;
+      font-weight: 850;
+      text-decoration: none;
+    }
+    .home-redesign-workspace {
+      padding: clamp(2rem, 4vw, 4rem) 0 clamp(3.4rem, 7vw, 6.5rem);
+      background:
+        linear-gradient(180deg, #08111f, #0a1524 46%, #101a25 100%);
+    }
+    .home-redesign-heading,
+    .home-redesign-grid {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+    .home-redesign-heading {
+      max-width: 760px;
+      margin-bottom: 2rem;
+      margin-left: max(1rem, calc((100% - 1180px) / 2));
+    }
+    .home-redesign-heading h2 {
+      margin: 0 0 .78rem;
+      color: #f5efe3;
+      font-size: clamp(2rem, 4vw, 4.1rem);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+    .home-redesign-heading p:last-child {
+      margin: 0;
+      color: #b7c5d6;
+      font-size: 1.04rem;
+      line-height: 1.55;
+    }
+    .home-redesign-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 1.2rem;
+      align-items: start;
+    }
+    .home-redesign-index {
+      display: grid;
+      border-top: 1px solid rgba(214,226,241,.18);
+      background:
+        linear-gradient(90deg, rgba(230,184,76,.1), transparent 22%),
+        rgba(255,255,255,.02);
+    }
+    .home-redesign-row {
+      display: grid;
+      grid-template-columns: 62px minmax(0,1fr) auto;
+      gap: 1rem;
+      align-items: center;
+      min-height: 86px;
+      border-bottom: 1px solid rgba(214,226,241,.18);
+      padding: 1rem 1.1rem;
+      color: inherit;
+      text-decoration: none;
+      transition: background .16s ease, transform .16s ease, border-color .16s ease;
+    }
+    .home-redesign-row:hover {
+      border-color: rgba(54,212,199,.44);
+      background: rgba(54,212,199,.075);
+      transform: translateX(4px);
+    }
+    .home-redesign-row.featured {
+      background:
+        linear-gradient(90deg, rgba(230,184,76,.14), transparent 48%),
+        rgba(245,239,227,.04);
+    }
+    .home-redesign-number {
+      color: #e6b84c;
+      font-family: "Arial Narrow", "Rajdhani", sans-serif;
+      font-size: 1.12rem;
+      font-weight: 950;
+    }
+    .home-redesign-main { display: grid; gap: .18rem; }
+    .home-redesign-main strong {
+      color: #f5efe3;
+      font-size: 1.04rem;
+    }
+    .home-redesign-main span {
+      color: #b7c5d6;
+      font-size: .93rem;
+      line-height: 1.45;
+    }
+    .home-redesign-tag {
+      justify-self: end;
+      min-width: 68px;
+      border: 1px solid rgba(230,184,76,.4);
+      border-radius: 999px;
+      color: #e6b84c;
+      padding: .24rem .54rem;
+      text-align: center;
+      font-size: .7rem;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+    .home-redesign-tag.muted {
+      border-color: rgba(214,226,241,.2);
+      color: #b7c5d6;
+    }
+    .home-redesign-side {
+      display: grid;
+      gap: 1rem;
+      position: sticky;
+      top: 88px;
+    }
+    .home-redesign-note,
+    .home-redesign-stamp {
+      border: 1px solid rgba(214,226,241,.18);
+      border-radius: 8px;
+      background: rgba(13,33,56,.72);
+      box-shadow: 0 24px 70px rgba(2,7,15,.22);
+      padding: 1rem;
+    }
+    .home-redesign-note .module-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      color: #36d4c7;
+      font-size: .72rem;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+    .home-redesign-note .module-topline span:last-child { color: rgba(245,239,227,.62); }
+    .home-redesign-note h3 {
+      margin: 0 0 .45rem;
+      color: #f5efe3;
+      font-size: 1.38rem;
+      line-height: 1.05;
+    }
+    .home-redesign-note p {
+      margin: 0;
+      color: #b7c5d6;
+      font-size: .94rem;
+      line-height: 1.55;
+    }
+    .home-redesign-stamp {
+      display: grid;
+      gap: .72rem;
+      border-style: dashed;
+      border-color: rgba(213,94,77,.52);
+      background: rgba(213,94,77,.08);
+      color: #f5efe3;
+      transform: rotate(-1.1deg);
+    }
+    .home-redesign-stamp span {
+      color: #d55e4d;
+      font-size: .72rem;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+    .home-redesign-stamp strong {
+      font-size: 1.02rem;
+      line-height: 1.35;
+    }
+    .home-redesign-side #cfm-home-section {
+      width: 100%;
+      position: static;
+      flex-shrink: 1;
+    }
+    .home-redesign-side #cfm-home {
+      border-radius: 8px;
+    }
+    @media (max-width: 1020px) {
+      .home-redesign-inner,
+      .home-redesign-grid { grid-template-columns: 1fr; }
+      .home-redesign-inner { gap: 2rem; }
+      .home-redesign-brief { max-width: 520px; }
+      .home-redesign-side {
+        position: static;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .home-redesign-side #cfm-home-section,
+      .home-redesign-stamp { grid-column: 1 / -1; }
+    }
+    @media (max-width: 680px) {
+      .nav-inner { align-items: flex-start; }
+      .nav-links.open { display: flex; overflow-x: auto; }
+      .home-redesign-inner,
+      .home-redesign-strip-inner,
+      .home-redesign-heading,
+      .home-redesign-grid { width: min(100% - 1rem, 1180px); }
+      .home-redesign-hero { min-height: 78svh; }
+      .home-redesign-media { background-position: 60% center; }
+      .home-redesign-overlay {
+        background:
+          linear-gradient(90deg, rgba(6,13,25,.96), rgba(8,17,31,.72)),
+          linear-gradient(180deg, rgba(8,17,31,.16), #08111f 100%);
+      }
+      .home-redesign-inner {
+        min-height: calc(78svh - 66px);
+        padding-top: 3.8rem;
+        padding-bottom: 1.6rem;
+      }
+      .home-redesign-title {
+        max-width: 100%;
+        font-size: clamp(3rem, 13vw, 4.2rem);
+        line-height: .9;
+      }
+      .home-redesign-title span { display: block; }
+      .home-redesign-copy,
+      .home-redesign-lede { max-width: min(100%, 360px); }
+      .home-redesign-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        max-width: 320px;
+      }
+      .home-redesign-brief { display: none; }
+      .home-redesign-heading { margin-left: auto; }
+      .home-redesign-row {
+        grid-template-columns: 42px minmax(0,1fr);
+        gap: .75rem;
+        min-height: 98px;
+        padding: .9rem .55rem;
+      }
+      .home-redesign-tag {
+        grid-column: 2;
+        justify-self: start;
+        margin-top: .22rem;
+      }
+      .home-redesign-side { grid-template-columns: 1fr; }
+      .home-redesign-stamp { transform: none; }
+    }
   </style>
 
   <!-- SEO: Open Graph & Twitter Card -->
@@ -773,13 +1198,13 @@
 <body>
 
 <!-- NAV -->
-<nav class="navbar" id="navbar">
+<nav class="navbar" id="navbar" aria-label="Primary">
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">
       <span class="logo-kthq">KTHQ</span>
       <span class="logo-full">ContractingHQ</span>
     </a>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Toggle menu">
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="navLinks">
@@ -803,150 +1228,86 @@
 </nav>
 
 <!-- HERO -->
-<section class="hero" id="home">
-  <div class="hero-bg"></div>
-  <div class="hero-content">
-    <div class="hero-badge">KTHQ &mdash; ContractingHQ</div>
-    <h1 class="hero-title">The One-Stop Resource<br />for Contracting Officers</h1>
-    <p class="hero-sub">Free tools and training for contracting officers.</p>
-    <div class="hero-cta">
-      <a href="training.html" class="btn btn-primary">Start Training</a>
-      <a href="tools.html" class="btn btn-outline">Explore Tools</a>
+<section class="home-redesign-hero" id="home" aria-labelledby="home-title">
+  <div class="home-redesign-media" aria-hidden="true"></div>
+  <div class="home-redesign-overlay" aria-hidden="true"></div>
+  <div class="home-redesign-inner">
+    <div class="home-redesign-copy">
+      <p class="home-redesign-eyebrow">KTHQ / ContractingHQ</p>
+      <h1 class="home-redesign-title" id="home-title"><span>Contracting</span><span>HQ</span></h1>
+      <p class="home-redesign-lede">A working desk for contracting officers: training, tools, updates, and acquisition judgment in one fast-moving hub.</p>
+      <div class="home-redesign-actions" role="group" aria-label="Primary actions">
+        <a class="home-redesign-btn primary" href="training.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z" /></svg>
+          Start Training
+        </a>
+        <a class="home-redesign-btn secondary" href="tools.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4Z" /></svg>
+          Explore Tools
+        </a>
+      </div>
     </div>
+
+    <aside class="home-redesign-brief" aria-label="Quick briefing">
+      <div class="home-redesign-brief-header">
+        <span>Today's Brief</span>
+        <time datetime="2026-05-05">May 5</time>
+      </div>
+      <div class="home-redesign-brief-list">
+        <a href="federal-register.html"><span class="home-redesign-kicker">FAR</span>Federal Register tracker and DFARS rulemaking activity.</a>
+        <a href="gao-decisions.html"><span class="home-redesign-kicker">GAO</span>Recent protest decisions summarized with CO takeaways.</a>
+        <a href="training.html"><span class="home-redesign-kicker">Training</span>Structured tracks from beginner to advanced.</a>
+      </div>
+    </aside>
   </div>
-  <div class="container" style="padding-top:2rem;padding-bottom:2.5rem;position:relative;z-index:1;">
-    <div class="home-content-row">
-    <div class="qs-grid" id="site-nav-cards">
-      <a href="training.html" class="qs-card has-icon">
-        <span class="qs-card-art training-icon-mini" aria-hidden="true">
-          <span class="halo"></span>
-          <span class="orbit orbit-a"><span class="spark spark-a"></span></span>
-          <span class="orbit orbit-b"><span class="spark spark-b"></span></span>
-          <span class="card card-back"></span>
-          <span class="card card-mid"></span>
-          <span class="card card-front"></span>
-        </span>
-        <div class="qs-card-title">Training</div>
-        <div class="qs-card-desc">Structured training tracks from beginner to advanced, built for how COs actually learn.</div>
-      </a>
-      <a href="tools.html" class="qs-card has-icon">
-        <span class="qs-card-art tools-icon-mini" aria-hidden="true">
-          <span class="ambient"></span>
-          <span class="panel panel-top"></span>
-          <span class="panel panel-left"></span>
-          <span class="panel panel-right"></span>
-          <span class="console">
-            <span class="console-ring"></span>
-            <span class="console-core">
-              <span class="core-dot dot-a"></span>
-              <span class="core-dot dot-b"></span>
-              <span class="core-dot dot-c"></span>
-              <span class="core-dot dot-d"></span>
-            </span>
-          </span>
-          <span class="platform">
-            <span class="platform-grid"></span>
-            <span class="tray tray-left"></span>
-            <span class="tray tray-center"></span>
-            <span class="tray tray-right"></span>
-          </span>
-        </span>
-        <div class="qs-card-title">Tools</div>
-        <div class="qs-card-desc">Solicitation Builder, FAR Comparator, PWS Builder, templates, and more.</div>
-      </a>
-      <a href="ai-acquisitions.html" class="qs-card has-icon">
-        <span class="qs-card-art ai-icon-mini" aria-hidden="true">
-          <span class="ambient"></span>
-          <span class="orbit orbit-a"><span class="data-chip chip-far"></span></span>
-          <span class="orbit orbit-b"><span class="data-chip chip-clin"></span></span>
-          <span class="orbit orbit-c"><span class="data-chip chip-price"></span></span>
-          <span class="robot">
-            <span class="antenna">
-              <span class="antenna-tip"></span>
-              <span class="antenna-ping"></span>
-            </span>
-            <span class="head">
-              <span class="visor">
-                <span class="eye eye-left"></span>
-                <span class="eye eye-right"></span>
-              </span>
-            </span>
-            <span class="torso">
-              <span class="torso-dot dot-left"></span>
-              <span class="torso-dot dot-mid"></span>
-              <span class="torso-dot dot-right"></span>
-            </span>
-            <span class="pedestal"></span>
-          </span>
-        </span>
-        <div class="qs-card-title">AI in Acquisitions</div>
-        <div class="qs-card-desc">Practical ways to use AI tools across the acquisition lifecycle. Force multiply without giving up judgment.</div>
-      </a>
-      <a href="customer-education.html" class="qs-card has-icon">
-        <span class="qs-card-art customer-education-icon-mini" aria-hidden="true">
-          <span class="ambient"></span>
-          <span class="chalkboard">
-            <span class="chalk-frame"></span>
-            <span class="chalk-line line-a"></span>
-            <span class="chalk-line line-b"></span>
-          </span>
-          <span class="axolotl">
-            <span class="cap">
-              <span class="cap-top"></span>
-              <span class="cap-band"></span>
-              <span class="cap-tassel"></span>
-            </span>
-            <span class="head">
-              <span class="eye eye-left"></span>
-              <span class="eye eye-right"></span>
-            </span>
-            <span class="body">
-              <span class="belly"></span>
-            </span>
-            <span class="pointer">
-              <span class="pointer-stick"></span>
-              <span class="pointer-tip"></span>
-            </span>
-          </span>
-        </span>
-        <div class="qs-card-title">Customer Education</div>
-        <div class="qs-card-desc">Guides and interactive tools for program offices and requiring activities. Build better requirements before they hit the CO's desk.</div>
-      </a>
-      <a href="cors.html" class="qs-card">
-        <div class="qs-card-title">&#128065;&#65039; CORs <span class="qs-card-badge">Coming Soon</span></div>
-        <div class="qs-card-desc">A dedicated track for Contracting Officer's Representatives. Surveillance, performance assessment, file maintenance, and training your replacement. Building this out now.</div>
-      </a>
-      <a href="industry.html" class="qs-card">
-        <div class="qs-card-title">&#127970; Industry</div>
-        <div class="qs-card-desc">For small businesses, new contractors, and subs. SAM registration, WAWF invoicing, reps and certs from a CO's perspective, and how not to get scammed during renewal.</div>
-      </a>
-      <a href="federal-register.html" class="qs-card">
-        <div class="qs-card-title">&#128221; FAR Updates</div>
-        <div class="qs-card-desc">Live Federal Register tracker for FAR and DFARS rulemaking activity.</div>
-      </a>
-      <a href="gao-decisions.html" class="qs-card">
-        <div class="qs-card-title">&#9878;&#65039; GAO Decisions</div>
-        <div class="qs-card-desc">Recent GAO protest decisions summarized with CO takeaways.</div>
-      </a>
-      <a href="asbca.html" class="qs-card">
-        <div class="qs-card-title">&#9878;&#65039; ASBCA</div>
-        <div class="qs-card-desc">Armed Services Board of Contract Appeals decisions, summarized.</div>
-      </a>
-      <a href="far-overhaul.html" class="qs-card">
-        <div class="qs-card-title">&#128736; FAR Overhaul</div>
-        <div class="qs-card-desc">Track the Revolutionary FAR Overhaul and what it means for COs.</div>
-      </a>
-      <a href="links.html" class="qs-card">
-        <div class="qs-card-title">&#128279; Links</div>
-        <div class="qs-card-desc">One-stop shop for every CO resource: SAM.gov, eCFR, PIEE, GSA, and more.</div>
-      </a>
-      <a href="https://www.facebook.com/groups/810414639497723" class="qs-card" target="_blank" rel="noopener" style="border-color:rgba(74,158,255,.35);background:rgba(74,158,255,.06);">
-        <div class="qs-card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="#4a9eff" style="vertical-align:-2px;margin-right:4px;"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.99 3.66 9.12 8.44 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99C18.34 21.12 22 16.99 22 12z"/></svg> CMCoE</div>
-        <div class="qs-card-desc">Contracting Memes Center of Excellence. Need a laugh? Join the Facebook group.</div>
-      </a>
+</section>
+
+<section class="home-redesign-strip" aria-label="Fast access">
+  <div class="home-redesign-strip-inner">
+    <span class="home-redesign-strip-label">Jump to</span>
+    <a href="solicitation-builder.html">Solicitation Builder</a>
+    <a href="far-comparator.html">FAR Comparator</a>
+    <a href="training.html">Training Tracks</a>
+    <a href="gao-decisions.html">Decision Summaries</a>
+    <a href="links.html">SAM.gov / eCFR / PIEE</a>
+  </div>
+</section>
+
+<section class="home-redesign-workspace" aria-labelledby="workspace-title">
+  <div class="home-redesign-heading">
+    <p class="home-redesign-eyebrow">Home base</p>
+    <h2 id="workspace-title">Start with the work in front of you.</h2>
+    <p>The homepage keeps the same direct routes, but recasts them as an index a contracting officer can scan in seconds.</p>
+  </div>
+
+  <div class="home-redesign-grid">
+    <div class="home-redesign-index" id="site-nav-cards">
+      <a class="home-redesign-row featured" href="training.html"><span class="home-redesign-number">01</span><span class="home-redesign-main"><strong>Training</strong><span>Structured tracks from beginner to advanced, built for how COs actually learn.</span></span><span class="home-redesign-tag">Track</span></a>
+      <a class="home-redesign-row" href="tools.html"><span class="home-redesign-number">02</span><span class="home-redesign-main"><strong>Tools</strong><span>Solicitation Builder, FAR Comparator, PWS Builder, templates, and more.</span></span><span class="home-redesign-tag">Build</span></a>
+      <a class="home-redesign-row" href="ai-acquisitions.html"><span class="home-redesign-number">03</span><span class="home-redesign-main"><strong>AI in Acquisitions</strong><span>Practical ways to use AI across the acquisition lifecycle without giving up judgment.</span></span><span class="home-redesign-tag">Guide</span></a>
+      <a class="home-redesign-row" href="customer-education.html"><span class="home-redesign-number">04</span><span class="home-redesign-main"><strong>Customer Education</strong><span>Guides and interactive tools for program offices before they hit the CO's desk.</span></span><span class="home-redesign-tag">Brief</span></a>
+      <a class="home-redesign-row" href="cors.html"><span class="home-redesign-number">05</span><span class="home-redesign-main"><strong>CORs</strong><span>Surveillance, performance assessment, file maintenance, and replacement training.</span></span><span class="home-redesign-tag muted">Coming</span></a>
+      <a class="home-redesign-row" href="industry.html"><span class="home-redesign-number">06</span><span class="home-redesign-main"><strong>Industry</strong><span>SAM registration, WAWF invoicing, reps and certs, and renewal guidance.</span></span><span class="home-redesign-tag">Small Biz</span></a>
+      <a class="home-redesign-row" href="federal-register.html"><span class="home-redesign-number">07</span><span class="home-redesign-main"><strong>FAR Updates</strong><span>Live Federal Register tracker for FAR and DFARS rulemaking activity.</span></span><span class="home-redesign-tag">Pulse</span></a>
+      <a class="home-redesign-row" href="gao-decisions.html"><span class="home-redesign-number">08</span><span class="home-redesign-main"><strong>GAO Decisions</strong><span>Recent GAO protest decisions summarized with contracting officer takeaways.</span></span><span class="home-redesign-tag">Cases</span></a>
+      <a class="home-redesign-row" href="asbca.html"><span class="home-redesign-number">09</span><span class="home-redesign-main"><strong>ASBCA</strong><span>Armed Services Board of Contract Appeals decisions, summarized.</span></span><span class="home-redesign-tag">Cases</span></a>
+      <a class="home-redesign-row" href="far-overhaul.html"><span class="home-redesign-number">10</span><span class="home-redesign-main"><strong>FAR Overhaul</strong><span>Track the Revolutionary FAR Overhaul and what it means for COs.</span></span><span class="home-redesign-tag">Watch</span></a>
+      <a class="home-redesign-row" href="links.html"><span class="home-redesign-number">11</span><span class="home-redesign-main"><strong>Links</strong><span>A one-stop shop for SAM.gov, eCFR, PIEE, GSA, and other CO resources.</span></span><span class="home-redesign-tag">Library</span></a>
+      <a class="home-redesign-row" href="https://www.facebook.com/groups/810414639497723" target="_blank" rel="noopener"><span class="home-redesign-number">12</span><span class="home-redesign-main"><strong>CMCoE</strong><span>Contracting Memes Center of Excellence. Need a laugh? Join the group.</span></span><span class="home-redesign-tag">Community</span></a>
     </div>
-    <div id="cfm-home-section"></div>
-    </div>
+
+    <aside class="home-redesign-side" aria-label="Supporting modules">
+      <div id="cfm-home-section"></div>
+      <section class="home-redesign-note" aria-labelledby="desk-notes-title">
+        <div class="module-topline"><span>Desk Notes</span><span>New</span></div>
+        <h3 id="desk-notes-title">Useful before beautiful.</h3>
+        <p>The redesign keeps KTHQ's practical tone, then adds texture, hierarchy, and a more ownable visual world.</p>
+      </section>
+      <section class="home-redesign-stamp" aria-label="Design direction">
+        <span>Prototype direction</span>
+        <strong>No robot mascots. No glow grid. No generic AI brochure.</strong>
+      </section>
+    </aside>
   </div>
 </section>
 
@@ -992,7 +1353,7 @@
       <span class="logo-kthq">KTHQ</span>
       <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
     </div>
-    <nav class="footer-nav">
+    <nav class="footer-nav" aria-label="Footer">
       <a href="index.html">Home</a>
       <a href="training.html">Training</a>
       <a href="gao-decisions.html">GAO Decisions</a>
