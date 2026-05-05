@@ -1459,6 +1459,73 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'index.html',
     'tools.html',
     'training.html',
+    'annual-cor-file-reviews.html',
+    'award-decision-documents.html',
+    'award-notice-letters.html',
+    'blanket-purchase-agreements.html',
+    'commercial-item-df.html',
+    'comparative-analysis.html',
+    'conducting-negotiations.html',
+    'contract-action-reports.html',
+    'contract-closeout.html',
+    'contract-specific-cor-training.html',
+    'cor-type-a-training.html',
+    'cost-price-analysis.html',
+    'cpars.html',
+    'cso.html',
+    'cure-notices.html',
+    'debriefing-unsuccessful-offerors.html',
+    'delivery-orders-vs-task-orders.html',
+    'evaluating-justifications.html',
+    'evaluating-labor-standards.html',
+    'evaluating-quotations.html',
+    'far-part12-restricting-competition.html',
+    'far-part16-fair-opportunity.html',
+    'far-part6-competition.html',
+    'far-part8-limiting-sources.html',
+    'far-research.html',
+    'fsc-codes.html',
+    'funding-color-of-money.html',
+    'government-purchase-cards.html',
+    'gsa-orders-above-sat.html',
+    'gsa-orders-sat.html',
+    'idiq-multiple-award.html',
+    'idiq-single-award.html',
+    'manual-contracts-deployed.html',
+    'market-research.html',
+    'material-submittals.html',
+    'monitoring-contractor-progress.html',
+    'naf-contracting.html',
+    'naics.html',
+    'notice-to-proceed.html',
+    'ocs-for-dummies.html',
+    'options.html',
+    'ota.html',
+    'past-performance.html',
+    'performance-work-statements.html',
+    'personal-vs-non-personal-services.html',
+    'pnm.html',
+    'preconstruction-conferences.html',
+    'preparing-ratifications.html',
+    'price-fair-reasonable.html',
+    'provisions-clauses-commercial.html',
+    'publicizing-awards.html',
+    'publicizing-contract-actions.html',
+    'purchase-requests.html',
+    'requirements-approval-documents.html',
+    'reviewing-tech-evals.html',
+    'rfp-preparation.html',
+    'rfp-preparation-dtype.html',
+    'sf30-modifications.html',
+    'show-cause-letters.html',
+    'simplified-solicitations-commercial.html',
+    'small-business-coordination.html',
+    'source-selection-guide.html',
+    'statements-of-objectives.html',
+    'statements-of-work.html',
+    'unilateral-bilateral-modifications.html',
+    'wage-determinations.html',
+    'writing-mfrs.html',
     'links.html',
     'about.html',
     'contact.html',
@@ -1534,8 +1601,42 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       src.indexOf('gc.zgo.at') > -1;
   }
 
+  function isRunnableInlineScript(script) {
+    var type = (script.getAttribute('type') || '').trim().toLowerCase();
+    return !type ||
+      type === 'text/javascript' ||
+      type === 'application/javascript' ||
+      type === 'text/ecmascript' ||
+      type === 'application/ecmascript';
+  }
+
+  function softScriptFunctionNames(source) {
+    var names = [];
+    var seen = {};
+    var rx = /(?:^|[^\w$])function\s+([A-Za-z_$][\w$]*)\s*\(/g;
+    var match;
+    while ((match = rx.exec(source))) {
+      if (!seen[match[1]]) {
+        seen[match[1]] = true;
+        names.push(match[1]);
+      }
+    }
+    return names;
+  }
+
+  function runInlineSoftScript(script) {
+    if (!isRunnableInlineScript(script)) return;
+    var source = script.textContent || '';
+    if (!source.trim()) return;
+    var exports = softScriptFunctionNames(source).map(function (name) {
+      return 'try { window[' + JSON.stringify(name) + '] = ' + name + '; } catch (e) {}';
+    }).join('\n');
+    var wrapped = source + (exports ? '\n' + exports : '');
+    Function('window', 'document', wrapped).call(window, window, document);
+  }
+
   function runSoftScript(script, pageUrl) {
-    return new Promise(function (resolve) {
+    return new Promise(function (resolve, reject) {
       if (shouldSkipSoftScript(script)) { resolve(); return; }
       var src = script.getAttribute('src');
       var next = document.createElement('script');
@@ -1550,10 +1651,12 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
         next.onerror = function () { resolve(); };
         document.body.appendChild(next);
       } else {
-        next.text = script.textContent || '';
-        document.body.appendChild(next);
-        if (next.parentNode) next.parentNode.removeChild(next);
-        resolve();
+        try {
+          runInlineSoftScript(script);
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
       }
     });
   }
@@ -1680,6 +1783,19 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       if (!link) return;
       var url;
       try { url = new URL(link.getAttribute('href'), window.location.href); } catch (err) { return; }
+      if (url.origin === window.location.origin &&
+        /^https?:$/.test(url.protocol) &&
+        isSoftPage(url) &&
+        url.pathname === window.location.pathname &&
+        url.search === window.location.search &&
+        !url.hash &&
+        !link.hasAttribute('download') &&
+        !link.hasAttribute('data-full-reload') &&
+        (!link.target || link.target === '_self')) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
       if (!canSoftNavigate(link, url)) return;
       e.preventDefault();
       softNavigateTo(url, true);
