@@ -227,43 +227,6 @@
       font-size: .88rem;
       white-space: nowrap;
     }
-    .watch-priority {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: .8rem;
-      margin-bottom: 1.2rem;
-    }
-    .priority-card {
-      border: 1px solid rgba(214,226,241,.18);
-      border-radius: 8px;
-      background: linear-gradient(180deg, rgba(230,184,76,.12), rgba(16,36,58,.62));
-      padding: .9rem;
-      min-height: 132px;
-    }
-    .priority-card.monitor {
-      background: linear-gradient(180deg, rgba(54,212,199,.1), rgba(16,36,58,.62));
-    }
-    .priority-card.watch {
-      background: linear-gradient(180deg, rgba(73,163,255,.12), rgba(16,36,58,.62));
-    }
-    .priority-card span {
-      color: #36d4c7;
-      font-size: .7rem;
-      font-weight: 900;
-      text-transform: uppercase;
-    }
-    .priority-card h3 {
-      margin: .5rem 0 .35rem;
-      color: #f5efe3;
-      font-size: 1.05rem;
-      line-height: 1.18;
-    }
-    .priority-card p {
-      margin: 0;
-      color: #b7c5d6;
-      font-size: .84rem;
-      line-height: 1.42;
-    }
     .watch-feed {
       display: grid;
       gap: .9rem;
@@ -434,7 +397,6 @@
       .watch-hero-grid,
       .watch-grid { grid-template-columns: 1fr; }
       .watch-sidebar { position: static; }
-      .watch-priority { grid-template-columns: 1fr; }
     }
     @media (max-width: 680px) {
       .watch-hero { padding: 3.4rem 0 2.5rem; }
@@ -669,8 +631,6 @@
         <div class="watch-feed-count" id="feedMeta">Loading rulemaking data...</div>
       </div>
 
-      <div class="watch-priority" id="priorityCards"></div>
-
       <div class="watch-controls">
         <input class="watch-search" id="watchSearch" type="search" aria-label="Search rulemaking feed" placeholder="Search title, topic, FAR, DFARS, CMMC, payments, small business..." />
         <div class="watch-filter-row" id="watchFilters" role="group" aria-label="Filter rulemaking feed">
@@ -724,7 +684,6 @@
 
   var feed = document.getElementById("ruleFeed");
   var feedMeta = document.getElementById("feedMeta");
-  var priorityCards = document.getElementById("priorityCards");
   var search = document.getElementById("watchSearch");
   var filters = document.getElementById("watchFilters");
   var loadMore = document.getElementById("loadMoreRules");
@@ -795,40 +754,6 @@
     document.getElementById("statComments").textContent = stats.openCommentWindows || 0;
     document.getElementById("statRules").textContent = stats.rules || 0;
     document.getElementById("statLatest").textContent = stats.latestPublicationDate ? fmtDate(stats.latestPublicationDate).replace(/, \d{4}/, "") : "--";
-  }
-
-  function renderPriority() {
-    var openComment = items.find(isOpenComment);
-    var updateItem = items.find(function (item) { return item.actionTone === "action"; });
-    var watchItem = items.find(function (item) { return item.actionTone === "watch"; });
-    var cards = [
-      {
-        cls: "active",
-        label: openComment ? "Comment window" : "No open comments",
-        title: openComment ? openComment.shortTitle : "No current comment deadline found",
-        text: openComment ? "Comments due " + fmtDate(openComment.commentsCloseDate) + "." : "The feed will surface proposed rules here when a comment window is open."
-      },
-      {
-        cls: "action",
-        label: "Template risk",
-        title: updateItem ? updateItem.shortTitle : "No template update flagged",
-        text: updateItem ? updateItem.practitionerNote : "Final and interim rules that may require local updates appear here."
-      },
-      {
-        cls: "watch",
-        label: "Policy watch",
-        title: watchItem ? watchItem.shortTitle : "No policy watch item",
-        text: watchItem ? watchItem.practitionerNote : "Executive actions and proposed changes appear here for awareness."
-      }
-    ];
-
-    priorityCards.innerHTML = cards.map(function (card) {
-      return '<article class="priority-card ' + esc(card.cls) + '">' +
-        '<span>' + esc(card.label) + '</span>' +
-        '<h3>' + esc(card.title) + '</h3>' +
-        '<p>' + esc(card.text) + '</p>' +
-      '</article>';
-    }).join("");
   }
 
   function chipClass(system) {
@@ -903,7 +828,6 @@
   }
 
   renderStats();
-  renderPriority();
   renderFeed();
 
   search.addEventListener("input", function () {
