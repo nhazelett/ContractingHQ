@@ -457,12 +457,38 @@ body.has-cfm-player { padding-bottom: 68px; }
   background: rgba(74,158,255,0.08);
   border-bottom: 1px solid rgba(74,158,255,0.12);
   display: flex; align-items: center; justify-content: space-between;
+  gap: 0.75rem;
 }
 .cfm-sb-name {
   font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700;
   color: #fff; letter-spacing: 0.5px;
 }
 .cfm-sb-name span { color: #4a9eff; }
+.cfm-sb-header-actions {
+  display: flex; align-items: center; gap: 0.45rem; flex-shrink: 0;
+}
+.cfm-sb-list-btn {
+  border: 1px solid rgba(74,158,255,0.26);
+  border-radius: 999px;
+  background: rgba(74,158,255,0.08);
+  color: #8a9bb0;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+  padding: 0.32rem 0.48rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  transition: color 0.18s, background 0.18s, border-color 0.18s;
+}
+.cfm-sb-list-btn:hover,
+.cfm-sb-list-btn.open {
+  color: #fff;
+  border-color: rgba(74,158,255,0.52);
+  background: rgba(74,158,255,0.14);
+}
 .cfm-sb-art-wrap {
   width: 100%; padding-top: 62%; position: relative;
   background:
@@ -715,6 +741,124 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
 .cfm-sb-favs-btn:hover { color: #8a9bb0; background: rgba(255,255,255,0.03); }
 .cfm-sb-favs-btn.active { color: #ef4444; background: rgba(239,68,68,0.06); }
 .cfm-sb-favs-btn.disabled { opacity: 0.35; cursor: default; }
+.cfm-sb-song-panel {
+  display: none;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  background: #080414;
+  max-height: 360px;
+  overflow-y: auto;
+}
+.cfm-sb-song-panel.open { display: block; }
+.cfm-sb-song-panel::-webkit-scrollbar { width: 4px; }
+.cfm-sb-song-panel::-webkit-scrollbar-track { background: transparent; }
+.cfm-sb-song-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+.cfm-sb-song-panel-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 0.72rem 0.8rem;
+  background: #080414;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.cfm-sb-song-panel-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+.cfm-sb-song-panel-title {
+  color: #fff;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.cfm-sb-song-panel-count {
+  color: #556;
+  font-size: 0.68rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.cfm-sb-song-panel-note {
+  margin-left: 0.45rem;
+}
+.cfm-sb-song-filter {
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.035);
+  color: #8a9bb0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 800;
+  margin-top: 0.55rem;
+  padding: 0.32rem 0.6rem;
+}
+.cfm-sb-song-filter:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.cfm-sb-song-filter.active { color: #ef4444; border-color: rgba(239,68,68,0.34); background: rgba(239,68,68,0.08); }
+.cfm-sb-song-filter.disabled { opacity: 0.45; cursor: default; }
+.cfm-sb-track-item {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto auto;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.58rem 0.8rem;
+  background: #080414;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+}
+.cfm-sb-track-item:hover { background: rgba(255,255,255,0.04); }
+.cfm-sb-track-item.active { background: #11172d; }
+.cfm-sb-track-item.skipped { opacity: 0.58; }
+.cfm-sb-track-item.skipped .cfm-sb-track-name { text-decoration: line-through; }
+.cfm-sb-track-num {
+  color: #334;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.8rem;
+  text-align: center;
+}
+.cfm-sb-track-item.active .cfm-sb-track-num { color: #4a9eff; }
+.cfm-sb-track-info { min-width: 0; }
+.cfm-sb-track-name {
+  color: #c0cdd8;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.22;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cfm-sb-track-item.active .cfm-sb-track-name { color: #fff; }
+.cfm-sb-track-genre {
+  color: #445;
+  font-size: 0.62rem;
+  margin-top: 0.08rem;
+}
+.cfm-sb-track-fav {
+  background: none;
+  border: none;
+  color: #334;
+  cursor: pointer;
+  font-size: 0.82rem;
+  padding: 0.2rem;
+}
+.cfm-sb-track-fav.active { color: #ef4444; }
+.cfm-sb-track-skip {
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.035);
+  color: #66758a;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.6rem;
+  font-weight: 800;
+  line-height: 1;
+  padding: 0.28rem 0.42rem;
+  text-transform: uppercase;
+}
+.cfm-sb-track-skip:hover { color: #fff; background: rgba(255,255,255,0.07); }
+.cfm-sb-track-skip.active { color: #f59e0b; border-color: rgba(245,158,11,0.34); background: rgba(245,158,11,0.08); }
 
 /* Mobile: art hidden, layout compressed */
 @media (max-width: 860px) {
@@ -944,6 +1088,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
 
   // ── HOME PLAYER BUILD ────────────────────────────────────────────
   var homeSection;
+  var homeListOpen = false;
 
   function buildHome() {
     if (!isHome) return;
@@ -955,7 +1100,10 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       '<div id="cfm-home">',
         '<div class="cfm-sb-header">',
           '<div class="cfm-sb-name">Contracting<span>FM</span></div>',
-          '<span class="cfm-on-air">On Air</span>',
+          '<div class="cfm-sb-header-actions">',
+            '<span class="cfm-on-air">On Air</span>',
+            '<button class="cfm-sb-list-btn" id="cfm-sb-list-btn" type="button" aria-controls="cfm-sb-song-panel" aria-expanded="false" title="Song list">&#9776; Songs</button>',
+          '</div>',
         '</div>',
         '<div class="cfm-sb-art-wrap">',
           '<div class="cfm-sb-art" id="cfm-sb-art">',
@@ -1009,6 +1157,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
           '<button class="cfm-sb-np-heart" id="cfm-sb-heart" title="Like this track">&#9825;</button>',
         '</div>',
         '<button class="cfm-sb-favs-btn" id="cfm-sb-favs-btn">&#10084; Play Liked Songs Only</button>',
+        '<div class="cfm-sb-song-panel" id="cfm-sb-song-panel"></div>',
       '</div>'
     ].join('');
 
@@ -1023,6 +1172,8 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     var npDot   = document.getElementById('cfm-sb-np-dot');
     var heart   = document.getElementById('cfm-sb-heart');
     var favsBtn = document.getElementById('cfm-sb-favs-btn');
+    var listBtn = document.getElementById('cfm-sb-list-btn');
+    var songPanel = document.getElementById('cfm-sb-song-panel');
     var t = TRACKS[state.idx];
     if (npTitle) npTitle.textContent = t ? t.title : '-';
     if (npDot)   npDot.classList.toggle('paused', !isPlaying);
@@ -1037,6 +1188,86 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       favsBtn.classList.toggle('disabled', !hasFavs && !state.favsOnly);
       favsBtn.title = hasFavs ? '' : 'Like a song first';
     }
+    if (listBtn) {
+      listBtn.classList.toggle('open', homeListOpen);
+      listBtn.setAttribute('aria-expanded', homeListOpen ? 'true' : 'false');
+    }
+    if (songPanel) {
+      songPanel.classList.toggle('open', homeListOpen);
+      renderHomeSongPanel(songPanel);
+    }
+  }
+
+  function renderHomeSongPanel(panel) {
+    var favCount = state.favs.length;
+    var skipCount = state.skips.length;
+    var html = [
+      '<div class="cfm-sb-song-panel-head">',
+        '<div class="cfm-sb-song-panel-row">',
+          '<div class="cfm-sb-song-panel-title">Song List</div>',
+          '<div class="cfm-sb-song-panel-count">' + TRACKS.length + ' tracks</div>',
+        '</div>',
+        '<button class="cfm-sb-song-filter' + (state.favsOnly ? ' active' : '') + (!favCount && !state.favsOnly ? ' disabled' : '') + '" id="cfm-sb-song-filter" type="button">',
+          'Liked only' + (favCount ? ' (' + favCount + ')' : ''),
+        '</button>',
+        '<span class="cfm-sb-song-panel-count cfm-sb-song-panel-note">' + (skipCount ? skipCount + ' skipped' : 'Skip removes tracks from rotation') + '</span>',
+      '</div>'
+    ].join('');
+
+    TRACKS.forEach(function (track, idx) {
+      var active = idx === state.idx;
+      var fav = isFav(idx);
+      var skipped = isSkipped(idx);
+      html += [
+        '<div class="cfm-sb-track-item' + (active ? ' active' : '') + (skipped ? ' skipped' : '') + '" data-idx="' + idx + '">',
+          '<div class="cfm-sb-track-num">' + (idx + 1) + '</div>',
+          '<div class="cfm-sb-track-info">',
+            '<div class="cfm-sb-track-name">' + esc(track.title) + '</div>',
+            '<div class="cfm-sb-track-genre">' + esc(track.genre) + '</div>',
+          '</div>',
+          '<button class="cfm-sb-track-fav' + (fav ? ' active' : '') + '" type="button" data-idx="' + idx + '" aria-label="' + (fav ? 'Remove favorite' : 'Favorite') + ' ' + esc(track.title) + '">',
+            fav ? '&#10084;' : '&#9825;',
+          '</button>',
+          '<button class="cfm-sb-track-skip' + (skipped ? ' active' : '') + '" type="button" data-idx="' + idx + '" aria-label="' + (skipped ? 'Include in rotation' : 'Skip in rotation') + ' ' + esc(track.title) + '">',
+            skipped ? 'Undo' : 'Skip',
+          '</button>',
+        '</div>'
+      ].join('');
+    });
+
+    panel.innerHTML = html;
+
+    var filterBtn = document.getElementById('cfm-sb-song-filter');
+    if (filterBtn) {
+      filterBtn.addEventListener('click', function () {
+        if (state.favs.length === 0 && !state.favsOnly) return;
+        state.favsOnly = !state.favsOnly;
+        saveState();
+        updateAll();
+      });
+    }
+    panel.querySelectorAll('.cfm-sb-track-item').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        if (e.target.classList.contains('cfm-sb-track-fav') || e.target.classList.contains('cfm-sb-track-skip')) return;
+        var idx = parseInt(this.getAttribute('data-idx'));
+        loadTrack(idx, true);
+        playerReady = true;
+      });
+    });
+    panel.querySelectorAll('.cfm-sb-track-fav').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var idx = parseInt(this.getAttribute('data-idx'));
+        toggleFav(idx);
+      });
+    });
+    panel.querySelectorAll('.cfm-sb-track-skip').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var idx = parseInt(this.getAttribute('data-idx'));
+        toggleSkip(idx);
+      });
+    });
   }
 
   // Update range slider track fill to visually reflect current value
@@ -1083,6 +1314,10 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     document.getElementById('cfm-sb-favs-btn').addEventListener('click', function () {
       if (state.favs.length === 0 && !state.favsOnly) return;
       state.favsOnly = !state.favsOnly; saveState(); renderHomeList();
+    });
+    document.getElementById('cfm-sb-list-btn').addEventListener('click', function () {
+      homeListOpen = !homeListOpen;
+      renderHomeList();
     });
     var sbVol = document.getElementById('cfm-sb-vol');
     updateSliderFill(sbVol);
