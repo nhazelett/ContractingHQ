@@ -37,7 +37,7 @@
 
   // ── STATE ────────────────────────────────────────────────────────
   var SK = 'cfm_v1';
-  var state = { idx: 0, time: 0, vol: 0.5, shuffle: false, favs: [], wasPlaying: false, favsOnly: false };
+  var state = { idx: 0, time: 0, vol: 0.5, shuffle: false, favs: [], skips: [], wasPlaying: false, favsOnly: false };
 
   function loadState() {
     try {
@@ -47,7 +47,8 @@
         if (typeof s.time === 'number')  state.time    = s.time;
         // vol intentionally not restored - always starts at 0.5 to avoid surprising the user
         if (typeof s.shuffle === 'boolean') state.shuffle = s.shuffle;
-        if (Array.isArray(s.favs))       state.favs    = s.favs;
+        if (Array.isArray(s.favs))       state.favs    = sanitizeIndexes(s.favs);
+        if (Array.isArray(s.skips))      state.skips   = sanitizeIndexes(s.skips);
         if (typeof s.wasPlaying === 'boolean') state.wasPlaying = s.wasPlaying;
         if (typeof s.favsOnly === 'boolean')   state.favsOnly   = s.favsOnly;
       }
@@ -87,9 +88,20 @@
     else { aud.play().catch(function () {}); }
   }
 
-  function getPool() {
-    if (state.favsOnly && state.favs.length > 0) return state.favs;
+  function sanitizeIndexes(values) {
+    return values.filter(function (idx, pos, arr) {
+      return typeof idx === 'number' && idx >= 0 && idx < TRACKS.length && arr.indexOf(idx) === pos;
+    });
+  }
+
+  function allTrackIndexes() {
     return TRACKS.map(function (_, i) { return i; });
+  }
+
+  function getPool() {
+    var base = state.favsOnly && state.favs.length > 0 ? state.favs : allTrackIndexes();
+    var playable = base.filter(function (idx) { return state.skips.indexOf(idx) === -1; });
+    return playable.length > 0 ? playable : base;
   }
 
   function nextTrack(force) {
@@ -113,12 +125,34 @@
   }
 
   function isFav(idx) { return state.favs.indexOf(idx) > -1; }
+  function isSkipped(idx) { return state.skips.indexOf(idx) > -1; }
 
   function toggleFav(idx) {
     var i = state.favs.indexOf(idx);
     if (i > -1) state.favs.splice(i, 1); else state.favs.push(idx);
     saveState();
     updateAll();
+  }
+
+  function toggleSkip(idx) {
+    var i = state.skips.indexOf(idx);
+    var nowSkipped = i === -1;
+    if (i > -1) state.skips.splice(i, 1); else state.skips.push(idx);
+    saveState();
+    if (nowSkipped && idx === state.idx) {
+      nextTrack(true);
+    } else {
+      updateAll();
+    }
+  }
+
+  function esc(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   function fmt(s) {
@@ -294,19 +328,20 @@ input[type=range].cfm-vol-slider::-moz-range-thumb {
 
 .cfm-playlist-btn {
   background: none; border: none; cursor: pointer;
-  color: #445; font-size: 0.85rem; padding: 0 1rem;
+  color: #8a9bb0; font-size: 0.85rem; padding: 0 1rem;
   transition: color 0.18s; flex-shrink: 0; height: 100%;
   display: flex; align-items: center; gap: 0.35rem; font-family: 'Inter', sans-serif;
   border-left: 1px solid rgba(255,255,255,0.06);
 }
 .cfm-playlist-btn:hover { color: #fff; }
 .cfm-playlist-btn.open { color: var(--cfm-accent, #4a9eff); }
+.cfm-playlist-text { font-size: 0.72rem; font-weight: 700; }
 
 /* Playlist drawer */
 #cfm-drawer {
   position: fixed; bottom: 68px; right: 0;
-  width: 320px; max-height: 400px;
-  background: rgba(8,4,20,0.98);
+  width: 380px; max-height: min(560px, calc(100vh - 92px));
+  background: #080414;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 14px 0 0 0;
   overflow-y: auto; z-index: 9998;
@@ -315,18 +350,50 @@ input[type=range].cfm-vol-slider::-moz-range-thumb {
 }
 #cfm-drawer.open { display: block; }
 .cfm-drawer-hdr {
-  padding: 0.9rem 1.1rem 0.6rem;
-  font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; font-weight: 700;
-  color: #8a9bb0; text-transform: uppercase; letter-spacing: 1.5px;
+  position: sticky; top: 0; z-index: 1;
+  padding: 0.85rem 1rem 0.75rem;
+  background: #080414;
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
+.cfm-drawer-title-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+}
+.cfm-drawer-title {
+  font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700;
+  color: #fff; text-transform: uppercase; letter-spacing: 1.2px;
+}
+.cfm-drawer-count { color: #556; font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
+.cfm-drawer-actions {
+  display: flex; align-items: center; gap: 0.45rem; margin-top: 0.65rem;
+}
+.cfm-drawer-toggle {
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.035);
+  color: #8a9bb0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.35rem 0.65rem;
+}
+.cfm-drawer-toggle:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.cfm-drawer-toggle.active { color: #ef4444; border-color: rgba(239,68,68,0.34); background: rgba(239,68,68,0.08); }
+.cfm-drawer-toggle.disabled { opacity: 0.45; cursor: default; }
 .cfm-track-item {
-  display: flex; align-items: center; gap: 0.75rem;
-  padding: 0.65rem 1.1rem; cursor: pointer;
+  display: grid; grid-template-columns: 22px minmax(0, 1fr) auto auto; align-items: center; gap: 0.65rem;
+  padding: 0.65rem 1rem; cursor: pointer;
+  background: #080414;
   transition: background 0.15s; border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 .cfm-track-item:hover { background: rgba(255,255,255,0.04); }
-.cfm-track-item.active { background: rgba(74,158,255,0.07); }
+.cfm-track-item.active { background: #11172d; }
+.cfm-track-item.skipped { opacity: 0.58; }
+.cfm-track-item.skipped .cfm-track-name { text-decoration: line-through; }
+.cfm-track-marker {
+  display: grid; place-items: center;
+  width: 22px; min-width: 22px;
+}
 .cfm-track-num {
   font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; color: #334;
   min-width: 18px; text-align: center;
@@ -351,6 +418,21 @@ input[type=range].cfm-vol-slider::-moz-range-thumb {
   color: #334; transition: color 0.18s; padding: 0.2rem;
 }
 .cfm-track-fav.active { color: #ef4444; }
+.cfm-track-skip {
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.035);
+  color: #66758a;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.64rem;
+  font-weight: 800;
+  line-height: 1;
+  padding: 0.32rem 0.48rem;
+  text-transform: uppercase;
+}
+.cfm-track-skip:hover { color: #fff; background: rgba(255,255,255,0.07); }
+.cfm-track-skip.active { color: #f59e0b; border-color: rgba(245,158,11,0.34); background: rgba(245,158,11,0.08); }
 
 /* Scrollbar styling for drawer */
 #cfm-drawer::-webkit-scrollbar { width: 4px; }
@@ -641,10 +723,22 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   .cfm-sb-controls { padding: 0.4rem 1rem; }
 }
 @media (max-width: 600px) {
-  .cfm-brand { min-width: 90px; }
-  .cfm-song-info { min-width: 140px; max-width: 170px; }
+  .cfm-brand { display: none; }
+  .cfm-song-info {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+    padding: 0 0.7rem;
+  }
+  .cfm-controls { gap: 0.25rem; padding: 0 0.45rem; }
+  .cfm-progress-zone,
   .cfm-volume-zone { display: none; }
-  .cfm-progress-zone { padding: 0 0.5rem; }
+  .cfm-playlist-text { display: none; }
+  .cfm-playlist-btn { width: 48px; padding: 0; justify-content: center; }
+  #cfm-drawer {
+    left: 8px; right: 8px; width: auto;
+    border-radius: 14px 14px 0 0;
+  }
 }
 `;
 
@@ -709,8 +803,8 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
         '<span class="cfm-vol-icon" id="cfm-vol-icon">&#128266;</span>',
         '<input type="range" class="cfm-vol-slider" id="cfm-vol" min="0" max="1" step="0.01" value="' + state.vol + '">',
       '</div>',
-      '<button class="cfm-playlist-btn" id="cfm-list-btn" title="Playlist">',
-        '&#9776; <span style="font-size:0.72rem;font-weight:600;">Playlist</span>',
+      '<button class="cfm-playlist-btn" id="cfm-list-btn" type="button" title="Song list" aria-controls="cfm-drawer" aria-expanded="false">',
+        '&#9776; <span class="cfm-playlist-text">Songs</span>',
       '</button>'
     ].join('');
 
@@ -750,44 +844,83 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       if (aud.duration) aud.currentTime = pct * aud.duration;
     });
     document.getElementById('cfm-list-btn').addEventListener('click', function () {
-      drawerOpen = !drawerOpen;
-      drawerEl.classList.toggle('open', drawerOpen);
-      this.classList.toggle('open', drawerOpen);
+      setDrawerOpen(!drawerOpen);
     });
     document.addEventListener('click', function (e) {
-      if (drawerOpen && !drawerEl.contains(e.target) && !document.getElementById('cfm-list-btn').contains(e.target)) {
-        drawerOpen = false;
-        drawerEl.classList.remove('open');
-        document.getElementById('cfm-list-btn').classList.remove('open');
-      }
+      var listBtn = document.getElementById('cfm-list-btn');
+      if (drawerOpen && !drawerEl.contains(e.target) && listBtn && !listBtn.contains(e.target)) setDrawerOpen(false);
     });
+    document.addEventListener('keydown', function (e) {
+      if (drawerOpen && e.key === 'Escape') setDrawerOpen(false);
+    });
+  }
+
+  function setDrawerOpen(open) {
+    var listBtn = document.getElementById('cfm-list-btn');
+    drawerOpen = open;
+    if (drawerEl) drawerEl.classList.toggle('open', drawerOpen);
+    if (listBtn) {
+      listBtn.classList.toggle('open', drawerOpen);
+      listBtn.setAttribute('aria-expanded', drawerOpen ? 'true' : 'false');
+    }
   }
 
   function renderDrawer() {
     if (!drawerEl) return;
-    var html = '<div class="cfm-drawer-hdr">&#127911; ContractingFM Playlist</div>';
+    var favCount = state.favs.length;
+    var skipCount = state.skips.length;
+    var html = [
+      '<div class="cfm-drawer-hdr">',
+        '<div class="cfm-drawer-title-row">',
+          '<div class="cfm-drawer-title">Song List</div>',
+          '<div class="cfm-drawer-count">' + TRACKS.length + ' tracks</div>',
+        '</div>',
+        '<div class="cfm-drawer-actions">',
+          '<button class="cfm-drawer-toggle' + (state.favsOnly ? ' active' : '') + (!favCount && !state.favsOnly ? ' disabled' : '') + '" id="cfm-drawer-favs" type="button">',
+            'Liked only' + (favCount ? ' (' + favCount + ')' : ''),
+          '</button>',
+          '<div class="cfm-drawer-count">' + (skipCount ? skipCount + ' skipped' : 'Skip removes tracks from rotation') + '</div>',
+        '</div>',
+      '</div>'
+    ].join('');
     TRACKS.forEach(function (t, i) {
       var active = i === state.idx;
       var fav = isFav(i);
+      var skipped = isSkipped(i);
       html += [
-        '<div class="cfm-track-item' + (active ? ' active' : '') + (active && isPlaying ? ' playing' : '') + '" data-idx="' + i + '">',
-          '<div class="cfm-track-dot" style="background:' + t.color + '"></div>',
-          '<div class="cfm-track-num">' + (i + 1) + '</div>',
-          '<div class="cfm-track-info">',
-            '<div class="cfm-track-name">' + t.title + '</div>',
-            '<div class="cfm-track-genre">' + t.genre + '</div>',
+        '<div class="cfm-track-item' + (active ? ' active' : '') + (active && isPlaying ? ' playing' : '') + (skipped ? ' skipped' : '') + '" data-idx="' + i + '">',
+          '<div class="cfm-track-marker">',
+            '<div class="cfm-track-dot" style="background:' + esc(t.color) + '"></div>',
+            '<div class="cfm-track-num">' + (i + 1) + '</div>',
           '</div>',
-          '<button class="cfm-track-fav' + (fav ? ' active' : '') + '" data-idx="' + i + '" title="Favorite">',
+          '<div class="cfm-track-info">',
+            '<div class="cfm-track-name">' + esc(t.title) + '</div>',
+            '<div class="cfm-track-genre">' + esc(t.genre) + '</div>',
+          '</div>',
+          '<button class="cfm-track-fav' + (fav ? ' active' : '') + '" type="button" data-idx="' + i + '" title="' + (fav ? 'Remove favorite' : 'Favorite') + '" aria-label="' + (fav ? 'Remove favorite' : 'Favorite') + ' ' + esc(t.title) + '">',
             fav ? '&#10084;' : '&#9825;',
+          '</button>',
+          '<button class="cfm-track-skip' + (skipped ? ' active' : '') + '" type="button" data-idx="' + i + '" title="' + (skipped ? 'Include in rotation' : 'Skip in rotation') + '" aria-label="' + (skipped ? 'Include in rotation' : 'Skip in rotation') + ' ' + esc(t.title) + '">',
+            skipped ? 'Undo' : 'Skip',
           '</button>',
         '</div>'
       ].join('');
     });
     drawerEl.innerHTML = html;
 
+    var favsToggle = document.getElementById('cfm-drawer-favs');
+    if (favsToggle) {
+      favsToggle.addEventListener('click', function () {
+        if (state.favs.length === 0 && !state.favsOnly) return;
+        state.favsOnly = !state.favsOnly;
+        saveState();
+        updateAll();
+      });
+    }
+
     drawerEl.querySelectorAll('.cfm-track-item').forEach(function (el) {
       el.addEventListener('click', function (e) {
-        if (e.target.classList.contains('cfm-track-fav')) return;
+        if (e.target.classList.contains('cfm-track-fav') || e.target.classList.contains('cfm-track-skip')) return;
         var idx = parseInt(this.getAttribute('data-idx'));
         loadTrack(idx, true);
         playerReady = true;
@@ -798,6 +931,13 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
         e.stopPropagation();
         var idx = parseInt(this.getAttribute('data-idx'));
         toggleFav(idx);
+      });
+    });
+    drawerEl.querySelectorAll('.cfm-track-skip').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var idx = parseInt(this.getAttribute('data-idx'));
+        toggleSkip(idx);
       });
     });
   }
@@ -1092,7 +1232,8 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     var freshVisit = !sessionStorage.getItem('cfm_session');
     if (freshVisit) {
       sessionStorage.setItem('cfm_session', '1');
-      state.idx = Math.floor(Math.random() * TRACKS.length);
+      var startPool = getPool();
+      state.idx = startPool[Math.floor(Math.random() * startPool.length)];
       state.time = 0;
       state.wasPlaying = false;
     }
