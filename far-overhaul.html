@@ -6,84 +6,576 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="FAR Overhaul Tracker — aggregated news and updates on the Revolutionary FAR Overhaul from government sources, law firms, and practitioners. Updated daily." />
+  <meta name="description" content="Primary-source FAR Overhaul tracker for contracting professionals. Official Acquisition.gov FAR part status, agency deviations, updates, and Federal Register companion notices." />
 
-  <title>FAR Overhaul Tracker | ContractingHQ</title>
+  <title>Official FAR Overhaul Tracker | ContractingHQ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
-<style>
-  .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s;margin-top:.75rem}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
 
-  /* Filter tabs */
-  .rfo-filters { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.25rem; }
-  .rfo-filter-btn { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); color:#8a9bb0; padding:.4rem .9rem; border-radius:6px; font-size:.82rem; font-weight:600; cursor:pointer; transition:all .2s; font-family:'Inter',sans-serif; }
-  .rfo-filter-btn:hover { border-color:rgba(74,158,255,.3); color:#c0cdd8; }
-  .rfo-filter-btn.active { background:rgba(74,158,255,.15); border-color:rgba(74,158,255,.4); color:#4a9eff; }
+  <style>
+    :root {
+      --rfo-bg: #f3f5f2;
+      --rfo-paper: #ffffff;
+      --rfo-ink: #17201c;
+      --rfo-muted: #647067;
+      --rfo-line: #d6ded4;
+      --rfo-green: #1f7a55;
+      --rfo-green-dark: #14543b;
+      --rfo-blue: #2457a6;
+      --rfo-gold: #a36516;
+      --rfo-red: #a13b2c;
+      --rfo-charcoal: #23302a;
+    }
 
-  /* News feed */
-  .rfo-feed { display:flex; flex-direction:column; gap:.7rem; }
-  .rfo-item { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07); border-radius:8px; padding:1rem 1.1rem; transition:border-color .2s, background .2s; }
-  .rfo-item:hover { border-color:rgba(74,158,255,.25); background:rgba(255,255,255,.055); }
-  .rfo-item-header { display:flex; align-items:flex-start; gap:.7rem; }
-  .rfo-item-icon { font-size:1.15rem; flex-shrink:0; margin-top:.15rem; }
-  .rfo-item-body { flex:1; min-width:0; }
-  .rfo-item-title { margin:0; }
-  .rfo-item-title a { color:#e2e8f0; text-decoration:none; font-size:.92rem; font-weight:600; line-height:1.4; }
-  .rfo-item-title a:hover { color:#4a9eff; }
-  .rfo-item-meta { font-size:.74rem; color:#666; margin-top:.35rem; display:flex; align-items:center; gap:.55rem; flex-wrap:wrap; }
-  .rfo-source-badge { font-size:.65rem; font-weight:700; padding:.12rem .42rem; border-radius:3px; text-transform:uppercase; white-space:nowrap; }
-  .rfo-cat-government { background:rgba(74,158,255,.15); color:#4a9eff; }
-  .rfo-cat-practitioner { background:rgba(100,220,150,.15); color:#64dc96; }
-  .rfo-cat-legislative { background:rgba(255,180,70,.15); color:#ffb446; }
-  .rfo-item-summary { font-size:.83rem; color:#8a9bb0; line-height:1.55; margin-top:.5rem; }
-  .rfo-item-readmore { display:inline-block; font-size:.78rem; color:#4a9eff; margin-top:.35rem; text-decoration:none; font-weight:500; }
-  .rfo-item-readmore:hover { text-decoration:underline; }
-  .rfo-item-date { white-space:nowrap; }
+    .bmc-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: #FFDD00;
+      color: #000;
+      border-radius: 8px;
+      padding: .45rem 1rem;
+      font-weight: 700;
+      font-size: .83rem;
+      text-decoration: none;
+      transition: opacity .2s, transform .15s;
+    }
 
-  /* Status bar */
-  .rfo-status { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem; padding:.6rem .9rem; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); border-radius:6px; font-size:.78rem; color:#666; }
-  .rfo-status-count { color:#8a9bb0; font-weight:600; }
+    .bmc-btn:hover { opacity: .88; transform: translateY(-1px); }
 
-  /* Context box */
-  .rfo-context { background:rgba(74,158,255,.06); border:1px solid rgba(74,158,255,.18); border-radius:8px; padding:1rem 1.2rem; margin-bottom:1.5rem; }
-  .rfo-context p { font-size:.88rem; color:#a0b0c0; line-height:1.6; margin:0 0 .5rem 0; }
-  .rfo-context p:last-child { margin-bottom:0; }
-  .rfo-context a { color:#4a9eff; }
-  .rfo-context strong { color:#c0cdd8; }
+    .rfo-shell {
+      min-height: 100vh;
+      background:
+        linear-gradient(180deg, #fbfcfb 0, var(--rfo-bg) 360px),
+        var(--rfo-bg);
+      color: var(--rfo-ink);
+      padding: 6.1rem 1.25rem 3.75rem;
+    }
 
-  /* Loading */
-  .rfo-loading { color:#666; font-style:italic; padding:2rem 0; text-align:center; }
+    .rfo-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-  /* Empty state */
-  .rfo-empty { color:#666; text-align:center; padding:2rem 0; font-size:.88rem; }
+    .rfo-mast {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 350px;
+      gap: 2rem;
+      align-items: end;
+      padding-bottom: 1.3rem;
+      border-bottom: 2px solid var(--rfo-charcoal);
+    }
 
-  /* Source list */
-  .rfo-sources { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:.6rem; margin-top:1rem; }
-  .rfo-source-card { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07); border-radius:6px; padding:.7rem .9rem; font-size:.82rem; }
-  .rfo-source-card a { color:#4a9eff; text-decoration:none; font-weight:600; }
-  .rfo-source-card a:hover { text-decoration:underline; }
-  .rfo-source-card .rfo-source-desc { color:#777; font-size:.76rem; margin-top:.2rem; }
-</style>
-  <!-- Open Graph & Twitter Card -->
+    .rfo-kicker {
+      display: inline-grid;
+      grid-template-columns: 38px auto;
+      gap: .7rem;
+      align-items: center;
+      color: var(--rfo-green-dark);
+      font-family: "Rajdhani", sans-serif;
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: 1.7px;
+      text-transform: uppercase;
+      margin-bottom: .8rem;
+    }
+
+    .rfo-kicker::before {
+      content: "";
+      height: 3px;
+      background: var(--rfo-green);
+    }
+
+    .rfo-title {
+      font-family: "Rajdhani", sans-serif;
+      font-size: clamp(2.2rem, 5vw, 4.45rem);
+      line-height: .92;
+      margin: 0;
+      color: #111713;
+      letter-spacing: 0;
+    }
+
+    .rfo-deck {
+      max-width: 760px;
+      margin: 1rem 0 0;
+      color: #4f5c54;
+      line-height: 1.65;
+      font-size: 1rem;
+    }
+
+    .rfo-source {
+      border-left: 4px solid var(--rfo-green);
+      padding-left: 1rem;
+      color: var(--rfo-muted);
+      font-size: .84rem;
+      line-height: 1.55;
+    }
+
+    .rfo-source-label {
+      font-family: "Rajdhani", sans-serif;
+      color: var(--rfo-gold);
+      font-weight: 700;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+      font-size: .74rem;
+      margin-bottom: .35rem;
+    }
+
+    .rfo-source p { margin: 0; }
+    .rfo-source a { color: var(--rfo-blue); text-decoration: none; font-weight: 800; }
+    .rfo-source a:hover { text-decoration: underline; }
+
+    .rfo-stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: .75rem;
+      margin: 1.2rem 0;
+    }
+
+    .rfo-stat {
+      min-height: 98px;
+      border: 1px solid var(--rfo-line);
+      background: var(--rfo-paper);
+      border-radius: 8px;
+      padding: .9rem;
+    }
+
+    .rfo-stat-value {
+      font-family: "Rajdhani", sans-serif;
+      font-size: 2.05rem;
+      line-height: 1;
+      font-weight: 700;
+      color: #111713;
+    }
+
+    .rfo-stat-label {
+      color: var(--rfo-muted);
+      font-size: .76rem;
+      line-height: 1.35;
+      margin-top: .45rem;
+    }
+
+    .rfo-briefing {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 1rem;
+      align-items: start;
+      margin: 1rem 0 1.25rem;
+    }
+
+    .rfo-panel {
+      border: 1px solid var(--rfo-line);
+      background: rgba(255, 255, 255, .86);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .rfo-panel h2,
+    .rfo-panel h3 {
+      margin: 0 0 .65rem;
+      font-family: "Rajdhani", sans-serif;
+      line-height: 1.15;
+      color: #111713;
+    }
+
+    .rfo-panel h2 { font-size: 1.35rem; }
+    .rfo-panel h3 { font-size: 1.1rem; }
+
+    .rfo-panel p {
+      margin: 0 0 .7rem;
+      color: #516056;
+      line-height: 1.58;
+      font-size: .92rem;
+    }
+
+    .rfo-panel p:last-child { margin-bottom: 0; }
+
+    .rfo-change-list,
+    .rfo-update-list,
+    .rfo-resource-list {
+      display: grid;
+      gap: .62rem;
+    }
+
+    .rfo-change {
+      border-left: 3px solid var(--rfo-green);
+      padding: .58rem .7rem;
+      background: #f4fbf6;
+      color: #334139;
+      font-size: .86rem;
+      line-height: 1.48;
+    }
+
+    .rfo-change strong { color: #111713; }
+
+    .rfo-controls {
+      position: sticky;
+      top: 64px;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto auto auto;
+      gap: .7rem;
+      align-items: center;
+      border: 1px solid var(--rfo-line);
+      background: rgba(255, 255, 255, .95);
+      backdrop-filter: blur(12px);
+      border-radius: 8px;
+      padding: .75rem;
+      margin: 1rem 0 1rem;
+      box-shadow: 0 14px 32px rgba(20, 36, 27, .08);
+    }
+
+    .rfo-search,
+    .rfo-select {
+      width: 100%;
+      min-height: 42px;
+      border-radius: 7px;
+      border: 1px solid #c9d4c8;
+      background: #fff;
+      color: var(--rfo-ink);
+      padding: .65rem .8rem;
+      font: inherit;
+      outline: none;
+    }
+
+    .rfo-select { min-width: 168px; }
+    .rfo-search:focus,
+    .rfo-select:focus {
+      border-color: rgba(31, 122, 85, .72);
+      box-shadow: 0 0 0 3px rgba(31, 122, 85, .14);
+    }
+
+    .rfo-segment {
+      display: inline-grid;
+      grid-auto-flow: column;
+      gap: .35rem;
+      align-items: center;
+      border: 1px solid #ccd7cc;
+      background: #f8faf7;
+      border-radius: 8px;
+      padding: .28rem;
+    }
+
+    .rfo-filter {
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #5d6d62;
+      min-height: 34px;
+      padding: .45rem .68rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .rfo-filter.active {
+      color: #fff;
+      background: var(--rfo-charcoal);
+    }
+
+    .rfo-status {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      color: var(--rfo-muted);
+      font-size: .82rem;
+      margin-bottom: .85rem;
+    }
+
+    .rfo-status strong { color: #111713; }
+
+    .rfo-parts {
+      display: grid;
+      gap: .9rem;
+    }
+
+    .rfo-part {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 1rem;
+      border: 1px solid var(--rfo-line);
+      background: var(--rfo-paper);
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 16px 34px rgba(20, 36, 27, .07);
+    }
+
+    .rfo-part-rail {
+      border-right: 1px solid var(--rfo-line);
+      padding-right: 1rem;
+    }
+
+    .rfo-part-number {
+      font-family: "Rajdhani", sans-serif;
+      color: #111713;
+      font-size: 1.75rem;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .rfo-part-status {
+      display: inline-flex;
+      margin-top: .55rem;
+      border-radius: 999px;
+      padding: .25rem .55rem;
+      background: #e7f4ec;
+      color: var(--rfo-green-dark);
+      font-size: .72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .7px;
+    }
+
+    .rfo-part-status.steady {
+      background: #eef1ee;
+      color: #5b655f;
+    }
+
+    .rfo-part-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1rem;
+      align-items: start;
+      margin-bottom: .65rem;
+    }
+
+    .rfo-part-title {
+      font-family: "Rajdhani", sans-serif;
+      font-size: 1.32rem;
+      line-height: 1.1;
+      font-weight: 700;
+      color: #111713;
+    }
+
+    .rfo-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .42rem .75rem;
+      margin-top: .35rem;
+      color: var(--rfo-muted);
+      font-size: .78rem;
+    }
+
+    .rfo-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      min-width: 112px;
+      border-radius: 7px;
+      padding: .35rem .65rem;
+      background: #eef3fb;
+      color: var(--rfo-blue);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .7px;
+      text-transform: uppercase;
+    }
+
+    .rfo-note {
+      border-left: 3px solid var(--rfo-green);
+      background: #f1f8f3;
+      color: #2c4d3b;
+      line-height: 1.58;
+      font-size: .88rem;
+      padding: .78rem .9rem;
+      margin-top: .72rem;
+    }
+
+    .rfo-label {
+      display: block;
+      font-family: "Rajdhani", sans-serif;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: 1.25px;
+      text-transform: uppercase;
+      color: #111713;
+      margin-bottom: .25rem;
+    }
+
+    .rfo-tags,
+    .rfo-agencies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .42rem;
+      margin-top: .82rem;
+    }
+
+    .rfo-tag {
+      border: 1px solid #cfd9cf;
+      background: #f8faf7;
+      color: #405047;
+      border-radius: 999px;
+      padding: .24rem .55rem;
+      font-size: .72rem;
+      font-weight: 800;
+    }
+
+    .rfo-agency {
+      border: 1px solid #ced9d0;
+      background: #fff;
+      color: #275c43;
+      border-radius: 999px;
+      padding: .26rem .58rem;
+      font-size: .72rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .rfo-agency:hover {
+      border-color: rgba(31, 122, 85, .55);
+      color: var(--rfo-green-dark);
+    }
+
+    .rfo-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      margin-top: .9rem;
+      padding-top: .8rem;
+      border-top: 1px solid var(--rfo-line);
+    }
+
+    .rfo-link {
+      color: var(--rfo-blue);
+      text-decoration: none;
+      font-weight: 800;
+      font-size: .86rem;
+    }
+
+    .rfo-link:hover { text-decoration: underline; }
+
+    .rfo-more {
+      color: var(--rfo-muted);
+      font-size: .75rem;
+      font-weight: 700;
+      align-self: center;
+    }
+
+    .rfo-update {
+      display: grid;
+      gap: .2rem;
+      border-left: 3px solid var(--rfo-gold);
+      background: #fff8ed;
+      padding: .65rem .78rem;
+      font-size: .86rem;
+      line-height: 1.45;
+    }
+
+    .rfo-update a {
+      color: #111713;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .rfo-update a:hover { text-decoration: underline; }
+
+    .rfo-update-meta {
+      color: var(--rfo-muted);
+      font-size: .74rem;
+    }
+
+    .rfo-resource {
+      display: block;
+      border: 1px solid #d6ded4;
+      background: #fff;
+      border-radius: 8px;
+      padding: .75rem .85rem;
+      text-decoration: none;
+    }
+
+    .rfo-resource strong {
+      display: block;
+      color: var(--rfo-blue);
+      font-size: .88rem;
+      margin-bottom: .2rem;
+    }
+
+    .rfo-resource span {
+      display: block;
+      color: var(--rfo-muted);
+      font-size: .78rem;
+      line-height: 1.42;
+    }
+
+    .rfo-empty {
+      border: 1px dashed #b9c5b8;
+      border-radius: 8px;
+      padding: 2rem;
+      color: var(--rfo-muted);
+      text-align: center;
+      background: rgba(255, 255, 255, .74);
+    }
+
+    .rfo-official-note {
+      margin-top: 1rem;
+      padding: .9rem 1rem;
+      border: 1px solid var(--rfo-line);
+      background: rgba(255, 255, 255, .74);
+      border-radius: 8px;
+      color: var(--rfo-muted);
+      font-size: .82rem;
+      line-height: 1.55;
+    }
+
+    .rfo-official-note strong { color: #111713; }
+
+    @media (max-width: 1040px) {
+      .rfo-mast,
+      .rfo-briefing {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .rfo-source { max-width: 720px; }
+      .rfo-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .rfo-controls {
+        grid-template-columns: 1fr;
+        position: static;
+      }
+      .rfo-segment {
+        grid-auto-flow: row;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .rfo-select { min-width: 0; }
+    }
+
+    @media (max-width: 680px) {
+      .rfo-shell { padding: 5.25rem 1rem 3.25rem; }
+      .rfo-stats { grid-template-columns: 1fr; }
+      .rfo-part { grid-template-columns: 1fr; }
+      .rfo-part-rail {
+        border-right: 0;
+        border-bottom: 1px solid var(--rfo-line);
+        padding-right: 0;
+        padding-bottom: .65rem;
+      }
+      .rfo-part-head { grid-template-columns: 1fr; }
+      .rfo-count { width: fit-content; }
+      .rfo-status { display: block; }
+      .bmc-btn { width: 38px; height: 38px; justify-content: center; padding: 0; overflow: hidden; color: transparent; }
+      .bmc-btn::first-letter { color: #000; }
+    }
+  </style>
+
   <meta property="og:type"        content="website" />
   <meta property="og:site_name"   content="ContractingHQ" />
-  <meta property="og:title"       content="FAR Overhaul Tracker | ContractingHQ" />
-  <meta property="og:description" content="FAR Overhaul Tracker — aggregated news and updates on the Revolutionary FAR Overhaul from government sources, law firms, and practitioners. Updated daily." />
+  <meta property="og:title"       content="Official FAR Overhaul Tracker | ContractingHQ" />
+  <meta property="og:description" content="Primary-source tracker for official FAR Overhaul parts, agency deviations, updates, and Federal Register companion notices." />
   <meta property="og:url"         content="https://kthq.org/far-overhaul.html" />
   <meta property="og:image"       content="https://kthq.org/og-image.png" />
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:site"        content="@ContractingHQ" />
-  <meta name="twitter:title"       content="FAR Overhaul Tracker | ContractingHQ" />
-  <meta name="twitter:description" content="FAR Overhaul Tracker — aggregated news and updates on the Revolutionary FAR Overhaul from government sources, law firms, and practitioners. Updated daily." />
+  <meta name="twitter:title"       content="Official FAR Overhaul Tracker | ContractingHQ" />
+  <meta name="twitter:description" content="Primary-source tracker for official FAR Overhaul parts, agency deviations, updates, and Federal Register companion notices." />
   <meta name="twitter:image"       content="https://kthq.org/og-image.png" />
   <link rel="canonical"            href="https://kthq.org/far-overhaul.html" />
 </head>
 <body>
-
-<!-- NAV -->
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">
@@ -113,112 +605,101 @@
   </div>
 </nav>
 
-<!-- PAGE HERO -->
-<div class="page-hero">
-  <div class="container">
-    <span class="hero-badge">FAR Overhaul</span>
-    <h1 class="page-hero-title">Revolutionary FAR Overhaul Tracker</h1>
-    <p class="page-hero-sub">Aggregated news and updates from government, practitioner, and legal sources. Updated daily.</p>
-  </div>
-</div>
+<main class="rfo-shell">
+  <div class="rfo-wrap">
+    <section class="rfo-mast" aria-labelledby="rfoTitle">
+      <div>
+        <div class="rfo-kicker">Primary Source FAR Overhaul Tracker</div>
+        <h1 class="rfo-title" id="rfoTitle">What Officially Changed?</h1>
+        <p class="rfo-deck">A daily snapshot of the official Revolutionary FAR Overhaul source material: issued FAR parts, updated model deviation text, agency deviation PDFs, and formal companion notices.</p>
+      </div>
+      <aside class="rfo-source" aria-label="FAR Overhaul source status">
+        <div class="rfo-source-label">Source Discipline</div>
+        <p id="rfoSourceText">Loading official source status...</p>
+      </aside>
+    </section>
 
-<!-- CONTEXT -->
-<section class="section" style="padding-top:1.5rem;padding-bottom:0;">
-  <div class="container">
-    <div class="rfo-context">
-      <p><strong>What is the RFO?</strong> The government is rewriting the rules for how it buys things. The FAR (Federal Acquisition Regulation) has governed federal contracting since 1984. Executive Order 14275 kicked off a full overhaul in April 2025, shifting from rigid, step-by-step rules to broader principles that give contracting officers more room to use their judgment. Changes are rolling out in waves through class deviations, with formal rulemaking still ahead.</p>
-      <p>This page pulls RFO-related news automatically from government agencies, law firms, and practitioners every day. For the official source of truth, check <a href="https://acquisition.gov/far-overhaul" target="_blank" rel="noopener">acquisition.gov/far-overhaul</a>. To compare old vs. new FAR language, use our <a href="far-comparator.html">FAR Comparator</a>.</p>
+    <section class="rfo-stats" aria-label="FAR Overhaul stats">
+      <div class="rfo-stat">
+        <div class="rfo-stat-value" id="statParts">--</div>
+        <div class="rfo-stat-label">Official FAR parts listed</div>
+      </div>
+      <div class="rfo-stat">
+        <div class="rfo-stat-value" id="statUpdated">--</div>
+        <div class="rfo-stat-label">Parts with posted update dates</div>
+      </div>
+      <div class="rfo-stat">
+        <div class="rfo-stat-value" id="statDeviations">--</div>
+        <div class="rfo-stat-label">Agency deviation PDFs linked</div>
+      </div>
+      <div class="rfo-stat">
+        <div class="rfo-stat-value" id="statAgencies">--</div>
+        <div class="rfo-stat-label">Unique agencies represented</div>
+      </div>
+      <div class="rfo-stat">
+        <div class="rfo-stat-value" id="statLatest">--</div>
+        <div class="rfo-stat-label">Latest official part date</div>
+      </div>
+    </section>
+
+    <section class="rfo-briefing" aria-label="FAR Overhaul briefing">
+      <div class="rfo-panel">
+        <h2>Daily Change Brief</h2>
+        <p id="rfoBriefIntro">Loading change summary...</p>
+        <div class="rfo-change-list" id="rfoChangeList"></div>
+      </div>
+      <aside class="rfo-panel">
+        <h3>What This Page Does Not Pull</h3>
+        <p>No law firm blogs. No general federal news feeds. No Congress.gov popularity lists. Those can be useful reading, but they are not the authority for whether a FAR part or agency deviation changed.</p>
+      </aside>
+    </section>
+
+    <section class="rfo-controls" aria-label="FAR part filters">
+      <input class="rfo-search" id="rfoSearch" type="search" placeholder="Search FAR part, agency, topic, or note" />
+      <select class="rfo-select" id="rfoTopic">
+        <option value="">All topics</option>
+      </select>
+      <select class="rfo-select" id="rfoSort">
+        <option value="part">Sort by FAR part</option>
+        <option value="updated">Sort by latest update</option>
+        <option value="deviations">Sort by agency deviations</option>
+      </select>
+      <div class="rfo-segment" role="group" aria-label="Part status filter">
+        <button class="rfo-filter active" type="button" data-mode="">All</button>
+        <button class="rfo-filter" type="button" data-mode="updated">Updated</button>
+        <button class="rfo-filter" type="button" data-mode="deviations">Deviations</button>
+      </div>
+    </section>
+
+    <div class="rfo-status">
+      <span id="rfoResultCount">Loading FAR parts...</span>
+      <span id="rfoDataNote"></span>
+    </div>
+
+    <section class="rfo-parts" id="rfoParts" aria-live="polite"></section>
+
+    <section class="rfo-briefing" aria-label="Official companion updates">
+      <div class="rfo-panel">
+        <h2>Official Acquisition.gov Updates</h2>
+        <div class="rfo-update-list" id="rfoAnnouncements"></div>
+      </div>
+      <div class="rfo-panel">
+        <h2>Federal Register Companion Notices</h2>
+        <div class="rfo-update-list" id="rfoFederalRegister"></div>
+      </div>
+    </section>
+
+    <section class="rfo-panel" aria-label="Official resources">
+      <h2>Official Resource Links</h2>
+      <div class="rfo-resource-list" id="rfoResources"></div>
+    </section>
+
+    <div class="rfo-official-note">
+      <strong>How to use this:</strong> start with the part card, open the official part text, then check whether your agency has a listed deviation PDF. KTHQ notes are triage prompts only; the authority stays with Acquisition.gov, agency deviations, and formal rulemaking.
     </div>
   </div>
-</section>
+</main>
 
-<!-- NEWS FEED -->
-<section class="section" id="rfo-news" style="padding-top:1rem;">
-  <div class="container">
-    <div class="section-header" style="margin-bottom:1rem;">
-      <span class="section-tag">News Feed</span>
-      <h2>Latest RFO Updates</h2>
-    </div>
-
-    <div class="rfo-filters" id="rfoFilters">
-      <button class="rfo-filter-btn active" data-filter="all">All</button>
-      <button class="rfo-filter-btn" data-filter="government">Government</button>
-      <button class="rfo-filter-btn" data-filter="practitioner">Practitioner / Analysis</button>
-      <button class="rfo-filter-btn" data-filter="legislative">Legislative</button>
-    </div>
-
-    <div class="rfo-status" id="rfoStatus">
-      <span class="rfo-loading">Loading news feed...</span>
-    </div>
-
-    <div class="rfo-feed" id="rfoFeed">
-      <div class="rfo-loading">Loading...</div>
-    </div>
-  </div>
-</section>
-
-<!-- SOURCES -->
-<section class="section" id="rfo-sources">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-tag">Sources</span>
-      <h2>Where This Data Comes From</h2>
-      <p class="section-desc">This page pulls from the following feeds automatically. If you know of a source we should add, <a href="contact.html" style="color:#4a9eff;">let us know</a>.</p>
-    </div>
-    <div class="rfo-sources">
-      <div class="rfo-source-card">
-        <a href="https://acquisition.gov/far-overhaul" target="_blank" rel="noopener">Acquisition.gov</a>
-        <div class="rfo-source-desc">Official FAR Overhaul hub. Model deviations, FAR Companion, FACs.</div>
-      </div>
-      <div class="rfo-source-card">
-        <a href="https://www.federalregister.gov" target="_blank" rel="noopener">Federal Register</a>
-        <div class="rfo-source-desc">FAR and DFARS proposed rules, final rules, and notices.</div>
-      </div>
-      <div class="rfo-source-card">
-        <a href="https://www.defense.gov" target="_blank" rel="noopener">Defense.gov</a>
-        <div class="rfo-source-desc">DoD contract announcements and acquisition news.</div>
-      </div>
-      <div class="rfo-source-card">
-        <a href="https://www.gao.gov" target="_blank" rel="noopener">GAO</a>
-        <div class="rfo-source-desc">Government Accountability Office reports and bid protest decisions.</div>
-      </div>
-      <div class="rfo-source-card">
-        <a href="https://www.congress.gov" target="_blank" rel="noopener">Congress.gov</a>
-        <div class="rfo-source-desc">Legislation related to federal acquisition and procurement reform.</div>
-      </div>
-      <div class="rfo-source-card">
-        <a href="https://federalnewsnetwork.com" target="_blank" rel="noopener">Federal News Network</a>
-        <div class="rfo-source-desc">Practitioner-focused federal workforce and acquisition reporting.</div>
-      </div>
-      <div class="rfo-source-card">
-        <a href="https://www.nextgov.com" target="_blank" rel="noopener">NextGov/FCW</a>
-        <div class="rfo-source-desc">Federal technology and IT acquisition news.</div>
-      </div>
-      <div class="rfo-source-card">
-        <a href="https://www.defenseone.com" target="_blank" rel="noopener">Defense One</a>
-        <div class="rfo-source-desc">Defense policy, contracting outcomes, and acquisition analysis.</div>
-      </div>
-      <div class="rfo-source-card">
-        <a href="https://www.govexec.com" target="_blank" rel="noopener">Government Executive</a>
-        <div class="rfo-source-desc">Federal management and policy news.</div>
-      </div>
-      <div class="rfo-source-card">
-        <a href="https://www.pilieromazza.com" target="_blank" rel="noopener">PilieroMazza</a>
-        <div class="rfo-source-desc">Part-by-part FAR overhaul analysis and weekly contractor updates.</div>
-      </div>
-      <div class="rfo-source-card">
-        <a href="https://www.governmentcontractslegalforum.com" target="_blank" rel="noopener">Crowell &amp; Moring</a>
-        <div class="rfo-source-desc">Government Contracts Legal Forum and FAR In Focus coverage.</div>
-      </div>
-      <div class="rfo-source-card">
-        <a href="https://www.insidegovernmentcontracts.com" target="_blank" rel="noopener">Inside Gov't Contracts</a>
-        <div class="rfo-source-desc">Deep procurement reform coverage and RFO progress updates.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
 <footer class="footer">
   <div class="container footer-inner">
     <div class="footer-brand">
@@ -230,6 +711,7 @@
       <a href="training.html">Training</a>
       <a href="gao-decisions.html">GAO Decisions</a>
       <a href="tools.html">Tools</a>
+      <a href="links.html">Links</a>
       <a href="federal-register.html">FAR Updates</a>
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
@@ -239,95 +721,266 @@
   </div>
 </footer>
 
-<script src="main.js"></script>
+<script src="data/far-overhaul-live.js"></script>
 <script>
-(function(){
-  var feed = document.getElementById('rfoFeed');
-  var status = document.getElementById('rfoStatus');
-  var filters = document.getElementById('rfoFilters');
-  var allItems = [];
-  var activeFilter = 'all';
+(function () {
+  var data = window.KTHQ_FAR_OVERHAUL_DATA || { parts: [], stats: {}, changes: {}, announcements: [], federalRegister: [], resources: [] };
+  var parts = Array.isArray(data.parts) ? data.parts : [];
+  var state = { search: "", topic: "", sort: "part", mode: "" };
 
-  function formatDate(d) {
-    if (!d) return '';
-    var parts = d.split('-');
-    if (parts.length !== 3) return d;
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var m = parseInt(parts[1], 10) - 1;
-    return months[m] + ' ' + parseInt(parts[2], 10) + ', ' + parts[0];
+  function esc(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
-  function catLabel(cat) {
-    if (cat === 'government') return 'Government';
-    if (cat === 'practitioner') return 'Practitioner';
-    if (cat === 'legislative') return 'Legislative';
-    return cat;
+  function shortDate(value) {
+    if (!value) return "--";
+    var d = new Date(/^\d{4}-\d{2}-\d{2}$/.test(value) ? value + "T12:00:00Z" : value);
+    if (Number.isNaN(d.getTime())) return value;
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric", timeZone: "UTC" });
   }
 
-  function renderItems(items) {
-    if (!items.length) {
-      feed.innerHTML = '<div class="rfo-empty">No items match this filter.</div>';
+  function fullDateTime(value) {
+    if (!value) return "Not generated yet";
+    var d = new Date(value);
+    if (Number.isNaN(d.getTime())) return value;
+    return d.toLocaleString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
+  }
+
+  function num(value) {
+    return Number(value || 0).toLocaleString();
+  }
+
+  function textFor(part) {
+    return [
+      part.fullTitle,
+      part.partLabel,
+      part.watchNote,
+      (part.tags || []).join(" "),
+      (part.agencies || []).map(function (agency) { return agency.name; }).join(" ")
+    ].join(" ").toLowerCase();
+  }
+
+  function allTopics() {
+    var found = {};
+    parts.forEach(function (part) {
+      (part.tags || []).forEach(function (tag) { found[tag] = true; });
+    });
+    return Object.keys(found).sort();
+  }
+
+  function visibleParts() {
+    var q = state.search.trim().toLowerCase();
+    var current = parts.filter(function (part) {
+      if (state.mode === "updated" && !part.isUpdated) return false;
+      if (state.mode === "deviations" && !part.deviationCount) return false;
+      if (state.topic && (part.tags || []).indexOf(state.topic) === -1) return false;
+      if (q && textFor(part).indexOf(q) === -1) return false;
+      return true;
+    });
+
+    current.sort(function (a, b) {
+      if (state.sort === "updated") {
+        return ((b.updateDate || b.issuanceDate || "")).localeCompare(a.updateDate || a.issuanceDate || "");
+      }
+      if (state.sort === "deviations") {
+        return (b.deviationCount || 0) - (a.deviationCount || 0) || a.partNumber - b.partNumber;
+      }
+      return a.partNumber - b.partNumber;
+    });
+    return current;
+  }
+
+  function renderStats() {
+    var stats = data.stats || {};
+    var source = data.source || {};
+    document.getElementById("statParts").textContent = num(stats.totalParts);
+    document.getElementById("statUpdated").textContent = num(stats.updatedParts);
+    document.getElementById("statDeviations").textContent = num(stats.agencyDeviationCount);
+    document.getElementById("statAgencies").textContent = num(stats.uniqueAgencyCount);
+    document.getElementById("statLatest").textContent = shortDate(stats.latestPartDate);
+    document.getElementById("rfoSourceText").innerHTML =
+      'Primary data comes from the official <a href="' + esc(source.deviationGuideUrl || "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide") + '" target="_blank" rel="noopener">Acquisition.gov FAR part deviation guide</a>. Companion notices are official Acquisition.gov and Federal Register items only.';
+    document.getElementById("rfoDataNote").textContent = "Checked " + fullDateTime(data.generatedAt);
+  }
+
+  function renderTopics() {
+    var select = document.getElementById("rfoTopic");
+    allTopics().forEach(function (topic) {
+      var opt = document.createElement("option");
+      opt.value = topic;
+      opt.textContent = topic;
+      select.appendChild(opt);
+    });
+  }
+
+  function renderChangeBrief() {
+    var changes = data.changes || {};
+    var list = document.getElementById("rfoChangeList");
+    var intro = document.getElementById("rfoBriefIntro");
+    var html = "";
+
+    if (changes.baseline) {
+      intro.textContent = "This is the first official-source snapshot for the new tracker. Future runs compare against this file and surface newly issued parts, updated part dates, and agency deviation changes.";
+      parts.slice().sort(function (a, b) {
+        return ((b.updateDate || b.issuanceDate || "")).localeCompare(a.updateDate || a.issuanceDate || "");
+      }).slice(0, 6).forEach(function (part) {
+        html += '<div class="rfo-change"><strong>' + esc(part.partLabel) + '</strong> ' + esc(part.title) +
+          ' - latest official date ' + esc(part.updateDateLabel || part.issuanceDateLabel || "not listed") + '.</div>';
+      });
+      list.innerHTML = html;
       return;
     }
-    var html = '';
-    for (var i = 0; i < items.length; i++) {
-      var it = items[i];
-      html += '<div class="rfo-item" data-category="' + it.category + '">';
-      html += '<div class="rfo-item-header">';
-      html += '<span class="rfo-item-icon">' + (it.icon || '') + '</span>';
-      html += '<div class="rfo-item-body">';
-      html += '<p class="rfo-item-title"><a href="' + it.url + '" target="_blank" rel="noopener">' + it.title + '</a></p>';
-      html += '<div class="rfo-item-meta">';
-      html += '<span class="rfo-source-badge rfo-cat-' + it.category + '">' + catLabel(it.category) + '</span>';
-      html += '<span>' + it.source + '</span>';
-      if (it.date) html += '<span class="rfo-item-date">' + formatDate(it.date) + '</span>';
-      html += '</div>';
-      if (it.summary) html += '<div class="rfo-item-summary">' + it.summary + '</div>';
-      html += '<a class="rfo-item-readmore" href="' + it.url + '" target="_blank" rel="noopener">Read full article &rarr;</a>';
-      html += '</div></div></div>';
+
+    var updated = changes.updatedParts || [];
+    var newParts = changes.newParts || [];
+    var newAgencies = changes.newAgencyDeviations || [];
+    if (!updated.length && !newParts.length && !newAgencies.length) {
+      intro.textContent = "No official FAR part or agency deviation changes were detected since the last committed snapshot.";
+      parts.slice().sort(function (a, b) {
+        return (b.deviationCount || 0) - (a.deviationCount || 0);
+      }).slice(0, 4).forEach(function (part) {
+        html += '<div class="rfo-change"><strong>' + esc(part.partLabel) + '</strong> has ' + esc(part.deviationCount) + ' listed agency deviation source(s).</div>';
+      });
+      list.innerHTML = html;
+      return;
     }
-    feed.innerHTML = html;
-  }
 
-  function applyFilter() {
-    var filtered = activeFilter === 'all' ? allItems : allItems.filter(function(it){ return it.category === activeFilter; });
-    renderItems(filtered);
-    // Update count
-    var countEl = status.querySelector('.rfo-status-count');
-    if (countEl) countEl.textContent = filtered.length + ' item' + (filtered.length === 1 ? '' : 's');
-  }
-
-  // Filter button clicks
-  filters.addEventListener('click', function(e){
-    var btn = e.target.closest('.rfo-filter-btn');
-    if (!btn) return;
-    filters.querySelectorAll('.rfo-filter-btn').forEach(function(b){ b.classList.remove('active'); });
-    btn.classList.add('active');
-    activeFilter = btn.getAttribute('data-filter');
-    applyFilter();
-  });
-
-  // Load data
-  fetch('data/rfo-news.json')
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      allItems = data.items || [];
-      var updated = data.last_updated ? new Date(data.last_updated) : null;
-      var updatedStr = updated ? updated.toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}) : 'Unknown';
-
-      status.innerHTML =
-        '<span class="rfo-status-count">' + allItems.length + ' item' + (allItems.length === 1 ? '' : 's') + '</span>' +
-        '<span>Last updated: ' + updatedStr + ' &middot; ' + (data.sources_checked || 0) + ' sources checked</span>';
-
-      applyFilter();
-    })
-    .catch(function(err){
-      feed.innerHTML = '<div class="rfo-empty">Unable to load news feed. Try refreshing the page.</div>';
-      status.innerHTML = '<span style="color:#c44;">Error loading feed data.</span>';
-      console.error('RFO feed error:', err);
+    intro.textContent = "Official source changes were detected during the latest run.";
+    newParts.slice(0, 6).forEach(function (part) {
+      html += '<div class="rfo-change"><strong>New:</strong> ' + esc(part.fullTitle) + ' was added to the official guide.</div>';
     });
+    updated.slice(0, 6).forEach(function (part) {
+      html += '<div class="rfo-change"><strong>Updated:</strong> ' + esc(part.fullTitle) + ' now shows ' + esc(part.updateDateLabel || "an updated date") + '.</div>';
+    });
+    newAgencies.slice(0, 6).forEach(function (entry) {
+      html += '<div class="rfo-change"><strong>Agency deviation:</strong> ' + esc(entry.agency.name) + ' was added under ' + esc(entry.part.partLabel) + '.</div>';
+    });
+    list.innerHTML = html || '<div class="rfo-change">Changes were detected, but none were displayable.</div>';
+  }
+
+  function renderParts() {
+    var list = document.getElementById("rfoParts");
+    var current = visibleParts();
+    document.getElementById("rfoResultCount").innerHTML = '<strong>' + current.length + '</strong> FAR parts shown';
+    if (!current.length) {
+      list.innerHTML = '<div class="rfo-empty">No FAR parts match the current filters.</div>';
+      return;
+    }
+    list.innerHTML = current.map(partCard).join("");
+  }
+
+  function partCard(part) {
+    var tags = (part.tags || []).map(function (tag) {
+      return '<span class="rfo-tag">' + esc(tag) + '</span>';
+    }).join("");
+    var agencies = (part.agencies || []).slice(0, 8).map(function (agency) {
+      return '<a class="rfo-agency" href="' + esc(agency.url) + '" target="_blank" rel="noopener">' + esc(agency.name) + '</a>';
+    }).join("");
+    var more = part.deviationCount > 8
+      ? '<span class="rfo-more">+' + esc(part.deviationCount - 8) + ' more on Acquisition.gov</span>'
+      : '';
+    var statusClass = part.isUpdated ? "" : " steady";
+    var statusText = part.isUpdated ? "Updated" : "Issued";
+    var dates = '<span>Issued: ' + esc(part.issuanceDateLabel || "not listed") + '</span>';
+    if (part.updateDateLabel) dates += '<span>Updated: ' + esc(part.updateDateLabel) + '</span>';
+
+    return '<article class="rfo-part">' +
+      '<div class="rfo-part-rail">' +
+        '<div class="rfo-part-number">' + esc(part.partLabel) + '</div>' +
+        '<span class="rfo-part-status' + statusClass + '">' + statusText + '</span>' +
+      '</div>' +
+      '<div>' +
+        '<div class="rfo-part-head">' +
+          '<div>' +
+            '<div class="rfo-part-title">' + esc(part.title) + '</div>' +
+            '<div class="rfo-meta">' + dates + '</div>' +
+          '</div>' +
+          '<span class="rfo-count">' + esc(part.deviationCount || 0) + ' deviations</span>' +
+        '</div>' +
+        '<div class="rfo-note"><span class="rfo-label">KTHQ triage note</span>' + esc(part.watchNote || "") + '</div>' +
+        (tags ? '<div class="rfo-tags">' + tags + '</div>' : '') +
+        (agencies || more ? '<div class="rfo-agencies">' + agencies + more + '</div>' : '') +
+        '<div class="rfo-actions">' +
+          '<a class="rfo-link" href="' + esc(part.url) + '" target="_blank" rel="noopener">Open official part text</a>' +
+          '<a class="rfo-link" href="' + esc(data.source && data.source.deviationGuideUrl || "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide") + '" target="_blank" rel="noopener">Open full deviation guide</a>' +
+        '</div>' +
+      '</div>' +
+    '</article>';
+  }
+
+  function renderUpdateList(id, items, emptyText) {
+    var container = document.getElementById(id);
+    if (!items || !items.length) {
+      container.innerHTML = '<div class="rfo-empty">' + esc(emptyText) + '</div>';
+      return;
+    }
+    container.innerHTML = items.slice(0, 8).map(function (item) {
+      return '<div class="rfo-update">' +
+        '<a href="' + esc(item.url) + '" target="_blank" rel="noopener">' + esc(item.title) + '</a>' +
+        '<div class="rfo-update-meta">' + esc(item.source || "Official source") + ' - ' + esc(item.dateLabel || item.date || "date not listed") + '</div>' +
+        (item.summary ? '<div>' + esc(item.summary) + '</div>' : '') +
+      '</div>';
+    }).join("");
+  }
+
+  function renderResources() {
+    var resources = data.resources || [];
+    document.getElementById("rfoResources").innerHTML = resources.map(function (item) {
+      return '<a class="rfo-resource" href="' + esc(item.url) + '" target="_blank" rel="noopener">' +
+        '<strong>' + esc(item.title) + '</strong>' +
+        '<span>' + esc(item.description || "") + '</span>' +
+      '</a>';
+    }).join("");
+  }
+
+  function bindControls() {
+    document.getElementById("rfoSearch").addEventListener("input", function (e) {
+      state.search = e.target.value;
+      renderParts();
+    });
+    document.getElementById("rfoTopic").addEventListener("change", function (e) {
+      state.topic = e.target.value;
+      renderParts();
+    });
+    document.getElementById("rfoSort").addEventListener("change", function (e) {
+      state.sort = e.target.value;
+      renderParts();
+    });
+    document.querySelectorAll(".rfo-filter").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        document.querySelectorAll(".rfo-filter").forEach(function (el) { el.classList.remove("active"); });
+        btn.classList.add("active");
+        state.mode = btn.getAttribute("data-mode") || "";
+        renderParts();
+      });
+    });
+  }
+
+  function init() {
+    renderStats();
+    renderTopics();
+    renderChangeBrief();
+    bindControls();
+    renderParts();
+    renderUpdateList("rfoAnnouncements", data.announcements || [], "No official Acquisition.gov RFO updates were available in the latest pull.");
+    renderUpdateList("rfoFederalRegister", data.federalRegister || [], "No tightly matched Federal Register companion notices were available in the latest pull.");
+    renderResources();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 })();
 </script>
+<script src="main.js"></script>
+<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <script src="player.js"></script>
 </body>
 </html>
