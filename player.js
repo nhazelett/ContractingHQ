@@ -44,13 +44,18 @@
     'manual-contracts-deployed.html'
   ];
   var CCO_TRACKS = [
-    { id: 1, title: 'Build the Base',           subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Build the Base.mp3', color: '#d99a31' },
-    { id: 2, title: 'EXECUTE',                  subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/EXECUTE.mp3', color: '#b54a31' },
-    { id: 3, title: 'Force Multiplier',         subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Force Multiplier.mp3', color: '#93a85b' },
-    { id: 4, title: 'No Time for Perfect',      subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/No Time for Perfect.mp3', color: '#c5b77a' },
-    { id: 5, title: 'Speed is a Weapon',        subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Speed is a Weapon.mp3', color: '#d2a64c' },
-    { id: 6, title: 'The Requirement is Trash', subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/The Requirement is Trash.mp3', color: '#df6b2f' },
-    { id: 7, title: 'Warrant in my Hand',       subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Warrant in my Hand.mp3', color: '#657c40' }
+    { id: 1, title: 'Build the Base',             subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Build the Base.mp3', color: '#d99a31' },
+    { id: 2, title: 'EXECUTE',                    subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/EXECUTE.mp3', color: '#b54a31' },
+    { id: 3, title: 'Force Multiplier',           subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Force Multiplier.mp3', color: '#93a85b' },
+    { id: 4, title: 'No Time for Perfect',        subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/No Time for Perfect.mp3', color: '#c5b77a' },
+    { id: 5, title: 'Speed is a Weapon',          subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Speed is a Weapon.mp3', color: '#d2a64c' },
+    { id: 6, title: 'The Requirement is Trash',   subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/The Requirement is Trash.mp3', color: '#df6b2f' },
+    { id: 7, title: 'Warrant in my Hand',         subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Warrant in my Hand.mp3', color: '#657c40' },
+    { id: 8, title: "Bend, Don't Break",          subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: "audio/cco/Bend, Don't Break.mp3", color: '#c07a2d' },
+    { id: 9, title: 'Good Enough / Not Enough',   subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Good Enough _ Not Enough.mp3', color: '#f4c04d' },
+    { id: 10, title: 'KTHQ',                      subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/KTHQ.mp3', color: '#a7b36b' },
+    { id: 11, title: 'Legal Enough to Move',      subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Legal Enough to Move.mp3', color: '#8b7744' },
+    { id: 12, title: 'Risk Accepted',             subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Risk Accepted.mp3', color: '#b54a31' }
   ];
 
   function pageFileName(value) {
@@ -223,6 +228,25 @@
     return playable.length > 0 ? playable : base;
   }
 
+  function randomPlayableIndex(excludeIdx) {
+    var pool = getPool();
+    if (!pool.length) return 0;
+    if (pool.length === 1) return pool[0];
+    var next = pool[Math.floor(Math.random() * pool.length)];
+    while (next === excludeIdx) {
+      next = pool[Math.floor(Math.random() * pool.length)];
+    }
+    return next;
+  }
+
+  function randomizeStartTrack(keepPlaybackIntent) {
+    if (!TRACKS.length) return;
+    state.idx = randomPlayableIndex(state.idx);
+    state.time = 0;
+    if (!keepPlaybackIntent) state.wasPlaying = false;
+    saveState();
+  }
+
   function nextTrack(force) {
     var pool = getPool();
     if (!pool.length) { updateAll(); return; }
@@ -381,6 +405,9 @@
       normalWasPlayingBeforeCco = false;
     }
     if (!TRACKS.length) shouldResume = false;
+    if (nextMode === 'cco' || (oldMode === 'cco' && nextMode === 'default' && !shouldResume)) {
+      randomizeStartTrack(shouldResume);
+    }
 
     suppressTimeState = oldWasPlaying;
     updateAll();
@@ -481,6 +508,10 @@
 #cfm-float.cfm-mode-cco .cfm-brand-logo span,
 #cfm-float.cfm-mode-cco .cfm-playlist-btn.open {
   color: #d99a31;
+}
+#cfm-float.cfm-mode-cco .cfm-playlist-count {
+  background: rgba(8,9,5,0.34);
+  color: #f5efd8;
 }
 #cfm-float.cfm-mode-cco .cfm-on-air {
   color: #070805;
@@ -688,6 +719,14 @@ input[type=range].cfm-vol-slider::-moz-range-thumb {
 .cfm-playlist-btn:hover { color: #fff; }
 .cfm-playlist-btn.open { color: var(--cfm-accent, #4a9eff); }
 .cfm-playlist-text { font-size: 0.72rem; font-weight: 700; }
+.cfm-playlist-count {
+  display: inline-grid; place-items: center;
+  min-width: 1.35rem; height: 1.35rem; padding: 0 0.28rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  color: #dbe8f7;
+  font-size: 0.68rem; font-weight: 800;
+}
 
 /* Playlist drawer */
 #cfm-drawer {
@@ -846,6 +885,18 @@ body.has-cfm-player { padding-bottom: 68px; }
   color: #fff;
   border-color: rgba(74,158,255,0.52);
   background: rgba(74,158,255,0.14);
+}
+.cfm-sb-list-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.3rem;
+  height: 1.3rem;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  background: rgba(74,158,255,0.18);
+  color: #dbe8f7;
+  font-size: 0.68rem;
+  font-weight: 900;
 }
 .cfm-sb-art-wrap {
   width: 100%; padding-top: 62%; position: relative;
@@ -1236,7 +1287,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   .cfm-progress-zone,
   .cfm-volume-zone { display: none; }
   .cfm-playlist-text { display: none; }
-  .cfm-playlist-btn { width: 48px; padding: 0; justify-content: center; }
+  .cfm-playlist-btn { width: 58px; padding: 0; justify-content: center; }
   #cfm-drawer {
     left: 8px; right: 8px; width: auto;
     border-radius: 14px 14px 0 0;
@@ -1307,8 +1358,8 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
         '<span class="cfm-vol-icon" id="cfm-vol-icon">&#128266;</span>',
         '<input type="range" class="cfm-vol-slider" id="cfm-vol" min="0" max="1" step="0.01" value="' + state.vol + '">',
       '</div>',
-      '<button class="cfm-playlist-btn" id="cfm-list-btn" type="button" title="Song list" aria-controls="cfm-drawer" aria-expanded="false">',
-        '&#9776; <span class="cfm-playlist-text">Songs</span>',
+      '<button class="cfm-playlist-btn" id="cfm-list-btn" type="button" title="Open song list" aria-label="Open song list, ' + TRACKS.length + ' tracks" aria-controls="cfm-drawer" aria-expanded="false">',
+        '&#9776; <span class="cfm-playlist-text">Song List</span><span class="cfm-playlist-count">' + TRACKS.length + '</span>',
       '</button>'
     ].join('');
 
@@ -1489,7 +1540,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
           '<div class="cfm-sb-name">' + radioBrandHtml() + '</div>',
           '<div class="cfm-sb-header-actions">',
             '<span class="cfm-on-air">On Air</span>',
-            '<button class="cfm-sb-list-btn" id="cfm-sb-list-btn" type="button" aria-controls="cfm-sb-song-panel" aria-expanded="false" title="Song list">&#9776; Songs</button>',
+            '<button class="cfm-sb-list-btn" id="cfm-sb-list-btn" type="button" aria-controls="cfm-sb-song-panel" aria-expanded="false" title="Open song list" aria-label="Open song list, ' + TRACKS.length + ' tracks">&#9776; Song List <span class="cfm-sb-list-count">' + TRACKS.length + '</span></button>',
           '</div>',
         '</div>',
         '<div class="cfm-sb-art-wrap">',
@@ -2268,19 +2319,8 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   }
 
   function init() {
-    // sessionStorage lives only for the current tab session.
-    // If it's empty, this is a brand new visit - pick a random track.
-    // If it has the key, we're just navigating between pages - resume normally.
-    var freshVisit = !sessionStorage.getItem('cfm_session');
-    if (freshVisit) {
-      sessionStorage.setItem('cfm_session', '1');
-      if (TRACKS.length) {
-        var startPool = getPool();
-        state.idx = startPool[Math.floor(Math.random() * startPool.length)];
-        state.time = 0;
-        state.wasPlaying = false;
-      }
-    }
+    // Hard page loads start fresh; soft navigation keeps the current song smooth.
+    randomizeStartTrack(false);
     if (isHome) {
       buildHome();
       if (state.wasPlaying) resumeAudio();
