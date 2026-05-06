@@ -36,8 +36,97 @@
   ];
 
   // ── STATE ────────────────────────────────────────────────────────
+  var DEFAULT_TRACKS = TRACKS.slice();
+
+  function pageFileName(value) {
+    return (String(value || '').split('/').pop() || 'index.html').toLowerCase();
+  }
+
+  function isCcoTrainingPath(value) {
+    return pageFileName(value) === 'contingency-contracting.html';
+  }
+
+  function modeForPath(value) {
+    return isCcoTrainingPath(value) ? 'cco' : 'default';
+  }
+
+  function freshState() {
+    return { idx: 0, time: 0, vol: 0.5, shuffle: false, favs: [], skips: [], wasPlaying: false, favsOnly: false };
+  }
+
+  function normalizeCcoTrack(track, idx) {
+    if (!track || !track.file) return null;
+    return {
+      id: track.id || idx + 1,
+      title: track.title || 'CCO Field Track ' + String(idx + 1).padStart(2, '0'),
+      subtitle: track.subtitle || 'CCO Field Radio',
+      genre: track.genre || 'Contingency Contracting',
+      file: track.file,
+      color: track.color || '#d2a64c'
+    };
+  }
+
+  function ccoTracksFromPage() {
+    var raw = window.KTHQ_CCO_TRACKS;
+    var template = document.getElementById('kthq-cco-tracks');
+    if (!Array.isArray(raw) && template) {
+      try { raw = JSON.parse(template.textContent || '[]'); } catch (e) { raw = []; }
+    }
+    if (!Array.isArray(raw)) return [];
+    return raw.map(normalizeCcoTrack).filter(Boolean);
+  }
+
+  function tracksForMode(mode) {
+    return mode === 'cco' ? ccoTracksFromPage() : DEFAULT_TRACKS.slice();
+  }
+
+  function modeStateKey(mode) {
+    return mode === 'cco' ? 'cfm_cco_v1' : 'cfm_v1';
+  }
+
+  function radioBrandHtml() {
+    return currentMode === 'cco' ? 'Field<span>Radio</span>' : 'Contracting<span>FM</span>';
+  }
+
+  function radioDrawerTitle() {
+    return currentMode === 'cco' ? 'Field Radio Tracks' : 'Song List';
+  }
+
+  function emptyTrack() {
+    return {
+      title: currentMode === 'cco' ? 'Field radio awaiting tracks' : 'Select a track',
+      subtitle: currentMode === 'cco' ? 'Add CCO tracks to this page' : '',
+      genre: currentMode === 'cco' ? 'Contingency Contracting' : '',
+      color: currentMode === 'cco' ? '#d2a64c' : '#4a9eff'
+    };
+  }
+
   var SK = 'cfm_v1';
-  var state = { idx: 0, time: 0, vol: 0.5, shuffle: false, favs: [], skips: [], wasPlaying: false, favsOnly: false };
+  var state = freshState();
+  var currentMode = '';
+  var suppressPauseState = false;
+  var suppressTimeState = false;
+  var normalWasPlayingBeforeCco = false;
+
+  function configureRadioMode(mode) {
+    currentMode = mode || 'default';
+    TRACKS = tracksForMode(currentMode);
+    SK = modeStateKey(currentMode);
+    state = freshState();
+    loadState();
+    if (!TRACKS.length) {
+      state.idx = 0;
+      state.time = 0;
+      state.wasPlaying = false;
+      state.favs = [];
+      state.skips = [];
+      state.favsOnly = false;
+      return;
+    }
+    if (state.idx < 0 || state.idx >= TRACKS.length) state.idx = 0;
+    state.favs = sanitizeIndexes(state.favs);
+    state.skips = sanitizeIndexes(state.skips);
+  }
 
   function loadState() {
     try {
@@ -63,16 +152,19 @@
   var aud = new Audio();
   var isPlaying = false;
   var playerReady = false;
-  loadState();
+  configureRadioMode(modeForPath(window.location.pathname));
   aud.volume = state.vol;
 
   function trackUrl(idx) {
-    var origin = window.location.origin;
-    return origin + '/' + TRACKS[idx].file;
+    if (!TRACKS[idx] || !TRACKS[idx].file) return '';
+    return new URL(TRACKS[idx].file, window.location.origin + '/').href;
   }
 
   function loadTrack(idx, autoplay) {
-    if (idx < 0 || idx >= TRACKS.length) return;
+    if (idx < 0 || idx >= TRACKS.length) {
+      updateAll();
+      return;
+    }
     state.idx = idx;
     state.time = 0;
     aud.src = trackUrl(idx);
@@ -83,6 +175,11 @@
   }
 
   function togglePlay() {
+    if (!TRACKS.length) {
+      updateAll();
+      window.dispatchEvent(new CustomEvent('cfm:modechange', { detail: radioStatus() }));
+      return;
+    }
     if (!playerReady) { loadTrack(state.idx, true); playerReady = true; return; }
     if (isPlaying) { aud.pause(); }
     else { aud.play().catch(function () {}); }
@@ -99,6 +196,7 @@
   }
 
   function getPool() {
+    if (!TRACKS.length) return [];
     var base = state.favsOnly && state.favs.length > 0 ? state.favs : allTrackIndexes();
     var playable = base.filter(function (idx) { return state.skips.indexOf(idx) === -1; });
     return playable.length > 0 ? playable : base;
@@ -106,6 +204,7 @@
 
   function nextTrack(force) {
     var pool = getPool();
+    if (!pool.length) { updateAll(); return; }
     var cur = pool.indexOf(state.idx);
     var next;
     if (state.shuffle) {
@@ -118,8 +217,10 @@
   }
 
   function prevTrack() {
+    if (!TRACKS.length) { updateAll(); return; }
     if (aud.currentTime > 3) { aud.currentTime = 0; return; }
     var pool = getPool();
+    if (!pool.length) return;
     var cur = pool.indexOf(state.idx);
     loadTrack(pool[(cur - 1 + pool.length) % pool.length], isPlaying);
   }
@@ -161,12 +262,36 @@
     return m + ':' + (sec < 10 ? '0' : '') + sec;
   }
 
+  function radioStatus() {
+    return {
+      mode: currentMode,
+      trackCount: TRACKS.length,
+      isPlaying: isPlaying,
+      track: TRACKS[state.idx] || null
+    };
+  }
+
+  function announceRadioStatus() {
+    try {
+      window.dispatchEvent(new CustomEvent('cfm:modechange', { detail: radioStatus() }));
+    } catch (e) {}
+  }
+
   // Audio event listeners
-  aud.addEventListener('play',   function () { isPlaying = true;  state.wasPlaying = true; updatePlayBtns(); saveState(); });
-  aud.addEventListener('pause',  function () { isPlaying = false; state.wasPlaying = false; updatePlayBtns(); saveState(); });
+  aud.addEventListener('play',   function () { isPlaying = true;  state.wasPlaying = true; updatePlayBtns(); saveState(); announceRadioStatus(); });
+  aud.addEventListener('pause',  function () {
+    isPlaying = false;
+    if (!suppressPauseState) {
+      state.wasPlaying = false;
+      saveState();
+    }
+    updatePlayBtns();
+    announceRadioStatus();
+  });
   aud.addEventListener('ended',  function () { nextTrack(true); });
   var lastSave = 0;
   aud.addEventListener('timeupdate', function () {
+    if (suppressTimeState) return;
     state.time = aud.currentTime;
     updateProgress();
     // Save to localStorage every 5 seconds so navigation never loses more than 5s
@@ -192,6 +317,75 @@
   }
   var isHome = isHomePath(path);
   var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+  function fadeVolumeTo(target, duration, done) {
+    var start = aud.volume;
+    var startAt = Date.now();
+    var ms = Math.max(0, duration || 0);
+    if (!ms) {
+      aud.volume = target;
+      if (done) done();
+      return;
+    }
+    var timer = setInterval(function () {
+      var pct = Math.min(1, (Date.now() - startAt) / ms);
+      aud.volume = start + ((target - start) * pct);
+      if (pct >= 1) {
+        clearInterval(timer);
+        if (done) done();
+      }
+    }, 40);
+  }
+
+  function switchRadioModeForPath(nextPath) {
+    var nextMode = modeForPath(nextPath);
+    if (nextMode === currentMode) return;
+
+    var oldMode = currentMode;
+    var oldWasPlaying = isPlaying;
+    if (oldMode === 'default' && nextMode === 'cco') {
+      normalWasPlayingBeforeCco = oldWasPlaying;
+    }
+    state.time = aud.currentTime || 0;
+    state.wasPlaying = oldWasPlaying;
+    saveState();
+
+    configureRadioMode(nextMode);
+    playerReady = false;
+
+    var shouldResume = !!state.wasPlaying;
+    if (nextMode === 'cco' && oldWasPlaying) shouldResume = true;
+    if (oldMode === 'cco' && nextMode === 'default') {
+      shouldResume = normalWasPlayingBeforeCco;
+      normalWasPlayingBeforeCco = false;
+    }
+    if (!TRACKS.length) shouldResume = false;
+
+    suppressTimeState = oldWasPlaying;
+    updateAll();
+
+    function finishSwitch() {
+      suppressPauseState = true;
+      aud.pause();
+      suppressPauseState = false;
+      aud.removeAttribute('src');
+      aud.load();
+      suppressTimeState = false;
+
+      if (shouldResume) {
+        playerReady = true;
+        loadTrack(state.idx, true);
+        fadeVolumeTo(state.vol, 650);
+      } else {
+        aud.volume = state.vol;
+        updateAll();
+      }
+      announceRadioStatus();
+    }
+
+    if (oldWasPlaying) fadeVolumeTo(0, 650, finishSwitch);
+    else finishSwitch();
+  }
 
   // ── CSS ──────────────────────────────────────────────────────────
   var css = `
@@ -383,6 +577,12 @@ input[type=range].cfm-vol-slider::-moz-range-thumb {
 .cfm-drawer-toggle:hover { color: #fff; background: rgba(255,255,255,0.06); }
 .cfm-drawer-toggle.active { color: #ef4444; border-color: rgba(239,68,68,0.34); background: rgba(239,68,68,0.08); }
 .cfm-drawer-toggle.disabled { opacity: 0.45; cursor: default; }
+.cfm-drawer-empty {
+  padding: 1rem;
+  color: #8a9bb0;
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
 .cfm-track-item {
   display: grid; grid-template-columns: 22px minmax(0, 1fr) auto auto; align-items: center; gap: 0.65rem;
   padding: 0.65rem 1rem; cursor: pointer;
@@ -919,7 +1119,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     floatEl.innerHTML = [
       '<div class="cfm-brand">',
         '<div>',
-          '<div class="cfm-brand-logo">Contracting<span>FM</span></div>',
+          '<div class="cfm-brand-logo">' + radioBrandHtml() + '</div>',
           '<div class="cfm-on-air">ON AIR</div>',
         '</div>',
       '</div>',
@@ -981,6 +1181,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   function mountPlayerForCurrentPage() {
     path = window.location.pathname;
     isHome = isHomePath(path);
+    switchRadioModeForPath(path);
     unmountPlayerDom();
     if (isHome) buildHome();
     else buildFloat();
@@ -1040,7 +1241,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     var html = [
       '<div class="cfm-drawer-hdr">',
         '<div class="cfm-drawer-title-row">',
-          '<div class="cfm-drawer-title">Song List</div>',
+          '<div class="cfm-drawer-title">' + radioDrawerTitle() + '</div>',
           '<div class="cfm-drawer-count">' + TRACKS.length + ' tracks</div>',
         '</div>',
         '<div class="cfm-drawer-actions">',
@@ -1051,6 +1252,11 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
         '</div>',
       '</div>'
     ].join('');
+    if (!TRACKS.length) {
+      html += '<div class="cfm-drawer-empty">' + (currentMode === 'cco' ? 'CCO field radio is armed, but no page-specific tracks are loaded yet.' : 'No tracks are loaded.') + '</div>';
+      drawerEl.innerHTML = html;
+      return;
+    }
     TRACKS.forEach(function (t, i) {
       var active = i === state.idx;
       var fav = isFav(i);
@@ -1123,7 +1329,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     homeSection.innerHTML = [
       '<div id="cfm-home">',
         '<div class="cfm-sb-header">',
-          '<div class="cfm-sb-name">Contracting<span>FM</span></div>',
+          '<div class="cfm-sb-name">' + radioBrandHtml() + '</div>',
           '<div class="cfm-sb-header-actions">',
             '<span class="cfm-on-air">On Air</span>',
             '<button class="cfm-sb-list-btn" id="cfm-sb-list-btn" type="button" aria-controls="cfm-sb-song-panel" aria-expanded="false" title="Song list">&#9776; Songs</button>',
@@ -1198,7 +1404,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     var favsBtn = document.getElementById('cfm-sb-favs-btn');
     var listBtn = document.getElementById('cfm-sb-list-btn');
     var songPanel = document.getElementById('cfm-sb-song-panel');
-    var t = TRACKS[state.idx];
+    var t = TRACKS[state.idx] || emptyTrack();
     if (npTitle) npTitle.textContent = t ? t.title : '-';
     if (npDot)   npDot.classList.toggle('paused', !isPlaying);
     if (heart) {
@@ -1228,7 +1434,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     var html = [
       '<div class="cfm-sb-song-panel-head">',
         '<div class="cfm-sb-song-panel-row">',
-          '<div class="cfm-sb-song-panel-title">Song List</div>',
+          '<div class="cfm-sb-song-panel-title">' + radioDrawerTitle() + '</div>',
           '<div class="cfm-sb-song-panel-count">' + TRACKS.length + ' tracks</div>',
         '</div>',
         '<button class="cfm-sb-song-filter' + (state.favsOnly ? ' active' : '') + (!favCount && !state.favsOnly ? ' disabled' : '') + '" id="cfm-sb-song-filter" type="button">',
@@ -1237,6 +1443,11 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
         '<span class="cfm-sb-song-panel-count cfm-sb-song-panel-note">' + (skipCount ? skipCount + ' skipped' : 'Skip removes tracks from rotation') + '</span>',
       '</div>'
     ].join('');
+
+    if (!TRACKS.length) {
+      panel.innerHTML = html + '<div class="cfm-drawer-empty">No tracks are loaded.</div>';
+      return;
+    }
 
     TRACKS.forEach(function (track, idx) {
       var active = idx === state.idx;
@@ -1358,7 +1569,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
 
   // ── UPDATE FUNCTIONS ─────────────────────────────────────────────
   function updateAll() {
-    var t = TRACKS[state.idx];
+    var t = TRACKS[state.idx] || emptyTrack();
     setAccent(t.color);
     updateSongInfo(t);
     updatePlayBtns();
@@ -1367,6 +1578,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     renderDrawer();
     renderHomeList();
     updateProgress();
+    announceRadioStatus();
   }
 
   function updateSongInfo(t) {
@@ -1481,6 +1693,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'contract-action-reports.html',
     'contract-closeout.html',
     'contract-specific-cor-training.html',
+    'contingency-contracting.html',
     'cor-type-a-training.html',
     'cost-price-analysis.html',
     'cpars.html',
@@ -1858,6 +2071,10 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
 
   // ── INIT ─────────────────────────────────────────────────────────
   function resumeAudio() {
+    if (!TRACKS.length) {
+      updateAll();
+      return;
+    }
     var targetTime = state.time;
     var shouldPlay = state.wasPlaying;
     // #t= fragment tells the browser to buffer from this position immediately
@@ -1897,10 +2114,12 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     var freshVisit = !sessionStorage.getItem('cfm_session');
     if (freshVisit) {
       sessionStorage.setItem('cfm_session', '1');
-      var startPool = getPool();
-      state.idx = startPool[Math.floor(Math.random() * startPool.length)];
-      state.time = 0;
-      state.wasPlaying = false;
+      if (TRACKS.length) {
+        var startPool = getPool();
+        state.idx = startPool[Math.floor(Math.random() * startPool.length)];
+        state.time = 0;
+        state.wasPlaying = false;
+      }
     }
     if (isHome) {
       buildHome();
