@@ -211,6 +211,64 @@
 
     .rfo-change strong { color: #111713; }
 
+    .rfo-priority-grid {
+      display: grid;
+      gap: .65rem;
+    }
+
+    .rfo-priority-card {
+      border: 1px solid #cfdbc9;
+      background: linear-gradient(180deg, #fff, #f5faf5);
+      border-radius: 8px;
+      padding: .78rem;
+      display: grid;
+      gap: .45rem;
+    }
+
+    .rfo-priority-card.far {
+      border-color: rgba(31, 122, 85, .32);
+      background: linear-gradient(180deg, #f3fbf5, #fff);
+    }
+
+    .rfo-priority-top {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: .8rem;
+    }
+
+    .rfo-priority-label {
+      font-family: "Rajdhani", sans-serif;
+      color: #111713;
+      font-size: 1.1rem;
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: .3px;
+    }
+
+    .rfo-priority-date {
+      color: var(--rfo-green-dark);
+      font-size: .72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .rfo-priority-copy {
+      color: #516056;
+      font-size: .82rem;
+      line-height: 1.45;
+    }
+
+    .rfo-priority-link {
+      color: var(--rfo-blue);
+      text-decoration: none;
+      font-size: .8rem;
+      font-weight: 900;
+    }
+
+    .rfo-priority-link:hover { text-decoration: underline; }
+
     .rfo-controls {
       position: sticky;
       top: 64px;
@@ -430,6 +488,27 @@
       color: var(--rfo-green-dark);
     }
 
+    .rfo-agency.priority {
+      border-color: rgba(31, 122, 85, .38);
+      background: #e8f5ed;
+      color: var(--rfo-green-dark);
+      box-shadow: inset 0 0 0 1px rgba(31, 122, 85, .08);
+    }
+
+    .rfo-agency.priority::before {
+      content: "PRIME";
+      display: inline-flex;
+      align-items: center;
+      margin-right: .42rem;
+      border-radius: 999px;
+      background: rgba(31, 122, 85, .13);
+      color: var(--rfo-green-dark);
+      padding: .12rem .32rem;
+      font-size: .58rem;
+      font-weight: 900;
+      letter-spacing: .5px;
+    }
+
     .rfo-actions {
       display: flex;
       flex-wrap: wrap;
@@ -638,7 +717,7 @@
       </div>
       <div class="rfo-stat">
         <div class="rfo-stat-value" id="statLatest">--</div>
-        <div class="rfo-stat-label">Latest official part date</div>
+        <div class="rfo-stat-label">Latest FAR model text date</div>
       </div>
     </section>
 
@@ -649,13 +728,14 @@
         <div class="rfo-change-list" id="rfoChangeList"></div>
       </div>
       <aside class="rfo-panel">
-        <h3>What This Page Does Not Pull</h3>
-        <p>No law firm blogs. No general federal news feeds. No Congress.gov popularity lists. Those can be useful reading, but they are not the authority for whether a FAR part or agency deviation changed.</p>
+        <h2>Priority Watch</h2>
+        <p>DoD, VA, and FAR Council model text are surfaced first because they matter most to this audience.</p>
+        <div class="rfo-priority-grid" id="rfoPriorityWatch"></div>
       </aside>
     </section>
 
     <section class="rfo-controls" aria-label="FAR part filters">
-      <input class="rfo-search" id="rfoSearch" type="search" placeholder="Search FAR part, agency, topic, or note" />
+      <input class="rfo-search" id="rfoSearch" type="search" placeholder="Search FAR part, agency, or topic" />
       <select class="rfo-select" id="rfoTopic">
         <option value="">All topics</option>
       </select>
@@ -695,7 +775,7 @@
     </section>
 
     <div class="rfo-official-note">
-      <strong>How to use this:</strong> start with the part card, open the official part text, then check whether your agency has a listed deviation PDF. KTHQ notes are triage prompts only; the authority stays with Acquisition.gov, agency deviations, and formal rulemaking.
+      <strong>How to use this:</strong> start with DoD or VA if either applies to you, then open the official FAR part text and the listed agency deviation PDF. The authority stays with Acquisition.gov, agency deviations, and formal rulemaking.
     </div>
   </div>
 </main>
@@ -727,6 +807,10 @@
   var data = window.KTHQ_FAR_OVERHAUL_DATA || { parts: [], stats: {}, changes: {}, announcements: [], federalRegister: [], resources: [] };
   var parts = Array.isArray(data.parts) ? data.parts : [];
   var state = { search: "", topic: "", sort: "part", mode: "" };
+  var priorityAgencies = [
+    { key: "dod", label: "DoD", name: "Department of Defense (DoD)", match: /department of defense|\(dod\)/i },
+    { key: "va", label: "VA", name: "Department of Veterans Affairs (VA)", match: /veterans affairs|\(va\)/i }
+  ];
 
   function esc(value) {
     return String(value == null ? "" : value)
@@ -759,7 +843,6 @@
     return [
       part.fullTitle,
       part.partLabel,
-      part.watchNote,
       (part.tags || []).join(" "),
       (part.agencies || []).map(function (agency) { return agency.name; }).join(" ")
     ].join(" ").toLowerCase();
@@ -771,6 +854,37 @@
       (part.tags || []).forEach(function (tag) { found[tag] = true; });
     });
     return Object.keys(found).sort();
+  }
+
+  function latestDateValue(part) {
+    return part.updateDate || part.issuanceDate || "";
+  }
+
+  function priorityForAgency(agency) {
+    var name = agency && agency.name || "";
+    for (var i = 0; i < priorityAgencies.length; i += 1) {
+      if (priorityAgencies[i].match.test(name)) return priorityAgencies[i];
+    }
+    return null;
+  }
+
+  function priorityRank(agency) {
+    var hit = priorityForAgency(agency);
+    if (!hit) return 99;
+    return hit.key === "dod" ? 0 : 1;
+  }
+
+  function partsForPriorityAgency(item) {
+    return parts.filter(function (part) {
+      return (part.agencies || []).some(function (agency) { return item.match.test(agency.name || ""); });
+    }).sort(function (a, b) {
+      return latestDateValue(b).localeCompare(latestDateValue(a)) || a.partNumber - b.partNumber;
+    });
+  }
+
+  function priorityAgencyLink(part, item) {
+    var agency = (part.agencies || []).find(function (entry) { return item.match.test(entry.name || ""); });
+    return agency ? agency.url : "";
   }
 
   function visibleParts() {
@@ -802,10 +916,44 @@
     document.getElementById("statUpdated").textContent = num(stats.updatedParts);
     document.getElementById("statDeviations").textContent = num(stats.agencyDeviationCount);
     document.getElementById("statAgencies").textContent = num(stats.uniqueAgencyCount);
-    document.getElementById("statLatest").textContent = shortDate(stats.latestPartDate);
+    document.getElementById("statLatest").textContent = stats.latestPartDateLabel || shortDate(stats.latestPartDate);
     document.getElementById("rfoSourceText").innerHTML =
       'Primary data comes from the official <a href="' + esc(source.deviationGuideUrl || "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide") + '" target="_blank" rel="noopener">Acquisition.gov FAR part deviation guide</a>. Companion notices are official Acquisition.gov and Federal Register items only.';
     document.getElementById("rfoDataNote").textContent = "Checked " + fullDateTime(data.generatedAt);
+  }
+
+  function renderPriorityWatch() {
+    var stats = data.stats || {};
+    var source = data.source || {};
+    var container = document.getElementById("rfoPriorityWatch");
+    if (!container) return;
+
+    var latestFarPart = parts.slice().sort(function (a, b) {
+      return latestDateValue(b).localeCompare(latestDateValue(a)) || a.partNumber - b.partNumber;
+    })[0];
+    var html = '<article class="rfo-priority-card far">' +
+      '<div class="rfo-priority-top">' +
+        '<div class="rfo-priority-label">FAR model text</div>' +
+        '<div class="rfo-priority-date">' + esc(stats.latestPartDateLabel || shortDate(stats.latestPartDate)) + '</div>' +
+      '</div>' +
+      '<div class="rfo-priority-copy">' + esc(num(stats.updatedParts)) + ' parts currently show posted update dates. Latest listed part: ' + esc(latestFarPart ? latestFarPart.partLabel : "not listed") + '.</div>' +
+      '<a class="rfo-priority-link" href="' + esc(latestFarPart && latestFarPart.url || source.deviationGuideUrl || "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide") + '" target="_blank" rel="noopener">Open latest official FAR part</a>' +
+    '</article>';
+
+    priorityAgencies.forEach(function (item) {
+      var agencyParts = partsForPriorityAgency(item);
+      var latest = agencyParts[0];
+      html += '<article class="rfo-priority-card">' +
+        '<div class="rfo-priority-top">' +
+          '<div class="rfo-priority-label">' + esc(item.label) + ' deviations</div>' +
+          '<div class="rfo-priority-date">' + esc(latest ? (latest.updateDateLabel || latest.issuanceDateLabel || "Listed") : "None") + '</div>' +
+        '</div>' +
+        '<div class="rfo-priority-copy">' + esc(num(agencyParts.length)) + ' FAR part deviation PDF' + (agencyParts.length === 1 ? "" : "s") + ' listed in the current official guide' + (latest ? ', newest associated with ' + esc(latest.partLabel) + '.' : '.') + '</div>' +
+        (latest ? '<a class="rfo-priority-link" href="' + esc(priorityAgencyLink(latest, item)) + '" target="_blank" rel="noopener">Open latest ' + esc(item.label) + ' deviation PDF</a>' : '') +
+      '</article>';
+    });
+
+    container.innerHTML = html;
   }
 
   function renderTopics() {
@@ -878,8 +1026,13 @@
     var tags = (part.tags || []).map(function (tag) {
       return '<span class="rfo-tag">' + esc(tag) + '</span>';
     }).join("");
-    var agencies = (part.agencies || []).slice(0, 8).map(function (agency) {
-      return '<a class="rfo-agency" href="' + esc(agency.url) + '" target="_blank" rel="noopener">' + esc(agency.name) + '</a>';
+    var agencyList = (part.agencies || []).slice().sort(function (a, b) {
+      return priorityRank(a) - priorityRank(b) || String(a.name || "").localeCompare(String(b.name || ""));
+    });
+    var agencies = agencyList.slice(0, 8).map(function (agency) {
+      var priority = priorityForAgency(agency);
+      var agencyClass = priority ? ' priority ' + priority.key : '';
+      return '<a class="rfo-agency' + agencyClass + '" href="' + esc(agency.url) + '" target="_blank" rel="noopener">' + esc(agency.name) + '</a>';
     }).join("");
     var more = part.deviationCount > 8
       ? '<span class="rfo-more">+' + esc(part.deviationCount - 8) + ' more on Acquisition.gov</span>'
@@ -902,7 +1055,6 @@
           '</div>' +
           '<span class="rfo-count">' + esc(part.deviationCount || 0) + ' deviations</span>' +
         '</div>' +
-        '<div class="rfo-note"><span class="rfo-label">KTHQ triage note</span>' + esc(part.watchNote || "") + '</div>' +
         (tags ? '<div class="rfo-tags">' + tags + '</div>' : '') +
         (agencies || more ? '<div class="rfo-agencies">' + agencies + more + '</div>' : '') +
         '<div class="rfo-actions">' +
@@ -965,6 +1117,7 @@
     renderStats();
     renderTopics();
     renderChangeBrief();
+    renderPriorityWatch();
     bindControls();
     renderParts();
     renderUpdateList("rfoAnnouncements", data.announcements || [], "No official Acquisition.gov RFO updates were available in the latest pull.");
