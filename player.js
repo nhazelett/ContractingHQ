@@ -37,13 +37,34 @@
 
   // ── STATE ────────────────────────────────────────────────────────
   var DEFAULT_TRACKS = TRACKS.slice();
+  var CCO_PAGE_FALLBACKS = [
+    'contingency-contracting.html',
+    'ocs-for-dummies.html',
+    'far-part-18-flexibilities.html',
+    'manual-contracts-deployed.html'
+  ];
+  var CCO_TRACKS = [
+    { id: 1, title: 'Build the Base',           subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Build the Base.mp3', color: '#d99a31' },
+    { id: 2, title: 'EXECUTE',                  subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/EXECUTE.mp3', color: '#b54a31' },
+    { id: 3, title: 'Force Multiplier',         subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Force Multiplier.mp3', color: '#93a85b' },
+    { id: 4, title: 'No Time for Perfect',      subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/No Time for Perfect.mp3', color: '#c5b77a' },
+    { id: 5, title: 'Speed is a Weapon',        subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Speed is a Weapon.mp3', color: '#d2a64c' },
+    { id: 6, title: 'The Requirement is Trash', subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/The Requirement is Trash.mp3', color: '#df6b2f' },
+    { id: 7, title: 'Warrant in my Hand',       subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Warrant in my Hand.mp3', color: '#657c40' }
+  ];
 
   function pageFileName(value) {
     return (String(value || '').split('/').pop() || 'index.html').toLowerCase();
   }
 
+  function pageDeclaresCcoMode() {
+    var meta = document.querySelector('meta[name="kthq-radio-mode"]');
+    if (meta && String(meta.getAttribute('content') || '').toLowerCase() === 'cco') return true;
+    return !!(document.body && document.body.classList.contains('cco-page-body'));
+  }
+
   function isCcoTrainingPath(value) {
-    return pageFileName(value) === 'contingency-contracting.html';
+    return CCO_PAGE_FALLBACKS.indexOf(pageFileName(value)) > -1 || pageDeclaresCcoMode();
   }
 
   function modeForPath(value) {
@@ -72,7 +93,7 @@
     if (!Array.isArray(raw) && template) {
       try { raw = JSON.parse(template.textContent || '[]'); } catch (e) { raw = []; }
     }
-    if (!Array.isArray(raw)) return [];
+    if (!Array.isArray(raw) || !raw.length) raw = CCO_TRACKS.slice();
     return raw.map(normalizeCcoTrack).filter(Boolean);
   }
 
@@ -402,6 +423,140 @@
   transition: transform 0.3s ease;
 }
 #cfm-float.cfm-hidden { transform: translateY(100%); }
+
+#cfm-float.cfm-mode-cco {
+  background:
+    radial-gradient(circle at 8% 25%, rgba(255,255,255,0.08) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 64% 65%, rgba(0,0,0,0.18) 0 1px, transparent 2px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,0) 0 238px, rgba(0,0,0,0.24) 239px 242px, rgba(255,255,255,0.06) 243px 244px),
+    linear-gradient(180deg, rgba(92,88,73,0.98), rgba(50,48,41,0.99));
+  border-top: 0;
+  box-shadow:
+    0 -10px 36px rgba(0,0,0,0.62),
+    inset 0 1px 0 rgba(255,255,255,0.1),
+    inset 0 -8px 22px rgba(0,0,0,0.24);
+  overflow: hidden;
+}
+
+#cfm-float.cfm-mode-cco::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 9px;
+  background: repeating-linear-gradient(135deg, #d99a31 0 16px, #070805 16px 32px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#cfm-float.cfm-mode-cco::after {
+  content: "";
+  position: absolute;
+  inset: 9px 0 0;
+  background:
+    linear-gradient(90deg, transparent 0 13%, rgba(255,255,255,0.06) 13.4% 13.7%, transparent 14% 48%, rgba(0,0,0,0.22) 48.2% 48.7%, transparent 49% 76%, rgba(255,255,255,0.04) 76.2% 76.5%, transparent 77%),
+    linear-gradient(170deg, transparent 0 36%, rgba(0,0,0,0.14) 36.3% 36.8%, transparent 37.2% 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#cfm-float.cfm-mode-cco > * { position: relative; z-index: 1; }
+#cfm-float.cfm-mode-cco .cfm-brand,
+#cfm-float.cfm-mode-cco .cfm-song-info,
+#cfm-float.cfm-mode-cco .cfm-controls,
+#cfm-float.cfm-mode-cco .cfm-volume-zone,
+#cfm-float.cfm-mode-cco .cfm-playlist-btn {
+  border-color: rgba(8,9,5,0.42);
+}
+#cfm-float.cfm-mode-cco .cfm-brand,
+#cfm-float.cfm-mode-cco .cfm-song-info {
+  background: rgba(8,9,5,0.36);
+}
+#cfm-float.cfm-mode-cco .cfm-brand-logo,
+#cfm-float.cfm-mode-cco .cfm-meta-title {
+  color: #f5efd8;
+}
+#cfm-float.cfm-mode-cco .cfm-brand-logo span,
+#cfm-float.cfm-mode-cco .cfm-playlist-btn.open {
+  color: #d99a31;
+}
+#cfm-float.cfm-mode-cco .cfm-on-air {
+  color: #070805;
+  background: rgba(217,154,49,0.86);
+  border-color: rgba(7,8,5,0.6);
+  box-shadow: 0 0 16px rgba(217,154,49,0.22);
+}
+#cfm-float.cfm-mode-cco .cfm-on-air.off-air {
+  color: #2c2a21;
+  background: rgba(8,9,5,0.16);
+  border-color: rgba(8,9,5,0.28);
+  box-shadow: none;
+}
+#cfm-float.cfm-mode-cco .cfm-art {
+  background:
+    linear-gradient(135deg, rgba(217,154,49,0.16), rgba(8,9,5,0.34)),
+    rgba(8,9,5,0.42);
+  border-color: rgba(217,154,49,0.26);
+}
+#cfm-float.cfm-mode-cco .cfm-time,
+#cfm-float.cfm-mode-cco .cfm-vol-icon {
+  color: #2f2c22;
+}
+#cfm-float.cfm-mode-cco .cfm-meta-sub {
+  color: #c5b77a;
+}
+#cfm-float.cfm-mode-cco .cfm-meta-genre {
+  color: #f4c04d;
+  background: rgba(8,9,5,0.42);
+}
+#cfm-float.cfm-mode-cco .cfm-btn {
+  color: #201e18;
+  background: rgba(8,9,5,0.08);
+}
+#cfm-float.cfm-mode-cco .cfm-btn:hover {
+  color: #f5efd8;
+  background: rgba(8,9,5,0.36);
+}
+#cfm-float.cfm-mode-cco .cfm-btn.cfm-play-btn {
+  background: #d99a31;
+  color: #080905;
+  box-shadow: 0 0 0 3px rgba(8,9,5,0.3), 0 0 20px rgba(217,154,49,0.22);
+}
+#cfm-float.cfm-mode-cco .cfm-bar-bg,
+#cfm-float.cfm-mode-cco input[type=range].cfm-vol-slider {
+  background: rgba(8,9,5,0.32);
+}
+#cfm-float.cfm-mode-cco .cfm-bar-fill {
+  background: linear-gradient(90deg, #070805, #d99a31);
+}
+#cfm-float.cfm-mode-cco .cfm-bar-thumb,
+#cfm-float.cfm-mode-cco input[type=range].cfm-vol-slider::-webkit-slider-thumb {
+  background: #f5efd8;
+  box-shadow: 0 0 0 2px rgba(8,9,5,0.45);
+}
+
+#cfm-drawer.cfm-mode-cco {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255,255,255,0.06) 0 1px, transparent 1.8px),
+    linear-gradient(180deg, #28261f, #0b0c08);
+  border-color: rgba(217,154,49,0.24);
+}
+#cfm-drawer.cfm-mode-cco .cfm-drawer-hdr {
+  background:
+    repeating-linear-gradient(135deg, rgba(217,154,49,0.22) 0 11px, rgba(7,8,5,0.54) 11px 22px),
+    #11130c;
+  border-bottom-color: rgba(217,154,49,0.24);
+}
+#cfm-drawer.cfm-mode-cco .cfm-track-item {
+  background: rgba(8,9,5,0.74);
+  border-bottom-color: rgba(217,154,49,0.08);
+}
+#cfm-drawer.cfm-mode-cco .cfm-track-item:hover,
+#cfm-drawer.cfm-mode-cco .cfm-track-item.active {
+  background: rgba(217,154,49,0.13);
+}
 
 .cfm-brand {
   display: flex; align-items: center; gap: 0.5rem;
@@ -1116,6 +1271,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
 
     floatEl = document.createElement('div');
     floatEl.id = 'cfm-float';
+    if (currentMode === 'cco') floatEl.className = 'cfm-mode-cco';
     floatEl.innerHTML = [
       '<div class="cfm-brand">',
         '<div>',
@@ -1158,6 +1314,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
 
     drawerEl = document.createElement('div');
     drawerEl.id = 'cfm-drawer';
+    if (currentMode === 'cco') drawerEl.className = 'cfm-mode-cco';
 
     document.body.appendChild(floatEl);
     document.body.appendChild(drawerEl);
@@ -1798,7 +1955,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   function markCurrentSoftHead() {
     if (softHeadMarked) return;
     softHeadMarked = true;
-    document.querySelectorAll('head style, head meta[name="description"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]').forEach(function (node) {
+    document.querySelectorAll('head style, head meta[name="description"], head meta[name="kthq-radio-mode"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]').forEach(function (node) {
       if (node.id === 'cfm-player-styles') return;
       node.setAttribute('data-kthq-soft-head', 'true');
     });
@@ -1809,7 +1966,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     document.querySelectorAll('[data-kthq-soft-head]').forEach(function (node) {
       if (node.parentNode) node.parentNode.removeChild(node);
     });
-    doc.querySelectorAll('head style, head meta[name="description"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]').forEach(function (node) {
+    doc.querySelectorAll('head style, head meta[name="description"], head meta[name="kthq-radio-mode"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]').forEach(function (node) {
       var clone = node.cloneNode(true);
       clone.setAttribute('data-kthq-soft-head', 'true');
       document.head.appendChild(clone);
