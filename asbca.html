@@ -6,31 +6,481 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Recent Armed Services Board of Contract Appeals (ASBCA) decisions, summarized in plain English with CO takeaways." />
+  <meta name="description" content="Automated ASBCA decision watch for contracting professionals. Recent Armed Services Board of Contract Appeals decisions, official PDF excerpts, outcomes, and practitioner triage notes." />
 
-  <title>ASBCA Decisions | ContractingHQ</title>
+  <title>ASBCA Decision Watch | ContractingHQ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
-<style>.bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}</style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
 
-  <!-- SEO: Open Graph & Twitter Card -->
+  <style>
+    :root {
+      --asbca-paper: #f5f7f8;
+      --asbca-ink: #18202a;
+      --asbca-muted: #617080;
+      --asbca-line: #d9e0e7;
+      --asbca-panel: #ffffff;
+      --asbca-teal: #0f8b87;
+      --asbca-teal-dark: #0a5f5c;
+      --asbca-gold: #bb7a17;
+      --asbca-blue: #2563eb;
+      --asbca-red: #b42318;
+      --asbca-green: #15803d;
+      --asbca-plum: #6d28d9;
+    }
+
+    .bmc-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: #FFDD00;
+      color: #000;
+      border-radius: 8px;
+      padding: .45rem 1rem;
+      font-weight: 700;
+      font-size: .83rem;
+      text-decoration: none;
+      transition: opacity .2s, transform .15s;
+    }
+
+    .bmc-btn:hover { opacity: .88; transform: translateY(-1px); }
+
+    .asbca-shell {
+      min-height: 100vh;
+      background:
+        linear-gradient(180deg, #ffffff 0, var(--asbca-paper) 380px),
+        var(--asbca-paper);
+      color: var(--asbca-ink);
+      padding: 6.2rem 1.25rem 3.75rem;
+    }
+
+    .asbca-wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .asbca-mast {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 2rem;
+      align-items: end;
+      border-bottom: 2px solid var(--asbca-ink);
+      padding-bottom: 1.35rem;
+    }
+
+    .asbca-kicker {
+      display: inline-grid;
+      grid-template-columns: 42px auto;
+      gap: .7rem;
+      align-items: center;
+      color: var(--asbca-teal-dark);
+      font-family: "Rajdhani", sans-serif;
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      margin-bottom: .8rem;
+    }
+
+    .asbca-kicker::before {
+      content: "";
+      height: 3px;
+      background: var(--asbca-teal);
+    }
+
+    .asbca-title {
+      font-family: "Rajdhani", sans-serif;
+      font-size: clamp(2.25rem, 5vw, 4.5rem);
+      line-height: .9;
+      margin: 0;
+      color: #111827;
+      letter-spacing: 0;
+    }
+
+    .asbca-deck {
+      max-width: 720px;
+      margin: 1rem 0 0;
+      color: #475569;
+      line-height: 1.65;
+      font-size: 1rem;
+    }
+
+    .asbca-source {
+      border-left: 4px solid var(--asbca-teal);
+      padding-left: 1rem;
+      color: var(--asbca-muted);
+      font-size: .84rem;
+      line-height: 1.55;
+    }
+
+    .asbca-source-label {
+      font-family: "Rajdhani", sans-serif;
+      color: var(--asbca-gold);
+      font-weight: 700;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+      font-size: .74rem;
+      margin-bottom: .35rem;
+    }
+
+    .asbca-source p { margin: 0; }
+    .asbca-source a { color: var(--asbca-blue); text-decoration: none; font-weight: 700; }
+    .asbca-source a:hover { text-decoration: underline; }
+
+    .asbca-primer {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin: 1.25rem 0 1.2rem;
+    }
+
+    .asbca-note {
+      border: 1px solid var(--asbca-line);
+      background: rgba(255, 255, 255, .82);
+      border-radius: 8px;
+      padding: 1rem 1.05rem;
+    }
+
+    .asbca-note h2 {
+      margin: 0 0 .4rem;
+      font-family: "Rajdhani", sans-serif;
+      font-size: 1.2rem;
+      line-height: 1.15;
+      color: #111827;
+    }
+
+    .asbca-note p {
+      margin: 0;
+      color: #526170;
+      line-height: 1.58;
+      font-size: .93rem;
+    }
+
+    .asbca-stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: .75rem;
+      margin: 1.2rem 0;
+    }
+
+    .asbca-stat {
+      min-height: 96px;
+      border: 1px solid var(--asbca-line);
+      background: var(--asbca-panel);
+      border-radius: 8px;
+      padding: .9rem;
+    }
+
+    .asbca-stat-value {
+      font-family: "Rajdhani", sans-serif;
+      font-size: 2.05rem;
+      line-height: 1;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .asbca-stat-label {
+      color: var(--asbca-muted);
+      font-size: .76rem;
+      line-height: 1.35;
+      margin-top: .45rem;
+    }
+
+    .asbca-controls {
+      position: sticky;
+      top: 64px;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto auto;
+      gap: .7rem;
+      align-items: center;
+      border: 1px solid var(--asbca-line);
+      background: rgba(255, 255, 255, .94);
+      backdrop-filter: blur(12px);
+      border-radius: 8px;
+      padding: .75rem;
+      margin: 1rem 0 1.15rem;
+      box-shadow: 0 14px 32px rgba(15, 23, 42, .08);
+    }
+
+    .asbca-search,
+    .asbca-select {
+      width: 100%;
+      min-height: 42px;
+      border-radius: 7px;
+      border: 1px solid #ccd6df;
+      background: #fff;
+      color: var(--asbca-ink);
+      padding: .65rem .8rem;
+      font: inherit;
+      outline: none;
+    }
+
+    .asbca-select { min-width: 190px; }
+    .asbca-search:focus,
+    .asbca-select:focus {
+      border-color: rgba(15, 139, 135, .72);
+      box-shadow: 0 0 0 3px rgba(15, 139, 135, .13);
+    }
+
+    .asbca-segment {
+      display: inline-grid;
+      grid-auto-flow: column;
+      gap: .35rem;
+      align-items: center;
+      border: 1px solid #d3dce5;
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: .28rem;
+    }
+
+    .asbca-filter {
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #566576;
+      min-height: 34px;
+      padding: .45rem .68rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .asbca-filter.active {
+      color: #fff;
+      background: var(--asbca-ink);
+    }
+
+    .asbca-status {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      color: var(--asbca-muted);
+      font-size: .82rem;
+      margin-bottom: .85rem;
+    }
+
+    .asbca-status strong { color: #111827; }
+
+    .asbca-list {
+      display: grid;
+      gap: .9rem;
+    }
+
+    .asbca-card {
+      display: grid;
+      grid-template-columns: 142px minmax(0, 1fr);
+      gap: 1rem;
+      border: 1px solid var(--asbca-line);
+      background: var(--asbca-panel);
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 16px 34px rgba(15, 23, 42, .07);
+    }
+
+    .asbca-date-rail {
+      border-right: 1px solid var(--asbca-line);
+      padding-right: 1rem;
+    }
+
+    .asbca-date {
+      font-family: "Rajdhani", sans-serif;
+      color: #111827;
+      font-size: 1.35rem;
+      line-height: 1.05;
+      font-weight: 700;
+    }
+
+    .asbca-judge {
+      margin-top: .45rem;
+      color: var(--asbca-muted);
+      font-size: .78rem;
+      line-height: 1.35;
+    }
+
+    .asbca-card-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1rem;
+      align-items: start;
+      margin-bottom: .7rem;
+    }
+
+    .asbca-case {
+      font-family: "Rajdhani", sans-serif;
+      font-size: 1.28rem;
+      line-height: 1.1;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .asbca-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem .75rem;
+      margin-top: .35rem;
+      color: var(--asbca-muted);
+      font-size: .78rem;
+    }
+
+    .asbca-outcome {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      min-width: 108px;
+      border-radius: 7px;
+      padding: .35rem .65rem;
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+    }
+
+    .outcome-settled { background: var(--asbca-teal-dark); }
+    .outcome-sustained,
+    .outcome-granted { background: var(--asbca-green); }
+    .outcome-denied { background: #344256; }
+    .outcome-dismissed { background: var(--asbca-gold); color: #1d1304; }
+    .outcome-procedural { background: var(--asbca-plum); }
+    .outcome-unclassified { background: #6b7280; }
+
+    .asbca-excerpt {
+      color: #344256;
+      line-height: 1.62;
+      margin: .75rem 0;
+      font-size: .94rem;
+    }
+
+    .asbca-label {
+      display: block;
+      font-family: "Rajdhani", sans-serif;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: 1.25px;
+      text-transform: uppercase;
+      color: #111827;
+      margin-bottom: .25rem;
+    }
+
+    .asbca-prompt {
+      border-left: 3px solid var(--asbca-teal);
+      background: #eef9f7;
+      color: #254f4b;
+      line-height: 1.58;
+      font-size: .88rem;
+      padding: .78rem .9rem;
+      margin-top: .75rem;
+    }
+
+    .asbca-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .42rem;
+      margin-top: .85rem;
+    }
+
+    .asbca-tag {
+      border: 1px solid #cfdae4;
+      background: #f8fafc;
+      color: #435165;
+      border-radius: 999px;
+      padding: .24rem .55rem;
+      font-size: .72rem;
+      font-weight: 800;
+    }
+
+    .asbca-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      margin-top: .9rem;
+      padding-top: .8rem;
+      border-top: 1px solid var(--asbca-line);
+    }
+
+    .asbca-link {
+      color: var(--asbca-blue);
+      text-decoration: none;
+      font-weight: 800;
+      font-size: .86rem;
+    }
+
+    .asbca-link:hover { text-decoration: underline; }
+
+    .asbca-source-chip {
+      color: var(--asbca-muted);
+      font-size: .72rem;
+    }
+
+    .asbca-empty {
+      border: 1px dashed #bac6d2;
+      border-radius: 8px;
+      padding: 2rem;
+      color: var(--asbca-muted);
+      text-align: center;
+      background: rgba(255, 255, 255, .72);
+    }
+
+    .asbca-legacy {
+      margin-top: 1rem;
+      padding: .9rem 1rem;
+      border: 1px solid var(--asbca-line);
+      background: rgba(255, 255, 255, .72);
+      border-radius: 8px;
+      color: var(--asbca-muted);
+      font-size: .82rem;
+      line-height: 1.55;
+    }
+
+    .asbca-legacy a { color: var(--asbca-blue); text-decoration: none; font-weight: 800; }
+    .asbca-legacy a:hover { text-decoration: underline; }
+
+    @media (max-width: 980px) {
+      .asbca-mast { grid-template-columns: 1fr; gap: 1rem; }
+      .asbca-source { max-width: 680px; }
+      .asbca-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .asbca-controls { grid-template-columns: 1fr; position: static; }
+      .asbca-segment { grid-auto-flow: row; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .asbca-select { min-width: 0; }
+    }
+
+    @media (max-width: 680px) {
+      .asbca-shell { padding: 5.25rem 1rem 3.25rem; }
+      .asbca-primer { grid-template-columns: 1fr; }
+      .asbca-stats { grid-template-columns: 1fr; }
+      .asbca-card { grid-template-columns: 1fr; }
+      .asbca-date-rail {
+        border-right: 0;
+        border-bottom: 1px solid var(--asbca-line);
+        padding-right: 0;
+        padding-bottom: .65rem;
+      }
+      .asbca-card-head { grid-template-columns: 1fr; }
+      .asbca-outcome { width: fit-content; }
+      .asbca-status { display: block; }
+      .bmc-btn { width: 38px; height: 38px; justify-content: center; padding: 0; overflow: hidden; color: transparent; }
+      .bmc-btn::first-letter { color: #000; }
+    }
+  </style>
+
   <meta property="og:type"        content="website" />
   <meta property="og:site_name"   content="ContractingHQ" />
-  <meta property="og:title"       content="ASBCA Decisions | ContractingHQ" />
-  <meta property="og:description" content="Recent Armed Services Board of Contract Appeals (ASBCA) decisions, summarized in plain English with CO takeaways." />
+  <meta property="og:title"       content="ASBCA Decision Watch | ContractingHQ" />
+  <meta property="og:description" content="Automated watch page for recent ASBCA decisions, official PDF excerpts, outcomes, and practitioner triage notes." />
   <meta property="og:url"         content="https://kthq.org/asbca.html" />
   <meta name="twitter:card"        content="summary" />
   <meta name="twitter:site"        content="@ContractingHQ" />
-  <meta name="twitter:title"       content="ASBCA Decisions | ContractingHQ" />
-  <meta name="twitter:description" content="Recent Armed Services Board of Contract Appeals (ASBCA) decisions, summarized in plain English with CO takeaways." />
+  <meta name="twitter:title"       content="ASBCA Decision Watch | ContractingHQ" />
+  <meta name="twitter:description" content="Automated watch page for recent ASBCA decisions, official PDF excerpts, outcomes, and practitioner triage notes." />
   <link rel="canonical"            href="https://kthq.org/asbca.html" />
 </head>
 <body>
-
-<!-- NAV -->
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">
@@ -60,40 +510,82 @@
   </div>
 </nav>
 
-<!-- PAGE HERO -->
-<div class="page-hero">
-  <div class="container">
-    <span class="hero-badge">ASBCA</span>
-    <h1 class="page-hero-title">ASBCA Decisions</h1>
-    <p class="page-hero-sub">Armed Services Board of Contract Appeals decisions — summarized in plain English with CO takeaways. Updated monthly.</p>
+<main class="asbca-shell">
+  <div class="asbca-wrap">
+    <section class="asbca-mast" aria-labelledby="asbcaTitle">
+      <div>
+        <div class="asbca-kicker">Automated ASBCA Decision Watch</div>
+        <h1 class="asbca-title" id="asbcaTitle">Contract Disputes, Fresh From The Board</h1>
+        <p class="asbca-deck">A daily pull of recent Armed Services Board of Contract Appeals decisions. The Board's PDF language stays visible; KTHQ adds outcome sorting, topic tags, and short practitioner prompts for acquisition teams.</p>
+      </div>
+      <aside class="asbca-source" aria-label="ASBCA source status">
+        <div class="asbca-source-label">Source</div>
+        <p id="asbcaSourceText">Loading ASBCA data...</p>
+      </aside>
+    </section>
+
+    <section class="asbca-primer" aria-label="ASBCA primer">
+      <div class="asbca-note">
+        <h2>After award, the file still matters</h2>
+        <p>GAO protests test source selections. ASBCA appeals test claims, terminations, final decisions, modifications, settlement authority, and whether the contract file can support the government's position.</p>
+      </div>
+      <div class="asbca-note">
+        <h2>Read these like file lessons</h2>
+        <p>The quickest value is pattern recognition: why a claim was dismissed, what evidence was missing, where a release worked, and how Board language maps back to CO documentation.</p>
+      </div>
+    </section>
+
+    <section class="asbca-stats" aria-label="ASBCA decision watch stats">
+      <div class="asbca-stat">
+        <div class="asbca-stat-value" id="statTotal">--</div>
+        <div class="asbca-stat-label">Recent decisions tracked</div>
+      </div>
+      <div class="asbca-stat">
+        <div class="asbca-stat-value" id="statLatest">--</div>
+        <div class="asbca-stat-label">Latest decision date in this feed</div>
+      </div>
+      <div class="asbca-stat">
+        <div class="asbca-stat-value" id="statResolved">--</div>
+        <div class="asbca-stat-label">Settled, sustained, or granted outcomes</div>
+      </div>
+      <div class="asbca-stat">
+        <div class="asbca-stat-value" id="statDismissed">--</div>
+        <div class="asbca-stat-label">Dismissals identified</div>
+      </div>
+      <div class="asbca-stat">
+        <div class="asbca-stat-value" id="statExtracted">--</div>
+        <div class="asbca-stat-label">PDFs extracted during the last run</div>
+      </div>
+    </section>
+
+    <section class="asbca-controls" aria-label="Decision filters">
+      <input class="asbca-search" id="asbcaSearch" type="search" placeholder="Search case, ASBCA number, topic, or Board language" />
+      <select class="asbca-select" id="asbcaTopic">
+        <option value="">All topics</option>
+      </select>
+      <div class="asbca-segment" role="group" aria-label="Outcome filter">
+        <button class="asbca-filter active" type="button" data-outcome="">All</button>
+        <button class="asbca-filter" type="button" data-outcome="settled">Settled</button>
+        <button class="asbca-filter" type="button" data-outcome="dismissed">Dismissed</button>
+        <button class="asbca-filter" type="button" data-outcome="denied">Denied</button>
+        <button class="asbca-filter" type="button" data-outcome="sustained">Sustained</button>
+        <button class="asbca-filter" type="button" data-outcome="unclassified">Read</button>
+      </div>
+    </section>
+
+    <div class="asbca-status">
+      <span id="asbcaResultCount">Loading decisions...</span>
+      <span id="asbcaDataNote"></span>
+    </div>
+
+    <section class="asbca-list" id="asbcaList" aria-live="polite"></section>
+
+    <div class="asbca-legacy">
+      Older hand-written summaries remain available in the <a href="asbca-archive.html">legacy ASBCA archive</a>. This page is the daily automated feed.
+    </div>
   </div>
-</div>
+</main>
 
-<!-- ASBCA DIGEST -->
-<section class="section" id="asbca">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-tag">Case Law</span>
-      <h2>Monthly ASBCA Digest</h2>
-      <p class="section-desc">The ASBCA hears contractor appeals of CO final decisions on DoD contracts. Decisions are released as PDFs only &mdash; each entry below is manually reviewed and summarized.</p>
-    </div>
-
-    <div class="asbca-intro">
-      <p>
-        Unlike GAO bid protests, ASBCA cases are post-award contract disputes &mdash; things like terminations, claims for money owed, constructive changes, and delivery failures. These decisions directly affect how COs write final decisions and manage contract disputes. New decisions appear at
-        <a href="https://www.asbca.mil/Decisions/" target="_blank" rel="noopener">asbca.mil/Decisions</a>.
-      </p>
-    </div>
-
-    <div id="asbcaCurrentWeek"></div>
-
-    <div class="gao-archive-link">
-      <a href="asbca-archive.html" class="archive-page-link">View all past digests &rarr;</a>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
 <footer class="footer">
   <div class="container footer-inner">
     <div class="footer-brand">
@@ -115,8 +607,177 @@
   </div>
 </footer>
 
-<script src="data/asbca.js"></script>
-<script src="data/asbca-render.js"></script>
+<script src="data/asbca-live.js"></script>
+<script>
+(function () {
+  var data = window.KTHQ_ASBCA_DATA || { items: [], stats: {}, source: {} };
+  var items = Array.isArray(data.items) ? data.items : [];
+  var state = { search: "", topic: "", outcome: "" };
+
+  function esc(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function shortDate(value) {
+    if (!value) return "--";
+    var d = new Date(/^\d{4}-\d{2}-\d{2}$/.test(value) ? value + "T12:00:00Z" : value);
+    if (Number.isNaN(d.getTime())) return value;
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric", timeZone: "UTC" });
+  }
+
+  function fullDateTime(value) {
+    if (!value) return "Not generated yet";
+    var d = new Date(value);
+    if (Number.isNaN(d.getTime())) return value;
+    return d.toLocaleString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
+  }
+
+  function textFor(item) {
+    return [
+      item.caseName,
+      item.caseNumberText,
+      item.decisionType,
+      item.outcomeLabel,
+      item.officialExcerpt,
+      item.practitionerPrompt,
+      (item.tags || []).join(" ")
+    ].join(" ").toLowerCase();
+  }
+
+  function allTopics() {
+    var found = {};
+    items.forEach(function (item) {
+      (item.tags || []).forEach(function (tag) { found[tag] = true; });
+    });
+    return Object.keys(found).sort();
+  }
+
+  function visibleItems() {
+    var q = state.search.trim().toLowerCase();
+    return items.filter(function (item) {
+      if (state.outcome) {
+        if (state.outcome === "sustained") {
+          if (["sustained", "granted"].indexOf(item.outcome) === -1) return false;
+        } else if (item.outcome !== state.outcome) {
+          return false;
+        }
+      }
+      if (state.topic && (item.tags || []).indexOf(state.topic) === -1) return false;
+      if (q && textFor(item).indexOf(q) === -1) return false;
+      return true;
+    });
+  }
+
+  function renderStats() {
+    var stats = data.stats || {};
+    var outcomes = stats.outcomes || {};
+    var resolved = (outcomes.settled || 0) + (outcomes.sustained || 0) + (outcomes.granted || 0);
+    var source = data.source || {};
+    var sourceUrl = source.decisionsUrl || "https://www.asbca.mil/Decisions/";
+
+    document.getElementById("statTotal").textContent = stats.total || items.length || 0;
+    document.getElementById("statLatest").textContent = shortDate(stats.latestDecisionDate);
+    document.getElementById("statResolved").textContent = resolved;
+    document.getElementById("statDismissed").textContent = outcomes.dismissed || 0;
+    document.getElementById("statExtracted").textContent = stats.downloadedPdfs || 0;
+    document.getElementById("asbcaSourceText").innerHTML =
+      'Official ASBCA decisions index and linked decision PDFs. Last run extracted ' +
+      esc(stats.downloadedPdfs || 0) +
+      ' PDF decisions. <a href="' + esc(sourceUrl) + '" target="_blank" rel="noopener">ASBCA decisions</a>';
+    document.getElementById("asbcaDataNote").textContent = "Updated " + fullDateTime(data.generatedAt);
+  }
+
+  function renderTopics() {
+    var select = document.getElementById("asbcaTopic");
+    allTopics().forEach(function (topic) {
+      var opt = document.createElement("option");
+      opt.value = topic;
+      opt.textContent = topic;
+      select.appendChild(opt);
+    });
+  }
+
+  function card(item) {
+    var tags = (item.tags || []).map(function (tag) {
+      return '<span class="asbca-tag">' + esc(tag) + '</span>';
+    }).join("");
+    var judge = item.judge ? '<div class="asbca-judge">Judge ' + esc(item.judge) + '</div>' : '';
+    return '<article class="asbca-card" data-outcome="' + esc(item.outcome || "unclassified") + '">' +
+      '<div class="asbca-date-rail">' +
+        '<div class="asbca-date">' + esc(item.displayDate || item.decisionDate || "") + '</div>' +
+        judge +
+      '</div>' +
+      '<div>' +
+        '<div class="asbca-card-head">' +
+          '<div>' +
+            '<div class="asbca-case">' + esc(item.caseName || "ASBCA decision") + '</div>' +
+            '<div class="asbca-meta">' +
+              '<span>' + esc(item.caseNumberText || "ASBCA appeal") + '</span>' +
+              '<span>' + esc(item.decisionType || "Decision") + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<span class="asbca-outcome outcome-' + esc(item.outcome || "unclassified") + '">' + esc(item.outcomeLabel || "Read Decision") + '</span>' +
+        '</div>' +
+        '<div class="asbca-excerpt"><span class="asbca-label">Board language</span>' + esc(item.officialExcerpt || "Open the ASBCA PDF for the Board's full reasoning.") + '</div>' +
+        '<div class="asbca-prompt"><span class="asbca-label">Practitioner note</span>' + esc(item.practitionerPrompt || "Read the decision against your own contract file facts.") + '</div>' +
+        (tags ? '<div class="asbca-tags">' + tags + '</div>' : '') +
+        '<div class="asbca-actions">' +
+          '<a class="asbca-link" href="' + esc(item.pdfUrl) + '" target="_blank" rel="noopener">Open ASBCA PDF</a>' +
+          '<span class="asbca-source-chip">' + esc(item.sourceStatusLabel || "ASBCA source") + '</span>' +
+        '</div>' +
+      '</div>' +
+    '</article>';
+  }
+
+  function renderList() {
+    var list = document.getElementById("asbcaList");
+    var current = visibleItems();
+    document.getElementById("asbcaResultCount").innerHTML = '<strong>' + current.length + '</strong> decisions shown';
+    if (!current.length) {
+      list.innerHTML = '<div class="asbca-empty">No ASBCA decisions match the current filters.</div>';
+      return;
+    }
+    list.innerHTML = current.map(card).join("");
+  }
+
+  function bindControls() {
+    document.getElementById("asbcaSearch").addEventListener("input", function (e) {
+      state.search = e.target.value;
+      renderList();
+    });
+    document.getElementById("asbcaTopic").addEventListener("change", function (e) {
+      state.topic = e.target.value;
+      renderList();
+    });
+    document.querySelectorAll(".asbca-filter").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        document.querySelectorAll(".asbca-filter").forEach(function (el) { el.classList.remove("active"); });
+        btn.classList.add("active");
+        state.outcome = btn.getAttribute("data-outcome") || "";
+        renderList();
+      });
+    });
+  }
+
+  function init() {
+    renderStats();
+    renderTopics();
+    bindControls();
+    renderList();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+</script>
 <script src="main.js"></script>
 <script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <script src="player.js"></script>

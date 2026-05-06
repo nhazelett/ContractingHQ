@@ -1,0 +1,493 @@
+window.KTHQ_ASBCA_DATA = {
+  "generatedAt": "2026-05-06T00:01:29.504986+00:00",
+  "source": {
+    "name": "Armed Services Board of Contract Appeals",
+    "decisionsUrl": "https://www.asbca.mil/Decisions/"
+  },
+  "note": "Automated KTHQ ASBCA decision watch. Official excerpts are extracted from ASBCA PDF text when available. Practitioner prompts are deterministic triage notes, not legal advice.",
+  "stats": {
+    "total": 18,
+    "latestDecisionDate": "2026-04-16",
+    "downloadedPdfs": 18,
+    "metadataOnly": 0,
+    "outcomes": {
+      "denied": 2,
+      "dismissed": 10,
+      "settled": 5,
+      "unclassified": 1
+    },
+    "sourceStatus": {
+      "decisionsPage": {
+        "ok": true,
+        "url": "https://www.asbca.mil/Decisions/",
+        "readerUrl": "https://r.jina.ai/http://r.jina.ai/http://https://www.asbca.mil/Decisions/",
+        "mode": "reader-markdown",
+        "error": "",
+        "linksFound": 3997,
+        "linksUsed": 18
+      }
+    }
+  },
+  "items": [
+    {
+      "id": "2026-04-16-futures-inc--0",
+      "caseName": "Futures, Inc.",
+      "caseNumberText": "ASBCA No. 61566",
+      "caseNumbers": [
+        "ASBCA No. 61566"
+      ],
+      "decisionDate": "2026-04-16",
+      "displayDate": "Apr 16, 2026",
+      "decisionType": "Decision",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "judge": "Prouty",
+      "officialExcerpt": "The appeal is denied.",
+      "tags": [
+        "Costs",
+        "Delivery"
+      ],
+      "practitionerPrompt": "Denied appeals are useful file-discipline examples. Look for what evidence the Board expected and what the appellant could not prove.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=vfac_EZs_h8%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-04-09-cherokee-construction-services-llc-1",
+      "caseName": "Cherokee Construction Services, LLC",
+      "caseNumberText": "ASBCA No. 63962",
+      "caseNumbers": [
+        "ASBCA No. 63962"
+      ],
+      "decisionDate": "2026-04-09",
+      "displayDate": "Apr 9, 2026",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "Wilson",
+      "officialExcerpt": "The dispute has been settled. The appeal is dismissed with prejudice.",
+      "tags": [
+        "Settlement"
+      ],
+      "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=M0Hqfqex3ao%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-04-08-pae-aviation-and-technical-services-llc-3",
+      "caseName": "PAE Aviation and Technical Services, LLC",
+      "caseNumberText": "ASBCA No. 63911",
+      "caseNumbers": [
+        "ASBCA No. 63911"
+      ],
+      "decisionDate": "2026-04-08",
+      "displayDate": "Apr 8, 2026",
+      "decisionType": "Consent judgment",
+      "outcome": "settled",
+      "outcomeLabel": "Settled",
+      "judge": "Hamady",
+      "officialExcerpt": "It is the Board's decision, pursuant to 41 U.S.C. \u00a7\u00a7 7105(e), 7108(b), and the parties' stipulation and agreement, that the appeal is sustained. In the nature of a consent judgment, the Board makes a monetary award to appellant in the amount of $1,300,000. This amount is inclusive of Contract Disputes Act interest. No further interest shall be paid.",
+      "tags": [
+        "Settlement",
+        "CDA process"
+      ],
+      "practitionerPrompt": "Consent judgments are a practical off-ramp. Use them when exposure is clear and the negotiated number is better than continued litigation.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=GdJ29UNKWIE%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-04-08-eleven-bravo-group-llc-2",
+      "caseName": "Eleven Bravo Group, LLC",
+      "caseNumberText": "ASBCA No. 63932",
+      "caseNumbers": [
+        "ASBCA No. 63932"
+      ],
+      "decisionDate": "2026-04-08",
+      "displayDate": "Apr 8, 2026",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "Woodrow",
+      "officialExcerpt": "The dispute has been settled. The appeal is dismissed with prejudice.",
+      "tags": [
+        "Settlement"
+      ],
+      "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=3pnTtkdNOUs%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-04-07-goodwill-industrial-services-corporation-4",
+      "caseName": "Goodwill Industrial Services Corporation",
+      "caseNumberText": "ASBCA No. 64403",
+      "caseNumbers": [
+        "ASBCA No. 64403"
+      ],
+      "decisionDate": "2026-04-07",
+      "displayDate": "Apr 7, 2026",
+      "decisionType": "Consent judgment",
+      "outcome": "settled",
+      "outcomeLabel": "Settled",
+      "judge": "Wilson",
+      "officialExcerpt": "It is the Board's decision, pursuant to 41 U.S.C. \u00a7\u00a7 7105(e), 7108(b), and the parties' stipulation and agreement, that the appeal is sustained. In the nature of a consent judgment, the Board makes a monetary award to appellant in the amount of $446,385.24. This amount is inclusive of Contract Disputes Act interest. No further interest shall be paid.",
+      "tags": [
+        "Settlement",
+        "CDA process"
+      ],
+      "practitionerPrompt": "Consent judgments are a practical off-ramp. Use them when exposure is clear and the negotiated number is better than continued litigation.",
+      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64403%20Goodwill%20Industrial%20Services%20Corporation%204.7.26%20ConsentJudgment.pdf?ver=8aBD5uiHw38oboAAKB9AgA%3d%3d",
+      "filename": "64403 Goodwill Industrial Services Corporation 4.7.26 ConsentJudgment.pdf",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-04-06-shoreline-foundation-inc--5",
+      "caseName": "Shoreline Foundation, Inc.",
+      "caseNumberText": "ASBCA Nos. 62876, 63616",
+      "caseNumbers": [
+        "ASBCA No. 62876",
+        "ASBCA No. 63616"
+      ],
+      "decisionDate": "2026-04-06",
+      "displayDate": "Apr 6, 2026",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "O'Connell",
+      "officialExcerpt": "Previously, the Board dismissed for lack of jurisdiction SFI's claim that it was delayed by a bid protest because SFI never submitted that claim to the contracting officer (CO). Whether the contract is substantially complete is a factual determination made by the Board after considering the quantity of work remaining to be done and the extent to which the project was capable of serving its intended purpose. To recover for such a claim, the Federal Circuit has held that the contractor must prove that: (1) the contractor encountered a delay that is excusable under the contract; (2) the contractor made a timely a...",
+      "tags": [
+        "Jurisdiction",
+        "Termination",
+        "REA / changes",
+        "Motions",
+        "Delivery"
+      ],
+      "practitionerPrompt": "Check the claim before the final decision: sum certain, certification, privity, and whether the contractor actually presented the same claim to the CO.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=DxE81-ghLFM%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-04-01-northcon-inc--7",
+      "caseName": "Northcon, Inc.",
+      "caseNumberText": "ASBCA Nos. 64343, 64417",
+      "caseNumbers": [
+        "ASBCA No. 64343",
+        "ASBCA No. 64417"
+      ],
+      "decisionDate": "2026-04-01",
+      "displayDate": "Apr 1, 2026",
+      "decisionType": "Consent judgment",
+      "outcome": "settled",
+      "outcomeLabel": "Settled",
+      "judge": "Prouty",
+      "officialExcerpt": "It is the Board's decision, pursuant to 41 U.S.C. \u00a7\u00a7 7105(e), 7108(b), and the parties' stipulation and agreement, that the appeal is sustained and the termination for default is converted to a termination for convenience. In the nature of a consent judgment, the Board makes a monetary award to appellant in the amount of $106,000. This amount is inclusive of Contract Disputes Act interest. No further interest shall be paid.",
+      "tags": [
+        "Termination",
+        "Settlement",
+        "CDA process"
+      ],
+      "practitionerPrompt": "Termination actions need clean documentation. If performance is effectively ended, make sure the file and notices match the legal theory.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=1n0ZF5BJZIM%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-04-01-aytekin-serol-insaat-taahhut-muhendislik-anonim-sirketi-6",
+      "caseName": "Aytekin Serol Insaat Taahhut Muhendislik Anonim Sirketi",
+      "caseNumberText": "ASBCA No. 64061-ADR",
+      "caseNumbers": [
+        "ASBCA No. 64061-ADR"
+      ],
+      "decisionDate": "2026-04-01",
+      "displayDate": "Apr 1, 2026",
+      "decisionType": "Consent judgment",
+      "outcome": "settled",
+      "outcomeLabel": "Settled",
+      "judge": "Arnett",
+      "officialExcerpt": "It is the Board's decision, pursuant to 41 U.S.C. \u00a7\u00a7 7105(e), 7108(b), and the parties' stipulation and agreement, that the appeal is sustained. In the nature of a consent judgment, the Board makes a monetary award to appellant in the amount of $125,000. This amount is inclusive of Contract Disputes Act interest. No further interest shall be paid.",
+      "tags": [
+        "Settlement",
+        "ADR",
+        "CDA process"
+      ],
+      "practitionerPrompt": "Consent judgments are a practical off-ramp. Use them when exposure is clear and the negotiated number is better than continued litigation.",
+      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64061-ADR%20Aytekin%20Serol%20Insaat%20Taahhut%204.1.26%20Consent%20Judgment.pdf?ver=aV5x619hsJOnJwXhpEiOhg%3d%3d",
+      "filename": "64061-ADR Aytekin Serol Insaat Taahhut 4.1.26 Consent Judgment.pdf",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-03-30-gideon-contracting-llc-8",
+      "caseName": "Gideon Contracting, LLC",
+      "caseNumberText": "ASBCA No. 63561-EAJA",
+      "caseNumbers": [
+        "ASBCA No. 63561-EAJA"
+      ],
+      "decisionDate": "2026-03-30",
+      "displayDate": "Mar 30, 2026",
+      "decisionType": "EAJA",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "Melnick",
+      "officialExcerpt": "The dispute has been settled. The application for attorney fees and costs is dismissed with prejudice.",
+      "tags": [
+        "EAJA",
+        "Settlement",
+        "Costs"
+      ],
+      "practitionerPrompt": "EAJA deadlines and party identity rules are strict. The contractor entity, not just an owner, usually needs to be the prevailing applicant.",
+      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/63561%20EAJA%20Gideon%20%203.30.26.pdf?ver=4AhO0RBmiziyHo1PWuFUNA%3d%3d",
+      "filename": "63561 EAJA Gideon 3.30.26.pdf",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-03-27-mlsusa-corp--9",
+      "caseName": "MLSUSA Corp.",
+      "caseNumberText": "ASBCA No. 64475",
+      "caseNumbers": [
+        "ASBCA No. 64475"
+      ],
+      "decisionDate": "2026-03-27",
+      "displayDate": "Mar 27, 2026",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "Prouty",
+      "officialExcerpt": "the appeal is dismissed from the Board's docket without prejudice.",
+      "tags": [
+        "CDA process"
+      ],
+      "practitionerPrompt": "Dismissals often turn on threshold mistakes. New specialists should read these for what must happen before the Board can reach the merits.",
+      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64475%20MLSUSA%20Corp%203.27.26%20Dismissal.pdf?ver=hPBNJrmDR46taEJXnxUHSQ%3d%3d",
+      "filename": "64475 MLSUSA Corp 3.27.26 Dismissal.pdf",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-03-27-mlsusa-corp--10",
+      "caseName": "MLSUSA Corp.",
+      "caseNumberText": "ASBCA No. 64469",
+      "caseNumbers": [
+        "ASBCA No. 64469"
+      ],
+      "decisionDate": "2026-03-27",
+      "displayDate": "Mar 27, 2026",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "Prouty",
+      "officialExcerpt": "the appeal is dismissed from the Board's docket without prejudice.",
+      "tags": [
+        "CDA process"
+      ],
+      "practitionerPrompt": "Dismissals often turn on threshold mistakes. New specialists should read these for what must happen before the Board can reach the merits.",
+      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64469%20MLSUSA%20Corp.%203.27.26%20Dismissal.pdf?ver=tC7a3r8HC3-CBjrlaIOHLQ%3d%3d",
+      "filename": "64469 MLSUSA Corp. 3.27.26 Dismissal.pdf",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-03-27-jacmeals-llc-11",
+      "caseName": "JACMEALS LLC",
+      "caseNumberText": "ASBCA No. 64467",
+      "caseNumbers": [
+        "ASBCA No. 64467"
+      ],
+      "decisionDate": "2026-03-27",
+      "displayDate": "Mar 27, 2026",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "Prouty",
+      "officialExcerpt": "The dispute has been settled. The appeal is dismissed with prejudice.",
+      "tags": [
+        "Settlement"
+      ],
+      "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
+      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64467%20JACMEALS%20LLC%203.27.26%20Dismissal.pdf?ver=nfDf1IM8HywXW_qz_QGc0w%3d%3d",
+      "filename": "64467 JACMEALS LLC 3.27.26 Dismissal.pdf",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-03-26-zodiac-poettker-hbz-joint-venture-ii-llc-12",
+      "caseName": "Zodiac-Poettker HBZ Joint Venture II, LLC",
+      "caseNumberText": "ASBCA No. 64276",
+      "caseNumbers": [
+        "ASBCA No. 64276"
+      ],
+      "decisionDate": "2026-03-26",
+      "displayDate": "Mar 26, 2026",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "Prouty",
+      "officialExcerpt": "The dispute has been settled. The appeal is dismissed with prejudice.",
+      "tags": [
+        "Settlement"
+      ],
+      "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=ucXdwJSBFTM%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-03-25-wolverine-tube-inc--13",
+      "caseName": "Wolverine Tube, Inc.",
+      "caseNumberText": "ASBCA No. 63877",
+      "caseNumbers": [
+        "ASBCA No. 63877"
+      ],
+      "decisionDate": "2026-03-25",
+      "displayDate": "Mar 25, 2026",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "Laufgraben",
+      "officialExcerpt": "Because both standards support Wolverine's request, the motion to dismiss without prejudice is GRANTED. For instance, we routinely grant unconditional dismissals without prejudice for lack of jurisdiction. BACKGROUND Wolverine filed this appeal on April 12, 2024, from the deemed denial of its claim for convenience termination costs.",
+      "tags": [
+        "Jurisdiction",
+        "Termination",
+        "Motions",
+        "Costs",
+        "Delivery"
+      ],
+      "practitionerPrompt": "Check the claim before the final decision: sum certain, certification, privity, and whether the contractor actually presented the same claim to the CO.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=LdBaYU2TRnA%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-03-23-h-l-contracting-llc-15",
+      "caseName": "H&L Contracting LLC",
+      "caseNumberText": "ASBCA No. 63695",
+      "caseNumbers": [
+        "ASBCA No. 63695"
+      ],
+      "decisionDate": "2026-03-23",
+      "displayDate": "Mar 23, 2026",
+      "decisionType": "Consent judgment",
+      "outcome": "settled",
+      "outcomeLabel": "Settled",
+      "judge": "McLish",
+      "officialExcerpt": "It is the Board's decision, pursuant to 41 U.S.C. \u00a7\u00a7 7105(e), 7108(b), and the parties' stipulation and agreement, that the appeal is sustained. In the nature of a consent judgment, the Board makes a monetary award to appellant in the amount of $4,000,000 (Four Million Dollars), inclusive of Contract Disputes Act interest. No further interest shall be paid.",
+      "tags": [
+        "Settlement",
+        "CDA process"
+      ],
+      "practitionerPrompt": "Consent judgments are a practical off-ramp. Use them when exposure is clear and the negotiated number is better than continued litigation.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=W5DQ5uDet3o%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-03-23-endure-industries-inc--14",
+      "caseName": "Endure Industries, Inc.",
+      "caseNumberText": "ASBCA No. 64064",
+      "caseNumbers": [
+        "ASBCA No. 64064"
+      ],
+      "decisionDate": "2026-03-23",
+      "displayDate": "Mar 23, 2026",
+      "decisionType": "Decision",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "judge": "Herzfeld",
+      "officialExcerpt": "Standard of Review DHA has moved to dismiss for lack of jurisdiction, asserting that Endure has failed to plausibly allege a contract between the government and Endure based on the incentive agreement (gov't mot. Endure asserts that the government enabled the prime > 5 In the past, using \"approximately\" to qualify the claim amount would have resulted in an appeal's dismissal for lack of jurisdiction due to a lack of a sum certain. On February 2, 2025, Endure filed a notice of appeal with the Board and we acknowledged the notice as Endure's complaint, which alleged three counts (as it did at the Court of Federa...",
+      "tags": [
+        "Jurisdiction",
+        "Motions"
+      ],
+      "practitionerPrompt": "Check the claim before the final decision: sum certain, certification, privity, and whether the contractor actually presented the same claim to the CO.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=BQin89I5aNs%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-03-19-canadian-commercial-corporation-16",
+      "caseName": "Canadian Commercial Corporation",
+      "caseNumberText": "ASBCA No. 64165",
+      "caseNumbers": [
+        "ASBCA No. 64165"
+      ],
+      "decisionDate": "2026-03-19",
+      "displayDate": "Mar 19, 2026",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "Melnick",
+      "officialExcerpt": "The dispute has been settled. The appeal is dismissed with prejudice.",
+      "tags": [
+        "Settlement"
+      ],
+      "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
+      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64165%20Canadian%20Commercial%20Corporation%203.19.26%20Dismissal.pdf?ver=nJwZHzWoZ_kPfCVUbnmQcQ%3d%3d",
+      "filename": "64165 Canadian Commercial Corporation 3.19.26 Dismissal.pdf",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-03-17-sayar-development-inc--17",
+      "caseName": "Sayar Development Inc.",
+      "caseNumberText": "ASBCA Nos. 63871, 63894, 64191, 64227",
+      "caseNumbers": [
+        "ASBCA No. 63871",
+        "ASBCA No. 63894",
+        "ASBCA No. 64191",
+        "ASBCA No. 64227"
+      ],
+      "decisionDate": "2026-03-17",
+      "displayDate": "Mar 17, 2026",
+      "decisionType": "Reconsideration",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "judge": "D'Alessandris",
+      "officialExcerpt": "SDI's motions, other than the motion for reconsideration are denied. SDI's motion for reconsideration is granted with regard to its argument that Tab 23 is a request for a CO's final decision, however, we still grant the government's motion to dismiss because SDI's claim is not certified. Regarding SDI's argument that Tab 23 constitutes a request for a CO's final decision, the government argues that: 1) Tab 23 is not a request seeking payment of a sum certain and does not put the CO on notice of a claim; 2) even if Tab 23 incorporates invoices such that it is a claim seeking payment of a sum certain, the claim...",
+      "tags": [
+        "Jurisdiction",
+        "Termination",
+        "Reconsideration",
+        "Motions",
+        "Delivery"
+      ],
+      "practitionerPrompt": "Check the claim before the final decision: sum certain, certification, privity, and whether the contractor actually presented the same claim to the CO.",
+      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/63871%20et%20al.%20Sayar%20Development%20Inc.%203.17.26%20ReconDecision.pdf?ver=EQ6C0on-R0gwuvNpcPO-_w%3d%3d",
+      "filename": "63871 et al. Sayar Development Inc. 3.17.26 ReconDecision.pdf",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    }
+  ]
+};
