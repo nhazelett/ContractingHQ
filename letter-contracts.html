@@ -6,7 +6,7 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Letter contracts for new contingency contracting officers: when mission timing will not wait, what authority covers them, the NTE limit, definitization timeline, and how to keep the file out of trouble." />
+  <meta name="description" content="Beginner field guide for new CCOs on letter contracts, DoD UCAs, and unpriced purchase orders under the Revolutionary FAR Overhaul." />
   <meta name="kthq-radio-mode" content="cco" />
   <title>Letter Contracts | Contingency Contracting | KTHQ ContractingHQ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -450,47 +450,6 @@
       .bmc-btn::first-letter { color: #000; }
     }
 
-    /* ── Sample template details blocks ── */
-    .lc-template {
-      margin: 1rem 0;
-      border: 1px solid var(--cco-line);
-      background: linear-gradient(145deg, rgba(20, 26, 14, .82), rgba(8, 11, 6, .95));
-      box-shadow: inset 0 0 22px rgba(0,0,0,.42);
-    }
-    .lc-template summary {
-      cursor: pointer;
-      padding: .85rem 1.1rem;
-      font-family: "Rajdhani", sans-serif;
-      font-size: 1rem;
-      font-weight: 800;
-      color: #f4ecd1;
-      letter-spacing: .3px;
-      list-style: none;
-      position: relative;
-      transition: background .15s;
-    }
-    .lc-template summary::-webkit-details-marker { display: none; }
-    .lc-template summary::before {
-      content: "+";
-      display: inline-block;
-      width: 1.1em;
-      color: var(--cco-amber);
-      font-weight: 900;
-    }
-    .lc-template[open] summary::before { content: "−"; }
-    .lc-template summary:hover { background: rgba(217,154,49,.06); }
-    .lc-template pre {
-      margin: 0;
-      padding: 1rem 1.25rem 1.25rem 2.45rem;
-      color: #d8cea0;
-      font-size: .82rem;
-      line-height: 1.55;
-      font-family: "Inter", monospace;
-      white-space: pre-wrap;
-      border-top: 1px solid rgba(197,183,122,.14);
-    }
-
-    /* ── Reference tables ── */
     .lc-table {
       width: 100%;
       border-collapse: separate;
@@ -533,21 +492,405 @@
     .lc-table tbody tr:last-child td { border-bottom: none; }
     .lc-table strong { color: #f4ecd1; font-weight: 700; }
     .lc-table td:first-child { white-space: nowrap; }
+
+    .lc-decision-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .85rem;
+      margin: 1rem 0 0;
+    }
+
+    .lc-decision-card,
+    .lc-rule,
+    .lc-packet-card,
+    .lc-source-card {
+      position: relative;
+      border: 1px solid rgba(197, 183, 122, .22);
+      background:
+        radial-gradient(ellipse at 90% 0%, rgba(217,154,49,.08), transparent 36%),
+        linear-gradient(145deg, rgba(22, 28, 15, .86), rgba(8, 11, 6, .96));
+      box-shadow: inset 0 0 24px rgba(0,0,0,.36);
+      color: var(--cco-text);
+    }
+
+    .lc-decision-card {
+      min-height: 205px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .lc-decision-card.good { border-top: 3px solid #93a85b; }
+    .lc-decision-card.caution { border-top: 3px solid var(--cco-amber); }
+    .lc-decision-card.danger { border-top: 3px solid var(--cco-red); }
+
+    .lc-decision-label,
+    .lc-rule-label,
+    .lc-packet-label,
+    .lc-source-label {
+      color: var(--cco-amber);
+      font-family: "Rajdhani", sans-serif;
+      font-size: .72rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .lc-decision-card h3,
+    .lc-rule h3,
+    .lc-packet-card h3,
+    .lc-source-card h3 {
+      margin: .35rem 0 .45rem;
+      color: #f4ecd1;
+      font-family: "Rajdhani", sans-serif;
+      font-size: 1.18rem;
+      line-height: 1.15;
+    }
+
+    .lc-decision-card p,
+    .lc-rule p,
+    .lc-packet-card p,
+    .lc-source-card p {
+      margin: 0;
+      color: #bdb48d;
+      font-size: .9rem;
+      line-height: 1.55;
+    }
+
+    .lc-bottom-line {
+      margin-top: .9rem;
+      padding-top: .75rem;
+      border-top: 1px solid rgba(197,183,122,.16);
+      color: #e1d7aa;
+      font-size: .84rem;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .lc-rule-stack {
+      display: grid;
+      gap: .7rem;
+    }
+
+    .lc-rule {
+      display: grid;
+      grid-template-columns: 170px minmax(0, 1fr);
+      gap: 1rem;
+      align-items: start;
+      padding: .95rem 1rem;
+    }
+
+    .lc-rule strong {
+      color: #f4ecd1;
+    }
+
+    .lc-two-col {
+      display: grid;
+      grid-template-columns: .95fr 1.05fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .lc-field-note {
+      border-left: 4px solid var(--cco-amber);
+      padding: .95rem 1.05rem;
+      background:
+        linear-gradient(90deg, rgba(217,154,49,.12), rgba(217,154,49,.04)),
+        rgba(8, 11, 6, .72);
+      color: #d8cea0;
+      line-height: 1.6;
+    }
+
+    .lc-field-note strong { color: #f4ecd1; }
+
+    .lc-tabs {
+      border: 1px solid rgba(197,183,122,.22);
+      background:
+        radial-gradient(ellipse at 18% 0%, rgba(217,154,49,.08), transparent 42%),
+        linear-gradient(145deg, rgba(22, 28, 15, .76), rgba(8, 11, 6, .95));
+      box-shadow: inset 0 0 26px rgba(0,0,0,.42);
+    }
+
+    .lc-tabs input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .lc-tab-labels {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border-bottom: 1px solid rgba(197,183,122,.2);
+      background: rgba(0,0,0,.18);
+    }
+
+    .lc-tab-labels label {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: .75rem .85rem;
+      color: #bdb48d;
+      font-family: "Rajdhani", sans-serif;
+      font-size: .86rem;
+      font-weight: 900;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      text-align: center;
+      border-right: 1px solid rgba(197,183,122,.14);
+      transition: background .15s, color .15s;
+    }
+
+    .lc-tab-labels label:last-child {
+      border-right: none;
+    }
+
+    .lc-tab-labels label:hover {
+      color: #f4ecd1;
+      background: rgba(217,154,49,.08);
+    }
+
+    .lc-tab-panel {
+      display: none;
+      padding: 1.1rem;
+    }
+
+    #lc-tab-situation:checked ~ .lc-tab-labels label[for="lc-tab-situation"],
+    #lc-tab-execute:checked ~ .lc-tab-labels label[for="lc-tab-execute"],
+    #lc-tab-right:checked ~ .lc-tab-labels label[for="lc-tab-right"] {
+      color: #f4ecd1;
+      background: linear-gradient(180deg, rgba(217,154,49,.2), rgba(217,154,49,.06));
+      box-shadow: inset 0 -3px 0 var(--cco-amber);
+    }
+
+    #lc-tab-situation:checked ~ .lc-tab-panels .lc-panel-situation,
+    #lc-tab-execute:checked ~ .lc-tab-panels .lc-panel-execute,
+    #lc-tab-right:checked ~ .lc-tab-panels .lc-panel-right {
+      display: block;
+    }
+
+    .lc-scenario-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .lc-scenario-card {
+      border: 1px solid rgba(197,183,122,.18);
+      background: rgba(0,0,0,.18);
+      padding: 1rem;
+    }
+
+    .lc-scenario-card h3 {
+      margin: 0 0 .55rem;
+      color: #f4ecd1;
+      font-family: "Rajdhani", sans-serif;
+      font-size: 1.18rem;
+      line-height: 1.15;
+    }
+
+    .lc-scenario-card p,
+    .lc-scenario-card li {
+      color: #bdb48d;
+      font-size: .9rem;
+      line-height: 1.55;
+    }
+
+    .lc-scenario-card p {
+      margin: 0 0 .7rem;
+    }
+
+    .lc-scenario-card p:last-child {
+      margin-bottom: 0;
+    }
+
+    .lc-scenario-card ul {
+      margin: .2rem 0 0;
+      padding-left: 1.1rem;
+    }
+
+    .lc-steps {
+      display: grid;
+      gap: .7rem;
+      counter-reset: lc-step;
+    }
+
+    .lc-step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      gap: .85rem;
+      align-items: start;
+      padding: .85rem;
+      border: 1px solid rgba(197,183,122,.16);
+      background: rgba(0,0,0,.18);
+      counter-increment: lc-step;
+    }
+
+    .lc-step::before {
+      content: counter(lc-step);
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(217,154,49,.45);
+      color: var(--cco-amber);
+      font-family: "Rajdhani", sans-serif;
+      font-size: 1.1rem;
+      font-weight: 900;
+      background: rgba(217,154,49,.08);
+    }
+
+    .lc-step h3 {
+      margin: 0 0 .25rem;
+      color: #f4ecd1;
+      font-family: "Rajdhani", sans-serif;
+      font-size: 1.08rem;
+    }
+
+    .lc-step p {
+      margin: 0;
+      color: #bdb48d;
+      font-size: .88rem;
+      line-height: 1.5;
+    }
+
+    .lc-packet-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .85rem;
+    }
+
+    .lc-packet-card {
+      padding: 1rem;
+      min-height: 178px;
+    }
+
+    .lc-packet-card code {
+      display: block;
+      margin-top: .65rem;
+      padding: .75rem;
+      white-space: pre-wrap;
+      color: #d8cea0;
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(197,183,122,.14);
+      font-size: .78rem;
+      line-height: 1.45;
+    }
+
+    .lc-source-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: .75rem;
+    }
+
+    .lc-source-card {
+      padding: .9rem;
+      min-height: 130px;
+      text-decoration: none;
+      transition: transform .15s, border-color .15s;
+    }
+
+    .lc-source-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(217,154,49,.5);
+    }
+
+    .lc-source-card a,
+    .lc-source-card h3 a {
+      color: #f4ecd1;
+      text-decoration: none;
+    }
+
+    .lc-source-card h3 a:hover { text-decoration: underline; }
+
+    .lc-small {
+      color: #968e6a;
+      font-size: .78rem;
+      line-height: 1.45;
+    }
+
     @media (max-width: 720px) {
-      .lc-table { display: block; overflow-x: auto; }
-      .lc-table td:first-child { white-space: normal; }
+      .lc-table {
+        display: block;
+        overflow: visible;
+        border-spacing: 0;
+      }
+      .lc-table thead { display: none; }
+      .lc-table tbody,
+      .lc-table tr,
+      .lc-table td {
+        display: block;
+        width: 100%;
+      }
+      .lc-table tr {
+        border-bottom: 1px solid rgba(197,183,122,.18);
+      }
+      .lc-table tr:last-child { border-bottom: none; }
+      .lc-table td {
+        border-bottom: none;
+        padding: .62rem .8rem;
+      }
+      .lc-table td + td { border-left: none; }
+      .lc-table td:first-child {
+        white-space: normal;
+        background: rgba(217,154,49,.08);
+        color: #f4ecd1;
+        border-bottom: 1px solid rgba(217,154,49,.14);
+      }
+    }
+
+    @media (max-width: 980px) {
+      .lc-decision-strip,
+      .lc-source-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .lc-two-col {
+        grid-template-columns: 1fr;
+      }
+      .lc-scenario-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .lc-decision-strip,
+      .lc-packet-grid,
+      .lc-source-grid {
+        grid-template-columns: 1fr;
+      }
+      .lc-tab-labels {
+        grid-template-columns: 1fr;
+      }
+      .lc-tab-labels label {
+        border-right: none;
+        border-bottom: 1px solid rgba(197,183,122,.14);
+      }
+      .lc-tab-labels label:last-child {
+        border-bottom: none;
+      }
+      .lc-rule {
+        grid-template-columns: 1fr;
+        gap: .35rem;
+      }
+      .lc-step {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 
   <meta property="og:type"        content="article" />
   <meta property="og:site_name"   content="ContractingHQ" />
   <meta property="og:title"       content="Letter Contracts | KTHQ ContractingHQ" />
-  <meta property="og:description" content="Letter contracts walked through for new contingency contracting officers — authority, NTE, definitization timeline, file build." />
+  <meta property="og:description" content="A beginner-friendly CCO guide to choosing between definitive awards, unpriced purchase orders, and rare letter contract / UCA actions." />
   <meta property="og:url"         content="https://kthq.org/letter-contracts.html" />
   <meta name="twitter:card"        content="summary" />
   <meta name="twitter:site"        content="@ContractingHQ" />
   <meta name="twitter:title"       content="Letter Contracts" />
-  <meta name="twitter:description" content="Letter contracts walked through for new contingency contracting officers." />
+  <meta name="twitter:description" content="Letter contracts, UCAs, and unpriced POs explained for brand-new CCOs." />
   <link rel="canonical"            href="https://kthq.org/letter-contracts.html" />
 </head>
 <body class="cco-page-body">
@@ -585,396 +928,464 @@
     <section class="cco-brief">
       <span class="cco-stamp">Authority</span>
       <h1 class="cco-title">Letter Contracts</h1>
-      <p class="cco-deck">A letter contract is a written, binding instrument that lets a contractor start work before final terms are negotiated. The Government commits to a not-to-exceed (NTE) dollar amount; the parties keep negotiating the definitive contract on a clock. It exists for the moment when waiting for full pricing and full scope causes mission failure, and the file still has to track to a clean closure when the dust settles.</p>
+      <p class="cco-deck">Most new CCOs will never issue one. Good. A letter contract is a rare emergency tool for the moment when the mission needs a binding start now and there is not enough time to finish a definitive contract. Your first job is not to make one work. Your first job is to know when a definitive buy or unpriced purchase order is cleaner.</p>
       <div class="cco-alert-strip">
-        <span class="cco-chip">FAR 16.603</span>
+        <span class="cco-chip">Tool Choice</span>
+        <span class="cco-chip">RFO FAR 16.603</span>
         <span class="cco-chip">DFARS 217.74</span>
-        <span class="cco-chip">NTE</span>
-        <span class="cco-chip">180 / 40 / 50 / 75</span>
-        <span class="cco-chip">Subpart 18.2</span>
+        <span class="cco-chip">Unpriced PO</span>
+        <span class="cco-chip">Check Delegation</span>
       </div>
     </section>
 
-    <section class="cco-gridline" aria-label="What it is and what it is not">
+    <section class="cco-gridline" aria-label="First decision and beginner warning">
       <div class="cco-intel">
-        <h2>What it is</h2>
-        <p>A letter contract is one specific type of <strong>Undefinitized Contract Action (UCA)</strong>. UCA is the umbrella concept in DoD: any contract action where terms, specifications, or price are not fully agreed before performance starts. A letter contract is the written, signed, binding version, used when the Government needs the contractor to start now and there is genuinely no time to negotiate the whole agreement first.</p>
-        <p>Inside DoD, every letter contract is ordinarily managed as a UCA. That means FAR 16.603 plus the DFARS 217.74 controls layered on top.</p>
+        <h2>Start with the simple question</h2>
+        <p>Can we define the work, price it, and award a normal action in time? If yes, do that. Do not use a letter contract just because the customer is loud, late, or uncomfortable with uncertainty.</p>
+        <p>If only the exact price is uncertain and the buy fits simplified acquisition rules, think about an unpriced purchase order before you think about a UCA.</p>
       </div>
       <div class="cco-intel">
-        <h2>What it is not</h2>
-        <p>A letter contract is not a verbal go-ahead, an oral order, or an email telling a contractor to "start and we'll figure it out later." Those routes can produce an unauthorized commitment that has to be ratified, which is a separate problem with separate paperwork.</p>
-        <p>It is also not an unpriced purchase order. Under the Revolutionary FAR Overhaul, unpriced POs sit with the other commercial procedures in FAR Part 12. They are a small-scale tool for situations where a firm price cannot be set in advance, not the deployed answer for sustained contingency support.</p>
+        <h2>What can go wrong fast</h2>
+        <p>A verbal go-ahead, text message, or email saying "start and we will paper it later" is not a letter contract. It is how a team creates an unauthorized commitment.</p>
+        <p>A real letter contract is written, signed, funded, limited, approved, and scheduled for definitization before performance outruns the file.</p>
       </div>
     </section>
 
-    <!-- ============================================================ -->
-    <!--  AUTHORITY                                                   -->
-    <!-- ============================================================ -->
     <section class="cco-section">
       <div class="cco-section-head">
-        <div class="cco-section-kicker">Authority</div>
-        <h2>Where the rules live</h2>
-        <p class="cco-section-desc">FAR Part 16.6 is the home address. DFARS 217.74 is the DoD overlay that adds approval, NTE, and definitization discipline. FAR Part 18.2 widens the door in declared contingencies. A letter contract does not create its own competition exception. The competition rules still come from the underlying acquisition path.</p>
+        <div class="cco-section-kicker">Decision First</div>
+        <h2>Pick the least risky tool</h2>
+        <p class="cco-section-desc">Brand-new CCO rule: use the simplest lawful instrument that solves the mission problem. Letter contracts and UCAs are control problems. They are not speed hacks.</p>
       </div>
-      <div class="cco-card-grid">
+      <div class="lc-decision-strip">
 
-        <article class="cco-card">
-          <span class="cco-card-tier">Primary Authority</span>
-          <div class="cco-card-title">FAR 16.603</div>
-          <p class="cco-card-desc">Government-wide baseline. Lets the Head of the Contracting Activity (or designee) determine that no other contract is suitable. Requires the letter contract to be as complete as feasible, sets the 180-day or 40 percent definitization rule, and points at the FAR 52.216-23 / 24 / 25 clause family.</p>
-          <div class="cco-card-cite">FAR Subpart 16.6</div>
+        <article class="lc-decision-card good">
+          <div>
+            <span class="lc-decision-label">Default</span>
+            <h3>Definitive award</h3>
+            <p>Use this when you can describe the requirement, compete or justify the action, price it, fund it, and award before the mission breaks.</p>
+          </div>
+          <div class="lc-bottom-line">Best answer when it works: clean award, clean price, normal administration.</div>
         </article>
 
-        <article class="cco-card">
-          <span class="cco-card-tier">DoD Overlay</span>
-          <div class="cco-card-title">DFARS 217.74</div>
-          <p class="cco-card-desc">Sits on top of FAR 16.603 for any DoD letter contract. Adds the HCA approval package, the not-to-exceed price requirement, the 50 percent obligation cap (75 percent if the contractor submits a qualifying proposal), and the qualifying-proposal consequences. DFARS 252.217-7027 replaces FAR 52.216-25 in DoD awards.</p>
-          <div class="cco-card-cite">DFARS 217.74 &middot; PGI 217.7404</div>
+        <article class="lc-decision-card caution">
+          <div>
+            <span class="lc-decision-label">Often Better Than A UCA</span>
+            <h3>Unpriced purchase order</h3>
+            <p>Use this for limited simplified-acquisition situations where the exact price is not available yet, but the work is narrow enough to control.</p>
+          </div>
+          <div class="lc-bottom-line">Good fit: repair teardown, uncertain material cost, or small competitive buy with a realistic dollar limit.</div>
         </article>
 
-        <article class="cco-card">
-          <span class="cco-card-tier">Contingency Widening</span>
-          <div class="cco-card-title">FAR Part 18.2</div>
-          <p class="cco-card-desc">When a contingency, emergency, or specific declaration is in place, the standing letter-contract authority opens up wider. Pointer back to <a href="far-part-18-flexibilities.html">Part 18 Flexibilities</a>. Part 18 does not erase the FAR 16.603 / DFARS 217.74 controls. It changes how fast and how broadly you can reach for the tool.</p>
-          <div class="cco-card-cite">Subpart 18.2 &middot; FAR Part 16</div>
-        </article>
-
-      </div>
-    </section>
-
-    <!-- ============================================================ -->
-    <!--  WHEN TO USE ONE                                             -->
-    <!-- ============================================================ -->
-    <section class="cco-section">
-      <div class="cco-section-head">
-        <div class="cco-section-kicker">When</div>
-        <h2>When to reach for one</h2>
-        <p class="cco-section-desc">The first question is not "how fast can I issue a letter contract?" It is "why is a fully defined, priced action not possible in time, and what written record proves that?" If the record is weak, the action is weak. Letter contracts are emergency tools.</p>
-      </div>
-      <div class="cco-card-grid">
-
-        <article class="cco-card">
-          <span class="cco-card-tier">Use Case</span>
-          <div class="cco-card-title">Mission timing won't wait</div>
-          <p class="cco-card-desc">Government interest demands an immediate binding commitment so work can start, and there is no time to negotiate a definitive contract. Storm hits a forward base, beddown surge, casualty response, generator failure on a flight line. Document the operational consequence of delay in concrete terms.</p>
-          <div class="cco-card-cite">FAR 16.603-2</div>
-        </article>
-
-        <article class="cco-card">
-          <span class="cco-card-tier">Use Case</span>
-          <div class="cco-card-title">Requirement still forming</div>
-          <p class="cco-card-desc">The customer can describe the outcome but cannot fix the full scope. Site damage assessment is incomplete, repair quantities are unknown, labor mix depends on what is found on Day 1. Pair with the strongest performance description you can write.</p>
-          <div class="cco-card-cite">FAR 16.603-1</div>
-        </article>
-
-        <article class="cco-card">
-          <span class="cco-card-tier">Don't Use</span>
-          <div class="cco-card-title">"We forgot to plan" buy</div>
-          <p class="cco-card-desc">Letter contracts are not the cure for a customer who slept on the requirement. If the urgency basis is weak, the determination is weak, and an audit will say so. Walk back to a definitive contract or a justified bridge action instead.</p>
-          <div class="cco-card-cite">FAR 16.603-3</div>
+        <article class="lc-decision-card danger">
+          <div>
+            <span class="lc-decision-label">Rare / Elevate Early</span>
+            <h3>Letter contract / UCA</h3>
+            <p>Use this only when the Government needs a binding start now and there is not enough time to negotiate a definitive contract first.</p>
+          </div>
+          <div class="lc-bottom-line">This is the "call your leadership and legal now" lane.</div>
         </article>
 
       </div>
     </section>
 
-    <!-- ============================================================ -->
-    <!--  AT AWARD                                                    -->
-    <!-- ============================================================ -->
     <section class="cco-section">
       <div class="cco-section-head">
-        <div class="cco-section-kicker">At Award</div>
-        <h2>Approvals, NTE, and the file</h2>
-        <p class="cco-section-desc">Three things to nail down before signature: who has to approve it under the local delegation memo, what the not-to-exceed ceiling is and how it was calculated, and what goes into the contract file the day the letter contract is awarded. The approval package is where most weak letter contracts die in review.</p>
-      </div>
-      <div class="cco-card-grid">
-
-        <article class="cco-card">
-          <span class="cco-card-tier">Approvals</span>
-          <div class="cco-card-title">D&amp;F and the delegation chain</div>
-          <p class="cco-card-desc">FAR 16.603-3 requires written approval by the Head of the Contracting Activity (HCA) or designee that no other contract is suitable. DFARS 217.7404-1 adds HCA approval before any UCA. Practical reality: HCA delegates down. The DFARS floor is that for UCAs of $50 million or more, approval cannot go below the Senior Contracting Official (SCO). Below $50M, the chain runs lower. Read your local delegation memo before you need it; for a $500K letter contract in theater, your approver is rarely a 3-star.</p>
-          <div class="cco-card-cite">FAR 16.603-3 &middot; DFARS 217.7404-1</div>
-        </article>
-
-        <article class="cco-card">
-          <span class="cco-card-tier">Money</span>
-          <div class="cco-card-title">Not-to-Exceed (NTE) ceiling</div>
-          <p class="cco-card-desc">FAR 52.216-24 caps Government liability at the dollar amount in the clause. Generally that cap covers only the contractor's funding needs before definitization, and ordinarily does not exceed 50 percent of the estimated cost without higher approval. In DoD, you must obligate no more than 50 percent of the NTE before definitization (75 percent if the contractor submits a qualifying proposal first).</p>
-          <div class="cco-card-cite">FAR 52.216-24 &middot; DFARS 217.7404-4</div>
-        </article>
-
-        <article class="cco-card">
-          <span class="cco-card-tier">File</span>
-          <div class="cco-card-title">Day-one file build</div>
-          <p class="cco-card-desc">At award the file needs the funded requirement package, the vehicle-selection memo, the urgency narrative, the FAR/DFARS approval package, market research, competition documentation, the Independent Government Estimate (IGE) or Rough Order of Magnitude (ROM) that supports the NTE, the signed instrument, the definitization schedule, the clause matrix, and the Contracting Officer's Representative (COR) designation. Build it before or contemporaneously with award. "Fix the file later" is how files get audited.</p>
-          <div class="cco-card-cite">FAR 4.803 &middot; FAR 1.604</div>
-        </article>
-
-      </div>
-    </section>
-
-    <!-- ============================================================ -->
-    <!--  AFTER AWARD                                                 -->
-    <!-- ============================================================ -->
-    <section class="cco-section">
-      <div class="cco-section-head">
-        <div class="cco-section-kicker">After Award</div>
-        <h2>Definitization, the clock is running</h2>
-        <p class="cco-section-desc">A letter contract that never definitizes is the failure mode every audit looks for. The schedule is set at award. The milestones drive the negotiation. The bilateral SF 30 modification that converts the letter contract into a definitive contract is the closeout step. Treat definitization like a suspense item from Day 1.</p>
-      </div>
-      <div class="cco-card-grid">
-
-        <article class="cco-card">
-          <span class="cco-card-tier">Schedule</span>
-          <div class="cco-card-title">The 180 / 40 rule, plus 50 / 75</div>
-          <p class="cco-card-desc">FAR target: definitize within 180 days after the date of the letter contract or before 40 percent of the work is complete, whichever is first. DoD UCA target: the earlier of 180 days after a qualifying proposal or when obligated funds exceed 50 percent of the NTE (75 percent if the qualifying proposal is in early). Set your schedule to meet the earliest applicable milestone.</p>
-          <div class="cco-card-cite">FAR 16.603-2(c) &middot; DFARS 217.7404-3</div>
-        </article>
-
-        <article class="cco-card">
-          <span class="cco-card-tier">Negotiation</span>
-          <div class="cco-card-title">Running the negotiation</div>
-          <p class="cco-card-desc">Pricing follows FAR Subpart 15.4. The contractor owes a qualifying proposal with supporting data. You owe timely fact-finding, audit/pricing assistance where needed, and a documented prenegotiation objective. If the contractor submits the qualifying proposal late in DoD, you may withhold up to 5 percent of subsequent financing requests under DFARS 252.217-7027. Document why payments were or were not withheld.</p>
-          <div class="cco-card-cite">FAR 15.406-3 &middot; DFARS 252.217-7027</div>
-        </article>
-
-        <article class="cco-card">
-          <span class="cco-card-tier">Closure</span>
-          <div class="cco-card-title">The definitization mod</div>
-          <p class="cco-card-desc">A bilateral SF 30 modification converts the letter contract into a definitive contract. The Pre-Negotiation Memorandum (PNM) records the principal elements of the agreement. In DoD, late definitization triggers a profit reduction (the contractor has already burned off cost risk), so the weighted-guidelines record matters. Add release language for any equitable adjustments settled along the way.</p>
-          <div class="cco-card-cite">FAR 43.103 &middot; DFARS 215.404-71</div>
-        </article>
-
-      </div>
-    </section>
-
-    <!-- ============================================================ -->
-    <!--  THE DEPLOYED TIMELINE                                       -->
-    <!-- ============================================================ -->
-    <section class="cco-section">
-      <div class="cco-section-head">
-        <div class="cco-section-kicker">The Deployed Timeline</div>
-        <h2>What it looks like, hour by hour</h2>
-        <p class="cco-section-desc">Local-purchase scenario, executed by the deploying CCO on their own warrant. Severe weather hits a forward base. The generator pad supplying flight-line ops is wiped out, billeting tents are torn up, and the base is out of usable fuel storage. The commander needs emergency power, fuel, billeting, and debris removal up and running within 72 hours. Not an Air Force Contract Augmentation Program (AFCAP) action, those are run from the AFCAP central contracting office. This is the local CCO's letter contract.</p>
+        <div class="cco-section-kicker">Plain English</div>
+        <h2>Three terms new CCOs mix up</h2>
+        <p class="cco-section-desc">If you remember nothing else, remember the relationship: a DoD letter contract is usually a UCA, but an unpriced PO is not just a tiny UCA.</p>
       </div>
       <table class="lc-table">
         <thead>
-          <tr><th style="width:14%">Time</th><th>CCO action</th><th style="width:30%">Why it matters</th></tr>
+          <tr><th style="width:22%">Term</th><th>What it means</th><th>New CCO translation</th></tr>
         </thead>
         <tbody>
-          <tr><td><strong>H+0 to H+6</strong></td><td>Validate urgency with the supported commander. Confirm local purchase is the right route. Get the funded requirement, the funding citation, and the warrant level needed. Pull the local Senior Contracting Official (SCO) delegation memo so you know who actually approves the UCA.</td><td>Instrument choice follows the actual state of requirement definition and funding, not habit. The delegation memo answers the approval-chain question.</td></tr>
-          <tr><td><strong>H+6 to H+12</strong></td><td>Survey the in-theater contractor pool that can mobilize in 24 hours. Issue a short combined notice/RFQ if you have time. If not, document the urgent limitation of competition and solicit as many sources as practicable.</td><td>Urgency affects process speed. It does not erase the need for legal competition documentation.</td></tr>
-          <tr><td><strong>H+12 to H+24</strong></td><td>Receive technical and mobilization submissions plus ROM pricing. State the award basis: mobilization speed, technical capability for the first 30 days, past performance, and price/cost.</td><td>The disclosed basis of award is what the decision is judged against later.</td></tr>
-          <tr class="highlight"><td><strong>Day 1</strong></td><td>Evaluate. If scope and pricing are tight enough, award a definitive contract. If not, route the letter contract / UCA approval package to your delegated approver per the local memo. Award with NTE, funded initial tranche, period of performance (POP), and definitization schedule.</td><td>Use undefinitized authority only for the part of the problem that truly cannot be priced now. Your approver is whoever holds the delegation, not always the HCA.</td></tr>
-          <tr><td><strong>Day 1 to Day 3</strong></td><td>Execute the award instrument. Liability cap, clause set, reporting, receiving and acceptance directions, contractor proposal schedule. Designate the COR in writing and confirm the surveillance structure.</td><td>Surveillance does not wait for definitization. In DoD, COR designation for service contracts is generally required within 3 business days of award.</td></tr>
-          <tr><td><strong>Day 7 to Day 15</strong></td><td>Contractor submits the qualifying definitization proposal with supporting data.</td><td>This is what starts the meaningful pricing clock.</td></tr>
-          <tr><td><strong>Day 15 to Day 30</strong></td><td>Open negotiations. Request audit or pricing assistance if needed. Refine the Contract Line Item Number (CLIN) structure and performance metrics. Issue tightly controlled funding modifications only as required.</td><td>Defining the end-state too late is how UCAs become unmanaged bridge actions.</td></tr>
-          <tr class="highlight"><td><strong>Day 30 to Day 90</strong></td><td>Run active surveillance. Document acceptance before invoice approval. Update burn-rate against the NTE and obligation cap. Keep the definitization suspense system hot.</td><td>Invoice support and acceptance evidence are repeated failure points in deployed contingency work.</td></tr>
-          <tr><td><strong>Day 90 to Day 150</strong></td><td>Conclude negotiations. Prepare the Pre-Negotiation Memorandum. Obtain approvals. Issue the bilateral SF 30 definitization modification.</td><td>Bilateral modification is the normal way to definitize a letter contract.</td></tr>
-          <tr><td><strong>Day 150 to Day 180</strong></td><td>If agreement still fails in DoD, consider the clause-based unilateral price-determination path under DFARS 252.217-7027 with required higher-level approval.</td><td>Use this only as a backstop, after every other path has run out.</td></tr>
+          <tr><td><strong>Letter contract</strong></td><td>A written preliminary contractual instrument that lets the contractor begin immediately before all final terms are settled.</td><td>Emergency written start, then definitize quickly.</td></tr>
+          <tr><td><strong>UCA</strong></td><td>In DoD, an undefinitized contract action is the control framework for actions where terms, specs, or price are not fully agreed before performance begins.</td><td>The DoD rules layered on top: approvals, NTE, obligation limits, proposal clock, and profit risk.</td></tr>
+          <tr><td><strong>Unpriced PO</strong></td><td>A simplified-acquisition purchase order used in limited cases when a firm price cannot be established in advance.</td><td>Small, controlled, and often the better answer if only exact price is unknown.</td></tr>
         </tbody>
       </table>
     </section>
 
-    <!-- ============================================================ -->
-    <!--  CLAUSE REFERENCE                                            -->
-    <!-- ============================================================ -->
     <section class="cco-section">
       <div class="cco-section-head">
-        <div class="cco-section-kicker">Reference</div>
-        <h2>The clause set</h2>
-        <p class="cco-section-desc">Two cues to memorize before signature: FAR 52.216-24 is the clause that says "do not exceed this dollar amount." DFARS 252.217-7027 is the clause that says "begin negotiations promptly and follow the schedule." Both must be in any DoD letter contract.</p>
+        <div class="cco-section-kicker">Executioner Checklist</div>
+        <h2>If you are forced to build the UCA</h2>
+        <p class="cco-section-desc">If legal, leadership, and the mission all point to a letter contract, do not freeze. Build a signed letter-contract package that can stand on its own, then move it into the contract-writing system and definitize it as fast as the facts allow.</p>
       </div>
+
+      <div class="lc-packet-grid">
+        <article class="lc-packet-card">
+          <span class="lc-packet-label">Step 1</span>
+          <h3>Open a blank letter</h3>
+          <p>The first executable document can be a Word-built letter converted to PDF for signature. It still has to behave like a contract: number it, fund it, approve it, sign it, and get contractor acceptance.</p>
+          <code>Title: Letter Contract / UCA No. [number]
+Contractor: [legal name, UEI/CAGE if known]
+Requirement: [plain-English mission need]
+Authority: [approval memo / urgency record]
+Funds: [accounting line and obligated amount]
+Ceiling: [NTE price and liability limit]
+Exit: [definitization schedule]</code>
+        </article>
+
+        <article class="lc-packet-card">
+          <span class="lc-packet-label">Step 2</span>
+          <h3>Write the actual order to proceed</h3>
+          <p>The letter tells the contractor exactly what starts now and where the stop signs are. Nobody should need a side conversation to know the scope, money, or clock.</p>
+          <code>"You are authorized to begin only the work described in Attachment 1."
+"The Government's maximum liability before definitization is $[amount]."
+"The not-to-exceed price for this action is $[amount]."
+"The contractor shall submit its qualifying proposal by [date]."
+"Only the contracting officer may change scope, price, schedule, or terms."</code>
+        </article>
+
+        <article class="lc-packet-card">
+          <span class="lc-packet-label">Step 3</span>
+          <h3>Attach the field packet</h3>
+          <p>The signed PDF should include enough material that the next CCO can administer it without guessing what happened during the emergency.</p>
+          <code>Attachment 1: SOW/PWS or minimum work description.
+Attachment 2: CLINs, funding, NTE, liability limit.
+Attachment 3: Definitization schedule.
+Attachment 4: Required clauses and local provisions.
+Attachment 5: Inspection, acceptance, invoice instructions.
+Attachment 6: COR/ACO designation or interim surveillance plan.</code>
+        </article>
+
+        <article class="lc-packet-card">
+          <span class="lc-packet-label">Step 4</span>
+          <h3>Move it into the system</h3>
+          <p>The PDF gets the mission moving. The contract-writing and funding records keep the audit trail alive. As soon as practicable, mirror the action in the local system and definitize by modification.</p>
+          <code>Commercial products/services: SF 1449 may be right.
+Construction definitive action: SF 1442 may be right.
+Negotiated definitive action: SF 26, SF 33, OF 307, or system award.
+Order / BOA / IDIQ action: system order, DD 1155, OF 347, SF 1449, or local format.
+Definitization: usually bilateral SF 30 or system modification.</code>
+        </article>
+      </div>
+
       <table class="lc-table">
         <thead>
-          <tr><th style="width:24%">Clause</th><th>Purpose</th><th style="width:24%">When to include</th></tr>
+          <tr><th style="width:22%">Build Order</th><th>What the CCO does</th><th>What right looks like</th></tr>
         </thead>
         <tbody>
-          <tr><td><strong>FAR 52.216-23</strong><br>Execution and Commencement of Work</td><td>Handles contractor acceptance and authority to proceed.</td><td>Letter contracts. May be omitted on SF 26 awards.</td></tr>
-          <tr class="highlight"><td><strong>FAR 52.216-24</strong><br>Limitation of Government Liability</td><td>Caps spending and obligation before definitization. The dollar amount is the NTE.</td><td>Every letter contract, every UCA.</td></tr>
-          <tr><td><strong>FAR 52.216-25</strong><br>Contract Definitization</td><td>Identifies the contemplated definitive contract type, the proposal requirement, and the schedule.</td><td>Non-DoD letter contracts only.</td></tr>
-          <tr class="highlight"><td><strong>DFARS 252.217-7027</strong><br>Contract Definitization</td><td>Replaces FAR 52.216-25 in DoD. Adds qualifying-proposal consequences and the unilateral price-determination path.</td><td>Every DoD UCA, including DoD letter contracts.</td></tr>
-          <tr><td><strong>FAR 52.216-26</strong><br>Payments of Allowable Costs Before Definitization</td><td>Bridges payment mechanics for cost-type letter contracts.</td><td>When a cost-reimbursement definitive contract is contemplated.</td></tr>
-          <tr><td><strong>FAR 52.232-20 / 52.232-22</strong></td><td>Limitation of Cost / Limitation of Funds.</td><td>Cost-reimbursement definitive contracts (fully or incrementally funded).</td></tr>
-          <tr><td><strong>FAR 52.233-1</strong><br>Disputes</td><td>Preserves Contract Disputes Act handling and continued performance.</td><td>Almost always.</td></tr>
-          <tr><td><strong>FAR 52.243-x family</strong></td><td>Changes clause matched to the contemplated definitive contract type.</td><td>Pick by contract type.</td></tr>
-          <tr><td><strong>FAR 52.246-x family</strong></td><td>Inspection clause matched to supplies, services, or construction.</td><td>Pick by what is being bought.</td></tr>
-          <tr><td><strong>Termination clauses</strong></td><td>Noncommercial path: FAR Part 49 settlement and FAR 52.249-x family. Commercial path: FAR 12.403 governs, with 52.212-4(l) for convenience and 52.212-4(m) for cause. Commercial does not run a Part 49 settlement.</td><td>Pick by contract type and commerciality.</td></tr>
+          <tr><td><strong>1. Prove the emergency</strong></td><td>Write the mission harm if performance waits for a fully definitive award.</td><td>A reviewer can see why the normal route failed the mission, not just that the customer was loud.</td></tr>
+          <tr><td><strong>2. Try to avoid it</strong></td><td>Check definitive award, bridge, order, BPA/BP, GPC, or unpriced PO first.</td><td>The file explains why the simpler tool did not solve this specific problem.</td></tr>
+          <tr><td><strong>3. Get approval</strong></td><td>Pull legal, policy, funding, leadership, and current local delegation before signature.</td><td>The approval package is signed before the letter is signed. If the mission cannot wait for normal staffing, elevate until the authorized path is clear.</td></tr>
+          <tr><td><strong>4. Set the money</strong></td><td>Separate the funded obligation, maximum Government liability, and NTE ceiling.</td><td>Everyone knows what is funded now, what the contractor cannot exceed, and what ceiling the action cannot pass.</td></tr>
+          <tr><td><strong>5. Control the work</strong></td><td>Define the first authorized slice of performance, acceptance point, invoice path, and who can give direction.</td><td>The contractor can start, but cannot drift into unapproved work.</td></tr>
+          <tr><td><strong>6. Build the exit</strong></td><td>Put the qualifying proposal due date, negotiation date, and target definitization date in the letter.</td><td>The UCA has a clock on day one. Definitization is not left for the next person.</td></tr>
         </tbody>
       </table>
+
+      <table class="lc-table">
+        <thead>
+          <tr><th style="width:22%">Clause / control</th><th>When it goes in</th><th>Executioner note</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Definitive-contract clauses</strong></td><td>Every letter contract.</td><td>Include the clauses required for the definitive contract type you expect to end up with, plus any additional clauses already known to be appropriate.</td></tr>
+          <tr><td><strong>FAR 52.216-23</strong><br>Execution and Commencement of Work</td><td>Letter contracts, except it may be omitted when awarded on SF 26.</td><td>Contractor acceptance and authority to proceed. If using SF 26, the signature mechanics may make this unnecessary.</td></tr>
+          <tr class="highlight"><td><strong>FAR 52.216-24</strong><br>Limitation of Government Liability</td><td>Letter contracts and DoD UCAs.</td><td>This is the "do not exceed this dollar amount" control. Complete the dollar amount carefully; it is not decoration.</td></tr>
+          <tr><td><strong>FAR 52.216-25</strong><br>Contract Definitization</td><td>Non-DoD letter contracts.</td><td>Use Alternate I if award is based on price competition. In DoD, do not use this as the primary definitization clause.</td></tr>
+          <tr class="highlight"><td><strong>DFARS 252.217-7027</strong><br>Contract Definitization</td><td>All DoD UCAs, including DoD letter contracts.</td><td>Replaces FAR 52.216-25 for DoD. Fill in the contract action type, proposal type, definitization dates, and NTE ceiling.</td></tr>
+          <tr><td><strong>FAR 52.216-26</strong><br>Payments of Allowable Costs Before Definitization</td><td>When a cost-reimbursement definitive contract is contemplated, except specified ship work.</td><td>Use only when cost-type mechanics are expected. Pair this with invoice/acceptance discipline.</td></tr>
+          <tr><td><strong>Inspection / acceptance / changes / disputes / termination</strong></td><td>As required by the contemplated definitive contract type.</td><td>Pick the clauses that match what you are buying: supplies, services, construction, commercial, cost-type, fixed-price, etc.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="lc-rule-stack">
+        <article class="lc-rule">
+          <div>
+            <span class="lc-rule-label">Before Signature</span>
+            <h3>Stop if any box is blank</h3>
+          </div>
+          <p>Approved requirement, funding, competition/exception record, UCA approval, NTE support, liability limit, definitization schedule, clause review, acceptance process, and COR/ACO plan must all exist before the contractor starts.</p>
+        </article>
+        <article class="lc-rule">
+          <div>
+            <span class="lc-rule-label">After Signature</span>
+            <h3>Manage the clock</h3>
+          </div>
+          <p>Track the qualifying proposal due date, 50 percent obligation point, possible 75 percent limit after a qualifying proposal, invoice support, acceptance records, and the SF 30 definitization modification.</p>
+        </article>
+      </div>
     </section>
 
-    <!-- ============================================================ -->
-    <!--  COMMON PITFALLS                                             -->
-    <!-- ============================================================ -->
+    <section class="cco-section">
+      <div class="cco-section-head">
+        <div class="cco-section-kicker">Controls</div>
+        <h2>The few rules you actually need on day one</h2>
+        <p class="cco-section-desc">You do not need to memorize every UCA citation before deployment. You do need to know when to stop, elevate, and build the file around these controls.</p>
+      </div>
+      <div class="lc-rule-stack">
+
+        <article class="lc-rule">
+          <div>
+            <span class="lc-rule-label">Approval</span>
+            <h3>No solo moves</h3>
+          </div>
+          <p>RFO FAR 16.603 requires a written determination that no other contract is suitable. DoD UCA rules add an approval package before award. For DAF training, teach this plainly: <strong>check the current delegation memo</strong>. As of May 6, 2026, DAF approval commonly routes through SCO/COCO lanes for actions below $50M, not straight to a general officer.</p>
+        </article>
+
+        <article class="lc-rule">
+          <div>
+            <span class="lc-rule-label">Money</span>
+            <h3>NTE is not a blank check</h3>
+          </div>
+          <p>RFO FAR 52.216-24 caps Government liability before definitization. DoD UCA rules separately require a not-to-exceed price and limit obligations before definitization. Train the distinction: liability cap, NTE price, and funded obligation are related controls, but they are not the same sentence in the file.</p>
+        </article>
+
+        <article class="lc-rule">
+          <div>
+            <span class="lc-rule-label">Clock</span>
+            <h3>Definitization starts now</h3>
+          </div>
+          <p>RFO FAR 16.603 points to definitization within 180 days after the letter contract or before 40 percent completion, whichever comes first. DoD adds a UCA schedule tied to a qualifying proposal and obligation limits. New CCO translation: the schedule is not admin cleanup. It is the heartbeat of the action.</p>
+        </article>
+
+        <article class="lc-rule">
+          <div>
+            <span class="lc-rule-label">Competition</span>
+            <h3>No free pass</h3>
+          </div>
+          <p>A letter contract or UCA does not create a competition exception. Use the competition rules that match the action: FAR Part 6, FAR 16.505 fair opportunity, or simplified-acquisition procedures. If urgency limits competition, document why and solicit as many sources as practicable.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="cco-section">
+      <div class="cco-section-head">
+        <div class="cco-section-kicker">Field Exercise</div>
+        <h2>When the CCO actually has to execute one</h2>
+        <p class="cco-section-desc">This is the missing middle: not just what a letter contract is, but how a deployed CCO would move when the mission really cannot wait for a fully priced action.</p>
+      </div>
+      <div class="lc-tabs">
+        <input type="radio" name="lc-field-tabs" id="lc-tab-situation" checked>
+        <input type="radio" name="lc-field-tabs" id="lc-tab-execute">
+        <input type="radio" name="lc-field-tabs" id="lc-tab-right">
+
+        <div class="lc-tab-labels">
+          <label for="lc-tab-situation">1. Situation</label>
+          <label for="lc-tab-execute">2. Execute</label>
+          <label for="lc-tab-right">3. Right Looks Like</label>
+        </div>
+
+        <div class="lc-tab-panels">
+          <article class="lc-tab-panel lc-panel-situation">
+            <div class="lc-scenario-grid">
+              <div class="lc-scenario-card">
+                <h3>The scenario</h3>
+                <p>A forward operating airfield takes storm damage during a beddown surge. The unit needs emergency power, temporary billeting repairs, debris removal, fuel bladder support, latrines, and limited dining support running within 72 hours.</p>
+                <p>The commander can describe the outcome, but the final quantities are not known. Engineers have not finished the damage assessment. The labor mix depends on what the contractor finds on Day 1. Waiting two weeks for a fully priced action will interrupt flight-line operations.</p>
+              </div>
+              <div class="lc-scenario-card">
+                <h3>Why this might justify a letter contract</h3>
+                <ul>
+                  <li>The mission needs a binding written start now.</li>
+                  <li>The requirement is urgent for reasons that can be explained in concrete mission terms.</li>
+                  <li>The Government cannot negotiate a fully definitive price and final scope before performance must begin.</li>
+                  <li>An unpriced PO is not enough because the effort is broader than a narrow simplified-acquisition buy.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="lc-field-note" style="margin-top:1rem;">
+              <strong>Training point.</strong> This is not "we forgot to plan." This is "the mission breaks before a normal award can reasonably be built." That distinction is the heart of the file.
+            </div>
+          </article>
+
+          <article class="lc-tab-panel lc-panel-execute">
+            <div class="lc-steps">
+              <article class="lc-step">
+                <div>
+                  <h3>Validate the mission need</h3>
+                  <p>Get the requirement owner, funding path, operational consequence of delay, required start date, acceptance point, and first period of performance. Write down why waiting for a definitive award fails the mission.</p>
+                </div>
+              </article>
+              <article class="lc-step">
+                <div>
+                  <h3>Try to avoid the UCA first</h3>
+                  <p>Ask whether a definitive contract, task order, bridge, GPC buy, BP/BPA call, or unpriced PO can solve the actual problem. If one can, use the cleaner tool.</p>
+                </div>
+              </article>
+              <article class="lc-step">
+                <div>
+                  <h3>Elevate before award</h3>
+                  <p>Bring in legal, policy, funding, leadership, and the current DAF/local delegation memo. For DAF training, do not assume a 3-star approval lane; current matrices commonly route sub-$50M actions through SCO/COCO lanes depending on delegation.</p>
+                </div>
+              </article>
+              <article class="lc-step">
+                <div>
+                  <h3>Compete or justify the limit</h3>
+                  <p>Solicit as many sources as practicable. If using a multiple-award vehicle, use fair opportunity unless an exception applies. The letter contract label does not erase competition.</p>
+                </div>
+              </article>
+              <article class="lc-step">
+                <div>
+                  <h3>Build the award controls</h3>
+                  <p>Set the most complete scope you can, initial funded amount, NTE/liability cap, clause set, reporting, inspection, acceptance, COR/ACO roles, and a real definitization schedule.</p>
+                </div>
+              </article>
+              <article class="lc-step">
+                <div>
+                  <h3>Drive definitization immediately</h3>
+                  <p>Track proposal due date, negotiation start, obligation burn rate, and final bilateral modification. Definitization is not closeout paperwork; it is the exit route.</p>
+                </div>
+              </article>
+            </div>
+          </article>
+
+          <article class="lc-tab-panel lc-panel-right">
+            <table class="lc-table">
+              <thead>
+                <tr><th style="width:24%">File element</th><th>What right looks like</th><th style="width:24%">New CCO check</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Urgency narrative</strong></td><td>Specific mission harm, not generic urgency language.</td><td>Can I explain the consequence in one sentence?</td></tr>
+                <tr><td><strong>Tool-choice record</strong></td><td>Shows why definitive award, unpriced PO, or other vehicle was not suitable in time.</td><td>Did we prove the UCA was necessary?</td></tr>
+                <tr><td><strong>Approval package</strong></td><td>Uses current FAR/DFARS/DAF/local delegation and identifies the actual approval authority.</td><td>Did we pull the latest memo?</td></tr>
+                <tr><td><strong>NTE / liability support</strong></td><td>Supported by IGE, competition, historical data, market research, or price analysis.</td><td>Is the ceiling defensible?</td></tr>
+                <tr><td><strong>Performance controls</strong></td><td>COR/ACO roles, inspection, acceptance, and invoice support are live on Day 1.</td><td>Who says the work is acceptable?</td></tr>
+                <tr><td><strong>Definitization schedule</strong></td><td>Proposal date, negotiation date, target definitization date, and owner for each suspense.</td><td>Who is watching the clock?</td></tr>
+                <tr><td><strong>Final mod</strong></td><td>Bilateral SF 30 definitizes scope, price, funding, clauses, and any settled adjustments.</td><td>Did the emergency tool become a normal contract?</td></tr>
+              </tbody>
+            </table>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="cco-section">
+      <div class="cco-section-head">
+        <div class="cco-section-kicker">File Build</div>
+        <h2>The field packet</h2>
+        <p class="cco-section-desc">These are the pieces a new CCO should expect to see on the desk before the action moves.</p>
+      </div>
+      <div class="lc-packet-grid">
+
+        <article class="lc-packet-card">
+          <span class="lc-packet-label">Decision Memo</span>
+          <h3>Why this tool?</h3>
+          <p>Explain the mission harm, why a definitive action cannot be negotiated in time, what alternatives were considered, and why no other contract is suitable.</p>
+          <code>Do not write: "urgent requirement."
+Write: "Delay beyond 72 hours stops [mission effect] because [specific consequence]."</code>
+        </article>
+
+        <article class="lc-packet-card">
+          <span class="lc-packet-label">Money Controls</span>
+          <h3>What is the ceiling?</h3>
+          <p>Support the liability limit, NTE price, and initial obligation with an IGE, competition, historical data, market research, or a documented price-reasonableness basis.</p>
+          <code>Bad file smell: ceiling copied from the contractor's ROM with no Government support.</code>
+        </article>
+
+        <article class="lc-packet-card">
+          <span class="lc-packet-label">Schedule</span>
+          <h3>How do we get out?</h3>
+          <p>The definitization schedule should include proposal due date, negotiation start, target definitization date, and who owns each suspense.</p>
+          <code>If nobody owns the proposal suspense, the UCA owns you.</code>
+        </article>
+
+        <article class="lc-packet-card">
+          <span class="lc-packet-label">Performance</span>
+          <h3>Who checks the work?</h3>
+          <p>Set COR/ACO roles, inspection, acceptance, invoice support, and scope-change guardrails immediately. Surveillance does not wait for definitization.</p>
+          <code>Only the contracting officer changes scope, price, schedule, or terms.</code>
+        </article>
+
+      </div>
+    </section>
+
     <section class="cco-section">
       <div class="cco-section-head">
         <div class="cco-section-kicker">Pitfalls</div>
-        <h2>How letter contracts go bad</h2>
-        <p class="cco-section-desc">A short list of how letter contracts go wrong in deployed environments. Each one has real audit history behind it. The Air Force Contract Augmentation Program (AFCAP) inspector general review found that officials did not always verify satisfactory performance before certifying payment, and missed opportunities to build stronger equitable adjustments. Same patterns show up in local-purchase letter contract files.</p>
+        <h2>How these go bad</h2>
+        <p class="cco-section-desc">The failure pattern is usually not exotic. It is ordinary contracting discipline breaking under operational pressure.</p>
       </div>
       <div class="cco-card-grid">
 
         <article class="cco-card">
           <span class="cco-card-tier">Pitfall</span>
-          <div class="cco-card-title">Urgency as a paperwork substitute</div>
-          <p class="cco-card-desc">Deployed teams focus on the mission and tell themselves they will fix the file later. Build the approval memo, the competition record, and the NTE rationale before or contemporaneously with award. Not after.</p>
-          <div class="cco-card-cite">FAR 16.603-3</div>
+          <div class="cco-card-title">"Fix the file later"</div>
+          <p class="cco-card-desc">The team starts with a real emergency, then lets paperwork chase the mission. Build the approval, competition record, NTE support, and schedule before or contemporaneously with award.</p>
+          <div class="cco-card-cite">File discipline</div>
         </article>
 
         <article class="cco-card">
           <span class="cco-card-tier">Pitfall</span>
-          <div class="cco-card-title">Unsupported NTE</div>
-          <p class="cco-card-desc">Ceiling copied from a contractor estimate without independent support. NTE set arbitrarily high to "leave room," or set arbitrarily low and exhausted before definitization. Support the number with an Independent Government Estimate, historical buys, competition, or price analysis.</p>
-          <div class="cco-card-cite">FAR 16.603-2(c)</div>
-        </article>
-
-        <article class="cco-card">
-          <span class="cco-card-tier">Pitfall</span>
-          <div class="cco-card-title">Over-obligating before definitization</div>
-          <p class="cco-card-desc">Funding actions move faster than pricing actions. Track obligations weekly against the FAR liability cap and the DoD 50 / 75 percent UCA rules. If you cross the line without a qualifying proposal, you have a finding waiting to happen.</p>
-          <div class="cco-card-cite">DFARS 217.7404-4</div>
-        </article>
-
-        <article class="cco-card">
-          <span class="cco-card-tier">Pitfall</span>
-          <div class="cco-card-title">Late qualifying proposal</div>
-          <p class="cco-card-desc">Contractor mobilizes, then deprioritizes proposal prep. Put specific dates in the schedule. Treat proposal adequacy as a milestone with consequences. Use the 5 percent withhold under DFARS 252.217-7027 when warranted, and document the reasoning in the file.</p>
-          <div class="cco-card-cite">DFARS 252.217-7027</div>
+          <div class="cco-card-title">Unsupported ceiling</div>
+          <p class="cco-card-desc">An NTE set too high hides risk. An NTE set too low creates a funding crisis. Either way, the file needs Government support for the number.</p>
+          <div class="cco-card-cite">Price reasonableness</div>
         </article>
 
         <article class="cco-card">
           <span class="cco-card-tier">Pitfall</span>
           <div class="cco-card-title">Role drift</div>
-          <p class="cco-card-desc">In a deployed environment, technical reps and customer leadership talk to the contractor every day. Only the contracting officer changes scope, price, or schedule. Reissue the COR delegation early. Make sure everyone knows where the line is so technical direction does not become unauthorized commitments.</p>
-          <div class="cco-card-cite">FAR 1.604 &middot; FAR 43.102</div>
+          <p class="cco-card-desc">The customer, COR, or field lead starts directing new work because everyone is moving fast. That can become an unauthorized commitment or a claim.</p>
+          <div class="cco-card-cite">Scope control</div>
         </article>
 
         <article class="cco-card">
           <span class="cco-card-tier">Pitfall</span>
-          <div class="cco-card-title">Invoices without acceptance evidence</div>
-          <p class="cco-card-desc">Tempo is fast. Acceptance records lag. Invoices arrive. The fix: require linked receiving and acceptance support before invoice certification, every time. That is the AFCAP Inspector General (IG) finding, and it applies broadly to deployed contingency files.</p>
-          <div class="cco-card-cite">FAR 32.905</div>
+          <div class="cco-card-title">Paying without acceptance</div>
+          <p class="cco-card-desc">Invoices arrive before receiving records catch up. The fix is boring and critical: no certification without linked receiving and acceptance support.</p>
+          <div class="cco-card-cite">Invoice discipline</div>
+        </article>
+
+        <article class="cco-card">
+          <span class="cco-card-tier">Pitfall</span>
+          <div class="cco-card-title">Late proposal</div>
+          <p class="cco-card-desc">The contractor mobilizes and proposal prep becomes tomorrow's problem. In DoD, late qualifying proposals can trigger withholding and other consequences.</p>
+          <div class="cco-card-cite">DFARS 252.217-7027</div>
+        </article>
+
+        <article class="cco-card">
+          <span class="cco-card-tier">Pitfall</span>
+          <div class="cco-card-title">Second source selection</div>
+          <p class="cco-card-desc">Definitization is pricing and final terms. It is not a chance to rewrite the award rationale after performance has started.</p>
+          <div class="cco-card-cite">Award logic</div>
         </article>
 
       </div>
+
     </section>
 
-    <!-- ============================================================ -->
-    <!--  SAMPLE LANGUAGE                                             -->
-    <!-- ============================================================ -->
     <section class="cco-section">
       <div class="cco-section-head">
-        <div class="cco-section-kicker">Templates</div>
-        <h2>Sample file language</h2>
-        <p class="cco-section-desc">Starter language for the four documents most commonly missing from a deployed letter-contract file. Tailor to agency supplements, local delegation templates, theater business-clearance rules, and the specific vehicle. Do not paste verbatim into a real file.</p>
+        <div class="cco-section-kicker">Source Check</div>
+        <h2>Verified references</h2>
+        <p class="cco-section-desc">Use these as the current official anchors. DAFFARS is included as a DAF implementation note, not the core government-wide rule.</p>
       </div>
+      <div class="lc-source-grid">
 
-      <details class="lc-template">
-        <summary>Award memorandum / determination</summary>
-<pre>MEMORANDUM FOR THE CONTRACT FILE
+        <article class="lc-source-card">
+          <span class="lc-source-label">RFO FAR</span>
+          <h3><a href="https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12" target="_blank" rel="noopener">Part 12</a></h3>
+          <p>Unpriced purchase orders and commercial buying under the RFO model.</p>
+        </article>
 
-Subject: Determination to Use a Letter Contract / UCA
+        <article class="lc-source-card">
+          <span class="lc-source-label">RFO FAR</span>
+          <h3><a href="https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16" target="_blank" rel="noopener">Part 16</a></h3>
+          <p>Letter-contract baseline: immediate start, suitability determination, liability, and definitization.</p>
+        </article>
 
-I determine that use of a letter contract / undefinitized contract action
-is necessary for the following reasons:
+        <article class="lc-source-card">
+          <span class="lc-source-label">DoD RFO</span>
+          <h3><a href="https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-17.pdf" target="_blank" rel="noopener">DFARS Part 17</a></h3>
+          <p>UCA approval, NTE, qualifying proposal, and obligation controls.</p>
+        </article>
 
-1. Immediate mission need. The requiring activity has established that
-   delay in performance would materially harm mission accomplishment
-   because [describe operational consequence in concrete terms].
+        <article class="lc-source-card">
+          <span class="lc-source-label">DAF Note</span>
+          <h3><a href="https://www.acquisition.gov/daffars/mp5301.601-ai-department-air-force-approval-authority-matrices" target="_blank" rel="noopener">MP5301.601</a></h3>
+          <p>Current DAF delegation matrix. Check local delegation before use.</p>
+        </article>
 
-2. Why a definitive action is not possible in time. A fully definitive
-   contract action cannot be negotiated before performance must begin
-   because [describe unknown quantities, site conditions, incomplete
-   repair scope, missing cost drivers, or operational uncertainty].
-
-3. Why no other contract is suitable. I have considered [definitive
-   task order / bridge modification / purchase order / other vehicle]
-   and determine it is not suitable because [specific reason].
-
-4. Competition approach. The action will be [competed under fair
-   opportunity / competed under FAR Part 6 / limited under urgent
-   exception], and the basis for selection is [state disclosed basis].
-
-5. Financial controls. The Government's liability / not-to-exceed
-   amount is set at $[amount], which is the minimum amount necessary
-   to begin performance before definitization.
-
-6. Definitization control. The contractor shall submit its qualifying
-   proposal by [date], negotiations will begin by [date], and the
-   target definitization date is [date].
-
-Signed:
-[Contracting Officer]</pre>
-      </details>
-
-      <details class="lc-template">
-        <summary>Definitization schedule</summary>
-<pre>Definitization Schedule
-
-The contractor shall submit a qualifying definitization proposal no
-later than [date].
-
-If required, certified cost or pricing data and any make-or-buy /
-subcontracting information shall be submitted no later than [date].
-
-Negotiations will begin no later than [date].
-
-The parties will target agreement on all remaining terms,
-specifications, and price no later than [date].
-
-If agreement is not reached by the target date, the Government may
-take the actions authorized by the definitization clause and
-applicable regulation.</pre>
-      </details>
-
-      <details class="lc-template">
-        <summary>Urgency / exception to fair opportunity</summary>
-<pre>Justification for Exception to Fair Opportunity / Urgent Limitation
-of Competition
-
-The agency need for these supplies/services is so urgent that
-providing the normal response time for fair opportunity / full
-competition would result in unacceptable delay. Specifically,
-[describe the urgent requirement and precise harm from delay].
-
-The Government solicited / will solicit as many sources as
-practicable under the circumstances by [describe outreach].
-
-The period of performance for the interim action is limited to the
-minimum time necessary to satisfy the urgent requirement and
-transition to a more fully competed, definitive solution.</pre>
-      </details>
-
-      <details class="lc-template">
-        <summary>Definitization negotiation memorandum (starter)</summary>
-<pre>Purpose of negotiation:
-To definitize Contract / Task Order [number], issued on [date] as a
-letter contract / UCA.
-
-Issue summary:
-At award, the Government could not accurately establish final
-quantities, site conditions, and cost drivers for [describe work].
-Immediate performance was required to [mission impact].
-
-Pricing objective:
-Determine a fair and reasonable final price based on proposal
-analysis, technical evaluation updates, actual incurred costs where
-relevant, and estimated cost to complete.
-
-Key negotiation outcomes:
-- Final scope and CLIN structure
-- Final price / fee
-- Funding distribution
-- Schedule / POP
-- Incorporated clauses and updates
-- Any release language for settled equitable adjustments</pre>
-      </details>
-
+      </div>
+      <p class="lc-small">References verified May 6, 2026. RFO and agency deviations are moving targets; always check the current text and local policy before issuing real file guidance.</p>
     </section>
 
     <div class="cco-coming">
-      <strong>Bottom line for the deploying CCO.</strong> Treat a letter contract as a tightly controlled emergency tool. Pull the local delegation memo so you know your real approver before you need them. Cap liability with an NTE you can defend. Start surveillance the day of award. Drive definitization like a suspense item from Day 1. The 180 / 40 / 50 / 75 numbers are how an audit will measure your file. Memorize them.
+      <strong>Bottom line for the deploying CCO.</strong> You are unlikely to issue a UCA alone, and that is fine. Your job is to recognize the danger zone early: do not let anyone start work without written authority, use an unpriced PO when it fits better, elevate a true letter-contract need fast, and keep the file strong enough that the next CCO can understand exactly what happened.
     </div>
 
     <div class="cco-footer-nav">
@@ -1010,3 +1421,4 @@ Key negotiation outcomes:
 <script src="player.js"></script>
 </body>
 </html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
