@@ -308,6 +308,15 @@
       isolation: isolate;
     }
 
+    .cco-radio.is-on-air {
+      border-color: rgba(217,154,49,.58);
+      box-shadow:
+        0 22px 52px rgba(0,0,0,.52),
+        0 0 34px rgba(217,154,49,.15),
+        inset 0 0 48px rgba(0,0,0,.54),
+        inset 0 0 28px rgba(91,33,10,.28);
+    }
+
     .cco-radio-antenna {
       position: absolute;
       top: 13px;
@@ -320,6 +329,27 @@
       transform: rotate(-14deg);
       transform-origin: bottom center;
       z-index: 1;
+    }
+
+    .cco-radio-antenna::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -18px;
+      width: 46px;
+      height: 46px;
+      border: 1px solid rgba(217,154,49,.34);
+      border-left-color: transparent;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      opacity: 0;
+      transform: translateX(-50%) rotate(-20deg) scale(.65);
+      transform-origin: 50% 100%;
+      pointer-events: none;
+    }
+
+    .cco-radio.is-on-air .cco-radio-antenna::after {
+      animation: cco-signal 1.7s ease-out infinite;
     }
 
     .cco-radio-face {
@@ -372,6 +402,15 @@
       overflow: hidden;
     }
 
+    .cco-radio.is-on-air .cco-radio-screen {
+      border-color: rgba(185,214,112,.48);
+      box-shadow:
+        inset 0 0 24px rgba(0,0,0,.45),
+        0 0 0 4px rgba(0,0,0,.28),
+        0 0 22px rgba(147,168,91,.16);
+      animation: cco-screen-glow 2s ease-in-out infinite;
+    }
+
     .cco-radio-screen::before {
       content: "";
       position: absolute;
@@ -403,6 +442,11 @@
       margin-top: .42rem;
     }
 
+    .cco-radio.is-on-air .cco-radio-status {
+      color: #f1ffd1;
+      text-shadow: 0 0 10px rgba(185,214,112,.48);
+    }
+
     .cco-radio-detail {
       margin-top: .12rem;
       color: #93a85b;
@@ -424,12 +468,21 @@
     .cco-radio-meter span {
       height: 12px;
       background: rgba(147,168,91,.22);
+      transform-origin: bottom center;
     }
 
     .cco-radio-meter span:nth-child(3n),
     .cco-radio-meter span:nth-child(5n) {
       background: rgba(217,154,49,.55);
     }
+
+    .cco-radio.is-on-air .cco-radio-meter span {
+      animation: cco-meter 1.08s ease-in-out infinite;
+    }
+
+    .cco-radio.is-on-air .cco-radio-meter span:nth-child(2n) { animation-delay: -.18s; }
+    .cco-radio.is-on-air .cco-radio-meter span:nth-child(3n) { animation-delay: -.34s; }
+    .cco-radio.is-on-air .cco-radio-meter span:nth-child(5n) { animation-delay: -.52s; }
 
     .cco-radio-hardware {
       display: grid;
@@ -451,6 +504,16 @@
         inset 0 0 0 4px rgba(0,0,0,.18);
     }
 
+    .cco-radio-speaker::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 0 38%, rgba(217,154,49,.18) 45%, transparent 52% 100%);
+      opacity: 0;
+      transform: translateX(-120%);
+      pointer-events: none;
+    }
+
     .cco-radio-speaker::after {
       content: "";
       position: absolute;
@@ -459,6 +522,10 @@
       border-bottom: 2px solid rgba(217,154,49,.12);
       transform: skewY(-5deg);
       pointer-events: none;
+    }
+
+    .cco-radio.is-on-air .cco-radio-speaker::before {
+      animation: cco-speaker-sweep 2.3s ease-in-out infinite;
     }
 
     .cco-radio-dials {
@@ -503,6 +570,15 @@
       border-color: rgba(197,183,122,.28);
     }
 
+    .cco-radio.is-on-air .cco-radio-knob {
+      animation: cco-knob-drift 5.8s linear infinite;
+    }
+
+    .cco-radio.is-on-air .cco-radio-knob.small {
+      animation-duration: 4.3s;
+      animation-direction: reverse;
+    }
+
     .cco-radio-toggle {
       position: relative;
       width: 48px;
@@ -523,25 +599,151 @@
       box-shadow: 0 0 8px rgba(217,154,49,.26);
     }
 
+    .cco-radio.is-on-air .cco-radio-toggle::after {
+      left: 5px;
+      background: linear-gradient(180deg, #cfe3a1, #657c40);
+      box-shadow: 0 0 10px rgba(147,168,91,.44);
+    }
+
     .cco-radio-btn {
       width: 100%;
-      min-height: 44px;
+      min-height: 54px;
       margin-top: .9rem;
-      border: 1px solid rgba(217,154,49,.55);
-      background: linear-gradient(180deg, rgba(217,154,49,.2), rgba(91,64,20,.56));
+      border: 1.5px solid rgba(217,154,49,.72);
+      background:
+        radial-gradient(circle at 18% 28%, rgba(255,255,255,.16), transparent 28%),
+        linear-gradient(180deg, rgba(217,154,49,.38), rgba(91,64,20,.72));
       color: #f5efd8;
       font: inherit;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 1.1px;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .65rem;
+      position: relative;
+      overflow: hidden;
       box-shadow:
         inset 0 0 18px rgba(0,0,0,.42),
-        0 8px 18px rgba(0,0,0,.25);
+        0 8px 18px rgba(0,0,0,.25),
+        0 0 20px rgba(217,154,49,.16);
+      animation: cco-tune-beacon 2.4s ease-in-out infinite;
+    }
+
+    .cco-radio-btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 0 36%, rgba(255,255,255,.2) 46%, transparent 58% 100%);
+      transform: translateX(-115%);
+      opacity: .65;
+    }
+
+    .cco-radio-btn-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.28);
+      background: rgba(8,9,5,.32);
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+      box-shadow: inset 0 0 10px rgba(0,0,0,.42);
+    }
+
+    .cco-radio-btn-icon::before {
+      content: "";
+      width: 0;
+      height: 0;
+      margin-left: 3px;
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-left: 9px solid #f5efd8;
+    }
+
+    .cco-radio-btn-text {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cco-radio.is-on-air .cco-radio-btn {
+      background:
+        radial-gradient(circle at 18% 28%, rgba(255,255,255,.12), transparent 28%),
+        linear-gradient(180deg, rgba(147,168,91,.4), rgba(55,68,31,.82));
+      border-color: rgba(185,214,112,.62);
+      box-shadow:
+        inset 0 0 18px rgba(0,0,0,.42),
+        0 8px 18px rgba(0,0,0,.25),
+        0 0 24px rgba(147,168,91,.18);
+      animation: none;
+    }
+
+    .cco-radio.is-on-air .cco-radio-btn::after {
+      animation: cco-button-scan 2.6s ease-in-out infinite;
+    }
+
+    .cco-radio.is-on-air .cco-radio-btn-icon::before {
+      width: 10px;
+      height: 13px;
+      margin-left: 0;
+      border: 0;
+      border-left: 4px solid #f5efd8;
+      border-right: 4px solid #f5efd8;
     }
 
     .cco-radio-btn:hover {
       filter: brightness(1.08);
+    }
+
+    @keyframes cco-tune-beacon {
+      0%, 100% { box-shadow: inset 0 0 18px rgba(0,0,0,.42), 0 8px 18px rgba(0,0,0,.25), 0 0 16px rgba(217,154,49,.12); }
+      50% { box-shadow: inset 0 0 18px rgba(0,0,0,.42), 0 8px 18px rgba(0,0,0,.25), 0 0 28px rgba(217,154,49,.32); }
+    }
+
+    @keyframes cco-button-scan {
+      0% { transform: translateX(-115%); }
+      48%, 100% { transform: translateX(115%); }
+    }
+
+    @keyframes cco-screen-glow {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.12); }
+    }
+
+    @keyframes cco-meter {
+      0%, 100% { transform: scaleY(.52); opacity: .62; }
+      45% { transform: scaleY(1); opacity: 1; }
+    }
+
+    @keyframes cco-speaker-sweep {
+      0%, 35% { opacity: 0; transform: translateX(-120%); }
+      50% { opacity: .6; }
+      72%, 100% { opacity: 0; transform: translateX(120%); }
+    }
+
+    @keyframes cco-knob-drift {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes cco-signal {
+      0% { opacity: 0; transform: translateX(-50%) rotate(-20deg) scale(.55); }
+      20% { opacity: .65; }
+      100% { opacity: 0; transform: translateX(-50%) rotate(-20deg) scale(1.25); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cco-radio-btn,
+      .cco-radio.is-on-air .cco-radio-btn::after,
+      .cco-radio.is-on-air .cco-radio-screen,
+      .cco-radio.is-on-air .cco-radio-meter span,
+      .cco-radio.is-on-air .cco-radio-speaker::before,
+      .cco-radio.is-on-air .cco-radio-knob,
+      .cco-radio.is-on-air .cco-radio-antenna::after {
+        animation: none !important;
+      }
     }
 
     .cco-gridline {
@@ -906,7 +1108,10 @@
             </div>
           </div>
         </div>
-        <button class="cco-radio-btn" id="ccoRadioStart" type="button">Enter Field Radio</button>
+        <button class="cco-radio-btn" id="ccoRadioStart" type="button" aria-label="Play Field Radio">
+          <span class="cco-radio-btn-icon" aria-hidden="true"></span>
+          <span class="cco-radio-btn-text" id="ccoRadioButtonText">Tune In Field Radio</span>
+        </button>
       </aside>
     </section>
 
@@ -1140,14 +1345,25 @@
   function updateRadioPanel(detail) {
     var status = document.getElementById("ccoRadioStatus");
     var note = document.getElementById("ccoRadioDetail");
+    var radio = document.querySelector(".cco-radio");
+    var button = document.getElementById("ccoRadioStart");
+    var buttonText = document.getElementById("ccoRadioButtonText");
     if (!status || !note || !detail || detail.mode !== "cco") return;
+    if (radio) {
+      radio.classList.toggle("is-on-air", !!detail.isPlaying);
+      radio.classList.toggle("is-ready", !!detail.trackCount && !detail.isPlaying);
+    }
     if (!detail.trackCount) {
       status.textContent = "Standby";
       note.textContent = "Channel Clear";
+      if (buttonText) buttonText.textContent = "Field Radio Standby";
+      if (button) button.setAttribute("aria-label", "Field Radio standby");
       return;
     }
     status.textContent = detail.isPlaying ? "On Air" : "Ready";
     note.textContent = detail.track ? detail.track.title : detail.trackCount + " Tracks Loaded";
+    if (buttonText) buttonText.textContent = detail.isPlaying ? "Pause Field Radio" : "Tune In Field Radio";
+    if (button) button.setAttribute("aria-label", detail.isPlaying ? "Pause Field Radio" : "Play Field Radio");
   }
 
   document.getElementById("ccoRadioStart").addEventListener("click", function () {
