@@ -41,7 +41,10 @@
     'contingency-contracting.html',
     'ocs-for-dummies.html',
     'far-part-18-flexibilities.html',
-    'manual-contracts-deployed.html'
+    'manual-contracts-deployed.html',
+    'letter-contracts.html',
+    'raised-thresholds.html',
+    'acsas.html'
   ];
   var CCO_TRACKS = [
     { id: 1, title: 'Build the Base',             subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Build the Base.mp3', color: '#d99a31' },
@@ -1914,6 +1917,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'evaluating-quotations.html',
     'far-part12-restricting-competition.html',
     'far-part16-fair-opportunity.html',
+    'far-part-18-flexibilities.html',
     'far-part6-competition.html',
     'far-part8-limiting-sources.html',
     'far-research.html',
@@ -1924,6 +1928,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'gsa-orders-sat.html',
     'idiq-multiple-award.html',
     'idiq-single-award.html',
+    'letter-contracts.html',
     'manual-contracts-deployed.html',
     'market-research.html',
     'material-submittals.html',
@@ -1945,6 +1950,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'publicizing-awards.html',
     'publicizing-contract-actions.html',
     'purchase-requests.html',
+    'raised-thresholds.html',
     'requirements-approval-documents.html',
     'reviewing-tech-evals.html',
     'rfp-preparation.html',
@@ -1976,6 +1982,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'subcontracting-trap.html',
     'set-asides.html',
     'industry.html',
+    'acsas.html',
     'federal-register.html',
     'gao-decisions.html',
     'asbca.html',
