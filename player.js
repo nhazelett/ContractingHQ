@@ -1993,8 +1993,11 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       if (!res.ok) throw new Error('Soft navigation failed: ' + res.status);
       var html = await res.text();
       var doc = new DOMParser().parseFromString(html, 'text/html');
-      var scripts = Array.prototype.slice.call(doc.body.querySelectorAll('script'));
-      scripts.forEach(function (script) {
+      var scripts = [];
+      Array.prototype.slice.call(doc.body.querySelectorAll('script')).forEach(function (script) {
+        var isExternal = !!script.getAttribute('src');
+        if (!isExternal && !isRunnableInlineScript(script)) return;
+        scripts.push(script);
         if (script.parentNode) script.parentNode.removeChild(script);
       });
 
