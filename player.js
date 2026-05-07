@@ -325,6 +325,61 @@
     } catch (e) {}
   }
 
+  var visitorCountText = '';
+  var visitorCountPromise = null;
+
+  function formatVisitorCount(value) {
+    var digits = String(value || '').replace(/[^\d]/g, '');
+    if (!digits) return '';
+    return Number(digits).toLocaleString() + ' visitors';
+  }
+
+  function visitorCounterTarget() {
+    return document.querySelector('.footer .footer-inner') ||
+      document.querySelector('footer .footer-inner') ||
+      document.querySelector('footer');
+  }
+
+  function updateVisitorCounterText(text) {
+    document.querySelectorAll('#gc-stats, .kthq-visitor-count').forEach(function (el) {
+      el.textContent = text;
+    });
+  }
+
+  function mountVisitorCounter() {
+    var target = visitorCounterTarget();
+    if (!target) return;
+
+    var el = document.getElementById('gc-stats') || document.querySelector('.kthq-visitor-count');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'gc-stats';
+      target.appendChild(el);
+    }
+    el.classList.add('kthq-visitor-count');
+    el.setAttribute('aria-live', 'polite');
+
+    if (visitorCountText) {
+      el.textContent = visitorCountText;
+      return;
+    }
+
+    if (!el.textContent.trim()) el.textContent = 'Loading visitor count';
+    if (!visitorCountPromise) {
+      visitorCountPromise = fetch('https://nhazelett.goatcounter.com/counter/TOTAL.json')
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          visitorCountText = formatVisitorCount(d.count || d.count_unique);
+          return visitorCountText;
+        })
+        .catch(function () { return ''; });
+    }
+
+    visitorCountPromise.then(function (text) {
+      if (text) updateVisitorCounterText(text);
+    });
+  }
+
   // Audio event listeners
   aud.addEventListener('play',   function () { isPlaying = true;  state.wasPlaying = true; updatePlayBtns(); saveState(); announceRadioStatus(); });
   aud.addEventListener('pause',  function () {
@@ -2223,6 +2278,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
 
       initSoftPageChrome();
       mountPlayerForCurrentPage();
+      mountVisitorCounter();
       await runSoftPageScripts(scripts, url);
       updateSoftAnalytics();
 
@@ -2335,6 +2391,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       buildFloat();
       if (state.wasPlaying) resumeAudio();
     }
+    mountVisitorCounter();
     initSoftNavigation();
   }
 
