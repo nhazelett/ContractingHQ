@@ -1,0 +1,43 @@
+name: Fetch FAR Overhaul Tracker
+
+on:
+  schedule:
+    # Run daily at 08:15 UTC.
+    - cron: "15 8 * * *"
+  push:
+    paths:
+      - ".github/workflows/fetch-far-overhaul.yml"
+      - "scripts/fetch_far_overhaul.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-far-overhaul:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch official FAR Overhaul tracker data
+        run: python scripts/fetch_far_overhaul.py
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --quiet data/far-overhaul-live.json data/far-overhaul-live.js && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push updated FAR Overhaul data
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/far-overhaul-live.json data/far-overhaul-live.js
+          git commit -m "Update FAR Overhaul tracker ($(date -u +%Y-%m-%d))"
+          git push
