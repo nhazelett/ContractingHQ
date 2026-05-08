@@ -1,0 +1,43 @@
+name: Fetch GAO Protest Decisions
+
+on:
+  schedule:
+    # Run daily at 07:35 UTC.
+    - cron: "35 7 * * *"
+  push:
+    paths:
+      - ".github/workflows/fetch-gao-decisions.yml"
+      - "scripts/fetch_gao_decisions.js"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-gao-decisions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch GAO protest decision data
+        run: node scripts/fetch_gao_decisions.js
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --quiet data/gao-live.json data/gao-live.js && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push updated GAO data
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/gao-live.json data/gao-live.js
+          git commit -m "Update GAO protest watch ($(date -u +%Y-%m-%d))"
+          git push
