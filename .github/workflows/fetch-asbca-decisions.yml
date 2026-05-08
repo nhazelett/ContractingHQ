@@ -1,0 +1,43 @@
+name: Fetch ASBCA Decisions
+
+on:
+  schedule:
+    # Run daily at 07:55 UTC.
+    - cron: "55 7 * * *"
+  push:
+    paths:
+      - ".github/workflows/fetch-asbca-decisions.yml"
+      - "scripts/fetch_asbca_decisions.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-asbca-decisions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch ASBCA decision data
+        run: python scripts/fetch_asbca_decisions.py
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --quiet data/asbca-live.json data/asbca-live.js && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push updated ASBCA data
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/asbca-live.json data/asbca-live.js
+          git commit -m "Update ASBCA decision watch ($(date -u +%Y-%m-%d))"
+          git push
