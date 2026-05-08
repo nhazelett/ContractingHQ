@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-05-06T00:24:41.676256+00:00",
+  "generatedAt": "2026-05-08T00:15:44.165223+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -12,7 +12,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "totalParts": 51,
     "issuedParts": 51,
     "updatedParts": 10,
-    "agencyDeviationCount": 1378,
+    "agencyDeviationCount": 1388,
     "uniqueAgencyCount": 37,
     "latestPartDate": "2026-04-20",
     "latestPartDateLabel": "Apr 20, 2026",
@@ -23,8 +23,542 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "baseline": false,
     "newParts": [],
     "updatedParts": [],
-    "newAgencyDeviations": [],
-    "removedAgencyDeviations": []
+    "newAgencyDeviations": [
+      {
+        "part": {
+          "partNumber": 9,
+          "partLabel": "Part 9",
+          "title": "Contractor Qualifications",
+          "fullTitle": "Part 9 - Contractor Qualifications",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
+          "issuanceDate": "2025-08-21",
+          "issuanceDateLabel": "Aug 21, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Department of the Interior (DOI)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOI_RFO_Deviation_Part-9.pdf",
+          "id": "211c5bd16c9e33eb"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 9,
+          "partLabel": "Part 9",
+          "title": "Contractor Qualifications",
+          "fullTitle": "Part 9 - Contractor Qualifications",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
+          "issuanceDate": "2025-08-21",
+          "issuanceDateLabel": "Aug 21, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "National Labor Relations Board (NLRB)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NLRB_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "e9b24358379f94e0"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 9,
+          "partLabel": "Part 9",
+          "title": "Contractor Qualifications",
+          "fullTitle": "Part 9 - Contractor Qualifications",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
+          "issuanceDate": "2025-08-21",
+          "issuanceDateLabel": "Aug 21, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Pension Benefit Guaranty Corporation (PBGC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PBGC_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "79175f98aed196c2"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 9,
+          "partLabel": "Part 9",
+          "title": "Contractor Qualifications",
+          "fullTitle": "Part 9 - Contractor Qualifications",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
+          "issuanceDate": "2025-08-21",
+          "issuanceDateLabel": "Aug 21, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Housing and Urban Development (HUD)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/HUD_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "64b464baf965a67c"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 9,
+          "partLabel": "Part 9",
+          "title": "Contractor Qualifications",
+          "fullTitle": "Part 9 - Contractor Qualifications",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
+          "issuanceDate": "2025-08-21",
+          "issuanceDateLabel": "Aug 21, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Environmental Protection Agency (EPA)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/EPA_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "22831a609f0f34b9"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 12,
+          "partLabel": "Part 12",
+          "title": "Acquisition of Commercial Products and Commercial Services",
+          "fullTitle": "Part 12 - Acquisition of Commercial Products and Commercial Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "National Labor Relations Board (NLRB)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NLRB_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "4795709886815cee"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 12,
+          "partLabel": "Part 12",
+          "title": "Acquisition of Commercial Products and Commercial Services",
+          "fullTitle": "Part 12 - Acquisition of Commercial Products and Commercial Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Pension Benefit Guaranty Corporation (PBGC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PBGC_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "31213e531f2b2cf5"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 12,
+          "partLabel": "Part 12",
+          "title": "Acquisition of Commercial Products and Commercial Services",
+          "fullTitle": "Part 12 - Acquisition of Commercial Products and Commercial Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Environmental Protection Agency (EPA)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/EPA_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "640870ea251d1294"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 12,
+          "partLabel": "Part 12",
+          "title": "Acquisition of Commercial Products and Commercial Services",
+          "fullTitle": "Part 12 - Acquisition of Commercial Products and Commercial Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Housing and Urban Development (HUD)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/HUD_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "8e20b5e0cdabb52d"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 22,
+          "partLabel": "Part 22",
+          "title": "Application of Labor Laws to Government Acquisitions",
+          "fullTitle": "Part 22 - Application of Labor Laws to Government Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-22",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Department of the Interior (DOI)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOI_RFO_Deviation_Part-22.pdf",
+          "id": "311cfa2cb7842ef2"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 22,
+          "partLabel": "Part 22",
+          "title": "Application of Labor Laws to Government Acquisitions",
+          "fullTitle": "Part 22 - Application of Labor Laws to Government Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-22",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "National Labor Relations Board (NLRB)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NLRB_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "db0c1b782c0675c6"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 22,
+          "partLabel": "Part 22",
+          "title": "Application of Labor Laws to Government Acquisitions",
+          "fullTitle": "Part 22 - Application of Labor Laws to Government Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-22",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Pension Benefit Guaranty Corporation (PBGC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PBGC_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "11256a8c0a8cfbba"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 22,
+          "partLabel": "Part 22",
+          "title": "Application of Labor Laws to Government Acquisitions",
+          "fullTitle": "Part 22 - Application of Labor Laws to Government Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-22",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Housing and Urban Development (HUD)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/HUD_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "a859d34731b6180d"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 22,
+          "partLabel": "Part 22",
+          "title": "Application of Labor Laws to Government Acquisitions",
+          "fullTitle": "Part 22 - Application of Labor Laws to Government Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-22",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Environmental Protection Agency (EPA)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/EPA_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "a123d9ccc880c4df"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 23,
+          "partLabel": "Part 23",
+          "title": "Sustainable Acquisition, Material Safety, and Pollution Prevention",
+          "fullTitle": "Part 23 - Sustainable Acquisition, Material Safety, and Pollution Prevention",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-23",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 27
+        },
+        "agency": {
+          "name": "Department of the Interior (DOI)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOI_RFO_Deviation_Part-23.pdf",
+          "id": "9ecc65304a615250"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 41,
+          "partLabel": "Part 41",
+          "title": "Acquisition of Utility Services",
+          "fullTitle": "Part 41 - Acquisition of Utility Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-41",
+          "issuanceDate": "2025-09-25",
+          "issuanceDateLabel": "Sep 25, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 28
+        },
+        "agency": {
+          "name": "Department of the Interior (DOI)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOI_RFO_Deviation_Part-41.pdf",
+          "id": "9ad4c33b8acbd973"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 44,
+          "partLabel": "Part 44",
+          "title": "Subcontracting Policies and Procedures",
+          "fullTitle": "Part 44 - Subcontracting Policies and Procedures",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-44",
+          "issuanceDate": "2025-09-04",
+          "issuanceDateLabel": "Sep 4, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 26
+        },
+        "agency": {
+          "name": "Department of the Interior (DOI)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOI_RFO_Deviation_Part-44.pdf",
+          "id": "636edb677a6ca107"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 47,
+          "partLabel": "Part 47",
+          "title": "Transportation",
+          "fullTitle": "Part 47 - Transportation",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-47",
+          "issuanceDate": "2025-09-25",
+          "issuanceDateLabel": "Sep 25, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 28
+        },
+        "agency": {
+          "name": "Department of the Interior (DOI)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOI_RFO_Deviation_Part-47.pdf",
+          "id": "2970fe96688533c5"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 53,
+          "partLabel": "Part 53",
+          "title": "Forms",
+          "fullTitle": "Part 53 - Forms",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-53",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 27
+        },
+        "agency": {
+          "name": "Department of the Interior (DOI)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOI_RFO_Deviation_Part-53.pdf",
+          "id": "48a4ad937240d1b2"
+        }
+      }
+    ],
+    "removedAgencyDeviations": [
+      {
+        "part": {
+          "partNumber": 9,
+          "partLabel": "Part 9",
+          "title": "Contractor Qualifications",
+          "fullTitle": "Part 9 - Contractor Qualifications",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
+          "issuanceDate": "2025-08-21",
+          "issuanceDateLabel": "Aug 21, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Pension Benefit Guaranty Corporation (PBGC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PBGC_RFO_Deviation_Part_9.pdf",
+          "id": "6b8610f8638e9f28"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 9,
+          "partLabel": "Part 9",
+          "title": "Contractor Qualifications",
+          "fullTitle": "Part 9 - Contractor Qualifications",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
+          "issuanceDate": "2025-08-21",
+          "issuanceDateLabel": "Aug 21, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Housing and Urban Development (HUD)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/HUD_RFO_Deviation_Part-9-12-22.pdf",
+          "id": "0dc0857b16695ccf"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 9,
+          "partLabel": "Part 9",
+          "title": "Contractor Qualifications",
+          "fullTitle": "Part 9 - Contractor Qualifications",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
+          "issuanceDate": "2025-08-21",
+          "issuanceDateLabel": "Aug 21, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Environmental Protection Agency (EPA)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/EPA_RFO_Deviation_Part-9.pdf",
+          "id": "9c0be81ecb7b507b"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 12,
+          "partLabel": "Part 12",
+          "title": "Acquisition of Commercial Products and Commercial Services",
+          "fullTitle": "Part 12 - Acquisition of Commercial Products and Commercial Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Pension Benefit Guaranty Corporation (PBGC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PBGC_RFO_Deviation_Part_12.pdf",
+          "id": "7cedd081c7cb06b4"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 12,
+          "partLabel": "Part 12",
+          "title": "Acquisition of Commercial Products and Commercial Services",
+          "fullTitle": "Part 12 - Acquisition of Commercial Products and Commercial Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Environmental Protection Agency (EPA)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/EPA_RFO_Deviation_Part-12.pdf",
+          "id": "dd0c81311d157782"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 12,
+          "partLabel": "Part 12",
+          "title": "Acquisition of Commercial Products and Commercial Services",
+          "fullTitle": "Part 12 - Acquisition of Commercial Products and Commercial Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Housing and Urban Development (HUD)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/HUD_RFO_Deviation_Part-9-12-22.pdf",
+          "id": "78bd1893810357d4"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 22,
+          "partLabel": "Part 22",
+          "title": "Application of Labor Laws to Government Acquisitions",
+          "fullTitle": "Part 22 - Application of Labor Laws to Government Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-22",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Pension Benefit Guaranty Corporation (PBGC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PBGC_RFO_Deviation_Part_22.pdf",
+          "id": "7af302b222f2b212"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 22,
+          "partLabel": "Part 22",
+          "title": "Application of Labor Laws to Government Acquisitions",
+          "fullTitle": "Part 22 - Application of Labor Laws to Government Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-22",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Housing and Urban Development (HUD)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/HUD_RFO_Deviation_Part-9-12-22.pdf",
+          "id": "c0f2d9eaa4ec081d"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 22,
+          "partLabel": "Part 22",
+          "title": "Application of Labor Laws to Government Acquisitions",
+          "fullTitle": "Part 22 - Application of Labor Laws to Government Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-22",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Environmental Protection Agency (EPA)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/EPA_RFO_Deviation_Part-22.pdf",
+          "id": "41a0e386873f31c2"
+        }
+      }
+    ]
   },
   "parts": [
     {
@@ -1269,8 +1803,18 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-04-20",
       "updateDateLabel": "Apr 20, 2026",
       "isUpdated": true,
-      "deviationCount": 29,
+      "deviationCount": 31,
       "agencies": [
+        {
+          "name": "Department of the Interior (DOI)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOI_RFO_Deviation_Part-9.pdf",
+          "id": "211c5bd16c9e33eb"
+        },
+        {
+          "name": "National Labor Relations Board (NLRB)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NLRB_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "e9b24358379f94e0"
+        },
         {
           "name": "Department of Energy (DOE)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-9-12-22.pdf",
@@ -1288,8 +1832,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "Pension Benefit Guaranty Corporation (PBGC)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PBGC_RFO_Deviation_Part_9.pdf",
-          "id": "6b8610f8638e9f28"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PBGC_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "79175f98aed196c2"
         },
         {
           "name": "Department of Defense (DoD)",
@@ -1298,8 +1842,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "Housing and Urban Development (HUD)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/HUD_RFO_Deviation_Part-9-12-22.pdf",
-          "id": "0dc0857b16695ccf"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/HUD_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "64b464baf965a67c"
         },
         {
           "name": "National Aeronautics and Space Administration (NASA)",
@@ -1328,8 +1872,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "Environmental Protection Agency (EPA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/EPA_RFO_Deviation_Part-9.pdf",
-          "id": "9c0be81ecb7b507b"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/EPA_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "22831a609f0f34b9"
         },
         {
           "name": "Social Security Administration (SSA)",
@@ -1420,7 +1964,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Updated model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Updated model text is posted. 31 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 10,
@@ -1816,8 +2360,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-04-20",
       "updateDateLabel": "Apr 20, 2026",
       "isUpdated": true,
-      "deviationCount": 30,
+      "deviationCount": 31,
       "agencies": [
+        {
+          "name": "National Labor Relations Board (NLRB)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NLRB_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "4795709886815cee"
+        },
         {
           "name": "Department of Energy (DOE)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-9-12-22.pdf",
@@ -1845,8 +2394,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "Pension Benefit Guaranty Corporation (PBGC)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PBGC_RFO_Deviation_Part_12.pdf",
-          "id": "7cedd081c7cb06b4"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PBGC_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "31213e531f2b2cf5"
         },
         {
           "name": "Department of Defense (DoD)",
@@ -1865,8 +2414,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "Environmental Protection Agency (EPA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/EPA_RFO_Deviation_Part-12.pdf",
-          "id": "dd0c81311d157782"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/EPA_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "640870ea251d1294"
         },
         {
           "name": "Department of Veterans Affairs (VA)",
@@ -1905,8 +2454,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "Housing and Urban Development (HUD)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/HUD_RFO_Deviation_Part-9-12-22.pdf",
-          "id": "78bd1893810357d4"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/HUD_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "8e20b5e0cdabb52d"
         },
         {
           "name": "Nuclear Regulatory Commission (NRC)",
@@ -3073,8 +3622,18 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-04-20",
       "updateDateLabel": "Apr 20, 2026",
       "isUpdated": true,
-      "deviationCount": 27,
+      "deviationCount": 29,
       "agencies": [
+        {
+          "name": "Department of the Interior (DOI)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOI_RFO_Deviation_Part-22.pdf",
+          "id": "311cfa2cb7842ef2"
+        },
+        {
+          "name": "National Labor Relations Board (NLRB)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NLRB_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "db0c1b782c0675c6"
+        },
         {
           "name": "Department of Energy (DOE)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-9-12-22.pdf",
@@ -3102,8 +3661,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "Pension Benefit Guaranty Corporation (PBGC)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PBGC_RFO_Deviation_Part_22.pdf",
-          "id": "7af302b222f2b212"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PBGC_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "11256a8c0a8cfbba"
         },
         {
           "name": "Department of Defense (DoD)",
@@ -3112,13 +3671,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "Housing and Urban Development (HUD)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/HUD_RFO_Deviation_Part-9-12-22.pdf",
-          "id": "c0f2d9eaa4ec081d"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/HUD_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "a859d34731b6180d"
         },
         {
           "name": "Environmental Protection Agency (EPA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/EPA_RFO_Deviation_Part-22.pdf",
-          "id": "41a0e386873f31c2"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/EPA_RFO_Deviation_Part-9-12and22.pdf",
+          "id": "a123d9ccc880c4df"
         },
         {
           "name": "Consumer Product Safety Commission (CPSC)",
@@ -3227,8 +3786,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 26,
+      "deviationCount": 27,
       "agencies": [
+        {
+          "name": "Department of the Interior (DOI)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOI_RFO_Deviation_Part-23.pdf",
+          "id": "9ecc65304a615250"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-23.pdf",
@@ -6030,8 +6594,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 27,
+      "deviationCount": 28,
       "agencies": [
+        {
+          "name": "Department of the Interior (DOI)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOI_RFO_Deviation_Part-41.pdf",
+          "id": "9ad4c33b8acbd973"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-41.pdf",
@@ -6171,7 +6740,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 27 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 42,
@@ -6503,8 +7072,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 25,
+      "deviationCount": 26,
       "agencies": [
+        {
+          "name": "Department of the Interior (DOI)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOI_RFO_Deviation_Part-44.pdf",
+          "id": "636edb677a6ca107"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-44.pdf",
@@ -6634,7 +7208,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 25 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 26 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 45,
@@ -6950,8 +7524,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 27,
+      "deviationCount": 28,
       "agencies": [
+        {
+          "name": "Department of the Interior (DOI)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOI_RFO_Deviation_Part-47.pdf",
+          "id": "2970fe96688533c5"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-47.pdf",
@@ -7091,7 +7670,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 27 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 48,
@@ -7748,8 +8327,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 26,
+      "deviationCount": 27,
       "agencies": [
+        {
+          "name": "Department of the Interior (DOI)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOI_RFO_Deviation_Part-53.pdf",
+          "id": "48a4ad937240d1b2"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-53.pdf",
