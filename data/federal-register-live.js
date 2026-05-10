@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-05-09T08:50:19.147Z",
-  "since": "2024-11-15",
+  "generatedAt": "2026-05-10T09:01:24.450Z",
+  "since": "2024-11-16",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,15 +14,15 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 138,
+    "total": 132,
     "latestPublicationDate": "2026-05-07",
     "openCommentWindows": 3,
-    "rules": 72,
+    "rules": 66,
     "byTone": {
-      "action": 52,
+      "action": 47,
       "active": 1,
       "monitor": 63,
-      "watch": 22
+      "watch": 21
     }
   },
   "items": [
@@ -4749,219 +4749,6 @@ window.KTHQ_FEDREG_DATA = {
       ],
       "htmlUrl": "https://www.federalregister.gov/documents/2024/11/21/2024-27314/information-collection-certain-federal-acquisition-regulation-part-15-requirements",
       "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-11-21/pdf/2024-27314.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2024-26055",
-      "documentNumber": "2024-26055",
-      "title": "Defense Federal Acquisition Regulation: Past Performance of Affiliate Companies of Small Business Concerns (DFARS Case 2024-D016)",
-      "shortTitle": "Defense Federal Acquisition Regulation: Past Performance of Affiliate Companies of Small Business Concerns (DFARS Case 2024-D016)",
-      "system": "DFARS",
-      "stage": "Final rule",
-      "topic": "Small business",
-      "actionLevel": "Check templates",
-      "actionTone": "action",
-      "practitionerNote": "This is implemented rulemaking. Check effective dates, affected parts, and whether your templates, clauses, review checklists, or training notes need to change.",
-      "nextSteps": [
-        "Read the effective date language",
-        "Search local templates for the cited parts or clauses",
-        "Tell the team if open acquisitions are affected"
-      ],
-      "type": "Rule",
-      "publicationDate": "2024-11-15",
-      "effectiveDate": "2024-11-15",
-      "commentsCloseDate": "",
-      "datesText": "Effective November 15, 2024.",
-      "actionText": "Final rule.",
-      "summary": "DoD is issuing a final rule amending the Defense Federal Acquisition Regulation Supplement (DFARS) to implement a section of the National Defense Authorization Act for Fiscal Year 2024 that provides direction to contracting officers evaluating the past performance of small business concerns.",
-      "citation": "89 FR 90237",
-      "regulationIds": [
-        "0750-AM13"
-      ],
-      "cfrReferences": "48 CFR part 215",
-      "agencies": [
-        "Defense Department",
-        "Defense Acquisition Regulations System"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2024/11/15/2024-26055/defense-federal-acquisition-regulation-past-performance-of-affiliate-companies-of-small-business",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-11-15/pdf/2024-26055.pdf",
-      "sourceQuery": "DFARS / DARS agency feed"
-    },
-    {
-      "id": "2024-26058",
-      "documentNumber": "2024-26058",
-      "title": "Defense Federal Acquisition Regulation Supplement: Disclosure of Information Regarding Foreign Obligations (DFARS Case 2018-D064)",
-      "shortTitle": "DFARS: Disclosure of Information Regarding Foreign Obligations (DFARS Case 2018-D064)",
-      "system": "DFARS",
-      "stage": "Proposed rule",
-      "topic": "Cyber / data rights",
-      "actionLevel": "Review",
-      "actionTone": "watch",
-      "practitionerNote": "This is proposed rulemaking, not a current requirement. Keep it on your radar for the final rule.",
-      "nextSteps": [
-        "Check the comment due date",
-        "Skim the affected FAR/DFARS parts",
-        "Flag it for policy or leadership if it touches your buying lane"
-      ],
-      "type": "Proposed Rule",
-      "publicationDate": "2024-11-15",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-01-14",
-      "datesText": "Comments on the proposed rule should be submitted in writing to the address shown below on or before January 14, 2025, to be considered in the formation of a final rule.",
-      "actionText": "Proposed rule.",
-      "summary": "DoD is proposing to amend the Defense Federal Acquisition Regulation Supplement (DFARS) to implement a section of the National Defense Authorization Act for Fiscal Year 2019, which prohibits DoD from acquiring products, services, or systems relating to information or operational technology, cybersecurity, industrial control systems, or weapon systems through a contract unless the offeror or contractor provides disclosures related to sharing source code and computer code with foreign governments.",
-      "citation": "89 FR 90254",
-      "regulationIds": [
-        "0750-AK23"
-      ],
-      "cfrReferences": "48 CFR part 212, 48 CFR part 213, 48 CFR part 217, 48 CFR part 239, 48 CFR part 252",
-      "agencies": [
-        "Defense Department",
-        "Defense Acquisition Regulations System"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2024/11/15/2024-26058/defense-federal-acquisition-regulation-supplement-disclosure-of-information-regarding-foreign",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-11-15/pdf/2024-26058.pdf",
-      "sourceQuery": "DFARS / DARS agency feed"
-    },
-    {
-      "id": "2024-26054",
-      "documentNumber": "2024-26054",
-      "title": "Defense Federal Acquisition Regulation Supplement: Inapplicability of Additional Defense-Unique Laws and Certain Non-Statutory DFARS Clauses to Commercial Item Contracts (DFARS Case 2018-D074)",
-      "shortTitle": "DFARS: Inapplicability of Additional Defense-Unique Laws and Certain Non-Statutory DFARS Clauses to Commercial Item Contracts (DFARS Case 2018-D074)",
-      "system": "DFARS",
-      "stage": "Final rule",
-      "topic": "Clauses / reps",
-      "actionLevel": "Check templates",
-      "actionTone": "action",
-      "practitionerNote": "This is implemented rulemaking. Check effective dates, affected parts, and whether your templates, clauses, review checklists, or training notes need to change.",
-      "nextSteps": [
-        "Read the effective date language",
-        "Search local templates for the cited parts or clauses",
-        "Tell the team if open acquisitions are affected"
-      ],
-      "type": "Rule",
-      "publicationDate": "2024-11-15",
-      "effectiveDate": "2024-11-25",
-      "commentsCloseDate": "",
-      "datesText": "Effective November 25, 2024.",
-      "actionText": "Final rule.",
-      "summary": "DoD is issuing a final rule amending the Defense Federal Acquisition Regulation Supplement (DFARS) to implement sections of the National Defense Authorization Acts for Fiscal Years 2018 and 2019 regarding the applicability of certain solicitation provisions and contract clauses to contracts and subcontracts for commercial products, commercial services, and commercially available off-the-shelf items.",
-      "citation": "89 FR 90233",
-      "regulationIds": [
-        "0750-AK33"
-      ],
-      "cfrReferences": "48 CFR part 203, 48 CFR part 204, 48 CFR part 205, 48 CFR part 212, 48 CFR part 215, 48 CFR part 225",
-      "agencies": [
-        "Defense Department",
-        "Defense Acquisition Regulations System"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2024/11/15/2024-26054/defense-federal-acquisition-regulation-supplement-inapplicability-of-additional-defense-unique-laws",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-11-15/pdf/2024-26054.pdf",
-      "sourceQuery": "DFARS / DARS agency feed"
-    },
-    {
-      "id": "2024-26053",
-      "documentNumber": "2024-26053",
-      "title": "Defense Federal Acquisition Regulation Supplement; Technical Amendments",
-      "shortTitle": "DFARS: Technical Amendments",
-      "system": "DFARS",
-      "stage": "Final rule",
-      "topic": "Acquisition policy",
-      "actionLevel": "Check templates",
-      "actionTone": "action",
-      "practitionerNote": "This is implemented rulemaking. Check effective dates, affected parts, and whether your templates, clauses, review checklists, or training notes need to change.",
-      "nextSteps": [
-        "Read the effective date language",
-        "Search local templates for the cited parts or clauses",
-        "Tell the team if open acquisitions are affected"
-      ],
-      "type": "Rule",
-      "publicationDate": "2024-11-15",
-      "effectiveDate": "2024-11-15",
-      "commentsCloseDate": "",
-      "datesText": "Effective November 15, 2024.",
-      "actionText": "Final rule; technical amendment.",
-      "summary": "DoD is amending the Defense Federal Acquisition Regulation Supplement (DFARS) to make needed editorial changes.",
-      "citation": "89 FR 90238",
-      "regulationIds": [],
-      "cfrReferences": "48 CFR part 225",
-      "agencies": [
-        "Defense Department",
-        "Defense Acquisition Regulations System"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2024/11/15/2024-26053/defense-federal-acquisition-regulation-supplement-technical-amendments",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-11-15/pdf/2024-26053.pdf",
-      "sourceQuery": "DFARS / DARS agency feed"
-    },
-    {
-      "id": "2024-26059",
-      "documentNumber": "2024-26059",
-      "title": "Defense Federal Acquisition Regulation Supplement: Updates to the Definition of Departments and Agencies (DFARS Case 2024-D026)",
-      "shortTitle": "DFARS: Updates to the Definition of Departments and Agencies (DFARS Case 2024-D026)",
-      "system": "DFARS",
-      "stage": "Final rule",
-      "topic": "Acquisition policy",
-      "actionLevel": "Check templates",
-      "actionTone": "action",
-      "practitionerNote": "This is implemented rulemaking. Check effective dates, affected parts, and whether your templates, clauses, review checklists, or training notes need to change.",
-      "nextSteps": [
-        "Read the effective date language",
-        "Search local templates for the cited parts or clauses",
-        "Tell the team if open acquisitions are affected"
-      ],
-      "type": "Rule",
-      "publicationDate": "2024-11-15",
-      "effectiveDate": "2024-11-15",
-      "commentsCloseDate": "",
-      "datesText": "Effective November 15, 2024.",
-      "actionText": "Final rule.",
-      "summary": "DoD is issuing a final rule amending the Defense Federal Acquisition Regulation Supplement (DFARS) to provide updates to the existing definition of \"departments and agencies.\"",
-      "citation": "89 FR 90232",
-      "regulationIds": [
-        "0750-AM23"
-      ],
-      "cfrReferences": "48 CFR part 202",
-      "agencies": [
-        "Defense Department",
-        "Defense Acquisition Regulations System"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2024/11/15/2024-26059/defense-federal-acquisition-regulation-supplement-updates-to-the-definition-of-departments-and",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-11-15/pdf/2024-26059.pdf",
-      "sourceQuery": "DFARS / DARS agency feed"
-    },
-    {
-      "id": "2024-25967",
-      "documentNumber": "2024-25967",
-      "title": "General Services Administration Acquisition Regulation; SAM Representation for Leases",
-      "shortTitle": "General Services Administration Acquisition Regulation; SAM Representation for Leases",
-      "system": "Acquisition",
-      "stage": "Final rule",
-      "topic": "Clauses / reps",
-      "actionLevel": "Check templates",
-      "actionTone": "action",
-      "practitionerNote": "This is implemented rulemaking. Check effective dates, affected parts, and whether your templates, clauses, review checklists, or training notes need to change.",
-      "nextSteps": [
-        "Read the effective date language",
-        "Search local templates for the cited parts or clauses",
-        "Tell the team if open acquisitions are affected"
-      ],
-      "type": "Rule",
-      "publicationDate": "2024-11-15",
-      "effectiveDate": "2024-12-16",
-      "commentsCloseDate": "",
-      "datesText": "Effective December 16, 2024.",
-      "actionText": "Final rule.",
-      "summary": "The General Services Administration is issuing this final rule amending the General Services Administration Acquisition Regulation (GSAR) to remove the requirement for lease offerors to have an active System for Award Management registration when submitting offers and instead allow offers up until the time of award to obtain an active registration.",
-      "citation": "89 FR 90238",
-      "regulationIds": [
-        "3090-AK22"
-      ],
-      "cfrReferences": "48 CFR part 501, 48 CFR part 552, 48 CFR part 570",
-      "agencies": [
-        "General Services Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2024/11/15/2024-25967/general-services-administration-acquisition-regulation-sam-representation-for-leases",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-11-15/pdf/2024-25967.pdf",
       "sourceQuery": "Federal Acquisition Regulation keyword feed"
     }
   ]
