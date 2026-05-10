@@ -1,5 +1,5 @@
 window.KTHQ_ASBCA_DATA = {
-  "generatedAt": "2026-05-09T09:06:16.223984+00:00",
+  "generatedAt": "2026-05-10T09:18:48.040442+00:00",
   "source": {
     "name": "Armed Services Board of Contract Appeals",
     "decisionsUrl": "https://www.asbca.mil/Decisions/"
@@ -419,9 +419,9 @@ window.KTHQ_ASBCA_DATA = {
       "outcome": "dismissed",
       "outcomeLabel": "Dismissed",
       "judge": "Prouty",
-      "officialExcerpt": "%PDF-1.6 %\ufffd\ufffd\ufffd\ufffd 189 0 obj <> endobj 209 0 obj <>/Filter/FlateDecode/ID[<177F8503C6D60047AD7900F5AAD70615><90055D16FDFC714EBCDE4C13E0C4357D>]/Index[189 28]/Info 188 0 R/Length 99/Prev 81207/Root 190 0 R/Size 217/Type/XRef/W[1 3 1]>>stream h\ufffdbbd`\u0010``b``Z \"\u0019\u000f\ufffd\ufffd,\u0010\ufffd \u0001\u0016\ufffd\u0000\ufffd\ufffd\ufffd\ufffdR0)\b&\ufffd\ufffdj\u0782\ufffd\ufffd\ufffdlo0i\b&?\ufffd\u0203\ufffd`\ufffd\u0007\ufffd\u0014Q\u0000\ufffd\ufffd\u0002SAln7 \ufffd\ufffd].\u0003\u0013\ufffdv \ufffd\b\ufffdN\ufffd\ufffd\u007f\u0006F\ufffd\ufffd\u0000\u0001\u0006\u0000\ufffd\ufffd\u000f6 endstream endobj startxref 0 %%EOF 216 0 obj <>stream h\ufffdb``\u0010b``\ufffd\ufffd\ufffd\ufffd\ufffd(Y\u0280 \u0018\ufffd\ufffd\ufffd\ufffd\ufffd\u0001YL\b\ufffd\u0019\u0018\ufffd\u0018\u0004\ufffd\ufffd;F>\ufffd\u0004\u0006k\ufffd\ufffd ;\u0019\ufffd\u0019m\u0019 2 g\ufffd8\ufffd\ufffdpOh\u001b\ufffd6\ufffd \ufffd:\ufffdQ\ufffd2\ufffd4\u0013\u0003\u0003\ufffdF\ufffda\ufffd \ufffd\u0595\u0010\ufffd\u0018\ufffd\u0001\u0004\u0018\u0000\ufffd\ufffd\u000f\ufffd endstream endobj 190 0 obj <>/Metadata 3 0 R/PageLayout/OneColumn/Pages 187 0 R/StructTreeRoot 7 0 R/Type/Catalog/ViewerPreferen...",
+      "officialExcerpt": "the appeal is dismissed from the Board's docket without prejudice.",
       "tags": [
-        "Delivery"
+        "CDA process"
       ],
       "practitionerPrompt": "Dismissals often turn on threshold mistakes. New specialists should read these for what must happen before the Board can reach the merits.",
       "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64475%20MLSUSA%20Corp%203.27.26%20Dismissal.pdf?ver=hPBNJrmDR46taEJXnxUHSQ%3d%3d",
@@ -443,9 +443,9 @@ window.KTHQ_ASBCA_DATA = {
       "outcome": "dismissed",
       "outcomeLabel": "Dismissed",
       "judge": "Prouty",
-      "officialExcerpt": "%PDF-1.6 %\ufffd\ufffd\ufffd\ufffd 189 0 obj <> endobj 209 0 obj <>/Filter/FlateDecode/ID[<871E66BF9F81FE47A7DF2A69EE1DFA35><313B60F21DE1444A9F786DAF6B26D765>]/Index[189 28]/Info 188 0 R/Length 98/Prev 82827/Root 190 0 R/Size 217/Type/XRef/W[1 3 1]>>stream h\ufffdbbd`\u0010``b``Z\u0001\"\u0019\u000f\ufffd\ufffd,\u0010\ufffd \u0002\u0016\ufffd\u0004\ufffd\u000f\ufffd\ufffd\u001a0 Q\ufffd\u0006V\ufffd\u0013\ufffd^ f\u0007\ufffdIC0\ufffd \"\u000fG\ufffde=A\ufffd\ufffd\u0002\ufffdd\u0014\ufffd b\ufffd\ufffd\u0003\ufffd\ufffd\ufffd 10\u0001m\ufffd\u0001\ufffd\u0000\ufffd\ufffdI\ufffdg`\ufffd\ufffd \u0010`\u0000\ufffdP\u000f5 endstream endobj startxref 0 %%EOF 216 0 obj <>stream h\ufffdb``\u0010b``\ufffd\ufffd\ufffd\ufffd\ufffd(\u007f\ufffd\u0001\u00150\u00021 \u0003G\u0003\ufffd\ufffd\u0010\u001430f1\b\u0000\ufffdW \ufffd\u0019\ufffd\u0018\ufffd\u0018\ufffd1\ufffda\ufffdg\ufffddx\ufffdx\ufffd\ufffd\ufffd\ufffd\ufffd \ufffd\ufffd\ufffd\ufffdks\ufffd\ufffd\u008cbTv\u0004\ufffdL \\\ufffd\u11b120:\ufffd\ufffdX\u0138\u000f \ufffd\u0000 [\u0011- endstream endobj 190 0 obj <>/Metadata 3 0 R/PageLayout/OneColumn/Pages 187 0 R/StructTreeRoot 7 0 R/Type/Catalog/ViewerPreference...",
+      "officialExcerpt": "the appeal is dismissed from the Board's docket without prejudice.",
       "tags": [
-        "Delivery"
+        "CDA process"
       ],
       "practitionerPrompt": "Dismissals often turn on threshold mistakes. New specialists should read these for what must happen before the Board can reach the merits.",
       "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64469%20MLSUSA%20Corp.%203.27.26%20Dismissal.pdf?ver=tC7a3r8HC3-CBjrlaIOHLQ%3d%3d",
