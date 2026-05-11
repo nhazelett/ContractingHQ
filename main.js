@@ -62,6 +62,7 @@
     ["far-part8-limiting-sources.html", "Limiting Sources (FAR 8)"],
     ["far-part16-fair-opportunity.html", "Fair Opportunity (FAR 16)"],
     ["far-part12-restricting-competition.html", "Restricting Competition (FAR 12)"],
+    ["commercial-competition-statutes.html", "Commercial Competition Statutes"],
     ["commercial-item-df.html", "Commercial Item D&F"],
     ["provisions-clauses-commercial.html", "Provisions & Clauses"],
     ["simplified-solicitations-commercial.html", "Simplified Solicitations"],

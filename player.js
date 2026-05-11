@@ -1953,6 +1953,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'award-decision-documents.html',
     'award-notice-letters.html',
     'blanket-purchase-agreements.html',
+    'commercial-competition-statutes.html',
     'commercial-item-df.html',
     'comparative-analysis.html',
     'conducting-negotiations.html',
