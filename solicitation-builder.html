@@ -25,8 +25,10 @@
 
     .sb-container { max-width: 860px; margin: 0 auto; padding: 0 1.5rem; }
 
-    /* ── Export bar ── */
-    .sb-export-bar { display: flex; gap: 0.75rem; justify-content: flex-end; margin-bottom: 1.5rem; position: sticky; top: 60px; z-index: 80; background: rgba(4,13,31,0.92); backdrop-filter: blur(8px); padding: 0.75rem 0; border-bottom: 1px solid rgba(74,158,255,0.1); }
+    /* ── Builder actions ── */
+    .sb-reset-bar, .sb-preview-bar { display: flex; gap: 0.75rem; justify-content: flex-end; }
+    .sb-reset-bar { margin-bottom: 1.5rem; }
+    .sb-preview-bar { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(74,158,255,0.1); }
     .sb-export-btn { background: var(--accent); color: #fff; border: none; padding: 0.6rem 1.4rem; border-radius: 6px; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: inherit; transition: background 0.15s; }
     .sb-export-btn:hover { background: #3a8eff; }
     .sb-reset-btn { background: transparent; color: var(--silver); border: 1px solid rgba(255,255,255,0.15); padding: 0.6rem 1.2rem; border-radius: 6px; font-size: 0.82rem; cursor: pointer; font-family: inherit; transition: all 0.15s; }
@@ -133,11 +135,13 @@
 
     /* ── Print styles (for PDF via browser print) ── */
     @media print {
+      html, body { background: #fff; }
       body * { visibility: hidden; }
+      #preview-wrapper, #preview-wrapper.active, .pv-page-area { display: block !important; visibility: visible; background: #fff; margin: 0; padding: 0; }
       .pv-page, .pv-page * { visibility: visible; }
       .pv-page { position: absolute; left: 0; top: 0; width: 100%; padding: 0.5in 0.75in; box-shadow: none; border-radius: 0; }
       .pv-page [contenteditable="true"] { border-bottom: none !important; background: none !important; }
-      .navbar, .sb-bg, .pv-toolbar, .pv-tip, #builder-form { display: none !important; }
+      .navbar, .pv-toolbar, .pv-tip, #builder-form { display: none !important; }
     }
 
     /* ── CLIN table responsive ── */
@@ -149,7 +153,7 @@
       .sb-row { flex-direction: column; flex-wrap: wrap; }
       .sb-label { width: auto; min-width: 0; padding-top: 0; margin-bottom: 0.15rem; }
       .sb-input, .sb-select { width: 100%; }
-      .sb-export-bar { flex-wrap: wrap; }
+      .sb-reset-bar, .sb-preview-bar { flex-wrap: wrap; }
       .sb-section { padding: 1rem; }
       .sb-factor-header { flex-direction: column; align-items: flex-start; }
       .sb-factor .sb-select { max-width: none !important; width: 100%; }
@@ -239,10 +243,9 @@
 
   <div class="sb-container">
 
-    <!-- Export bar -->
-    <div class="sb-export-bar">
+    <!-- Reset action -->
+    <div class="sb-reset-bar">
       <button class="sb-reset-btn" onclick="resetBuilder()">Reset All</button>
-      <button class="sb-export-btn" onclick="generatePreview()">Preview Document &rarr;</button>
     </div>
 
     <!-- ═══════ SECTION 1: HEADER BLOCK ═══════ -->
@@ -517,6 +520,11 @@
         </tbody>
       </table>
       <button class="sb-add-btn" onclick="addAttachment()">+ Add Attachment</button>
+    </div>
+
+    <!-- Preview action -->
+    <div class="sb-preview-bar">
+      <button class="sb-export-btn" onclick="generatePreview()">Preview Document &rarr;</button>
     </div>
 
   </div><!-- /sb-container -->
