@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-05-11T10:47:06.896Z",
+  "generatedAt": "2026-05-12T10:05:59.141Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -8,7 +8,7 @@ window.KTHQ_GAO_DATA = {
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
     "total": 17,
-    "latestDecisionDate": "2026-05-08",
+    "latestDecisionDate": "2026-05-11",
     "sustained": 0,
     "denied": 8,
     "dismissed": 2,
@@ -37,6 +37,33 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-423995,B-423995.2",
+      "caseName": "Covenant Aviation Security LLC",
+      "title": "Covenant Aviation Security LLC",
+      "bNumbers": [
+        "B-423995",
+        "B-423995.2"
+      ],
+      "bNumberText": "B-423995, B-423995.2",
+      "link": "https://www.gao.gov/products/b-423995%2Cb-423995.2",
+      "publicationDate": "2026-05-11",
+      "decisionDate": "2026-05-11",
+      "displayDate": "May 11, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "Covenant Aviation Security, LLC (CAS), of Bolingbrook, Illinois, protests the issuance of a task order to VMD Systems Integrators, LLC, of McLean,...",
+      "highlights": "",
+      "digest": "",
+      "tags": [
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
+    },
     {
       "id": "B-424353",
       "caseName": "AIMS-USGP JV LLC",
@@ -460,33 +487,6 @@ window.KTHQ_GAO_DATA = {
       "tags": [
         "Small business",
         "Orders / IDIQ"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
-    },
-    {
-      "id": "B-424183,B-424183.2",
-      "caseName": "Highland Engineering, Inc.",
-      "title": "Highland Engineering, Inc.",
-      "bNumbers": [
-        "B-424183",
-        "B-424183.2"
-      ],
-      "bNumberText": "B-424183, B-424183.2",
-      "link": "https://www.gao.gov/products/b-424183%2Cb-424183.2",
-      "publicationDate": "2026-04-09",
-      "decisionDate": "2026-04-09",
-      "displayDate": "Apr 9, 2026",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "outcomeSource": "Inferred from GAO RSS",
-      "decisionLine": "",
-      "officialSynopsis": "Highland Engineering, Inc., a small business of Howell, Michigan, protests the award of a contract to SelectTech Services Corporation, a small...",
-      "highlights": "",
-      "digest": "",
-      "tags": [
-        "Small business"
       ],
       "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
       "sourceStatus": "rss",
