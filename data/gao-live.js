@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-05-12T10:05:59.141Z",
+  "generatedAt": "2026-05-13T10:05:37.968Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,13 +7,13 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 17,
-    "latestDecisionDate": "2026-05-11",
+    "total": 15,
+    "latestDecisionDate": "2026-05-12",
     "sustained": 0,
-    "denied": 8,
+    "denied": 5,
     "dismissed": 2,
     "mixed": 1,
-    "unclassified": 5,
+    "unclassified": 6,
     "sourceStatus": {
       "rss": {
         "ok": true,
@@ -27,9 +27,9 @@ window.KTHQ_GAO_DATA = {
         "status": 403
       },
       "productPages": {
-        "attempted": 17,
+        "attempted": 15,
         "enriched": 0,
-        "blocked": 17
+        "blocked": 15
       },
       "legacyCache": {
         "entries": 43
@@ -37,6 +37,60 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424229,B-424229.2",
+      "caseName": "a. i. solutions, Inc.",
+      "title": "a. i. solutions, Inc.",
+      "bNumbers": [
+        "B-424229",
+        "B-424229.2"
+      ],
+      "bNumberText": "B-424229, B-424229.2",
+      "link": "https://www.gao.gov/products/b-424229%2Cb-424229.2",
+      "publicationDate": "2026-05-12",
+      "decisionDate": "2026-05-12",
+      "displayDate": "May 12, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "a.i. solutions, Inc., of Lanham, Maryland, challenges the award of a contract to ARES Technical Services Corp., of McLean, Virginia, under request...",
+      "highlights": "",
+      "digest": "",
+      "tags": [
+        "Evaluation"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
+    },
+    {
+      "id": "B-424276,B-424276.2",
+      "caseName": "Platinum Business Services, LLC",
+      "title": "Platinum Business Services, LLC",
+      "bNumbers": [
+        "B-424276",
+        "B-424276.2"
+      ],
+      "bNumberText": "B-424276, B-424276.2",
+      "link": "https://www.gao.gov/products/b-424276%2Cb-424276.2",
+      "publicationDate": "2026-05-12",
+      "decisionDate": "2026-05-12",
+      "displayDate": "May 12, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "Platinum Business Services, LLC, a service-disabled veteran-owned small business (SDVOSB) of Clarksville, Maryland, protests the issuance of a task...",
+      "highlights": "",
+      "digest": "",
+      "tags": [
+        "Small business"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
+    },
     {
       "id": "B-423995,B-423995.2",
       "caseName": "Covenant Aviation Security LLC",
@@ -378,116 +432,6 @@ window.KTHQ_GAO_DATA = {
       "highlights": "",
       "digest": "",
       "tags": [],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
-    },
-    {
-      "id": "B-423066.2",
-      "caseName": "LOGMET LLC",
-      "title": "LOGMET LLC",
-      "bNumbers": [
-        "B-423066.2"
-      ],
-      "bNumberText": "B-423066.2",
-      "link": "https://www.gao.gov/products/b-423066.2",
-      "publicationDate": "2026-04-16",
-      "decisionDate": "2026-04-16",
-      "displayDate": "Apr 16, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "KTHQ legacy holding cache",
-      "decisionLine": "Protest that the agency should have conducted discussions to allow the protester to cure its proposal's technical unacceptability is denied where the solicitation expressly stated that the agency intended to award without discussions.",
-      "officialSynopsis": "LOGMET LLC (Logmet), a service-disabled veteran-owned small business of Round Rock, Texas, protests its non-selection for a multiple-award indefinite...",
-      "highlights": "",
-      "digest": "",
-      "tags": [
-        "Small business"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
-    },
-    {
-      "id": "B-424040.2,B-424040.3",
-      "caseName": "Identity One, LLC",
-      "title": "Identity One, LLC",
-      "bNumbers": [
-        "B-424040.2",
-        "B-424040.3"
-      ],
-      "bNumberText": "B-424040.2, B-424040.3",
-      "link": "https://www.gao.gov/products/b-424040.2%2Cb-424040.3",
-      "publicationDate": "2026-04-14",
-      "decisionDate": "2026-04-14",
-      "displayDate": "Apr 14, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "KTHQ legacy holding cache",
-      "decisionLine": "Protest challenging the implementation and scope of agency corrective action that includes issuing a new solicitation for only the remainder of the requirement is denied where, due to unique circumstances related to a government shutdown, a substantial portion of the requirement was performed before the protest was filed and the agency issued a stop work order.",
-      "officialSynopsis": "Identity One, LLC, a small business of Atlanta, Georgia, protests the scope of a corrective action in connection with a protest that challenged the...",
-      "highlights": "",
-      "digest": "",
-      "tags": [
-        "Corrective action",
-        "Small business"
-      ],
-      "practitionerNote": "Corrective action is broad, but not unlimited. Tie the scope to the procurement defect and document why the remedy fits.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
-    },
-    {
-      "id": "B-422249.5,B-422249.2",
-      "caseName": "CSlope Solutions, LLC",
-      "title": "CSlope Solutions, LLC",
-      "bNumbers": [
-        "B-422249.5",
-        "B-422249.2"
-      ],
-      "bNumberText": "B-422249.5, B-422249.2",
-      "link": "https://www.gao.gov/products/b-422249.5",
-      "publicationDate": "2026-04-13",
-      "decisionDate": "2026-04-13",
-      "displayDate": "Apr 13, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "KTHQ legacy holding cache",
-      "decisionLine": "Request for reconsideration is denied where the requester has not shown that our prior decision contains an error of fact or law warranting reversal or modification.",
-      "officialSynopsis": "CSlope Solutions, LLC, a small business of Arlington, Virginia, requests reconsideration of our decision in CSlope Sols., LLC, B-422249.2 et al., Dec...",
-      "highlights": "",
-      "digest": "",
-      "tags": [
-        "Small business"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
-    },
-    {
-      "id": "B-424208,B-424208.2,B-424208.3",
-      "caseName": "Rice Services, Inc.",
-      "title": "Rice Services, Inc.",
-      "bNumbers": [
-        "B-424208",
-        "B-424208.2",
-        "B-424208.3"
-      ],
-      "bNumberText": "B-424208, B-424208.2, B-424208.3",
-      "link": "https://www.gao.gov/products/b-424208%2Cb-424208.2%2Cb-424208.3",
-      "publicationDate": "2026-04-10",
-      "decisionDate": "2026-04-10",
-      "displayDate": "Apr 10, 2026",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "outcomeSource": "Inferred from GAO RSS",
-      "decisionLine": "",
-      "officialSynopsis": "Rice Services, Inc., a small business of Smithville, Tennessee, protests the issuance of an undefinitized contract action (UCA) modifying task order...",
-      "highlights": "",
-      "digest": "",
-      "tags": [
-        "Small business",
-        "Orders / IDIQ"
-      ],
       "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
       "sourceStatus": "rss",
       "sourceStatusLabel": "RSS fallback"
