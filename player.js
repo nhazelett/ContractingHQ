@@ -32,7 +32,17 @@
     { id: 22, title: "The Quotation Doesn't Lie",           subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-22.mp3', color: '#8b5cf6' },
     { id: 23, title: 'Write It Clean',                      subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-23.mp3', color: '#0ea5e9' },
     { id: 24, title: 'Хто це все придумав',                 subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-24.mp3', color: '#ef4444' },
-    { id: 25, title: '견적 더 줘',                           subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-25.mp3', color: '#10b981' }
+    { id: 25, title: '견적 더 줘',                           subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-25.mp3', color: '#10b981' },
+    { id: 26, title: 'A Hundred Bad Awards',                subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/A Hundred Bad Awards.mp3', color: '#4a9eff' },
+    { id: 27, title: 'Ask Me Again Tomorrow',               subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/Ask Me Again Tomorrow.mp3', color: '#8b5cf6' },
+    { id: 28, title: 'One More Mod',                        subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/One More Mod.mp3', color: '#059669' },
+    { id: 29, title: 'Pull Up a Chair',                     subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/Pull up a Chair.mp3', color: '#d97706' },
+    { id: 30, title: 'Somebody Stayed Late for Me',         subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/Somebody Stayed Late for Me.mp3', color: '#dc2626' },
+    { id: 31, title: 'The Myth Collector',                  subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/The Myth Collector.mp3', color: '#0891b2' },
+    { id: 32, title: 'The Quiet Part of the Fight',         subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/The Quiet Part of the Fight.mp3', color: '#7c3aed' },
+    { id: 33, title: 'Turning Into Them',                   subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/Turning Into Them.mp3', color: '#e11d48' },
+    { id: 34, title: "What I Wish I'd Known",               subtitle: 'ContractingFM',  genre: 'ContractingFM', file: "audio/What I Wish I'd Known.mp3", color: '#f59e0b' },
+    { id: 35, title: 'Yes, If',                             subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/Yes, If.mp3', color: '#10b981' }
   ];
 
   // ── STATE ────────────────────────────────────────────────────────
