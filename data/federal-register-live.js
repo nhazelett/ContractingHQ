@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-05-13T09:50:35.293Z",
-  "since": "2024-11-19",
+  "generatedAt": "2026-05-14T09:40:36.639Z",
+  "since": "2024-11-20",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,18 +14,55 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 136,
-    "latestPublicationDate": "2026-05-13",
-    "openCommentWindows": 7,
+    "total": 137,
+    "latestPublicationDate": "2026-05-14",
+    "openCommentWindows": 8,
     "rules": 66,
     "byTone": {
-      "monitor": 67,
+      "monitor": 68,
       "action": 47,
       "active": 1,
       "watch": 21
     }
   },
   "items": [
+    {
+      "id": "2026-09609",
+      "documentNumber": "2026-09609",
+      "title": "Information Collection; Acquisition 360 Voluntary Survey",
+      "shortTitle": "Information Collection; Acquisition 360 Voluntary Survey",
+      "system": "Acquisition",
+      "stage": "Information collection",
+      "topic": "Acquisition policy",
+      "actionLevel": "Monitor",
+      "actionTone": "monitor",
+      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
+      "nextSteps": [
+        "Identify the cited provision, clause, form, or system",
+        "Comment only if your office has burden data or a process concern",
+        "No template change unless a later rule follows"
+      ],
+      "type": "Notice",
+      "publicationDate": "2026-05-14",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-07-13",
+      "datesText": "OFPP, DoD, GSA, and NASA will consider all comments received by July 13, 2026.",
+      "actionText": "Notice and request for comments.",
+      "summary": "In accordance with the Paperwork Reduction Act of 1995 and OMB regulations, OFPP, DoD, GSA, and NASA invite the public to comment on an extension concerning the Acquisition 360 Voluntary Survey. OFPP, DoD, GSA, and NASA invite comments on: whether the proposed collection of information is necessary for the proper performance of the functions of Federal Government acquisitions, including whether the information will have practical utility; the accuracy of the estimate of the burden of the proposed information colle...",
+      "citation": "91 FR 27339",
+      "regulationIds": [],
+      "cfrReferences": "",
+      "agencies": [
+        "Management and Budget Office",
+        "Federal Procurement Policy Office",
+        "Defense Department",
+        "General Services Administration",
+        "National Aeronautics and Space Administration"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/05/14/2026-09609/information-collection-acquisition-360-voluntary-survey",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-05-14/pdf/2026-09609.pdf",
+      "sourceQuery": "Federal Acquisition Regulation keyword feed"
+    },
     {
       "id": "2026-09525",
       "documentNumber": "2026-09525",
