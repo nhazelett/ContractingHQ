@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AFCAP Volume II: what an appointed Administrative Contracting Officer actually does day to day on a live AFCAP task order. Covers the PCO/ACO relationship, KTFS, monthly PARs, CARs, equitable adjustments, the $2M modification line, and UCAs." />
+  <title>AFCAP Volume II: ACO Field Execution | KTHQ ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page shell ── */
+    .av2-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    /* ── Tab bar ── */
+    .av2-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .av2-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .av2-tab:hover { color: var(--white); }
+    .av2-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .av2-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .av2-panel.active { display: block; }
+
+    /* ── Intro ── */
+    .av2-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .av2-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .av2-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .av2-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    /* ── Learn ── */
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body em { color: #cfd6e3; }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-body .highlight-box.amber { background: rgba(217,154,49,0.05); border-color: rgba(217,154,49,0.22); }
+    .learn-body .highlight-box.amber strong { color: #f4c277; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* ── Scenario callouts ── */
+    .av2-scenario { background: rgba(217,154,49,0.06); border: 1px solid rgba(217,154,49,0.2); border-left: 3px solid #d99a31; border-radius: 12px; padding: 1.1rem 1.3rem; margin: 1.5rem 0; }
+    .av2-scenario-label { display: inline-block; background: rgba(217,154,49,0.15); color: #f4c277; font-size: 0.66rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 0.2rem 0.7rem; border-radius: 100px; margin-bottom: 0.55rem; }
+    .av2-scenario p { color: #d8e0ec; font-size: 0.9rem; line-height: 1.7; margin: 0 0 0.7rem; }
+    .av2-scenario p:last-child { margin-bottom: 0; }
+    .av2-scenario strong { color: #fff; }
+
+    /* ── UCA timeline ── */
+    .av2-timeline { display: flex; flex-direction: column; gap: 0.85rem; margin: 1.25rem 0 0.5rem; }
+    .av2-timeline-step { display: grid; grid-template-columns: 90px 1fr; gap: 0.9rem; align-items: start; padding: 0.85rem 1rem; background: rgba(10,22,50,0.45); border-left: 3px solid #4a9eff; border-radius: 8px; }
+    .av2-timeline-step.amber { border-left-color: #d99a31; }
+    .av2-timeline-step.warn { border-left-color: #ef4444; }
+    .av2-timeline-day { font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 700; color: #f4c277; text-transform: uppercase; letter-spacing: 0.5px; }
+    .av2-timeline-body { color: var(--silver); font-size: 0.88rem; line-height: 1.6; }
+    .av2-timeline-body strong { color: var(--white); }
+
+    /* ── Sample documents ── */
+    .av2-doc-outer { background: rgba(10,22,50,0.3); border-radius: 14px; padding: 1.5rem; overflow-x: auto; margin: 1.25rem 0 2rem; }
+    .av2-doc { min-width: 640px; border: 2px solid #000; background: #fff; color: #000; font-size: 12px; line-height: 1.65; font-family: 'Inter', 'Times New Roman', serif; padding: 1.75rem 2rem; }
+    .av2-doc h4 { font-size: 14px; font-weight: 700; text-transform: uppercase; text-align: center; margin: 0 0 1.25rem; letter-spacing: 1px; border-bottom: 2px solid #000; padding-bottom: 0.5rem; }
+    .av2-doc h5 { font-size: 12px; font-weight: 700; margin: 1.1rem 0 0.4rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .av2-doc p { margin: 0 0 0.5rem; }
+    .av2-doc ul, .av2-doc ol { margin: 0.25rem 0 0.6rem 1.25rem; padding: 0; }
+    .av2-doc li { margin-bottom: 0.18rem; }
+    .av2-doc table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; }
+    .av2-doc th, .av2-doc td { border: 1px solid #000; padding: 4px 7px; vertical-align: top; }
+    .av2-doc th { background: #f0f0f0; font-weight: 700; text-align: left; }
+
+    /* ── Lookup ── */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .av2-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .av2-doc { padding: 1.25rem 1rem; min-width: auto; }
+      .lookup-grid { grid-template-columns: 1fr; }
+      .av2-timeline-step { grid-template-columns: 1fr; }
+    }
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="ContractingHQ" />
+  <meta property="og:title"       content="AFCAP Volume II: ACO Field Execution | KTHQ ContractingHQ" />
+  <meta property="og:description" content="What an appointed Administrative Contracting Officer actually does day to day on a live AFCAP task order. PCO/ACO relationship, KTFS, monthly PARs, CARs, EAs, the $2M mod line, and UCAs." />
+  <meta property="og:url"         content="https://kthq.org/afcap-volume-ii.html" />
+  <meta name="twitter:card"        content="summary" />
+  <link rel="canonical"            href="https://kthq.org/afcap-volume-ii.html" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="customer-education.html">Customer Education</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="links.html">Links</a></li>
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Advanced Track &bull; AFCAP Vol II</span>
+    <h1 class="page-hero-title">AFCAP Volume II: ACO Field Execution</h1>
+    <p class="page-hero-sub">Volume I covered the program. Volume II is the field side: you have an appointment letter, a delegation, a stack of task orders, and a contractor that's already performing. This is what your job actually looks like, who you should know by name back at Tyndall, and how to keep the file telling the same story as the work.</p>
+  </div>
+</div>
+
+<div class="av2-bg">
+  <div class="av2-tabs" role="tablist">
+    <button class="av2-tab active" data-tab="learn" role="tab">&#128218; Learn</button>
+    <button class="av2-tab" data-tab="samples" role="tab">&#128196; Sample Documents</button>
+    <button class="av2-tab" data-tab="lookup" role="tab">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════════════════════════ LEARN ═══ -->
+  <div id="panel-learn" class="av2-panel active">
+    <div class="av2-intro">
+      <div class="av2-intro-tag">The Field Side</div>
+      <h2>From Appointment Letter to a Working File</h2>
+      <p>If you haven't read <a href="afcap.html" style="color:var(--accent);text-decoration:none;font-weight:700;">AFCAP Volume I</a> yet, that one covers what AFCAP is, who holds the contracts, and how a task order gets awarded. This volume picks up after the task order is on contract and you're the one administering it.</p>
+    </div>
+
+    <!-- ═══════════ SECTION 1 ═══════════ -->
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> Who's Who in AFCAP (And Why It Matters)</h3>
+      <div class="learn-body">
+        <p>AFCAP is run from <strong>Tyndall AFB, Florida</strong>, by the 772d Enterprise Sourcing Squadron. The Procuring Contracting Officer (PCO) sits there. So does the AFCAP Team Lead, the Flight Chief, and the buyers who actually award the task orders. As the Administrative Contracting Officer (ACO), you sit somewhere else: a forward base, an Area of Responsibility (AOR) location, or a stateside reachback site. You administer task orders the Tyndall team awarded.</p>
+
+        <p>That geographic split is the most important thing about your job, and it's the part most appointment briefings skim over. Every authority you have is delegated <em>from</em> Tyndall, every problem you can't solve gets escalated <em>back to</em> Tyndall, and every relationship you build with the people there is going to determine how fast you can move when something goes sideways.</p>
+
+        <div class="highlight-box">
+          <strong>The cast of characters.</strong> Here's who you'll be working with regularly. Memorize the roles before you memorize the names. People rotate, the roles don't.
+        </div>
+
+        <div class="highlight-box">
+          <strong>PCO (Tyndall).</strong> The Procuring Contracting Officer. They awarded the task order and own the contract. Every modification you draft has to be reviewed and approved by their flight before you award it. Big issues, scope questions, and urgent changes all route back to the PCO.
+        </div>
+
+        <div class="highlight-box">
+          <strong>AFCAP Team Lead (Tyndall).</strong> The senior ACO/PCO who runs the AFCAP section. They sign your appointment letter. If you can't get answers from the PCO or the program managers, the Team Lead is your next call. From the source training: <em>"If you're not getting the answers you need, then contact the AFCAP Team Lead."</em>
+        </div>
+
+        <div class="highlight-box">
+          <strong>Flight Chief (Tyndall).</strong> Reviews and approves every modification before you award it. The chain is: <em>You draft &rarr; Flight Chief reviews &rarr; You award, upload to KTFS, distribute</em>. The Flight Chief isn't a rubber stamp; they're the guardrail on your authority.
+        </div>
+
+        <div class="highlight-box">
+          <strong>AOR Program Manager (PM).</strong> Works the requirement on the customer side. Coordinates with Shaw on funding, works with the COR/customer to finalize the Performance Work Statement (PWS), and brings new work or scope changes to you for execution. The PM speaks for the customer to the contracting team. They are not the customer themselves.
+        </div>
+
+        <div class="highlight-box">
+          <strong>COR / QAP.</strong> The Contracting Officer's Representative and the Quality Assurance Personnel watch performance on the ground. They submit the monthly PAR. They write up CARs. They are your eyes. On AFCAP, they rotate every six months, so you'll meet a lot of them.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Contractor.</strong> One of the AFCAP V holders (Amentum, ECC, Fluor, KBR, RMS, or Vectrus) depending on which prime won the task order. Their site lead and program manager will be your daily contact. Stay professional, stay collaborative, and stay clear of any direction that wanders outside the contract.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ═══════════ SECTION 2 ═══════════ -->
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Why You Should Know Your PCO Personally</h3>
+      <div class="learn-body">
+        <p>You can do this job competently as a stranger to your PCO. You can't do it <em>well</em>.</p>
+
+        <p>The reason is structural. As an ACO under the AFCAP delegation, your modification authority caps at <strong>$2M for scope increases</strong> (or your warrant ceiling, whichever is lower). Anything above that line, anything that touches scope in a contested way, anything urgent that needs an exception path, and anything where the contractor is starting to push back all has to involve the PCO. You're going to be on Teams with this person every week. You're going to be drafting language they'll review. You're going to be asking them to reach into the contract on your behalf when a problem grows past your delegation.</p>
+
+        <div class="highlight-box tip">
+          <strong>Make the introduction early.</strong> In your first week, set up a 30-minute call with your PCO. Not about a problem. Just so they know your face, your task orders, and your operating posture. The next time you call them at 2200 because a contractor walked off site, they'll already know who you are.
+        </div>
+
+        <p>The same logic extends to the Team Lead, the Flight Chief, and the AOR PM. The source training puts it bluntly: <em>"Communicate issues to the Tyndall PCO early."</em> Early means before it's a crisis. Early means before the customer is on a call demanding answers you don't have. Early means while there's still room to maneuver.</p>
+
+        <div class="highlight-box warn">
+          <strong>The pattern that hurts.</strong> ACO sees a problem, decides to handle it locally, the problem grows, finally surfaces it when it's already on fire, and now Tyndall is reacting under pressure with no context. The way to avoid that is to read the PCO in earlier, not to move faster after the fact. Routine status updates beat heroic late saves every time.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ═══════════ SECTION 3 ═══════════ -->
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Your First 30 Days</h3>
+      <div class="learn-body">
+        <p>You just got your appointment letter. The previous ACO is rotating out in two weeks. You have access to a SharePoint site, a contractor email thread you don't fully understand, and a stack of task orders nobody's walked you through. The clock is ticking.</p>
+
+        <div class="av2-scenario">
+          <span class="av2-scenario-label">From the Source Training</span>
+          <p><strong>"I'm here, now what? What do I do first? Who do I go to for help?"</strong></p>
+          <p>This is the exact question the AFCAP team poses to new ACOs in the official training. The answer below is built directly off their guidance, with the practical sequencing experienced ACOs use to actually get there.</p>
+        </div>
+
+        <p><strong>Days 1&ndash;3: Get oriented.</strong> Read your appointment letter front to back, including the delegation language. Know your dollar limits. Get KTFS access from the AFCAP Team Lead. Identify your PCO, the AOR PM(s), the CORs and QAPs assigned to your task orders, and the contractor site leads.</p>
+
+        <p><strong>Days 4&ndash;10: Read every PWS.</strong> Every task order, every modification, every attachment. As the source training says: <em>"Read the PWS's &amp; talk to the PCO and/or PM's about each Task Order. Which TO's have issues? What are the issues? What has been done up to this point?"</em> Build an issue inventory while you read: open PARs, late PARs, open CARs, pending mods, equitable adjustment discussions, contractor disputes, and funding concerns.</p>
+
+        <div class="highlight-box">
+          <strong>Issue inventory format.</strong> One row per task order. Columns: TO number, contractor, PWS title, COR name, last PAR date, open issues, last action date, who owns the next move. This single document is going to make every Wednesday AFCAP meeting easier for the rest of your tour.
+        </div>
+
+        <p><strong>Days 11&ndash;20: Meet the CORs.</strong> Verify each one has a current designation letter and COR training certificate uploaded to KTFS. Walk them through monthly PAR expectations. Confirm they know their PWS. From the source: <em>"Contract issues almost always center around lack of proper oversight."</em> If a COR doesn't know what's in their PWS, you don't have oversight, you have paperwork.</p>
+
+        <p><strong>Days 21&ndash;30: Establish your battle rhythm.</strong> Weekly Wednesday AFCAP meeting prep, monthly PAR review cadence, file upload routine, a personal escalation rule (e.g., <em>"any single issue I can't resolve in 5 business days goes to the PCO"</em>). Get on a regular call cadence with your PCO and your AOR PM. By day 30, the file should already look better than when you took it over.</p>
+
+        <div class="highlight-box amber">
+          <strong>The 6-month turnover problem.</strong> AFCAP CORs rotate every 6 months. ACOs often rotate on a similar cycle. That means everything you build in the first 30 days has to survive without you. Documented, in KTFS, where the next person can find it. <em>You are always preparing for your own turnover.</em>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ═══════════ SECTION 4 ═══════════ -->
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> KTFS, JAM/SPM, and Why AFCAP Uses Its Own File System</h3>
+      <div class="learn-body">
+        <p>Across the rest of the contracting world, COR files live in JAM (Joint Appointment Module) and SPM (Surveillance and Performance Monitoring). AFCAP doesn't use those. AFCAP uses <strong>KTFS</strong>. There's a reason, and it's worth understanding even if you've never thought about it.</p>
+
+        <div class="highlight-box">
+          <strong>The math problem.</strong> Most AFCAP task orders run for 5 years. CORs rotate every 6 months. That means a single task order will see <em>at least</em> 10 different CORs over its life, usually more.
+        </div>
+
+        <p>JAM and SPM weren't built for that. In JAM/SPM, each COR creates their own file location, and a new COR can only see files <em>they</em> created. So on a 5-year task order, you'd end up with 10 separate file locations, none of which can see the others. The next COR comes in blind. The history is gone. Every six months, the institutional memory resets.</p>
+
+        <p>KTFS solves it by giving the task order one continuous file location that every COR (and the ACO) can access. Designation letters, training certificates, monthly PARs, CARs, mods, and contractor correspondence all live in one place, organized by task order rather than by COR. When the new COR shows in, they can read what the previous COR documented. Continuity actually exists.</p>
+
+        <div class="highlight-box tip">
+          <strong>Your KTFS habit.</strong> Upload everything, even when you don't think you'll need it again. Designation letters, training certs, PARs, CARs, mods, meeting notes, decision rationale. The next ACO is going to thank you. So is the next COR. So is the lawyer six months from now reading the file because something went sideways.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>Don't run a parallel file.</strong> The one mistake that actively makes things worse: keeping &quot;your own&quot; copy of the file on a personal SharePoint or laptop instead of in KTFS. When you rotate, that file disappears with you. Put it in KTFS. That's where the institutional memory lives.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ═══════════ SECTION 5 ═══════════ -->
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> The Monthly Performance Acceptance Report (PAR)</h3>
+      <div class="learn-body">
+        <p>The PAR is the COR's monthly evaluation of contractor performance. It's submitted to you, the ACO, within <strong>5 days of the end of the performance period</strong>. It's also the primary documentary record of how the contractor is doing, which makes it the foundation for every CAR, every equitable adjustment, every past-performance crossflow, and every conversation you'll ever have with the PCO about whether this contractor is meeting the standard.</p>
+
+        <p>If the PAR is good, your file is strong. If the PAR is pencil-whipped, your file is fragile, and you'll find out the hard way the first time you try to take a real action against the contractor.</p>
+
+        <p><strong>The form has four sections.</strong> Sections A and B are the COR's monthly entries. Section C is the contractor's response. Section D is yours, the ACO's, for cases where there's a deficiency that needs resolution. (See the Sample Documents tab for a full layout.)</p>
+
+        <div class="highlight-box">
+          <strong>Section A: General Information (Boxes 1&ndash;4).</strong> Stays the same each month for each task order, except the date and the COR name when there's a turnover.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Section B: Performance (Boxes 5&ndash;9).</strong> The COR checks deficiency type (New, Repeat, or None) and rates each performance objective: Excellent, Very Good, Satisfactory, Marginal, Unsatisfactory.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Section C: Contractor Validation (Boxes 10&ndash;12).</strong> Contractor signs and can refute markdowns. <em>No COR action needed.</em>
+        </div>
+
+        <div class="highlight-box">
+          <strong>Section D: Deficiency Resolution (Boxes 13&ndash;15).</strong> ACO uses this when there's a markdown that drives a CAR or an EA. <em>No COR action needed.</em>
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>The four common COR mistakes you'll see.</strong>
+          <em>Pencil-whipping:</em> rating everything Satisfactory or higher because nothing exploded that month, without actually checking. <em>Friendliness drift:</em> the COR has been on site with the same contractor for months and doesn't want to "hurt them" with negative comments. <em>Signature errors:</em> forgetting to sign, signing in the wrong block. <em>PWS unfamiliarity:</em> rating performance against a vague memory of what the work should look like, instead of the actual PWS objectives.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Your PAR review job.</strong> When a PAR comes in, read it against the PWS. If the COR rated everything Satisfactory but you know there were three contractor issues that month, that's a conversation. Coach the COR. Don't just file the PAR. The file is what it says it is, and a soft PAR makes every later action harder.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ═══════════ SECTION 6 ═══════════ -->
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> Corrective Action Reports (CARs)</h3>
+      <div class="learn-body">
+        <p>A CAR is a tool to bring a problem to the contractor's attention and give them a chance to correct it. It's also the paper trail that supports more serious actions like cure notices, terminations, and past-performance ratings, if the contractor doesn't fix the problem.</p>
+
+        <p>DoD has <strong>four levels of CARs</strong>, and the level depends on the severity of the nonconformity and the level of supplier management you need to get attention from.</p>
+
+        <div class="highlight-box">
+          <strong>Level I: Correctable on the spot.</strong> Issued for a nonconformity that can be fixed immediately and where no further corrective action response is needed. Documented and issued to the supplier management level responsible for taking corrective action. The contractor doesn't even owe you a written response.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Level II: Can't be corrected on the spot.</strong> Issued when the nonconformity needs time and a written response. Critical Safety Items (CSI) and Safety of Flight (SOF) characteristics are issued at this level at minimum. Directed to the supplier management level responsible for initiating corrective action.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>Level III: To the supplier's top management.</strong> Issued when the nonconformity is serious enough that you want senior leadership eyes on it. Repeat nonconformities within one year for the same single-point-failure SOF characteristic are Level III. May be coupled with contractual remedies (progress payment reductions, cost disallowances, business management system disapprovals). <em>You don't have to issue a Level I or II first.</em> All Level III CARs must be coordinated with the Contracting Officer.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>Level IV: Top management, with remedies.</strong> Issued when a Level III didn't work, or when the nonconformity is serious enough to warrant immediate contractual remedies (suspension of progress payments, suspension of product acceptance). Addressed to the supplier's top-level management.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>How to actually use the CAR.</strong> The mistake is treating CARs as punishment. They're documented opportunities to fix a problem. A well-written Level II CAR (clear finding, clear PWS reference, clear expectation, reasonable suspense date) usually gets a real corrective action response and the problem goes away. A vague CAR with a missing PWS reference and a 24-hour suspense gets pushback from the contractor and your file looks worse than the problem.
+        </div>
+
+        <div class="highlight-box">
+          <strong>The format.</strong> The CAR template (Sample Documents tab) has 12 blocks. The two that determine whether the CAR holds up are <strong>Block 7 Finding</strong> and <strong>Block 7 Finding Impact</strong>. The Finding has to cite the actual PWS paragraph and quote what was supposed to happen. The Finding Impact has to connect the deficiency to mission impact. Not "the contractor missed a requirement," but "the contractor missed this requirement and the consequence to the mission was X."
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ═══════════ SECTION 7 ═══════════ -->
+    <div class="learn-section">
+      <h3><span class="section-num">7</span> Equitable Adjustments (EAs)</h3>
+      <div class="learn-body">
+        <p>An equitable adjustment is the Government's tool for not paying for services it didn't receive. Each EA is unique and there's no single formula. The basis is usually some combination of an estimated full-time equivalent (FTE) salary for missing labor, materials or expenses that didn't get incurred, overhead, and profit.</p>
+
+        <p><strong>You assess EAs when</strong> the contractor didn't meet the PWS requirement and can't re-perform, or when the contractor doesn't have enough manpower at the location to meet the PWS at all.</p>
+
+        <div class="av2-scenario">
+          <span class="av2-scenario-label">Worked Example</span>
+          <p>The contractor proposed to meet a PWS requirement with <strong>10 FTEs</strong>. On the ground, only <strong>5 FTEs</strong> are at the location, and the services aren't being met.</p>
+          <p>Your EA basis is the <strong>salary of the 5 missing FTEs</strong>, plus their proportional share of materials, overhead, and profit. The contractor doesn't get paid for labor they're not providing.</p>
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>The military-backfill scenario.</strong> Sometimes the contractor's manning shortfall is so bad that the Air Force has to reroute military personnel to the location to do the work. From the source training: <em>"This is UNSAT and ultimately goes against why AFCAP is here."</em> In that case, the contractor is responsible for the cost of the military labor that backfilled them. That cost gets included in your EA.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Build the file before you build the number.</strong> An EA that surprises a contractor doesn't survive a dispute. The PARs should have already documented the manning shortfall. The CAR should have already given the contractor a chance to correct. The Section D entries on the PAR should have already flagged the deficiency for resolution. By the time you assess the EA, the file should be telling the same story the EA tells.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ═══════════ SECTION 8 ═══════════ -->
+    <div class="learn-section">
+      <h3><span class="section-num">8</span> Modifications and the $2M Line</h3>
+      <div class="learn-body">
+        <p>Your appointment letter spells out exactly what you can and can't do as an ACO. The number that drives everything else in there is your modification authority cap.</p>
+
+        <div class="highlight-box">
+          <strong>The standard AFCAP delegation.</strong>
+          <em>Scope increases:</em> capped at <strong>$2M</strong>, or your individual warrant limit if it's less than $2M.
+          <em>Scope decreases:</em> unlimited, or in accordance with your warrant level.
+          <em>All modifications and direction to the contractor:</em> requires review and approval by 772 ESS/PKD/FC. The PCO facilitates the review process.
+        </div>
+
+        <p>That last clause is the part new ACOs sometimes miss. <em>Every</em> modification, regardless of dollar value, has to be reviewed and approved by the Flight Chief at Tyndall before you award it. You don't get to issue mods unilaterally because you have a warrant. The delegation is conditional on the review chain.</p>
+
+        <div class="highlight-box">
+          <strong>The mod review process.</strong>
+          <em>Step 1.</em> ACO drafts the modification.
+          <em>Step 2.</em> Flight Chief at 772 ESS/PKD/FC reviews and approves.
+          <em>Step 3.</em> ACO awards the modification, uploads the executed copy to KTFS, and distributes to the COR(s), contractor, AOR PM(s), and PCO.
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>Make the mod easy to review.</strong> When you draft a mod, write a one-paragraph cover note for the Flight Chief: what changed, why it changed, what authority supports it, what funding is being used, and any open issues. The Flight Chief reviews many mods a week from many ACOs. The clearer the package, the faster it comes back approved. Vague mods get returned for clarification, which costs you a day.
+        </div>
+
+        <p>For new requirements, added or deleted PWS items, and anything that touches scope materially, the path is the same but the conversation starts earlier. The AOR PM works with Shaw on funding and with the COR/customer to finalize the PWS. Funding gets approved. <strong>Under $2M, the ACO executes. Over $2M, the Tyndall PCO and PM execute.</strong> Your job is to recognize which lane the action belongs in and route accordingly.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ═══════════ SECTION 9 ═══════════ -->
+    <div class="learn-section">
+      <h3><span class="section-num">9</span> Undefinitized Contract Actions (UCAs)</h3>
+      <div class="learn-body">
+        <p>A UCA is what you reach for when the mission can't wait for full negotiation. It's a binding commitment to a contractor before final terms, specifications, and price are agreed. The contractor starts performing immediately. You and the contractor finish negotiating the rest of the deal in parallel, on a clock, with hard limits on how much money can move before the contract is definitized.</p>
+
+        <p>UCAs live under <strong>DFARS 217.74</strong>. They are powerful, and they are also one of the most heavily controlled contracting actions in the entire DoD. Every part of the structure exists because UCAs have a history of being abused, with long-running undefinitized actions where the Government burned through obligation authority without ever pinning down what it was buying. The current rules are tight on purpose.</p>
+
+        <div class="highlight-box warn">
+          <strong>A UCA is more than a fast task order.</strong> A fast task order is a competitive task order with a compressed schedule. The price is agreed before performance begins. A UCA is a contract action where the price has not yet been agreed and the contractor is already at work. Different categories. Don't use UCA shorthand to describe a normal urgent action.
+        </div>
+
+        <p><strong>When can you use one?</strong> Only when both of these are true: (1) negotiating a definitive contract action isn't possible in time to meet the Government's requirement, and (2) the Government's interest demands that the contractor be given a binding commitment so performance can begin immediately. Examples include unforeseen urgent requirements and contingency, humanitarian, or peacekeeping operations. Be as complete and definitive as the circumstances allow. Starting work before the conversation finishes is the point. Leaving the work loosely defined is not.</p>
+
+        <div class="highlight-box">
+          <strong>Approval authority.</strong> The Contracting Officer must obtain approval from the Head of the Contracting Activity (HCA) before entering into a UCA, before modifying its scope after performance has begun, and before increasing obligations above the approved NTE via UCA modification. SAF/AQC has delegated UCA approval to the Senior Contracting Official (SCO) under AFFARS MP 5301.601(a)(i)(53). For AFICC, that's the AFICC Commander or Director of Contracting. SCOs may redelegate down to no lower than the COCO if the value is $50M or less.
+        </div>
+
+        <div class="highlight-box">
+          <strong>The Management Control Document (MCD).</strong> Every UCA approval starts with a Request for Authority to Issue a UCA. When approved, that document becomes the MCD. It has to include: why a UCA is required, why performance has to begin before definitization, the adverse impact of delay, the risks and mitigation, the specific contractual instrument, the obligation limitation, and the definitization schedule. (Sample Documents tab has the section breakdown.)
+        </div>
+
+        <div class="highlight-box">
+          <strong>NTE: the not-to-exceed price.</strong> Every UCA has to have an NTE, anchored to an Independent Government Cost Estimate, prior buys, or contractor proposal. The Purchase Request should obligate only enough funds to complete the undefinitized portion of the work. The NTE is a ceiling, not a budget.
+        </div>
+
+        <div class="highlight-box amber">
+          <strong>The 50 / 75 percent obligation limits.</strong> Before definitization, you cannot obligate more than <strong>50 percent</strong> of the NTE. Once a qualifying proposal is received, you can go up to <strong>75 percent</strong>. If the qualifying proposal comes in at less than the NTE, the 75 percent is calculated against the proposal price, not the NTE. <em>No profit or fee is authorized for payment before definitization.</em>
+        </div>
+
+        <div class="highlight-box amber">
+          <strong>The 180-day definitization clock.</strong> The UCA has to be definitized by the earlier of: (a) 180 days after the contractor submits a qualifying proposal, or (b) the date when obligated funds exceed 50 percent of the NTE. The 180-day clock cannot be extended beyond an additional 90 days without HCA approval (non-delegable).
+        </div>
+
+        <div class="highlight-box">
+          <strong>What's a "qualifying proposal"?</strong> A proposal with enough information that DoD can conduct meaningful analyses and audits. Only the Contracting Officer makes the determination that one has been received, in concert with the technical team, price analyst, policy, and legal advisor. If the proposal is incomplete, return it immediately for rework.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Required clauses.</strong> Every UCA gets <strong>FAR 52.216-24 (Limitation of Government Liability)</strong> and <strong>DFARS 252.217-7027 (Contract Definitization)</strong>. If you're incrementally funding, also include <strong>FAR 52.232-22 (Limitation of Funds)</strong>. These clauses are the ones a court or board will look at if anything goes wrong.
+        </div>
+
+        <div class="highlight-box">
+          <strong>Reporting.</strong> UCAs at or above $5M have to be entered and updated in the UCA Reporting Tool semi-annually (NLT 10 April and 10 October). Anything more than 30 days behind its definitization schedule needs an entry explaining what's being done to get back on track. UCAs at or above $100M also require Weighted Guidelines documentation in the tool.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ═══════════ SECTION 10 ═══════════ -->
+    <div class="learn-section">
+      <h3><span class="section-num">10</span> A UCA Walkthrough</h3>
+      <div class="learn-body">
+        <p>This scenario comes straight from the source training and walks you through the UCA timeline as it would actually unfold. The dates are what you need to internalize. Everything else flows from how you manage the clock.</p>
+
+        <div class="av2-scenario">
+          <span class="av2-scenario-label">The Scenario</span>
+          <p>You're the CO. An urgent user request lands with an Independent Government Estimate to support services for individuals fleeing life-threatening conditions. You have <strong>10 days</strong> to start performance. You identify an available IDIQ contract and simultaneously prepare and submit a <strong>$100M NTE UCA Request</strong> and an Exception to Fair Opportunity. <strong>$80M</strong> is funded; you obligate <strong>$49M</strong>. Period of performance is 1 year. Your definitization schedule shows: <em>Day 30 for contractor qualifying proposal; Day 210 to complete definitization</em> (the maximum 180 days after a qualifying proposal at Day 30).</p>
+        </div>
+
+        <p>The SCO (or applicable PEO) approves the MCD. You issue the task order and enter the action in the UCA Reporting Tool. Now the clock is running.</p>
+
+        <div class="av2-timeline">
+          <div class="av2-timeline-step">
+            <div class="av2-timeline-day">Day 30</div>
+            <div class="av2-timeline-body">Updated contractor spend plan received. Burn rate looks fine, funding is sufficient. <strong>But no proposal.</strong> Working with the mission partner, you may suspend or reduce progress payments under <em>FAR 32.503-6</em> or take other appropriate action.</div>
+          </div>
+          <div class="av2-timeline-step warn">
+            <div class="av2-timeline-day">Day 45</div>
+            <div class="av2-timeline-body">An incomplete contractor proposal comes in. You identify the deficient areas and immediately return it to the contractor for rework. Engage Legal support and start the action to suspend or reduce progress payments. Don't sit on this. The next deadline is days away.</div>
+          </div>
+          <div class="av2-timeline-step amber">
+            <div class="av2-timeline-day">Day 55</div>
+            <div class="av2-timeline-body"><strong>Contractor submits a qualifying proposal for $95M.</strong> Just before the 60-day point where you'd have had to update the Reporting Tool with corrective actions. Recalculate your funding amount: 75% of $95M = $71.25M. Make sure current obligations haven't already exceeded that. <strong>The 180-day definitization clock starts ticking.</strong></div>
+          </div>
+          <div class="av2-timeline-step amber">
+            <div class="av2-timeline-day">Alt. Day 55</div>
+            <div class="av2-timeline-body">If the qualifying proposal had come in at <strong>$110M</strong> instead, the UCA approval authority would need to know. You'd process an MCD revision to get approval for the higher NTE. Until that revision is approved, your allowed funding stays at 75% of the original $100M, not 75% of $110M.</div>
+          </div>
+          <div class="av2-timeline-step">
+            <div class="av2-timeline-day">Day 60</div>
+            <div class="av2-timeline-body">Updated contractor spend plan received. If the burn rate is going to exceed your obligation limits, engage the mission partner and approval authority to figure out the path forward. Limits: 50% of NTE before a qualifying proposal, 75% after.</div>
+          </div>
+          <div class="av2-timeline-step">
+            <div class="av2-timeline-day">Days 60&ndash;235</div>
+            <div class="av2-timeline-body">The work to definitize: technical evaluation of the qualifying proposal, Pre-Price Negotiation Memorandum (see DFARS 217.7404-6 and PGI for profit guidelines), legal review, clearance, and execution of the definitizing modification. Keep the UCA Reporting Tool current the whole time. Slippages of more than 30 days from the original schedule require a Tool entry explaining the corrective action.</div>
+          </div>
+          <div class="av2-timeline-step">
+            <div class="av2-timeline-day">If You Slip</div>
+            <div class="av2-timeline-body">If you're going to miss the 180-day clock, the SCO can approve an extension up to 90 days. <strong>Anything beyond 90 days has to come from the HCA, and that authority cannot be redelegated.</strong> Don't show up to that conversation late.</div>
+          </div>
+        </div>
+
+        <div class="highlight-box tip">
+          <strong>The takeaway.</strong> The UCA isn't hard math. It's calendar management. The Day 30 / Day 55 / Day 60 / Day 235 milestones are the ones that get COs in trouble when they drift. Put them in your calendar the moment the UCA is awarded. Set 7-day and 14-day reminders. The Reporting Tool entry deadlines (10 April / 10 October) go in too.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>When not to add funding.</strong> Consider <em>not</em> adding funding when the contractor isn't timely providing the qualifying proposal, spend plan updates, or proposal revisions, or when the contractor isn't making sufficient progress. Funding is a lever. Use it.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <!-- ═══════════ SECTION 11 ═══════════ -->
+    <div class="learn-section">
+      <h3><span class="section-num">11</span> Where Things Usually Go Sideways</h3>
+      <div class="learn-body">
+        <p>Most AFCAP problems aren't about the FAR. They're about the human relationships and the file. After a tour as an ACO, the same handful of failure patterns show up over and over.</p>
+
+        <div class="highlight-box warn">
+          <strong>Late PCO communication.</strong> Issue smolders for two weeks because the ACO is trying to handle it locally. By the time Tyndall finds out, it's an emergency. Fix: routine weekly status, not just exception reporting.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>COR doesn't actually know the PWS.</strong> Performance ratings are based on vibes instead of objectives. CARs don't survive contractor pushback because the cited paragraph doesn't say what the COR thought it said. Fix: PWS walkthrough with every new COR.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>File lives outside KTFS.</strong> ACO keeps "their own copy" on a personal SharePoint. When they rotate, the next ACO finds an empty KTFS folder and has to rebuild. Fix: KTFS is the file. Personal copies are scratch.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>Mod awarded without Flight Chief approval.</strong> ACO assumes the warrant carries the authority. Award gets unwound. Fix: <em>every</em> mod, regardless of dollar value, goes through the review chain.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>UCA obligation creep.</strong> Funding gets added piecemeal without anyone tracking the 50% / 75% limits against the current NTE or qualifying proposal price. ACO discovers they're already over the line. Fix: the moment a UCA is awarded, track current obligation as a percentage of the relevant ceiling on the file's first page.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>EA ambushes the contractor.</strong> First the contractor hears about an equitable adjustment is when the assessment letter arrives. They dispute it, the file doesn't support it, and the ACO ends up backing off. Fix: the PARs, the CARs, and the Section D entries should have already told the story before the EA letter goes out.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════ SAMPLES ═══ -->
+  <div id="panel-samples" class="av2-panel">
+    <div class="av2-intro">
+      <div class="av2-intro-tag">Sample Documents</div>
+      <h2>What These Forms Actually Look Like</h2>
+      <p>Layouts for the documents you'll be reading and writing every week. These are training mockups based on the AFCAP source material. Verify against the current official templates before using them on a live action.</p>
+    </div>
+
+    <h3 style="font-family:'Rajdhani',sans-serif;color:var(--white);margin:2rem 0 0.5rem;">Performance Acceptance Report (PAR)</h3>
+    <p style="color:var(--silver);font-size:0.9rem;line-height:1.7;">Submitted by the COR to the ACO within 5 days of the end of each performance period.</p>
+    <div class="av2-doc-outer">
+      <div class="av2-doc">
+        <h4>Performance Acceptance Report (PAR)</h4>
+
+        <h5>Section A: General Information</h5>
+        <table>
+          <tr><th style="width:30%;">Block 1. Contract / Task Order Number</th><td>FA8051-XX-D-XXXX-00XX</td></tr>
+          <tr><th>Block 2. Contractor</th><td>[AFCAP V Holder Name]</td></tr>
+          <tr><th>Block 3. Performance Period</th><td>[Month / Year covered]</td></tr>
+          <tr><th>Block 4. COR Name &amp; Signature</th><td>[Signature, date]</td></tr>
+        </table>
+
+        <h5>Section B: Performance Evaluation</h5>
+        <table>
+          <tr><th style="width:30%;">Block 5. Deficiency Type</th><td>&#9633; New &nbsp; &#9633; Repeat &nbsp; &#9633; None</td></tr>
+          <tr><th>Block 6. PO #1 Rating</th><td>&#9633; Excellent &nbsp; &#9633; Very Good &nbsp; &#9633; Satisfactory &nbsp; &#9633; Marginal &nbsp; &#9633; Unsatisfactory</td></tr>
+          <tr><th>Block 7. PO #2 Rating</th><td>&#9633; Excellent &nbsp; &#9633; Very Good &nbsp; &#9633; Satisfactory &nbsp; &#9633; Marginal &nbsp; &#9633; Unsatisfactory</td></tr>
+          <tr><th>Block 8. PO #3 Rating</th><td>(continue per PWS performance objectives)</td></tr>
+          <tr><th>Block 9. COR Comments</th><td>[Narrative supporting ratings; cite PWS paragraphs.]</td></tr>
+        </table>
+
+        <h5>Section C: Contractor Validation</h5>
+        <table>
+          <tr><th style="width:30%;">Block 10. Contractor Acknowledgment</th><td>[Signature, date]</td></tr>
+          <tr><th>Block 11. Contractor Refutation</th><td>[Optional: contractor response to any markdowns]</td></tr>
+          <tr><th>Block 12. Contractor POC</th><td>[Name, title, contact]</td></tr>
+        </table>
+
+        <h5>Section D: Deficiency Resolution (ACO)</h5>
+        <table>
+          <tr><th style="width:30%;">Block 13. ACO Determination</th><td>&#9633; CAR Issued &nbsp; &#9633; EA Pending &nbsp; &#9633; Resolved &nbsp; &#9633; No Action</td></tr>
+          <tr><th>Block 14. ACO Comments</th><td>[Disposition rationale; reference any associated CAR control number or EA action.]</td></tr>
+          <tr><th>Block 15. ACO Signature</th><td>[Signature, date]</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Rajdhani',sans-serif;color:var(--white);margin:2.5rem 0 0.5rem;">Corrective Action Report (CAR)</h3>
+    <p style="color:var(--silver);font-size:0.9rem;line-height:1.7;">12-block format. The two blocks that determine whether the CAR holds up are Block 7 Finding and Block 7 Finding Impact.</p>
+    <div class="av2-doc-outer">
+      <div class="av2-doc">
+        <h4>Corrective Action Report (CAR)</h4>
+
+        <table>
+          <tr><th style="width:25%;">1. Contractor</th><td>[Contractor Name]</td></tr>
+          <tr><th>2. Contract Number</th><td>FA8051-XX-D-XXXX-00XX</td></tr>
+          <tr><th>3. Type of Services</th><td>[Contract name / type of services]</td></tr>
+          <tr><th>4. Functional Area</th><td>[BOS, Life Support, Engineering, etc.]</td></tr>
+          <tr><th>5. Suspense Date</th><td>[Date contractor response is due. Typically 10 working days for Major findings.]</td></tr>
+          <tr><th>6. Control Number</th><td>[2-letter site code, last 2 digits of year, 3-digit sequence. E.g., AD26-001]</td></tr>
+        </table>
+
+        <h5>7. Deficiency: &#9633; Major &nbsp; &#9633; Minor</h5>
+        <p><strong>Finding:</strong> [Clear statement of the deficiency, followed by reference to the contractual requirement. Cite the part, section, paragraph, and subparagraph. Quote the contract reference briefly.]</p>
+        <p><strong>Finding Impact:</strong> [State the impact the finding has or could have on accomplishment of the mission the contract supports.]</p>
+
+        <table style="margin-top:0.75rem;">
+          <tr><th style="width:25%;">8. QAP Name &amp; Grade</th><td>[Signature, date]</td></tr>
+          <tr><th>9. Issuing Authority</th><td>[Name, grade, signature, date. Functional commander/director.]</td></tr>
+          <tr><th>10. QAP Response to Contractor Corrective Action</th><td>[Comments on acceptance or rejection of the contractor's response. Note any follow-on inspections.]</td></tr>
+          <tr><th>11. QAP Determination</th><td>&#9633; Accepted &nbsp; &#9633; Rejected</td></tr>
+          <tr><th>12. Close Date</th><td>[Date Issuing Authority concurs the response is acceptable]</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Rajdhani',sans-serif;color:var(--white);margin:2.5rem 0 0.5rem;">UCA Management Control Document (MCD)</h3>
+    <p style="color:var(--silver);font-size:0.9rem;line-height:1.7;">Section breakdown for the Request for Authority to Issue a UCA. When approved, this becomes the MCD. Source: AFCC Knowledge Exchange template (verify current version before use).</p>
+    <div class="av2-doc-outer">
+      <div class="av2-doc">
+        <h4>Request for Authority to Issue a UCA: MCD Outline</h4>
+
+        <h5>Section A: General Information</h5>
+        <p>Contracting activity, action description, contract/order number, contractor, dollar value, period of performance.</p>
+
+        <h5>Section B: Description of the Acquisition</h5>
+        <p>Plain-language description of what is being acquired, with reasonable flexibility built in. The undefinitized character means the description can't be too tight, but it shouldn't be a blank check either.</p>
+
+        <h5>Section C: Supporting Rationale</h5>
+        <ul>
+          <li>Why a UCA is required (for letter contracts, see DFARS 216.603)</li>
+          <li>Detailed explanation for the need to begin performance before definitization</li>
+          <li>Adverse impact on agency requirements that would result from delay</li>
+          <li>Identified risks and the means by which the Government will mitigate them</li>
+          <li>Justification for the specific contractual instrument selected</li>
+        </ul>
+
+        <h5>Section D: Funding</h5>
+        <ul>
+          <li>Not-To-Exceed (NTE) Price:supported by IGCE, prior buys, or contractor proposal</li>
+          <li>Contractor Spend Plan (if available)</li>
+          <li>Purchase Request: obligate only enough funds to complete the undefinitized portion of the contractor proposal</li>
+          <li>Limitations on the obligation of funds (50% pre-qualifying-proposal, 75% post)</li>
+        </ul>
+
+        <h5>Section E: Most Recent Acquisition</h5>
+        <p>Reference to the most recent comparable acquisition, prior award history, and any pricing history that supports the NTE.</p>
+
+        <h5>Section F: Definitization Schedule</h5>
+        <p>Agreed-upon events that support timely definitization. Must include the due date for submittal of a qualifying proposal and the target definitization date (within 180 days of qualifying proposal receipt).</p>
+
+        <h5>Section G: Coordination and Approval</h5>
+        <p>Routing slip: contracting, legal, comptroller, mission partner, requirements activity, and the SCO (or PEO, as applicable) for approval signature.</p>
+
+        <h5>Required Clauses (in the UCA itself)</h5>
+        <ul>
+          <li>FAR 52.216-24: Limitation of Government Liability</li>
+          <li>DFARS 252.217-7027: Contract Definitization</li>
+          <li>FAR 52.232-22: Limitation of Funds (if incrementally funding)</li>
+          <li>Any other Contract/Task Order specific clauses</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ LOOKUP ═══ -->
+  <div id="panel-lookup" class="av2-panel">
+    <div class="av2-intro">
+      <div class="av2-intro-tag">References</div>
+      <h2>Look It Up</h2>
+      <p>The regulatory and policy citations behind the Vol II material. Verify against current versions, particularly under the Revolutionary FAR Overhaul, where Part numbers and specific paragraphs are still moving.</p>
+    </div>
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>DFARS 217.74: Undefinitized Contract Actions</h4>
+        <p>The full DFARS subpart governing UCAs. Approval thresholds, NTE rules, definitization clock, obligation limits, reporting. The primary reference for any UCA action.</p>
+        <a href="https://www.acquisition.gov/dfars/subpart-217.74-undefinitized-contract-actions" target="_blank" rel="noopener">Open DFARS 217.74</a>
+      </div>
+      <div class="lookup-card">
+        <h4>DFARS PGI 217.7404: UCA Procedures</h4>
+        <p>Procedures, Guidance, and Information for UCAs. Includes the requirements for the request-for-authority package and the supporting analyses.</p>
+        <a href="https://www.acquisition.gov/dfarspgi/pgi-217.74-undefinitized-contract-actions" target="_blank" rel="noopener">Open DFARS PGI 217.7404</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 52.216-24: Limitation of Government Liability</h4>
+        <p>Required clause in every UCA. Caps the Government's liability at the NTE for the undefinitized period.</p>
+        <a href="https://www.acquisition.gov/far/52.216-24" target="_blank" rel="noopener">Open FAR 52.216-24</a>
+      </div>
+      <div class="lookup-card">
+        <h4>DFARS 252.217-7027: Contract Definitization</h4>
+        <p>Required clause in every UCA. Establishes the definitization schedule, the qualifying-proposal expectation, and the consequences for failure to definitize.</p>
+        <a href="https://www.acquisition.gov/dfars/252.217-7027-contract-definitization." target="_blank" rel="noopener">Open DFARS 252.217-7027</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 52.232-22: Limitation of Funds</h4>
+        <p>Required when incrementally funding. Notifies the contractor of the funded ceiling and triggers notice obligations as that ceiling is approached.</p>
+        <a href="https://www.acquisition.gov/far/52.232-22" target="_blank" rel="noopener">Open FAR 52.232-22</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 32.503-6: Suspension of Progress Payments</h4>
+        <p>The authority you reach for when a UCA contractor isn't producing the qualifying proposal or making sufficient progress.</p>
+        <a href="https://www.acquisition.gov/far/32.503-6" target="_blank" rel="noopener">Open FAR 32.503-6</a>
+      </div>
+      <div class="lookup-card">
+        <h4>AFFARS MP 5301.601: Approval Authority</h4>
+        <p>Air Force FAR Supplement Mandatory Procedure on contracting authority delegations. Includes the SAF/AQC delegation of UCA approval to the SCO.</p>
+        <a href="https://www.acquisition.gov/affars/affars-mandatory-procedures-mps" target="_blank" rel="noopener">Open AFFARS MPs</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Revolutionary FAR Overhaul</h4>
+        <p>RFO is rewriting the FAR. Several Parts that touch UCAs and UCA-adjacent actions are in flux. Always cross-check against the current RFO posture before relying on a citation.</p>
+        <a href="https://www.acquisition.gov/far-overhaul" target="_blank" rel="noopener">Open FAR Overhaul</a>
+      </div>
+      <div class="lookup-card">
+        <h4>AFCAP Vol I: Vehicle Brief</h4>
+        <p>The companion training. What AFCAP is, who holds the contracts, the ordering paths, and how task orders get awarded. Read first if you haven't already.</p>
+        <a href="afcap.html">Open AFCAP Vol I</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Contingency Contracting Hub</h4>
+        <p>The broader CCO field-desk hub. OCS for Dummies, FAR Part 18 flexibilities, manual contracts deployed, FOO program, ACSAs, and other contingency-relevant training.</p>
+        <a href="contingency-contracting.html">Open CCO Hub</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="training-nav-band"><div id="training-nav" class="training-nav"></div></div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="customer-education.html">Customer Education</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+<script src="main.js"></script>
+<script>
+document.querySelectorAll('.av2-tab').forEach(function (tab) {
+  tab.addEventListener('click', function () {
+    document.querySelectorAll('.av2-tab').forEach(function (t) { t.classList.remove('active'); });
+    document.querySelectorAll('.av2-panel').forEach(function (p) { p.classList.remove('active'); });
+    tab.classList.add('active');
+    var panel = document.getElementById('panel-' + tab.dataset.tab);
+    if (panel) panel.classList.add('active');
+  });
+});
+</script>
+<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
