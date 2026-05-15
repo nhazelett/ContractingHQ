@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-05-14T10:33:48.142373+00:00",
+  "generatedAt": "2026-05-15T10:37:46.820360+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -12,7 +12,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "totalParts": 51,
     "issuedParts": 51,
     "updatedParts": 10,
-    "agencyDeviationCount": 1388,
+    "agencyDeviationCount": 1399,
     "uniqueAgencyCount": 37,
     "latestPartDate": "2026-04-20",
     "latestPartDateLabel": "Apr 20, 2026",
@@ -23,7 +23,217 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "baseline": false,
     "newParts": [],
     "updatedParts": [],
-    "newAgencyDeviations": [],
+    "newAgencyDeviations": [
+      {
+        "part": {
+          "partNumber": 15,
+          "partLabel": "Part 15",
+          "title": "Contracting by Negotiation",
+          "fullTitle": "Part 15 - Contracting by Negotiation",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-15",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 27
+        },
+        "agency": {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-15.pdf",
+          "id": "a5cc1dfa3678d5ef"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 16,
+          "partLabel": "Part 16",
+          "title": "Types of Contracts",
+          "fullTitle": "Part 16 - Types of Contracts",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 27
+        },
+        "agency": {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-16.pdf",
+          "id": "9bf0e2105830f0ca"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 17,
+          "partLabel": "Part 17",
+          "title": "Special Contracting Methods",
+          "fullTitle": "Part 17 - Special Contracting Methods",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-17",
+          "issuanceDate": "2025-09-11",
+          "issuanceDateLabel": "Sep 11, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 26
+        },
+        "agency": {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-17.pdf",
+          "id": "a7b1fe47adc7c70a"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 19,
+          "partLabel": "Part 19",
+          "title": "Small Business",
+          "fullTitle": "Part 19 - Small Business",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-19",
+          "issuanceDate": "2025-09-26",
+          "issuanceDateLabel": "Sep 26, 2025",
+          "updateDate": "2026-02-20",
+          "updateDateLabel": "Feb 20, 2026",
+          "deviationCount": 28
+        },
+        "agency": {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-19.pdf",
+          "id": "625f2f9d734af3bd"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 22,
+          "partLabel": "Part 22",
+          "title": "Application of Labor Laws to Government Acquisitions",
+          "fullTitle": "Part 22 - Application of Labor Laws to Government Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-22",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 30
+        },
+        "agency": {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-22.pdf",
+          "id": "7b1d3c3472d69279"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 23,
+          "partLabel": "Part 23",
+          "title": "Sustainable Acquisition, Material Safety, and Pollution Prevention",
+          "fullTitle": "Part 23 - Sustainable Acquisition, Material Safety, and Pollution Prevention",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-23",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 28
+        },
+        "agency": {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-23.pdf",
+          "id": "a39540174c896ba2"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 24,
+          "partLabel": "Part 24",
+          "title": "Protection of Privacy and Freedom of Information",
+          "fullTitle": "Part 24 - Protection of Privacy and Freedom of Information",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-24",
+          "issuanceDate": "2025-09-04",
+          "issuanceDateLabel": "Sep 4, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 26
+        },
+        "agency": {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-24.pdf",
+          "id": "c9961fbafe7036bb"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 25,
+          "partLabel": "Part 25",
+          "title": "Foreign Acquisition",
+          "fullTitle": "Part 25 - Foreign Acquisition",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-25",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-03-16",
+          "updateDateLabel": "Mar 16, 2026",
+          "deviationCount": 27
+        },
+        "agency": {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-25.pdf",
+          "id": "700d57a7e17cbc5c"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 26,
+          "partLabel": "Part 26",
+          "title": "Other Socioeconomic Programs",
+          "fullTitle": "Part 26 - Other Socioeconomic Programs",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-26",
+          "issuanceDate": "2025-08-08",
+          "issuanceDateLabel": "Aug 8, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-26.pdf",
+          "id": "fddb08c18caff11c"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 27,
+          "partLabel": "Part 27",
+          "title": "Patents, Data, and Copyrights",
+          "fullTitle": "Part 27 - Patents, Data, and Copyrights",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-27",
+          "issuanceDate": "2025-09-11",
+          "issuanceDateLabel": "Sep 11, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 26
+        },
+        "agency": {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-27.pdf",
+          "id": "14b5279cc316bd86"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 29,
+          "partLabel": "Part 29",
+          "title": "Taxes",
+          "fullTitle": "Part 29 - Taxes",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-29",
+          "issuanceDate": "2025-07-17",
+          "issuanceDateLabel": "Jul 17, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-29.pdf",
+          "id": "66d7b350eba7b143"
+        }
+      }
+    ],
     "removedAgencyDeviations": []
   },
   "parts": [
@@ -2318,7 +2528,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 26,
+      "deviationCount": 27,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -2449,6 +2659,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Department of Commerce (DOC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOC_RFO_Deviation_Parts-1-53.pdf",
           "id": "0e2859683397c48f"
+        },
+        {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-15.pdf",
+          "id": "a5cc1dfa3678d5ef"
         }
       ],
       "tags": [
@@ -2467,7 +2682,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 26,
+      "deviationCount": 27,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -2598,6 +2813,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Department of Commerce (DOC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOC_RFO_Deviation_Parts-1-53.pdf",
           "id": "bc2e985954358c88"
+        },
+        {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-16.pdf",
+          "id": "9bf0e2105830f0ca"
         }
       ],
       "tags": [
@@ -2616,7 +2836,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 25,
+      "deviationCount": 26,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -2742,12 +2962,17 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Department of Commerce (DOC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOC_RFO_Deviation_Parts-1-53.pdf",
           "id": "03010bb4bc1fae1b"
+        },
+        {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-17.pdf",
+          "id": "a7b1fe47adc7c70a"
         }
       ],
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 25 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 26 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 18,
@@ -2934,7 +3159,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-02-20",
       "updateDateLabel": "Feb 20, 2026",
       "isUpdated": true,
-      "deviationCount": 27,
+      "deviationCount": 28,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -3070,6 +3295,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Department of Commerce (DOC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOC_RFO_Deviation_Parts-1-53.pdf",
           "id": "e5af5dded926a80f"
+        },
+        {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-19.pdf",
+          "id": "625f2f9d734af3bd"
         }
       ],
       "tags": [
@@ -3088,7 +3318,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-04-20",
       "updateDateLabel": "Apr 20, 2026",
       "isUpdated": true,
-      "deviationCount": 29,
+      "deviationCount": 30,
       "agencies": [
         {
           "name": "Department of the Interior (DOI)",
@@ -3234,6 +3464,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Department of Commerce (DOC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOC_RFO_Deviation_Parts-1-53.pdf",
           "id": "90fe822d6864070e"
+        },
+        {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-22.pdf",
+          "id": "7b1d3c3472d69279"
         }
       ],
       "tags": [
@@ -3252,7 +3487,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 27,
+      "deviationCount": 28,
       "agencies": [
         {
           "name": "Department of the Interior (DOI)",
@@ -3388,6 +3623,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Department of Commerce (DOC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOC_RFO_Deviation_Parts-1-53.pdf",
           "id": "808ec9d3b67a8cc8"
+        },
+        {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-23.pdf",
+          "id": "a39540174c896ba2"
         }
       ],
       "tags": [
@@ -3406,7 +3646,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 25,
+      "deviationCount": 26,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -3532,12 +3772,17 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Department of Commerce (DOC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOC_RFO_Deviation_Parts-1-53.pdf",
           "id": "a9149b080d9b5fbc"
+        },
+        {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-24.pdf",
+          "id": "c9961fbafe7036bb"
         }
       ],
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 25 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 26 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 25,
@@ -3550,7 +3795,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-03-16",
       "updateDateLabel": "Mar 16, 2026",
       "isUpdated": true,
-      "deviationCount": 26,
+      "deviationCount": 27,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -3681,6 +3926,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Department of Commerce (DOC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOC_RFO_Deviation_Parts-1-53.pdf",
           "id": "1f99fb2fa5d5296c"
+        },
+        {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-25.pdf",
+          "id": "700d57a7e17cbc5c"
         }
       ],
       "tags": [
@@ -3699,7 +3949,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 28,
+      "deviationCount": 29,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -3840,12 +4090,17 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Department of Commerce (DOC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOC_RFO_Deviation_Parts-1-53.pdf",
           "id": "89f8e93b61c95f8a"
+        },
+        {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-26.pdf",
+          "id": "fddb08c18caff11c"
         }
       ],
       "tags": [
         "Policy"
       ],
-      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 27,
@@ -3858,7 +4113,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 25,
+      "deviationCount": 26,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -3984,12 +4239,17 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Department of Commerce (DOC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOC_RFO_Deviation_Parts-1-53.pdf",
           "id": "7a682dfd690719ce"
+        },
+        {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-27.pdf",
+          "id": "14b5279cc316bd86"
         }
       ],
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 25 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 26 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 28,
@@ -4151,7 +4411,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 28,
+      "deviationCount": 29,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -4292,12 +4552,17 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Department of Commerce (DOC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOC_RFO_Deviation_Parts-1-53.pdf",
           "id": "bb92b677cb3effd9"
+        },
+        {
+          "name": "Office of Personnel Management (OPM)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-29.pdf",
+          "id": "66d7b350eba7b143"
         }
       ],
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 30,
