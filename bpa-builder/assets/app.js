@@ -119,7 +119,7 @@ const supplierRoster = [
 
 const clauseLibrary = [
   {
-    id: "FAR 12.201-1(e)(3)",
+    id: "FAR 13.303-3",
     title: "BPA Mandatory Terms",
     date: "BY REF",
     group: "BPA Terms",
@@ -128,7 +128,7 @@ const clauseLibrary = [
     body: "BPA terms are set forth in this agreement. The BPA itself cites no accounting and appropriation data. The Government is obligated only to the extent of authorized calls actually placed under the BPA."
   },
   {
-    id: "FAR 12.201-1(e)(3)",
+    id: "FAR 13.303-5",
     title: "Purchases Under BPAs",
     date: "BY REF",
     group: "BPA Terms",
@@ -640,7 +640,7 @@ function wawfInstructionsText() {
 function bpaTypeLabel() {
   return state.document.bpaType === "FSS"
     ? "Federal Supply Schedule BPA under FAR 8.405-3"
-    : "Open market BPA under FAR 12.201-1";
+    : "Open market BPA under FAR 13.303";
 }
 
 function renderContactSelect() {

@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IDIQ Generator</title>
+  <link rel="stylesheet" href="assets/styles.css?v=20260519">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <strong>IDIQ Generator</strong>
+      <span>SF 1449 training sample builder</span>
+    </div>
+    <div class="actions">
+      <button type="button" id="sampleBtn" class="ghost small">Reset Sample</button>
+      <button type="button" id="saveDraftBtn" class="small">Save Draft</button>
+      <button type="button" id="exportBtn" class="small">Export JSON</button>
+      <label class="file-button small">
+        Import JSON
+        <input type="file" id="importInput" accept="application/json">
+      </label>
+      <button type="button" id="printBtn" class="primary">Save to PDF</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="editor" id="editor">
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>Document</h2>
+          <span id="draftStatus">Unsaved</span>
+        </div>
+        <div class="field-grid two">
+          <label>
+            Instrument
+            <select data-field="document.documentType">
+              <option value="contract">Contract</option>
+              <option value="solicitation">Solicitation</option>
+            </select>
+          </label>
+          <label>
+            Solicitation method
+            <select data-field="document.solicitationMethod">
+              <option value="RFP">RFP</option>
+              <option value="RFQ">RFQ</option>
+            </select>
+          </label>
+          <label>
+            Award approach
+            <select data-field="idiq.awardApproach">
+              <option value="single">Single-award IDIQ</option>
+              <option value="multiple">Multiple-award IDIQ</option>
+            </select>
+          </label>
+          <label>
+            Order type
+            <select data-field="idiq.orderType">
+              <option value="task">Task orders</option>
+              <option value="delivery">Delivery orders</option>
+              <option value="both">Task and delivery orders</option>
+            </select>
+          </label>
+        </div>
+        <label>
+          Requirement title
+          <input data-field="document.title">
+        </label>
+        <div class="field-grid three">
+          <label>
+            Contract no.
+            <input data-field="document.contractNumber" readonly>
+          </label>
+          <label>
+            Solicitation no.
+            <input data-field="document.solicitationNumber" readonly>
+          </label>
+          <label>
+            Form 9 / requisition no.
+            <input data-field="document.requisitionNumber" placeholder="F2D3JC-F9-20XX-0001">
+          </label>
+          <label>
+            Issue date
+            <input data-field="document.issueDate" placeholder="05/01/20XX">
+          </label>
+          <label>
+            Award date
+            <input data-field="document.awardDate" placeholder="05/30/20XX">
+          </label>
+          <label>
+            Offer due date
+            <input data-field="document.offerDueDate" placeholder="05/20/20XX">
+          </label>
+        </div>
+        <div class="inline-tools">
+          <button type="button" id="randomPiidBtn" class="small">Randomize PIIDs</button>
+          <button type="button" id="randomForm9Btn" class="small">Randomize Form 9</button>
+          <span>PIID buttons update the final two digits only.</span>
+        </div>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>Government</h2>
+        </div>
+        <div class="field-grid two">
+          <label>
+            Contracting Officer
+            <select data-field="government.contactName" id="contactSelect"></select>
+          </label>
+          <label>
+            Phone
+            <input data-field="government.contactPhone" readonly>
+          </label>
+          <label>
+            Issued by code
+            <input data-field="government.issuedByCode" readonly>
+          </label>
+          <label>
+            Payment office
+            <input data-field="government.paymentCode" readonly>
+          </label>
+        </div>
+        <label>
+          Issued by address
+          <textarea data-field="government.issuedByAddress" rows="3" readonly></textarea>
+        </label>
+        <div class="field-grid two">
+          <label>
+            Deliver to code
+            <input data-field="government.deliverToCode" readonly>
+          </label>
+          <label>
+            Deliver to
+            <input data-field="government.deliverToName" readonly>
+          </label>
+        </div>
+        <label>
+          Deliver to address
+          <textarea data-field="government.deliverToAddress" rows="3"></textarea>
+        </label>
+        <button type="button" id="randomDeliveryBtn" class="small">Randomize delivery address</button>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>Contractor</h2>
+        </div>
+        <label>
+          Contractor / UEI
+          <select id="contractorSelect"></select>
+        </label>
+        <div class="field-grid two">
+          <label>
+            UEI
+            <input data-field="contractor.uei" readonly>
+          </label>
+          <label>
+            CAGE
+            <input data-field="contractor.cage" readonly>
+          </label>
+        </div>
+        <label>
+          Contractor address
+          <textarea data-field="contractor.address" rows="3"></textarea>
+        </label>
+        <div class="field-grid two">
+          <label>
+            Phone
+            <input data-field="contractor.phone">
+          </label>
+          <label>
+            Discount terms
+            <input data-field="contractor.discountTerms">
+          </label>
+        </div>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>IDIQ Limits</h2>
+        </div>
+        <div class="field-grid two">
+          <label>
+            Contract ceiling
+            <input data-field="idiq.ceiling">
+          </label>
+          <label>
+            Guaranteed minimum
+            <input data-field="idiq.guaranteedMinimum">
+          </label>
+          <label>
+            Minimum order
+            <input data-field="idiq.minimumOrder">
+          </label>
+          <label>
+            Maximum single-item order
+            <input data-field="idiq.maximumSingleItem">
+          </label>
+          <label>
+            Maximum combination order
+            <input data-field="idiq.maximumCombination">
+          </label>
+          <label>
+            Series order days
+            <input data-field="idiq.seriesOrderDays">
+          </label>
+          <label>
+            Contractor rejection window
+            <input data-field="idiq.rejectionDays">
+          </label>
+          <label>
+            Estimated awards
+            <input data-field="idiq.estimatedAwards">
+          </label>
+        </div>
+        <div class="field-grid two">
+          <label>
+            Ordering start
+            <input data-field="idiq.orderingStartDate" placeholder="05/30/20XX">
+          </label>
+          <label>
+            Ordering end
+            <input data-field="idiq.orderingEndDate" placeholder="05/29/20XX">
+          </label>
+          <label>
+            Final order completion
+            <input data-field="idiq.finalCompletionDate" placeholder="11/29/20XX">
+          </label>
+          <label>
+            Ombudsman
+            <input data-field="idiq.ombudsman">
+          </label>
+        </div>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>Ordering</h2>
+        </div>
+        <label>
+          Ordering activities
+          <textarea data-field="idiq.orderingActivities" rows="4"></textarea>
+        </label>
+        <label>
+          Ordering procedures
+          <textarea data-field="idiq.orderingProcedures" rows="5"></textarea>
+        </label>
+        <label>
+          Fair opportunity procedures
+          <textarea data-field="idiq.fairOpportunity" rows="5"></textarea>
+        </label>
+        <label>
+          Scope
+          <textarea data-field="idiq.scope" rows="5"></textarea>
+        </label>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>UCF Text</h2>
+        </div>
+        <label>
+          Section D
+          <textarea data-field="text.sectionD" rows="4"></textarea>
+        </label>
+        <label>
+          Section E
+          <textarea data-field="text.sectionE" rows="4"></textarea>
+        </label>
+        <label>
+          Section J
+          <textarea data-field="text.sectionJ" rows="4"></textarea>
+        </label>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>CLIN Schedule</h2>
+          <button type="button" id="addClinBtn" class="small">Add CLIN</button>
+        </div>
+        <div id="clinEditor"></div>
+      </section>
+
+      <section class="editor-section" id="lmSection">
+        <div class="section-heading">
+          <h2>Sections L and M</h2>
+        </div>
+        <label>
+          Section L
+          <textarea data-field="text.sectionL" rows="5"></textarea>
+        </label>
+        <label>
+          Section M
+          <textarea data-field="text.sectionM" rows="5"></textarea>
+        </label>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-heading">
+          <h2>Signatures</h2>
+        </div>
+        <div class="signature-controls">
+          <div>
+            <button type="button" id="applySignaturesBtn" class="small">Apply signatures</button>
+            <button type="button" id="clearSignaturesBtn" class="small">Clear</button>
+          </div>
+          <label><input type="checkbox" data-field="signatures.contractor"> Contractor signed</label>
+          <label><input type="checkbox" data-field="signatures.government"> Government signed</label>
+        </div>
+      </section>
+    </aside>
+
+    <section class="preview-shell">
+      <div class="preview-top">
+        <div>
+          <strong id="previewTitle">SF 1449 IDIQ Preview</strong>
+          <span id="pageCount">0 pages</span>
+        </div>
+        <label>
+          Zoom
+          <input type="range" id="zoomInput" min="55" max="115" value="86">
+        </label>
+      </div>
+      <div id="preview" class="preview"></div>
+    </section>
+  </main>
+
+  <script>
+    window.addEventListener("load", function () {
+      var stamp = Date.now();
+      var topbar = document.querySelector(".topbar");
+      var preview = document.querySelector("#preview");
+      if (topbar && getComputedStyle(topbar).display !== "flex") {
+        var fallbackCss = document.createElement("link");
+        fallbackCss.rel = "stylesheet";
+        fallbackCss.href = "assets/styles.css?v=" + stamp;
+        document.head.appendChild(fallbackCss);
+      }
+      window.setTimeout(function () {
+        if (preview && !preview.children.length) {
+          var fallbackJs = document.createElement("script");
+          fallbackJs.src = "assets/app.js?v=" + stamp;
+          document.body.appendChild(fallbackJs);
+        }
+      }, 800);
+    });
+  </script>
+  <script src="assets/app.js?v=20260519"></script>
+</body>
+</html>

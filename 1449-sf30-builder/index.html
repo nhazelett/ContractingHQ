@@ -4,38 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SF 1449 Generator</title>
-  <link rel="stylesheet" href="assets/styles.css?v=20260518">
-  <!-- Structured data: SoftwareApplication -->
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "SF 1449 Generator",
-  "url": "https://kthq.org/1449-sf30-builder/",
-  "description": "1449 / SF30 Builder from KTHQ ContractingHQ. Free, no login required.",
-  "applicationCategory": "BusinessApplication",
-  "operatingSystem": "Web Browser, any modern browser",
-  "browserRequirements": "Requires JavaScript. Requires HTML5.",
-  "inLanguage": "en-US",
-  "isAccessibleForFree": true,
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "@id": "https://kthq.org/#organization",
-    "name": "KTHQ ContractingHQ",
-    "url": "https://kthq.org/"
-  }
-}
-  </script>
+  <link rel="stylesheet" href="assets/styles.css?v=20260519">
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <a href="../cco-training-tools.html" style="color:#5b9dff;text-decoration:none;font-size:0.78rem;font-weight:600;display:inline-block;margin-bottom:0.2rem;">&larr; CCO Training Tools</a>
       <strong>SF 1449 Generator</strong>
       <span>Training contract builder</span>
     </div>
@@ -78,9 +51,9 @@
           </label>
         </div>
         <div class="field-grid three">
-          <label>
+          <label class="field-span-two">
             Form 9 / requisition no.
-            <input data-field="document.requisitionNumber" placeholder="FA4867-F9-20XX-0001">
+            <input data-field="document.requisitionNumber" placeholder="F2D3JC-F9-20XX-0001">
           </label>
           <label>
             Contract no.
@@ -104,9 +77,10 @@
           </label>
         </div>
         <div class="inline-tools">
+          <button type="button" id="generateForm9Btn" class="small">Randomize Form 9</button>
           <button type="button" id="generateContractPiidBtn" class="small">Randomize contract serial</button>
           <button type="button" id="generateSolicitationPiidBtn" class="small">Randomize solicitation serial</button>
-          <span>Updates only the last two digits after `00`.</span>
+          <span>PIID buttons update the last two digits after `00`; Form 9 updates the final four-digit serial.</span>
         </div>
         <div class="field-grid three">
           <label>
@@ -121,8 +95,8 @@
             Method
             <select data-field="document.method">
               <option value="IFB">IFB</option>
-              <option value="RFP" selected>RFP</option>
-              <option value="RFQ">RFQ</option>
+              <option value="RFP">RFP</option>
+              <option value="RFQ" selected>RFQ</option>
             </select>
           </label>
         </div>
@@ -413,7 +387,7 @@
             Effective date
             <input data-field="mod.effectiveDate" placeholder="05/01/20XX">
           </label>
-          <label>
+          <label class="field-span-two">
             Form 9 / requisition no.
             <input data-field="mod.requisitionNumber">
           </label>
@@ -468,6 +442,26 @@
     </section>
   </main>
 
-  <script src="assets/app.js?v=20260518"></script>
+  <script>
+    window.addEventListener("load", function () {
+      var stamp = Date.now();
+      var topbar = document.querySelector(".topbar");
+      var preview = document.querySelector("#preview");
+      if (topbar && getComputedStyle(topbar).display !== "flex") {
+        var fallbackCss = document.createElement("link");
+        fallbackCss.rel = "stylesheet";
+        fallbackCss.href = "assets/styles.css?v=" + stamp;
+        document.head.appendChild(fallbackCss);
+      }
+      window.setTimeout(function () {
+        if (preview && !preview.children.length) {
+          var fallbackJs = document.createElement("script");
+          fallbackJs.src = "assets/app.js?v=" + stamp;
+          document.body.appendChild(fallbackJs);
+        }
+      }, 800);
+    });
+  </script>
+  <script src="assets/app.js?v=20260519"></script>
 </body>
 </html>

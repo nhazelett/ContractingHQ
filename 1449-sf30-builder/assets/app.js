@@ -1,5 +1,6 @@
 const STORAGE_KEY = "sf1449-generator-draft-v1";
 const PIID_ACTIVITY = "FA4867";
+const FORM9_DODAAC = "F2D3JC";
 const DEPLOYED_OFFICE_ADDRESS = "Deployed Contracting Squadron\n67 Deployed St\nUndisclosed Location, Overseas";
 
 const airForceContacts = [
@@ -228,6 +229,24 @@ const clauseLibrary = [
     body: "(a) The Government shall make payment by electronic funds transfer using information contained in SAM.\n\n(b) The Contractor is responsible for maintaining current EFT information. Payment may be delayed if banking information is incomplete, inaccurate, or inactive."
   },
   {
+    id: "252.232-7003",
+    title: "Electronic Submission of Payment Requests and Receiving Reports",
+    date: "DEC 2018",
+    group: "Payment",
+    core: true,
+    summary: "Requires electronic payment requests and receiving reports through WAWF unless an exception applies.",
+    body: "Incorporated by reference. Payment requests and receiving reports shall be submitted through Wide Area WorkFlow (WAWF) unless an authorized exception applies."
+  },
+  {
+    id: "252.232-7006",
+    title: "Wide Area WorkFlow Payment Instructions",
+    date: "JAN 2023",
+    group: "Payment",
+    core: true,
+    summary: "Completed WAWF document type and routing instructions.",
+    body: "Incorporated by reference. The completed WAWF fill-ins for this training contract are stated below and in Section G.\n\n{{wawfInstructions}}"
+  },
+  {
     id: "52.217-8",
     title: "Option to Extend Services",
     date: "NOV 1999",
@@ -327,7 +346,7 @@ const sampleState = {
   document: {
     instrumentType: "CONTRACT",
     profile: "optionYear",
-    requisitionNumber: "FA4867-F9-20XX-0001",
+    requisitionNumber: "F2D3JC-F9-20XX-0001",
     contractNumber: "FA4867XXP0001",
     awardDate: "04/29/20XX",
     orderNumber: "",
@@ -335,7 +354,7 @@ const sampleState = {
     issueDate: "03/15/20XX",
     offerDueDate: "04/08/20XX",
     offerDueTime: "3:00 PM ET",
-    method: "RFP",
+    method: "RFQ",
     trainingWatermark: true
   },
   acquisition: {
@@ -412,7 +431,7 @@ const sampleState = {
     sectionD: "D.1 Packaging. Training materials shall be delivered electronically unless otherwise directed by the Contracting Officer.\n\nD.2 Marking. Each deliverable shall identify the contract number, CLIN, deliverable title, and date of submission.",
     sectionE: "E.1 Inspection. Services and deliverables will be inspected by the Contracting Officer's Representative for conformance with Section C.\n\nE.2 Acceptance. Acceptance occurs upon written confirmation by the Government or ten business days after receipt absent written rejection.",
     sectionF: "F.1 Period of Performance. Base period: 01 May 20XX through 30 April 20XX.\n\nF.2 Place of Performance. Performance will occur at Government facilities at an undisclosed overseas location and virtually as directed.\n\nF.3 Option Notice. The Government may exercise options by written notice at least 30 days before expiration of the current period.",
-    sectionG: "G.1 Contracting Officer. Only the Contracting Officer may change the terms and conditions of this contract.\n\nG.2 COR. A Contracting Officer's Representative may be designated in writing after award.\n\nG.3 Invoices. Invoices shall be submitted monthly and shall reference the contract number, CLIN, period of performance, and amount billed.",
+    sectionG: "G.1 Contracting Officer. Only the Contracting Officer may change the terms and conditions of this contract.\n\nG.2 COR. A Contracting Officer's Representative may be designated in writing after award.\n\nG.3 Invoices. Invoices shall be submitted through Wide Area WorkFlow and shall reference the contract number, CLIN, period of performance, and amount billed.",
     sectionH: "H.1 Key Personnel. The Program Manager and Lead Facilitator are considered key personnel. Substitutions require prior written Government approval.\n\nH.2 Organizational Conflict of Interest. The Contractor shall disclose any actual or potential OCI that may affect impartial performance.\n\nH.3 Training Data. Exercise data and artifacts are for instructional use only and shall not be represented as official procurement actions.",
     sectionJ: "",
     attachments: [],
@@ -440,7 +459,7 @@ const sampleState = {
   mod: {
     modNumber: "P00001",
     effectiveDate: "05/01/20XX",
-    requisitionNumber: "FA4867-F9-20XX-0001",
+    requisitionNumber: "F2D3JC-F9-20XX-0001",
     projectNumber: "",
     modType: "supplemental",
     authority: "FAR 52.212-4(c)",
@@ -497,6 +516,10 @@ function randomNonzeroTwoDigit() {
   return String(Math.floor(Math.random() * 99) + 1).padStart(2, "0");
 }
 
+function randomFourDigit() {
+  return String(Math.floor(Math.random() * 10000)).padStart(4, "0");
+}
+
 function pickRandom(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
@@ -516,12 +539,17 @@ function contractorByCode(code) {
   return contractorRoster.find((contractor) => contractor.code === code) || contractorRoster[0];
 }
 
+function simulatedCageCode(code = "") {
+  const cleaned = String(code).replace(/[^A-Z0-9]/gi, "").toUpperCase();
+  return `${cleaned.slice(0, 2)}${cleaned.slice(-3)}`.padEnd(5, "0").slice(0, 5);
+}
+
 function applyContractor(contractor) {
   state.contractor.code = contractor.code;
   state.contractor.name = contractor.name;
   state.contractor.address = contractor.address;
   state.contractor.phone = contractor.phone;
-  state.contractor.facilityCode = contractor.facilityCode;
+  state.contractor.facilityCode = contractor.facilityCode || simulatedCageCode(contractor.code);
   state.contractor.discountTerms = "Net 30";
   state.award.contractorSigner = contractor.signer;
 }
@@ -555,7 +583,39 @@ function setContractSerial(serial = "01") {
 }
 
 function setSolicitationSerial(serial = "01") {
-  state.document.solicitationNumber = `${PIID_ACTIVITY}XXQ00${serial}`;
+  const typeByMethod = { RFP: "R", RFQ: "Q", IFB: "B" };
+  if (!typeByMethod[state.document.method]) {
+    state.document.method = "RFQ";
+  }
+  state.document.solicitationNumber = `${PIID_ACTIVITY}XX${typeByMethod[state.document.method]}00${serial}`;
+}
+
+function form9Dodaac() {
+  return state.government?.deliverToCode || FORM9_DODAAC;
+}
+
+function formatForm9Number(serial = "0001") {
+  const normalizedSerial = String(serial || "0001").replace(/\D/g, "").slice(-4).padStart(4, "0");
+  return `${form9Dodaac()}-F9-20XX-${normalizedSerial}`;
+}
+
+function badForm9Number(value = "") {
+  const raw = String(value || "").trim();
+  return !raw ||
+    raw.startsWith("PR-XX-") ||
+    /^FA4867-F9-/i.test(raw) ||
+    /^FA4867XX[BPQRC]00\d{2}$/i.test(raw);
+}
+
+function normalizeForm9Number(value, fallback = "0001") {
+  if (badForm9Number(value)) {
+    return formatForm9Number(fallback);
+  }
+  return String(value).replace(/\b20\d{2}\b/g, "20XX");
+}
+
+function setForm9Serial(serial = "0001") {
+  state.document.requisitionNumber = formatForm9Number(serial);
 }
 
 function randomizeContractSerial() {
@@ -564,6 +624,14 @@ function randomizeContractSerial() {
 
 function randomizeSolicitationSerial() {
   setSolicitationSerial(randomTwoDigit());
+}
+
+function randomizeForm9Serial() {
+  const previous = state.document.requisitionNumber;
+  setForm9Serial(randomFourDigit());
+  if (badForm9Number(state.mod.requisitionNumber) || state.mod.requisitionNumber === previous) {
+    state.mod.requisitionNumber = state.document.requisitionNumber;
+  }
 }
 
 function randomizeModNumber() {
@@ -657,16 +725,19 @@ function enforceExerciseDefaults() {
     state.signatures = { contractor: false, government: false };
   }
   const contractMatch = String(state.document.contractNumber || "").match(/^FA4867XXP00(\d{2})$/);
-  const solicitationMatch = String(state.document.solicitationNumber || "").match(/^FA4867XXQ00(\d{2})$/);
+  if (!["IFB", "RFP", "RFQ"].includes(state.document.method)) {
+    state.document.method = "RFQ";
+  }
+
+  const solicitationMatch = String(state.document.solicitationNumber || "").match(/^FA4867XX[BRQ]00(\d{2})$/);
   const oldContractMatch = String(state.document.contractNumber || "").match(/^FA4867(\d{2}|XX)P0001$/);
   const oldSolicitationMatch = String(state.document.solicitationNumber || "").match(/^FA4867(\d{2}|XX)Q0001$/);
 
   setContractSerial(contractMatch?.[1] || (oldContractMatch?.[1] === "XX" ? "01" : oldContractMatch?.[1]) || "01");
   setSolicitationSerial(solicitationMatch?.[1] || (oldSolicitationMatch?.[1] === "XX" ? "01" : oldSolicitationMatch?.[1]) || "01");
   state.document.awardDate = futureProofDate(state.document.awardDate) || "04/29/20XX";
-  if (!state.document.requisitionNumber || String(state.document.requisitionNumber).startsWith("PR-XX-")) {
-    state.document.requisitionNumber = sampleState.document.requisitionNumber;
-  }
+  const previousRequisitionNumber = state.document.requisitionNumber;
+  state.document.requisitionNumber = normalizeForm9Number(state.document.requisitionNumber);
   state.document.issueDate = futureProofDate(state.document.issueDate) || "03/15/20XX";
   state.document.offerDueDate = futureProofDate(state.document.offerDueDate) || "04/08/20XX";
   state.award.offerDate = futureProofDate(state.award.offerDate) || "04/08/20XX";
@@ -697,8 +768,10 @@ function enforceExerciseDefaults() {
 
   applyContractor(contractorByCode(state.contractor.code));
   state.mod.effectiveDate = futureProofDate(state.mod.effectiveDate) || "05/01/20XX";
-  if (!state.mod.requisitionNumber || String(state.mod.requisitionNumber).startsWith("PR-XX-")) {
+  if (badForm9Number(state.mod.requisitionNumber) || state.mod.requisitionNumber === previousRequisitionNumber) {
     state.mod.requisitionNumber = state.document.requisitionNumber;
+  } else {
+    state.mod.requisitionNumber = normalizeForm9Number(state.mod.requisitionNumber);
   }
   if (!state.mod.modNumber) state.mod.modNumber = "P00001";
   if (!state.mod.authority) state.mod.authority = defaultModAuthority(state.mod.modType);
@@ -759,11 +832,57 @@ function escapeHtml(value = "") {
     .replace(/'/g, "&#39;");
 }
 
+function requisitionDodaac() {
+  const match = String(state.document.requisitionNumber || "").match(/^([A-Z0-9]{6})/i);
+  return (match?.[1] || state.government.issuedByCode || PIID_ACTIVITY).toUpperCase();
+}
+
+function contractorSubmitterCode() {
+  return state.contractor.facilityCode || state.contractor.code || "SEE SAM";
+}
+
+function wawfDocumentType() {
+  return "Invoice 2-in-1";
+}
+
+function wawfInstructionsText() {
+  const issueBy = state.government.issuedByCode || PIID_ACTIVITY;
+  const adminBy = state.government.adminCode || issueBy;
+  const serviceDodaac = requisitionDodaac();
+  const routingRows = [
+    ["Document type", wawfDocumentType()],
+    ["Pay Official DoDAAC", state.government.paymentCode || "F87700"],
+    ["Issue By DoDAAC", issueBy],
+    ["Admin DoDAAC", adminBy],
+    ["Inspect By DoDAAC", issueBy],
+    ["Ship To Code", state.government.deliverToCode || "F2D3JC"],
+    ["Ship From Code", "Not applicable"],
+    ["Mark For Code", state.government.deliverToCode || "F2D3JC"],
+    ["Service Approver (DoDAAC)", serviceDodaac],
+    ["Service Acceptor (DoDAAC)", issueBy],
+    ["Accept at Other DoDAAC", "Not applicable"],
+    ["LPO DoDAAC", "Not applicable"],
+    ["DCAA Auditor DoDAAC", "Not applicable"],
+    ["Other DoDAAC(s)", `Contractor submitter: ${contractorSubmitterCode()}`]
+  ];
+
+  return [
+    "DFARS 252.232-7006 WAWF payment instructions fill-ins for this training contract:",
+    ...routingRows.map(([label, value]) => `${label}: ${value}`),
+    `WAWF point of contact: ${state.government.contactName || state.award.contractingOfficer}, ${state.government.contactPhone || "DSN 318-555-0101"}`
+  ].join("\n");
+}
+
+function sectionGText() {
+  return `${state.ucf.sectionG || ""}\n\nG.4 WAWF Instructions.\n${wawfInstructionsText()}`;
+}
+
 function applyDocumentTokens(value = "") {
   return String(value)
     .replaceAll("{{solicitationNumber}}", state.document.solicitationNumber || "")
     .replaceAll("{{contractNumber}}", state.document.contractNumber || "")
-    .replaceAll("{{contractorName}}", state.contractor.name || "");
+    .replaceAll("{{contractorName}}", state.contractor.name || "")
+    .replaceAll("{{wawfInstructions}}", wawfInstructionsText());
 }
 
 function attr(value = "") {
@@ -1450,7 +1569,7 @@ function renderClauseTextPages() {
       <h2>Section I - Full Text Clauses${index ? " (Continued)" : ""}</h2>
       ${clauses.map((clause) => `
         <h3>${escapeHtml(clause.id)} ${escapeHtml(clause.title)} (${escapeHtml(clause.date)})</h3>
-        <div class="clause-body">${escapeHtml(clause.body)}</div>
+        <div class="clause-body">${escapeHtml(applyDocumentTokens(clause.body))}</div>
       `).join("")}
     </section>
   `);
@@ -1517,7 +1636,7 @@ function buildUcfContents() {
   pages.push({
     title: "Sections G and H",
     content: [
-      ucfSection("G", "Contract Administration Data", state.ucf.sectionG),
+      ucfSection("G", "Contract Administration Data", sectionGText()),
       renderAdministrationContinuation(),
       ucfSection("H", "Special Contract Requirements", state.ucf.sectionH)
     ].join("")
@@ -1656,6 +1775,21 @@ editor.addEventListener("change", (event) => {
     if (target.dataset.field === "government.contactName") {
       applyGovernmentContact(state.government.contactName);
     }
+    if (target.dataset.field === "document.requisitionNumber") {
+      const previous = value;
+      state.document.requisitionNumber = normalizeForm9Number(state.document.requisitionNumber);
+      if (badForm9Number(state.mod.requisitionNumber) || state.mod.requisitionNumber === previous) {
+        state.mod.requisitionNumber = state.document.requisitionNumber;
+      }
+      syncAwardComputedFields();
+    }
+    if (target.dataset.field === "mod.requisitionNumber") {
+      state.mod.requisitionNumber = normalizeForm9Number(state.mod.requisitionNumber);
+    }
+    if (target.dataset.field === "document.method") {
+      const serial = String(state.document.solicitationNumber || "").match(/00(\d{2})$/)?.[1] || "01";
+      setSolicitationSerial(serial);
+    }
     if (target.dataset.field === "award.fundType") {
       state.award.funding = createFundingSeed(state.award.fundType);
       syncAwardComputedFields();
@@ -1723,6 +1857,13 @@ document.querySelector("#addAttachmentBtn").addEventListener("click", () => {
 });
 
 document.querySelector("#applyProfileBtn").addEventListener("click", applyProfile);
+
+document.querySelector("#generateForm9Btn").addEventListener("click", () => {
+  randomizeForm9Serial();
+  syncAwardComputedFields();
+  markDirty();
+  renderAll();
+});
 
 document.querySelector("#generateContractPiidBtn").addEventListener("click", () => {
   randomizeContractSerial();
