@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<!--
+KTHQ Training Page Skeleton Contract
+Classifier used: EDGE CASE
+1. Cold-open scenario: included in hero and scenario strip.
+2. Buyer-mindset classifier: EDGE CASE, because this is an operational setup action that unlocks systems rather than a buying method.
+3. Decision rhythm: recognize -> check first -> execute -> bring back evidence.
+4. Instrument walkthrough as a working file: DoDAAC request packet and route note.
+5. Friction and safeguards: routing, TACs, CUI/OPSEC, contractor DoDAACs, existing-code updates, and authority flags.
+6. Documentation, stop points, and mandated coordination: DoDAAC Monitor/CSP route, contractor PIEE stop, procurement-authority flag stop, data-security stop.
+7. Practical artifact: printable deployed DoDAAC route note and field card.
+8. Optional self-check: four scenario-based items.
+9. Citations and caveats: source notes near claims and source drawer at bottom.
+10. Fictional-example disclaimers: footer.
+-->
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="kthq-radio-mode" content="cco" />
+  <meta name="description" content="A KTHQ reach-back training module for establishing or updating a DoDAAC for a deployed unit: packet, TACs, routing through the DoDAAC monitor and Central Service Point, and the file evidence to bring back." />
+  
+  <title>Establishing DoDAACs | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ContractingHQ" />
+  <meta property="og:title" content="Establishing DoDAACs | ContractingHQ" />
+  <meta property="og:description" content="A field training module for getting a deployed unit's DoDAAC request routed cleanly through the right monitor and CSP." />
+  <meta property="og:url" content="https://kthq.org/establishing-dodaacs.html" />
+  <meta property="og:image" content="https://kthq.org/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@ContractingHQ" />
+  <meta name="twitter:title" content="Establishing DoDAACs | ContractingHQ" />
+  <meta name="twitter:description" content="Get a deployed unit's DoDAAC request routed cleanly through the right monitor and CSP." />
+  <meta name="twitter:image" content="https://kthq.org/og-image.png" />
+  <link rel="canonical" href="https://kthq.org/establishing-dodaacs.html" />
+  <style>
+    :root {
+      --dod-bg: #050b18;
+      --dod-panel: #0c1728;
+      --dod-panel-2: #101f34;
+      --dod-blue: #4a9eff;
+      --dod-blue-soft: rgba(74, 158, 255, 0.12);
+      --dod-gold: #d6b45d;
+      --dod-gold-soft: rgba(214, 180, 93, 0.12);
+      --dod-green: #65d6a1;
+      --dod-green-soft: rgba(101, 214, 161, 0.1);
+      --dod-red: #ff8f8f;
+      --dod-red-soft: rgba(255, 143, 143, 0.1);
+      --dod-ink: #edf5ff;
+      --dod-muted: #9badc3;
+      --dod-faint: #6d7f96;
+      --dod-line: rgba(145, 181, 222, 0.18);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body.dodaac-page {
+      margin: 0;
+      background: var(--dod-bg);
+      color: var(--dod-ink);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -4rem;
+      z-index: 2000;
+      background: var(--dod-blue);
+      color: #fff;
+      padding: 0.65rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: top 0.15s;
+    }
+    .skip-link:focus { top: 1rem; }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(7, 16, 33, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--dod-line);
+    }
+    .nav-inner {
+      max-width: 1200px;
+      height: 64px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .nav-logo {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+      text-decoration: none;
+      margin-right: 1.5rem;
+    }
+    .logo-kthq {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 1.45rem;
+      letter-spacing: 2px;
+      color: var(--dod-blue);
+    }
+    .logo-full {
+      color: #c8d4e0;
+      font-size: 0.68rem;
+      opacity: 0.78;
+      margin-top: 2px;
+    }
+    .nav-links {
+      flex: 1;
+      list-style: none;
+      display: flex;
+      gap: 0.2rem;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-links a {
+      display: block;
+      color: #c7d4e5;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.48rem 0.78rem;
+      border-radius: 6px;
+    }
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #fff;
+      background: rgba(74, 158, 255, 0.12);
+    }
+    .nav-more { position: relative; }
+    .nav-more-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 180px;
+      background: rgba(7, 16, 33, 0.98);
+      border: 1px solid var(--dod-line);
+      border-radius: 8px;
+      list-style: none;
+      padding: 0.35rem;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.34);
+    }
+    .nav-more:hover .nav-more-menu,
+    .nav-more.open .nav-more-menu { display: block; }
+    .nav-more-menu a { padding: 0.55rem 0.7rem; }
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      border: 0;
+      background: transparent;
+      padding: 0.35rem;
+      cursor: pointer;
+    }
+    .nav-toggle span {
+      width: 24px;
+      height: 2px;
+      border-radius: 2px;
+      background: #c8d4e0;
+    }
+    .bmc-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #ffdd00;
+      color: #000;
+      border-radius: 8px;
+      padding: 0.38rem 0.9rem;
+      font-weight: 800;
+      font-size: 0.78rem;
+      text-decoration: none;
+      margin-left: auto;
+      white-space: nowrap;
+    }
+
+    .page-wrap { overflow: hidden; }
+    .hero {
+      padding: 8rem 1.5rem 2.6rem;
+      background:
+        linear-gradient(135deg, rgba(5, 11, 24, 0.96) 0%, rgba(13, 32, 57, 0.96) 55%, rgba(19, 58, 90, 0.9) 100%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 96px);
+      border-bottom: 1px solid var(--dod-line);
+    }
+    .container {
+      width: min(1120px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+      gap: 2rem;
+      align-items: stretch;
+    }
+    .hero-kicker {
+      display: inline-flex;
+      gap: 0.5rem;
+      align-items: center;
+      color: var(--dod-gold);
+      border: 1px solid rgba(214, 180, 93, 0.35);
+      border-radius: 999px;
+      padding: 0.28rem 0.9rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 1.1rem;
+    }
+    h1, h2, h3, h4 {
+      font-family: 'Rajdhani', sans-serif;
+      line-height: 1.15;
+      margin: 0;
+      color: #fff;
+    }
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 4.3rem);
+      letter-spacing: 0;
+      max-width: 780px;
+    }
+    .hero-sub {
+      max-width: 720px;
+      color: #c9d7e7;
+      font-size: 1rem;
+      line-height: 1.75;
+      margin: 1rem 0 1.3rem;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      border-radius: 8px;
+      padding: 0.62rem 1rem;
+      font-weight: 800;
+      font-size: 0.86rem;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn:hover { border-color: rgba(74, 158, 255, 0.55); background: rgba(74, 158, 255, 0.14); }
+    .btn-primary {
+      background: var(--dod-blue);
+      border-color: var(--dod-blue);
+    }
+    .btn-primary:hover { background: #368df0; }
+
+    .scenario-card {
+      background: rgba(5, 11, 24, 0.68);
+      border: 1px solid rgba(214, 180, 93, 0.26);
+      border-radius: 8px;
+      padding: 1.35rem;
+      min-height: 100%;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.22);
+    }
+    .scenario-label {
+      font-family: 'Rajdhani', sans-serif;
+      color: var(--dod-gold);
+      font-weight: 800;
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.65rem;
+    }
+    .scenario-card p {
+      color: #d7e2ef;
+      font-size: 0.92rem;
+      margin: 0 0 0.8rem;
+    }
+    .scenario-card p:last-child { margin-bottom: 0; }
+    .scenario-card strong { color: #fff; }
+
+    .status-strip {
+      background: #07101f;
+      border-bottom: 1px solid var(--dod-line);
+    }
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      background: var(--dod-line);
+      border-left: 1px solid var(--dod-line);
+      border-right: 1px solid var(--dod-line);
+    }
+    .status-item {
+      background: #081324;
+      padding: 1rem;
+    }
+    .status-item span {
+      display: block;
+      color: var(--dod-faint);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+    .status-item strong {
+      display: block;
+      color: #fff;
+      font-size: 0.94rem;
+    }
+
+    .local-nav {
+      position: sticky;
+      top: 64px;
+      z-index: 80;
+      background: rgba(5, 11, 24, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--dod-line);
+    }
+    .local-nav .container {
+      display: flex;
+      gap: 0.45rem;
+      overflow-x: auto;
+      padding-top: 0.65rem;
+      padding-bottom: 0.65rem;
+    }
+    .local-nav a {
+      color: #b9c7da;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px;
+      padding: 0.38rem 0.8rem;
+      text-decoration: none;
+      white-space: nowrap;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+    .local-nav a:hover {
+      color: #fff;
+      border-color: rgba(74, 158, 255, 0.45);
+      background: rgba(74, 158, 255, 0.1);
+    }
+
+    main { background: var(--dod-bg); }
+    .section {
+      padding: 3.2rem 0;
+      border-bottom: 1px solid rgba(145, 181, 222, 0.1);
+      scroll-margin-top: 130px;
+    }
+    .section.tight { padding-top: 2.4rem; }
+    .section-heading {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.9rem;
+      align-items: start;
+      margin-bottom: 1.4rem;
+    }
+    .step-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: var(--dod-blue-soft);
+      border: 1px solid rgba(74, 158, 255, 0.24);
+      color: var(--dod-blue);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+    }
+    .section-eyebrow {
+      color: var(--dod-gold);
+      font-size: 0.7rem;
+      letter-spacing: 1.7px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+    h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); }
+    h3 { font-size: 1.25rem; }
+    .lead {
+      color: #c9d7e7;
+      font-size: 0.98rem;
+      max-width: 820px;
+      margin: 0 0 1.2rem;
+      line-height: 1.75;
+    }
+    p {
+      color: var(--dod-muted);
+      margin: 0 0 1rem;
+    }
+    strong { color: #fff; }
+    a { color: #7ab8ff; }
+    a:hover { color: #fff; }
+
+    .note {
+      border-left: 3px solid var(--dod-blue);
+      background: rgba(74, 158, 255, 0.07);
+      border-radius: 8px;
+      padding: 0.95rem 1rem;
+      margin: 1rem 0;
+      color: #cbd8e9;
+      font-size: 0.9rem;
+    }
+    .note.gold {
+      border-left-color: var(--dod-gold);
+      background: var(--dod-gold-soft);
+    }
+    .note.green {
+      border-left-color: var(--dod-green);
+      background: var(--dod-green-soft);
+    }
+    .note.red {
+      border-left-color: var(--dod-red);
+      background: var(--dod-red-soft);
+    }
+    .source-note {
+      font-size: 0.76rem;
+      color: #8799b0;
+      margin-top: 0.55rem;
+      line-height: 1.55;
+    }
+    .source-note a { font-weight: 700; text-decoration-thickness: 1px; }
+
+    .rhythm {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.85rem;
+      margin: 1.4rem 0 0;
+    }
+    .rhythm-card,
+    .plain-card {
+      background: var(--dod-panel);
+      border: 1px solid var(--dod-line);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .rhythm-card .tag,
+    .plain-card .tag {
+      display: inline-block;
+      color: var(--dod-blue);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.73rem;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+    .rhythm-card h3,
+    .plain-card h3 {
+      margin-bottom: 0.45rem;
+    }
+    .rhythm-card p,
+    .plain-card p {
+      margin: 0;
+      font-size: 0.84rem;
+      line-height: 1.62;
+    }
+
+    .decision-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1.1rem;
+    }
+    .decision-card {
+      border-radius: 8px;
+      padding: 1rem;
+      border: 1px solid var(--dod-line);
+      background: var(--dod-panel);
+    }
+    .decision-card h3 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      margin-bottom: 0.7rem;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 0.2rem 0.58rem;
+      font-size: 0.66rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .pill.go { color: #d8ffeb; background: rgba(101, 214, 161, 0.16); border: 1px solid rgba(101, 214, 161, 0.28); }
+    .pill.check { color: #ffefbd; background: rgba(214, 180, 93, 0.16); border: 1px solid rgba(214, 180, 93, 0.28); }
+    .pill.stop { color: #ffd6d6; background: rgba(255, 143, 143, 0.16); border: 1px solid rgba(255, 143, 143, 0.28); }
+    .decision-card ul,
+    .checklist,
+    .source-list {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--dod-muted);
+    }
+    .decision-card li,
+    .checklist li,
+    .source-list li {
+      margin-bottom: 0.55rem;
+    }
+
+    .route-map {
+      margin: 1.4rem 0;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(150px, 1fr));
+      gap: 0.7rem;
+    }
+    .route-node {
+      position: relative;
+      min-height: 132px;
+      background: var(--dod-panel);
+      border: 1px solid var(--dod-line);
+      border-radius: 8px;
+      padding: 0.95rem;
+    }
+    .route-node::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -0.7rem;
+      width: 0.7rem;
+      height: 2px;
+      background: rgba(214, 180, 93, 0.55);
+    }
+    .route-node:last-child::after { display: none; }
+    .route-node span {
+      display: block;
+      color: var(--dod-gold);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+    .route-node strong {
+      display: block;
+      font-size: 0.95rem;
+      margin-bottom: 0.4rem;
+    }
+    .route-node p {
+      margin: 0;
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .packet-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--dod-line);
+      border-radius: 8px;
+      margin: 1.2rem 0;
+      background: var(--dod-panel);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 780px;
+    }
+    th,
+    td {
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid rgba(145, 181, 222, 0.12);
+      padding: 0.85rem 0.95rem;
+    }
+    th {
+      color: var(--dod-blue);
+      background: rgba(74, 158, 255, 0.07);
+      font-size: 0.74rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    td {
+      color: var(--dod-muted);
+      font-size: 0.88rem;
+    }
+    tr:last-child td { border-bottom: 0; }
+    td strong { display: block; margin-bottom: 0.2rem; }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(300px, 0.75fr);
+      gap: 1.2rem;
+      align-items: start;
+    }
+    .side-panel {
+      background: var(--dod-panel);
+      border: 1px solid var(--dod-line);
+      border-radius: 8px;
+      padding: 1.1rem;
+    }
+    .side-panel h3 { margin-bottom: 0.7rem; }
+    .side-panel p { font-size: 0.86rem; }
+
+    .friction-grid,
+    .source-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .friction-card {
+      background: var(--dod-panel);
+      border: 1px solid var(--dod-line);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .friction-card h3 {
+      color: #fff;
+      margin-bottom: 0.45rem;
+    }
+    .friction-card p {
+      font-size: 0.86rem;
+      margin-bottom: 0.7rem;
+    }
+    .friction-card .move {
+      margin: 0;
+      color: #d9e8f9;
+      font-size: 0.84rem;
+      border-top: 1px solid rgba(145, 181, 222, 0.12);
+      padding-top: 0.7rem;
+    }
+
+    .field-card {
+      background: #f8fbff;
+      color: #182435;
+      border: 1px solid #c7d7e8;
+      border-radius: 8px;
+      padding: 1.35rem;
+      margin: 1.2rem 0 0;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+    }
+    .field-card h3 {
+      color: #122033;
+      font-size: 1.35rem;
+      margin-bottom: 0.4rem;
+    }
+    .field-card p,
+    .field-card li {
+      color: #344256;
+      font-size: 0.88rem;
+    }
+    .field-card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .field-box {
+      border: 1px solid #cfdae7;
+      border-radius: 6px;
+      padding: 0.8rem;
+      background: #fff;
+    }
+    .field-box strong {
+      display: block;
+      color: #122033;
+      font-size: 0.8rem;
+      margin-bottom: 0.25rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .field-card code {
+      display: block;
+      color: #172235;
+      background: #eef4fb;
+      border: 1px solid #d6e2ef;
+      border-radius: 6px;
+      padding: 0.75rem;
+      white-space: pre-wrap;
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .self-check {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.1rem;
+    }
+    .quiz-card {
+      background: var(--dod-panel);
+      border: 1px solid var(--dod-line);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .quiz-card h3 {
+      margin-bottom: 0.6rem;
+    }
+    .quiz-options {
+      display: grid;
+      gap: 0.55rem;
+      margin-top: 0.8rem;
+    }
+    .quiz-option {
+      width: 100%;
+      min-height: 42px;
+      border-radius: 8px;
+      border: 1px solid rgba(145, 181, 222, 0.18);
+      background: rgba(255,255,255,0.04);
+      color: #dbe7f6;
+      font-family: inherit;
+      font-weight: 700;
+      text-align: left;
+      padding: 0.65rem 0.85rem;
+      cursor: pointer;
+    }
+    .quiz-option:hover { border-color: rgba(74, 158, 255, 0.55); background: rgba(74, 158, 255, 0.1); }
+    .quiz-option.correct { border-color: rgba(101, 214, 161, 0.65); background: rgba(101, 214, 161, 0.13); color: #d8ffeb; }
+    .quiz-option.wrong { border-color: rgba(255, 143, 143, 0.55); background: rgba(255, 143, 143, 0.12); color: #ffdada; }
+    .quiz-feedback {
+      display: none;
+      margin-top: 0.75rem;
+      border-radius: 8px;
+      padding: 0.75rem;
+      font-size: 0.86rem;
+      color: #dce8f8;
+      background: rgba(74, 158, 255, 0.08);
+      border: 1px solid rgba(74, 158, 255, 0.18);
+    }
+    .quiz-feedback.visible { display: block; }
+
+    details {
+      background: var(--dod-panel);
+      border: 1px solid var(--dod-line);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+      margin-top: 1rem;
+    }
+    summary {
+      cursor: pointer;
+      color: #fff;
+      font-weight: 800;
+    }
+    details p,
+    details li { font-size: 0.86rem; }
+
+    .footer {
+      background: #0b1b34;
+      border-top: 1px solid var(--dod-line);
+      padding: 2.4rem 1.5rem;
+      text-align: center;
+    }
+    .footer-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      gap: 1rem;
+    }
+    .footer-brand {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+    }
+    .footer-tagline { color: #9badc3; font-size: 0.9rem; }
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-nav a {
+      color: #9badc3;
+      text-decoration: none;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+    .footer-nav a:hover { color: #fff; }
+    .footer-disclaimer,
+    .footer-copy {
+      max-width: 780px;
+      margin: 0 auto;
+      color: rgba(155, 173, 195, 0.75);
+      font-size: 0.78rem;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .split { grid-template-columns: 1fr; }
+      .rhythm,
+      .status-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .route-map { grid-template-columns: 1fr; }
+      .route-node { min-height: 0; }
+      .route-node::after {
+        top: auto;
+        left: 1.3rem;
+        right: auto;
+        bottom: -0.7rem;
+        width: 2px;
+        height: 0.7rem;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .nav-inner { padding: 0 1rem; }
+      .nav-toggle { display: flex; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 64px;
+        flex-direction: column;
+        background: rgba(7, 16, 33, 0.99);
+        border-bottom: 1px solid var(--dod-line);
+        padding: 0.8rem 1rem 1rem;
+      }
+      .nav-links.open { display: flex; }
+      .nav-more:hover .nav-more-menu { display: none; }
+      .nav-more.open .nav-more-menu {
+        display: block;
+        position: static;
+        border: 0;
+        border-left: 2px solid rgba(74, 158, 255, 0.35);
+        box-shadow: none;
+        margin: 0.35rem 0 0 0.6rem;
+      }
+      .logo-full { display: none; }
+      .nav-logo { margin-right: 0.5rem; }
+      .bmc-btn {
+        font-size: 0;
+        padding: 0.36rem 0.58rem;
+      }
+      .bmc-btn::before {
+        content: "Coffee";
+        font-size: 0.76rem;
+      }
+      .hero { padding-top: 7.3rem; }
+      .decision-grid,
+      .friction-grid,
+      .source-grid,
+      .field-card-grid,
+      .rhythm,
+      .status-grid { grid-template-columns: 1fr; }
+      h1 { font-size: clamp(2rem, 12vw, 3.2rem); }
+      .section-heading { grid-template-columns: 1fr; }
+      .local-nav { top: 64px; }
+    }
+
+    @media print {
+      body.dodaac-page {
+        background: #fff;
+        color: #111;
+      }
+      .navbar,
+      .hero,
+      .status-strip,
+      .local-nav,
+      .footer,
+      .btn,
+      .self-check,
+      .source-grid,
+      details,
+      .note,
+      .source-note {
+        display: none !important;
+      }
+      .section {
+        border: 0;
+        padding: 0;
+      }
+      body.print-field-card main > .section:not(#artifact) {
+        display: none !important;
+      }
+      body.print-field-card #artifact .section-heading,
+      body.print-field-card #artifact .lead,
+      body.print-field-card #artifact > .container > p:not(.print-keep) {
+        display: none !important;
+      }
+      .container {
+        width: 100%;
+        margin: 0;
+      }
+      .field-card {
+        box-shadow: none;
+        border: 1px solid #000;
+        color: #111;
+        margin: 0;
+        page-break-inside: avoid;
+      }
+      .field-card h3,
+      .field-card strong,
+      .field-card p,
+      .field-card li {
+        color: #111;
+      }
+    }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "Establishing DoDAACs",
+    "url": "https://kthq.org/establishing-dodaacs.html",
+    "description": "A field training module for establishing or updating DoDAACs for deployed units.",
+    "educationalLevel": "Intermediate",
+    "inLanguage": "en-US",
+    "isAccessibleForFree": true,
+    "publisher": {
+      "@type": "Organization",
+      "name": "KTHQ ContractingHQ",
+      "url": "https://kthq.org/"
+    }
+  }
+  </script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+</head>
+<body class="dodaac-page">
+<a href="#main" class="skip-link">Skip to lesson</a>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="customer-education.html">Customer Education</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li class="nav-more">
+        <a href="#" class="nav-more-toggle" aria-haspopup="true" aria-expanded="false">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="links.html">Links</a></li>
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn">Coffee</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <header class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="hero-kicker">Field Systems Setup / DoDAAD</div>
+        <h1>Establishing DoDAACs for a Deployed Unit</h1>
+        <p class="hero-sub">Most of the time the deployed unit already has a DoDAAC and you'll never think about this. With the 2026 situation in Iran and SOUTHCOM, more units are landing at locations that don't. Knowing how to set one up, ideally before you fly, saves CONS, FM, and your mission partners a lot of pain on day one.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#start-here">Start here</a>
+          <a class="btn" href="#sources">Open the sources</a>
+        </div>
+      </div>
+      <aside class="scenario-card" aria-labelledby="scenario-title">
+        <div class="scenario-label" id="scenario-title">Why you're reading this</div>
+        <p><strong>You're CONS at a location that doesn't have its own DoDAAC yet.</strong> Supply can't requisition, the freight carrier won't cut a TCN, finance can't pay against the activity, and PIEE doesn't recognize the unit. Everything traces back to a missing DoDAAC.</p>
+        <p>The whole fix is a phone call to the right person at the Central Service Point and a short application. Plain-language version is right below.</p>
+      </aside>
+    </div>
+  </header>
+
+  <section class="status-strip" aria-label="Lesson classifier and rhythm">
+    <div class="container status-grid">
+      <div class="status-item">
+        <span>Type</span>
+        <strong>EDGE CASE / SET-UP TASK</strong>
+      </div>
+      <div class="status-item">
+        <span>Reader</span>
+        <strong>CCO / CONS / support staff</strong>
+      </div>
+      <div class="status-item">
+        <span>Typical timeline</span>
+        <strong>About 7 days; faster for operations</strong>
+      </div>
+      <div class="status-item">
+        <span>Outcome</span>
+        <strong>Activity DoDAAC, EDA &amp; WAWF unlocked</strong>
+      </div>
+    </div>
+  </section>
+
+  <nav class="local-nav" aria-label="Lesson sections">
+    <div class="container">
+      <a href="#start-here">Start Here</a>
+      <a href="#rhythm">Rhythm</a>
+      <a href="#fit">Check First</a>
+      <a href="#packet">Packet</a>
+      <a href="#safeguards">Snags</a>
+      <a href="#sources">Sources</a>
+    </div>
+  </nav>
+
+  <main id="main">
+    <section class="section tight" id="start-here">
+      <div class="container">
+        <div class="section-heading">
+          <span class="step-mark">!</span>
+          <div>
+            <div class="section-eyebrow">Start here</div>
+            <h2>The plain-language version.</h2>
+          </div>
+        </div>
+        <p class="lead">Everyone tends to overcomplicate this. The whole thing in plain English:</p>
+
+        <div class="note gold">
+          <p style="margin:0 0 .55rem;"><strong>1.</strong> Go to <a href="https://home.daas.dla.mil/eDoDAAD/csp.asp" target="_blank" rel="noopener">DoDAAD Central Service Points (CSP)</a>.</p>
+          <p style="margin:0 0 .55rem;"><strong>2.</strong> Find your service's POC for your DoDAAC series. Don't be shy &mdash; reach out.</p>
+          <p style="margin:0 0 .55rem;"><strong>3.</strong> If you're CONS (the contracting squadron), tell them you need an FA-series DoDAAC. They'll either find one that already exists for your unit or help you stand up a new one.</p>
+          <p style="margin:0 0 .55rem;"><strong>4.</strong> If you're standing up under a real operation, say so. They'll expedite.</p>
+          <p style="margin:0;"><strong>5.</strong> Plan on about seven days under normal pace. They'll link you to a page where you fill out the application. That's the whole thing.</p>
+        </div>
+
+        <h3 style="margin-top:1.6rem;">What a DoDAAC actually is.</h3>
+        <p>A DoDAAC (Department of Defense Activity Address Code) is the six-character identifier your unit uses to plug into DoD business systems. It's how supply, transportation, finance, and contracting all know who you are. No DoDAAC, no system identity, and every transaction either bounces or has to be hand-walked.</p>
+
+        <h3 style="margin-top:1.4rem;">Why this matters once you have one.</h3>
+        <p>Getting your DoDAAC stood up is the gate that opens up the rest of the system stack:</p>
+        <ul>
+          <li><strong>Contract writing system.</strong> You can stop running pure manual contracts. The unit gets an identity that the writing system can issue contracts against.</li>
+          <li><strong>EDA (Electronic Document Access).</strong> Even your manual contracts can be loaded into EDA so they're in the corporate record where everyone &mdash; finance, audit, the next CCO &mdash; can find them.</li>
+          <li><strong>WAWF (Wide Area Workflow).</strong> Electronic invoicing instead of paper invoices chasing finance around the office.</li>
+        </ul>
+
+        <h3 style="margin-top:1.4rem;">If you can't get one.</h3>
+        <p>Reach back to the NAF (Numbered Air Force). For most Middle East deployments that's AFCENT (Air Forces Central). They can help, particularly with uploading your manual contracts into EDA when you can't do it from where you are. Even with that backstop in place, keep pushing to get your own DoDAAC, and tell your customers (the requiring activities) to apply for one too. Finance &mdash; FM (Financial Management) &mdash; is critical here as well. They need a DoDAAC of their own, or your invoices have nowhere to land on the system side.</p>
+
+        <h3 style="margin-top:1.4rem;">Why this is on the page.</h3>
+        <p>This isn't something most CCOs go through on most deployments. The unit usually shows up with a DoDAAC already and you'd never notice. With the 2026 situation in Iran and SOUTHCOM, more units are setting up at locations that don't have one yet, so it's worth knowing the route. Even more useful: get it set up before you fly. It saves CONS, FM, and your mission partners a lot of pain on day one.</p>
+      </div>
+    </section>
+
+    <section class="section tight" id="rhythm">
+      <div class="container">
+        <div class="section-heading">
+          <span class="step-mark">1</span>
+          <div>
+            <div class="section-eyebrow">Decision rhythm</div>
+            <h2>Move like this: recognize, check first, execute, bring back evidence.</h2>
+          </div>
+        </div>
+        <p class="lead">Everything below is the longer version of the plain-language section above. Use it when the CSP comes back with questions, when the request gets bounced for a missing piece, or when you're walking a customer or finance shop through the same path.</p>
+
+        <div class="rhythm">
+          <article class="rhythm-card">
+            <span class="tag">Recognize</span>
+            <h3>What is blocked?</h3>
+            <p>Name the actual systems and transactions that are failing: supply requisition, freight delivery, billing, WAWF/PIEE setup, property accountability, or contract-writing office identity.</p>
+          </article>
+          <article class="rhythm-card">
+            <span class="tag">Check first</span>
+            <h3>New code or update?</h3>
+            <p>Before asking for a brand-new DoDAAC, check whether an existing unit, base, tenant, or parent-code arrangement can support the mission.</p>
+          </article>
+          <article class="rhythm-card">
+            <span class="tag">Execute</span>
+            <h3>Send a usable packet.</h3>
+            <p>Give the monitor/CSP the activity identity, purpose, TAC addresses, effective date, duration, and enough context to prioritize a deployed-unit action.</p>
+          </article>
+          <article class="rhythm-card">
+            <span class="tag">Evidence</span>
+            <h3>Close the loop.</h3>
+            <p>Capture the assigned or updated DoDAAC, confirmation message, effective date, authority/purpose limits, and who was told to update local systems.</p>
+          </article>
+        </div>
+
+        <p class="source-note">Source check: DLM 4000.25, Volume 6, Chapter 2 describes DoDAACs as six-character identifiers for activities that requisition, contract for, receive, ship, or fund/pay bills for materials or services. It also states that DoDAACs support acquisition, procurement, contracting, shipping, billing, pay, maintenance, and other DoD business systems.</p>
+      </div>
+    </section>
+
+    <section class="section" id="fit">
+      <div class="container">
+        <div class="section-heading">
+          <span class="step-mark">2</span>
+          <div>
+            <div class="section-eyebrow">Check first</div>
+            <h2>Decide what problem you actually have before asking for a new code.</h2>
+          </div>
+        </div>
+        <p class="lead">Most stalled DoDAAC problems fall into one of three lanes. Pick the lane first, then route the action. That keeps the request from turning into a vague "systems are down" email.</p>
+
+        <div class="decision-grid">
+          <article class="decision-card">
+            <h3>Use or update an existing DoDAAC <span class="pill go">Often fastest</span></h3>
+            <ul>
+              <li>The unit is falling in on an existing U.S. location or tenant footprint.</li>
+              <li>The parent command already has a supporting activity code.</li>
+              <li>Only the TAC 2 freight address, TAC 3 billing address, effective date, or local system profile is wrong.</li>
+            </ul>
+          </article>
+          <article class="decision-card">
+            <h3>Request a new DoDAAC <span class="pill check">Use when needed</span></h3>
+            <ul>
+              <li>The activity genuinely needs its own identity for requisitioning, shipping, billing, property, contracting, funding, or system interfaces.</li>
+              <li>The mission duration and system footprint justify a separate record.</li>
+              <li>The monitor/CSP can tie the record to a service/agency owner and authority/purpose limits.</li>
+            </ul>
+          </article>
+          <article class="decision-card">
+            <h3>Stop and redirect <span class="pill stop">Wrong lane</span></h3>
+            <ul>
+              <li>The need is only user access to eDAASINQ or another system, not a new activity code.</li>
+              <li>The request is for a contractor DoDAAC. That has a separate PIEE contractor DoDAAC path.</li>
+              <li>The request would expose deployed location details outside approved channels.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="note gold">
+          <strong>Use the right phrase from the start.</strong> Ask for the "DoDAAC monitor" or "Central Service Point," not "who handles this at the MAJCOM J4." The internal route runs through the unit support chain that owns logistics, resource, supply, or parent-command data. Joint and theater staff can help with operational context like APOD/WPOD or host-nation, but the record itself belongs to the service/agency DoDAAD owner.
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="packet">
+      <div class="container">
+        <div class="section-heading">
+          <span class="step-mark">3</span>
+          <div>
+            <div class="section-eyebrow">Working file</div>
+            <h2>Build the DoDAAC request packet like a clean handoff.</h2>
+          </div>
+        </div>
+        <p class="lead">The monitor or CSP is the one who can make the official update. Your packet should make the action easy to validate: what activity needs the code, what the code must do, what addresses and authority limits apply, and when the change needs to be effective.</p>
+
+        <div class="packet-table-wrap" role="region" aria-label="DoDAAC request packet table" tabindex="0">
+          <table>
+            <thead>
+              <tr>
+                <th>Packet element</th>
+                <th>What to send</th>
+                <th>Why it matters</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Activity identity</strong> Unit/activity name, parent command, UIC/PAS or local equivalent, deployed support relationship.</td>
+                <td>Use the official unit identity and parent organization. Do not invent a temporary name just because the team is forward.</td>
+                <td>DoDAAC ownership follows the service/agency and delegated record owner. The monitor needs a real activity to attach to the record.</td>
+              </tr>
+              <tr>
+                <td><strong>Operational need</strong> What is blocked today and what systems need the code.</td>
+                <td>Examples: requisitioning, freight receiving, billing/payment, property accountability, PIEE/WAWF routing, contract-writing office setup.</td>
+                <td>DoDAAC purpose and authority are not cosmetic. They control what systems can do with the record.</td>
+              </tr>
+              <tr>
+                <td><strong>Authority and purpose</strong> Requisition, ship-to, bill-to, procurement authority, funding office, or administrative use.</td>
+                <td>State the intended use in plain language. Let the monitor/CSP set the actual authority and purpose codes.</td>
+                <td>Wrong authority can block transactions or create a fiscal-control problem. Procurement authority deserves extra review.</td>
+              </tr>
+              <tr>
+                <td><strong>TAC 1</strong> Owner or mailing address.</td>
+                <td>Provide the correct official mailing identity. If an APO/FPO format applies, use it cleanly and do not blend it with commercial postal lines.</td>
+                <td>TAC 1 is mandatory. It identifies the owner/mailing information for the activity.</td>
+              </tr>
+              <tr>
+                <td><strong>TAC 2</strong> Ship-to or freight address.</td>
+                <td>Provide enough freight detail to move cargo: location, delivery point, consignee support, APOD/WPOD if applicable, and any official routing constraints.</td>
+                <td>TAC 2 drives freight movement when the activity will receive shipments. For OCONUS records, APOD/WPOD can matter.</td>
+              </tr>
+              <tr>
+                <td><strong>TAC 3</strong> Bill-to address or payment responsibility.</td>
+                <td>Identify the responsible billing/payment office or funding/payment relationship through official channels.</td>
+                <td>TAC 3 supports bill payment. If the activity pays or funds bills, this cannot be guessed.</td>
+              </tr>
+              <tr>
+                <td><strong>Effective date and duration</strong> When the activity needs the record and whether it is temporary.</td>
+                <td>Give the mission start date, requested effective date, expected redeployment/end date, and a review point for deletion or update.</td>
+                <td>DLM procedures allow effective-date handling and deletion/inactivation. Temporary deployment records need lifecycle attention.</td>
+              </tr>
+              <tr>
+                <td><strong>Existing-code check</strong> Nearby, parent, host, or prior-rotation DoDAACs considered.</td>
+                <td>Tell the monitor what you checked and why the existing record does or does not fit.</td>
+                <td>This prevents duplicate records and helps the CSP choose update versus new assignment.</td>
+              </tr>
+              <tr>
+                <td><strong>POCs and handling</strong> Government POC, support-chain POC, and marking/handling instructions.</td>
+                <td>Use official email channels. Keep deployed location and operational details inside approved systems and marked as required.</td>
+                <td>Aggregated DoDAAD data and deployed-location details can be CUI/OPSEC-sensitive.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="source-note">Source check: DLA's DoDAAD page identifies TAC 1 as mailing/owner, TAC 2 as freight or ship-to, and TAC 3 as billing. DLM 4000.25, Volume 6, Chapter 2 adds authority-code rules, APOD/WPOD considerations, effective dates, deletion dates, and purpose flags.</p>
+      </div>
+    </section>
+
+
+    <section class="section" id="safeguards">
+      <div class="container">
+        <div class="section-heading">
+          <span class="step-mark">4</span>
+          <div>
+            <div class="section-eyebrow">Friction and safeguards</div>
+            <h2>The problems are predictable. Handle them directly.</h2>
+          </div>
+        </div>
+        <p class="lead">DoDAAC work gets messy when people blur ownership, authority, address data, and user access. Cleaner facts and clear stop points fix far more of it than escalating up the chain.</p>
+
+        <div class="friction-grid">
+          <article class="friction-card">
+            <h3>Parent command versus theater</h3>
+            <p>The location may be in a combatant command AOR, but the DoDAAC owner still follows service/agency record ownership and delegated DoDAAD management.</p>
+            <p class="move"><strong>Move:</strong> Route through the parent unit support chain to the service monitor/CSP. Use theater staff only for theater-specific address, APOD/WPOD, host-nation, or operational coordination.</p>
+          </article>
+          <article class="friction-card">
+            <h3>Wrong TAC, right code</h3>
+            <p>A DoDAAC can exist and still fail the mission because freight, billing, or mailing details do not match the deployed setup.</p>
+            <p class="move"><strong>Move:</strong> Ask for a correction/update when the activity identity is right but TAC 1, TAC 2, TAC 3, APOD/WPOD, or effective-date data is wrong.</p>
+          </article>
+          <article class="friction-card">
+            <h3>Contractor DoDAAC confusion</h3>
+            <p>A contractor DoDAAC is not the same as a deployed unit DoDAAC. DLM procedures point contractor DoDAAC requests through the PIEE contractor DoDAAC request module and contract validation.</p>
+            <p class="move"><strong>Move:</strong> If the request is for a contractor, stop the unit-code workflow and send it to the contract/program owner path.</p>
+          </article>
+          <article class="friction-card">
+            <h3>Data handling</h3>
+            <p>DoDAAD data can reveal deployed locations, duty station addresses, operational status, and internal controls. Treat the request packet as operational support data, not a public worksheet.</p>
+            <p class="move"><strong>Move:</strong> Keep real addresses, POCs, location details, and system screenshots inside official channels with required markings.</p>
+          </article>
+          <article class="friction-card">
+            <h3>Procurement authority flag</h3>
+            <p>Some DoDAAC records carry purpose flags, including procurement authority. The flag does not create contracting authority; the warrant does.</p>
+            <p class="move"><strong>Move:</strong> Route procurement-authority records through the contracting chain and the monitor/CSP so the flag matches a real warrant. Do not request it as a convenience setting.</p>
+          </article>
+          <article class="friction-card">
+            <h3>Processing-time folklore</h3>
+            <p>People may remember a fast contingency turnaround, but a public guarantee is not the same thing as a procedure.</p>
+            <p class="move"><strong>Move:</strong> Request priority handling, explain the mission impact, and track the action. Do not promise a fixed short-turn timeline unless your current CSP/local procedure says it.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+
+
+    <section class="section" id="sources">
+      <div class="container">
+        <div class="section-heading">
+          <span class="step-mark">5</span>
+          <div>
+            <div class="section-eyebrow">Look it up</div>
+            <h2>Official source anchors and caveats.</h2>
+          </div>
+        </div>
+        <p class="lead">Use these links to verify the current path before you send a real request. This page is a training aid, not a substitute for your service's current internal procedure.</p>
+
+        <div class="source-grid">
+          <article class="plain-card">
+            <span class="tag">Policy and procedures</span>
+            <h3>DLM 4000.25, Volume 6, Chapter 2</h3>
+            <p>Primary DoDAAD procedure source. Covers DoDAAC/RIC roles, CSP/monitor responsibilities, TAC rules, purpose flags, output, and data security.</p>
+            <p><a href="https://www.dla.mil/Portals/104/Documents/DLMS/Manuals/DLM/V6/Volume6.pdf" target="_blank" rel="noopener">Open DLM Volume 6</a></p>
+          </article>
+          <article class="plain-card">
+            <span class="tag">Air Force route</span>
+            <h3>AFMAN 23-230</h3>
+            <p>Air Force-specific DoDAAC manual. Describes the Air Force DoDAAC WMS, MAJCOM monitor, SME, and CSP route to establish, change, or terminate Air Force DoDAAC records.</p>
+            <p><a href="https://static.e-publishing.af.mil/production/1/af_a4/publication/afman23-230/afman23-230.pdf" target="_blank" rel="noopener">Open AFMAN 23-230</a></p>
+          </article>
+          <article class="plain-card">
+            <span class="tag">DLA explainer</span>
+            <h3>Defense Activity Address Directory</h3>
+            <p>DLA's public DoDAAD page explains what a DoDAAC is, how it is used, and where to find CSP and DoDAAD resources.</p>
+            <p><a href="https://www.dla.mil/Defense-Data-Standards/Committees/DoDAAD/" target="_blank" rel="noopener">Open DLA DoDAAD page</a></p>
+          </article>
+          <article class="plain-card">
+            <span class="tag">POC listing</span>
+            <h3>DoDAAD Central Service Points</h3>
+            <p>Public CSP listing by DoDAAC/RIC series and service/agency. Verify current Air Force or other service POC before using.</p>
+            <p><a href="https://home.daas.dla.mil/eDoDAAD/csp.asp" target="_blank" rel="noopener">Open CSP listing</a></p>
+          </article>
+          <article class="plain-card">
+            <span class="tag">Search</span>
+            <h3>DoDAAD simple search and eDAASINQ</h3>
+            <p>DLA notes that known DoDAACs can be queried publicly one at a time, while broader eDAASINQ access requires a SAR and CAC/PKI.</p>
+            <p><a href="https://home.daas.dla.mil/eDoDAAD/s_search/search_menu.asp" target="_blank" rel="noopener">Open simple search</a></p>
+          </article>
+          <article class="plain-card">
+            <span class="tag">AOR context</span>
+            <h3>Israel and CENTCOM</h3>
+            <p>DoD announced the 2020 UCP shift of Israel to CENTCOM AOR in January 2021; CENTCOM assumed responsibility for U.S. forces in Israel on Sept. 1, 2021.</p>
+            <p><a href="https://www.defense.gov/News/Releases/Release/Article/2473648/department-of-defense-statement-on-unified-command-plan-change/" target="_blank" rel="noopener">Open DoD release</a></p>
+          </article>
+          <article class="plain-card">
+            <span class="tag">RFO cross-check</span>
+            <h3>DoD Class Deviation 2026-O0013</h3>
+            <p>Checked because current DoD RFO/DFARS Part 211 purchase-request guidance references DoDAAC verification. It does not govern creating or updating DoDAAC records.</p>
+            <p><a href="https://www.acquisition.gov/sites/default/files/page_file_uploads/DoD_RFO_Deviation_Part-11.pdf" target="_blank" rel="noopener">Open Part 11 deviation</a></p>
+          </article>
+          <article class="plain-card">
+            <span class="tag">Drop these myths</span>
+            <h3>Don't carry these into the packet</h3>
+            <p>There is no public Air Force "contingency W-series" DoDAAC shortcut; W series belongs to Army in the current public CSP listing. There is no published 24-72 hour processing promise; DLM directs CSPs to prioritize deploying units but does not name a fixed turnaround. There is no "DD 448-2 equivalent" form to submit; the current path is the DoDAAD update through your CSP/monitor.</p>
+          </article>
+        </div>
+
+        <details>
+          <summary>Source-check details and date sensitivity</summary>
+          <ul class="source-list">
+            <li>Sources were checked on May 20, 2026.</li>
+            <li>DLM 4000.25, Volume 6 was published as revised October 03, 2025 in the PDF viewed during this build.</li>
+            <li>DoDAAC monitors and CSP POCs can change. The public CSP listing should be checked again before publication or operational use.</li>
+            <li>RFO/DFARS cross-check: DoD Class Deviation 2026-O0013 for FAR Part 11/DFARS Part 211 mentions DoDAACs for purchase request numbering and verification, but it does not replace DLM/DAAS procedures for DoDAAC establishment or update.</li>
+            <li>This page avoids FAR/DFARS threshold framing. The controlling source for DoDAAC establishment and DoDAAD maintenance is DLM 4000.25, Volume 6, Chapter 2, plus current service/agency supplemental procedures.</li>
+            <li>The fictional scenario references Israel only to mirror the training need. Do not include real deployed addresses, POCs, operational names, system screenshots, or aggregated DoDAAD data in public training artifacts.</li>
+          </ul>
+        </details>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ - Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="contingency-contracting.html">Contingency Contracting</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Fictional training scenario. Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only. Do not enter or publish CUI, classified information, PII, contractor proprietary information, source-selection sensitive material, or live operational details in public tools or training drafts.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var navToggle = document.getElementById('navToggle');
+    var navLinks = document.getElementById('navLinks');
+    if (navToggle && navLinks) {
+      navToggle.addEventListener('click', function () {
+        var open = navLinks.classList.toggle('open');
+        navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    }
+
+    document.querySelectorAll('.nav-more-toggle').forEach(function (toggle) {
+      toggle.addEventListener('click', function (event) {
+        event.preventDefault();
+        var parent = toggle.closest('.nav-more');
+        var open = parent.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    });
+
+  })();
+
+</script>
+<script src="player.js"></script>
+</body>
+</html>
