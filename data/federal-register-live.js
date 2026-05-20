@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-05-19T10:43:56.270Z",
-  "since": "2024-11-25",
+  "generatedAt": "2026-05-20T10:28:47.725Z",
+  "since": "2024-11-26",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,13 +14,13 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 136,
+    "total": 135,
     "latestPublicationDate": "2026-05-14",
     "openCommentWindows": 8,
-    "rules": 66,
+    "rules": 65,
     "byTone": {
       "monitor": 67,
-      "action": 47,
+      "action": 46,
       "active": 1,
       "watch": 21
     }
@@ -4864,41 +4864,6 @@ window.KTHQ_FEDREG_DATA = {
       ],
       "htmlUrl": "https://www.federalregister.gov/documents/2024/11/29/2024-28053/information-collection-certain-federal-acquisition-regulation-part-16-contract-pricing-requirements",
       "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-11-29/pdf/2024-28053.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2024-27631",
-      "documentNumber": "2024-27631",
-      "title": "Homeland Security Acquisition Regulation, Rescinding Reserve Officer Training Corps and Military Recruiting on Campus Clause (HSAR Case 2024-001)",
-      "shortTitle": "Homeland Security Acquisition Regulation, Rescinding Reserve Officer Training Corps and Military Recruiting on Campus Clause (HSAR Case 2024-001)",
-      "system": "FAR",
-      "stage": "Final rule",
-      "topic": "Clauses / reps",
-      "actionLevel": "Check templates",
-      "actionTone": "action",
-      "practitionerNote": "This is implemented rulemaking. Check effective dates, affected parts, and whether your templates, clauses, review checklists, or training notes need to change.",
-      "nextSteps": [
-        "Read the effective date language",
-        "Search local templates for the cited parts or clauses",
-        "Tell the team if open acquisitions are affected"
-      ],
-      "type": "Rule",
-      "publicationDate": "2024-11-25",
-      "effectiveDate": "2024-12-26",
-      "commentsCloseDate": "",
-      "datesText": "This final rule is effective December 26, 2024.",
-      "actionText": "Final rule.",
-      "summary": "DHS is issuing a final rule to amend the Homeland Security Acquisition Regulation (HSAR) to remove and reserve an HSAR clause and subpart. These provisions contain regulatory requirements, which prohibits the award of certain Federal contracts to institutions of higher education that prohibit Reserve Officer Training Corps units or military recruiting on campus. These HSAR provisions are no longer needed in light of amendments made in the Federal Acquisition Regulation (FAR), which DHS has adhered to since Decembe...",
-      "citation": "89 FR 92847",
-      "regulationIds": [
-        "1601-AB14"
-      ],
-      "cfrReferences": "48 CFR part 3009, 48 CFR part 3052",
-      "agencies": [
-        "Homeland Security Department"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2024/11/25/2024-27631/homeland-security-acquisition-regulation-rescinding-reserve-officer-training-corps-and-military",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-11-25/pdf/2024-27631.pdf",
       "sourceQuery": "Federal Acquisition Regulation keyword feed"
     }
   ]
