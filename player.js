@@ -2077,8 +2077,14 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     return name || 'index.html';
   }
 
+  function isRootLevelSoftPage(url) {
+    var parts = String(url.pathname || '/').split('/').filter(Boolean);
+    if (!parts.length) return true;
+    return parts.length === 1 && /\.html$/i.test(parts[0]);
+  }
+
   function isSoftPage(url) {
-    return SOFT_NAV_PAGES.indexOf(softPageName(url)) > -1;
+    return isRootLevelSoftPage(url) && SOFT_NAV_PAGES.indexOf(softPageName(url)) > -1;
   }
 
   function canSoftNavigate(link, url) {
