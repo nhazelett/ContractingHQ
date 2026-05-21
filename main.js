@@ -136,83 +136,41 @@
     return -1;
   }
 
-  function buildNavHTML(prev, next) {
-    var html = "";
-    if (prev) {
-      html += '<a href="' + prev[0] + '" class="tn-prev">'
-            + '<span class="tn-arrow">&larr;</span>'
-            + '<span class="tn-text"><span class="tn-label">Previous</span>'
-            + '<span class="tn-title">' + esc(prev[1]) + '</span></span></a>';
-    } else {
-      html += '<a href="training.html" class="tn-prev">'
-            + '<span class="tn-arrow">&larr;</span>'
-            + '<span class="tn-text"><span class="tn-label">Back to</span>'
-            + '<span class="tn-title">Training Home</span></span></a>';
-    }
-    if (next) {
-      html += '<a href="' + next[0] + '" class="tn-next">'
-            + '<span class="tn-text"><span class="tn-label">Next Training</span>'
-            + '<span class="tn-title">' + esc(next[1]) + '</span></span>'
-            + '<span class="tn-arrow">&rarr;</span></a>';
-    } else {
-      html += '<a href="training.html" class="tn-next">'
-            + '<span class="tn-text"><span class="tn-label">Complete</span>'
-            + '<span class="tn-title">Training Home</span></span>'
-            + '<span class="tn-arrow">&rarr;</span></a>';
-    }
-    return html;
+  function removeInlineTrainingNav() {
+    document.querySelectorAll(".training-nav-band").forEach(function (band) {
+      if (band.classList.contains("training-nav-auto") || band.querySelector("#training-nav, #training-nav-top")) {
+        if (band.parentNode) band.parentNode.removeChild(band);
+      }
+    });
   }
 
-  function insertAfter(referenceNode, newNode) {
-    if (!referenceNode || !referenceNode.parentNode) {
-      document.body.insertBefore(newNode, document.body.firstChild);
-      return;
+  function addFloatingTrainingButton(direction, target, label) {
+    var button = document.createElement("a");
+    button.className = "training-floating-nav training-" + direction + "-float training-nav-auto";
+    button.href = target[0];
+    button.setAttribute("aria-label", label + ": " + target[1]);
+    if (direction === "prev") {
+      button.innerHTML = '<em>&larr;</em><span>' + esc(label) + '</span><strong>' + esc(target[1]) + '</strong>';
+    } else {
+      button.innerHTML = '<span>' + esc(label) + '</span><strong>' + esc(target[1]) + '</strong><em>&rarr;</em>';
     }
-    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+    document.body.appendChild(button);
   }
 
   function mountTrainingNav() {
-    document.querySelectorAll(".training-nav-auto, .training-next-float").forEach(function (node) {
+    document.querySelectorAll(".training-nav-auto, .training-prev-float, .training-next-float").forEach(function (node) {
       if (node.parentNode) node.parentNode.removeChild(node);
     });
 
     var idx = currentTrainingIndex();
     if (idx === -1) return;
+    removeInlineTrainingNav();
 
     var prev = idx > 0 ? TRAINING_CHAIN[idx - 1] : null;
     var next = idx < TRAINING_CHAIN.length - 1 ? TRAINING_CHAIN[idx + 1] : null;
-    var navHTML = buildNavHTML(prev, next);
 
-    var top = document.getElementById("training-nav-top");
-    if (top) {
-      top.innerHTML = navHTML;
-    } else {
-      var topBand = document.createElement("div");
-      topBand.className = "training-nav-band training-nav-band-top training-nav-auto";
-      topBand.innerHTML = '<div class="training-nav training-nav-top">' + navHTML + '</div>';
-      var navbar = document.querySelector(".navbar");
-      insertAfter(navbar, topBand);
-    }
-
-    var bottom = document.getElementById("training-nav");
-    if (bottom) {
-      bottom.innerHTML = navHTML;
-    } else {
-      var bottomBand = document.createElement("div");
-      bottomBand.className = "training-nav-band training-nav-auto";
-      bottomBand.innerHTML = '<div class="training-nav">' + navHTML + '</div>';
-      var footer = document.querySelector("footer");
-      if (footer && footer.parentNode) footer.parentNode.insertBefore(bottomBand, footer);
-      else document.body.appendChild(bottomBand);
-    }
-
-    var floatTarget = next || ["training.html", "Training Home"];
-    var float = document.createElement("a");
-    float.className = "training-next-float training-nav-auto";
-    float.href = floatTarget[0];
-    float.setAttribute("aria-label", "Next training: " + floatTarget[1]);
-    float.innerHTML = '<span>Next Training</span><strong>' + esc(floatTarget[1]) + '</strong><em>&rarr;</em>';
-    document.body.appendChild(float);
+    addFloatingTrainingButton("prev", prev || ["training.html", "Training Home"], prev ? "Previous Training" : "Training Home");
+    addFloatingTrainingButton("next", next || ["training.html", "Training Home"], next ? "Next Training" : "Training Home");
   }
 
   window.KTHQ_mountTrainingNav = mountTrainingNav;
