@@ -168,7 +168,7 @@
   function ccoToggleHtml(id, cls) {
     if (currentMode === 'cco') return '';
     return [
-      '<button class="' + cls + (allowCcoOnContractingFm ? ' active' : '') + '" id="' + id + '" type="button" aria-pressed="' + (allowCcoOnContractingFm ? 'true' : 'false') + '" title="' + esc(CCO_OPT_IN_TIP) + '" data-tip="' + esc(CCO_OPT_IN_TIP) + '">',
+      '<button class="' + cls + (allowCcoOnContractingFm ? ' active' : '') + '" id="' + id + '" type="button" aria-pressed="' + (allowCcoOnContractingFm ? 'true' : 'false') + '" title="' + esc(CCO_OPT_IN_TIP) + '">',
         '<span>CCO</span>',
       '</button>'
     ].join('');
@@ -949,6 +949,11 @@ input[type=range].cfm-vol-slider::-moz-range-thumb {
   opacity: 1;
   transform: translateY(0);
 }
+.cfm-cco-toggle::after,
+.cfm-sb-cco-toggle::after {
+  content: none !important;
+  display: none !important;
+}
 
 /* Playlist drawer */
 #cfm-drawer {
@@ -1072,19 +1077,19 @@ body.has-cfm-player { padding-bottom: 68px; }
   box-shadow: 0 4px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(74,158,255,0.08);
 }
 .cfm-sb-header {
-  padding: 0.7rem 1rem;
+  padding: 0.7rem 0.85rem;
   background: rgba(74,158,255,0.08);
   border-bottom: 1px solid rgba(74,158,255,0.12);
   display: flex; align-items: center; justify-content: space-between;
-  gap: 0.75rem;
+  gap: 0.55rem;
 }
 .cfm-sb-name {
   font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700;
-  color: #fff; letter-spacing: 0.5px;
+  color: #fff; letter-spacing: 0.5px; white-space: nowrap;
 }
 .cfm-sb-name span { color: #4a9eff; }
 .cfm-sb-header-actions {
-  display: flex; align-items: center; gap: 0.45rem; flex-shrink: 0;
+  display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0;
 }
 .cfm-sb-list-btn {
   border: 1px solid rgba(74,158,255,0.26);
@@ -1096,10 +1101,10 @@ body.has-cfm-player { padding-bottom: 68px; }
   font-size: 0.68rem;
   font-weight: 800;
   line-height: 1;
-  padding: 0.32rem 0.48rem;
+  padding: 0.32rem 0.42rem;
   display: inline-flex;
   align-items: center;
-  gap: 0.28rem;
+  gap: 0.24rem;
   transition: color 0.18s, background 0.18s, border-color 0.18s;
 }
 .cfm-sb-list-btn:hover,
@@ -1166,6 +1171,11 @@ body.has-cfm-player { padding-bottom: 68px; }
 .cfm-sb-cco-toggle:focus-visible::after {
   opacity: 1;
   transform: translateY(0);
+}
+.cfm-cco-toggle::after,
+.cfm-sb-cco-toggle::after {
+  content: none !important;
+  display: none !important;
 }
 .cfm-sb-art-wrap {
   width: 100%; padding-top: 62%; position: relative;
