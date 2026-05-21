@@ -1465,7 +1465,57 @@
 <script>
 (function () {
   function clockText(timeZone) {
-    return new Intl.DateTimeFormat(undefined, {
+    var options = {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
+      hour12: false
+    };
+    if (timeZone) options.timeZone = timeZone;
+    return new Intl.DateTimeFormat(undefined, options).format(new Date());
+  }
+
+  function setText(id, value) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = value;
+  }
+
+  function updateClocks() {
+    setText("ccoClockLocal", clockText());
+    setText("ccoClockZulu", clockText("UTC"));
+    setText("ccoClockEast", clockText("America/New_York"));
+    setText("ccoClockTheater", clockText("Etc/GMT-3"));
+  }
+
+  function updateRadio(status) {
+    var statusEl = document.getElementById("ccoRadioStatus");
+    var detailEl = document.getElementById("ccoRadioDetail");
+    var buttonText = document.getElementById("ccoRadioButtonText");
+    if (!status) return;
+
+    var trackTitle = status.track && status.track.title ? status.track.title : "Channel Clear";
+    if (statusEl) statusEl.textContent = status.isPlaying ? "On Air" : "Standby";
+    if (detailEl) detailEl.textContent = status.isPlaying ? trackTitle : "Channel Clear";
+    if (buttonText) buttonText.textContent = status.isPlaying ? "Field Radio Live" : "Tune In Field Radio";
+  }
+
+  updateClocks();
+  window.setInterval(updateClocks, 1000);
+  window.addEventListener("cfm:modechange", function (event) {
+    updateRadio(event.detail);
+  });
+
+  var radioStart = document.getElementById("ccoRadioStart");
+  if (radioStart) {
+    radioStart.addEventListener("click", function () {
+      var playButton = document.getElementById("cfm-play") || document.getElementById("cfm-sb-play");
+      if (playButton) playButton.click();
+    });
+  }
+})();
+</script>
+<script src="main.js"></script>
+<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script src="player.js"></script>
+</body>
+</html>
