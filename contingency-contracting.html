@@ -1239,14 +1239,6 @@
         </div>
       </div>
       <div class="cco-card-grid">
-        <a href="far-part-18-flexibilities.html" class="cco-card">
-          <div class="cco-card-top">
-            <span class="cco-card-tier">Authority</span>
-            <div class="cco-card-title">FAR Part 18 Flexibilities</div>
-            <p class="cco-card-desc">Every Part 18 flexibility a CCO actually uses, walked through one at a time. Always-available authorities and contingency-only thresholds, split clearly so you know which is which before you reach for either.</p>
-          </div>
-          <span class="cco-status">Live</span>
-        </a>
         <a href="letter-contracts.html" class="cco-card">
           <div class="cco-card-top">
             <span class="cco-card-tier">Urgent Authority</span>
@@ -1477,62 +1469,3 @@
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
-      hour12: false,
-      timeZone: timeZone
-    }).format(new Date());
-  }
-
-  function setText(id, value) {
-    var el = document.getElementById(id);
-    if (el) el.textContent = value;
-  }
-
-  function tick() {
-    setText("ccoClockLocal", clockText(Intl.DateTimeFormat().resolvedOptions().timeZone));
-    setText("ccoClockZulu", clockText("UTC"));
-    setText("ccoClockEast", clockText("America/New_York"));
-    setText("ccoClockTheater", clockText("Asia/Qatar"));
-  }
-
-  function updateRadioPanel(detail) {
-    var status = document.getElementById("ccoRadioStatus");
-    var note = document.getElementById("ccoRadioDetail");
-    var radio = document.querySelector(".cco-radio");
-    var button = document.getElementById("ccoRadioStart");
-    var buttonText = document.getElementById("ccoRadioButtonText");
-    if (!status || !note || !detail || detail.mode !== "cco") return;
-    if (radio) {
-      radio.classList.toggle("is-on-air", !!detail.isPlaying);
-      radio.classList.toggle("is-ready", !!detail.trackCount && !detail.isPlaying);
-    }
-    if (!detail.trackCount) {
-      status.textContent = "Standby";
-      note.textContent = "Channel Clear";
-      if (buttonText) buttonText.textContent = "Field Radio Standby";
-      if (button) button.setAttribute("aria-label", "Field Radio standby");
-      return;
-    }
-    status.textContent = detail.isPlaying ? "On Air" : "Ready";
-    note.textContent = detail.track ? detail.track.title : detail.trackCount + " Tracks Loaded";
-    if (buttonText) buttonText.textContent = detail.isPlaying ? "Pause Field Radio" : "Tune In Field Radio";
-    if (button) button.setAttribute("aria-label", detail.isPlaying ? "Pause Field Radio" : "Play Field Radio");
-  }
-
-  document.getElementById("ccoRadioStart").addEventListener("click", function () {
-    var play = document.getElementById("cfm-play") || document.getElementById("cfm-sb-play");
-    if (play) play.click();
-  });
-
-  window.addEventListener("cfm:modechange", function (event) {
-    updateRadioPanel(event.detail);
-  });
-
-  tick();
-  window.setInterval(tick, 1000);
-})();
-</script>
-<script src="main.js"></script>
-<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-<script src="player.js"></script>
-</body>
-</html>

@@ -43,7 +43,7 @@
 // Add new topics here in order. That's it — pages auto-render.
 (function () {
   var TRAINING_CHAIN = [
-    ["far-research.html", "Researching the FAR"],
+    ["far-research.html", "Researching the FAR & Supplements"],
     ["market-research.html", "Market Research"],
     ["naics.html", "NAICS Codes"],
     ["fsc-codes.html", "PSC / FSC Codes"],
@@ -52,57 +52,91 @@
     ["statements-of-work.html", "Statements of Work"],
     ["performance-work-statements.html", "Performance Work Statements"],
     ["statements-of-objectives.html", "Statements of Objectives"],
-    ["contract-action-reports.html", "Contract Action Reports"],
+    ["contract-action-reports.html", "Preparing Contract Action Reports"],
     ["writing-mfrs.html", "Writing MFRs"],
     ["contract-closeout.html", "Closeout of Contract Files"],
-    ["publicizing-contract-actions.html", "Publicizing Contract Actions"],
+    ["publicizing-contract-actions.html", "Publicizing Proposed Contract Actions"],
     ["publicizing-awards.html", "Publicizing Awards"],
     ["evaluating-justifications.html", "Evaluating Brand Name J&As"],
-    ["far-part6-competition.html", "Other Than Full & Open (FAR 6)"],
-    ["far-part8-limiting-sources.html", "Limiting Sources (FAR 8)"],
-    ["far-part16-fair-opportunity.html", "Fair Opportunity (FAR 16)"],
-    ["far-part12-restricting-competition.html", "Restricting Competition (FAR 12)"],
-    ["commercial-competition-statutes.html", "Commercial Competition Statutes"],
-    ["commercial-item-df.html", "Commercial Item D&F"],
-    ["provisions-clauses-commercial.html", "Provisions & Clauses"],
-    ["simplified-solicitations-commercial.html", "Simplified Solicitations"],
+    ["far-part6-competition.html", "Other Than Full & Open Competition"],
+    ["far-part8-limiting-sources.html", "Limiting Sources"],
+    ["far-part16-fair-opportunity.html", "Exceptions to Fair Opportunity"],
+    ["far-part12-restricting-competition.html", "Restricting Competition for Commercial Items"],
+    ["commercial-competition-statutes.html", "Competition Statutes for Commercial Buys"],
+    ["commercial-item-df.html", "Preparing a Commercial Item D&F"],
+    ["provisions-clauses-commercial.html", "Selecting Provisions and Clauses"],
+    ["simplified-solicitations-commercial.html", "Simplified Solicitations for Commercial Items"],
     ["evaluating-quotations.html", "Evaluating Quotations"],
-    ["price-fair-reasonable.html", "Price Fair & Reasonable"],
-    ["delivery-orders-vs-task-orders.html", "Delivery Orders vs Task Orders"],
-    ["government-purchase-cards.html", "Government Purchase Cards"],
-    ["gsa-orders-sat.html", "GSA Orders under the SAT"],
+    ["price-fair-reasonable.html", "Price Fair and Reasonableness"],
+    ["delivery-orders-vs-task-orders.html", "Delivery Orders vs. Task Orders"],
+    ["gsa-orders-sat.html", "GSA Delivery Orders under the SAT"],
     ["gsa-orders-above-sat.html", "GSA Orders above the SAT"],
-    ["small-business-coordination.html", "DD Form 2579"],
-    ["wage-determinations.html", "Wage Determinations"],
-    ["blanket-purchase-agreements.html", "Blanket Purchase Agreements"],
-    ["idiq-single-award.html", "IDIQ Orders off Single Award IDIQs"],
-    ["idiq-multiple-award.html", "IDIQ Orders off Multiple Award IDIQs"],
+    ["blanket-purchase-agreements.html", "BPAs"],
+    ["idiq-single-award.html", "Single-Award IDIQ Orders"],
+    ["idiq-multiple-award.html", "Multiple-Award IDIQ Orders"],
+    ["government-purchase-cards.html", "Government Purchase Cards"],
     ["sf30-modifications.html", "SF 30s for Modifications and Amendments"],
     ["pnm.html", "Price Negotiation Memorandums"],
     ["options.html", "Options"],
     ["unilateral-bilateral-modifications.html", "Unilateral vs. Bilateral Modifications"],
+    ["small-business-coordination.html", "2579s"],
+    ["wage-determinations.html", "Wage Determinations"],
     ["personal-vs-non-personal-services.html", "Personal vs. Non-personal Services"],
-    ["cor-type-a-training.html", "COR Training: Type A Requirements"],
+    ["cor-type-a-training.html", "COR Training for Type A Requirements"],
     ["manual-contracts-deployed.html", "Manual Contracts in a Deployed Environment"],
-    ["cpars.html", "CPARS: Contractor Performance Assessments"],
-    ["rfp-preparation.html", "Preparing an RFP: C-Type Contracts & Part 15 Source Selection"]
+    ["rfp-preparation.html", "Preparing an RFP: C-Type Contracts"],
+    ["rfp-preparation-dtype.html", "Preparing an RFP: D-Type Contracts"],
+    ["past-performance.html", "Evaluating Past Performance"],
+    ["reviewing-tech-evals.html", "Reviewing Technical Evaluations"],
+    ["cost-price-analysis.html", "Cost & Price Analysis"],
+    ["conducting-negotiations.html", "Conducting Negotiations"],
+    ["comparative-analysis.html", "Comparative Analysis"],
+    ["award-decision-documents.html", "Award Decision Documents"],
+    ["award-notice-letters.html", "Award Notice Letters"],
+    ["debriefing-unsuccessful-offerors.html", "Debriefing Unsuccessful Offerors"],
+    ["notice-to-proceed.html", "Notice to Proceed"],
+    ["preconstruction-conferences.html", "Preconstruction Conferences"],
+    ["material-submittals.html", "Material Submittals"],
+    ["monitoring-contractor-progress.html", "Monitoring Contractor Progress"],
+    ["cpars.html", "CPARS"],
+    ["contract-specific-cor-training.html", "Contract-Specific COR Training"],
+    ["annual-cor-file-reviews.html", "Annual COR File Reviews"],
+    ["evaluating-labor-standards.html", "Evaluating Contract Labor Standards"],
+    ["requirements-approval-documents.html", "Requirements Approval Documents"],
+    ["cure-notices.html", "Cure Notices"],
+    ["show-cause-letters.html", "Show-Cause Letters"],
+    ["preparing-ratifications.html", "Preparing Ratifications"],
+    ["pick-the-path.html", "Pick the Path"],
+    ["contingency-contracting.html", "Contingency Contracting"],
+    ["source-selection-guide.html", "Major Source Selection Guide"],
+    ["warrant-board.html", "Warrant Board Prep"],
+    ["sat-warrant-board.html", "SAT Warrant Board Prep"],
+    ["cso.html", "Commercial Solutions Opening"],
+    ["ota.html", "Other Transaction Authority"],
+    ["naf-contracting.html", "NAF Contracting"],
+    ["jeopardy.html", "Contracting Jeopardy"]
   ];
 
-  // Find current page in chain
-  var page = location.pathname.split("/").pop() || "";
-  var idx = -1;
-  for (var i = 0; i < TRAINING_CHAIN.length; i++) {
-    if (TRAINING_CHAIN[i][0] === page) { idx = i; break; }
+  window.KTHQ_TRAINING_CHAIN = TRAINING_CHAIN;
+
+  function esc(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
-  if (idx === -1) return;
 
-  function esc(s) { return s.replace(/&/g, "&amp;"); }
+  function currentTrainingIndex() {
+    var page = location.pathname.split("/").pop() || "index.html";
+    for (var i = 0; i < TRAINING_CHAIN.length; i += 1) {
+      if (TRAINING_CHAIN[i][0] === page) return i;
+    }
+    return -1;
+  }
 
-  var prev = idx > 0 ? TRAINING_CHAIN[idx - 1] : null;
-  var next = idx < TRAINING_CHAIN.length - 1 ? TRAINING_CHAIN[idx + 1] : null;
-
-  // Build nav HTML (shared by top and bottom)
-  function buildNav() {
+  function buildNavHTML(prev, next) {
     var html = "";
     if (prev) {
       html += '<a href="' + prev[0] + '" class="tn-prev">'
@@ -122,22 +156,67 @@
             + '<span class="tn-arrow">&rarr;</span></a>';
     } else {
       html += '<a href="training.html" class="tn-next">'
-            + '<span class="tn-text"><span class="tn-label">Complete!</span>'
+            + '<span class="tn-text"><span class="tn-label">Complete</span>'
             + '<span class="tn-title">Training Home</span></span>'
             + '<span class="tn-arrow">&rarr;</span></a>';
     }
     return html;
   }
 
-  var navHTML = buildNav();
+  function insertAfter(referenceNode, newNode) {
+    if (!referenceNode || !referenceNode.parentNode) {
+      document.body.insertBefore(newNode, document.body.firstChild);
+      return;
+    }
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+  }
 
-  // Render into bottom nav
-  var bottom = document.getElementById("training-nav");
-  if (bottom) bottom.innerHTML = navHTML;
+  function mountTrainingNav() {
+    document.querySelectorAll(".training-nav-auto, .training-next-float").forEach(function (node) {
+      if (node.parentNode) node.parentNode.removeChild(node);
+    });
 
-  // Render into top nav
-  var top = document.getElementById("training-nav-top");
-  if (top) top.innerHTML = navHTML;
+    var idx = currentTrainingIndex();
+    if (idx === -1) return;
+
+    var prev = idx > 0 ? TRAINING_CHAIN[idx - 1] : null;
+    var next = idx < TRAINING_CHAIN.length - 1 ? TRAINING_CHAIN[idx + 1] : null;
+    var navHTML = buildNavHTML(prev, next);
+
+    var top = document.getElementById("training-nav-top");
+    if (top) {
+      top.innerHTML = navHTML;
+    } else {
+      var topBand = document.createElement("div");
+      topBand.className = "training-nav-band training-nav-band-top training-nav-auto";
+      topBand.innerHTML = '<div class="training-nav training-nav-top">' + navHTML + '</div>';
+      var navbar = document.querySelector(".navbar");
+      insertAfter(navbar, topBand);
+    }
+
+    var bottom = document.getElementById("training-nav");
+    if (bottom) {
+      bottom.innerHTML = navHTML;
+    } else {
+      var bottomBand = document.createElement("div");
+      bottomBand.className = "training-nav-band training-nav-auto";
+      bottomBand.innerHTML = '<div class="training-nav">' + navHTML + '</div>';
+      var footer = document.querySelector("footer");
+      if (footer && footer.parentNode) footer.parentNode.insertBefore(bottomBand, footer);
+      else document.body.appendChild(bottomBand);
+    }
+
+    var floatTarget = next || ["training.html", "Training Home"];
+    var float = document.createElement("a");
+    float.className = "training-next-float training-nav-auto";
+    float.href = floatTarget[0];
+    float.setAttribute("aria-label", "Next training: " + floatTarget[1]);
+    float.innerHTML = '<span>Next Training</span><strong>' + esc(floatTarget[1]) + '</strong><em>&rarr;</em>';
+    document.body.appendChild(float);
+  }
+
+  window.KTHQ_mountTrainingNav = mountTrainingNav;
+  mountTrainingNav();
 })();
 
 

@@ -2314,6 +2314,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       mountPlayerForCurrentPage();
       mountVisitorCounter();
       await runSoftPageScripts(scripts, url);
+      if (window.KTHQ_mountTrainingNav) window.KTHQ_mountTrainingNav();
       updateSoftAnalytics();
 
       if (url.hash) {
