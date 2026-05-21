@@ -124,7 +124,21 @@
   }
 
   function tracksForMode(mode) {
-    return mode === 'cco' ? ccoTracksFromPage() : DEFAULT_TRACKS.slice();
+    if (mode === 'cco') return ccoTracksFromPage();
+    var tracks = DEFAULT_TRACKS.slice();
+    if (allowCcoOnContractingFm) {
+      tracks = tracks.concat(ccoTracksFromPage().map(function (track) {
+        return {
+          id: 'cco-' + track.id,
+          title: track.title,
+          subtitle: track.subtitle || 'CCO Field Radio',
+          genre: 'CCO Field Radio',
+          file: track.file,
+          color: track.color || '#d2a64c'
+        };
+      }));
+    }
+    return tracks;
   }
 
   function modeStateKey(mode) {
@@ -136,7 +150,28 @@
   }
 
   function radioDrawerTitle() {
-    return currentMode === 'cco' ? 'Field Radio Tracks' : 'Song List';
+    if (currentMode === 'cco') return 'Field Radio Tracks';
+    return allowCcoOnContractingFm ? 'Song List + CCO Tracks' : 'Song List';
+  }
+
+  var CCO_OPT_IN_KEY = 'cfm_allow_cco_music_v1';
+  var CCO_OPT_IN_TIP = 'Allow CCO music? The CCO music is less relaxing, so it stays out of the normal study playlist by default. The songs, however, are SICK.';
+
+  function loadCcoOptIn() {
+    try { return localStorage.getItem(CCO_OPT_IN_KEY) === '1'; } catch (e) { return false; }
+  }
+
+  function saveCcoOptIn() {
+    try { localStorage.setItem(CCO_OPT_IN_KEY, allowCcoOnContractingFm ? '1' : '0'); } catch (e) {}
+  }
+
+  function ccoToggleHtml(id, cls) {
+    if (currentMode === 'cco') return '';
+    return [
+      '<button class="' + cls + (allowCcoOnContractingFm ? ' active' : '') + '" id="' + id + '" type="button" aria-pressed="' + (allowCcoOnContractingFm ? 'true' : 'false') + '" title="' + esc(CCO_OPT_IN_TIP) + '" data-tip="' + esc(CCO_OPT_IN_TIP) + '">',
+        '<span>CCO</span>',
+      '</button>'
+    ].join('');
   }
 
   function emptyTrack() {
@@ -151,6 +186,7 @@
   var SK = 'cfm_v1';
   var state = freshState();
   var currentMode = '';
+  var allowCcoOnContractingFm = loadCcoOptIn();
   var suppressPauseState = false;
   var suppressTimeState = false;
   var normalWasPlayingBeforeCco = false;
@@ -511,6 +547,60 @@
     else finishSwitch();
   }
 
+  function rebuildPlayerShell() {
+    unmountPlayerDom();
+    if (isHome) buildHome();
+    else buildFloat();
+    updateAll();
+  }
+
+  function toggleDefaultCcoMusic() {
+    if (currentMode === 'cco') return;
+    var previousTrack = TRACKS[state.idx] || null;
+    var previousSrc = previousTrack ? previousTrack.file : '';
+    var previousTime = aud.currentTime || state.time || 0;
+    var wasPlaying = isPlaying;
+
+    state.time = previousTime;
+    state.wasPlaying = wasPlaying;
+    saveState();
+
+    allowCcoOnContractingFm = !allowCcoOnContractingFm;
+    saveCcoOptIn();
+    configureRadioMode('default');
+
+    if (previousSrc) {
+      for (var i = 0; i < TRACKS.length; i += 1) {
+        if (TRACKS[i].file === previousSrc) {
+          state.idx = i;
+          state.time = previousTime;
+          break;
+        }
+      }
+    }
+    if (state.idx < 0 || state.idx >= TRACKS.length) {
+      state.idx = 0;
+      state.time = 0;
+    }
+    state.wasPlaying = wasPlaying;
+    saveState();
+
+    if (previousSrc && TRACKS[state.idx] && TRACKS[state.idx].file === previousSrc) {
+      updateAll();
+    } else if (wasPlaying) {
+      playerReady = true;
+      loadTrack(state.idx, true);
+    } else {
+      suppressPauseState = true;
+      aud.pause();
+      suppressPauseState = false;
+      aud.removeAttribute('src');
+      aud.load();
+      playerReady = false;
+    }
+    rebuildPlayerShell();
+  }
+
   // ── CSS ──────────────────────────────────────────────────────────
   var css = `
 /* ── ContractingFM floating player ── */
@@ -803,6 +893,62 @@ input[type=range].cfm-vol-slider::-moz-range-thumb {
   color: #dbe8f7;
   font-size: 0.68rem; font-weight: 800;
 }
+.cfm-cco-toggle {
+  position: relative;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.85rem;
+  border: none;
+  border-left: 1px solid rgba(255,255,255,0.06);
+  background: rgba(217,154,49,0.04);
+  color: #8a9bb0;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-family: 'Inter', sans-serif;
+}
+.cfm-cco-toggle span {
+  border: 1px solid rgba(217,154,49,0.28);
+  border-radius: 999px;
+  padding: 0.22rem 0.52rem;
+  color: #d99a31;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+.cfm-cco-toggle:hover span,
+.cfm-cco-toggle:focus-visible span,
+.cfm-cco-toggle.active span {
+  color: #080905;
+  background: #d99a31;
+  border-color: #d99a31;
+}
+.cfm-cco-toggle::after {
+  content: attr(data-tip);
+  position: absolute;
+  right: 0.5rem;
+  bottom: calc(100% + 10px);
+  width: min(300px, calc(100vw - 24px));
+  padding: 0.65rem 0.75rem;
+  border: 1px solid rgba(217,154,49,0.34);
+  border-radius: 8px;
+  background: rgba(6,3,16,0.96);
+  color: #dbe8f7;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.42);
+  font-size: 0.72rem;
+  font-weight: 650;
+  line-height: 1.45;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+.cfm-cco-toggle:hover::after,
+.cfm-cco-toggle:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 /* Playlist drawer */
 #cfm-drawer {
@@ -973,6 +1119,53 @@ body.has-cfm-player { padding-bottom: 68px; }
   color: #dbe8f7;
   font-size: 0.68rem;
   font-weight: 900;
+}
+.cfm-sb-cco-toggle {
+  position: relative;
+  border: 1px solid rgba(217,154,49,0.28);
+  border-radius: 999px;
+  background: rgba(217,154,49,0.06);
+  color: #d99a31;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  padding: 0.43rem 0.56rem;
+}
+.cfm-sb-cco-toggle:hover,
+.cfm-sb-cco-toggle:focus-visible,
+.cfm-sb-cco-toggle.active {
+  color: #080905;
+  background: #d99a31;
+  border-color: #d99a31;
+}
+.cfm-sb-cco-toggle::after {
+  content: attr(data-tip);
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  width: min(280px, calc(100vw - 32px));
+  padding: 0.65rem 0.75rem;
+  border: 1px solid rgba(217,154,49,0.34);
+  border-radius: 8px;
+  background: rgba(6,3,16,0.96);
+  color: #dbe8f7;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.42);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 1.45;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+.cfm-sb-cco-toggle:hover::after,
+.cfm-sb-cco-toggle:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
 }
 .cfm-sb-art-wrap {
   width: 100%; padding-top: 62%; position: relative;
@@ -1364,6 +1557,9 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   .cfm-volume-zone { display: none; }
   .cfm-playlist-text { display: none; }
   .cfm-playlist-btn { width: 58px; padding: 0; justify-content: center; }
+  .cfm-cco-toggle { width: 48px; padding: 0; }
+  .cfm-cco-toggle span { font-size: 0.62rem; padding: 0.2rem 0.38rem; }
+  .cfm-cco-toggle::after { right: -62px; }
   #cfm-drawer {
     left: 8px; right: 8px; width: auto;
     border-radius: 14px 14px 0 0;
@@ -1434,6 +1630,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
         '<span class="cfm-vol-icon" id="cfm-vol-icon">&#128266;</span>',
         '<input type="range" class="cfm-vol-slider" id="cfm-vol" min="0" max="1" step="0.01" value="' + state.vol + '">',
       '</div>',
+      ccoToggleHtml('cfm-cco-toggle', 'cfm-cco-toggle'),
       '<button class="cfm-playlist-btn" id="cfm-list-btn" type="button" title="Open song list" aria-label="Open song list, ' + TRACKS.length + ' tracks" aria-controls="cfm-drawer" aria-expanded="false">',
         '&#9776; <span class="cfm-playlist-text">Song List</span><span class="cfm-playlist-count">' + TRACKS.length + '</span>',
       '</button>'
@@ -1499,6 +1696,8 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     document.getElementById('cfm-list-btn').addEventListener('click', function () {
       setDrawerOpen(!drawerOpen);
     });
+    var ccoToggle = document.getElementById('cfm-cco-toggle');
+    if (ccoToggle) ccoToggle.addEventListener('click', toggleDefaultCcoMusic);
     document.addEventListener('click', function (e) {
       var listBtn = document.getElementById('cfm-list-btn');
       if (drawerOpen && !drawerEl.contains(e.target) && listBtn && !listBtn.contains(e.target)) setDrawerOpen(false);
@@ -1616,6 +1815,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
           '<div class="cfm-sb-name">' + radioBrandHtml() + '</div>',
           '<div class="cfm-sb-header-actions">',
             '<span class="cfm-on-air">On Air</span>',
+            ccoToggleHtml('cfm-sb-cco-toggle', 'cfm-sb-cco-toggle'),
             '<button class="cfm-sb-list-btn" id="cfm-sb-list-btn" type="button" aria-controls="cfm-sb-song-panel" aria-expanded="false" title="Open song list" aria-label="Open song list, ' + TRACKS.length + ' tracks">&#9776; Song List <span class="cfm-sb-list-count">' + TRACKS.length + '</span></button>',
           '</div>',
         '</div>',
@@ -1838,6 +2038,8 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       homeListOpen = !homeListOpen;
       renderHomeList();
     });
+    var sbCcoToggle = document.getElementById('cfm-sb-cco-toggle');
+    if (sbCcoToggle) sbCcoToggle.addEventListener('click', toggleDefaultCcoMusic);
     var sbVol = document.getElementById('cfm-sb-vol');
     updateSliderFill(sbVol);
     sbVol.addEventListener('input', function () {
