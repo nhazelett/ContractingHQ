@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-05-21T10:49:10.610Z",
-  "since": "2024-11-27",
+  "generatedAt": "2026-05-22T10:29:05.297Z",
+  "since": "2024-11-28",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,18 +14,129 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 135,
-    "latestPublicationDate": "2026-05-14",
-    "openCommentWindows": 8,
+    "total": 138,
+    "latestPublicationDate": "2026-05-22",
+    "openCommentWindows": 11,
     "rules": 65,
     "byTone": {
-      "monitor": 67,
+      "monitor": 70,
       "action": 46,
       "active": 1,
       "watch": 21
     }
   },
   "items": [
+    {
+      "id": "2026-10288",
+      "documentNumber": "2026-10288",
+      "title": "Information Collection; Architect-Engineer Qualifications (SF-330)",
+      "shortTitle": "Information Collection; Architect-Engineer Qualifications (SF-330)",
+      "system": "Acquisition",
+      "stage": "Information collection",
+      "topic": "Acquisition policy",
+      "actionLevel": "Monitor",
+      "actionTone": "monitor",
+      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
+      "nextSteps": [
+        "Identify the cited provision, clause, form, or system",
+        "Comment only if your office has burden data or a process concern",
+        "No template change unless a later rule follows"
+      ],
+      "type": "Notice",
+      "publicationDate": "2026-05-22",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-07-21",
+      "datesText": "OFPP, DoD, GSA, and NASA will consider all comments received by July 21, 2026.",
+      "actionText": "Notice and request for comments.",
+      "summary": "In accordance with the Paperwork Reduction Act of 1995 and OMB regulations, OFPP, DoD, GSA, and NASA invite the public to comment on an extension concerning architect-engineer qualifications (Standard Form (SF) 330). OFPP, DoD, GSA, and NASA invite comments on: whether the proposed collection of information is necessary for the proper performance of the functions of Federal Government acquisitions, including whether the information will have practical utility; the accuracy of the estimate of the burden of the prop...",
+      "citation": "91 FR 30304",
+      "regulationIds": [],
+      "cfrReferences": "",
+      "agencies": [
+        "Management and Budget Office",
+        "Federal Procurement Policy Office",
+        "Defense Department",
+        "General Services Administration",
+        "National Aeronautics and Space Administration"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/05/22/2026-10288/information-collection-architect-engineer-qualifications-sf-330",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-05-22/pdf/2026-10288.pdf",
+      "sourceQuery": "Federal Acquisition Regulation keyword feed"
+    },
+    {
+      "id": "2026-10287",
+      "documentNumber": "2026-10287",
+      "title": "Information Collection; Certain Federal Acquisition Regulation Part 28 Requirements",
+      "shortTitle": "Information Collection; Certain Federal Acquisition Regulation Part 28 Requirements",
+      "system": "FAR",
+      "stage": "Information collection",
+      "topic": "Acquisition policy",
+      "actionLevel": "Monitor",
+      "actionTone": "monitor",
+      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
+      "nextSteps": [
+        "Identify the cited provision, clause, form, or system",
+        "Comment only if your office has burden data or a process concern",
+        "No template change unless a later rule follows"
+      ],
+      "type": "Notice",
+      "publicationDate": "2026-05-22",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-07-21",
+      "datesText": "OFPP, DoD, GSA, and NASA will consider all comments received by July 21, 2026.",
+      "actionText": "Notice and request for comments.",
+      "summary": "In accordance with the Paperwork Reduction Act of 1995 and OMB regulations, OFPP, DoD, GSA, and NASA invite the public to comment on an extension concerning certain Federal Acquisition Regulation (FAR) part 28 requirements. OFPP, DoD, GSA, and NASA invite comments on: whether the proposed collection of information is necessary for the proper performance of the functions of Federal Government acquisitions, including whether the information will have practical utility; the accuracy of the estimate of the burden of t...",
+      "citation": "91 FR 30306",
+      "regulationIds": [],
+      "cfrReferences": "",
+      "agencies": [
+        "Management and Budget Office",
+        "Federal Procurement Policy Office",
+        "Defense Department",
+        "General Services Administration",
+        "National Aeronautics and Space Administration"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/05/22/2026-10287/information-collection-certain-federal-acquisition-regulation-part-28-requirements",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-05-22/pdf/2026-10287.pdf",
+      "sourceQuery": "Federal Acquisition Regulation keyword feed"
+    },
+    {
+      "id": "2026-10289",
+      "documentNumber": "2026-10289",
+      "title": "Information Collection; Privacy Training",
+      "shortTitle": "Information Collection; Privacy Training",
+      "system": "Acquisition",
+      "stage": "Information collection",
+      "topic": "Acquisition policy",
+      "actionLevel": "Monitor",
+      "actionTone": "monitor",
+      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
+      "nextSteps": [
+        "Identify the cited provision, clause, form, or system",
+        "Comment only if your office has burden data or a process concern",
+        "No template change unless a later rule follows"
+      ],
+      "type": "Notice",
+      "publicationDate": "2026-05-22",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-07-21",
+      "datesText": "OFPP, DoD, GSA, and NASA will consider all comments received by July 21, 2026.",
+      "actionText": "Notice and request for comments.",
+      "summary": "In accordance with the Paperwork Reduction Act of 1995 and OMB regulations, OFPP, DoD, GSA, and NASA invite the public to comment on an extension concerning privacy training. OFPP, DoD, GSA, and NASA invite comments on: whether the proposed collection of information is necessary for the proper performance of the functions of Federal Government acquisitions, including whether the information will have practical utility; the accuracy of the estimate of the burden of the proposed information collection; ways to enhan...",
+      "citation": "91 FR 30305",
+      "regulationIds": [],
+      "cfrReferences": "",
+      "agencies": [
+        "Management and Budget Office",
+        "Federal Procurement Policy Office",
+        "Defense Department",
+        "General Services Administration",
+        "National Aeronautics and Space Administration"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/05/22/2026-10289/information-collection-privacy-training",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-05-22/pdf/2026-10289.pdf",
+      "sourceQuery": "Federal Acquisition Regulation keyword feed"
+    },
     {
       "id": "2026-09609",
       "documentNumber": "2026-09609",
