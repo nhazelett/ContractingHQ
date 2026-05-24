@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-05-23T09:12:13.351Z",
-  "since": "2024-11-29",
+  "generatedAt": "2026-05-24T09:25:22.245Z",
+  "since": "2024-11-30",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,15 +14,15 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 138,
+    "total": 136,
     "latestPublicationDate": "2026-05-22",
     "openCommentWindows": 11,
-    "rules": 65,
+    "rules": 64,
     "byTone": {
-      "monitor": 70,
+      "monitor": 69,
       "action": 46,
       "active": 1,
-      "watch": 21
+      "watch": 20
     }
   },
   "items": [
@@ -4903,78 +4903,6 @@ window.KTHQ_FEDREG_DATA = {
       ],
       "htmlUrl": "https://www.federalregister.gov/documents/2024/12/16/2024-29373/federal-acquisition-regulation-training-to-prevent-human-trafficking-for-certain-air-carriers",
       "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-12-16/pdf/2024-29373.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2024-27851",
-      "documentNumber": "2024-27851",
-      "title": "Federal Acquisition Regulation: Inflation Adjustment of Acquisition-Related Thresholds",
-      "shortTitle": "Federal Acquisition Regulation: Inflation Adjustment of Acquisition-Related Thresholds",
-      "system": "FAR",
-      "stage": "Proposed rule",
-      "topic": "Payments",
-      "actionLevel": "Review",
-      "actionTone": "watch",
-      "practitionerNote": "This is proposed rulemaking, not a current requirement. Keep it on your radar for the final rule.",
-      "nextSteps": [
-        "Check the comment due date",
-        "Skim the affected FAR/DFARS parts",
-        "Flag it for policy or leadership if it touches your buying lane"
-      ],
-      "type": "Proposed Rule",
-      "publicationDate": "2024-11-29",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-01-28",
-      "datesText": "Interested parties should submit written comments to the Regulatory Secretariat Division at the address shown below on or before January 28, 2025 to be considered in the formation of the final rule.",
-      "actionText": "Proposed rule.",
-      "summary": "DoD, GSA, and NASA are proposing to amend the Federal Acquisition Regulation (FAR) to further implement the statute, which requires an adjustment every five years of statutory acquisition- related thresholds for inflation. The adjustment uses the Consumer Price Index for all urban consumers and does not apply to the Construction Wage Rate Requirements statute (Davis-Bacon Act), Service Contract Labor Standards statute, performance and payment bonds, and trade agreements thresholds. DoD, GSA, and NASA are also prop...",
-      "citation": "89 FR 94649",
-      "regulationIds": [
-        "9000-AO73"
-      ],
-      "cfrReferences": "48 CFR part 1, 48 CFR part 2, 48 CFR part 3, 48 CFR part 4, 48 CFR part 5, 48 CFR part 6, 48 CFR part 8, 48 CFR part 9, 48 CFR part 10, 48 CFR part 12, 48 CFR part 13, 48 CFR part 15, 48 CFR part 16, 48 CFR part 17, 48 CFR part 19, 48 CFR part 22, 48 CFR part 23, 48 CFR part 25, 48 CFR part 26, 48 CFR part 30, 48 CFR part 32, 48 CFR part 36, 48 CFR part 42, 48 CFR part 50, 48 CFR part 52",
-      "agencies": [
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2024/11/29/2024-27851/federal-acquisition-regulation-inflation-adjustment-of-acquisition-related-thresholds",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-11-29/pdf/2024-27851.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2024-28053",
-      "documentNumber": "2024-28053",
-      "title": "Information Collection; Certain Federal Acquisition Regulation Part 16 Contract Pricing Requirements",
-      "shortTitle": "Information Collection; Certain Federal Acquisition Regulation Part 16 Contract Pricing Requirements",
-      "system": "FAR",
-      "stage": "Information collection",
-      "topic": "Acquisition policy",
-      "actionLevel": "Monitor",
-      "actionTone": "monitor",
-      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
-      "nextSteps": [
-        "Identify the cited provision, clause, form, or system",
-        "Comment only if your office has burden data or a process concern",
-        "No template change unless a later rule follows"
-      ],
-      "type": "Notice",
-      "publicationDate": "2024-11-29",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-01-28",
-      "datesText": "DoD, GSA, and NASA will consider all comments received by January 28, 2025.",
-      "actionText": "Notice and request for comments.",
-      "summary": "In accordance with the Paperwork Reduction Act of 1995, and the Office of Management and Budget (OMB) regulations, DoD, GSA, and NASA invite the public to comment on an extension concerning certain Federal Acquisition Regulation (FAR) part 16 contract pricing requirements. DoD, GSA, and NASA invite comments on: whether the proposed collection of information is necessary for the proper performance of the functions of Federal Government acquisitions, including whether the information will have practical utility; the...",
-      "citation": "89 FR 94730",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2024/11/29/2024-28053/information-collection-certain-federal-acquisition-regulation-part-16-contract-pricing-requirements",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-11-29/pdf/2024-28053.pdf",
       "sourceQuery": "Federal Acquisition Regulation keyword feed"
     }
   ]
