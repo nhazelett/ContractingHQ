@@ -42,6 +42,7 @@
             ['software', 'Software / SaaS'],
             ['cyber', 'Cybersecurity'],
             ['training', 'Training'],
+            ['fms', 'Foreign Military Sales (FMS)'],
             ['logistics', 'Logistics / sustainment'],
             ['medical', 'Medical'],
             ['construction_repair', 'Construction / repair'],
@@ -128,6 +129,19 @@
           ]
         },
         {
+          id: 'packageActionType',
+          label: 'Package action type',
+          help: 'This keeps special package rules straight, especially task orders where some documents are handled at the vehicle level.',
+          options: [
+            ['contract_po_award', 'Contract or purchase order award'],
+            ['task_order', 'Task or delivery order'],
+            ['idiq_vehicle', 'IDIQ / BPA vehicle award'],
+            ['modification', 'Modification / in-scope change'],
+            ['other', 'Other'],
+            ['unknown', "I don't know"]
+          ]
+        },
+        {
           id: 'competitionApproach',
           label: 'Competition approach',
           help: 'The more restricted the approach, the more the file has to explain why. "Unsure" is common at intake.',
@@ -135,10 +149,41 @@
             ['full_open', 'Full and open'],
             ['set_aside', 'Set-aside'],
             ['sole_source', 'Sole source'],
+            ['country_directed', 'Country-directed'],
             ['brand_name', 'Brand name'],
             ['brand_name_or_equal', 'Brand-name-or-equal'],
             ['fair_opportunity', 'Fair opportunity under IDIQ'],
             ['urgency', 'Urgency'],
+            ['unknown', "I don't know"]
+          ]
+        },
+        {
+          id: 'fmsLoaStatus',
+          label: 'FMS LOA and amendments included?',
+          help: 'For FMS contract awards, including task orders, the package should include the associated LOA and any subsequent amendments.',
+          showWhen: {
+            requirementSubject: 'fms'
+          },
+          options: [
+            ['complete', 'Yes - LOA and amendments included'],
+            ['partial', 'LOA included, amendments still being checked'],
+            ['missing', 'No / not yet'],
+            ['not_applicable', 'Not applicable'],
+            ['unknown', "I don't know"]
+          ]
+        },
+        {
+          id: 'countryDirectedIacrStatus',
+          label: 'Country-directed IACR status',
+          help: 'Country-directed packages need an IACR unless this is a task order; task-order IACRs are handled at the vehicle or C-type/PO level.',
+          showWhen: {
+            competitionApproach: 'country_directed'
+          },
+          options: [
+            ['complete', 'IACR included'],
+            ['task_order_skip', 'Task order - handled at vehicle/C-type/PO level'],
+            ['missing', 'Required, not started / missing'],
+            ['not_applicable', 'Not applicable'],
             ['unknown', "I don't know"]
           ]
         },
@@ -557,6 +602,7 @@
         dollarBand: '10k-350k',
         commercialDetermination: 'yes',
         authorityTrack: 'far12',
+        packageActionType: 'contract_po_award',
         competitionApproach: 'full_open',
         contractType: 'ffp',
         performanceBond: 'not_applicable'
@@ -572,6 +618,7 @@
         dollarBand: '10k-350k',
         commercialDetermination: 'not_applicable',
         authorityTrack: 'far13',
+        packageActionType: 'contract_po_award',
         competitionApproach: 'full_open',
         contractType: 'ffp',
         performanceBond: 'not_applicable'
@@ -586,6 +633,7 @@
         requirementSubject: 'professional_services',
         dollarBand: '350k-9m',
         commercialDetermination: 'unsure',
+        packageActionType: 'contract_po_award',
         competitionApproach: 'full_open',
         contractType: 'ffp',
         performanceBond: 'not_applicable'
@@ -598,6 +646,7 @@
       presets: {
         requirementType: 'supplies',
         requirementSubject: 'other',
+        packageActionType: 'contract_po_award',
         competitionApproach: 'brand_name',
         contractType: 'ffp',
         reqDoc: 'purchase_desc',
@@ -619,6 +668,7 @@
         requirementType: 'supplies',
         requirementSubject: 'other',
         authorityTrack: 'far12',
+        packageActionType: 'contract_po_award',
         competitionApproach: 'full_open',
         contractType: 'ffp',
         reqDoc: 'purchase_desc',
@@ -638,6 +688,7 @@
       label: 'Sole-source action',
       description: 'Restricted-source path where justification, alternatives, market research, and approval posture carry the file.',
       presets: {
+        packageActionType: 'contract_po_award',
         competitionApproach: 'sole_source',
         soleSourceFlag: 'yes',
         justification: 'required_not_started',
@@ -646,11 +697,25 @@
       }
     },
     {
+      id: 'fms-country-directed',
+      label: 'FMS country-directed award',
+      description: 'FMS contract or purchase-order package where LOA support and country-directed IACR posture need to be checked before award.',
+      presets: {
+        requirementSubject: 'fms',
+        packageActionType: 'contract_po_award',
+        competitionApproach: 'country_directed',
+        fmsLoaStatus: 'unknown',
+        countryDirectedIacrStatus: 'unknown',
+        performanceBond: 'not_applicable'
+      }
+    },
+    {
       id: 'gsa-fss-order',
       label: 'GSA / FSS order (FAR 8)',
       description: 'Federal Supply Schedule order pattern with FAR Part 8 ordering logic.',
       presets: {
         authorityTrack: 'far8',
+        packageActionType: 'task_order',
         competitionApproach: 'fair_opportunity',
         contractType: 'ffp',
         existingVehicle: 'yes',
@@ -665,6 +730,7 @@
       description: 'Task or delivery order under an IDIQ/BPA-style vehicle where ordering scope and fair opportunity matter.',
       presets: {
         authorityTrack: 'far16',
+        packageActionType: 'task_order',
         competitionApproach: 'fair_opportunity',
         contractType: 'idiq',
         existingVehicle: 'yes',
@@ -681,6 +747,7 @@
         requirementType: 'construction',
         requirementSubject: 'construction_repair',
         authorityTrack: 'far36',
+        packageActionType: 'contract_po_award',
         contractType: 'ffp',
         reqDoc: 'specs_drawings',
         qasp: 'draft',
@@ -696,6 +763,7 @@
         requirementType: 'it',
         requirementSubject: 'software',
         authorityTrack: 'far12',
+        packageActionType: 'contract_po_award',
         contractType: 'ffp',
         commercialDetermination: 'yes',
         novelTerms: 'yes',
@@ -708,6 +776,7 @@
       description: 'Follow-on package where the old file helps, but fresh market research and schedule planning still matter.',
       presets: {
         recurring: 'recompete',
+        packageActionType: 'contract_po_award',
         existingVehicle: 'maybe',
         marketResearch: 'not_started',
         paltPlanned: 'no',
@@ -723,6 +792,7 @@
         requirementType: 'supplies',
         requirementSubject: 'it_hardware',
         authorityTrack: 'far12',
+        packageActionType: 'contract_po_award',
         contractType: 'ffp',
         reqDoc: 'purchase_desc',
         commercialDetermination: 'yes',
@@ -747,6 +817,8 @@
     isSupplies: 'Requirement is supplies-like',
     isConstruction: 'Requirement is construction-like',
     isIT: 'Requirement is IT/cyber-related',
+    isFms: 'Requirement is Foreign Military Sales',
+    isTaskOrder: 'Package is a task or delivery order',
     hasRequirementDoc: 'A requirement document exists',
     noRequirementDoc: 'No requirement document is selected',
     hasServiceRequirementDoc: 'A services requirement document exists',
@@ -757,9 +829,14 @@
     marketResearchFormal: 'Formal market research is complete',
     isBrandRelated: 'Brand-name or brand-name-or-equal is involved',
     isSoleRelated: 'Single-source or sole-source path is involved',
+    isCountryDirected: 'Competition approach is country-directed',
     isUrgent: 'Urgency is involved',
     isFairOpportunityException: 'IDIQ path may need fair-opportunity documentation',
     justificationNotReady: 'Justification is not ready',
+    fmsLoaNotReady: 'FMS LOA and amendments are not ready',
+    fmsLoaPartial: 'FMS LOA support is only partial',
+    countryDirectedIacrNotReady: 'Country-directed IACR is not ready',
+    countryDirectedIacrSkippedAtTaskOrder: 'Country-directed task order points to vehicle-level IACR',
     annualMoneyCrossFy: 'Annual money crosses fiscal years',
     isHighRiskContractType: 'Contract type has elevated surveillance risk',
     isTMLH: 'Contract type is T&M or labor-hour',
@@ -791,6 +868,7 @@
     renderQuickStarts();
     restorePreferences();
     loadSavedAnswers();
+    updateQuestionVisibility();
     wireEvents();
     loadRules();
   }
@@ -885,8 +963,9 @@
       var question = eventTargetQuestionId(event.target);
       if (question && quickStartState) {
         quickStartState.touched[question] = true;
-        updateQuickStartPills();
       }
+      updateQuestionVisibility();
+      if (quickStartState) updateQuickStartPills();
       if (saveToggle.checked) saveAnswers();
     });
 
@@ -927,6 +1006,7 @@
       touched: {}
     };
     setAnswers(quickStart.presets, true);
+    updateQuestionVisibility();
     quickStartDesc.textContent = quickStart.description + ' Pre-filled answers are suggestions; override anything that does not fit.';
     updateQuickStartPills();
     if (saveToggle.checked) saveAnswers();
@@ -947,6 +1027,7 @@
     }
     var answers = getAnswers();
     getAllQuestions().forEach(function (q) {
+      if (!isQuestionVisible(q, answers)) return;
       var pill = form.querySelector('[data-pill="' + cssEscape(q.id) + '"]');
       if (!pill) return;
       pill.className = 'question-pill';
@@ -988,6 +1069,14 @@
   }
 
   function getAnswers() {
+    var answers = getRawAnswers();
+    getAllQuestions().forEach(function (q) {
+      if (!isQuestionVisible(q, answers)) answers[q.id] = '';
+    });
+    return answers;
+  }
+
+  function getRawAnswers() {
     var answers = {};
     getAllQuestions().forEach(function (q) {
       if (q.type === 'date') {
@@ -998,6 +1087,35 @@
       answers[q.id] = checked ? checked.value : '';
     });
     return answers;
+  }
+
+  function updateQuestionVisibility() {
+    var answers = getRawAnswers();
+    getAllQuestions().forEach(function (q) {
+      var questionEl = form.querySelector('[data-question="' + cssEscape(q.id) + '"]');
+      if (!questionEl) return;
+      var visible = isQuestionVisible(q, answers);
+      questionEl.hidden = !visible;
+      if (!visible) {
+        clearQuestionAnswer(q);
+        answers[q.id] = '';
+      }
+    });
+  }
+
+  function isQuestionVisible(q, answers) {
+    return !q.showWhen || matchSet(q.showWhen, answers || {});
+  }
+
+  function clearQuestionAnswer(q) {
+    if (q.type === 'date') {
+      var dateInput = document.getElementById(q.id);
+      if (dateInput) dateInput.value = '';
+      return;
+    }
+    form.querySelectorAll('input[name="' + cssEscape(q.id) + '"]').forEach(function (input) {
+      input.checked = false;
+    });
   }
 
   function setAnswers(answers) {
@@ -1021,6 +1139,7 @@
     quickStartState = null;
     if (quickStartSelect) quickStartSelect.value = '';
     if (quickStartDesc) quickStartDesc.textContent = 'Pick a common package pattern to pre-fill the obvious answers. Nothing is locked; change anything that does not fit.';
+    updateQuestionVisibility();
     clearQuickStartPills();
     resultsEl.classList.remove('is-visible');
     resultsEl.innerHTML = '';
@@ -1056,6 +1175,9 @@
     var highDollar = ['9m-25m', '25m-plus'].indexOf(answers.dollarBand) !== -1;
     var isConstruction = answers.requirementType === 'construction' || answers.authorityTrack === 'far36';
     var isIT = answers.requirementType === 'it' || ['it_hardware', 'software', 'cyber'].indexOf(answers.requirementSubject) !== -1;
+    var isFms = answers.requirementSubject === 'fms';
+    var isTaskOrder = answers.packageActionType === 'task_order' ||
+      (!answers.packageActionType && answers.authorityTrack === 'far16' && answers.existingVehicle === 'yes');
     var isServices = ['services', 'mixed'].indexOf(answers.requirementType) !== -1 ||
       (answers.requirementType === 'it' && answers.requirementSubject !== 'it_hardware') ||
       answers.requirementType === 'rd';
@@ -1075,10 +1197,17 @@
       ['brand_name', 'brand_name_or_equal'].indexOf(answers.competitionApproach) !== -1;
     var isSoleRelated = answers.soleSourceFlag === 'yes' ||
       answers.competitionApproach === 'sole_source';
+    var isCountryDirected = answers.competitionApproach === 'country_directed';
     var isUrgent = answers.urgencyFlag === 'yes' || answers.competitionApproach === 'urgency';
     var isFairOpportunityException = answers.authorityTrack === 'far16' &&
       (answers.competitionApproach === 'sole_source' || answers.competitionApproach === 'fair_opportunity');
     var justificationNotReady = ['required_not_started', 'unsure', ''].indexOf(answers.justification) !== -1;
+    var fmsLoaNotReady = isFms && ['missing', 'unknown', 'not_applicable', ''].indexOf(answers.fmsLoaStatus) !== -1;
+    var fmsLoaPartial = isFms && answers.fmsLoaStatus === 'partial';
+    var countryDirectedIacrNotReady = isCountryDirected && !isTaskOrder &&
+      ['missing', 'unknown', 'not_applicable', 'task_order_skip', ''].indexOf(answers.countryDirectedIacrStatus) !== -1;
+    var countryDirectedIacrSkippedAtTaskOrder = isCountryDirected && isTaskOrder &&
+      answers.countryDirectedIacrStatus === 'task_order_skip';
     var annualMoneyCrossFy = answers.colorMoney === 'om' && answers.crossesFiscalYears === 'yes';
     var isHighRiskContractType = ['tm_lh', 'cost'].indexOf(answers.contractType) !== -1;
     var isTMLH = answers.contractType === 'tm_lh';
@@ -1107,6 +1236,8 @@
       isSupplies: isSupplies,
       isConstruction: isConstruction,
       isIT: isIT,
+      isFms: isFms,
+      isTaskOrder: isTaskOrder,
       hasRequirementDoc: hasRequirementDoc,
       noRequirementDoc: noRequirementDoc,
       hasServiceRequirementDoc: hasServiceRequirementDoc,
@@ -1117,9 +1248,14 @@
       marketResearchFormal: marketResearchFormal,
       isBrandRelated: isBrandRelated,
       isSoleRelated: isSoleRelated,
+      isCountryDirected: isCountryDirected,
       isUrgent: isUrgent,
       isFairOpportunityException: isFairOpportunityException,
       justificationNotReady: justificationNotReady,
+      fmsLoaNotReady: fmsLoaNotReady,
+      fmsLoaPartial: fmsLoaPartial,
+      countryDirectedIacrNotReady: countryDirectedIacrNotReady,
+      countryDirectedIacrSkippedAtTaskOrder: countryDirectedIacrSkippedAtTaskOrder,
       annualMoneyCrossFy: annualMoneyCrossFy,
       isHighRiskContractType: isHighRiskContractType,
       isTMLH: isTMLH,
