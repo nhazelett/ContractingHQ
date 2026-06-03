@@ -3690,6 +3690,13 @@ function clearOllieData() {
       <label><input type="radio" name="ai-mode" value="append"> Append to existing content</label>
     </div>
     <p id="ai-status" class="ai-status"></p>
+    <p id="ai-support-nudge" style="display:none; font-size:12px; color:var(--steel); margin:6px 0 0; text-align:center">
+      Like KTHQ?
+      <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener"
+         style="color:#1a3a6e; text-decoration:underline; font-weight:600">
+        &#9749; Support the site
+      </a>
+    </p>
     <div class="ai-actions">
       <button type="button" class="btn btn-secondary btn-left" onclick="aiClose()">Cancel</button>
       <button type="button" class="btn btn-primary" id="ai-generate-btn" onclick="aiGenerate()">Generate Draft</button>
@@ -4075,6 +4082,8 @@ function clearOllieData() {
     st.classList.remove('err');
     document.getElementById('ai-generate-btn').disabled = false;
     document.getElementById('ai-insert-btn').disabled = true;
+    var _nudge = document.getElementById('ai-support-nudge');
+    if (_nudge) _nudge.style.display = 'none';
 
     var appendDefault = (section.type !== 'textarea');
     document.querySelector('input[name="ai-mode"][value="replace"]').checked = !appendDefault;
@@ -4122,6 +4131,8 @@ function clearOllieData() {
       }
       out.value = data.text || '';
       status.textContent = 'Draft ready. Review and edit before inserting.';
+      var nudge = document.getElementById('ai-support-nudge');
+      if (nudge) nudge.style.display = 'block';
       document.getElementById('ai-insert-btn').disabled = false;
       btn.disabled = false;
     } catch (e) {
