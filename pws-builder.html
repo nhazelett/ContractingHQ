@@ -655,7 +655,133 @@
       font-size: 11pt;
     }
     body { background: #fff; }
+    .ai-btn, #ai-modal { display: none !important; }
   }
+  /* ── AI HELPER ── */
+  .ai-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 8px;
+    padding: 3px 9px;
+    background: #eef4ff;
+    color: var(--af-blue);
+    border: 1px solid #c8dafc;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all .15s;
+    vertical-align: middle;
+  }
+  .ai-btn:hover { background: var(--af-blue); color: #fff; border-color: var(--af-blue); }
+  .ai-btn::before { content: "\2728"; font-size: 11px; }
+  h3 .ai-btn { font-size: 9px; }
+
+  #ai-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(13, 17, 23, .55);
+    padding: 4vh 4vw;
+    overflow-y: auto;
+  }
+  #ai-modal.open { display: block; }
+  #ai-modal .ai-modal-box {
+    max-width: 780px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    padding: 24px 28px 22px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  }
+  #ai-modal h3 {
+    margin: 0 0 4px;
+    font-family: var(--display);
+    font-size: 22px;
+    color: var(--af-blue);
+  }
+  #ai-modal .ai-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--steel);
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  #ai-modal .ai-warn {
+    background: #fff8e6;
+    border: 1px solid var(--af-gold);
+    border-left: 3px solid var(--af-gold);
+    color: #7a5c00;
+    padding: 9px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-bottom: 14px;
+  }
+  #ai-modal details { margin-bottom: 14px; font-size: 12px; }
+  #ai-modal details summary {
+    cursor: pointer;
+    color: var(--af-blue);
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    padding: 4px 0;
+  }
+  #ai-modal details pre {
+    margin-top: 6px;
+    background: var(--mist);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-size: 11px;
+    white-space: pre-wrap;
+    max-height: 240px;
+    overflow-y: auto;
+    color: var(--steel);
+  }
+  #ai-modal textarea {
+    width: 100%;
+    min-height: 180px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: var(--body);
+    font-size: 13px;
+    line-height: 1.5;
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  #ai-modal .ai-mode {
+    display: flex;
+    gap: 14px;
+    margin: 10px 0 4px;
+    font-size: 12px;
+    color: var(--steel);
+  }
+  #ai-modal .ai-mode label { cursor: pointer; }
+  #ai-modal .ai-status {
+    font-size: 12px;
+    color: var(--steel);
+    margin: 8px 0 0;
+    min-height: 18px;
+  }
+  #ai-modal .ai-status.err { color: var(--red); }
+  #ai-modal .ai-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  #ai-modal .ai-actions .btn-left { margin-right: auto; }
+
 </style>
 
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
@@ -846,7 +972,7 @@
     </div>
     <div class="form-grid single">
       <div class="field">
-        <label>Purpose / Mission Need Statement<span class="req">*</span><span class="hint">1–3 sentences: why is this contract needed?</span></label>
+        <label>Purpose / Mission Need Statement<span class="req">*</span><span class="hint">1–3 sentences: why is this contract needed?</span><button type="button" class="ai-btn" onclick="aiHelp('mission_need')">Draft with AI</button></label>
         <textarea id="mission_need" class="tall">The 386th Air Expeditionary Wing requires contractor support to operate the Ali Al Salem Air Base dining facility (DFAC) in order to sustain mission readiness of assigned and transient forces. The unit lacks sufficient organic military manpower to perform this function on a continuous basis. Contractor support is essential to maintain uninterrupted dining operations and sustain force readiness in this contingency environment.</textarea>
       </div>
     </div>
@@ -862,7 +988,7 @@
     </div>
     <div class="form-grid single">
       <div class="field">
-        <label>Background / Operational Context<span class="hint">history, current situation, why OCONUS CCO is acquiring</span></label>
+        <label>Background / Operational Context<span class="hint">history, current situation, why OCONUS CCO is acquiring</span><button type="button" class="ai-btn" onclick="aiHelp('background')">Draft with AI</button></label>
         <textarea id="background" class="tall">Ali Al Salem Air Base, Kuwait is a primary staging and throughput installation supporting U.S. Air Force operations throughout the USCENTCOM Area of Responsibility (AOR). The installation supports rotational and transient forces and serves as a critical logistics hub for theater operations. The current contract for dining facility operations expires on [EXPIRATION DATE], necessitating a new competitive acquisition to ensure continuity of services. The DFAC serves an average of [NUMBER] personnel per day across three meal periods. This requirement has been reviewed and validated by the Requiring Activity and approved through appropriate resource authority.</textarea>
       </div>
     </div>
@@ -888,13 +1014,13 @@
       <h3>Scope of Work</h3>
       <div class="form-grid single">
         <div class="field">
-          <label>Overall Scope Statement<span class="req">*</span></label>
+          <label>Overall Scope Statement<span class="req">*</span><button type="button" class="ai-btn" onclick="aiHelp('svc_scope')">Draft with AI</button></label>
           <textarea id="svc_scope" class="xtall">The contractor shall provide all personnel, equipment, tools, materials, supervision, and other items and non-personal services necessary to operate and maintain the dining facility (DFAC) at Ali Al Salem Air Base, Kuwait. Services shall be performed on a continuous, uninterrupted basis in accordance with this PWS, Air Force Manual (AFMAN) 34-239, Food Service Management Program, applicable DoD food service standards, and all applicable laws and regulations. The contractor is solely responsible for the quality, adequacy, and legality of all services rendered under this contract.</textarea>
         </div>
       </div>
     </div>
     <div class="card-group">
-      <h3>Specific Tasks <span style="font-weight:400;font-size:11px;color:#888">(add each major task the contractor must perform)</span></h3>
+      <h3>Specific Tasks <span style="font-weight:400;font-size:11px;color:#888">(add each major task the contractor must perform)</span><button type="button" class="ai-btn" onclick="aiHelp('svc-tasks')">Draft with AI</button></h3>
       <div id="svc-tasks-list"></div>
       <button class="add-row-btn" onclick="addDynRow('svc-tasks-list', 'Task description (e.g., Operate dining facility for three meals daily, seven days per week...)', true)">+ Add Task</button>
     </div>
@@ -926,7 +1052,7 @@
       <h3>Project Description &amp; Scope</h3>
       <div class="form-grid single">
         <div class="field">
-          <label>Project Scope Statement<span class="req">*</span></label>
+          <label>Project Scope Statement<span class="req">*</span><button type="button" class="ai-btn" onclick="aiHelp('con_scope')">Draft with AI</button></label>
           <textarea id="con_scope" class="xtall">The contractor shall provide all labor, materials, equipment, tools, transportation, and supervision required to construct [DESCRIBE FACILITY] at [LOCATION], Ali Al Salem Air Base, Kuwait. All work shall be completed in accordance with this PWS, applicable Unified Facilities Criteria (UFC), AFMAN 32-1084, and all applicable host nation laws and agreements. The contractor shall obtain all required permits and approvals prior to commencing construction. Work shall be performed without interruption to ongoing installation operations unless specifically authorized in writing by the Contracting Officer.</textarea>
         </div>
       </div>
@@ -953,7 +1079,7 @@
       </div>
     </div>
     <div class="card-group">
-      <h3>Specific Work Items</h3>
+      <h3>Specific Work Items<button type="button" class="ai-btn" onclick="aiHelp('con-tasks')">Draft with AI</button></h3>
       <div id="con-tasks-list"></div>
       <button class="add-row-btn" onclick="addDynRow('con-tasks-list', 'Work item (e.g., Construct reinforced concrete perimeter wall, 8 ft height, 500 LF total...)', true)">+ Add Work Item</button>
     </div>
@@ -992,7 +1118,7 @@
       <h3>Supply / Equipment Scope</h3>
       <div class="form-grid single">
         <div class="field">
-          <label>Overall Scope Statement<span class="req">*</span></label>
+          <label>Overall Scope Statement<span class="req">*</span><button type="button" class="ai-btn" onclick="aiHelp('sup_scope')">Draft with AI</button></label>
           <textarea id="sup_scope" class="xtall">The contractor shall furnish, deliver, and where specified install all supplies and equipment identified in the Schedule of Supplies/Services and applicable CLINs. All items shall be new, unissued, in current production, and shall conform to the technical specifications and standards identified in this PWS. Substitution of specified items is not authorized without prior written approval from the Contracting Officer. The contractor shall provide manufacturer documentation and certificates of conformance for all deliverable items as required by the COR.</textarea>
         </div>
       </div>
@@ -1011,13 +1137,13 @@
       <h3>IT / Communications Scope</h3>
       <div class="form-grid single">
         <div class="field">
-          <label>Overall Scope Statement<span class="req">*</span></label>
+          <label>Overall Scope Statement<span class="req">*</span><button type="button" class="ai-btn" onclick="aiHelp('it_scope')">Draft with AI</button></label>
           <textarea id="it_scope" class="xtall">The contractor shall provide all personnel, equipment, hardware, software, cabling, and services necessary to install, configure, operate, and maintain [DESCRIBE IT/COMMS SYSTEM] in support of operations at [INSTALLATION]. All contractor-provided systems and software shall comply with DoD and Air Force information assurance requirements, applicable Defense Information Systems Agency (DISA) Security Technical Implementation Guides (STIGs), and DODI 8510.01, Risk Management Framework (RMF) for DoD Information Technology. No system shall be placed into operation on government networks without a valid Authority to Operate (ATO) issued by the appropriate Authorizing Official.</textarea>
         </div>
       </div>
     </div>
     <div class="card-group">
-      <h3>Specific Tasks</h3>
+      <h3>Specific Tasks<button type="button" class="ai-btn" onclick="aiHelp('it-tasks')">Draft with AI</button></h3>
       <div id="it-tasks-list"></div>
       <button class="add-row-btn" onclick="addDynRow('it-tasks-list', 'IT/Comms task (e.g., Install and configure...)', true)">+ Add Task</button>
     </div>
@@ -1058,13 +1184,13 @@
       <h3>Medical Support Scope</h3>
       <div class="form-grid single">
         <div class="field">
-          <label>Overall Scope Statement<span class="req">*</span></label>
+          <label>Overall Scope Statement<span class="req">*</span><button type="button" class="ai-btn" onclick="aiHelp('med_scope')">Draft with AI</button></label>
           <textarea id="med_scope" class="xtall">The contractor shall provide qualified medical personnel, equipment, pharmaceuticals, and support services necessary to deliver [DESCRIBE MEDICAL SERVICES — e.g., primary care, dental, laboratory] in support of [UNIT/INSTALLATION] at [LOCATION]. All services shall be performed in accordance with applicable DoD and Air Force Medical Service standards, DODI 6025.13, Medical Quality Assurance, applicable host nation medical regulations, and applicable U.S. medical licensing and credentialing requirements. The contractor shall maintain all required licenses, certifications, and accreditations for the duration of the contract.</textarea>
         </div>
       </div>
     </div>
     <div class="card-group">
-      <h3>Specific Services</h3>
+      <h3>Specific Services<button type="button" class="ai-btn" onclick="aiHelp('med-tasks')">Draft with AI</button></h3>
       <div id="med-tasks-list"></div>
       <button class="add-row-btn" onclick="addDynRow('med-tasks-list', 'Medical service task...', true)">+ Add Service</button>
     </div>
@@ -1085,7 +1211,7 @@
       <h3>Base Operations Support Scope</h3>
       <div class="form-grid single">
         <div class="field">
-          <label>Overall Scope Statement<span class="req">*</span></label>
+          <label>Overall Scope Statement<span class="req">*</span><button type="button" class="ai-btn" onclick="aiHelp('bos_scope')">Draft with AI</button></label>
           <textarea id="bos_scope" class="xtall">The contractor shall provide comprehensive base operations support services, including all personnel, equipment, materials, consumables, and management necessary to sustain the selected functions identified herein at Ali Al Salem Air Base, Kuwait. Services shall be provided continuously, 24 hours per day, 7 days per week, 365 days per year unless specific service windows are identified in individual task areas. The contractor shall maintain the installation operational readiness in support of an average population of [NUMBER] assigned and transient personnel. All services shall comply with applicable DoD, Air Force, and host nation standards and regulations.</textarea>
         </div>
       </div>
@@ -1106,7 +1232,7 @@
       </div>
       <div class="form-grid single" style="margin-top:12px">
         <div class="field">
-          <label>Additional Specific Tasks</label>
+          <label>Additional Specific Tasks<button type="button" class="ai-btn" onclick="aiHelp('bos-tasks')">Draft with AI</button></label>
           <div id="bos-tasks-list"></div>
           <button class="add-row-btn" onclick="addDynRow('bos-tasks-list', 'Additional task...', true)">+ Add Task</button>
         </div>
@@ -1173,7 +1299,7 @@
     </div>
     <div class="form-grid single">
       <div class="field">
-        <label>Performance Standards / Acceptable Quality Levels (AQLs)</label>
+        <label>Performance Standards / Acceptable Quality Levels (AQLs)<button type="button" class="ai-btn" onclick="aiHelp('perf_standards')">Draft with AI</button></label>
         <textarea id="perf_standards" class="tall">The following performance standards apply to this contract:
 
 - Services shall be available during all required operating hours with no unauthorized interruptions exceeding 30 minutes per incident
@@ -1190,7 +1316,7 @@
         <textarea id="incentives">When the contractor fails to meet performance standards, the government will address the deficiency through the remedies available under the contract. The Contracting Officer Representative (COR) will document deficiencies in writing and provide the contractor notice and an opportunity to respond. Recurring or serious failures may result in a Cure Notice or Show Cause Notice issued by the Contracting Officer under FAR 49.607, and, where warranted, termination for cause or default. Any contractual remedy (including deductions, fee reductions, or reprocurement) shall be applied only as authorized by the terms of the awarded contract.</textarea>
       </div>
       <div class="field">
-        <label>Reporting Requirements</label>
+        <label>Reporting Requirements<button type="button" class="ai-btn" onclick="aiHelp('reporting')">Draft with AI</button></label>
         <textarea id="reporting">The contractor shall submit Monthly Status Reports to the COR not later than (NLT) the 5th calendar day of each month for the preceding month performance. Reports shall include: (1) summary of work accomplished; (2) personnel roster and changes; (3) issues, discrepancies, or safety incidents and corrective actions taken; (4) status of all open COR-identified deficiencies; and (5) planned activities for the upcoming period. Reports shall be submitted electronically in PDF or Word format. Additional ad hoc reports may be required by the COR with 24-hour notice.</textarea>
       </div>
     </div>
@@ -1238,7 +1364,7 @@
     </div>
     <div class="form-grid single" style="margin-top:10px">
       <div class="field">
-        <label>GFP Accountability / Care Requirements</label>
+        <label>GFP Accountability / Care Requirements<button type="button" class="ai-btn" onclick="aiHelp('gfp_accountability')">Draft with AI</button></label>
         <textarea id="gfp_accountability">The contractor shall be responsible for the proper use, care, and maintenance of all Government-Furnished Property (GFP) and Equipment (GFE) provided under this contract. GFP/GFE shall be used exclusively for performance of this contract and shall not be removed from the installation without prior written COR approval. The contractor shall report any loss, damage, theft, or destruction of GFP/GFE to the COR within 24 hours of discovery. At contract completion, all GFP/GFE shall be returned to the government in the same condition as received, less normal wear and tear, accompanied by a signed property receipt.</textarea>
       </div>
     </div>
@@ -1272,13 +1398,13 @@
     </div>
     <div class="form-grid single" style="margin-top:10px">
       <div class="field">
-        <label>Minimum Qualifications / Experience Requirements</label>
+        <label>Minimum Qualifications / Experience Requirements<button type="button" class="ai-btn" onclick="aiHelp('min_quals')">Draft with AI</button></label>
         <textarea id="min_quals">All contractor personnel performing under this contract shall possess the qualifications, licenses, certifications, and experience required by applicable law, regulation, and professional standards for their assigned duties. At a minimum, all personnel shall: (1) be able to read, write, and communicate effectively in the English language; (2) possess any required professional licenses or certifications for their position; (3) have a minimum of [X] years of relevant experience in their field; and (4) be legally authorized to work in the United States (or applicable host nation, if performance is OCONUS). The contractor shall provide documentation of qualifications to the COR within five (5) days of any new personnel assignment.</textarea>
       </div>
     </div>
     <div class="form-grid">
       <div class="field">
-        <label>Training Requirements</label>
+        <label>Training Requirements<button type="button" class="ai-btn" onclick="aiHelp('training_req')">Draft with AI</button></label>
         <textarea id="training_req">Contractor personnel shall complete all required training prior to commencing performance, including: (1) Anti-Terrorism (AT) Level I Awareness training (annual requirement); (2) theater-specific operational and safety briefings as required by the installation; (3) job-specific certifications required for the assigned function; and (4) any additional training required by the Contracting Officer or COR. The contractor is solely responsible for scheduling, funding, and documenting all required training. Training records shall be maintained and provided to the COR within two (2) business days upon request.</textarea>
       </div>
       <div class="field">
@@ -1311,7 +1437,7 @@
     </div>
     <div class="form-grid single">
       <div class="field">
-        <label>Additional Security Requirements</label>
+        <label>Additional Security Requirements<button type="button" class="ai-btn" onclick="aiHelp('security_add')">Draft with AI</button></label>
         <textarea id="security_add">Contractor personnel shall comply with all installation security directives and force protection measures in effect at the performance location. The contractor shall report all security incidents, suspicious activity, or potential threats to the COR within one (1) hour of discovery. Contractor personnel shall not photograph, video record, or otherwise document installation facilities, force composition, or operational activities without prior written Contracting Officer authorization. All contractor personnel shall carry required identification at all times while on the installation. The contractor shall designate a Security POC to interface with installation Security Forces and report all security matters to the COR.</textarea>
       </div>
     </div>
@@ -1374,7 +1500,7 @@
     <h3>Applicable Documents &amp; Standards</h3>
     <div class="form-grid single">
       <div class="field">
-        <label>Standard Applicable Documents <span class="hint">(auto-populated — remove inapplicable)</span></label>
+        <label>Standard Applicable Documents <span class="hint">(auto-populated — remove inapplicable)</span><button type="button" class="ai-btn" onclick="aiHelp('applicable_docs')">Draft with AI</button></label>
         <textarea id="applicable_docs" class="xtall">Federal Acquisition Regulation (FAR) — current edition
 Defense Federal Acquisition Regulation Supplement (DFARS) — current edition
 Agency-specific FAR Supplement (e.g., AFFARS, AFARS, NMCARS) — current edition
@@ -1388,7 +1514,7 @@ DFARS 252.225-7043, Antiterrorism/Force Protection Policy for Defense Contractor
     </div>
     <div class="form-grid single">
       <div class="field">
-        <label>Additional Technical / Contract-Specific Documents</label>
+        <label>Additional Technical / Contract-Specific Documents<button type="button" class="ai-btn" onclick="aiHelp('docs-list')">Draft with AI</button></label>
         <div id="docs-list"></div>
         <button class="add-row-btn" onclick="addDynRow('docs-list', 'Document title and number (e.g., UFC 4-010-01, DoD Minimum Antiterrorism Standards for Buildings)')">+ Add Document</button>
       </div>
@@ -2557,6 +2683,370 @@ function clearOllieData() {
   x.send();
 })();
 </script>
+<div id="ai-modal" aria-hidden="true">
+  <div class="ai-modal-box" role="dialog" aria-labelledby="ai-modal-title">
+    <h3 id="ai-modal-title">Draft with AI</h3>
+    <div class="ai-sub">KTHQ AI Assistant &middot; Powered by Gemini</div>
+    <div class="ai-warn">
+      <strong>Do not paste classified, CUI, or source selection sensitive information.</strong>
+      This sends your prompt to Google's free Gemini API. Treat the input the same way you would any non-government AI tool.
+    </div>
+    <details>
+      <summary>View the prompt being sent to the AI</summary>
+      <pre id="ai-prompt-preview"></pre>
+    </details>
+    <label style="font-size:12px; color:var(--steel); display:block; margin-bottom:4px; font-weight:600">AI draft (edit before inserting)</label>
+    <textarea id="ai-output" placeholder="Click 'Generate Draft' to start. The AI's response will appear here for you to review and edit before inserting into the PWS."></textarea>
+    <div class="ai-mode">
+      <label><input type="radio" name="ai-mode" value="replace" checked> Replace existing content</label>
+      <label><input type="radio" name="ai-mode" value="append"> Append to existing content</label>
+    </div>
+    <p id="ai-status" class="ai-status"></p>
+    <div class="ai-actions">
+      <button type="button" class="btn btn-secondary btn-left" onclick="aiClose()">Cancel</button>
+      <button type="button" class="btn btn-primary" id="ai-generate-btn" onclick="aiGenerate()">Generate Draft</button>
+      <button type="button" class="btn btn-green" id="ai-insert-btn" onclick="aiInsert()" disabled>Insert into PWS</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+ * KTHQ AI Helper for PWS Builder
+ * Sends prompts to a Cloudflare Worker that proxies Gemini.
+ * The Worker holds the API key (not exposed to the browser).
+ * ========================================================= */
+(function(){
+  // ============================================================
+  // === CONFIGURE: paste your Cloudflare Worker URL below ======
+  // ============================================================
+  const AI_WORKER_URL = 'https://kthq-ai-helper.nickhazelett.workers.dev/';
+  // ============================================================
+
+  function preamble(D) {
+    const L = ['You are helping a federal contracting officer draft a section of a Performance Work Statement (PWS) for a U.S. Government contract.', ''];
+    L.push('CONTEXT THE CO HAS PROVIDED:');
+    if (D.type)        L.push('- Contract type: ' + D.type);
+    if (D.title)       L.push('- Contract title: ' + D.title);
+    if (D.reqActivity) L.push('- Requiring activity: ' + D.reqActivity);
+    if (D.installation)L.push('- Installation / location: ' + D.installation);
+    if (D.missionNeed) L.push('- Mission need: ' + D.missionNeed);
+    if (D.background) {
+      const b = D.background.length > 600 ? D.background.substring(0, 600) + '...' : D.background;
+      L.push('- Background already drafted: ' + b);
+    }
+    L.push('');
+    L.push('SAFETY RULES:');
+    L.push('- Do not invent specific facts you were not given (unit history, prior contract numbers, equipment counts, regulation numbers you are unsure about).');
+    L.push('- Mark anything you do not have information on as [TBD].');
+    L.push('- Use plain English. No filler. No markdown headers.');
+    L.push('');
+    return L.join('\n');
+  }
+
+  function scopeSection(targetId, kind) {
+    return {
+      label: 'Overall Scope Statement',
+      type: 'textarea',
+      targetId: targetId,
+      buildPrompt: function(D) {
+        return preamble(D) +
+          'YOUR TASK: Draft the Overall Scope Statement for this ' + kind + ' requirement.\n\n' +
+          'GUIDANCE:\n' +
+          '- 1 to 2 paragraphs.\n' +
+          '- State WHAT the contractor will provide or deliver and the boundary of performance.\n' +
+          '- Use binding language: "The contractor shall provide..." not "should" or "will".\n' +
+          '- Performance-based: outcomes, not methods.\n' +
+          '- Return only the scope text. No header, no preamble, no markdown.';
+      }
+    };
+  }
+
+  function tasksSection(listId, kind, scopeFieldId) {
+    return {
+      label: 'Specific Tasks',
+      type: 'rows',
+      targetId: listId,
+      buildPrompt: function(D) {
+        const scope = (document.getElementById(scopeFieldId) || {}).value || '';
+        const scopeBlock = scope.trim() ? ('SCOPE STATEMENT (for reference):\n' + scope.trim() + '\n\n') : '';
+        return preamble(D) + scopeBlock +
+          'YOUR TASK: Draft a list of specific tasks the contractor shall perform under this ' + kind + ' contract.\n\n' +
+          'GUIDANCE:\n' +
+          '- One task per line. No numbering, no bullets, no headers.\n' +
+          '- Each task starts with "The contractor shall..." or a strong action verb.\n' +
+          '- Each task describes an outcome the COR can observe, not a method.\n' +
+          '- 5 to 12 tasks, sized to the scope above.\n' +
+          '- Return ONLY the task lines, one per line. Nothing else.';
+      }
+    };
+  }
+
+  const SECTIONS = {
+    'mission_need': {
+      label: 'Purpose / Mission Need Statement', type: 'textarea', targetId: 'mission_need',
+      buildPrompt: function(D) {
+        return preamble(D) +
+          'YOUR TASK: Draft the Purpose / Mission Need Statement.\n\n' +
+          'GUIDANCE:\n' +
+          '- 1 to 3 sentences.\n' +
+          '- State the capability gap the contract fills, tied to mission outcome.\n' +
+          '- Plain English. Avoid "the contractor shall" language here — that belongs in scope.\n' +
+          '- Return only the statement.';
+      }
+    },
+    'background': {
+      label: 'Background / Operational Context', type: 'textarea', targetId: 'background',
+      buildPrompt: function(D) {
+        return preamble(D) +
+          'YOUR TASK: Draft the Background / Operational Context section.\n\n' +
+          'GUIDANCE:\n' +
+          '- 2 to 3 short paragraphs.\n' +
+          '- Explain mission context the contractor needs to understand the requirement.\n' +
+          '- Do NOT restate scope or specific tasks here.\n' +
+          '- Return only the section text.';
+      }
+    },
+    'svc_scope': scopeSection('svc_scope', 'services'),
+    'con_scope': scopeSection('con_scope', 'construction'),
+    'sup_scope': scopeSection('sup_scope', 'supply'),
+    'it_scope':  scopeSection('it_scope',  'IT / communications'),
+    'med_scope': scopeSection('med_scope', 'medical'),
+    'bos_scope': scopeSection('bos_scope', 'base operations'),
+    'svc-tasks': tasksSection('svc-tasks-list', 'services',            'svc_scope'),
+    'con-tasks': tasksSection('con-tasks-list', 'construction',        'con_scope'),
+    'it-tasks':  tasksSection('it-tasks-list',  'IT / communications', 'it_scope'),
+    'med-tasks': tasksSection('med-tasks-list', 'medical',             'med_scope'),
+    'bos-tasks': tasksSection('bos-tasks-list', 'base operations',     'bos_scope'),
+    'perf_standards': {
+      label: 'Performance Standards / AQLs', type: 'textarea', targetId: 'perf_standards',
+      buildPrompt: function(D) {
+        return preamble(D) +
+          'YOUR TASK: Draft Performance Standards / Acceptable Quality Levels (AQLs).\n\n' +
+          'GUIDANCE:\n' +
+          '- 4 to 8 standards, one per line, each starting with a hyphen.\n' +
+          '- Each standard MUST be measurable (specific number, percentage, or time bound).\n' +
+          '- Tie each standard to an observable outcome, not a contractor method.\n' +
+          '- Examples of measurable: "responds within 2 hours", "95% on-time delivery".\n' +
+          '- Return only the standard lines. No headers, no preamble.';
+      }
+    },
+    'reporting': {
+      label: 'Reporting Requirements', type: 'textarea', targetId: 'reporting',
+      buildPrompt: function(D) {
+        return preamble(D) +
+          'YOUR TASK: Draft Reporting Requirements.\n\n' +
+          'GUIDANCE:\n' +
+          '- 1 to 2 paragraphs.\n' +
+          '- Specify: what is reported, how often, to whom, in what format, by when.\n' +
+          '- Cover typical monthly status report content (work performed, personnel changes, issues, planned activities).\n' +
+          '- Return only the requirement text.';
+      }
+    },
+    'min_quals': {
+      label: 'Minimum Qualifications', type: 'textarea', targetId: 'min_quals',
+      buildPrompt: function(D) {
+        return preamble(D) +
+          'YOUR TASK: Draft Minimum Qualifications / Experience Requirements for contractor personnel.\n\n' +
+          'GUIDANCE:\n' +
+          '- 1 to 2 paragraphs OR a numbered list.\n' +
+          '- Cover: required licenses or certifications, years of experience, language, work authorization.\n' +
+          '- Qualification-focused, not full job description.\n' +
+          '- Return only the requirement text.';
+      }
+    },
+    'training_req': {
+      label: 'Training Requirements', type: 'textarea', targetId: 'training_req',
+      buildPrompt: function(D) {
+        return preamble(D) +
+          'YOUR TASK: Draft Training Requirements for contractor personnel.\n\n' +
+          'GUIDANCE:\n' +
+          '- 1 to 2 paragraphs.\n' +
+          '- Cover pre-performance training, ongoing training, training documentation and records.\n' +
+          '- Include AT Level I if performance is on a military installation.\n' +
+          '- Return only the requirement text.';
+      }
+    },
+    'gfp_accountability': {
+      label: 'GFP Accountability', type: 'textarea', targetId: 'gfp_accountability',
+      buildPrompt: function(D) {
+        return preamble(D) +
+          'YOUR TASK: Draft GFP / GFE Accountability and Care Requirements.\n\n' +
+          'GUIDANCE:\n' +
+          '- 1 to 2 paragraphs.\n' +
+          '- Cover proper use, loss or damage reporting, return at contract end, recordkeeping.\n' +
+          '- Do not invent a specific GFP item list.\n' +
+          '- Return only the requirement text.';
+      }
+    },
+    'security_add': {
+      label: 'Additional Security Requirements', type: 'textarea', targetId: 'security_add',
+      buildPrompt: function(D) {
+        return preamble(D) +
+          'YOUR TASK: Draft Additional Security Requirements for contractor personnel.\n\n' +
+          'GUIDANCE:\n' +
+          '- 1 to 2 paragraphs.\n' +
+          '- Cover installation security compliance, incident reporting, photography or recording restrictions, ID requirements.\n' +
+          '- Return only the requirement text.';
+      }
+    },
+    'applicable_docs': {
+      label: 'Standard Applicable Documents', type: 'textarea', targetId: 'applicable_docs',
+      buildPrompt: function(D) {
+        return preamble(D) +
+          'YOUR TASK: Draft a list of Standard Applicable Documents for this PWS.\n\n' +
+          'GUIDANCE:\n' +
+          '- One document per line. No bullets, no numbering, no headers.\n' +
+          '- Format: "Document title and number - current edition".\n' +
+          '- Include FAR, DFARS, agency supplement, and applicable DoD instructions for this contract type.\n' +
+          '- Do not invent document numbers. If unsure, use the title only with [TBD: verify edition].\n' +
+          '- Return only the document lines.';
+      }
+    },
+    'docs-list': {
+      label: 'Additional Technical / Contract-Specific Documents', type: 'rows', targetId: 'docs-list',
+      buildPrompt: function(D) {
+        return preamble(D) +
+          'YOUR TASK: Suggest Additional Technical / Contract-Specific Documents that should be referenced in this PWS.\n\n' +
+          'GUIDANCE:\n' +
+          '- One document per line. No bullets, no numbering, no headers.\n' +
+          '- Format: "Document title and number" (example: "UFC 4-010-01, DoD Minimum Antiterrorism Standards for Buildings").\n' +
+          '- Focus on technical standards, UFCs, military handbooks, industry standards relevant to this contract type.\n' +
+          '- 3 to 8 lines.\n' +
+          '- Return ONLY the document lines, one per line.';
+      }
+    }
+  };
+
+  function gatherContext() {
+    function v(id) {
+      var el = document.getElementById(id);
+      return (el && el.value || '').trim();
+    }
+    return {
+      type:         (window.state && window.state.contractTypeLabel) || '',
+      title:        v('contract_title'),
+      reqActivity:  v('requiring_activity'),
+      contrOffice:  v('contracting_office'),
+      missionNeed:  v('mission_need'),
+      installation: v('installation'),
+      background:   v('background'),
+      perfLocation: v('perf_location')
+    };
+  }
+
+  var currentSection = null;
+  var currentPrompt = '';
+
+  window.aiHelp = function(key) {
+    var section = SECTIONS[key];
+    if (!section) { console.warn('Unknown AI section: ' + key); return; }
+    currentSection = section;
+    var D = gatherContext();
+    currentPrompt = section.buildPrompt(D);
+
+    document.getElementById('ai-modal-title').textContent = 'Draft with AI - ' + section.label;
+    document.getElementById('ai-prompt-preview').textContent = currentPrompt;
+    document.getElementById('ai-output').value = '';
+    var st = document.getElementById('ai-status');
+    st.textContent = '';
+    st.classList.remove('err');
+    document.getElementById('ai-generate-btn').disabled = false;
+    document.getElementById('ai-insert-btn').disabled = true;
+
+    var appendDefault = (section.type === 'rows');
+    document.querySelector('input[name="ai-mode"][value="replace"]').checked = !appendDefault;
+    document.querySelector('input[name="ai-mode"][value="append"]').checked  = appendDefault;
+
+    document.getElementById('ai-modal').classList.add('open');
+  };
+
+  window.aiClose = function() {
+    document.getElementById('ai-modal').classList.remove('open');
+  };
+
+  window.aiGenerate = async function() {
+    if (!currentSection) return;
+    var status = document.getElementById('ai-status');
+    var btn = document.getElementById('ai-generate-btn');
+    var out = document.getElementById('ai-output');
+
+    if (!AI_WORKER_URL || AI_WORKER_URL === 'YOUR_WORKER_URL_HERE') {
+      status.textContent = 'AI is not yet configured. Site admin: paste your Cloudflare Worker URL into AI_WORKER_URL near the top of the AI script block.';
+      status.classList.add('err');
+      return;
+    }
+
+    btn.disabled = true;
+    status.classList.remove('err');
+    status.textContent = 'Generating draft...';
+    out.value = '';
+
+    try {
+      var res = await fetch(AI_WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: currentPrompt })
+      });
+      var data = {};
+      try { data = await res.json(); } catch (e) {}
+      if (!res.ok) {
+        status.textContent = 'Error: ' + (data.error || ('HTTP ' + res.status));
+        status.classList.add('err');
+        btn.disabled = false;
+        return;
+      }
+      out.value = data.text || '';
+      status.textContent = 'Draft ready. Review and edit before inserting.';
+      document.getElementById('ai-insert-btn').disabled = false;
+      btn.disabled = false;
+    } catch (e) {
+      status.textContent = 'Network error: ' + String(e);
+      status.classList.add('err');
+      btn.disabled = false;
+    }
+  };
+
+  window.aiInsert = function() {
+    if (!currentSection) return;
+    var text = (document.getElementById('ai-output').value || '').trim();
+    if (!text) return;
+    var mode = (document.querySelector('input[name="ai-mode"]:checked') || {}).value || 'replace';
+
+    if (currentSection.type === 'textarea') {
+      var t = document.getElementById(currentSection.targetId);
+      if (!t) return;
+      if (mode === 'replace') {
+        t.value = text;
+      } else {
+        t.value = (t.value.trim() ? t.value.trim() + '\n\n' : '') + text;
+      }
+      t.classList.remove('prefilled', 'from-ollie');
+      t.dispatchEvent(new Event('input'));
+    } else if (currentSection.type === 'rows') {
+      var listId = currentSection.targetId;
+      var list = document.getElementById(listId);
+      if (!list) return;
+      if (mode === 'replace') list.innerHTML = '';
+      var rawLines = text.split('\n');
+      var cleaned = [];
+      for (var i = 0; i < rawLines.length; i++) {
+        var s = rawLines[i].replace(/^[\-\*\d+\.\)\s]+/, '').trim();
+        if (s) cleaned.push(s);
+      }
+      if (typeof window.addDynRow === 'function') {
+        for (var j = 0; j < cleaned.length; j++) {
+          window.addDynRow(listId, '', false);
+          var inputs = list.querySelectorAll('input[type="text"], textarea');
+          if (inputs.length) inputs[inputs.length - 1].value = cleaned[j];
+        }
+      }
+    }
+    aiClose();
+  };
+})();
+</script>
+
 <script src="player.js"></script>
 </body>
 </html>
