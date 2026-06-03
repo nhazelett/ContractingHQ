@@ -109,7 +109,7 @@
     font-weight: 700;
     color: #4a9eff;
     margin-bottom: 4px;
-    letter-spacing: -.01em;
+    letter-spacing: 0;
   }
   .step-sub {
     font-size: 12px;
@@ -793,6 +793,979 @@
   /* BMC button */
   .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
 </style>
+<style>
+  body.pws-builder-page {
+    --pws-bg: #07111f;
+    --pws-ink: #e9f0f8;
+    --pws-muted: #9aaec4;
+    --pws-panel: rgba(10, 22, 40, 0.92);
+    --pws-panel-2: rgba(12, 29, 48, 0.96);
+    --pws-line: rgba(150, 185, 220, 0.18);
+    --pws-line-strong: rgba(87, 191, 220, 0.38);
+    --pws-cyan: #57bfdc;
+    --pws-teal: #59d6c7;
+    --pws-gold: #f3c765;
+    --pws-green: #5fd08f;
+    --pws-red: #ef6f6c;
+    --pws-radius: 8px;
+    background:
+      linear-gradient(180deg, rgba(7,17,31,0.98), rgba(7,17,31,1) 430px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 96px),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.024) 0 1px, transparent 1px 72px);
+    color: var(--pws-ink);
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  body.pws-builder-page * {
+    letter-spacing: 0;
+  }
+
+  body.pws-builder-page .navbar {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  body.pws-builder-page .nav-inner {
+    max-width: 1180px;
+  }
+
+  #app-header {
+    position: relative;
+    top: auto;
+    z-index: 1;
+    max-width: 1180px;
+    margin: 2rem auto 0;
+    padding: 1.35rem;
+    border: 1px solid rgba(87,191,220,0.28);
+    border-radius: var(--pws-radius);
+    background:
+      linear-gradient(135deg, rgba(10,23,42,0.97), rgba(13,45,58,0.95)),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 34px);
+    box-shadow: 0 22px 60px rgba(0,0,0,0.34);
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 1.25rem;
+    color: var(--pws-ink);
+  }
+
+  #app-header::after {
+    content: "";
+    position: absolute;
+    inset: auto 1.35rem 0;
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--pws-cyan), var(--pws-gold), var(--pws-teal));
+  }
+
+  .pws-hero-copy {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  #app-header .shield {
+    width: 58px;
+    height: 58px;
+    clip-path: none;
+    border-radius: var(--pws-radius);
+    background:
+      linear-gradient(145deg, rgba(243,199,101,0.94), rgba(89,214,199,0.78));
+    color: #06111c;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.38);
+    font-family: Rajdhani, Inter, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+  }
+
+  #app-header .pws-eyebrow {
+    margin: 0 0 0.15rem;
+    color: var(--pws-teal);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  #app-header h1 {
+    margin: 0;
+    color: #ffffff;
+    font-family: Rajdhani, Inter, sans-serif;
+    font-size: 2rem;
+    line-height: 1;
+    font-weight: 800;
+  }
+
+  #app-header p {
+    margin: 0.35rem 0 0;
+    max-width: 560px;
+    color: #b9c9da;
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
+  .pws-hero-panel {
+    min-width: 400px;
+    display: grid;
+    grid-template-columns: minmax(190px, 1.35fr) minmax(130px, 0.8fr);
+    gap: 0.65rem;
+    align-items: stretch;
+  }
+
+  .pws-hero-stat {
+    min-height: 84px;
+    padding: 0.85rem 0.75rem;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--pws-radius);
+    background: rgba(255,255,255,0.055);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.18rem;
+  }
+
+  .pws-hero-stat-ai {
+    border-color: rgba(89,214,199,0.42);
+    background:
+      linear-gradient(135deg, rgba(89,214,199,0.22), rgba(243,199,101,0.12)),
+      rgba(255,255,255,0.055);
+  }
+
+  .pws-hero-stat.pws-hero-stat-ai span {
+    color: #dffef8;
+    font-size: 1.4rem;
+  }
+
+  .pws-hero-stat span {
+    color: #ffffff;
+    font-family: Rajdhani, Inter, sans-serif;
+    font-size: 1.55rem;
+    line-height: 1;
+    font-weight: 800;
+  }
+
+  .pws-hero-stat strong {
+    color: #aebfd1;
+    font-size: 0.76rem;
+    line-height: 1.2;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .tool-safety-note {
+    max-width: 1180px;
+    margin: 0.85rem auto 0;
+    padding: 0.78rem 1rem;
+    border: 1px solid rgba(243,199,101,0.34);
+    border-left: 3px solid var(--pws-gold);
+    border-radius: var(--pws-radius);
+    background: rgba(243,199,101,0.08);
+    color: #e7d6a4;
+    font-size: 0.86rem;
+    line-height: 1.45;
+  }
+
+  .tool-safety-note strong {
+    color: #fff1bf;
+  }
+
+  #progress-wrap {
+    position: sticky;
+    top: 64px;
+    z-index: 80;
+    max-width: 1180px;
+    margin: 1rem auto 0;
+    padding: 0.5rem;
+    border: 1px solid rgba(87,191,220,0.18);
+    border-radius: var(--pws-radius);
+    background: rgba(5, 12, 24, 0.9);
+    backdrop-filter: blur(12px);
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.35rem;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.26);
+  }
+
+  .prog-step {
+    min-height: 48px;
+    padding: 0.72rem 0.55rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.035);
+    color: #879bb0;
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: none;
+    white-space: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.18;
+  }
+
+  .prog-step.active {
+    color: #06111c;
+    background: linear-gradient(180deg, var(--pws-gold), #e7b550);
+    border-color: rgba(255,231,169,0.8);
+    box-shadow: 0 8px 20px rgba(243,199,101,0.16);
+  }
+
+  .prog-step.done {
+    color: #d9fff7;
+    background: rgba(89,214,199,0.14);
+    border-color: rgba(89,214,199,0.34);
+  }
+
+  #main {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 1.25rem 1rem 5rem;
+  }
+
+  .step-panel {
+    border: 1px solid var(--pws-line);
+    border-radius: var(--pws-radius);
+    background: rgba(8, 18, 34, 0.7);
+    box-shadow: 0 18px 54px rgba(0,0,0,0.24);
+    padding: 1.25rem;
+  }
+
+  .step-panel.active {
+    animation: pwsFade 0.22s ease;
+  }
+
+  @keyframes pwsFade {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .step-title {
+    color: #ffffff;
+    font-family: Rajdhani, Inter, sans-serif;
+    font-size: 1.55rem;
+    line-height: 1.05;
+    font-weight: 800;
+    margin: 0;
+  }
+
+  .step-sub {
+    color: var(--pws-muted);
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    margin: 0.3rem 0 1.2rem;
+    text-transform: none;
+  }
+
+  .card-group {
+    margin-bottom: 1rem;
+    padding: 1.1rem;
+    border: 1px solid rgba(150,185,220,0.2);
+    border-radius: var(--pws-radius);
+    background: rgba(246, 249, 252, 0.98);
+    color: #162233;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  }
+
+  .card-group h3 {
+    margin: 0 0 0.95rem;
+    padding: 0 0 0.72rem;
+    border-bottom: 1px solid rgba(34, 62, 92, 0.12);
+    color: #0b3856;
+    font-family: Rajdhani, Inter, sans-serif;
+    font-size: 1.08rem;
+    line-height: 1.15;
+    font-weight: 800;
+    text-transform: none;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .form-grid {
+    gap: 1rem;
+    margin-top: 0.8rem;
+  }
+
+  .form-grid:first-child {
+    margin-top: 0;
+  }
+
+  .field {
+    gap: 0.42rem;
+  }
+
+  .field > label,
+  .card-group .field > label {
+    color: #28415c;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.38rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    line-height: 1.25;
+    text-transform: none;
+  }
+
+  label .hint {
+    margin-left: 0;
+    color: #64758a;
+    font-size: 0.75rem;
+  }
+
+  label .req {
+    color: var(--pws-red);
+  }
+
+  input[type=text],
+  input[type=date],
+  input[type=number],
+  select,
+  textarea {
+    min-height: 42px;
+    padding: 0.7rem 0.78rem;
+    border: 1px solid rgba(40, 65, 92, 0.22);
+    border-radius: 7px;
+    background: #ffffff;
+    color: #132235;
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.48;
+    box-shadow: inset 0 1px 0 rgba(10, 22, 40, 0.04);
+  }
+
+  textarea {
+    min-height: 110px;
+  }
+
+  textarea.tall {
+    min-height: 150px;
+  }
+
+  textarea.xtall {
+    min-height: 210px;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: #2283b2;
+    box-shadow: 0 0 0 3px rgba(87,191,220,0.22);
+  }
+
+  input.prefilled,
+  textarea.prefilled {
+    background: #fff9e8;
+    border-color: rgba(210,159,57,0.55);
+  }
+
+  input.from-ollie,
+  textarea.from-ollie,
+  select.from-ollie {
+    border-left: 4px solid var(--pws-cyan) !important;
+    background: #eefcff;
+  }
+
+  .prefill-note {
+    color: #8a6616;
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 0.75rem;
+  }
+
+  .tile-row {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .tile {
+    min-height: 138px;
+    padding: 1rem;
+    border: 1px solid rgba(150,185,220,0.24);
+    border-radius: var(--pws-radius);
+    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(239,246,250,0.98));
+    color: #162233;
+    text-align: left;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .tile:hover {
+    transform: translateY(-2px);
+    border-color: rgba(87,191,220,0.6);
+    background: #ffffff;
+  }
+
+  .tile.selected {
+    border-color: rgba(243,199,101,0.92);
+    background: linear-gradient(180deg, #12324b, #0b2439);
+    color: #ffffff;
+    box-shadow: 0 16px 38px rgba(0,0,0,0.28), inset 0 0 0 1px rgba(255,255,255,0.08);
+  }
+
+  .tile .tile-icon {
+    width: 42px;
+    height: 42px;
+    margin: 0 0 0.65rem;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(87,191,220,0.12);
+    color: #0b3856;
+    font-size: 1.25rem;
+  }
+
+  .tile.selected .tile-icon {
+    background: rgba(243,199,101,0.18);
+    color: #ffffff;
+  }
+
+  .tile .tile-label {
+    color: #0b3856;
+    font-family: Rajdhani, Inter, sans-serif;
+    font-size: 1.03rem;
+    font-weight: 800;
+    text-transform: none;
+  }
+
+  .tile .tile-sub {
+    margin-top: 0.32rem;
+    color: #5d7189;
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+
+  .tile.selected .tile-label,
+  .tile.selected .tile-sub {
+    color: #ffffff;
+  }
+
+  .check-grid {
+    gap: 0.7rem;
+  }
+
+  .check-item {
+    min-height: 46px;
+    align-items: center;
+    padding: 0.72rem 0.78rem;
+    border: 1px solid rgba(40,65,92,0.18);
+    border-radius: 7px;
+    color: #22364d;
+    background: #ffffff;
+    font-size: 0.86rem;
+  }
+
+  .check-item:hover,
+  .check-item.checked {
+    background: #eefcff;
+    border-color: rgba(87,191,220,0.48);
+  }
+
+  .section-divider {
+    color: var(--pws-gold);
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 0.78rem;
+    text-transform: none;
+    margin: 1.3rem 0 0.8rem;
+  }
+
+  .section-divider::after {
+    background: rgba(243,199,101,0.34);
+  }
+
+  .alert {
+    padding: 0.82rem 0.95rem;
+    border-radius: var(--pws-radius);
+    border-left-width: 3px;
+    font-size: 0.86rem;
+    line-height: 1.52;
+  }
+
+  .alert-info {
+    background: rgba(87,191,220,0.12);
+    border-color: var(--pws-cyan);
+    color: #d8f8ff;
+  }
+
+  .alert-info code {
+    color: #163148;
+  }
+
+  .alert-warn {
+    background: rgba(243,199,101,0.14);
+    border-color: var(--pws-gold);
+    color: #ffe5a3;
+  }
+
+  .alert-good {
+    background: rgba(95,208,143,0.13);
+    border-color: var(--pws-green);
+    color: #cef9df;
+  }
+
+  .card-group .alert,
+  .step-panel .card-group .alert-warn,
+  .step-panel .card-group .alert-good {
+    color: #445468;
+  }
+
+  .ollie-handoff-banner {
+    padding: 1rem;
+    border: 1px solid rgba(87,191,220,0.35);
+    border-left: 3px solid var(--pws-cyan);
+    border-radius: var(--pws-radius);
+    background: rgba(87,191,220,0.1);
+    color: #cdeef8;
+  }
+
+  .ollie-handoff-banner h4 {
+    color: #ffffff;
+    font-family: Rajdhani, Inter, sans-serif;
+    font-size: 1.02rem;
+  }
+
+  .ollie-handoff-banner p {
+    color: #bed1e4;
+    font-size: 0.86rem;
+  }
+
+  .ollie-handoff-banner .ollie-actions {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .ollie-handoff-banner button,
+  .btn {
+    min-height: 40px;
+    border-radius: 7px;
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: none;
+  }
+
+  .btn-row {
+    gap: 0.65rem;
+    margin-top: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 0.72rem 1.1rem;
+    border: 1px solid transparent;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+  }
+
+  .btn-primary {
+    background: linear-gradient(180deg, #57bfdc, #2788b0);
+    color: #06111c;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(180deg, #72d7ea, #35a2ca);
+  }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.92);
+    color: #22364d;
+    border-color: rgba(40,65,92,0.2);
+  }
+
+  .btn-secondary:hover {
+    background: #ffffff;
+  }
+
+  .btn-gold {
+    background: linear-gradient(180deg, var(--pws-gold), #d59d39);
+    color: #06111c;
+  }
+
+  .btn-gold:hover {
+    background: linear-gradient(180deg, #ffe19a, #e9b34e);
+  }
+
+  .btn-green {
+    background: linear-gradient(180deg, var(--pws-green), #2f9e68);
+    color: #06111c;
+  }
+
+  .btn-danger {
+    background: var(--pws-red);
+    color: #ffffff;
+  }
+
+  .ai-btn {
+    min-height: 36px;
+    margin-left: auto;
+    padding: 0.5rem 0.85rem;
+    border: 1px solid rgba(4,83,100,0.18);
+    border-radius: 7px;
+    background: linear-gradient(180deg, #9ff7e8, #57bfdc);
+    color: #06111c;
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: none;
+    box-shadow: 0 8px 18px rgba(87,191,220,0.24);
+  }
+
+  .ai-btn:hover {
+    background: linear-gradient(180deg, #b7fff3, #71d6eb);
+    border-color: rgba(4,83,100,0.28);
+    color: #06111c;
+    transform: translateY(-1px);
+  }
+
+  .ai-btn::before {
+    content: "AI";
+    width: 24px;
+    height: 20px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(6,17,28,0.12);
+    font-size: 0.68rem;
+  }
+
+  h3 .ai-btn {
+    font-size: 0.78rem;
+    float: none;
+    margin-top: 0;
+    margin-left: auto;
+  }
+
+  .section-divider .ai-btn {
+    margin-left: 0.35rem;
+  }
+
+  .dyn-row {
+    gap: 0.6rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .dyn-row .rm-btn {
+    min-width: 42px;
+    min-height: 42px;
+    border-radius: 7px;
+    border-color: rgba(239,111,108,0.3);
+    background: #fff1f1;
+    color: #b83036;
+  }
+
+  .dyn-row .rm-btn:hover {
+    background: #ffe0e0;
+  }
+
+  .add-row-btn {
+    min-height: 38px;
+    padding: 0.55rem 0.85rem;
+    border: 1px dashed rgba(87,191,220,0.62);
+    border-radius: 7px;
+    background: rgba(87,191,220,0.08);
+    color: #0b6680;
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: none;
+  }
+
+  .add-row-btn:hover {
+    background: rgba(87,191,220,0.16);
+  }
+
+  #review-content table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 7px;
+  }
+
+  #review-content th {
+    background: #12324b;
+    color: #ffffff;
+    padding: 0.65rem 0.75rem;
+    text-align: left;
+  }
+
+  #review-content td {
+    border: 1px solid rgba(40,65,92,0.12);
+    padding: 0.65rem 0.75rem;
+  }
+
+  #pws-output-wrap {
+    margin-top: 1rem;
+  }
+
+  #pws-toolbar {
+    top: 132px;
+    overflow: hidden;
+    border: 1px solid rgba(87,191,220,0.2);
+    border-radius: var(--pws-radius) var(--pws-radius) 0 0;
+    background: #091526;
+    box-shadow: 0 18px 46px rgba(0,0,0,0.3);
+  }
+
+  #pws-toolbar-top {
+    gap: 0.45rem;
+    padding: 0.7rem;
+  }
+
+  #pws-toolbar-top span.doc-label {
+    color: #c9d7e6;
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .tb-sep {
+    background: rgba(255,255,255,0.12);
+  }
+
+  .tb-btn {
+    min-height: 31px;
+    border-radius: 6px;
+    color: #dce8f4;
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.12);
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+
+  .tb-btn:hover,
+  .tb-btn.active {
+    background: rgba(87,191,220,0.18);
+    border-color: rgba(87,191,220,0.38);
+    color: #ffffff;
+  }
+
+  .tb-btn.green {
+    background: rgba(95,208,143,0.18);
+    border-color: rgba(95,208,143,0.38);
+    color: #dfffee;
+  }
+
+  .tb-btn.gold {
+    background: rgba(243,199,101,0.2);
+    border-color: rgba(243,199,101,0.42);
+    color: #ffe5a3;
+  }
+
+  #find-bar,
+  #section-nav,
+  #editor-status {
+    background: #0d1d30;
+    border-color: rgba(255,255,255,0.08);
+  }
+
+  #find-bar input {
+    min-height: 34px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.08);
+    color: #ffffff;
+  }
+
+  .nav-pill {
+    min-height: 28px;
+    padding: 0.35rem 0.62rem;
+    border-radius: 999px;
+    font-family: Inter, system-ui, sans-serif;
+  }
+
+  #editor-status {
+    min-height: 34px;
+    color: #8da3b9;
+    font-family: Inter, system-ui, sans-serif;
+  }
+
+  #editor-status span {
+    color: #bed0e2;
+  }
+
+  #pws-document {
+    border: 1px solid rgba(150,185,220,0.2);
+    border-top: none;
+    border-radius: 0 0 var(--pws-radius) var(--pws-radius);
+    padding: 3rem;
+    box-shadow: 0 22px 60px rgba(0,0,0,0.32);
+  }
+
+  #ai-modal {
+    background: rgba(2, 8, 16, 0.72);
+    backdrop-filter: blur(8px);
+  }
+
+  #ai-modal .ai-modal-box {
+    border: 1px solid rgba(87,191,220,0.28);
+    border-radius: var(--pws-radius);
+    background: #f8fbfd;
+    box-shadow: 0 28px 80px rgba(0,0,0,0.42);
+  }
+
+  #ai-modal h3 {
+    color: #0b3856;
+    font-family: Rajdhani, Inter, sans-serif;
+    font-size: 1.45rem;
+  }
+
+  #ai-modal .ai-sub,
+  #ai-modal details summary {
+    color: #236780;
+    font-family: Inter, system-ui, sans-serif;
+    text-transform: none;
+  }
+
+  #ai-modal .ai-warn {
+    border-radius: 7px;
+  }
+
+  #ai-modal details pre {
+    border-radius: 7px;
+    background: #eaf1f6;
+  }
+
+  #ai-modal textarea {
+    border-radius: 7px;
+    font-family: Inter, system-ui, sans-serif;
+  }
+
+  @media (max-width: 960px) {
+    #app-header {
+      margin: 1rem 1rem 0;
+      flex-direction: column;
+    }
+
+    .pws-hero-panel {
+      min-width: 0;
+    }
+
+    #progress-wrap {
+      margin-inline: 1rem;
+      grid-template-columns: repeat(7, minmax(120px, 1fr));
+      overflow-x: auto;
+    }
+
+    #main {
+      padding-inline: 1rem;
+    }
+
+    .form-grid,
+    .form-grid.triple {
+      grid-template-columns: 1fr;
+    }
+
+    .field.span2,
+    .field.span3 {
+      grid-column: span 1;
+    }
+  }
+
+  @media (max-width: 680px) {
+    #app-header {
+      padding: 1rem;
+    }
+
+    .pws-hero-copy {
+      align-items: flex-start;
+    }
+
+    #app-header .shield {
+      width: 48px;
+      height: 48px;
+      font-size: 0.95rem;
+    }
+
+    #app-header h1 {
+      font-size: 1.45rem;
+      line-height: 1.08;
+    }
+
+    #app-header p {
+      font-size: 0.86rem;
+    }
+
+    .pws-hero-panel {
+      grid-template-columns: 1fr;
+      gap: 0.45rem;
+    }
+
+    .pws-hero-stat {
+      min-height: 58px;
+      padding: 0.62rem 0.45rem;
+    }
+
+    .pws-hero-stat span {
+      font-size: 1.15rem;
+    }
+
+    .pws-hero-stat strong {
+      font-size: 0.63rem;
+    }
+
+    .tool-safety-note {
+      margin-inline: 1rem;
+    }
+
+    .step-panel,
+    .card-group {
+      padding: 0.9rem;
+    }
+
+    .tile-row {
+      grid-template-columns: 1fr;
+    }
+
+    .tile {
+      min-height: 120px;
+    }
+
+    .check-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .dyn-row {
+      flex-direction: column;
+    }
+
+    .dyn-row input,
+    .dyn-row textarea,
+    .dyn-row .rm-btn {
+      width: 100% !important;
+    }
+
+    .btn-row {
+      justify-content: stretch;
+    }
+
+    .btn-row .btn {
+      flex: 1 1 auto;
+    }
+
+    #pws-toolbar {
+      top: 118px;
+    }
+
+    #pws-document {
+      padding: 1.3rem;
+      font-size: 12px;
+    }
+
+    #ai-modal {
+      padding: 1rem;
+    }
+
+    #ai-modal .ai-modal-box {
+      padding: 1rem;
+    }
+  }
+</style>
 
   <!-- SEO: Open Graph & Twitter Card -->
   <meta property="og:type"        content="website" />
@@ -832,7 +1805,7 @@
 }
   </script>
 </head>
-<body>
+<body class="pws-builder-page">
 
 <!-- KTHQ SITE NAV -->
 <nav class="navbar" id="navbar">
@@ -858,14 +1831,27 @@
 </nav>
 
 <div id="app-header">
-  <div class="shield">PWS</div>
-  <div>
-    <h1>PWS BUILDER</h1>
-    <p>PERFORMANCE WORK STATEMENT &middot; STEP-BY-STEP WIZARD</p>
+  <div class="pws-hero-copy">
+    <div class="shield">PWS</div>
+    <div>
+      <div class="pws-eyebrow">AI-assisted acquisition workspace</div>
+      <h1>Performance Work Statement Builder</h1>
+      <p>Build a cleaner PWS with guided sections and AI drafting support right where you need it.</p>
+    </div>
+  </div>
+  <div class="pws-hero-panel" aria-label="Builder status">
+    <div class="pws-hero-stat pws-hero-stat-ai">
+      <span>AI Drafting</span>
+      <strong>built into key fields</strong>
+    </div>
+    <div class="pws-hero-stat">
+      <span>7</span>
+      <strong>guided passes</strong>
+    </div>
   </div>
 </div>
 
-<div style="max-width:1100px;margin:0.7rem auto 0;padding:0 1rem;font-size:0.72rem;color:#a4b1c4;font-family:'Inter',system-ui,sans-serif;font-style:italic;">Note: Don't enter CUI or other sensitive information &mdash; ContractingHQ is hosted on public infrastructure and isn't authorized for protected data.</div>
+<div class="tool-safety-note"><strong>Public tool:</strong> Do not enter CUI, source selection material, proposal information, classified data, or anything your organization would not allow on public infrastructure.</div>
 
 <div id="progress-wrap">
   <div class="prog-step active" id="prog-0">1 · Contract Type</div>
@@ -953,11 +1939,11 @@
     <div class="form-grid">
       <div class="field">
         <label>Requiring Activity / Unit<span class="req">*</span></label>
-        <input type="text" id="requiring_activity" value="386 ESFS / 386 ABW/CE">
+        <input type="text" id="requiring_activity" value="Example Requiring Activity / Unit">
       </div>
       <div class="field">
         <label>Contracting Office<span class="req">*</span></label>
-        <input type="text" id="contracting_office" placeholder="e.g., 386 ECONS, Camp Arifjan">
+        <input type="text" id="contracting_office" placeholder="e.g., Installation Contracting Office">
       </div>
     </div>
   </div>
@@ -967,13 +1953,13 @@
     <div class="form-grid single">
       <div class="field">
         <label>Official Contract Title<span class="req">*</span></label>
-        <input type="text" id="contract_title" value="Base Life Support — Dining Facility Operations, Ali Al Salem AB, Kuwait">
+        <input type="text" id="contract_title" value="Facility Operations Support Services">
       </div>
     </div>
     <div class="form-grid single">
       <div class="field">
         <label>Purpose / Mission Need Statement<span class="req">*</span><span class="hint">1–3 sentences: why is this contract needed?</span><button type="button" class="ai-btn" onclick="aiHelp('mission_need')">Draft with AI</button></label>
-        <textarea id="mission_need" class="tall">The 386th Air Expeditionary Wing requires contractor support to operate the Ali Al Salem Air Base dining facility (DFAC) in order to sustain mission readiness of assigned and transient forces. The unit lacks sufficient organic military manpower to perform this function on a continuous basis. Contractor support is essential to maintain uninterrupted dining operations and sustain force readiness in this contingency environment.</textarea>
+        <textarea id="mission_need" class="tall">The requiring activity needs contractor support to perform mission-essential services that cannot be fully performed with available government resources. Contractor support is necessary to maintain continuity of operations, meet customer requirements, and support the mission without interruption.</textarea>
       </div>
     </div>
   </div>
@@ -983,13 +1969,13 @@
     <div class="form-grid">
       <div class="field">
         <label>Installation / Location<span class="req">*</span></label>
-        <input type="text" id="installation" value="Ali Al Salem Air Base, Kuwait">
+        <input type="text" id="installation" value="Primary Installation / Work Site">
       </div>
     </div>
     <div class="form-grid single">
       <div class="field">
-        <label>Background / Operational Context<span class="hint">history, current situation, why OCONUS CCO is acquiring</span><button type="button" class="ai-btn" onclick="aiHelp('background')">Draft with AI</button></label>
-        <textarea id="background" class="tall">Ali Al Salem Air Base, Kuwait is a primary staging and throughput installation supporting U.S. Air Force operations throughout the USCENTCOM Area of Responsibility (AOR). The installation supports rotational and transient forces and serves as a critical logistics hub for theater operations. The current contract for dining facility operations expires on [EXPIRATION DATE], necessitating a new competitive acquisition to ensure continuity of services. The DFAC serves an average of [NUMBER] personnel per day across three meal periods. This requirement has been reviewed and validated by the Requiring Activity and approved through appropriate resource authority.</textarea>
+        <label>Background / Operational Context<span class="hint">history, current situation, why this requirement is needed</span><button type="button" class="ai-btn" onclick="aiHelp('background')">Draft with AI</button></label>
+        <textarea id="background" class="tall">The requiring activity supports mission operations at the primary work site and must maintain reliable service delivery for assigned customers and supported organizations. The current support arrangement expires on [EXPIRATION DATE], requiring a new acquisition to ensure continuity of services. This requirement has been reviewed and validated by the requiring activity and approved through the appropriate resource authority.</textarea>
       </div>
     </div>
   </div>
@@ -1015,7 +2001,7 @@
       <div class="form-grid single">
         <div class="field">
           <label>Overall Scope Statement<span class="req">*</span><button type="button" class="ai-btn" onclick="aiHelp('svc_scope')">Draft with AI</button></label>
-          <textarea id="svc_scope" class="xtall">The contractor shall provide all personnel, equipment, tools, materials, supervision, and other items and non-personal services necessary to operate and maintain the dining facility (DFAC) at Ali Al Salem Air Base, Kuwait. Services shall be performed on a continuous, uninterrupted basis in accordance with this PWS, Air Force Manual (AFMAN) 34-239, Food Service Management Program, applicable DoD food service standards, and all applicable laws and regulations. The contractor is solely responsible for the quality, adequacy, and legality of all services rendered under this contract.</textarea>
+          <textarea id="svc_scope" class="xtall">The contractor shall provide all personnel, equipment, tools, materials, supervision, and other items and non-personal services necessary to perform the services described in this PWS at the primary work site and any authorized alternate locations. Services shall be performed in accordance with this PWS, applicable federal, agency, installation, state, local, and industry standards. The contractor is solely responsible for the quality, adequacy, and legality of all services rendered under this contract.</textarea>
         </div>
       </div>
     </div>
@@ -1047,13 +2033,13 @@
 
   <!-- CONSTRUCTION -->
   <div id="req-construction" class="req-section" style="display:none">
-    <div class="alert alert-warn">Construction PWS must define the END STATE, not the HOW. Reference applicable UFC, AFMAN, and host nation standards. Attach drawings and specs separately.</div>
+    <div class="alert alert-warn">Construction PWS must define the END STATE, not the HOW. Reference applicable UFC, agency, facility, and local standards. Attach drawings and specs separately.</div>
     <div class="card-group">
       <h3>Project Description &amp; Scope</h3>
       <div class="form-grid single">
         <div class="field">
           <label>Project Scope Statement<span class="req">*</span><button type="button" class="ai-btn" onclick="aiHelp('con_scope')">Draft with AI</button></label>
-          <textarea id="con_scope" class="xtall">The contractor shall provide all labor, materials, equipment, tools, transportation, and supervision required to construct [DESCRIBE FACILITY] at [LOCATION], Ali Al Salem Air Base, Kuwait. All work shall be completed in accordance with this PWS, applicable Unified Facilities Criteria (UFC), AFMAN 32-1084, and all applicable host nation laws and agreements. The contractor shall obtain all required permits and approvals prior to commencing construction. Work shall be performed without interruption to ongoing installation operations unless specifically authorized in writing by the Contracting Officer.</textarea>
+          <textarea id="con_scope" class="xtall">The contractor shall provide all labor, materials, equipment, tools, transportation, and supervision required to construct [DESCRIBE FACILITY] at [LOCATION]. All work shall be completed in accordance with this PWS, applicable Unified Facilities Criteria (UFC), agency standards, approved plans and specifications, and all applicable laws and regulations. The contractor shall obtain all required permits and approvals prior to commencing construction. Work shall be performed without interruption to ongoing operations unless specifically authorized in writing by the Contracting Officer.</textarea>
         </div>
       </div>
       <div class="form-grid triple">
@@ -1185,7 +2171,7 @@
       <div class="form-grid single">
         <div class="field">
           <label>Overall Scope Statement<span class="req">*</span><button type="button" class="ai-btn" onclick="aiHelp('med_scope')">Draft with AI</button></label>
-          <textarea id="med_scope" class="xtall">The contractor shall provide qualified medical personnel, equipment, pharmaceuticals, and support services necessary to deliver [DESCRIBE MEDICAL SERVICES — e.g., primary care, dental, laboratory] in support of [UNIT/INSTALLATION] at [LOCATION]. All services shall be performed in accordance with applicable DoD and Air Force Medical Service standards, DODI 6025.13, Medical Quality Assurance, applicable host nation medical regulations, and applicable U.S. medical licensing and credentialing requirements. The contractor shall maintain all required licenses, certifications, and accreditations for the duration of the contract.</textarea>
+          <textarea id="med_scope" class="xtall">The contractor shall provide qualified medical personnel, equipment, pharmaceuticals, and support services necessary to deliver [DESCRIBE MEDICAL SERVICES - e.g., primary care, dental, laboratory] in support of [UNIT/INSTALLATION] at [LOCATION]. All services shall be performed in accordance with applicable agency medical standards, DODI 6025.13, Medical Quality Assurance, applicable jurisdictional medical regulations, and applicable licensing and credentialing requirements. The contractor shall maintain all required licenses, certifications, and accreditations for the duration of the contract.</textarea>
         </div>
       </div>
     </div>
@@ -1212,7 +2198,7 @@
       <div class="form-grid single">
         <div class="field">
           <label>Overall Scope Statement<span class="req">*</span><button type="button" class="ai-btn" onclick="aiHelp('bos_scope')">Draft with AI</button></label>
-          <textarea id="bos_scope" class="xtall">The contractor shall provide comprehensive base operations support services, including all personnel, equipment, materials, consumables, and management necessary to sustain the selected functions identified herein at Ali Al Salem Air Base, Kuwait. Services shall be provided continuously, 24 hours per day, 7 days per week, 365 days per year unless specific service windows are identified in individual task areas. The contractor shall maintain the installation operational readiness in support of an average population of [NUMBER] assigned and transient personnel. All services shall comply with applicable DoD, Air Force, and host nation standards and regulations.</textarea>
+          <textarea id="bos_scope" class="xtall">The contractor shall provide comprehensive base operations support services, including all personnel, equipment, materials, consumables, and management necessary to sustain the selected functions identified herein at the primary work site. Services shall be provided continuously, 24 hours per day, 7 days per week, 365 days per year unless specific service windows are identified in individual task areas. The contractor shall maintain operational readiness in support of an average population of [NUMBER] assigned and supported personnel. All services shall comply with applicable federal, agency, installation, state, local, and industry standards.</textarea>
         </div>
       </div>
     </div>
@@ -1260,17 +2246,17 @@
     <div class="form-grid single">
       <div class="field">
         <label>Primary Performance Location<span class="req">*</span></label>
-        <textarea id="perf_location">Primary place of performance is Ali Al Salem Air Base, Kuwait, within the USCENTCOM Area of Responsibility (AOR). The contractor may be required to support operations at secondary locations within the AOR as directed by the Contracting Officer with advance written authorization. The contractor shall be prepared to continue operations at alternate locations in the event of an emergency evacuation or relocation directive. All performance locations are subject to installation security and force protection requirements.</textarea>
+        <textarea id="perf_location">Primary place of performance is the work site identified in the contract and any authorized alternate locations approved in writing by the Contracting Officer. The contractor may be required to support secondary locations when directed by the Contracting Officer with advance written authorization. All performance locations are subject to applicable access, security, safety, and facility requirements.</textarea>
       </div>
     </div>
     <div class="form-grid">
       <div class="field">
         <label>Contractor Workspace / Facilities Provided<button type="button" class="ai-btn" onclick="aiHelp('workspace')">Draft with AI</button></label>
-        <textarea id="workspace">The government will provide contractor administrative workspace in [BUILDING/LOCATION], Ali Al Salem AB, to the extent available. No guarantee is made regarding the availability or permanence of any government-furnished workspace. The contractor is responsible for providing all tools, equipment, vehicles, office supplies, and communications necessary to perform this contract unless specifically identified as GFP/GFE in Section 5. The contractor may not modify government-provided workspace without prior written COR approval.</textarea>
+        <textarea id="workspace">The government will provide contractor administrative workspace in [BUILDING/LOCATION], to the extent available. No guarantee is made regarding the availability or permanence of any government-furnished workspace. The contractor is responsible for providing all tools, equipment, vehicles, office supplies, and communications necessary to perform this contract unless specifically identified as GFP/GFE in Section 5. The contractor may not modify government-provided workspace without prior written COR approval.</textarea>
       </div>
       <div class="field">
         <label>Travel Requirements<button type="button" class="ai-btn" onclick="aiHelp('travel_req')">Draft with AI</button></label>
-        <textarea id="travel_req">Contractor personnel may be required to travel within the USCENTCOM AOR in support of contract performance. All travel beyond the primary performance location shall require prior written approval from the COR. The contractor is responsible for coordinating and funding all travel unless government transportation is specifically authorized in writing. Contractor personnel traveling within the AOR shall comply with all theater convoy and movement requirements and applicable force protection directives.</textarea>
+        <textarea id="travel_req">Contractor personnel may be required to travel in support of contract performance. All travel beyond the primary performance location shall require prior written approval from the COR. The contractor is responsible for coordinating and funding all travel unless government transportation is specifically authorized in writing. Contractor personnel shall comply with all applicable travel, movement, safety, and security requirements.</textarea>
       </div>
     </div>
   </div>
@@ -1399,17 +2385,17 @@
     <div class="form-grid single" style="margin-top:10px">
       <div class="field">
         <label>Minimum Qualifications / Experience Requirements<button type="button" class="ai-btn" onclick="aiHelp('min_quals')">Draft with AI</button></label>
-        <textarea id="min_quals">All contractor personnel performing under this contract shall possess the qualifications, licenses, certifications, and experience required by applicable law, regulation, and professional standards for their assigned duties. At a minimum, all personnel shall: (1) be able to read, write, and communicate effectively in the English language; (2) possess any required professional licenses or certifications for their position; (3) have a minimum of [X] years of relevant experience in their field; and (4) be legally authorized to work in the United States (or applicable host nation, if performance is OCONUS). The contractor shall provide documentation of qualifications to the COR within five (5) days of any new personnel assignment.</textarea>
+        <textarea id="min_quals">All contractor personnel performing under this contract shall possess the qualifications, licenses, certifications, and experience required by applicable law, regulation, and professional standards for their assigned duties. At a minimum, all personnel shall: (1) be able to read, write, and communicate effectively in the English language; (2) possess any required professional licenses or certifications for their position; (3) have a minimum of [X] years of relevant experience in their field; and (4) be legally authorized to work in the place of performance. The contractor shall provide documentation of qualifications to the COR within five (5) days of any new personnel assignment.</textarea>
       </div>
     </div>
     <div class="form-grid">
       <div class="field">
         <label>Training Requirements<button type="button" class="ai-btn" onclick="aiHelp('training_req')">Draft with AI</button></label>
-        <textarea id="training_req">Contractor personnel shall complete all required training prior to commencing performance, including: (1) Anti-Terrorism (AT) Level I Awareness training (annual requirement); (2) theater-specific operational and safety briefings as required by the installation; (3) job-specific certifications required for the assigned function; and (4) any additional training required by the Contracting Officer or COR. The contractor is solely responsible for scheduling, funding, and documenting all required training. Training records shall be maintained and provided to the COR within two (2) business days upon request.</textarea>
+        <textarea id="training_req">Contractor personnel shall complete all required training prior to commencing performance, including: (1) Anti-Terrorism (AT) Level I Awareness training when required; (2) site-specific operational and safety briefings as required by the place of performance; (3) job-specific certifications required for the assigned function; and (4) any additional training required by the Contracting Officer or COR. The contractor is solely responsible for scheduling, funding, and documenting all required training. Training records shall be maintained and provided to the COR within two (2) business days upon request.</textarea>
       </div>
       <div class="field">
-        <label>OCONUS / Theater Entry Requirements<button type="button" class="ai-btn" onclick="aiHelp('oconus_req')">Draft with AI</button></label>
-        <textarea id="oconus_req">All contractor personnel performing in an overseas location under this contract shall comply with DFARS 252.225-7040. Prior to deployment, contractor personnel shall: (1) receive a government-issued Letter of Authorization (LOA); (2) meet theater medical and dental readiness standards; (3) complete all required theater inoculations and vaccinations; (4) be registered in the Synchronized Pre-deployment and Operational Tracker (SPOT) system; and (5) comply with all theater-specific entry requirements. The contractor is responsible for ensuring all personnel are deployment-ready prior to travel. Contractor personnel who fail to maintain deployment readiness may be removed from theater at the contractor expense. All personnel shall comply with applicable Rules for the Use of Force (RUF) and theater directives.</textarea>
+        <label>Site Access / Deployment Requirements<button type="button" class="ai-btn" onclick="aiHelp('oconus_req')">Draft with AI</button></label>
+        <textarea id="oconus_req">Contractor personnel shall comply with all site access, badging, credentialing, medical, training, and deployment requirements applicable to the place of performance. If performance requires travel, deployment, or overseas work, the contractor shall ensure personnel meet all entry, documentation, vaccination, authorization, and movement requirements before travel. The contractor is responsible for maintaining required documentation and ensuring personnel remain eligible to perform at the approved work location.</textarea>
       </div>
     </div>
   </div>
@@ -1423,7 +2409,7 @@
           <option value="escort">Escorted access only</option>
           <option value="badge">Contractor badge / installation pass required</option>
           <option value="cac">CAC required (long-term, >6 months)</option>
-          <option value="biometric">Biometric enrollment required (OCONUS)</option>
+          <option value="biometric">Biometric enrollment required</option>
         </select>
       </div>
       <div class="field">
@@ -1501,15 +2487,15 @@
     <div class="form-grid single">
       <div class="field">
         <label>Standard Applicable Documents <span class="hint">(auto-populated — remove inapplicable)</span><button type="button" class="ai-btn" onclick="aiHelp('applicable_docs')">Draft with AI</button></label>
-        <textarea id="applicable_docs" class="xtall">Federal Acquisition Regulation (FAR) — current edition
-Defense Federal Acquisition Regulation Supplement (DFARS) — current edition
-Agency-specific FAR Supplement (e.g., AFFARS, AFARS, NMCARS) — current edition
-Applicable agency instructions on contingency contracting
-DoD Instruction 3020.37, Continuation of Essential DoD Contractor Services During Crises
-DoD Instruction 5000.74, Defense Acquisition of Services
-DoD Instruction 3020.41, Operational Contract Support (OCS)
-DFARS 252.225-7040, Contractor Personnel Supporting U.S. Armed Forces Deployed OCONUS
-DFARS 252.225-7043, Antiterrorism/Force Protection Policy for Defense Contractors OCONUS</textarea>
+        <textarea id="applicable_docs" class="xtall">Federal Acquisition Regulation (FAR) - current edition
+Defense Federal Acquisition Regulation Supplement (DFARS) - current edition
+Agency-specific FAR Supplement (e.g., AFFARS, AFARS, NMCARS) - current edition
+FAR Part 37, Service Contracting
+FAR Subpart 37.6, Performance-Based Acquisition
+FAR Part 46, Quality Assurance
+Applicable agency acquisition instructions and local supplements
+Applicable installation, facility, safety, security, and access control policies
+Applicable wage determination / labor standards documents</textarea>
       </div>
     </div>
     <div class="form-grid single">
@@ -1562,7 +2548,7 @@ DFARS 252.225-7043, Antiterrorism/Force Protection Policy for Defense Contractor
   </div>
 
   <div class="alert alert-warn">
-    <strong>CCO NOTE:</strong> This tool generates an 80–95% solution based on your inputs. Review all <span style="color:#c0392b;font-weight:bold">[TBD]</span> placeholders before issuing. All regulatory citations are current as of FAC 2025-06. Verify current DFARS deviations with your theater contracting authority.
+    <strong>Review Note:</strong> This tool generates an 80-95% solution based on your inputs. Review all <span style="color:#c0392b;font-weight:bold">[TBD]</span> placeholders before issuing. All regulatory citations are current as of FAC 2025-06. Verify current deviations, agency supplements, and local policy before issuing.
   </div>
 
   <div class="btn-row">
@@ -1921,8 +2907,8 @@ function buildPWS() {
     keyPersonnel:   getKeyPersonnel(),
     clearanceReq:   v('clearance_req')||'no',
     minQuals:       v('min_quals')||'Contractor personnel shall possess the qualifications, licenses, and certifications required by applicable law, regulation, and professional standards for the services provided under this contract.',
-    trainingReq:    v('training_req')||'Contractor personnel shall complete all theater-required training prior to deployment, including Anti-Terrorism Level I awareness training. The contractor is responsible for maintaining and providing documentation of all required training records.',
-    oconusReq:      v('oconus_req')||'All contractor personnel performing under this contract in an overseas location shall obtain a Letter of Authorization (LOA) prior to deployment and shall comply with all requirements of DFARS 252.225-7040, including medical readiness, dental fitness, and required theater-specific inoculations.',
+    trainingReq:    v('training_req')||'Contractor personnel shall complete all site-required training prior to commencing performance, including Anti-Terrorism Level I awareness training when required. The contractor is responsible for maintaining and providing documentation of all required training records.',
+    oconusReq:      v('oconus_req')||'Contractor personnel shall comply with all site access, badging, credentialing, medical, training, and travel requirements applicable to the place of performance. The contractor is responsible for maintaining required documentation and ensuring personnel remain eligible to perform at the approved work location.',
     baseAccess:     v('base_access')||'badge',
     atfp:           v('atfp')||'standard',
     securityAdd:    v('security_add')||'',
@@ -2043,7 +3029,7 @@ function buildPWS() {
   function getATFPText() {
     switch(v('atfp')) {
       case 'enhanced': return 'The contractor shall prepare and submit an Antiterrorism/Force Protection (AT/FP) plan within 15 calendar days of contract award. The plan shall address threat awareness, emergency procedures, and reporting protocols. The AT/FP plan shall be reviewed and approved by the installation AT Officer prior to performance commencement.';
-      case 'convoy': return 'All contractor convoy and vehicle movement operations shall comply with theater-specific force protection convoy requirements. The contractor shall coordinate all convoy operations with the installation AT/FP officer and applicable theater movement control authority. Contractors shall not conduct vehicle movements in restricted areas without prior COR/CO approval.';
+      case 'convoy': return 'All contractor convoy and vehicle movement operations shall comply with applicable force protection and movement control requirements. The contractor shall coordinate all convoy operations with the installation AT/FP officer and applicable movement control authority. Contractors shall not conduct vehicle movements in restricted areas without prior COR/CO approval.';
       default: return 'The contractor shall comply with all DoD and installation antiterrorism and force protection (AT/FP) requirements in accordance with DFARS 252.225-7043. Contractor personnel shall receive and acknowledge AT/FP threat briefings prior to performance.';
     }
   }
@@ -2165,9 +3151,8 @@ function buildPWS() {
   <div class="pws-sub-hdr">5.3 Training Requirements</div>
   <p class="pws-body">${D.trainingReq}</p>
 
-  <div class="pws-sub-hdr">5.4 OCONUS / Theater Entry Requirements</div>
+  <div class="pws-sub-hdr">5.4 Site Access / Deployment Requirements</div>
   <p class="pws-body">${D.oconusReq}</p>
-  <p class="pws-body">The contractor shall comply with all requirements of DFARS 252.225-7040, Contractor Personnel Supporting U.S. Armed Forces Deployed Outside the United States. Contractor personnel shall be registered in the Synchronized Pre-deployment and Operational Tracker (SPOT) system prior to deployment. The Contracting Officer will issue Letters of Authorization (LOA) to authorized contractor personnel. Contractor personnel must maintain medical and dental fitness standards required for theater deployment.</p>
 
   <div class="pws-sub-hdr">5.5 Personnel Changes</div>
   <p class="pws-body">The contractor shall notify the COR a minimum of five (5) calendar days in advance of any planned personnel changes. Unplanned personnel departures shall be reported within 24 hours. Contractor is responsible for ensuring continuity of performance during all transitions. All replacement personnel shall meet the minimum qualification requirements of this PWS.</p>
@@ -2188,7 +3173,7 @@ function buildPWS() {
   <p class="pws-body">${getCUIText()}</p>
 
   <div class="pws-sub-hdr">6.5 Operations Security (OPSEC)</div>
-  <p class="pws-body">${D.opsec === 'plan' ? 'The contractor shall prepare and submit an Operations Security (OPSEC) plan within 15 calendar days of contract award. The plan shall address protection of critical program information, contractor personnel social media guidance, and communication protocols.' : D.opsec === 'enhanced' ? 'All contractor-produced documents, reports, photographs, and communications that reference installation activities, force composition, or operational schedules shall be reviewed and approved by the COR prior to release or transmission. Contractor personnel shall comply with enhanced OPSEC briefing requirements.' : 'The contractor shall comply with installation and theater OPSEC requirements. Contractor personnel shall receive OPSEC awareness training. Contractor shall not disclose sensitive information about installation activities, force structure, or operational schedules through any medium.'}</p>
+  <p class="pws-body">${D.opsec === 'plan' ? 'The contractor shall prepare and submit an Operations Security (OPSEC) plan within 15 calendar days of contract award. The plan shall address protection of critical program information, contractor personnel social media guidance, and communication protocols.' : D.opsec === 'enhanced' ? 'All contractor-produced documents, reports, photographs, and communications that reference installation activities, force composition, or operational schedules shall be reviewed and approved by the COR prior to release or transmission. Contractor personnel shall comply with enhanced OPSEC briefing requirements.' : 'The contractor shall comply with installation, facility, and organizational OPSEC requirements. Contractor personnel shall receive OPSEC awareness training. Contractor shall not disclose sensitive information about installation activities, force structure, or operational schedules through any medium.'}</p>
 
   ${D.securityAdd ? `<div class="pws-sub-hdr">6.6 Additional Security Requirements</div><p class="pws-body">${D.securityAdd}</p>` : ''}
 </div>
@@ -2242,10 +3227,10 @@ function buildPWS() {
   <p class="pws-body">The contractor shall not perform inherently governmental functions under this contract. The contractor shall not commit the Government to any expenditure of funds without the express written authorization of the Contracting Officer. The contractor shall not disclose, release, or authorize publication of any information related to this contract without prior written approval of the Contracting Officer.</p>
 
   <div class="pws-sub-hdr">11.2 Combating Trafficking in Persons</div>
-  <p class="pws-body">The contractor shall comply with FAR 52.222-50, Combating Trafficking in Persons. The contractor shall not engage in, or facilitate, any form of trafficking in persons during the performance of this contract. This prohibition applies to all contractor personnel, subcontractors, and agents. Contractor shall train all personnel on trafficking in persons awareness prior to deployment and annually thereafter. Any suspected violations shall be reported immediately to the Contracting Officer.</p>
+  <p class="pws-body">The contractor shall comply with FAR 52.222-50, Combating Trafficking in Persons. The contractor shall not engage in, or facilitate, any form of trafficking in persons during the performance of this contract. This prohibition applies to all contractor personnel, subcontractors, and agents. Contractor shall train all personnel on trafficking in persons awareness prior to performance and annually thereafter. Any suspected violations shall be reported immediately to the Contracting Officer.</p>
 
   <div class="pws-sub-hdr">11.3 Subcontracting</div>
-  <p class="pws-body">Contractor consent to subcontract is required for all subcontracts not identified in the contract. The contractor shall provide a list of proposed subcontractors to the COR within ten (10) calendar days of contract award. The contractor is fully responsible for the performance of all subcontractors. Flow-down requirements apply per FAR 52.244-6. The contractor shall ensure subcontractors comply with all applicable PWS requirements including security, personnel, and OCONUS requirements.</p>
+  <p class="pws-body">Contractor consent to subcontract is required for all subcontracts not identified in the contract. The contractor shall provide a list of proposed subcontractors to the COR within ten (10) calendar days of contract award. The contractor is fully responsible for the performance of all subcontractors. Flow-down requirements apply per FAR 52.244-6. The contractor shall ensure subcontractors comply with all applicable PWS requirements including security, personnel, site access, and performance requirements.</p>
 
   <div class="pws-sub-hdr">11.4 Transition-In</div>
   <p class="pws-body">The contractor shall develop and execute a Transition-In Plan to assume full responsibility for all PWS requirements without interruption to operations. The Transition-In Plan shall be submitted to the COR within ten (10) calendar days of contract award. Full operational capability shall be achieved NLT the start of the base period of performance, or as directed by the Contracting Officer.</p>
@@ -2253,8 +3238,8 @@ function buildPWS() {
   <div class="pws-sub-hdr">11.5 Transition-Out</div>
   <p class="pws-body">The contractor shall develop a Transition-Out Plan and submit to the COR no later than ninety (90) calendar days prior to contract expiration (or upon notice of termination). The contractor shall cooperate fully with any successor contractor and the Government during transition. Contractor shall not take any action that would disrupt operations or compromise the ability of the Government or a successor contractor to assume performance.</p>
 
-  <div class="pws-sub-hdr">11.6 Environmental and Host Nation Compliance</div>
-  <p class="pws-body">The contractor shall comply with all applicable environmental, occupational health, and safety requirements including Status of Forces Agreements (SOFA), host nation laws, U.S. Executive Orders, DoD Instructions, and Air Force directives. The contractor shall obtain all required environmental permits and approvals prior to commencing work. Hazardous waste generation, storage, and disposal shall comply with applicable regulations. The contractor shall not discharge, dump, or otherwise improperly dispose of any waste on or near ${D.installation}.</p>
+  <div class="pws-sub-hdr">11.6 Environmental and Safety Compliance</div>
+  <p class="pws-body">The contractor shall comply with all applicable environmental, occupational health, and safety requirements, including federal, agency, state, local, installation, facility, and industry requirements that apply to the place of performance. The contractor shall obtain all required environmental permits and approvals prior to commencing work. Hazardous waste generation, storage, and disposal shall comply with applicable regulations. The contractor shall not discharge, dump, or otherwise improperly dispose of any waste on or near ${D.installation}.</p>
 </div>
 
 <div style="margin-top:32px; border-top:2px solid #111; padding-top:12px; text-align:center">
@@ -2809,7 +3794,7 @@ function clearOllieData() {
     addDraft('Key Personnel', D.keyPersonnel, 400);
     addDraft('Minimum Qualifications', D.minQuals, 400);
     addDraft('Training', D.training, 400);
-    addDraft('OCONUS Requirements', D.oconusReq, 400);
+    addDraft('Site Access / Deployment Requirements', D.oconusReq, 400);
     addDraft('Security', D.securityAdd, 400);
     addDraft('Workspace', D.workspace, 300);
     addDraft('Travel', D.travelReq, 300);
@@ -2944,7 +3929,7 @@ function clearOllieData() {
     'travel_req': simpleTextarea('travel_req', 'Travel Requirements',
       'Draft Travel Requirements.',
       ['1 short paragraph.',
-       'Cover whether travel is required, approval process, who funds travel, theater/AOR restrictions if OCONUS.']),
+       'Cover whether travel is required, approval process, who funds travel, and any site, movement, or travel restrictions that apply.']),
     'perf_standards': simpleTextarea('perf_standards', 'Performance Standards / AQLs',
       'Draft Performance Standards / Acceptable Quality Levels (AQLs).',
       ['4 to 8 standards, one per line, each starting with a hyphen.',
@@ -2974,11 +3959,11 @@ function clearOllieData() {
       ['1 to 2 paragraphs.',
        'Cover pre-performance training, ongoing training, training documentation and records.',
        'Include AT Level I if performance is on a military installation.']),
-    'oconus_req': simpleTextarea('oconus_req', 'OCONUS / Theater Entry Requirements',
-      'Draft OCONUS / Theater Entry Requirements for contractor personnel.',
+    'oconus_req': simpleTextarea('oconus_req', 'Site Access / Deployment Requirements',
+      'Draft Site Access / Deployment Requirements for contractor personnel.',
       ['1 to 2 paragraphs.',
-       'Cover DFARS 252.225-7040 compliance, Letter of Authorization (LOA), SPOT registration, medical/dental readiness, theater entry compliance.',
-       'Reference rules for the use of force only if performance involves armed conflict zone.']),
+       'Cover site access, badging, credentials, deployment or travel documentation, medical/readiness requirements when applicable, and any location-specific entry rules.',
+       'Reference rules for the use of force only if performance specifically requires it.']),
     'security_add': simpleTextarea('security_add', 'Additional Security Requirements',
       'Draft Additional Security Requirements for contractor personnel.',
       ['1 to 2 paragraphs.',
