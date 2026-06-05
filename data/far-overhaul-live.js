@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-06-04T11:25:29.381383+00:00",
+  "generatedAt": "2026-06-05T11:36:09.738977+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -12,8 +12,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "totalParts": 51,
     "issuedParts": 51,
     "updatedParts": 10,
-    "agencyDeviationCount": 1423,
-    "uniqueAgencyCount": 37,
+    "agencyDeviationCount": 1426,
+    "uniqueAgencyCount": 38,
     "latestPartDate": "2026-04-20",
     "latestPartDateLabel": "Apr 20, 2026",
     "announcementCount": 10,
@@ -23,7 +23,65 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "baseline": false,
     "newParts": [],
     "updatedParts": [],
-    "newAgencyDeviations": [],
+    "newAgencyDeviations": [
+      {
+        "part": {
+          "partNumber": 1,
+          "partLabel": "Part 1",
+          "title": "Federal Acquisition Regulations System",
+          "fullTitle": "Part 1 - Federal Acquisition Regulations System",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-1",
+          "issuanceDate": "2025-05-02",
+          "issuanceDateLabel": "May 2, 2025",
+          "updateDate": "2026-03-16",
+          "updateDateLabel": "Mar 16, 2026",
+          "deviationCount": 37
+        },
+        "agency": {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-1.pdf",
+          "id": "f9e8013520ab9fda"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 4,
+          "partLabel": "Part 4",
+          "title": "Administrative and Information Matters",
+          "fullTitle": "Part 4 - Administrative and Information Matters",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-4",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-4.pdf",
+          "id": "d6a2075b949f2c67"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 10,
+          "partLabel": "Part 10",
+          "title": "Market Research",
+          "fullTitle": "Part 10 - Market Research",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-10",
+          "issuanceDate": "2025-05-22",
+          "issuanceDateLabel": "May 22, 2025",
+          "updateDate": "2026-03-16",
+          "updateDateLabel": "Mar 16, 2026",
+          "deviationCount": 37
+        },
+        "agency": {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-10.pdf",
+          "id": "c907ba1046d4f915"
+        }
+      }
+    ],
     "removedAgencyDeviations": []
   },
   "parts": [
@@ -38,7 +96,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-03-16",
       "updateDateLabel": "Mar 16, 2026",
       "isUpdated": true,
-      "deviationCount": 36,
+      "deviationCount": 37,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -219,6 +277,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "General Services Administration (GSA)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA-Final-RFO-2025-01-FAR-part-1.pdf",
           "id": "1f89764d40b34ccd"
+        },
+        {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-1.pdf",
+          "id": "f9e8013520ab9fda"
         }
       ],
       "tags": [
@@ -409,7 +472,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 30,
+      "deviationCount": 31,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -560,12 +623,17 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Department of Commerce (DOC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOC_RFO_Deviation_Parts-1-53.pdf",
           "id": "da5a6c0eaadc2095"
+        },
+        {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-4.pdf",
+          "id": "d6a2075b949f2c67"
         }
       ],
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 30 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 31 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 5,
@@ -1443,7 +1511,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-03-16",
       "updateDateLabel": "Mar 16, 2026",
       "isUpdated": true,
-      "deviationCount": 36,
+      "deviationCount": 37,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -1624,6 +1692,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "General Services Administration (GSA)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-10.pdf",
           "id": "1b4b4ceeffa34e96"
+        },
+        {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-10.pdf",
+          "id": "c907ba1046d4f915"
         }
       ],
       "tags": [
