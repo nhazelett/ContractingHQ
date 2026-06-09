@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-06-08T12:15:10.466Z",
+  "generatedAt": "2026-06-09T10:46:20.057Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,12 +7,12 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 12,
-    "latestDecisionDate": "2026-06-04",
-    "sustained": 1,
-    "denied": 8,
-    "dismissed": 0,
-    "mixed": 3,
+    "total": 13,
+    "latestDecisionDate": "2026-06-08",
+    "sustained": 0,
+    "denied": 10,
+    "dismissed": 1,
+    "mixed": 2,
     "unclassified": 0,
     "sourceStatus": {
       "rss": {
@@ -23,11 +23,11 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 16
+        "parsedOutcomes": 26
       },
       "productPages": {
-        "attempted": 12,
-        "enriched": 12,
+        "attempted": 13,
+        "enriched": 13,
         "blocked": 0
       },
       "legacyCache": {
@@ -36,6 +36,36 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424508,B-424509,B-424510",
+      "caseName": "Oready, LLC",
+      "title": "Oready, LLC",
+      "bNumbers": [
+        "B-424508",
+        "B-424509",
+        "B-424510"
+      ],
+      "bNumberText": "B-424508, B-424509, B-424510",
+      "link": "https://www.gao.gov/products/b-424508%2Cb-424509%2Cb-424510",
+      "publicationDate": "2026-06-08",
+      "decisionDate": "2026-06-08",
+      "displayDate": "Jun 8, 2026",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We dismiss the protests.",
+      "officialSynopsis": "Oready, LLC, of Las Vegas, Nevada, a small business, protests the terms of three requests for quotations (RFQ) Nos. 140A2326Q0114; 140A2326Q0116; and...",
+      "highlights": "",
+      "digest": "1. Protests challenging terms of solicitations are dismissed as untimely where each protest was submitted to GAO on a business day, but after GAO had closed for filings at 5:30 p.m. Eastern Time and, as a result, each protest was filed when GAO reopened on the next business day, which was after the closing time set for receipt of quotations under the applicable solicitation. 2. Protests challenging terms of solicitations that were filed at GAO after the closing time set for receipt of quotations were not eligible for treatment as subsequent protests to GAO filed after timely agency-level protests under 4 C.F.R. 21.2(a)(3) because, even though the protester transmitted a copy of each GAO protest to the contracting officer before the applicable solicitation's closing time set for receipt of quotations, that submission did not constitute the filing of an agency-level protest.",
+      "tags": [
+        "Timeliness",
+        "Solicitation terms",
+        "Small business"
+      ],
+      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424336",
       "caseName": "Mustang Survival Manufacturing, Inc.",
@@ -176,29 +206,62 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-423980.5,B-423980.6,B-423980.2,B-420983.4",
-      "caseName": "Mission Analytics, LLC--Reconsideration",
-      "title": "Mission Analytics, LLC--Reconsideration",
+      "id": "B-424255,B-424255.2",
+      "caseName": "Science Applications International Corporation",
+      "title": "Science Applications International Corporation",
       "bNumbers": [
-        "B-423980.5",
-        "B-423980.6",
-        "B-423980.2",
-        "B-420983.4"
+        "B-424255",
+        "B-424255.2"
       ],
-      "bNumberText": "B-423980.5, B-423980.6, B-423980.2, B-420983.4",
-      "link": "https://www.gao.gov/products/b-423980.5%2Cb-423980.6",
-      "publicationDate": "2026-05-22",
-      "decisionDate": "2026-05-21",
-      "displayDate": "May 21, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
+      "bNumberText": "B-424255, B-424255.2",
+      "link": "https://www.gao.gov/products/b-424255%2Cb-424255.2",
+      "publicationDate": "2026-06-08",
+      "decisionDate": "2026-05-19",
+      "displayDate": "May 19, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
       "outcomeSource": "GAO product page",
-      "decisionLine": "We deny and dismiss the requests.",
-      "officialSynopsis": "Mission Analytics, LLC, of Falls Church, Virginia, requests reconsideration of our decisions, Mission Analytics, LLC-Recon., B-423980.2, B-420983.4,...",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Science Applications International Corporation (SAIC) of Reston, Virginia, protests the issuance of a task order to Accenture Federal Services (...",
       "highlights": "",
-      "digest": "1. Request for reconsideration is denied where our decision did not contain any factual or legal error. 2. Second request for reconsideration is dismissed because our Office's Bid Protest Regulations do not contemplate such review.",
-      "tags": [],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "digest": "1. Protest challenging the agency's technical evaluation of proposals is denied where the record demonstrates that the evaluation was conducted reasonably and in accordance with the terms of the solicitation. 2. Allegations of disparate treatment are denied where the protester fails to demonstrate that different evaluation results were the product of substantively indistinguishable approaches. 3. Challenges to the best‑value tradeoff decision are denied where the record sufficiently documents the basis for the award decision and the rationale for the tradeoff decisions made.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms",
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424253.2,B-424253.3,B-424253.5",
+      "caseName": "ID8Spark, LLC",
+      "title": "ID8Spark, LLC",
+      "bNumbers": [
+        "B-424253.2",
+        "B-424253.3",
+        "B-424253.5"
+      ],
+      "bNumberText": "B-424253.2, B-424253.3, B-424253.5",
+      "link": "https://www.gao.gov/products/b-424253.2%2Cb-424253.3%2Cb-424253.5",
+      "publicationDate": "2026-06-08",
+      "decisionDate": "2026-05-18",
+      "displayDate": "May 18, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "ID8Spark, LLC, of Catonsville, Maryland, a small business, protests the issuance of a Federal Supply Schedule (FSS) task order to Chags Health...",
+      "highlights": "",
+      "digest": "1. Protest that agency misevaluated quotations and engaged in disparate treatment under competition for Federal Supply Schedule task order is denied where the record shows the evaluation was reasonable and consistent with the solicitation criteria and differences in evaluation treatment was the result of differences in vendors' quotations. 2. Protest challenging agency's selection of the best-suited vendor and the subsequent conduct of exchanges only with that firm is denied where the record shows the best-suited vendor determination was reasonable and consistent with the terms of the solicitation.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms",
+        "Small business",
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -232,6 +295,36 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-424253,B-424253.4",
+      "caseName": "Octave Technologies Corporation",
+      "title": "Octave Technologies Corporation",
+      "bNumbers": [
+        "B-424253",
+        "B-424253.4"
+      ],
+      "bNumberText": "B-424253, B-424253.4",
+      "link": "https://www.gao.gov/products/b-424253%2Cb-424253.4",
+      "publicationDate": "2026-06-08",
+      "decisionDate": "2026-05-15",
+      "displayDate": "May 15, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Octave Technologies Corporation, of Baltimore, Maryland, a small business, protests the issuance of a Federal Supply Schedule (FSS) task order to...",
+      "highlights": "",
+      "digest": "1. Protest that agency misevaluated quotations and engaged in disparate treatment under competition for Federal Supply Schedule task order is denied where the record shows that the evaluation was reasonable and consistent with the solicitation criteria and differences in evaluation treatment was the result of differences in the vendors' quotations. 2. Protest challenging agency's selection of the best-suited vendor and the subsequent conduct of exchanges only with that firm is denied where the record shows the best-suited vendor determination was reasonable and consistent with the terms of the solicitation.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms",
+        "Small business",
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
       "id": "B-424323",
       "caseName": "Soft Tech Consulting, Inc.",
       "title": "Soft Tech Consulting, Inc.",
@@ -252,36 +345,6 @@ window.KTHQ_GAO_DATA = {
       "digest": "Protest that agency should have engaged in clarifications with protester before rejecting quotation is denied; the agency was not required to engage in clarifications, and it was not otherwise unreasonable for the agency to decline to engage in clarifications.",
       "tags": [],
       "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424271,B-424271.2,B-424271.3",
-      "caseName": "TRAX International Corporation",
-      "title": "TRAX International Corporation",
-      "bNumbers": [
-        "B-424271",
-        "B-424271.2",
-        "B-424271.3"
-      ],
-      "bNumberText": "B-424271, B-424271.2, B-424271.3",
-      "link": "https://www.gao.gov/products/b-424271%2Cb-424271.2%2Cb-424271.3",
-      "publicationDate": "2026-05-20",
-      "decisionDate": "2026-05-14",
-      "displayDate": "May 14, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "TRAX International Corporation, of Las Vegas, Nevada, protests the award of a contract to Southwest Range Services, LLC, of Las Cruces, New Mexico,...",
-      "highlights": "",
-      "digest": "1. Protest that the agency unreasonably investigated an alleged impaired objectivity organizational conflict of interest is denied where the record does not contain clear evidence showing that the investigation was unreasonable. 2. Protest that the agency improperly evaluated technical proposals is denied where the record shows that the agency reasonably and equally evaluated proposals in accordance with the solicitation's evaluation criteria, and a conceded error did not competitively prejudice the protester. 3. Protest that the agency unreasonably found no meaningful distinction between proposals under the past performance factor is denied where the agency reasonably considered differences in the offerors' respective past performance, and even assuming that the agency improperly credited the awardee for the past performance of affiliate entities that were not clearly committed to perform on this contract, the protester cannot demonstrate a reasonable possibility of competitive prejudice.",
-      "tags": [
-        "Evaluation",
-        "OCI",
-        "Solicitation terms"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -336,34 +399,6 @@ window.KTHQ_GAO_DATA = {
         "Evaluation",
         "Solicitation terms",
         "Small business"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-423852.2,B-423852.3",
-      "caseName": "N&S Property Services, LLC",
-      "title": "N&S Property Services, LLC",
-      "bNumbers": [
-        "B-423852.2",
-        "B-423852.3"
-      ],
-      "bNumberText": "B-423852.2, B-423852.3",
-      "link": "https://www.gao.gov/products/b-423852.2%2Cb-423852.3",
-      "publicationDate": "2026-05-19",
-      "decisionDate": "2026-03-10",
-      "displayDate": "Mar 10, 2026",
-      "outcome": "sustained",
-      "outcomeLabel": "Sustained",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We sustain the protest.",
-      "officialSynopsis": "N&S Property Services, LLC, a small disadvantaged business of Atlanta, Georgia, protests the award of a contract to KCorp Reliance Company, Inc...",
-      "highlights": "",
-      "digest": "1. Protest challenging evaluation of protester's technical proposal is sustained where the agency's negative findings are not supported by the solicitation's evaluation criteria or the contents of the protester's proposal. 2. Protest challenging evaluation of awardee's technical proposal is sustained where the agency does not meaningfully respond to the protester's arguments and the record does not support the agency's evaluation findings.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
