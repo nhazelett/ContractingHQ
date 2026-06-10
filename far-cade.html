@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FAR-CADE: PART LOCK | KTHQ ContractingHQ</title>
+<meta name="description" content="Arcade-style FAR Part recall drill built on the RFO structure. Free, no login. Built by practitioners, for practitioners.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#040d1f; --navy2:#081427; --blue:#4a9eff; --gold:#c9a227;
+  --ink:#e8eef7; --dim:#8fa3bd; --red:#ff4a5e;
+  --line:rgba(74,158,255,.22); --line-gold:rgba(201,162,39,.35);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  background:#03091a;color:var(--ink);
+  font-family:'Inter',sans-serif;overflow:hidden;
+  touch-action:manipulation;user-select:none;-webkit-user-select:none;
+}
+#stage{
+  position:relative;width:100%;height:100dvh;max-width:1100px;margin:0 auto;
+  display:flex;flex-direction:column;
+  background:
+    radial-gradient(900px 500px at 30% 10%,rgba(74,158,255,.08),transparent 60%),
+    radial-gradient(700px 500px at 85% 95%,rgba(201,162,39,.06),transparent 55%),
+    linear-gradient(180deg,#061226 0%,#040d1f 55%,#03091a 100%);
+}
+/* scanlines + vignette */
+#stage::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:40;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px);
+  mix-blend-mode:overlay;
+}
+#stage::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:41;box-shadow:inset 0 0 180px rgba(0,0,0,.7)}
+.scr{position:absolute;top:5px;left:0;right:0;bottom:36px;display:none;flex-direction:column;z-index:10}
+.scr.on{display:flex}
+
+/* ---------- shared chrome ---------- */
+.classbar{height:5px;background:linear-gradient(90deg,var(--blue) 0%,var(--blue) 55%,var(--gold) 100%);flex:none}
+.mono{font-family:'IBM Plex Mono',monospace}
+.disp{font-family:'Rajdhani',sans-serif;text-transform:uppercase}
+.kicker{font-family:'IBM Plex Mono',monospace;font-weight:500;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;font-size:clamp(11px,1.4vw,14px)}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;touch-action:manipulation}
+
+.corner{position:relative}
+.corner i{position:absolute;width:14px;height:14px;pointer-events:none}
+.corner i::before,.corner i::after{content:'';position:absolute;background:var(--blue)}
+.corner i::before{width:14px;height:2px}.corner i::after{width:2px;height:14px}
+.corner i.tl{top:-2px;left:-2px}.corner i.tr{top:-2px;right:-2px;transform:scaleX(-1)}
+.corner i.bl{bottom:-2px;left:-2px;transform:scaleY(-1)}.corner i.br{bottom:-2px;right:-2px;transform:scale(-1)}
+
+/* ---------- TITLE ---------- */
+#title{align-items:center;justify-content:center;text-align:center;padding:24px;gap:14px}
+#title .logo{font-size:clamp(54px,11vw,120px);font-weight:700;line-height:1.05;letter-spacing:.02em;
+  text-shadow:0 0 28px rgba(74,158,255,.45)}
+#title .logo .alt{color:var(--blue)}
+#title .sub{font-size:clamp(16px,2.4vw,24px);color:var(--ink);font-weight:500;letter-spacing:.06em}
+#title .sub b{color:var(--gold);font-weight:600}
+#title .rfo{margin-top:4px;font-size:clamp(11px,1.5vw,14px);letter-spacing:.22em;color:var(--dim)}
+#startBtn{
+  margin-top:26px;padding:18px 54px;border:1px solid var(--line-gold);
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:clamp(20px,3vw,28px);
+  letter-spacing:.18em;color:var(--gold);background:rgba(201,162,39,.07);
+  animation:pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 rgba(201,162,39,0)}50%{box-shadow:0 0 26px rgba(201,162,39,.4)}}
+#title .credit{position:absolute;bottom:16px;left:0;right:0;font-size:11px;letter-spacing:.16em;color:rgba(143,163,189,.6)}
+
+/* ---------- SECTOR SELECT ---------- */
+#select{padding:max(20px,3vh) 20px;align-items:center;overflow-y:auto}
+#select .hd{margin:8px 0 4px;font-size:clamp(30px,5vw,52px);font-weight:700}
+#select .sd{color:var(--dim);font-size:clamp(13px,1.8vw,16px);margin-bottom:22px;text-align:center;max-width:560px}
+.sector{
+  width:min(640px,100%);margin-bottom:14px;padding:18px 20px;text-align:left;
+  border:1px solid var(--line);background:rgba(8,20,39,.6);
+  display:flex;align-items:center;gap:16px;transition:border-color .2s, background .2s;
+}
+.sector:not(.locked):hover{border-color:var(--blue);background:rgba(8,20,39,.9)}
+.sector .tno{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--gold);letter-spacing:.2em;width:84px;flex:none}
+.sector .tnm{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:clamp(20px,3vw,28px);text-transform:uppercase;line-height:1.2}
+.sector .tds{font-size:13px;color:var(--dim);margin-top:2px;line-height:1.4}
+.sector .ths{margin-left:auto;text-align:right;flex:none}
+.sector .ths .hs{font-family:'IBM Plex Mono',monospace;font-size:15px;color:var(--blue)}
+.sector .ths .lb{font-size:10px;letter-spacing:.18em;color:var(--dim)}
+.sector.locked{opacity:.45;cursor:not-allowed}
+.sector.locked .tnm{color:var(--dim)}
+.sector .lock{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);letter-spacing:.15em}
+.sector.cleared .tno::after{content:' ✓';color:var(--gold)}
+
+/* ---------- GAME ---------- */
+#game{padding:0}
+#hud{
+  flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px clamp(12px,3vw,28px);border-bottom:1px solid var(--line);
+  background:rgba(4,9,22,.7);
+}
+#lives{display:flex;gap:6px}
+.life{width:18px;height:18px;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);background:var(--blue);box-shadow:0 0 8px rgba(74,158,255,.6);transition:opacity .2s, background .2s}
+.life.dead{background:#26344a;box-shadow:none}
+#score{font-family:'IBM Plex Mono',monospace;font-size:clamp(17px,2.6vw,24px);font-weight:600;color:var(--ink)}
+#mult{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:clamp(16px,2.4vw,22px);color:var(--gold);min-width:48px;text-align:right}
+#qcount{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--dim);letter-spacing:.15em}
+
+#arena{flex:1;display:flex;min-height:0}
+#heat{flex:none;width:14px;margin:18px 0 18px clamp(10px,2vw,22px);border:1px solid var(--line);position:relative;background:rgba(8,20,39,.6)}
+#heatFill{position:absolute;bottom:0;left:0;right:0;height:0%;background:linear-gradient(0deg,var(--blue),var(--gold));transition:height .25s ease}
+#heat.max #heatFill{animation:heatmax .5s ease-in-out infinite alternate}
+@keyframes heatmax{from{filter:brightness(1)}to{filter:brightness(1.6)}}
+
+#center{flex:1;display:flex;flex-direction:column;justify-content:center;padding:10px clamp(12px,3vw,30px);min-width:0}
+#reticle{
+  position:relative;border:1px solid var(--line);background:rgba(8,20,39,.55);
+  padding:clamp(20px,4vh,40px) clamp(16px,3vw,36px);text-align:center;
+}
+#reticle .tag{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.3em;color:var(--blue);margin-bottom:10px}
+#term{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:clamp(26px,5.2vw,52px);line-height:1.2;text-transform:uppercase;min-height:1.2em;text-shadow:0 0 18px rgba(74,158,255,.35)}
+#timerWrap{height:8px;background:rgba(143,163,189,.15);margin-top:clamp(14px,2.5vh,22px);position:relative;overflow:hidden}
+#timerBar{position:absolute;inset:0;transform-origin:left;background:linear-gradient(90deg,var(--blue),var(--gold));}
+#timerWrap.danger #timerBar{background:var(--red)}
+
+#answers{display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1.6vh,16px);margin-top:clamp(14px,2.6vh,26px)}
+.ans{
+  position:relative;border:1px solid var(--line);background:rgba(8,20,39,.6);
+  padding:14px 16px;min-height:64px;text-align:left;display:flex;flex-direction:column;justify-content:center;
+  transition:border-color .15s, background .15s, transform .1s;
+}
+@media(hover:hover){.ans:hover{border-color:var(--blue);background:rgba(12,28,52,.9)}}
+.ans:active{transform:scale(.985)}
+.ans .pn{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gold);letter-spacing:.18em}
+.ans .pt{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:clamp(15px,2.2vw,21px);text-transform:uppercase;line-height:1.22;margin-top:2px}
+.ans.hit{border-color:var(--gold);background:rgba(201,162,39,.15);box-shadow:0 0 22px rgba(201,162,39,.45)}
+.ans.miss{border-color:var(--red);background:rgba(255,74,94,.12)}
+.ans.reveal{border-color:var(--blue);box-shadow:0 0 16px rgba(74,158,255,.5)}
+.ans:disabled{cursor:default}
+
+#feed{height:26px;margin-top:10px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:clamp(12px,1.8vw,15px);letter-spacing:.12em}
+#feed.good{color:var(--gold)}#feed.bad{color:var(--red)}
+
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-9px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(4px)}}
+#flash{position:absolute;inset:0;pointer-events:none;z-index:30;opacity:0;transition:opacity .25s}
+#flash.red{background:rgba(255,74,94,.16);opacity:1}
+#flash.goldf{background:rgba(201,162,39,.10);opacity:1}
+
+.particle{position:absolute;width:6px;height:6px;background:var(--gold);pointer-events:none;z-index:35}
+
+/* ---------- DEBRIEF ---------- */
+#debrief{padding:max(18px,3vh) 18px;align-items:center;overflow-y:auto}
+#debrief .hd{font-size:clamp(30px,5.5vw,54px);font-weight:700;margin:6px 0 2px;text-align:center}
+#debrief .hd.win{color:var(--gold);text-shadow:0 0 24px rgba(201,162,39,.5)}
+#debrief .hd.lose{color:var(--red)}
+#stats{display:flex;gap:clamp(14px,4vw,40px);margin:16px 0 6px;flex-wrap:wrap;justify-content:center}
+#stats .st{text-align:center}
+#stats .v{font-family:'IBM Plex Mono',monospace;font-size:clamp(22px,4vw,36px);font-weight:600;color:var(--blue)}
+#stats .l{font-size:10px;letter-spacing:.22em;color:var(--dim);margin-top:2px}
+#newhs{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-size:13px;letter-spacing:.2em;height:20px;margin-bottom:6px}
+#aar{width:min(620px,100%);margin-top:10px}
+#aar .ahd{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.26em;color:var(--gold);border-bottom:1px solid var(--line-gold);padding-bottom:8px;margin-bottom:10px}
+.missrow{display:flex;justify-content:space-between;gap:14px;padding:9px 4px;border-bottom:1px solid rgba(74,158,255,.12);font-size:clamp(13px,1.9vw,15px)}
+.missrow .t{color:var(--ink)}
+.missrow .p{font-family:'IBM Plex Mono',monospace;color:var(--blue);white-space:nowrap}
+#aar .clean{color:var(--dim);font-size:14px;padding:8px 4px}
+#debrief .btns{display:flex;gap:14px;margin:24px 0 10px;flex-wrap:wrap;justify-content:center}
+.cta{padding:14px 34px;border:1px solid var(--line);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:18px;letter-spacing:.14em;text-transform:uppercase}
+.cta.gold{border-color:var(--line-gold);color:var(--gold)}
+.cta.blue{color:var(--blue)}
+@media(hover:hover){.cta:hover{background:rgba(12,28,52,.9)}}
+
+/* ---------- footer rail ---------- */
+#rail{
+  position:absolute;bottom:0;left:0;right:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px clamp(12px,3vw,28px);border-top:1px solid var(--line);
+  background:rgba(4,9,22,.85);font-family:'IBM Plex Mono',monospace;
+  font-size:10px;letter-spacing:.16em;color:var(--dim);z-index:20;
+}
+#rail .g{color:var(--gold)}#rail .b{color:var(--blue)}
+#sndBtn{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--dim);border:1px solid var(--line);padding:4px 10px}
+#sndBtn.on{color:var(--gold);border-color:var(--line-gold)}
+
+@media(max-width:640px){
+  #answers{grid-template-columns:1fr}
+  .ans{min-height:58px}
+  #heat{width:10px}
+  .sector .ths{display:none}
+  #railMid{display:none}
+  #title .credit{bottom:8px;padding:0 14px;font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div id="stage" class="corner">
+  <div class="classbar"></div>
+
+  <!-- TITLE -->
+  <section id="title" class="scr on">
+    <div class="kicker">// kthq training systems</div>
+    <div class="logo disp">FAR-<span class="alt">CADE</span></div>
+    <div class="sub disp">PART LOCK — <b>RFO part recall drill</b></div>
+    <div class="rfo mono">SEE THE TERM · LOCK THE PART · BUILT ON THE REVOLUTIONARY FAR OVERHAUL STRUCTURE</div>
+    <button id="startBtn" class="disp">INSERT JUDGMENT</button>
+    <div class="credit mono">KTHQ.ORG · FREE · NO LOGIN · EDUCATIONAL USE ONLY · NOT AFFILIATED WITH USAF / DOD</div>
+  </section>
+
+  <!-- SECTOR SELECT -->
+  <section id="select" class="scr">
+    <div class="kicker">// select sector</div>
+    <div class="hd disp">Choose your drill</div>
+    <div class="sd">Survive 15 terms with lives remaining to clear a sector and unlock the next. Streaks build your heat multiplier. Misses get logged to your After Action Report.</div>
+    <div id="sectorList"></div>
+  </section>
+
+  <!-- GAME -->
+  <section id="game" class="scr">
+    <div id="hud">
+      <div id="lives"></div>
+      <div id="qcount">Q 01/15</div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <span id="mult">x1</span><span id="score">0</span>
+      </div>
+    </div>
+    <div id="arena">
+      <div id="heat"><div id="heatFill"></div></div>
+      <div id="center">
+        <div id="reticle" class="corner"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i>
+          <div class="tag">TARGET TERM</div>
+          <div id="term" class="disp">—</div>
+          <div id="timerWrap"><div id="timerBar"></div></div>
+        </div>
+        <div id="answers"></div>
+        <div id="feed" class="mono"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEBRIEF -->
+  <section id="debrief" class="scr">
+    <div class="kicker">// after action report</div>
+    <div id="dbHd" class="hd disp">SECTOR CLEARED</div>
+    <div id="newhs"></div>
+    <div id="stats"></div>
+    <div id="aar"><div class="ahd">MISSED TERMS — STUDY THESE</div><div id="aarList"></div></div>
+    <div class="btns">
+      <button id="againBtn" class="cta gold">Run it again</button>
+      <button id="menuBtn" class="cta blue">Sector select</button>
+    </div>
+  </section>
+
+  <div id="rail">
+    <span>KTHQ <span class="b">//</span> FAR-CADE</span>
+    <span class="g" id="railMid">RFO STRUCTURE · PARTS 1–53</span>
+    <button id="sndBtn">SND OFF</button>
+  </div>
+  <div id="flash"></div>
+</div>
+
+<script>
+'use strict';
+/* =============== RFO PART REGISTRY =============== */
+const PARTS = {
+  1:"Federal Acquisition Regulations System",2:"Definitions of Words and Terms",3:"Improper Business Practices & Conflicts of Interest",
+  4:"Administrative and Information Matters",5:"Publicizing Contract Actions",6:"Competition Requirements",
+  7:"Acquisition Planning",8:"Required Sources of Supplies and Services",9:"Contractor Qualifications",
+  10:"Market Research",11:"Describing Agency Needs",12:"Acquisition of Commercial Products & Services",
+  13:"Simplified Acquisition Procedures",14:"Sealed Bidding",15:"Contracting by Negotiation",
+  16:"Types of Contracts",17:"Special Contracting Methods",18:"Emergency Acquisitions",
+  19:"Small Business",22:"Application of Labor Laws",23:"Sustainable Acquisition & Material Safety",
+  24:"Protection of Privacy and Freedom of Information",25:"Foreign Acquisition",26:"Other Socioeconomic Programs",
+  27:"Patents, Data, and Copyrights",28:"Bonds and Insurance",29:"Taxes",
+  30:"Cost Accounting Standards Administration",31:"Contract Cost Principles and Procedures",32:"Contract Financing",
+  33:"Protests, Disputes, and Appeals",34:"Major System Acquisition",35:"Research and Development Contracting",
+  36:"Construction and Architect-Engineer Contracts",37:"Service Contracting",38:"Federal Supply Schedule Contracting",
+  39:"Acquisition of Information & Communication Technology",40:"Information Security and Supply Chain Security",
+  41:"Acquisition of Utility Services",42:"Contract Administration and Audit Services",43:"Contract Modifications",
+  44:"Subcontracting Policies and Procedures",45:"Government Property",46:"Quality Assurance",
+  47:"Transportation",48:"Value Engineering",49:"Termination of Contracts",
+  50:"Extraordinary Contractual Actions",51:"Use of Government Sources by Contractors",53:"Forms"
+};
+/* term : part — each term maps to exactly one part */
+const BANK = {
+  5:["Synopsis posted to SAM.gov","Contract action publicity requirements","Pre-solicitation notices","Paid advertisements for acquisitions"],
+  6:["Full and open competition","Unusual and compelling urgency exception","Only one responsible source","CICA's competition mandate"],
+  8:["AbilityOne procurement list","Ordering from Federal Supply Schedules","Federal Prison Industries (UNICOR)","Required sources priority order"],
+  10:["Sources sought notice","Requests for information (RFIs)","Reviewing commercial product availability","Researching the marketplace before solicitation"],
+  11:["Brand name or equal purchase descriptions","Salient characteristics","Liquidated damages policy","Delivery or performance schedules"],
+  12:["Commercial product determination","Streamlined procedures for commercial items","Commercial services acquisition policy","Tailoring terms for commercial buying"],
+  13:["Micro-purchases with the GPC","SF 44 purchase orders","Imprest funds and third-party drafts","Blanket purchase agreements (BPAs)","Simplified procedures under the SAT"],
+  14:["Invitation for bids (IFB)","Public bid opening","Two-step sealed bidding","Responsiveness of bids"],
+  15:["Competitive range determination","Discussions and final proposal revisions","Certified cost or pricing data","Post-award debriefings","Unsolicited proposals"],
+  16:["Cost-plus-fixed-fee (CPFF)","Firm-fixed-price contracts","Indefinite-delivery contracts (IDIQ)","Award-fee arrangements","Letter contracts (UCAs)","Economic price adjustment"],
+  17:["Options to extend the term","Exercising contract options","Multiyear contracting","Interagency acquisitions (Economy Act)"],
+  19:["The Rule of Two","8(a) Business Development Program","HUBZone set-asides","Service-disabled veteran-owned set-asides (SDVOSB)","SBA Certificate of Competency"],
+  1:["Guiding principles of the acquisition system","FAR deviations","Agency acquisition regulations","Four-year sunset review of non-statutory clauses"],
+  2:["Definition of 'commercial service'","Where acquisition terms are defined","Definition of 'micro-purchase threshold'"],
+  4:["Contract file documentation","Unique Entity Identifier (UEI)","Contract closeout procedures","Safeguarding contract information"],
+  7:["Written acquisition plans","Inherently governmental functions","Equipment lease-or-purchase analysis","Planning the overall acquisition strategy"],
+  9:["Responsibility determinations","Suspension and debarment","Organizational conflicts of interest (OCI)","First article testing","Qualified products lists"],
+  22:["Service Contract Labor Standards (SCA)","Construction Wage Rate Requirements (Davis-Bacon)","Contractor labor relations","Equal employment opportunity in contracts"],
+  25:["Buy American statute","Trade Agreements Act coverage","Acquisitions for use outside the United States","Foreign end product evaluation"],
+  32:["Progress payments","Prompt Payment Act interest","Assignment of claims","Performance-based payments"],
+  33:["GAO bid protests","Contract Disputes Act claims","Agency-level protests","Appeals to the boards (ASBCA/CBCA)"],
+  36:["Design-build selection procedures","Architect-engineer (Brooks Act) selection","Construction contract requirements"],
+  37:["Performance-based service acquisition","Personal vs. nonpersonal services","Service contracts surveillance","Acquiring services from the right vehicle"],
+  43:["Change orders","Bilateral contract modifications","Administrative changes","Notification of contract changes"],
+  46:["Government contract quality assurance","Inspection and acceptance","Certificates of conformance","Contract warranties"],
+  49:["Termination for convenience","Termination for default","Cure notices and show cause letters","Settlement proposals after termination"],
+  52:["Solicitation provision matrix","Clause fill-in material","Incorporating clauses by reference","Where clause text actually lives"],
+  3:["Procurement Integrity Act restrictions","Covenant against contingent fees","Anti-Kickback Act","Contractor whistleblower protections"],
+  18:["Emergency acquisition flexibilities","Streamlined buying after a declared disaster","Defense or recovery contingency authorities"],
+  23:["Sustainable products and services","Material safety data requirements","Pollution prevention in acquisition"],
+  24:["Privacy Act in contracting","Freedom of Information Act requests","Protecting individual records held by contractors"],
+  26:["Indian Incentive Program","Historically Black Colleges incentives","Disaster-area local firm preferences"],
+  27:["Patent rights in contracts","Rights in technical data","Copyright in contract deliverables","Royalty reporting"],
+  28:["Miller Act payment bonds","Bid guarantees and bonds","Sureties and surety bonds","Liability insurance requirements"],
+  29:["Federal excise taxes","State and local tax exemptions","Tax clauses in contracts"],
+  30:["CAS Disclosure Statements","Cost Accounting Standards applicability","CAS noncompliance administration"],
+  31:["Cost allowability","Allocability of costs","Unallowable cost principles","Facilities capital cost of money"],
+  34:["Earned Value Management Systems (EVMS)","Defense Production Act Title III resources","Integrated Baseline Reviews"],
+  35:["Broad agency announcements (BAAs)","R&D contracting objectives","Basic vs. applied research acquisition"],
+  38:["GSA's management of the FSS program","Establishing Federal Supply Schedules","Schedule contracting authority"],
+  39:["Section 508 accessibility","Acquiring information and communication technology","ICT modular contracting"],
+  40:["Supply chain security requirements","Information security policy in acquisition","Prohibited sources and covered articles"],
+  41:["Acquiring utility services","GSA areawide utility agreements","Connection charges for utilities"],
+  42:["Past performance evaluations (CPARS)","Contract administration office functions","Novation and change-of-name agreements","Stop-work orders","Indirect cost rate audits"],
+  44:["Consent to subcontract","Contractor purchasing system reviews (CPSR)","Subcontract flowdown policy"],
+  45:["Government-furnished property (GFP)","Contractor property management systems","Reporting and disposing of Government property"],
+  47:["F.o.b. origin vs. destination","Transportation factors in evaluation","Bills of lading"],
+  48:["Value engineering change proposals (VECPs)","Sharing value engineering savings","VE incentive clauses"],
+  50:["Public Law 85-804 relief","Extraordinary contractual relief","Indemnification for unusually hazardous risks"],
+  51:["Contractor use of Government supply sources","Contractor access to interagency fleet vehicles"],
+  53:["Prescriptions for standard forms","Where the SF 33 and SF 1449 are prescribed","Illustrations of forms (SF/OF series)"]
+};
+const TIERS = [
+  {id:0,name:"RECRUIT",code:"SECTOR 01",desc:"The bread and butter: the parts you touch every week.",parts:[5,6,8,10,11,12,13,14,15,16,17,19],time:9},
+  {id:1,name:"OPERATOR",code:"SECTOR 02",desc:"Wider net: planning, qualifications, labor, money, protests.",parts:[1,2,4,7,9,22,25,32,33,36,37,43,46,49,52],time:8},
+  {id:2,name:"WARRANTED",code:"SECTOR 03",desc:"Deep cuts: the parts that separate board-ready from bored.",parts:[3,18,23,24,26,27,28,29,30,31,34,35,38,39,40,41,42,44,45,47,48,50,51,53],time:7}
+];
+const RUN_LEN=15, LIVES=3;
+
+/* =============== SAFE STORAGE =============== */
+const store={ mem:{},
+  get(k){ try{const v=localStorage.getItem(k);return v!==null?v:(this.mem[k]??null)}catch(e){return this.mem[k]??null} },
+  set(k,v){ this.mem[k]=String(v); try{localStorage.setItem(k,String(v))}catch(e){} } };
+const KEY_UNLOCK='farcade_unlock', KEY_HS='farcade_hs_';
+let unlocked=parseInt(store.get(KEY_UNLOCK)||'0',10);
+
+/* =============== AUDIO (synth bleeps, off by default) =============== */
+let sndOn=false, actx=null;
+function beep(f,d,type='square',g=0.04){ if(!sndOn)return; try{
+  actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+  const o=actx.createOscillator(),v=actx.createGain();
+  o.type=type;o.frequency.value=f;v.gain.value=g;
+  o.connect(v);v.connect(actx.destination);
+  o.start();v.gain.exponentialRampToValueAtTime(0.0001,actx.currentTime+d);
+  o.stop(actx.currentTime+d);}catch(e){} }
+const sfx={
+  hit(){beep(660,.09);setTimeout(()=>beep(990,.12),70)},
+  miss(){beep(180,.25,'sawtooth',.05)},
+  tick(){beep(880,.03,'square',.015)},
+  clear(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.18),i*110))},
+  over(){[392,330,262,196].forEach((f,i)=>setTimeout(()=>beep(f,.2,'sawtooth',.04),i*140))}
+};
+
+/* =============== STATE =============== */
+let cur={tier:0,q:0,score:0,lives:LIVES,streak:0,best:0,mult:1,correct:0,missed:[],lockout:false,timerId:null,t0:0,tLimit:9,asked:new Set()};
+const $=id=>document.getElementById(id);
+const screens={title:$('title'),select:$('select'),game:$('game'),debrief:$('debrief')};
+function show(name){Object.values(screens).forEach(s=>s.classList.remove('on'));screens[name].classList.add('on');}
+
+/* =============== SECTOR SELECT =============== */
+function renderSelect(){
+  const list=$('sectorList');list.innerHTML='';
+  TIERS.forEach(t=>{
+    const locked=t.id>unlocked;
+    const cleared=t.id<unlocked;
+    const hs=store.get(KEY_HS+t.id)||'0';
+    const b=document.createElement('button');
+    b.className='sector corner'+(locked?' locked':'')+(cleared?' cleared':'');
+    b.innerHTML=`<i class="tl"></i><i class="br"></i>
+      <div class="tno">${t.code}</div>
+      <div><div class="tnm disp">${t.name}</div>
+      <div class="tds">${locked?'<span class="lock">LOCKED — CLEAR PREVIOUS SECTOR</span>':t.desc}</div></div>
+      <div class="ths"><div class="hs">${parseInt(hs,10).toLocaleString()}</div><div class="lb">HIGH SCORE</div></div>`;
+    if(!locked)b.addEventListener('click',()=>startRun(t.id));
+    list.appendChild(b);
+  });
+}
+
+/* =============== GAME LOOP =============== */
+function pool(tierId){
+  const main=TIERS[tierId].parts.flatMap(p=>BANK[p].map(t=>({t,p})));
+  if(tierId===0)return main;
+  const prev=TIERS.slice(0,tierId).flatMap(tt=>tt.parts).flatMap(p=>BANK[p].map(t=>({t,p})));
+  return main.concat(shuffle(prev).slice(0,Math.floor(main.length*0.35)));
+}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function startRun(tierId){
+  cur={tier:tierId,q:0,score:0,lives:LIVES,streak:0,best:0,mult:1,correct:0,missed:[],lockout:false,timerId:null,t0:0,tLimit:TIERS[tierId].time,asked:new Set()};
+  cur.deck=shuffle(pool(tierId));
+  $('railMid').textContent=TIERS[tierId].code+' · '+TIERS[tierId].name;
+  renderLives();updateHud();show('game');nextQ();
+}
+function renderLives(){
+  const w=$('lives');w.innerHTML='';
+  for(let i=0;i<LIVES;i++){const d=document.createElement('div');d.className='life'+(i<cur.lives?'':' dead');w.appendChild(d);}
+}
+function updateHud(){
+  $('score').textContent=cur.score.toLocaleString();
+  $('mult').textContent='x'+cur.mult;
+  $('qcount').textContent='Q '+String(Math.min(cur.q+1,RUN_LEN)).padStart(2,'0')+'/'+RUN_LEN;
+  const heatPct=Math.min(cur.streak/15,1)*100;
+  $('heatFill').style.height=heatPct+'%';
+  $('heat').classList.toggle('max',cur.mult>=4);
+}
+function nextQ(){
+  if(cur.q>=RUN_LEN){endRun(true);return}
+  cur.lockout=false;$('feed').textContent='';$('feed').className='mono';
+  let item;
+  do{item=cur.deck[Math.floor(Math.random()*cur.deck.length)]}while(cur.asked.has(item.t)&&cur.asked.size<cur.deck.length);
+  cur.asked.add(item.t);cur.answer=item.p;
+  $('term').textContent=item.t;
+  const allParts=Object.keys(PARTS).map(Number);
+  const tierParts=[...new Set(TIERS.slice(0,cur.tier+1).flatMap(t=>t.parts))];
+  const wrong=shuffle(tierParts.filter(p=>p!==item.p)).slice(0,3);
+  while(wrong.length<3){const r=allParts[Math.floor(Math.random()*allParts.length)];if(r!==item.p&&!wrong.includes(r))wrong.push(r);}
+  const opts=shuffle([item.p,...wrong]);
+  const grid=$('answers');grid.innerHTML='';
+  opts.forEach(p=>{
+    const b=document.createElement('button');b.className='ans';b.dataset.p=p;
+    b.innerHTML=`<span class="pn">PART ${p}</span><span class="pt">${PARTS[p]}</span>`;
+    b.addEventListener('click',()=>answer(p,b));
+    grid.appendChild(b);
+  });
+  startTimer();
+  updateHud();
+}
+function startTimer(){
+  cancelAnimationFrame(cur.timerId);
+  cur.t0=performance.now();const limit=cur.tLimit*1000;
+  const bar=$('timerBar'),wrap=$('timerWrap');wrap.classList.remove('danger');
+  let lastTick=0;
+  function frame(now){
+    const elapsed=now-cur.t0,remain=Math.max(0,1-elapsed/limit);
+    bar.style.transform='scaleX('+remain+')';
+    if(remain<.3){wrap.classList.add('danger');
+      if(now-lastTick>500){sfx.tick();lastTick=now;}}
+    if(elapsed>=limit){timeout();return}
+    if(!cur.lockout)cur.timerId=requestAnimationFrame(frame);
+  }
+  cur.timerId=requestAnimationFrame(frame);
+}
+function timeRemaining(){return Math.max(0,cur.tLimit-(performance.now()-cur.t0)/1000)}
+function answer(p,btn){
+  if(cur.lockout)return;cur.lockout=true;cancelAnimationFrame(cur.timerId);
+  document.querySelectorAll('.ans').forEach(b=>b.disabled=true);
+  if(p===cur.answer){
+    btn.classList.add('hit');sfx.hit();
+    cur.streak++;cur.correct++;
+    cur.best=Math.max(cur.best,cur.streak);
+    cur.mult=Math.min(4,1+Math.floor(cur.streak/5));
+    const gained=Math.round((100+timeRemaining()*10)*cur.mult);
+    cur.score+=gained;
+    $('feed').textContent='+'+gained+(cur.mult>1?'  ·  HEAT x'+cur.mult:'');
+    $('feed').className='mono good';
+    burst(btn);flash('goldf');
+  }else{
+    btn&&btn.classList.add('miss');sfx.miss();
+    cur.lives--;cur.streak=0;cur.mult=1;
+    cur.missed.push({t:$('term').textContent,p:cur.answer});
+    const right=document.querySelector('.ans[data-p="'+cur.answer+'"]');right&&right.classList.add('reveal');
+    $('feed').textContent='PART '+cur.answer+' — '+PARTS[cur.answer].toUpperCase();
+    $('feed').className='mono bad';
+    $('stage').classList.add('shake');setTimeout(()=>$('stage').classList.remove('shake'),380);
+    flash('red');renderLives();
+  }
+  updateHud();cur.q++;
+  if(cur.lives<=0){setTimeout(()=>endRun(false),1100);return}
+  setTimeout(nextQ, p===cur.answer?650:1400);
+}
+function timeout(){answer(-1,null)}
+function flash(cls){const f=$('flash');f.className=cls;setTimeout(()=>f.className='',260)}
+function burst(el){
+  const r=el.getBoundingClientRect(),s=$('stage').getBoundingClientRect();
+  for(let i=0;i<10;i++){
+    const d=document.createElement('div');d.className='particle';
+    d.style.left=(r.left-s.left+r.width/2)+'px';d.style.top=(r.top-s.top+r.height/2)+'px';
+    d.style.background=i%2?'var(--gold)':'var(--blue)';
+    $('stage').appendChild(d);
+    const a=Math.random()*Math.PI*2,v=40+Math.random()*70;
+    d.animate([{transform:'translate(0,0)',opacity:1},
+      {transform:'translate('+Math.cos(a)*v+'px,'+Math.sin(a)*v+'px)',opacity:0}],
+      {duration:480+Math.random()*200,easing:'cubic-bezier(.1,.8,.3,1)'}).onfinish=()=>d.remove();
+  }
+}
+/* =============== DEBRIEF =============== */
+function endRun(survived){
+  cancelAnimationFrame(cur.timerId);
+  const win=survived&&cur.lives>0;
+  $('dbHd').textContent=win?'SECTOR CLEARED':'SIGNAL LOST';
+  $('dbHd').className='hd disp '+(win?'win':'lose');
+  win?sfx.clear():sfx.over();
+  if(win&&cur.tier===unlocked&&unlocked<TIERS.length-1){unlocked++;store.set(KEY_UNLOCK,unlocked);}
+  const hsKey=KEY_HS+cur.tier,prev=parseInt(store.get(hsKey)||'0',10);
+  $('newhs').textContent='';
+  if(cur.score>prev){store.set(hsKey,cur.score);$('newhs').textContent='★ NEW SECTOR HIGH SCORE ★';}
+  const acc=cur.q?Math.round(cur.correct/cur.q*100):0;
+  $('stats').innerHTML=
+    st(cur.score.toLocaleString(),'SCORE')+st(acc+'%','ACCURACY')+st(cur.best,'BEST STREAK')+
+    (win&&cur.tier<TIERS.length-1?st('OPEN','NEXT SECTOR'):'');
+  const list=$('aarList');list.innerHTML='';
+  if(cur.missed.length===0){list.innerHTML='<div class="clean">Zero misses. The reg fears you.</div>';}
+  else cur.missed.forEach(m=>{
+    const d=document.createElement('div');d.className='missrow';
+    d.innerHTML='<span class="t">'+m.t+'</span><span class="p">PART '+m.p+'</span>';
+    list.appendChild(d);
+  });
+  show('debrief');
+}
+function st(v,l){return '<div class="st"><div class="v">'+v+'</div><div class="l">'+l+'</div></div>'}
+
+/* =============== WIRES =============== */
+$('startBtn').addEventListener('click',()=>{renderSelect();show('select')});
+$('againBtn').addEventListener('click',()=>startRun(cur.tier));
+$('menuBtn').addEventListener('click',()=>{renderSelect();show('select')});
+$('sndBtn').addEventListener('click',e=>{sndOn=!sndOn;e.target.textContent=sndOn?'SND ON':'SND OFF';e.target.classList.toggle('on',sndOn);if(sndOn)beep(660,.08);});
+document.addEventListener('keydown',e=>{
+  if(!screens.game.classList.contains('on')||cur.lockout)return;
+  const i={'1':0,'2':1,'3':2,'4':3}[e.key];
+  if(i!==undefined){const b=document.querySelectorAll('.ans')[i];b&&b.click();}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAR-CADE | The Contracting Arcade — KTHQ</title>
+<meta name="description" content="The contracting arcade. Free play, no quarters, no login. Games that make the FAR stick.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#0a0118; --panel:#140a2e; --pink:#ff2d95; --cyan:#19e3ff;
+  --gold:#ffd23f; --ink:#f4f0ff; --dim:#9a8fc0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--void);color:var(--ink);font-family:'Inter',sans-serif;
+  overflow-x:hidden;min-height:100vh;position:relative;
+}
+/* CRT scanlines over everything */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:90;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);
+}
+.px{font-family:'Press Start 2P',monospace;line-height:1.5}
+.crt{font-family:'VT323',monospace}
+
+/* ---------- synthwave floor ---------- */
+#floor{
+  position:fixed;left:-25%;right:-25%;bottom:-12vh;height:46vh;z-index:0;pointer-events:none;
+  background:
+    linear-gradient(transparent 0%,rgba(255,45,149,.16) 100%),
+    repeating-linear-gradient(90deg,rgba(25,227,255,.35) 0 2px,transparent 2px 110px),
+    repeating-linear-gradient(0deg,rgba(255,45,149,.4) 0 2px,transparent 2px 46px);
+  transform:perspective(420px) rotateX(62deg);
+  mask-image:linear-gradient(transparent 0%,black 45%);
+  -webkit-mask-image:linear-gradient(transparent 0%,black 45%);
+  animation:floorscroll 2.4s linear infinite;
+}
+@keyframes floorscroll{from{background-position:0 0,0 0,0 0}to{background-position:0 0,0 0,0 46px}}
+#glowsun{
+  position:fixed;left:50%;bottom:8vh;width:60vmin;height:60vmin;z-index:0;pointer-events:none;
+  transform:translateX(-50%);border-radius:50%;
+  background:radial-gradient(circle,rgba(255,45,149,.22),rgba(139,92,246,.10) 45%,transparent 70%);
+}
+
+main{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 20px 60px}
+
+/* ---------- marquee hero ---------- */
+#marquee{
+  margin:34px auto 10px;max-width:880px;position:relative;
+  border:6px solid #1d0f3f;border-radius:18px;
+  background:linear-gradient(180deg,#1a0b38,#0d0524);
+  padding:clamp(26px,5vw,52px) 20px;text-align:center;
+  box-shadow:0 0 60px rgba(255,45,149,.25),inset 0 0 40px rgba(0,0,0,.6);
+}
+/* chasing bulbs */
+#marquee .bulbs{position:absolute;inset:-3px;border-radius:16px;pointer-events:none;
+  background-image:radial-gradient(circle 4px,var(--gold) 40%,transparent 45%);
+  background-size:34px 34px;background-position:8px -13px;background-repeat:repeat-x;}
+#marquee .bulbs.bottom{background-position:25px calc(100% + 13px)}
+#marquee .bulbs.b2{animation:chase 1s steps(2) infinite}
+@keyframes chase{to{filter:brightness(.25)}}
+#marquee .bulbs.b1{animation:chase 1s steps(2) .5s infinite}
+#logo{
+  font-size:clamp(30px,7.5vw,76px);color:var(--pink);letter-spacing:.04em;
+  text-shadow:0 0 8px var(--pink),0 0 28px var(--pink),0 0 70px rgba(255,45,149,.8);
+  animation:flicker 4s linear infinite;
+}
+#logo .c{color:var(--cyan);text-shadow:0 0 8px var(--cyan),0 0 28px var(--cyan),0 0 70px rgba(25,227,255,.8)}
+@keyframes flicker{0%,93%,95%,100%{opacity:1}94%{opacity:.45}}
+#subtitle{margin-top:18px;font-size:clamp(11px,2vw,16px);color:var(--gold);letter-spacing:.18em}
+#freeplay{margin-top:22px;font-size:clamp(20px,3.4vw,30px);color:var(--cyan)}
+#insert{margin-top:18px;font-size:clamp(10px,1.7vw,13px);color:var(--ink);animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ---------- ticker ---------- */
+#tickerWrap{
+  margin:26px auto 40px;max-width:880px;overflow:hidden;
+  border-top:2px solid rgba(25,227,255,.4);border-bottom:2px solid rgba(25,227,255,.4);
+  background:rgba(13,5,36,.8);
+}
+#ticker{display:inline-block;white-space:nowrap;padding:9px 0;
+  font-family:'VT323',monospace;font-size:clamp(18px,2.6vw,24px);color:var(--cyan);
+  animation:scroll 26s linear infinite}
+#ticker b{color:var(--gold);font-weight:400}
+#ticker i{color:var(--pink);font-style:normal}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ---------- cabinet grid ---------- */
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:30px;margin-top:8px}
+.cab{
+  position:relative;display:block;text-decoration:none;color:inherit;
+  filter:drop-shadow(0 14px 24px rgba(0,0,0,.55));
+  transition:transform .22s ease;
+}
+a.cab:hover,a.cab:focus-visible{transform:translateY(-8px)}
+a.cab:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+/* cabinet body */
+.cab .shell{
+  background:linear-gradient(180deg,#241247,#120829 70%);
+  border:3px solid #2d1a55;border-radius:14px 14px 8px 8px;overflow:hidden;
+}
+.cab .top{
+  padding:13px 10px 11px;text-align:center;font-size:clamp(13px,1.6vw,16px);
+  border-bottom:3px solid #2d1a55;letter-spacing:.05em;
+}
+.cab[data-neon="pink"] .top{color:var(--pink);text-shadow:0 0 6px var(--pink),0 0 20px rgba(255,45,149,.9);background:#1c0d3b}
+.cab[data-neon="cyan"] .top{color:var(--cyan);text-shadow:0 0 6px var(--cyan),0 0 20px rgba(25,227,255,.9);background:#0e1535}
+.cab[data-neon="gold"] .top{color:var(--gold);text-shadow:0 0 6px var(--gold),0 0 20px rgba(255,210,63,.9);background:#221a08}
+.cab .screen{
+  margin:14px 14px 0;border:3px solid #000;border-radius:8px;height:158px;position:relative;
+  background:radial-gradient(120% 100% at 50% 0%,#0e0b2e,#050214);overflow:hidden;
+}
+.cab .screen::after{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.04) 0 1px,transparent 1px 3px)}
+.cab .scr-art{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'VT323',monospace;text-align:center}
+.cab .deck{display:flex;align-items:center;justify-content:center;gap:18px;padding:16px 0 18px}
+.stick{width:14px;height:14px;border-radius:50%;background:var(--pink);box-shadow:0 0 10px var(--pink);position:relative}
+.stick::before{content:'';position:absolute;left:5px;top:12px;width:4px;height:14px;background:#3a2a66;border-radius:2px}
+.btn{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 -3px 0 rgba(0,0,0,.5)}
+.btn.b1{background:var(--cyan)}.btn.b2{background:var(--gold)}.btn.b3{background:#8b5cf6}
+.cab .info{padding:0 16px 18px;text-align:center}
+.cab .name{font-size:clamp(15px,2vw,19px);margin-bottom:9px}
+.cab .tag{font-family:'VT323',monospace;font-size:19px;color:var(--dim);line-height:1.25}
+.cab .status{
+  margin:13px auto 0;display:inline-block;padding:7px 16px;border-radius:4px;
+  font-size:clamp(9px,1.2vw,11px);letter-spacing:.1em;
+}
+.status.play{background:var(--pink);color:#fff;box-shadow:0 0 16px rgba(255,45,149,.8);animation:blink 1.6s steps(1) infinite}
+.status.soon{border:2px dashed rgba(154,143,192,.55);color:var(--dim)}
+.status.idea{border:2px solid var(--cyan);color:var(--cyan)}
+/* screen art bits */
+.art-term{color:var(--ink);font-size:22px;line-height:1.2;padding:0 12px}
+.art-term .hl{color:var(--gold)}
+.art-board{display:grid;grid-template-columns:repeat(3,46px);gap:5px}
+.art-board span{background:#101a4a;border:1px solid var(--cyan);color:var(--gold);font-family:'VT323',monospace;font-size:18px;display:flex;align-items:center;justify-content:center;height:30px}
+.art-soon{color:var(--dim);font-size:24px;letter-spacing:.1em}
+.art-soon b{display:block;color:var(--cyan);font-weight:400;font-size:40px;animation:blink 1.4s steps(1) infinite}
+.art-idea{color:var(--cyan);font-size:23px;line-height:1.3}
+
+/* section label */
+.sect{margin:50px 0 24px;text-align:center;font-size:clamp(13px,2vw,18px);color:var(--gold);
+  text-shadow:0 0 14px rgba(255,210,63,.7)}
+.sect small{display:block;margin-top:10px;font-family:'VT323',monospace;font-size:20px;color:var(--dim);letter-spacing:.06em}
+
+/* footer */
+footer{position:relative;z-index:1;margin-top:70px;padding:22px 16px 26px;text-align:center;
+  border-top:2px solid rgba(25,227,255,.3);background:rgba(10,1,24,.9)}
+footer .crt{font-size:20px;color:var(--dim)}
+footer a{color:var(--cyan);text-decoration:none}
+footer .legal{margin-top:8px;font-family:'VT323',monospace;font-size:16px;color:#5e548a}
+
+@media(max-width:640px){
+  #grid{grid-template-columns:1fr;gap:24px}
+  .cab .screen{height:150px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div id="floor" aria-hidden="true"></div>
+<div id="glowsun" aria-hidden="true"></div>
+<main>
+
+  <header id="marquee">
+    <div class="bulbs b1" aria-hidden="true"></div>
+    <div class="bulbs bottom b2" aria-hidden="true"></div>
+    <h1 id="logo" class="px">FAR-<span class="c">CADE</span></h1>
+    <div id="subtitle" class="px">THE CONTRACTING ARCADE</div>
+    <div id="freeplay" class="crt">★ FREE PLAY ★ NO QUARTERS ★ NO LOGIN ★</div>
+    <div id="insert" class="px">PRESS ANY GAME TO START</div>
+  </header>
+
+  <div id="tickerWrap"><div id="ticker">
+    HIGH SCORE: <b>THE TAXPAYER</b> &nbsp;···&nbsp; NEW CHALLENGER: <i>FAR 2.101</i> &nbsp;···&nbsp; RULE OF TWO HAS ENTERED THE CHAT &nbsp;···&nbsp; COMBO x4: <b>FULL AND OPEN</b> &nbsp;···&nbsp; GAME TIP: OPTIONS LIVE IN PART 17 &nbsp;···&nbsp; CONTINUE? YOUR PALT IS RUNNING &nbsp;···&nbsp;
+    HIGH SCORE: <b>THE TAXPAYER</b> &nbsp;···&nbsp; NEW CHALLENGER: <i>FAR 2.101</i> &nbsp;···&nbsp; RULE OF TWO HAS ENTERED THE CHAT &nbsp;···&nbsp; COMBO x4: <b>FULL AND OPEN</b> &nbsp;···&nbsp; GAME TIP: OPTIONS LIVE IN PART 17 &nbsp;···&nbsp; CONTINUE? YOUR PALT IS RUNNING &nbsp;···&nbsp;
+  </div></div>
+
+  <h2 class="sect px">SELECT YOUR GAME<small>survive the reg · climb the scoreboard · learn it for keeps</small></h2>
+
+  <div id="grid">
+
+    <a class="cab" data-neon="pink" href="far-cade.html">
+      <div class="shell">
+        <div class="top px">PART LOCK</div>
+        <div class="screen"><div class="scr-art art-term"><div>OPTIONS TO<br>EXTEND THE TERM<br><span class="hl">▸ PART 17 ◂</span></div></div></div>
+        <div class="deck"><div class="stick"></div><div class="btn b1"></div><div class="btn b2"></div></div>
+        <div class="info">
+          <div class="name px">PART LOCK</div>
+          <div class="tag">See the term. Lock the FAR part before the timer burns. Streaks, heat multipliers, and an After Action Report on everything you missed.</div>
+          <span class="status play px">▶ INSERT JUDGMENT</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="cab" data-neon="cyan" href="jeopardy.html">
+      <div class="shell">
+        <div class="top px">FAR JEOPARDY</div>
+        <div class="screen"><div class="scr-art"><div class="art-board">
+          <span>100</span><span>200</span><span>300</span>
+          <span>100</span><span>200</span><span>300</span>
+          <span>100</span><span>200</span><span>300</span>
+        </div></div></div>
+        <div class="deck"><div class="stick"></div><div class="btn b3"></div><div class="btn b2"></div></div>
+        <div class="info">
+          <div class="name px">FAR JEOPARDY</div>
+          <div class="tag">The classic board, contracting edition. Pick a category, phrase it as a question, flex on your whole flight.</div>
+          <span class="status play px">▶ TAKE THE BOARD</span>
+        </div>
+      </div>
+    </a>
+
+    <div class="cab" data-neon="gold">
+      <div class="shell">
+        <div class="top px">THRESHOLD</div>
+        <div class="screen"><div class="scr-art art-soon"><div>LOADING<b>···</b>dodge the protests<br>beat the PALT</div></div></div>
+        <div class="deck"><div class="stick"></div><div class="btn b1"></div><div class="btn b3"></div></div>
+        <div class="info">
+          <div class="name px">THRESHOLD</div>
+          <div class="tag">An endless runner through the acquisition lifecycle. Jump the hurdles, duck the protests, don't blow the threshold.</div>
+          <span class="status soon px">COMING SOON</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cab" data-neon="cyan">
+      <div class="shell">
+        <div class="top px">CLAUSE CRASH</div>
+        <div class="screen"><div class="scr-art art-soon"><div>LOADING<b>···</b>match the clause<br>before the stack falls</div></div></div>
+        <div class="deck"><div class="stick"></div><div class="btn b2"></div><div class="btn b1"></div></div>
+        <div class="info">
+          <div class="name px">CLAUSE CRASH</div>
+          <div class="tag">Falling-block clause matching. Pair the 52.2XX with its prescription before the solicitation stacks out.</div>
+          <span class="status soon px">COMING SOON</span>
+        </div>
+      </div>
+    </div>
+
+    <a class="cab" data-neon="pink" href="https://kthq.org/contact.html">
+      <div class="shell">
+        <div class="top px">YOUR GAME?</div>
+        <div class="screen"><div class="scr-art art-idea"><div>GOT A GAME IDEA?<br>THIS CABINET IS<br>RESERVED FOR IT</div></div></div>
+        <div class="deck"><div class="stick"></div><div class="btn b1"></div><div class="btn b2"></div><div class="btn b3"></div></div>
+        <div class="info">
+          <div class="name px">OPEN CABINET</div>
+          <div class="tag">The arcade grows when the field speaks up. Pitch a game and we'll build it.</div>
+          <span class="status idea px">✉ SUGGEST A GAME</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <footer>
+    <div class="crt">FAR-CADE is part of <a href="https://kthq.org">KTHQ // ContractingHQ</a> — built by practitioners, for practitioners.</div>
+    <div class="legal">NOT AFFILIATED WITH THE U.S. AIR FORCE, DOD, OR ANY GOVERNMENT AGENCY · FOR EDUCATIONAL PURPOSES ONLY · © 2026 CONTRACTINGHQ</div>
+  </footer>
+</main>
+</body>
+</html>
