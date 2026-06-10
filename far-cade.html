@@ -199,6 +199,59 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;tou
 .railBtn{font-family:'Press Start 2P',monospace;font-size:8px;letter-spacing:.1em;color:var(--dim);border:2px solid var(--line);padding:5px 9px}
 .railBtn.on{color:var(--gold);border-color:var(--line-gold);text-shadow:0 0 8px rgba(255,210,63,.6)}
 
+/* ---------- extra juice ---------- */
+#stars{position:absolute;inset:0 0 30% 0;pointer-events:none;z-index:2;
+  background-image:
+    radial-gradient(2px 2px at 25px 35px,rgba(244,240,255,.8),transparent),
+    radial-gradient(2px 2px at 110px 80px,rgba(25,227,255,.7),transparent),
+    radial-gradient(2px 2px at 190px 20px,rgba(255,45,149,.6),transparent),
+    radial-gradient(2px 2px at 260px 60px,rgba(255,210,63,.7),transparent),
+    radial-gradient(2px 2px at 330px 105px,rgba(244,240,255,.5),transparent);
+  background-size:380px 130px;animation:twinkle 3.2s steps(2) infinite}
+@keyframes twinkle{0%,100%{opacity:.45}50%{opacity:.15}}
+.scr.on{animation:scrIn .26s cubic-bezier(.2,.9,.3,1)}
+@keyframes scrIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+#title .logo{animation:neonflicker 4.2s linear infinite}
+@keyframes neonflicker{0%,92.5%,94.5%,100%{opacity:1}93%,94%{opacity:.55}}
+#term.in{animation:termIn .22s cubic-bezier(.2,.9,.3,1)}
+@keyframes termIn{from{transform:scale(.78);opacity:0}to{transform:scale(1);opacity:1}}
+.ans{animation:ansIn .22s both}
+.ans:nth-child(2){animation-delay:.05s}.ans:nth-child(3){animation-delay:.1s}.ans:nth-child(4){animation-delay:.15s}
+@keyframes ansIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+#score{display:inline-block}
+#score.pop{animation:scorePop .28s}
+@keyframes scorePop{40%{transform:scale(1.45);color:#fff}}
+#lives.low .life:not(.dead){animation:lifeblink .5s steps(2) infinite}
+@keyframes lifeblink{50%{background:var(--red);filter:drop-shadow(0 0 10px var(--red))}}
+#ready{position:absolute;inset:0;display:none;align-items:center;justify-content:center;z-index:36;pointer-events:none;
+  font-size:clamp(30px,7vw,72px);color:var(--gold);
+  text-shadow:-4px 0 var(--pink),4px 0 var(--cyan),0 0 30px rgba(255,210,63,.6)}
+#ready.show{display:flex;animation:readyzoom .3s cubic-bezier(.2,.9,.3,1)}
+@keyframes readyzoom{from{transform:scale(2.2);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* ---------- ollie ---------- */
+.ollie{image-rendering:pixelated;width:128px;height:68px}
+#ollieTitle{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:4px;animation:olliebob 1.3s steps(2) infinite}
+.obubble{font-size:18px;color:var(--pink);border:2px solid var(--line-pink);background:rgba(20,10,46,.9);padding:4px 10px;box-shadow:3px 3px 0 rgba(0,0,0,.5)}
+@keyframes olliebob{50%{transform:translateY(-6px)}}
+#ollieGame{position:absolute;right:14px;bottom:12px;z-index:15;display:none;flex-direction:column;align-items:center;gap:4px;pointer-events:none}
+#ollieSay{min-height:22px;max-width:170px;text-align:center;font-size:17px;line-height:1.1;color:var(--pink);text-shadow:0 0 8px rgba(255,45,149,.5)}
+@media(min-width:900px){#ollieGame{display:flex}}
+#ollieDb{display:flex;align-items:center;justify-content:center;gap:14px;margin:6px 0 2px}
+#ollieDb .ollie{width:96px;height:51px}
+#ollieDbSay{font-size:clamp(17px,2.2vw,21px);color:var(--gold);max-width:300px;line-height:1.15;text-align:left}
+
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+#rankLine{font-size:18px;color:var(--gold);letter-spacing:.08em;min-height:20px}
+#drillBtn{margin-top:8px}
+#drillBtn:disabled{opacity:.4;cursor:not-allowed}
+#badgeStrip{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px;max-width:640px}
+.bchip{font-family:'Press Start 2P',monospace;font-size:7px;padding:6px 8px;border:2px solid rgba(154,143,192,.3);color:rgba(154,143,192,.5);letter-spacing:.08em}
+.bchip.got{border-color:var(--line-gold);color:var(--gold);text-shadow:0 0 8px rgba(255,210,63,.5)}
+#rankUp,#badgeLine{min-height:14px;font-size:clamp(8px,1.3vw,10px);letter-spacing:.12em;margin-top:6px;text-align:center}
+#rankUp{color:var(--cyan);text-shadow:0 0 10px rgba(25,227,255,.6)}
+#badgeLine{color:var(--pink);text-shadow:0 0 10px rgba(255,45,149,.6)}
+#scopeRow{display:flex;gap:10px;margin-bottom:10px}
 @media(max-width:640px){
   #answers{grid-template-columns:1fr}
   .ans{min-height:58px}
@@ -207,6 +260,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;tou
   #railMid{display:none}
   #title .credit{bottom:8px;padding:0 14px;font-size:13px}
   #title .logo{font-size:clamp(26px,8.5vw,40px)}
+  #ollieTitle .ollie{width:96px;height:51px}
   .btn8{padding:14px 16px}
   #entry .erow{flex-direction:column}
   #nameInput{min-width:0}
@@ -221,14 +275,21 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;tou
 <div id="stage">
   <div id="marquee"></div>
   <div id="floor"></div>
+  <div id="stars"></div>
 
   <!-- TITLE -->
   <section id="title" class="scr on">
     <div class="kicker">// FAR-CADE // KTHQ TRAINING SYSTEMS</div>
     <div class="logo px">PART LOCK</div>
     <div class="sub">SEE THE TERM · LOCK THE PART · <b>BUILT ON THE RFO STRUCTURE</b></div>
+    <div id="rankLine" class="vt"></div>
+    <div id="ollieTitle"><img id="ollieTitleImg" class="ollie" src="img/ollie_neutral.png" alt="Ollie the axolotl"><div class="obubble vt">OLLIE SAYS: LOCK THE PART, NOT THE GUESS.</div></div>
     <button id="startBtn" class="btn8 gold">INSERT JUDGMENT</button>
-    <button id="hsBtn" class="btn8 cyan small">★ HIGH SCORES ★</button>
+    <div class="btnrow">
+      <button id="dailyBtn" class="btn8 gold small">☀ DAILY DRILL</button>
+      <button id="hsBtn" class="btn8 cyan small">★ HIGH SCORES ★</button>
+      <a class="btn8 pink small" href="farcade-arcade.html" style="text-decoration:none">&larr; BACK TO ARCADE</a>
+    </div>
     <div class="credit vt">KTHQ.ORG · FREE · NO LOGIN · EDUCATIONAL USE ONLY · NOT AFFILIATED WITH USAF / DOD OR ANY GOVERNMENT AGENCY</div>
   </section>
 
@@ -238,6 +299,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;tou
     <div class="hd">Choose your drill</div>
     <div class="sd">Survive 15 terms with lives remaining to clear a sector and unlock the next. Streaks build your heat multiplier. Misses get logged to your After Action Report.</div>
     <div id="sectorList"></div>
+    <div class="btnrow"><button id="drillBtn" class="btn8 pink small">DRILL YOUR MISSES</button></div>
+    <div id="badgeStrip"></div>
   </section>
 
   <!-- GAME -->
@@ -261,6 +324,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;tou
         <div id="feed" class="vt"></div>
       </div>
     </div>
+    <div id="ollieGame"><img id="ollieGameImg" class="ollie" src="img/ollie_neutral.png" alt=""><div id="ollieSay" class="vt"></div></div>
   </section>
 
   <!-- DEBRIEF -->
@@ -268,7 +332,10 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;tou
     <div class="kicker">// after action report</div>
     <div id="dbHd" class="hd">SECTOR CLEARED</div>
     <div id="newhs"></div>
+    <div id="ollieDb"><img id="ollieDbImg" class="ollie" src="img/ollie_neutral.png" alt="Ollie the axolotl"><div id="ollieDbSay"></div></div>
     <div id="stats"></div>
+    <div id="rankUp" class="px"></div>
+    <div id="badgeLine" class="px"></div>
     <div id="entry" class="panel8" style="display:none">
       <div class="ehd px">ENTER YOUR CALLSIGN</div>
       <div class="esub">18 CHARACTERS MAX · POSTED TO THE GLOBAL HIGH SCORE BOARD</div>
@@ -284,6 +351,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;tou
       <button id="againBtn" class="btn8 gold small">Run it again</button>
       <button id="menuBtn" class="btn8 cyan small">Sector select</button>
       <button id="boardBtn" class="btn8 pink small">High scores</button>
+      <button id="shareBtn" class="btn8 gold small">Share result</button>
     </div>
   </section>
 
@@ -292,19 +360,21 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;tou
     <div class="kicker">// hall of fame</div>
     <div class="hd">High Scores</div>
     <div id="boardTabs"></div>
+    <div id="scopeRow"><button id="scopeWeek" class="tab on">THIS WEEK</button><button id="scopeAll" class="tab">ALL-TIME</button></div>
     <div id="boardStatus">—</div>
     <div id="boardWrap" class="panel8"><div id="boardList"></div></div>
     <div class="btns"><button id="boardBack" class="btn8 cyan small">Back</button></div>
   </section>
 
   <div id="rail">
-    <span class="vt">KTHQ <span class="b">//</span> FAR-CADE</span>
+    <a class="vt" href="farcade-arcade.html" style="color:inherit;text-decoration:none">KTHQ <span class="b">//</span> FAR-CADE</a>
     <span class="g vt" id="railMid">RFO STRUCTURE · PARTS 1–53</span>
     <span style="display:flex;gap:8px">
       <button id="musBtn" class="railBtn">MUS</button>
       <button id="sfxBtn" class="railBtn">SFX</button>
     </span>
   </div>
+  <div id="ready" class="px"></div>
   <div id="flash"></div>
 </div>
 
@@ -316,7 +386,7 @@ const PARTS = {
   4:"Administrative and Information Matters",5:"Publicizing Contract Actions",6:"Competition Requirements",
   7:"Acquisition Planning",8:"Required Sources of Supplies and Services",9:"Contractor Qualifications",
   10:"Market Research",11:"Describing Agency Needs",12:"Acquisition of Commercial Products & Services",
-  13:"Simplified Acquisition Procedures",14:"Sealed Bidding",15:"Contracting by Negotiation",
+  13:"Simplified Procedures for Noncommercial Acquisitions",14:"Sealed Bidding",15:"Contracting by Negotiation",
   16:"Types of Contracts",17:"Special Contracting Methods",18:"Emergency Acquisitions",
   19:"Small Business",22:"Application of Labor Laws",23:"Sustainable Acquisition & Material Safety",
   24:"Protection of Privacy and Freedom of Information",25:"Foreign Acquisition",26:"Other Socioeconomic Programs",
@@ -328,7 +398,8 @@ const PARTS = {
   41:"Acquisition of Utility Services",42:"Contract Administration and Audit Services",43:"Contract Modifications",
   44:"Subcontracting Policies and Procedures",45:"Government Property",46:"Quality Assurance",
   47:"Transportation",48:"Value Engineering",49:"Termination of Contracts",
-  50:"Extraordinary Contractual Actions",51:"Use of Government Sources by Contractors",53:"Forms"
+  50:"Extraordinary Contractual Actions",51:"Use of Government Sources by Contractors",
+  52:"Solicitation Provisions and Contract Clauses",53:"Forms"
 };
 /* term : part — each term maps to exactly one part */
 const BANK = {
@@ -337,8 +408,8 @@ const BANK = {
   8:["AbilityOne procurement list","Ordering from Federal Supply Schedules","Federal Prison Industries (UNICOR)","Required sources priority order"],
   10:["Sources sought notice","Requests for information (RFIs)","Reviewing commercial product availability","Researching the marketplace before solicitation"],
   11:["Brand name or equal purchase descriptions","Salient characteristics","Liquidated damages policy","Delivery or performance schedules"],
-  12:["Commercial product determination","Streamlined procedures for commercial items","Commercial services acquisition policy","Tailoring terms for commercial buying"],
-  13:["Micro-purchases with the GPC","SF 44 purchase orders","Imprest funds and third-party drafts","Blanket purchase agreements (BPAs)","Simplified procedures under the SAT"],
+  12:["Commercial product determination","Streamlined procedures for commercial items","Commercial services acquisition policy","Tailoring terms for commercial buying","Micro-purchases with the GPC","SF 44 pocket purchase orders","Imprest funds and third-party drafts","Commercial BPAs under simplified procedures"],
+  13:["Simplified procedures for noncommercial buys","Purchase orders on the OF 347","Noncommercial acquisitions at or below the SAT"],
   14:["Invitation for bids (IFB)","Public bid opening","Two-step sealed bidding","Responsiveness of bids"],
   15:["Competitive range determination","Discussions and final proposal revisions","Certified cost or pricing data","Post-award debriefings","Unsolicited proposals"],
   16:["Cost-plus-fixed-fee (CPFF)","Firm-fixed-price contracts","Indefinite-delivery contracts (IDIQ)","Award-fee arrangements","Letter contracts (UCAs)","Economic price adjustment"],
@@ -396,7 +467,9 @@ const store={ mem:{},
   get(k){ try{const v=localStorage.getItem(k);return v!==null?v:(this.mem[k]??null)}catch(e){return this.mem[k]??null} },
   set(k,v){ this.mem[k]=String(v); try{localStorage.setItem(k,String(v))}catch(e){} } };
 const KEY_UNLOCK='farcade_unlock', KEY_HS='farcade_hs_', KEY_NAME='farcade_name',
-      KEY_MUS='farcade_mus', KEY_SFX='farcade_sfx', KEY_LB='farcade_lb_';
+      KEY_MUS='farcade_mus', KEY_SFX='farcade_sfx', KEY_LB='farcade_lb_',
+      KEY_XP='farcade_xp', KEY_BADGES='farcade_badges', KEY_MISS='farcade_missbank',
+      KEY_DAILY='farcade_daily', KEY_DCOUNT='farcade_dcount', KEY_CLEAR='farcade_clear_';
 let unlocked=parseInt(store.get(KEY_UNLOCK)||'0',10);
 
 /* =============== GLOBAL LEADERBOARD =============== */
@@ -404,15 +477,48 @@ const LB_URL='https://farcade-leaderboard.nickhazelett.workers.dev';
 function tfetch(url,opt){ opt=opt||{};
   if(typeof AbortSignal!=='undefined'&&AbortSignal.timeout){opt.signal=AbortSignal.timeout(7000);}
   return fetch(url,opt); }
-async function lbGet(sector){ const r=await tfetch(LB_URL+'/?sector='+sector);
+async function lbGet(board,scope){ const r=await tfetch(LB_URL+'/?board='+board+(scope?'&scope='+scope:''));
   if(!r.ok)throw new Error('lb'); const d=await r.json(); return d.scores||[]; }
-async function lbPost(sector,name,score){ const r=await tfetch(LB_URL+'/',{method:'POST',
-  headers:{'Content-Type':'application/json'},body:JSON.stringify({sector,name,score})});
+async function lbPost(board,name,score){ const r=await tfetch(LB_URL+'/',{method:'POST',
+  headers:{'Content-Type':'application/json'},body:JSON.stringify({board:String(board),sector:board,name,score})});
   if(!r.ok)throw new Error('lb'); return r.json(); }
 function localScores(sector){ try{return JSON.parse(store.get(KEY_LB+sector)||'[]')}catch(e){return[]} }
 function localSave(sector,name,score){ const l=localScores(sector); l.push({name,score});
   l.sort((a,b)=>b.score-a.score); store.set(KEY_LB+sector,JSON.stringify(l.slice(0,25))); }
 function cleanName(s){ return String(s||'').toUpperCase().replace(/[^A-Z0-9 ._\-]/g,'').replace(/ +/g,' ').trim().slice(0,18); }
+
+/* =============== META: rng, daily, misses, xp, badges =============== */
+function todayUTC(){return new Date().toISOString().slice(0,10)}
+function hashStr(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function missBank(){try{return JSON.parse(store.get(KEY_MISS)||'{}')}catch(e){return{}}}
+function saveMissB(m){store.set(KEY_MISS,JSON.stringify(m))}
+function recordMiss(term,part){const m=missBank();const e=m[term]||{p:part,miss:0,clear:0};e.miss++;e.clear=0;m[term]=e;saveMissB(m)}
+function recordClear(term){const m=missBank();if(!m[term])return;m[term].clear=(m[term].clear||0)+1;if(m[term].clear>=2)delete m[term];saveMissB(m)}
+function getXP(){return parseInt(store.get(KEY_XP)||'0',10)}
+const RANKS=[[0,'RECRUIT'],[500,'BUYER'],[1500,'OPERATOR'],[4000,'WARRANTED'],[10000,'UNLIMITED']];
+function rankFor(xp){let r=RANKS[0][1];for(const[t,n]of RANKS){if(xp>=t)r=n}return r}
+function nextRank(xp){for(const[t,n]of RANKS){if(xp<t)return[t,n]}return null}
+function updateRankLine(){const xp=getXP();const nx=nextRank(xp);
+  $('rankLine').textContent='RANK: '+rankFor(xp)+' · '+xp.toLocaleString()+' XP'+(nx?' · '+(nx[0]-xp).toLocaleString()+' TO '+nx[1]:'');}
+const BADGES={sweep:'CLEAN SWEEP',heat:'MAX HEAT',warranted:'DEEP CUTS',all:'FULL UNLOCK',daily5:'DAILY HABIT',remedial:'HOMEWORK DONE'};
+function badges(){try{return JSON.parse(store.get(KEY_BADGES)||'[]')}catch(e){return[]}}
+function earnBadge(id){const b=badges();if(b.includes(id))return false;b.push(id);store.set(KEY_BADGES,JSON.stringify(b));return true}
+function renderBadges(){const w=$('badgeStrip');w.innerHTML='';const got=badges();
+  Object.keys(BADGES).forEach(id=>{const d=document.createElement('div');
+    d.className='bchip'+(got.includes(id)?' got':'');d.textContent=BADGES[id];w.appendChild(d);});}
+function dailyStatus(){try{return JSON.parse(store.get(KEY_DAILY)||'null')}catch(e){return null}}
+function shareText(){
+  const sq=(cur.results||[]).map(r=>r?'\u{1F7E9}':'\u{1F7E5}').join('');
+  const head=cur.mode==='daily'?'DAILY '+todayUTC():cur.mode==='drill'?'REMEDIAL ROTATION':TIERS[cur.tier].name+' SECTOR';
+  return 'FAR-CADE PART LOCK · '+head+'\nSCORE '+cur.score.toLocaleString()+' · '+cur.correct+'/'+cur.q+' · BEST STREAK '+cur.best+'\n'+sq+'\nkthq.org/far-cade.html';
+}
+async function copyShare(){
+  const b=$('shareBtn');
+  try{await navigator.clipboard.writeText(shareText());b.textContent='COPIED!';}
+  catch(e){b.textContent='COPY FAILED';}
+  setTimeout(()=>{b.textContent='Share result'},1500);
+}
 
 /* =============== AUDIO ENGINE =============== */
 let actx=null;
@@ -442,35 +548,18 @@ const sfx={
   ui(){beep(740,.05,'square',.025)}
 };
 
-/* chiptune loop: Am Am F G / Am Am F E, 132bpm 8ths, 64 steps */
-const BASS=[
-  110,0,110,0,164.81,0,110,220,  110,0,110,0,164.81,0,110,220,
-  87.31,0,87.31,0,130.81,0,87.31,174.61,  98,0,98,0,146.83,0,98,196,
-  110,0,110,0,164.81,0,110,220,  110,0,110,0,164.81,0,110,220,
-  87.31,0,87.31,0,130.81,0,87.31,174.61,  82.41,0,82.41,0,123.47,0,82.41,164.81];
-const LEAD=[
-  440,0,523.25,0,659.25,0,523.25,0,  440,0,523.25,0,659.25,0,783.99,0,
-  880,0,783.99,0,698.46,0,659.25,0,  587.33,0,659.25,0,587.33,0,493.88,0,
-  440,523.25,659.25,0,880,0,783.99,0,  659.25,0,783.99,659.25,587.33,0,523.25,0,
-  698.46,0,880,0,698.46,0,659.25,587.33,  659.25,0,0,659.25,0,0,493.88,0];
-const music={ on:store.get(KEY_MUS)!=='0', playing:false, step:0, t:0, timer:null, master:null,
-  start(){ if(!this.on||this.playing)return; const c=ctx(); if(!c)return;
-    if(!this.master){ this.master=c.createGain(); this.master.connect(c.destination); }
-    this.master.gain.cancelScheduledValues(c.currentTime);
-    this.master.gain.setValueAtTime(.5,c.currentTime);
-    this.playing=true; this.t=c.currentTime+.06; this.step=0; this.loop(); },
-  loop(){ if(!this.playing)return; const c=actx; const dur=60/132/2;
-    while(this.t<c.currentTime+.15){ this.play(this.step,this.t,dur); this.step=(this.step+1)%64; this.t+=dur; }
-    this.timer=setTimeout(()=>this.loop(),50); },
-  play(s,t,d){
-    const b=BASS[s],l=LEAD[s];
-    if(b)tone(b,d*.95,'triangle',.085,t,this.master);
-    if(l)tone(l,d*.85,'square',.03,t,this.master);
-    if(s%8===0)tone(98,.1,'sine',.07,t,this.master);
-    if(s%8===4)hiss(.07,.03,t,this.master);
-    if(s%2===1)hiss(.025,.011,t,this.master); },
-  stop(){ this.playing=false; clearTimeout(this.timer);
-    if(this.master&&actx)this.master.gain.setTargetAtTime(0,actx.currentTime,.06); },
+/* Ollie's soundtrack — shuffled playlist from audio/ollie/ */
+const TRACKS=['audio/ollie/axolotl-01.mp3','audio/ollie/axolotl-02.mp3','audio/ollie/axolotl-03.mp3','audio/ollie/axolotl-04.mp3','audio/ollie/axolotl-05.mp3','audio/ollie/axolotl-06.mp3','audio/ollie/axolotl-07.mp3','audio/ollie/axolotl-08.mp3'];
+const music={ on:store.get(KEY_MUS)!=='0', el:null, order:[], i:0,
+  start(){ if(!this.on)return;
+    if(!this.el){ this.el=new Audio(); this.el.volume=.45;
+      this.el.addEventListener('ended',()=>this.next());
+      this.order=shuffle(TRACKS); this.i=0; this.el.src=this.order[0]; }
+    this.el.play().catch(e=>{}); },
+  next(){ if(!this.el)return; this.i++;
+    if(this.i>=this.order.length){ this.order=shuffle(TRACKS); this.i=0; }
+    this.el.src=this.order[this.i]; if(this.on)this.el.play().catch(e=>{}); },
+  stop(){ if(this.el)this.el.pause(); },
   toggle(){ this.on=!this.on; store.set(KEY_MUS,this.on?'1':'0');
     if(this.on){this.start()}else{this.stop()} renderToggles(); }
 };
@@ -480,9 +569,29 @@ function renderToggles(){
   s.textContent='SFX '+(sfxOn?'ON':'OFF'); s.classList.toggle('on',sfxOn);
 }
 
+/* =============== OLLIE =============== */
+const OLLIE_IMGS={neutral:'img/ollie_neutral.png',talk:'img/ollie_talk.png',annoyed:'img/ollie_annoyed.png',angry:'img/ollie_angry.png'};
+Object.values(OLLIE_IMGS).forEach(src=>{const i=new Image();i.src=src;});
+const QUIP={
+  hit:['LOCKED!','CLEAN HIT!',"THAT'S THE ONE!",'NICE LOCK.','ON TARGET.'],
+  heat:['HEAT RISING!','MULTIPLIER UP!','COOKING NOW!'],
+  miss:['OOF.','STUDY THAT ONE.','WRONG LOCKER.','LOG IT. MOVE ON.'],
+  last:['LAST HEART. FOCUS.','ONE LIFE LEFT. BREATHE.'],
+  start:['GOOD LUCK OUT THERE.','EYES UP. CLOCK MOVES FAST.','SHOW THE REG WHO IS BOSS.']
+};
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+let ollieTimer=null;
+function ollieReact(mood,text,hold){
+  const img=$('ollieGameImg'),say=$('ollieSay');
+  img.src=OLLIE_IMGS[mood]||OLLIE_IMGS.neutral;
+  if(text!==undefined)say.textContent=text;
+  clearTimeout(ollieTimer);
+  ollieTimer=setTimeout(()=>{img.src=OLLIE_IMGS.neutral;say.textContent='';},hold||1200);
+}
+
 /* =============== STATE =============== */
-let cur={tier:0,q:0,score:0,lives:LIVES,streak:0,best:0,mult:1,correct:0,missed:[],lockout:false,timerId:null,t0:0,tLimit:9,asked:new Set()};
-let entryBusy=false, entryDone=false, boardTier=0, lastBoardFrom='title';
+let cur={mode:'sector',tier:0,q:0,score:0,lives:LIVES,streak:0,best:0,mult:1,correct:0,missed:[],lockout:false,timerId:null,t0:0,tLimit:9,asked:new Set(),results:[],maxMult:1,boardEligible:true,rnd:Math.random};
+let entryBusy=false, entryDone=false, boardTier=0, boardScope='week', lastBoardFrom='title';
 const $=id=>document.getElementById(id);
 const screens={title:$('title'),select:$('select'),game:$('game'),debrief:$('debrief'),board:$('board')};
 function show(name){Object.values(screens).forEach(s=>s.classList.remove('on'));screens[name].classList.add('on');}
@@ -503,28 +612,67 @@ function renderSelect(){
     if(!locked)b.addEventListener('click',()=>{sfx.ui();startRun(t.id)});
     list.appendChild(b);
   });
+  const mc=Object.keys(missBank()).length;
+  const db=$('drillBtn');
+  db.textContent='DRILL YOUR MISSES ('+mc+')';db.disabled=mc<3;
+  renderBadges();
 }
 
 /* =============== GAME LOOP =============== */
 function pool(tierId){
   const main=TIERS[tierId].parts.flatMap(p=>BANK[p].map(t=>({t,p})));
-  if(tierId===0)return main;
-  const prev=TIERS.slice(0,tierId).flatMap(tt=>tt.parts).flatMap(p=>BANK[p].map(t=>({t,p})));
-  return main.concat(shuffle(prev).slice(0,Math.floor(main.length*0.35)));
+  let out=main;
+  if(tierId>0){
+    const prev=TIERS.slice(0,tierId).flatMap(tt=>tt.parts).flatMap(p=>BANK[p].map(t=>({t,p})));
+    out=main.concat(shuffle(prev).slice(0,Math.floor(main.length*0.35)));
+  }
+  const allowed=new Set(TIERS.slice(0,tierId+1).flatMap(t=>t.parts));
+  const m=missBank();
+  Object.keys(m).forEach(t=>{if(allowed.has(m[t].p)){out=out.concat([{t,p:m[t].p},{t,p:m[t].p}]);}});
+  return out;
 }
-function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const ALL_TERMS=Object.keys(BANK).flatMap(p=>BANK[p].map(t=>({t,p:+p})));
+function shuffleR(a,rnd){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function shuffle(a){return shuffleR(a,Math.random)}
 function startRun(tierId){
-  cur={tier:tierId,q:0,score:0,lives:LIVES,streak:0,best:0,mult:1,correct:0,missed:[],lockout:false,timerId:null,t0:0,tLimit:TIERS[tierId].time,asked:new Set()};
+  cur={mode:'sector',tier:tierId,q:0,score:0,lives:LIVES,streak:0,best:0,mult:1,correct:0,missed:[],lockout:false,timerId:null,t0:0,tLimit:TIERS[tierId].time,asked:new Set(),results:[],maxMult:1,boardEligible:true,rnd:Math.random,partScope:[...new Set(TIERS.slice(0,tierId+1).flatMap(t=>t.parts))]};
   cur.deck=shuffle(pool(tierId));
   $('railMid').textContent=TIERS[tierId].code+' · '+TIERS[tierId].name;
-  renderLives();updateHud();show('game');nextQ();
+  renderLives();updateHud();show('game');ollieReact('talk',pick(QUIP.start),1700);intro(nextQ);
+}
+function startDaily(){
+  const rnd=mulberry32(hashStr('farcade-daily-'+todayUTC()));
+  cur={mode:'daily',tier:0,q:0,score:0,lives:LIVES,streak:0,best:0,mult:1,correct:0,missed:[],lockout:false,timerId:null,t0:0,tLimit:8,asked:new Set(),results:[],maxMult:1,boardEligible:true,rnd,partScope:Object.keys(BANK).map(Number)};
+  cur.seqDeck=shuffleR(ALL_TERMS,rnd).slice(0,RUN_LEN);
+  cur.deck=cur.seqDeck;
+  $('railMid').textContent='DAILY DRILL · '+todayUTC();
+  renderLives();updateHud();show('game');ollieReact('talk','ONE SHOT. MAKE IT COUNT.',1700);intro(nextQ);
+}
+function startDrill(){
+  const m=missBank();const items=Object.keys(m).map(t=>({t,p:m[t].p}));
+  if(items.length<3)return;
+  cur={mode:'drill',tier:0,q:0,score:0,lives:LIVES,streak:0,best:0,mult:1,correct:0,missed:[],lockout:false,timerId:null,t0:0,tLimit:9,asked:new Set(),results:[],maxMult:1,boardEligible:false,rnd:Math.random,partScope:Object.keys(BANK).map(Number)};
+  cur.deck=shuffle(items);
+  $('railMid').textContent='REMEDIAL ROTATION';
+  renderLives();updateHud();show('game');ollieReact('talk','YOUR GREATEST MISSES. FIX THEM.',1700);intro(nextQ);
+}
+function intro(cb){
+  const r=$('ready');
+  const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){cb();return}
+  r.textContent='READY…';r.classList.add('show');beep(523,.1);
+  setTimeout(()=>{r.classList.remove('show');void r.offsetWidth;r.textContent='GO!';r.classList.add('show');beep(880,.12);},560);
+  setTimeout(()=>{r.classList.remove('show');cb();},940);
 }
 function renderLives(){
   const w=$('lives');w.innerHTML='';
   for(let i=0;i<LIVES;i++){const d=document.createElement('div');d.className='life'+(i<cur.lives?'':' dead');w.appendChild(d);}
+  w.classList.toggle('low',cur.lives===1);
 }
 function updateHud(){
-  $('score').textContent=cur.score.toLocaleString();
+  const sEl=$('score'),sTxt=cur.score.toLocaleString();
+  if(sEl.textContent!==sTxt&&cur.score>0){sEl.classList.remove('pop');void sEl.offsetWidth;sEl.classList.add('pop');}
+  sEl.textContent=sTxt;
   $('mult').textContent='x'+cur.mult;
   $('qcount').textContent='Q '+String(Math.min(cur.q+1,RUN_LEN)).padStart(2,'0')+'/'+RUN_LEN;
   const heatPct=Math.min(cur.streak/15,1)*100;
@@ -535,14 +683,15 @@ function nextQ(){
   if(cur.q>=RUN_LEN){endRun(true);return}
   cur.lockout=false;$('feed').textContent='';$('feed').className='vt';
   let item;
-  do{item=cur.deck[Math.floor(Math.random()*cur.deck.length)]}while(cur.asked.has(item.t)&&cur.asked.size<cur.deck.length);
+  if(cur.seqDeck){item=cur.seqDeck[cur.q];}
+  else{do{item=cur.deck[Math.floor(Math.random()*cur.deck.length)]}while(cur.asked.has(item.t)&&cur.asked.size<cur.deck.length);}
   cur.asked.add(item.t);cur.answer=item.p;
-  $('term').textContent=item.t;
+  const tEl=$('term');tEl.classList.remove('in');void tEl.offsetWidth;tEl.textContent=item.t;tEl.classList.add('in');
   const allParts=Object.keys(PARTS).map(Number);
-  const tierParts=[...new Set(TIERS.slice(0,cur.tier+1).flatMap(t=>t.parts))];
-  const wrong=shuffle(tierParts.filter(p=>p!==item.p)).slice(0,3);
-  while(wrong.length<3){const r=allParts[Math.floor(Math.random()*allParts.length)];if(r!==item.p&&!wrong.includes(r))wrong.push(r);}
-  const opts=shuffle([item.p,...wrong]);
+  const tierParts=cur.partScope&&cur.partScope.length?cur.partScope:[...new Set(TIERS.slice(0,cur.tier+1).flatMap(t=>t.parts))];
+  const wrong=shuffleR(tierParts.filter(p=>p!==item.p),cur.rnd).slice(0,3);
+  while(wrong.length<3){const r=allParts[Math.floor(cur.rnd()*allParts.length)];if(r!==item.p&&!wrong.includes(r))wrong.push(r);}
+  const opts=shuffleR([item.p,...wrong],cur.rnd);
   const grid=$('answers');grid.innerHTML='';
   opts.forEach(p=>{
     const b=document.createElement('button');b.className='ans';b.dataset.p=p;
@@ -577,22 +726,27 @@ function answer(p,btn){
     const prevMult=cur.mult;
     cur.streak++;cur.correct++;
     cur.best=Math.max(cur.best,cur.streak);
+    cur.results.push(true);recordClear($('term').textContent);
     cur.mult=Math.min(4,1+Math.floor(cur.streak/5));
+    cur.maxMult=Math.max(cur.maxMult,cur.mult);
     if(cur.mult>prevMult){sfx.heat()}else{sfx.hit()}
     const gained=Math.round((100+timeRemaining()*10)*cur.mult);
     cur.score+=gained;
     $('feed').textContent='+'+gained+(cur.mult>prevMult?' · HEAT UP! x'+cur.mult:cur.mult>1?' · HEAT x'+cur.mult:'');
     $('feed').className='vt good';
     burst(btn);flash('goldf');
+    ollieReact('talk',cur.mult>prevMult?pick(QUIP.heat):pick(QUIP.hit));
   }else{
     btn&&btn.classList.add('miss');sfx.miss();
     cur.lives--;cur.streak=0;cur.mult=1;
     cur.missed.push({t:$('term').textContent,p:cur.answer});
+    cur.results.push(false);recordMiss($('term').textContent,cur.answer);
     const right=document.querySelector('.ans[data-p="'+cur.answer+'"]');right&&right.classList.add('reveal');
     $('feed').textContent='PART '+cur.answer+' — '+PARTS[cur.answer].toUpperCase();
     $('feed').className='vt bad';
     $('stage').classList.add('shake');setTimeout(()=>$('stage').classList.remove('shake'),380);
     flash('red');renderLives();
+    ollieReact(cur.lives===1?'angry':'annoyed',cur.lives===1?pick(QUIP.last):pick(QUIP.miss),1600);
   }
   updateHud();cur.q++;
   if(cur.lives<=0){setTimeout(()=>endRun(false),1100);return}
@@ -619,17 +773,41 @@ function burst(el){
 function endRun(survived){
   cancelAnimationFrame(cur.timerId);
   const win=survived&&cur.lives>0;
-  $('dbHd').textContent=win?'SECTOR CLEARED':'GAME OVER';
+  $('dbHd').textContent=cur.mode==='daily'?(win?'DAILY COMPLETE':'DAILY OVER'):cur.mode==='drill'?(win?'ROTATION CLEARED':'GAME OVER'):(win?'SECTOR CLEARED':'GAME OVER');
   $('dbHd').className='hd '+(win?'win':'lose');
   win?sfx.clear():sfx.over();
-  if(win&&cur.tier===unlocked&&unlocked<TIERS.length-1){unlocked++;store.set(KEY_UNLOCK,unlocked);}
-  const hsKey=KEY_HS+cur.tier,prev=parseInt(store.get(hsKey)||'0',10);
+  if(cur.mode==='sector'&&win&&cur.tier===unlocked&&unlocked<TIERS.length-1){unlocked++;store.set(KEY_UNLOCK,unlocked);}
   $('newhs').textContent='';
-  if(cur.score>prev){store.set(hsKey,cur.score);$('newhs').textContent='★ NEW PERSONAL BEST ★';}
+  if(cur.mode==='sector'){
+    const hsKey=KEY_HS+cur.tier,prev=parseInt(store.get(hsKey)||'0',10);
+    if(cur.score>prev){store.set(hsKey,cur.score);$('newhs').textContent='★ NEW PERSONAL BEST ★';}
+  }
   const acc=cur.q?Math.round(cur.correct/cur.q*100):0;
+  const xpGain=Math.round(cur.score/100);
+  const oldXP=getXP(),newXP=oldXP+xpGain;store.set(KEY_XP,String(newXP));
+  $('rankUp').textContent='';
+  if(rankFor(newXP)!==rankFor(oldXP)){$('rankUp').textContent='▲ RANK UP: '+rankFor(newXP)+' ▲';}
+  const earned=[];
+  if(cur.q>=RUN_LEN&&cur.missed.length===0&&earnBadge('sweep'))earned.push(BADGES.sweep);
+  if(cur.maxMult>=4&&earnBadge('heat'))earned.push(BADGES.heat);
+  if(cur.mode==='sector'&&win&&cur.tier===2&&earnBadge('warranted'))earned.push(BADGES.warranted);
+  if(cur.mode==='sector'&&win){store.set(KEY_CLEAR+cur.tier,'1');
+    if([0,1,2].every(i=>store.get(KEY_CLEAR+i)==='1')&&earnBadge('all'))earned.push(BADGES.all);}
+  if(cur.mode==='drill'&&acc===100&&earnBadge('remedial'))earned.push(BADGES.remedial);
+  if(cur.mode==='daily'){
+    const cnt=parseInt(store.get(KEY_DCOUNT)||'0',10)+1;store.set(KEY_DCOUNT,String(cnt));
+    if(cnt>=5&&earnBadge('daily5'))earned.push(BADGES.daily5);
+    store.set(KEY_DAILY,JSON.stringify({date:todayUTC(),score:cur.score,correct:cur.correct,q:cur.q,best:cur.best,results:cur.results}));
+  }
+  $('badgeLine').textContent=earned.length?'★ BADGE: '+earned.join(' · ')+' ★':'';
+  updateRankLine();
+  const oimg=$('ollieDbImg'),osay=$('ollieDbSay');
+  if(win){oimg.src=OLLIE_IMGS.talk;
+    osay.textContent=acc===100?'PERFECT RUN. THE REG FEARS YOU.':acc>=80?'BOARD-READY SHOOTING.':'CLEARED. THE AAR HAS HOMEWORK.';}
+  else{oimg.src=OLLIE_IMGS.angry;osay.textContent=pick(['RUN IT BACK.','THE FAR WON THIS ROUND. REMATCH?']);}
   $('stats').innerHTML=
-    st(cur.score.toLocaleString(),'SCORE')+st(acc+'%','ACCURACY')+st(cur.best,'BEST STREAK')+
-    (win&&cur.tier<TIERS.length-1?st('OPEN','NEXT SECTOR'):'');
+    st(cur.score.toLocaleString(),'SCORE')+st(acc+'%','ACCURACY')+st(cur.best,'BEST STREAK')+st('+'+xpGain,'XP')+
+    (cur.mode==='sector'&&win&&cur.tier<TIERS.length-1?st('OPEN','NEXT SECTOR'):'');
   const list=$('aarList');list.innerHTML='';
   if(cur.missed.length===0){list.innerHTML='<div class="clean">Zero misses. The reg fears you.</div>';}
   else cur.missed.forEach(m=>{
@@ -639,7 +817,8 @@ function endRun(survived){
   });
   entryBusy=false;entryDone=false;
   const e=$('entry');
-  if(cur.score>0){
+  $('aar').style.display='';
+  if(cur.score>0&&cur.boardEligible!==false){
     e.style.display='';
     $('nameInput').value=store.get(KEY_NAME)||'';
     $('nameInput').disabled=false;$('lockBtn').disabled=false;
@@ -657,13 +836,14 @@ async function submitScore(){
   entryBusy=true;sfx.ui();
   $('entryStatus').textContent='TRANSMITTING…';$('entryStatus').className='';
   try{
-    const r=await lbPost(cur.tier,name,cur.score);
+    const r=await lbPost(cur.mode==='daily'?'daily':cur.tier,name,cur.score);
     entryDone=true;
-    $('entryStatus').textContent=r.rank?'★ LOCKED IN — GLOBAL RANK #'+r.rank+' ★':'★ LOCKED IN ★';
+    const lbl=cur.mode==='daily'?'DAILY RANK':'WEEK RANK';
+    $('entryStatus').textContent=r.rank?('★ LOCKED IN — '+lbl+' #'+r.rank+' ★'):'★ LOCKED IN ★';
     $('entryStatus').className='gold';
     sfx.clear();
   }catch(err){
-    localSave(cur.tier,name,cur.score);
+    localSave(cur.mode==='daily'?'daily':cur.tier,name,cur.score);
     entryDone=true;
     $('entryStatus').textContent='BOARD UNREACHABLE — SAVED ON THIS MACHINE';
   }
@@ -671,16 +851,35 @@ async function submitScore(){
   $('nameInput').disabled=true;$('lockBtn').disabled=true;$('skipBtn').style.display='none';
 }
 
+function showDailyDone(d){
+  cur={mode:'daily',tier:0,score:d.score,correct:d.correct,q:d.q,best:d.best,results:d.results||[],missed:[],boardEligible:false,mult:1};
+  $('dbHd').textContent='DAILY COMPLETE';$('dbHd').className='hd win';
+  $('newhs').textContent='';$('rankUp').textContent='';
+  $('badgeLine').textContent='COME BACK TOMORROW FOR A NEW SET';
+  $('stats').innerHTML=st(d.score.toLocaleString(),'SCORE')+st((d.q?Math.round(d.correct/d.q*100):0)+'%','ACCURACY')+st(d.best,'BEST STREAK');
+  $('entry').style.display='none';$('aar').style.display='none';
+  $('ollieDbImg').src=OLLIE_IMGS.talk;$('ollieDbSay').textContent='ALREADY RAN TODAY. NEW SET AT MIDNIGHT ZULU.';
+  show('debrief');
+}
+
 /* =============== HIGH SCORE BOARD =============== */
 function renderTabs(){
   const w=$('boardTabs');w.innerHTML='';
   TIERS.forEach(t=>{
     const b=document.createElement('button');
-    b.className='tab'+(t.id===boardTier?' on':'');
+    b.className='tab'+(boardTier===t.id?' on':'');
     b.textContent=t.name;
     b.addEventListener('click',()=>{sfx.ui();openBoard(t.id,lastBoardFrom)});
     w.appendChild(b);
   });
+  const d=document.createElement('button');
+  d.className='tab'+(boardTier==='daily'?' on':'');
+  d.textContent='DAILY';
+  d.addEventListener('click',()=>{sfx.ui();openBoard('daily',lastBoardFrom)});
+  w.appendChild(d);
+  $('scopeRow').style.display=boardTier==='daily'?'none':'flex';
+  $('scopeWeek').classList.toggle('on',boardScope==='week');
+  $('scopeAll').classList.toggle('on',boardScope==='all');
 }
 function renderRows(rows){
   const list=$('boardList');list.innerHTML='';
@@ -700,8 +899,9 @@ async function openBoard(tier,from){
   $('boardStatus').textContent='DIALING THE MAINFRAME…';
   $('boardList').innerHTML='';
   let rows,src;
-  try{rows=await lbGet(tier);src='GLOBAL TOP 25 · '+TIERS[tier].name;}
-  catch(e){rows=localScores(tier);src=rows.length?'OFFLINE — SCORES ON THIS MACHINE ONLY':'OFFLINE — NO LOCAL SCORES YET';}
+  const label=tier==='daily'?('DAILY · '+todayUTC()):((boardScope==='week'?'THIS WEEK · ':'ALL-TIME · ')+TIERS[tier].name);
+  try{rows=await lbGet(tier,tier==='daily'?undefined:boardScope);src='TOP 25 · '+label;}
+  catch(e){rows=tier==='daily'?[]:localScores(tier);src=rows.length?'OFFLINE — SCORES ON THIS MACHINE ONLY':'OFFLINE — NO SCORES TO SHOW';}
   if(boardTier!==tier||!screens.board.classList.contains('on'))return;
   $('boardStatus').textContent=src;
   renderRows(rows);
@@ -717,6 +917,11 @@ $('boardBack').addEventListener('click',()=>{sfx.ui();
   if(lastBoardFrom==='debrief'){show('debrief')}
   else if(lastBoardFrom==='select'){renderSelect();show('select')}
   else{show('title')}});
+$('dailyBtn').addEventListener('click',()=>{sfx.ui();music.start();const d=dailyStatus();if(d&&d.date===todayUTC()){showDailyDone(d)}else{startDaily()}});
+$('drillBtn').addEventListener('click',()=>{sfx.ui();startDrill()});
+$('shareBtn').addEventListener('click',copyShare);
+$('scopeWeek').addEventListener('click',()=>{if(boardScope!=='week'){boardScope='week';sfx.ui();openBoard(boardTier,lastBoardFrom)}});
+$('scopeAll').addEventListener('click',()=>{if(boardScope!=='all'){boardScope='all';sfx.ui();openBoard(boardTier,lastBoardFrom)}});
 $('lockBtn').addEventListener('click',submitScore);
 $('skipBtn').addEventListener('click',()=>{sfx.ui();$('entry').style.display='none'});
 $('nameInput').addEventListener('input',e=>{
@@ -734,10 +939,11 @@ document.addEventListener('keydown',e=>{
   if(i!==undefined){const b=document.querySelectorAll('.ans')[i];b&&b.click();}
 });
 document.addEventListener('visibilitychange',()=>{
-  if(document.hidden){if(music.playing)music.stop();}
+  if(document.hidden){music.stop();}
   else if(music.on&&!screens.title.classList.contains('on'))music.start();
 });
 renderToggles();
+updateRankLine();
 </script>
 </body>
 </html>
