@@ -4,6 +4,8 @@ One-time setup, about 5 minutes. Same Cloudflare account you used for `kthq-ai-h
 
 > **Already deployed v1?** Just open the worker, **Edit code**, re-paste everything from `farcade-leaderboard-worker.js`, and Deploy. v2 adds weekly season boards (reset Mondays, UTC) and the Daily Drill board. No KV changes needed — same `LB` binding.
 
+> **v4 (CLOSEOUT):** same drill — open the worker, **Edit code**, re-paste everything from `farcade-leaderboard-worker.js`, Deploy. v4 adds the CLOSEOUT daily/weekly/all-time boards (board id `closeout`, dollar-scale scores). No KV changes needed. Until v4 is deployed, CLOSEOUT falls back to LOCAL boards automatically.
+
 ## 1. Create the KV namespace
 
 1. Go to dash.cloudflare.com → **Storage & Databases** → **KV**
@@ -49,6 +51,18 @@ You should see `{"scores":[]}`. Then play a round of PART LOCK, lock in a callsi
 - Old weekly/daily keys just sit unused; KV free tier storage is 1 GB, so no cleanup needed for years. Delete old keys whenever you feel tidy.
 - If you ever rename the worker, update `LB_URL` near the top of the script in `far-cade.html`.
 - This file and `farcade-leaderboard-worker.js` don't need to be pushed to GitHub — they're for your reference. Pushing them is harmless, though.
+
+## Admin: removing yourself (or anyone) from the boards
+
+One-time: give the worker an admin token, then use the local console page.
+
+1. Worker page → **Settings** → **Variables and Secrets** → **Add** → type **Secret**
+2. Name: `ADMIN_TOKEN` — value: any long random string you make up (treat it like a password)
+3. Re-paste the latest `farcade-leaderboard-worker.js` into the worker (v3 has the /admin endpoint) → **Deploy**
+4. Open `farcade-admin.html` from your site folder by double-clicking it (works locally, no hosting needed)
+5. Paste your token, type the callsign (e.g. `NICK`), hit **PURGE EVERYWHERE** — removes it from all-time, every weekly board, and every daily board in one shot
+
+The admin page can also show any board's raw contents and wipe a whole board. Keep `farcade-admin.html` off GitHub ideally, but every action requires the token, so an accidental push exposes the tool, not the power.
 
 ## Free tier limits (plenty)
 
