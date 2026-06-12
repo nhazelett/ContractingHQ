@@ -29,7 +29,7 @@ body{
 button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 
 /* ============ GAME CANVAS ============ */
-#cv{position:fixed;inset:0;display:block;z-index:1;background:var(--void)}
+#cv{position:fixed;left:0;top:0;display:block;z-index:1;background:var(--void)}
 
 /* ============ HUD ============ */
 #hud{position:fixed;left:0;right:0;top:0;z-index:10;pointer-events:none;
@@ -266,6 +266,81 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important}
+}
+
+/* ---------- MOBILE FIT (patch 1.1) ---------- */
+/* dvh tracks the dynamic mobile viewport; overlay buttons stay reachable */
+.ovbox{max-height:92vh;max-height:92dvh}
+#armorybody{max-height:50vh;max-height:52dvh}
+#inspector{max-height:36vh;max-height:38dvh}
+#title{padding-bottom:calc(46px + env(safe-area-inset-bottom))}
+.ov{padding:10px;align-items:flex-start;padding-top:max(12px,env(safe-area-inset-top))}
+.ovbox{margin:auto 0}
+@media(min-height:741px){ .ov{align-items:center} }
+
+@media(max-width:640px){
+  /* title screen: tighter rhythm, three character cards per row */
+  #tlogo{margin-top:12px}
+  #tsub{margin-top:10px}
+  #tline{margin-top:10px;font-size:17px}
+  #chars{gap:6px;margin-top:14px}
+  .char{flex:1 1 30%;min-width:30%;max-width:none;padding:9px 4px 8px}
+  .char canvas{width:34px;height:34px;margin-bottom:5px}
+  .char .hn{font-size:7px;line-height:1.4}
+  .char .hd{font-size:13px;min-height:0;margin-top:4px}
+  #stages{margin-top:10px;gap:6px}
+  .stage{min-width:100%;padding:8px 10px}
+  .stage canvas{width:32px;height:32px}
+  .stage .sd{font-size:14px}
+  #beststats{margin-top:12px;font-size:15px}
+  #trow{margin-top:10px}
+  .abtn{padding:13px 14px;margin:6px 3px 0;font-size:10px}
+  #tinsert{margin-top:10px}
+  .audiotg2{margin-top:10px;padding:11px 12px}
+  #tfoot{padding-top:18px}
+  #tfoot .crt{font-size:14px}
+  #tfoot .legal{font-size:11px}
+  /* overlays: tighter shell */
+  .ovbox{padding:16px 10px 18px}
+  /* upgrade cards: single column, icon-left rows — readable in two seconds */
+  #cards{flex-direction:column;gap:8px;margin-top:12px}
+  .card{display:grid;grid-template-columns:52px 1fr;column-gap:10px;align-items:center;
+    width:100%;max-width:none;min-width:0;min-height:0;padding:10px 12px;text-align:left}
+  .card canvas{grid-column:1;grid-row:1/span 6;width:44px;height:44px;margin:0}
+  .card .key{display:none}
+  .card .new{top:5px;right:7px;font-size:6px}
+  .card .cn{grid-column:2;min-height:0;font-size:9px;line-height:1.5}
+  .card .chips{grid-column:2;justify-content:flex-start;margin-top:4px}
+  .card .cf{grid-column:2;margin-top:4px;font-size:15px}
+  .card .delta{grid-column:2;margin-top:5px;padding-top:4px;font-size:14px}
+  .card .cp{grid-column:2;justify-content:flex-start;margin-top:5px}
+  /* AAR: compact stats */
+  #aarstats{gap:6px;margin-top:12px}
+  .aarbox{padding:9px 6px}
+  #aarkills .kr{font-size:16px;padding:4px 2px}
+  #aartip{font-size:16px;padding:10px 10px}
+  #aarbuild .bi{width:64px;padding:4px}
+  #aarbuild .bi span{font-size:11px}
+  /* boards + armory rows */
+  .brow{font-size:17px}
+  .armrow .an{font-size:8px}
+  .armrow .ad{font-size:14px}
+  .btab{font-size:8px;padding:10px 8px}
+  /* wheels stay >=56px tap targets */
+  #wheels{gap:10px}
+}
+@media(max-height:740px){
+  /* short screens (landscape phones, small devices): compress the title column */
+  #tlogo{margin-top:6px;font-size:clamp(24px,6vw,40px)}
+  #tsub{margin-top:6px}
+  #tline{margin-top:6px}
+  #chars{margin-top:10px}
+  .char .hd{min-height:0}
+  #beststats{margin-top:8px}
+  #trow{margin-top:8px}
+  #tinsert{margin-top:6px}
+  .audiotg2{margin-top:8px}
+  #tfoot{padding-top:12px}
 }
 </style>
 </head>
@@ -1792,11 +1867,17 @@ const cv=$('cv'), ctx=cv.getContext('2d');
 let DPR=1, ZOOM=1, VW=0, VH=0;
 function resize(){
   DPR=min(2,window.devicePixelRatio||1);
-  VW=innerWidth; VH=innerHeight;
+  // visualViewport tracks the real visible area on mobile (URL bar, rotation)
+  const vv=window.visualViewport;
+  VW=vv?Math.round(vv.width):innerWidth;
+  VH=vv?Math.round(vv.height):innerHeight;
   cv.width=floor(VW*DPR); cv.height=floor(VH*DPR);
+  cv.style.width=VW+'px'; cv.style.height=VH+'px';
   ZOOM=(VW<560?0.82:1)*DPR;
 }
 addEventListener('resize',resize);
+if(window.visualViewport)visualViewport.addEventListener('resize',resize);
+addEventListener('orientationchange',()=>setTimeout(resize,250));
 
 function blit(spr,x,y,sc,rot){
   const img=SPR[spr], w=img.width;
