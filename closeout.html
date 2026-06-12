@@ -109,6 +109,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   border:3px solid #2d1a55;border-radius:10px;background:#120829;position:relative;
   transition:transform .12s,border-color .12s,box-shadow .12s}
 .card:hover,.card:focus-visible{transform:translateY(-5px);border-color:var(--gold);box-shadow:0 0 22px rgba(255,210,63,.45);outline:none}
+.card .cwrap{display:flex;flex-direction:column;align-items:center}
+.card .ctext{width:100%}
 .card .key{position:absolute;top:6px;left:8px;font-family:'VT323',monospace;font-size:16px;color:#5e548a}
 .card .new{position:absolute;top:6px;right:8px;font-family:'Press Start 2P',monospace;font-size:7px;color:var(--gold);text-shadow:0 0 6px var(--gold)}
 .card canvas{width:44px;height:44px;margin:4px auto 10px;display:block}
@@ -302,18 +304,20 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   #tfoot .legal{font-size:11px}
   /* overlays: tighter shell */
   .ovbox{padding:16px 10px 18px}
-  /* upgrade cards: single column, icon-left rows — readable in two seconds */
+  /* upgrade cards: single column, icon-left rows — readable in two seconds.
+     Layout lives on inner divs, never on the <button> (Safari button-layout bug). */
   #cards{flex-direction:column;gap:8px;margin-top:12px}
-  .card{display:grid;grid-template-columns:52px 1fr;column-gap:10px;align-items:center;
-    width:100%;max-width:none;min-width:0;min-height:0;padding:10px 12px;text-align:left}
-  .card canvas{grid-column:1;grid-row:1/span 6;width:44px;height:44px;margin:0}
+  .card{width:100%;max-width:none;min-width:0;min-height:0;padding:10px 12px;text-align:left}
+  .card .cwrap{flex-direction:row;align-items:center;gap:10px}
+  .card .cwrap canvas{width:44px;height:44px;margin:0;flex:none}
+  .card .ctext{flex:1;min-width:0}
   .card .key{display:none}
   .card .new{top:5px;right:7px;font-size:6px}
-  .card .cn{grid-column:2;min-height:0;font-size:9px;line-height:1.5}
-  .card .chips{grid-column:2;justify-content:flex-start;margin-top:4px}
-  .card .cf{grid-column:2;margin-top:4px;font-size:15px}
-  .card .delta{grid-column:2;margin-top:5px;padding-top:4px;font-size:14px}
-  .card .cp{grid-column:2;justify-content:flex-start;margin-top:5px}
+  .card .cn{min-height:0;font-size:9px;line-height:1.5}
+  .card .chips{justify-content:flex-start;margin-top:4px}
+  .card .cf{margin-top:4px;font-size:15px}
+  .card .delta{margin-top:5px;padding-top:4px;font-size:14px}
+  .card .cp{justify-content:flex-start;margin-top:5px}
   /* AAR: compact stats */
   #aarstats{gap:6px;margin-top:12px}
   .aarbox{padding:9px 6px}
@@ -1726,19 +1730,22 @@ function buildCards(){
     else { icon='cash';name='YEAR-END FUNDS';flavor='+$10,000 obligated. Spend-down found you.'; }
     el.innerHTML='<span class="key crt">['+(i+1)+']</span>'+(isNew?'<span class="new px">★ NEW ★</span>':'');
     if(isNew)el.classList.add('newcard');
-    el.appendChild(iconCanvas(icon,88));
-    const cn=document.createElement('div');cn.className='cn px';cn.textContent=name;el.appendChild(cn);
+    const cw=document.createElement('div');cw.className='cwrap';
+    cw.appendChild(iconCanvas(icon,88));
+    const tx=document.createElement('div');tx.className='ctext';
+    const cn=document.createElement('div');cn.className='cn px';cn.textContent=name;tx.appendChild(cn);
     if(tags){ const tg=document.createElement('div');tg.className='chips';
       for(const t of tags){ const c2=document.createElement('span');c2.className='chip px';c2.textContent=t;tg.appendChild(c2); }
-      el.appendChild(tg); }
-    const cf=document.createElement('div');cf.className='cf crt';cf.textContent=flavor;el.appendChild(cf);
-    if(delta){ const dl=document.createElement('div');dl.className='delta crt';dl.textContent=delta;el.appendChild(dl); }
+      tx.appendChild(tg); }
+    const cf=document.createElement('div');cf.className='cf crt';cf.textContent=flavor;tx.appendChild(cf);
+    if(delta){ const dl=document.createElement('div');dl.className='delta crt';dl.textContent=delta;tx.appendChild(dl); }
     if(ch.kind==='wup'||ch.kind==='pup'||isNew){
       const cp=document.createElement('div');cp.className='cp';
       const mx=ch.kind==='pup'||ch.kind==='pnew'?(PASSIVES[ch.id].maxl||MAXLVL):MAXLVL;
       for(let k=0;k<mx;k++){const b=document.createElement('b');
         if(k<lvl)b.className='on'; else if(k===lvl)b.className='nx'; cp.appendChild(b);}
-      el.appendChild(cp); }
+      tx.appendChild(cp); }
+    cw.appendChild(tx); el.appendChild(cw);
     if(isW)el.classList.add('wpn');
     el.onclick=()=>applyCard(ch);
     wrap.appendChild(el);
