@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-06-11T11:56:13.793Z",
+  "generatedAt": "2026-06-12T11:26:42.461Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -8,10 +8,10 @@ window.KTHQ_GAO_DATA = {
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
     "total": 14,
-    "latestDecisionDate": "2026-06-08",
+    "latestDecisionDate": "2026-06-10",
     "sustained": 0,
-    "denied": 11,
-    "dismissed": 1,
+    "denied": 10,
+    "dismissed": 2,
     "mixed": 2,
     "unclassified": 0,
     "sourceStatus": {
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 22
+        "parsedOutcomes": 24
       },
       "productPages": {
         "attempted": 14,
@@ -36,6 +36,33 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424421,B-424421.2",
+      "caseName": "The Gilchrist Law Firm, P.A.",
+      "title": "The Gilchrist Law Firm, P.A.",
+      "bNumbers": [
+        "B-424421",
+        "B-424421.2"
+      ],
+      "bNumberText": "B-424421, B-424421.2",
+      "link": "https://www.gao.gov/products/b-424421%2Cb-424421.2",
+      "publicationDate": "2026-06-11",
+      "decisionDate": "2026-06-10",
+      "displayDate": "Jun 10, 2026",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We dismiss the protest.",
+      "officialSynopsis": "The Gilchrist Law Firm, P.A. (GLF), a service-disabled, veteran-owned small business (SDVOSB) of Coral Gables, Florida, protests the rejection of the...",
+      "highlights": "",
+      "digest": "Protest challenging rejection of protester's quotation as late is dismissed as abandoned.",
+      "tags": [
+        "Small business"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424508,B-424509,B-424510",
       "caseName": "Oready, LLC",
@@ -315,35 +342,6 @@ window.KTHQ_GAO_DATA = {
       "officialSynopsis": "ID8Spark, LLC, of Catonsville, Maryland, a small business, protests the issuance of a Federal Supply Schedule (FSS) task order to Chags Health...",
       "highlights": "",
       "digest": "1. Protest that agency misevaluated quotations and engaged in disparate treatment under competition for Federal Supply Schedule task order is denied where the record shows the evaluation was reasonable and consistent with the solicitation criteria and differences in evaluation treatment was the result of differences in vendors' quotations. 2. Protest challenging agency's selection of the best-suited vendor and the subsequent conduct of exchanges only with that firm is denied where the record shows the best-suited vendor determination was reasonable and consistent with the terms of the solicitation.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Small business",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424317",
-      "caseName": "Metro Accounting and Professional Services, LLC",
-      "title": "Metro Accounting and Professional Services, LLC",
-      "bNumbers": [
-        "B-424317"
-      ],
-      "bNumberText": "B-424317",
-      "link": "https://www.gao.gov/products/b-424317",
-      "publicationDate": "2026-05-26",
-      "decisionDate": "2026-05-15",
-      "displayDate": "May 15, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Metro Accounting and Professional Services, LLC (Metro), a small business of Goodyear, Arizona, protests the issuance of a task order to Vector CSP,...",
-      "highlights": "",
-      "digest": "Protest challenging the agency's evaluation of the protester's proposal as ineligible for award is denied where the evaluation was reasonable and consistent with the solicitation.",
       "tags": [
         "Evaluation",
         "Solicitation terms",
