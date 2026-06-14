@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-06-13T10:07:25.869Z",
-  "since": "2024-12-20",
+  "generatedAt": "2026-06-14T10:31:11.297Z",
+  "since": "2024-12-21",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,12 +14,12 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 134,
+    "total": 132,
     "latestPublicationDate": "2026-06-04",
     "openCommentWindows": 17,
     "rules": 56,
     "byTone": {
-      "monitor": 75,
+      "monitor": 73,
       "action": 38,
       "active": 1,
       "watch": 20
@@ -4752,75 +4752,6 @@ window.KTHQ_FEDREG_DATA = {
       ],
       "htmlUrl": "https://www.federalregister.gov/documents/2024/12/27/2024-30670/general-services-administration-acquisition-regulation-gsar-update-to-omb-approval-table",
       "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-12-27/pdf/2024-30670.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2024-30329",
-      "documentNumber": "2024-30329",
-      "title": "Information Collection Requirement: DFARS Part 232, Contract Financing, and the Clause at 252.232-7002, Progress Payments for Foreign Military Sales Acquisition",
-      "shortTitle": "Information Collection Requirement: DFARS Part 232, Contract Financing, and the Clause at 252.232-7002, Progress Payments for Foreign Military Sales Acquisition",
-      "system": "DFARS",
-      "stage": "Information collection",
-      "topic": "Payments",
-      "actionLevel": "Monitor",
-      "actionTone": "monitor",
-      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
-      "nextSteps": [
-        "Identify the cited provision, clause, form, or system",
-        "Comment only if your office has burden data or a process concern",
-        "No template change unless a later rule follows"
-      ],
-      "type": "Notice",
-      "publicationDate": "2024-12-20",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-02-18",
-      "datesText": "DoD will consider all comments received by February 18, 2025.",
-      "actionText": "Notice and request for comments regarding a proposed extension of an approved information collection requirement.",
-      "summary": "In compliance with the Paperwork Reduction Act of 1995, DoD announces the proposed extension of a public information collection requirement and seeks public comment on the provisions thereof. DoD invites comments on: whether the proposed collection of information is necessary for the proper performance of the functions of DoD, including whether the information will have practical utility; the accuracy of DoD's estimate of the burden of the proposed information collection; ways to enhance the quality, utility, and...",
-      "citation": "89 FR 104111",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Defense Department",
-        "Defense Acquisition Regulations System"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2024/12/20/2024-30329/information-collection-requirement-dfars-part-232-contract-financing-and-the-clause-at-252232-7002",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-12-20/pdf/2024-30329.pdf",
-      "sourceQuery": "DFARS / DARS agency feed"
-    },
-    {
-      "id": "2024-30452",
-      "documentNumber": "2024-30452",
-      "title": "Information Collection; Certain Federal Acquisition Regulation Part 4 Requirements",
-      "shortTitle": "Information Collection; Certain Federal Acquisition Regulation Part 4 Requirements",
-      "system": "FAR",
-      "stage": "Information collection",
-      "topic": "Acquisition policy",
-      "actionLevel": "Monitor",
-      "actionTone": "monitor",
-      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
-      "nextSteps": [
-        "Identify the cited provision, clause, form, or system",
-        "Comment only if your office has burden data or a process concern",
-        "No template change unless a later rule follows"
-      ],
-      "type": "Notice",
-      "publicationDate": "2024-12-20",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-02-18",
-      "datesText": "DoD, GSA, and NASA will consider all comments received by February 18, 2025.",
-      "actionText": "Notice and request for comments.",
-      "summary": "In accordance with the Paperwork Reduction Act of 1995, and the Office of Management and Budget (OMB) regulations, DoD, GSA, and NASA invite the public to comment on an extension concerning certain Federal Acquisition Regulation (FAR) part 4 requirements and a revision to address existing Commercial and Government Entity code requirements. DoD, GSA, and NASA invite comments on: whether the proposed collection of information is necessary for the proper performance of the functions of Federal Government acquisitions...",
-      "citation": "89 FR 104154",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2024/12/20/2024-30452/information-collection-certain-federal-acquisition-regulation-part-4-requirements",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-12-20/pdf/2024-30452.pdf",
       "sourceQuery": "Federal Acquisition Regulation keyword feed"
     }
   ]
