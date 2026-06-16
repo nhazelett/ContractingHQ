@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Download the CCO Office Package Tool, a local training dashboard that generates mock contracting office packages, contract files, BPAs, IDIQs, injects, and controller artifacts." />
+
+  <title>CCO Office Package Tool | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>
+    .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+    .office-tool-bg {
+      background: #040d1f;
+      padding: 4rem 1.5rem 6rem;
+      min-height: 80vh;
+    }
+    .hero-download-actions {
+      display: flex;
+      justify-content: center;
+      gap: .7rem;
+      flex-wrap: wrap;
+      margin-top: 1.35rem;
+    }
+    .hero-download-actions a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: .58rem 1.1rem;
+      border-radius: 8px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 800;
+      letter-spacing: .5px;
+      text-decoration: none;
+    }
+    .hero-download-primary {
+      background: var(--accent);
+      color: #04102a;
+    }
+    .hero-download-secondary {
+      color: var(--silver-light);
+      border: 1px solid rgba(255,255,255,0.24);
+      background: rgba(255,255,255,0.05);
+    }
+    .office-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .office-hero-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 2rem;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 2rem;
+      border: 1px solid rgba(74,158,255,0.18);
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at 78% 22%, rgba(74,158,255,0.12), transparent 32%),
+        rgba(10,22,50,0.72);
+    }
+    .office-kicker {
+      display: inline-block;
+      margin-bottom: .75rem;
+      padding: .28rem .9rem;
+      border: 1px solid rgba(74,158,255,0.3);
+      border-radius: 999px;
+      background: rgba(74,158,255,0.1);
+      color: var(--accent);
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .office-title {
+      margin: 0 0 .8rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      line-height: 1.05;
+      color: var(--white);
+    }
+    .office-lede {
+      margin: 0 0 1.35rem;
+      color: var(--silver-light);
+      font-size: 1rem;
+      line-height: 1.7;
+      max-width: 650px;
+    }
+    .office-actions {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .office-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .78rem 1.25rem;
+      border-radius: 8px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 800;
+      letter-spacing: .5px;
+      text-decoration: none;
+      transition: transform .16s, box-shadow .2s, background .2s;
+    }
+    .office-btn-primary {
+      background: var(--accent);
+      color: #04102a;
+    }
+    .office-btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 28px rgba(74,158,255,0.32);
+    }
+    .office-btn-secondary {
+      color: var(--silver-light);
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.04);
+    }
+    .office-btn-secondary:hover {
+      background: rgba(255,255,255,0.08);
+      color: var(--white);
+    }
+    .office-preview {
+      border: 1px solid rgba(74,158,255,0.18);
+      border-radius: 14px;
+      background: rgba(4,13,31,0.78);
+      overflow: hidden;
+      box-shadow: 0 18px 44px rgba(0,0,0,0.35);
+    }
+    .preview-bar {
+      display: flex;
+      gap: .35rem;
+      padding: .7rem .8rem;
+      border-bottom: 1px solid rgba(74,158,255,0.14);
+      background: rgba(255,255,255,0.03);
+    }
+    .preview-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(74,158,255,0.5);
+    }
+    .preview-screen {
+      padding: 1rem;
+    }
+    .preview-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: .85rem;
+      color: var(--silver-light);
+      font-size: .72rem;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+    .preview-pill {
+      padding: .18rem .55rem;
+      border-radius: 999px;
+      color: #6ee7b7;
+      border: 1px solid rgba(52,211,153,0.3);
+      background: rgba(52,211,153,0.12);
+    }
+    .preview-row {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      gap: .7rem;
+      align-items: center;
+      padding: .65rem 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .preview-id {
+      color: var(--accent);
+      font-family: Consolas, 'Courier New', monospace;
+      font-size: .72rem;
+      font-weight: 800;
+    }
+    .preview-name {
+      color: var(--white);
+      font-size: .82rem;
+      font-weight: 700;
+    }
+    .preview-meta {
+      color: var(--text-muted);
+      font-size: .68rem;
+      margin-top: .08rem;
+    }
+    .preview-status {
+      color: #fcd34d;
+      font-size: .68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .notice {
+      margin-bottom: 2rem;
+      padding: 1.15rem 1.25rem;
+      border-radius: 12px;
+      border: 1px solid rgba(251,191,36,0.34);
+      background: rgba(251,191,36,0.08);
+      color: #f8e2a3;
+      line-height: 1.65;
+      font-size: .92rem;
+    }
+    .notice strong { color: #fff4cf; }
+    .office-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .office-card {
+      padding: 1.25rem 1.3rem;
+      border-radius: 12px;
+      border: 1px solid rgba(74,158,255,0.14);
+      background: rgba(10,22,50,0.72);
+    }
+    .office-card h2,
+    .office-card h3 {
+      margin: 0 0 .55rem;
+      font-family: 'Rajdhani', sans-serif;
+      color: var(--white);
+      font-size: 1.18rem;
+      line-height: 1.2;
+    }
+    .office-card p {
+      margin: 0;
+      color: var(--silver);
+      font-size: .88rem;
+      line-height: 1.65;
+    }
+    .office-card ul,
+    .office-card ol {
+      margin: .25rem 0 0 1.1rem;
+      color: var(--silver);
+      font-size: .88rem;
+      line-height: 1.7;
+    }
+    .office-card li { padding-left: .2rem; }
+    .wide-card { grid-column: 1 / -1; }
+    .download-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1.25rem;
+      align-items: center;
+      margin: 0 0 2rem;
+      padding: 1.45rem;
+      border-radius: 14px;
+      border: 1px solid rgba(52,211,153,0.25);
+      background: rgba(52,211,153,0.07);
+    }
+    .download-panel h2 {
+      margin: 0 0 .3rem;
+      font-family: 'Rajdhani', sans-serif;
+      color: var(--white);
+      font-size: 1.35rem;
+    }
+    .download-panel p {
+      margin: 0;
+      color: var(--silver-light);
+      font-size: .9rem;
+      line-height: 1.65;
+    }
+    .ai-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .fine-print {
+      color: var(--text-muted);
+      font-size: .8rem;
+      line-height: 1.65;
+      text-align: center;
+      max-width: 820px;
+      margin: 2.25rem auto 0;
+    }
+    .fine-print a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .fine-print a:hover { text-decoration: underline; }
+    @media (max-width: 840px) {
+      .office-hero-panel,
+      .download-panel {
+        grid-template-columns: 1fr;
+      }
+      .office-preview { max-width: 420px; }
+    }
+  </style>
+
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="ContractingHQ" />
+  <meta property="og:title"       content="CCO Office Package Tool | ContractingHQ" />
+  <meta property="og:description" content="Download a local training dashboard that generates mock CCO office drives, contract files, BPAs, IDIQs, injects, and controller-only artifacts." />
+  <meta property="og:url"         content="https://kthq.org/cco-office-package-tool.html" />
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:site"        content="@ContractingHQ" />
+  <meta name="twitter:title"       content="CCO Office Package Tool | ContractingHQ" />
+  <meta name="twitter:description" content="Download a local training dashboard that generates mock CCO office packages." />
+  <link rel="canonical"            href="https://kthq.org/cco-office-package-tool.html" />
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html" class="active">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="community-tools.html">Community Tools</a></li>
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin:0 0 0 auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Buy Me a Coffee</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Capstone Exercise Tool</span>
+    <h1 class="page-hero-title">CCO Office Package Tool</h1>
+    <p class="page-hero-sub">Generate a mock contracting office drive with contract files, admin trackers, injects, BPAs, IDIQs, and trainee-ready exports.</p>
+    <div class="hero-download-actions">
+      <a class="hero-download-primary" href="downloads/CCO_Office_Package_Tool.zip" download>Download ZIP</a>
+      <a class="hero-download-secondary" href="#setup">Setup Instructions</a>
+    </div>
+  </div>
+</div>
+
+<main class="office-tool-bg">
+  <div class="office-wrap">
+    <section class="office-hero-panel">
+      <div>
+        <span class="office-kicker">Downloadable Local Tool</span>
+        <h2 class="office-title">Build the office file cabinet before the exercise starts.</h2>
+        <p class="office-lede">The CCO Office Package Tool is a local browser dashboard that creates realistic mock contract action folders for training. It can build single files, append new actions to an existing office, create BPA/IDIQ masters and orders, export trainee copies, and run QC validation before you hand the drive to students.</p>
+        <div class="office-actions">
+          <a class="office-btn office-btn-primary" href="downloads/CCO_Office_Package_Tool.zip" download>Download ZIP</a>
+          <a class="office-btn office-btn-secondary" href="#setup">View setup steps</a>
+        </div>
+      </div>
+      <div class="office-preview" aria-label="Mock dashboard preview">
+        <div class="preview-bar">
+          <span class="preview-dot"></span>
+          <span class="preview-dot"></span>
+          <span class="preview-dot"></span>
+        </div>
+        <div class="preview-screen">
+          <div class="preview-heading">
+            <span>Mock Office Drive</span>
+            <span class="preview-pill">Valid</span>
+          </div>
+          <div class="preview-row">
+            <div class="preview-id">P0007</div>
+            <div>
+              <div class="preview-name">Generator Maintenance</div>
+              <div class="preview-meta">SOR, funding, MRR, quotes, award</div>
+            </div>
+            <div class="preview-status">Done</div>
+          </div>
+          <div class="preview-row">
+            <div class="preview-id">D0002</div>
+            <div>
+              <div class="preview-name">Vehicle Lease IDIQ</div>
+              <div class="preview-meta">Awardee pool and ordering data</div>
+            </div>
+            <div class="preview-status">Active</div>
+          </div>
+          <div class="preview-row">
+            <div class="preview-id">F0004</div>
+            <div>
+              <div class="preview-name">Task Order</div>
+              <div class="preview-meta">Parent tracker updated</div>
+            </div>
+            <div class="preview-status">Queued</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="notice">
+      <strong>Use a personal computer.</strong> This download is intended for personal machines used to prepare training materials. Government computers will often block local tool downloads, scripts, ZIP files, or API-key setup. Do not use it for real procurement records, sensitive data, PII, CUI, or classified information.
+    </div>
+
+    <section class="office-grid" aria-label="Tool overview">
+      <article class="office-card">
+        <h3>Contract files</h3>
+        <p>Generate full mock action folders with SORs, funding documents, market research, solicitations, quotes, evaluations, awards, and delivery confirmation artifacts.</p>
+      </article>
+      <article class="office-card">
+        <h3>BPA and IDIQ support</h3>
+        <p>Create master vehicles with awardee rosters, price or competition structures, calls, task orders, parent links, and administration trackers.</p>
+      </article>
+      <article class="office-card">
+        <h3>Inject-ready training</h3>
+        <p>Plant controlled problems such as expired vehicles, funding issues, late quotes, missing evaluations, SAM concerns, or tracker mismatches with controller-only answer keys.</p>
+      </article>
+      <article class="office-card">
+        <h3>Office admin artifacts</h3>
+        <p>Each office gets workload trackers, continuity notes, vehicle registry data, validation reports, and trainee export tools so the package behaves like an office drive.</p>
+      </article>
+    </section>
+
+    <section class="download-panel">
+      <div>
+        <h2>Download the current package</h2>
+        <p>The ZIP contains the dashboard, generator, setup scripts, example AI settings file, and installation instructions. Generated offices stay local on the user's machine.</p>
+      </div>
+      <a class="office-btn office-btn-primary" href="downloads/CCO_Office_Package_Tool.zip" download>Download ZIP</a>
+    </section>
+
+    <section class="office-grid" id="setup" aria-label="Setup instructions">
+      <article class="office-card wide-card">
+        <h2>Basic setup</h2>
+        <ol>
+          <li>Download the ZIP on a personal computer.</li>
+          <li>Extract the folder somewhere normal, such as Documents.</li>
+          <li>Open the <strong>turnover_tool</strong> folder.</li>
+          <li>Run <strong>Install Requirements.bat</strong> once if Python dependencies are missing.</li>
+          <li>Run <strong>Start Dashboard.bat</strong>.</li>
+          <li>The local dashboard opens in your browser and writes new packages to the local <strong>Outputs</strong> folder.</li>
+        </ol>
+      </article>
+
+      <article class="office-card">
+        <h3>Works without AI</h3>
+        <p>The generator has deterministic templates and data built in. It can create usable mock office packages without an AI account, API key, login, or network call.</p>
+      </article>
+      <article class="office-card">
+        <h3>Better with optional AI</h3>
+        <p>AI assist can add more variation and a controller-only QA pass. It is useful for broader scenario texture, but the tool still controls PIIDs, folders, amounts, trackers, and validation.</p>
+      </article>
+      <article class="office-card">
+        <h3>User-owned API setup</h3>
+        <p>If a user wants AI, they should use their own OpenAI API key. Run <strong>Setup AI Settings.bat</strong>, paste the key, and restart the dashboard. A ChatGPT subscription is not the same as API access.</p>
+      </article>
+    </section>
+
+    <section class="office-grid ai-steps" aria-label="AI guidance">
+      <article class="office-card">
+        <h3>What AI changes</h3>
+        <ul>
+          <li>More varied scenarios and descriptions</li>
+          <li>Better scenario-specific details</li>
+          <li>Controller-only QA notes after generation</li>
+        </ul>
+      </article>
+      <article class="office-card">
+        <h3>What AI does not control</h3>
+        <ul>
+          <li>PIID sequencing and folder structure</li>
+          <li>Funding math and registry links</li>
+          <li>Validation, inject keys, and trainee exports</li>
+        </ul>
+      </article>
+      <article class="office-card">
+        <h3>Privacy note</h3>
+        <p>Do not put real contract information, names, PII, source selection information, CUI, or classified data into prompts. Treat this as a training content generator, not an official records system.</p>
+      </article>
+    </section>
+
+    <p class="fine-print">This tool is for education and exercise preparation only. It is not an official government system and is not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For other KTHQ tools, return to the <a href="tools.html">tools directory</a>.</p>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="community-tools.html">Community Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+<script src="main.js"></script>
+<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
