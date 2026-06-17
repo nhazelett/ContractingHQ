@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAR Historian · KTHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#15182b;
+    --ink-2:#1d2138;
+    --ink-3:#272c47;
+    --paper:#f4f1e9;
+    --paper-edge:#e7e2d4;
+    --record:#fbfaf6;
+    --text:#23262e;
+    --muted:#6c6f7e;
+    --muted-2:#9a8f74;
+    --line:#d9d3c4;
+    --line-ink:#33385a;
+    --del:#a83a2a;
+    --del-bg:#f3dcd6;
+    --ins:#2f6249;
+    --ins-bg:#dcebe0;
+    --ins-bg:#d9e9df;
+    --brass:#b8893b;
+    --brass-soft:#cdb07a;
+    --chip:#ece4d2;
+    --focus:#e7b65a;
+    --serif:"IBM Plex Serif",Georgia,"Times New Roman",serif;
+    --sans:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    display:flex;flex-direction:column;min-height:100vh;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead{
+    background:
+      linear-gradient(180deg,var(--ink-2),var(--ink));
+    color:var(--paper);
+    border-bottom:1px solid var(--line-ink);
+    padding:18px 26px 16px;
+  }
+  .brandrow{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap}
+  .seal{
+    font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+    color:var(--ink);background:var(--brass-soft);
+    padding:3px 7px;border-radius:2px;font-weight:600;
+    align-self:center;
+  }
+  .wordmark{
+    font-family:var(--sans);font-weight:700;
+    font-size:clamp(22px,3.4vw,30px);letter-spacing:-.01em;line-height:1;
+  }
+  .wordmark b{color:var(--brass-soft);font-weight:700}
+  .tag{
+    font-family:var(--mono);font-size:11px;letter-spacing:.04em;
+    color:#a7abc4;margin-left:auto;text-align:right;line-height:1.5;
+  }
+  .tag span{color:var(--brass-soft)}
+
+  /* ---------- control bar ---------- */
+  .controls{
+    display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;
+    margin-top:16px;
+  }
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{
+    font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+    text-transform:uppercase;color:#8c90ab;
+  }
+  select,.btn{
+    font-family:var(--mono);font-size:13px;
+    background:var(--ink-3);color:var(--paper);
+    border:1px solid var(--line-ink);border-radius:3px;
+    padding:9px 11px;min-height:38px;
+  }
+  select{min-width:210px;max-width:340px}
+  #section{
+    font-family:var(--mono);font-size:13px;
+    background:var(--ink-3);color:var(--paper);
+    border:1px solid var(--line-ink);border-radius:3px;
+    padding:9px 11px;min-height:38px;min-width:250px;max-width:360px;
+  }
+  #section::placeholder{color:#8c90ab}
+  #section:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+  #section:disabled{opacity:.55}
+  select:focus-visible,.btn:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+  .btn{
+    cursor:pointer;background:var(--brass);color:#231a06;border-color:var(--brass);
+    font-weight:600;letter-spacing:.03em;padding-inline:16px;
+  }
+  .btn:hover{background:var(--brass-soft)}
+  .btn[disabled]{opacity:.4;cursor:not-allowed}
+
+  /* ---------- recently-amended ticker ---------- */
+  .ticker{
+    display:flex;align-items:center;gap:8px;margin-top:14px;
+    padding-top:12px;border-top:1px solid var(--line-ink);
+    overflow-x:auto;scrollbar-width:thin;
+  }
+  .tk-label{
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--brass-soft);white-space:nowrap;padding-right:4px;flex:none;
+  }
+  .tk-item{
+    flex:none;cursor:pointer;font-family:var(--mono);font-size:11px;
+    color:#c7cae0;background:var(--ink-3);border:1px solid var(--line-ink);
+    border-radius:3px;padding:5px 9px;white-space:nowrap;
+  }
+  .tk-item b{color:var(--brass-soft);font-weight:600}
+  .tk-item:hover{border-color:var(--brass-soft);color:#fff}
+  .tk-item:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+
+  /* ---------- stage ---------- */
+  .stage{
+    flex:1;display:grid;grid-template-columns:340px 1fr;
+    background:var(--paper);min-height:0;
+  }
+
+  /* ---------- ledger (timeline spine) ---------- */
+  .ledger{
+    background:var(--paper);
+    border-right:1px solid var(--paper-edge);
+    overflow:auto;padding:0 0 40px;
+  }
+  .ledger-head{
+    position:sticky;top:0;z-index:2;
+    background:var(--paper);border-bottom:1px solid var(--line);
+    padding:14px 20px 12px;
+  }
+  .ledger-head h2{
+    margin:0;font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--muted-2);font-weight:600;
+  }
+  .ledger-sub{font-family:var(--serif);font-size:15px;color:var(--text);margin-top:4px;font-weight:500}
+  .ledger-count{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:2px}
+
+  .spine{position:relative;padding:8px 16px 0 22px}
+  .spine::before{
+    content:"";position:absolute;left:30px;top:14px;bottom:6px;
+    width:1px;background:var(--line);
+  }
+  .entry{
+    position:relative;width:100%;text-align:left;cursor:pointer;
+    background:transparent;border:0;border-radius:5px;
+    padding:11px 12px 11px 26px;margin:2px 0;
+    display:block;color:inherit;font-family:inherit;
+  }
+  .entry:hover{background:#ece7d7}
+  .entry:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+  .entry .node{
+    position:absolute;left:4px;top:16px;width:11px;height:11px;border-radius:50%;
+    background:var(--paper);border:2px solid var(--muted-2);
+  }
+  .entry.sel{background:var(--ink);}
+  .entry.sel .e-date,.entry.sel .e-meta{color:var(--paper)}
+  .entry.sel .node{border-color:var(--brass);background:var(--brass)}
+  .entry.sub .node{border-color:var(--del)}
+  .entry.rmv .node{background:var(--del);border-color:var(--del)}
+  .entry.add .node{background:var(--ins);border-color:var(--ins)}
+  .entry.annual .node{background:#dfe7ef;border-color:#3a5066}
+  .e-date{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.01em}
+  .e-meta{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:3px;letter-spacing:.02em}
+  .tagchip{
+    display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;
+    text-transform:uppercase;padding:1px 5px;border-radius:2px;margin-right:5px;
+    border:1px solid transparent;
+  }
+  .t-sub{background:var(--del-bg);color:var(--del);border-color:#e3b5ab}
+  .t-adm{background:var(--chip);color:var(--muted-2);border-color:var(--line)}
+  .t-add{background:var(--ins-bg);color:var(--ins);border-color:#b6d3c2}
+  .t-rmv{background:var(--del);color:#fff}
+  .t-base{background:#dfe7ef;color:#3a5066;border-color:#c2d2e0}
+
+  .stratum{
+    margin:18px 16px 0;padding:13px 14px;border:1px dashed var(--line);
+    border-radius:6px;background:#efe9da;
+  }
+  .stratum h3{margin:0 0 4px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2)}
+  .stratum p{margin:0;font-size:12px;line-height:1.5;color:var(--muted)}
+
+  /* ---------- record (reading pane) ---------- */
+  .record{
+    background:var(--record);overflow:auto;min-height:0;
+    display:flex;flex-direction:column;
+  }
+  .record-head{
+    position:sticky;top:0;z-index:2;background:var(--record);
+    border-bottom:1px solid var(--line);padding:20px 34px 16px;
+  }
+  .cite{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--brass);font-weight:600}
+  .sec-title{font-family:var(--serif);font-size:clamp(20px,2.6vw,26px);margin:6px 0 0;font-weight:500;line-height:1.2}
+  .stamp{
+    display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;
+    font-family:var(--mono);font-size:11px;color:var(--muted);
+  }
+  .stamp b{color:var(--text);font-weight:600}
+  .stamp .vs{color:var(--del);font-weight:600}
+
+  .legend{
+    display:flex;gap:16px;align-items:center;margin-top:12px;
+    font-family:var(--mono);font-size:11px;color:var(--muted);
+  }
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .swatch{width:22px;height:0;border-top-width:2px;border-top-style:solid;display:inline-block}
+
+  .doc{
+    padding:26px 34px 80px;max-width:760px;
+    font-family:var(--serif);font-size:16.5px;line-height:1.72;color:var(--text);
+  }
+  .doc p{margin:0 0 14px}
+  .doc del{
+    color:var(--del);background:var(--del-bg);text-decoration:line-through;
+    text-decoration-thickness:1.5px;border-radius:2px;padding:0 1px;
+  }
+  .doc ins{
+    color:var(--ins);background:var(--ins-bg);text-decoration:underline;
+    text-decoration-thickness:1.5px;border-radius:2px;padding:0 1px;
+  }
+  .authority{
+    margin:30px 0 0;padding:14px 16px;border-left:3px solid var(--brass-soft);
+    background:#f5efe1;font-family:var(--mono);font-size:12px;line-height:1.65;color:#6a5a35;
+  }
+  .authority h4{margin:0 0 6px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2)}
+  .fr-row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:baseline;
+    padding:7px 0;border-bottom:1px solid #e7ddc4;text-decoration:none;color:#6a5a35}
+  .fr-row:last-child{border-bottom:0}
+  .fr-row:hover .fr-cite{color:var(--del);text-decoration:underline}
+  .fr-cite{font-weight:600;white-space:nowrap}
+  .fr-date{color:#9a8f74}
+  .fr-tag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);white-space:nowrap}
+  .frcite{display:inline-block;margin-top:3px;font-family:var(--mono);font-size:9.5px;
+    letter-spacing:.04em;color:var(--brass);font-weight:600}
+  .entry.sel .frcite{color:var(--brass-soft)}
+
+  /* ---------- states ---------- */
+  .placeholder,.errbox{
+    margin:auto;max-width:440px;text-align:center;padding:50px 30px;color:var(--muted);
+  }
+  .placeholder .mark{
+    font-family:var(--serif);font-size:54px;color:var(--brass-soft);line-height:1;margin-bottom:14px;
+    font-style:italic;
+  }
+  .placeholder h3{font-family:var(--sans);font-weight:600;font-size:18px;color:var(--text);margin:0 0 8px}
+  .placeholder p{font-size:14px;line-height:1.6;margin:0}
+  .errbox{color:var(--del)}
+  .errbox h3{color:var(--del);font-family:var(--sans);margin:0 0 8px}
+  .errbox code{font-family:var(--mono);font-size:12px;background:#f3dcd6;padding:1px 5px;border-radius:3px}
+
+  .spinner{
+    width:26px;height:26px;border:3px solid var(--line);border-top-color:var(--brass);
+    border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .skel{padding:8px 16px}
+  .skel div{height:46px;background:linear-gradient(90deg,#ece7d7,#f1ece0,#ece7d7);
+    background-size:200% 100%;animation:sh 1.3s linear infinite;border-radius:6px;margin:6px 0}
+  @keyframes sh{to{background-position:-200% 0}}
+
+  .backlink{font-family:var(--mono);font-size:11px;color:var(--brass-soft);text-decoration:none;border:1px solid var(--line-ink);padding:4px 8px;border-radius:3px;white-space:nowrap;display:inline-block;margin-bottom:6px}
+  .backlink:hover{border-color:var(--brass-soft);color:#fff}
+  .viewtoggle{display:inline-flex;border:1px solid var(--line);border-radius:3px;overflow:hidden;margin-top:12px;margin-left:auto}
+  .viewtoggle button{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:5px 11px;background:transparent;border:0;cursor:pointer;color:var(--muted)}
+  .viewtoggle button.on{background:var(--ink);color:var(--paper)}
+  .viewtoggle button:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+  .legendrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  @media (max-width:880px){
+    .stage{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+    .ledger{border-right:0;border-bottom:1px solid var(--paper-edge);max-height:42vh}
+    .tag{margin-left:0;text-align:left;width:100%}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="brandrow">
+      <span class="seal">48 CFR</span>
+      <div class="wordmark">FAR <b>HISTORIAN</b></div>
+      <div class="tag">
+        <a class="backlink" href="index.html">&larr; KTHQ</a><br>
+        Point-in-time record of the Federal Acquisition Regulation<br>
+        Source: <span>eCFR</span> versioner API · live since 2017-01-01
+      </div>
+    </div>
+    <div class="controls">
+      <div class="field">
+        <label for="part">FAR Part</label>
+        <select id="part" aria-label="Select FAR part"></select>
+      </div>
+      <div class="field">
+        <label for="section">Section</label>
+        <input id="section" list="sec-list" autocomplete="off" spellcheck="false"
+               placeholder="Load a part first" disabled
+               aria-label="FAR section — type a number or title">
+        <datalist id="sec-list"></datalist>
+      </div>
+      <button class="btn" id="load" disabled>Trace history</button>
+    </div>
+    <div id="ticker" class="ticker" hidden></div>
+  </header>
+
+  <main class="stage">
+    <aside class="ledger">
+      <div class="ledger-head">
+        <h2>Amendment Ledger</h2>
+        <div class="ledger-sub" id="ledger-sub">No section loaded</div>
+        <div class="ledger-count" id="ledger-count">Pick a part and section to begin</div>
+      </div>
+      <div id="spine"></div>
+    </aside>
+
+    <section class="record" id="record">
+      <div class="placeholder">
+        <div class="mark">§</div>
+        <h3>Read the regulation as it stood, on any date</h3>
+        <p>Choose a part and section, then walk its amendment ledger. Each
+        entry loads the section's text on that date and redlines it against
+        the prior version: deletions struck in rust, insertions underlined in green.</p>
+      </div>
+    </section>
+  </main>
+
+<script>
+const BASE='https://www.ecfr.gov/api/versioner/v1';
+/* Set to your deployed Worker URL (no trailing slash) to light up the
+   1996-2016 annual tier and the live "recently amended" feed.
+   Leave "" to run the modern tier only. e.g. "https://far-historian.kthq.workers.dev" */
+const KTHQ_BACKEND="";
+
+/* FAR (48 CFR Chapter 1) part titles. Labels reflect current names;
+   the live section list always comes from the eCFR data itself. */
+const PARTS=[
+ [1,"Federal Acquisition Regulations System"],[2,"Definitions of Words and Terms"],
+ [3,"Improper Business Practices and Personal Conflicts of Interest"],
+ [4,"Administrative and Information Matters"],[5,"Publicizing Contract Actions"],
+ [6,"Competition Requirements"],[7,"Acquisition Planning"],
+ [8,"Required Sources of Supplies and Services"],[9,"Contractor Qualifications"],
+ [10,"Market Research"],[11,"Describing Agency Needs"],
+ [12,"Acquisition of Commercial Products and Commercial Services"],
+ [13,"Simplified Acquisition Procedures"],[14,"Sealed Bidding"],
+ [15,"Contracting by Negotiation"],[16,"Types of Contracts"],
+ [17,"Special Contracting Methods"],[18,"Emergency Acquisitions"],
+ [19,"Small Business Programs"],[22,"Application of Labor Laws to Government Acquisitions"],
+ [23,"Environment, Energy, Water Efficiency, Safety, and Drug-Free Workplace"],
+ [24,"Protection of Privacy and Freedom of Information"],[25,"Foreign Acquisition"],
+ [26,"Other Socioeconomic Programs"],[27,"Patents, Data, and Copyrights"],
+ [28,"Bonds and Insurance"],[29,"Taxes"],[30,"Cost Accounting Standards Administration"],
+ [31,"Contract Cost Principles and Procedures"],[32,"Contract Financing"],
+ [33,"Protests, Disputes, and Appeals"],[34,"Major System Acquisition"],
+ [35,"Research and Development Contracting"],[36,"Construction and Architect-Engineer Contracts"],
+ [37,"Service Contracting"],[38,"Federal Supply Schedule Contracting"],
+ [39,"Acquisition of Information Technology"],[40,"Information Security and Supply Chain Security"],
+ [41,"Acquisition of Utility Services"],[42,"Contract Administration and Audit Services"],
+ [43,"Contract Modifications"],[44,"Subcontracting Policies and Procedures"],
+ [45,"Government Property"],[46,"Quality Assurance"],[47,"Transportation"],
+ [48,"Value Engineering"],[49,"Termination of Contracts"],
+ [50,"Extraordinary Contractual Actions and the Safety Act"],
+ [51,"Use of Government Sources by Contractors"],
+ [52,"Solicitation Provisions and Contract Clauses"],[53,"Forms"]
+];
+
+const $=s=>document.querySelector(s);
+const partSel=$('#part'), secSel=$('#section'), loadBtn=$('#load'),
+      secList=$('#sec-list'), spine=$('#spine'), record=$('#record'),
+      lsub=$('#ledger-sub'), lcount=$('#ledger-count');
+let idSet=new Set();        // valid section identifiers for the current part
+let secLabelToId=new Map(); // lowercased display label -> identifier
+
+/* Resolve whatever is typed (a picked label, a bare number, or a prefix)
+   to a real section identifier, or null if it doesn't match one. */
+function resolveSection(){
+  const raw=(secSel.value||'').trim();
+  if(!raw) return null;
+  const lc=raw.toLowerCase();
+  if(secLabelToId.has(lc)) return secLabelToId.get(lc);   // picked from list
+  const tok=raw.split(/\s+/)[0].replace(/[—–-]+$/,'');     // leading token
+  if(idSet.has(tok)) return tok;                           // exact number
+  if(idSet.has(raw)) return raw;
+  const hits=[...idSet].filter(x=>x.startsWith(tok));      // unique prefix
+  return hits.length===1?hits[0]:null;
+}
+function syncLoadBtn(){ loadBtn.disabled=!resolveSection(); }
+
+const secCache=new Map();   // `${date}|${id}` -> {text, paras, authority} | null
+let versions=[];            // versions for current part
+let timeline=[];            // entries for current section
+
+PARTS.forEach(([n,t])=>{
+  const o=document.createElement('option');
+  o.value=n;o.textContent=`Part ${n} — ${t}`;partSel.appendChild(o);
+});
+partSel.value=15; // sensible default: Contracting by Negotiation
+
+partSel.addEventListener('change',loadPart);
+secSel.addEventListener('input',syncLoadBtn);
+secSel.addEventListener('change',syncLoadBtn);
+secSel.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault(); const id=resolveSection(); if(id) traceSection(id);}
+});
+loadBtn.addEventListener('click',()=>{const id=resolveSection(); if(id) traceSection(id);});
+
+bootstrap();
+initRecent();
+
+/* Honor ?part=&section= so any view is shareable / bookmarkable. */
+async function bootstrap(){
+  const q=new URLSearchParams(location.search);
+  const p=q.get('part'), s=q.get('section');
+  if(p && PARTS.some(([n])=>String(n)===String(p))) partSel.value=p;
+  await loadPart();
+  if(s && idSet.has(s)) traceSection(s);
+}
+
+async function loadPart(){
+  const part=partSel.value;
+  secSel.disabled=true;loadBtn.disabled=true;
+  secSel.value='';secSel.placeholder='Loading sections…';
+  secList.innerHTML='';idSet=new Set();secLabelToId=new Map();
+  try{
+    const r=await fetch(`${BASE}/versions/title-48.json?part=${part}`);
+    if(!r.ok) throw new Error('versions '+r.status);
+    versions=(await r.json()).content_versions
+      .filter(v=>v.type==='section');
+    const ids=[...new Set(versions.map(v=>v.identifier))]
+      .sort(natCompare);
+    if(!ids.length){ secSel.placeholder='No sections found'; return; }
+    idSet=new Set(ids);
+    const frag=document.createDocumentFragment();
+    ids.forEach(id=>{
+      const label=cleanName((versions.find(v=>v.identifier===id)||{}).name||id);
+      secLabelToId.set(label.toLowerCase(),id);
+      const o=document.createElement('option');
+      o.value=label;frag.appendChild(o);
+    });
+    secList.appendChild(frag);
+    secSel.disabled=false;
+    secSel.placeholder=`Type a number or title — ${ids.length} sections`;
+  }catch(e){
+    secSel.placeholder='Load failed';
+    showError(e);
+  }
+}
+
+function buildTimeline(id){
+  const recs=versions.filter(v=>v.identifier===id);
+  const byDate=new Map();
+  recs.forEach(v=>{
+    const e=byDate.get(v.date)||{date:v.date,substantive:false,removed:false};
+    if(v.substantive) e.substantive=true;
+    if(v.removed) e.removed=true;
+    byDate.set(v.date,e);
+  });
+  return [...byDate.values()].sort((a,b)=>a.date<b.date?-1:1);
+}
+
+async function traceSection(id){
+  timeline=buildTimeline(id);
+  const label=cleanName((versions.find(v=>v.identifier===id)||{}).name||id);
+  secSel.value=label;loadBtn.disabled=false;
+  lsub.textContent=label;
+  try{history.replaceState(null,'',`?part=${partSel.value}&section=${encodeURIComponent(id)}`);}catch(e){}
+
+  spine.innerHTML='<div class="spine" id="sp"></div><div id="strat"></div>';
+  const sp=$('#sp');
+  const clearSel=()=>[...sp.querySelectorAll('.entry')].forEach(c=>c.classList.remove('sel'));
+
+  // --- deep-history tier (1996-2016) via KTHQ backend, if configured ---
+  let annualYears=[];
+  if(KTHQ_BACKEND){
+    try{
+      const r=await fetch(`${KTHQ_BACKEND}/api/annual/years?section=${encodeURIComponent(id)}`);
+      if(r.ok) annualYears=(await r.json()).years||[];
+    }catch(e){/* backend optional */}
+    annualYears.forEach((yr,k)=>{
+      const prev=k>0?annualYears[k-1]:null;
+      const btn=mkEntry('annual',`${yr} edition`,
+        `<span class="tagchip t-base">Annual edition</span>`);
+      btn.addEventListener('click',()=>{clearSel();btn.classList.add('sel');showAnnual(id,yr,prev);});
+      sp.appendChild(btn);
+    });
+  }
+
+  // --- modern tier (2017+), live from eCFR ---
+  const ecfrBtns=[];
+  timeline.forEach((e,i)=>{
+    const isBase=i===0;
+    const extra=e.removed?'rmv':(e.substantive&&!isBase?'sub':'');
+    const btn=mkEntry(extra,fmt(e.date),chips(e,isBase));
+    btn.dataset.date=e.date;
+    btn.addEventListener('click',()=>{
+      clearSel();btn.classList.add('sel');
+      isBase?showBaseline(id,e):showDiff(id,timeline[i-1],e);
+    });
+    sp.appendChild(btn);ecfrBtns.push(btn);
+  });
+
+  lcount.textContent=
+    `${annualYears.length?annualYears.length+' annual · ':''}${timeline.length} since 2017`;
+  renderStratum(!!KTHQ_BACKEND,annualYears.length);
+
+  // open the most recent eCFR change by default
+  const last=timeline.length-1;
+  ecfrBtns[last].classList.add('sel');
+  last===0?showBaseline(id,timeline[0]):showDiff(id,timeline[last-1],timeline[last]);
+}
+
+function mkEntry(extra,dateText,metaHTML){
+  const b=document.createElement('button');
+  b.className=('entry '+(extra||'')).trim();
+  b.innerHTML=`<span class="node"></span>
+    <div class="e-date">${dateText}</div>
+    <div class="e-meta">${metaHTML}</div>`;
+  return b;
+}
+
+function chips(e,isBase){
+  if(isBase) return `<span class="tagchip t-base">Earliest captured</span>`;
+  if(e.removed) return `<span class="tagchip t-rmv">Removed</span>`;
+  if(e.substantive) return `<span class="tagchip t-sub">Substantive</span>`;
+  return `<span class="tagchip t-adm">Administrative</span>`;
+}
+
+async function fetchSection(date,id){
+  const key=`${date}|${id}`;
+  if(secCache.has(key)) return secCache.get(key);
+  const part=id.split('.')[0];
+  const url=`${BASE}/full/${date}/title-48.xml?part=${part}&section=${encodeURIComponent(id)}`;
+  let val=null;
+  try{
+    const r=await fetch(url);
+    if(r.ok){ val=parseSection(await r.text(),id); }
+  }catch(e){/* treat as absent */}
+  secCache.set(key,val);
+  return val;
+}
+
+function parseSection(xml,id){
+  let doc;
+  try{ doc=new DOMParser().parseFromString(xml,'application/xml'); }
+  catch(e){ return null; }
+  if(doc.querySelector('parsererror')) return null;
+  // locate the section node (strict: match the requested identifier)
+  const nodes=[...doc.querySelectorAll('DIV8,[TYPE="SECTION"]')];
+  let node=nodes.find(n=>(n.getAttribute('N')||'')===id);
+  if(!node) node = nodes.length===1 ? nodes[0] : null;
+  if(!node) return null;
+  const head=node.querySelector('HEAD');
+  const title=head?head.textContent.trim():id;
+  const paras=[];
+  node.querySelectorAll('P,FP').forEach(p=>{
+    const t=collapse(p.textContent);
+    if(t) paras.push(t);
+  });
+  // authority / source trail
+  let authority='';
+  const cita=node.querySelector('CITA');
+  if(cita) authority=collapse(cita.textContent);
+  if(!authority){
+    const m=xml.match(/\[[^\]]*\bFR\b[^\]]*\]/g);
+    if(m) authority=m[m.length-1];
+  }
+  return {title,paras,authority,text:paras.join('\n\n')};
+}
+
+function showBaseline(id,e){
+  renderLoading();
+  fetchSection(e.date,id).then(sec=>{
+    if(!sec){return renderRecord(id,e.date,null,baseStamp(e),[],'');}
+    const body=sec.paras.map(p=>`<p>${esc(p)}</p>`).join('');
+    renderRecord(id,e.date,sec.title,baseStamp(e),body,sec.authority,true);
+  });
+}
+
+function showDiff(id,prev,cur){
+  renderLoading();
+  Promise.all([fetchSection(prev.date,id),fetchSection(cur.date,id)])
+  .then(([a,b])=>{
+    const title=(b&&b.title)||(a&&a.title)||id;
+    let body, authority=(b&&b.authority)||'';
+    if(cur.removed||(!b&&a)){
+      // section deleted at cur.date
+      body=(a?a.paras:[]).map(p=>`<p><del>${esc(p)}</del></p>`).join('')
+        ||`<p><del>(text removed)</del></p>`;
+    }else if(!a&&b){
+      // section added at cur.date
+      body=b.paras.map(p=>`<p><ins>${esc(p)}</ins></p>`).join('');
+    }else if(a&&b){
+      body=renderDiff(a.text,b.text);
+    }else{
+      body='<p>No text available for either version.</p>';
+    }
+    renderRecord(id,cur.date,title,diffStamp(prev,cur),body,authority,false);
+  });
+}
+
+/* ---------- Federal Register lineage ---------- */
+const FR_MONTHS={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+const FR_MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+/* Pull every "<vol> FR <page>, <Mon> <d>, <yyyy>" action out of the FAR's own
+   amendment-history note. These are the real final-rule citations. */
+function parseHistory(s){
+  const out=[], seen=new Set();
+  const re=/(\d{1,3})\s*FR\s*(\d{1,6})\s*,\s*([A-Za-z]+)\.?\s+(\d{1,2}),\s*(\d{4})/g;
+  let m;
+  while((m=re.exec(s||''))){
+    const mon=FR_MONTHS[m[3].toLowerCase().slice(0,3)];
+    if(!mon) continue;
+    const key=m[1]+'-'+m[2];
+    if(seen.has(key)) continue; seen.add(key);
+    const iso=`${m[5]}-${String(mon).padStart(2,'0')}-${String(+m[4]).padStart(2,'0')}`;
+    out.push({vol:m[1],page:m[2],iso,dateText:`${FR_MN[mon-1]} ${+m[4]}, ${m[5]}`});
+  }
+  return out;
+}
+function frURL(h){return `https://www.federalregister.gov/citation/${h.vol}-FR-${h.page}`;}
+function renderAuthority(authority){
+  if(!authority) return '';
+  const hist=parseHistory(authority);
+  if(!hist.length)
+    return `<div class="authority"><h4>Authority trail</h4>${esc(authority)}</div>`;
+  const rows=hist.map((h,i)=>`<a class="fr-row" href="${frURL(h)}" target="_blank" rel="noopener">
+      <span class="fr-cite">${h.vol} FR ${h.page}</span>
+      <span class="fr-date">${esc(h.dateText)}</span>
+      <span class="fr-tag">${i===0?'Established':'Amended'}</span></a>`).join('');
+  return `<div class="authority"><h4>Federal Register lineage · ${hist.length} action${hist.length>1?'s':''}</h4>${rows}
+    <p style="margin:8px 0 0;font-size:10.5px;color:#9a8f74">Each citation opens the final rule on federalregister.gov.</p></div>`;
+}
+/* Tag ledger entries with the FR rule whose publication date sits just before
+   the codified version date (rules take effect 0-100 days after publication). */
+function frForDate(history,dateStr){
+  const d=Date.parse(dateStr+'T00:00:00Z'); let best=null,gapBest=1e9;
+  for(const h of history){
+    const gap=(d-Date.parse(h.iso+'T00:00:00Z'))/864e5;
+    if(gap>=0 && gap<=100 && gap<gapBest){best=h;gapBest=gap;}
+  }
+  return best;
+}
+function decorateLedger(authority){
+  const hist=parseHistory(authority); if(!hist.length) return;
+  document.querySelectorAll('#sp .entry[data-date]').forEach(el=>{
+    if(el.querySelector('.frcite')) return;
+    const h=frForDate(hist,el.dataset.date); if(!h) return;
+    const meta=el.querySelector('.e-meta');
+    if(meta) meta.insertAdjacentHTML('beforeend',
+      `<br><span class="frcite">${h.vol} FR ${h.page}</span>`);
+  });
+}
+
+/* ---------- word-level redline diff (LCS) ---------- */
+function tokenize(s){return s.match(/\S+|\s+/g)||[];}
+/* Long Part 52 clauses can blow up an O(n*m) word diff and freeze the tab.
+   Above a cell budget, fall back to a paragraph-level redline. */
+function paragraphDiff(aStr,bStr){
+  const a=aStr.split(/\n{2,}/), b=bStr.split(/\n{2,}/), n=a.length, m=b.length;
+  const dp=Array.from({length:n+1},()=>new Uint16Array(m+1));
+  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)
+    dp[i][j]=a[i]===b[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+  let i=0,j=0,out='<p style="font-family:var(--mono);font-size:11px;color:var(--muted-2)">Long section &mdash; redline shown paragraph-by-paragraph.</p>';
+  const P=(t,v)=>t==='eq'?`<p>${esc(v)}</p>`:t==='del'?`<p><del>${esc(v)}</del></p>`:`<p><ins>${esc(v)}</ins></p>`;
+  while(i<n&&j<m){
+    if(a[i]===b[j]){out+=P('eq',a[i]);i++;j++;}
+    else if(dp[i+1][j]>=dp[i][j+1]){out+=P('del',a[i]);i++;}
+    else{out+=P('ins',b[j]);j++;}
+  }
+  while(i<n)out+=P('del',a[i++]);
+  while(j<m)out+=P('ins',b[j++]);
+  return out;
+}
+function renderDiff(aStr,bStr){
+  const a=tokenize(aStr), b=tokenize(bStr), n=a.length, m=b.length;
+  if(n*m>4000000) return paragraphDiff(aStr,bStr);
+  const dp=Array.from({length:n+1},()=>new Uint16Array(m+1));
+  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)
+    dp[i][j]=a[i]===b[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+  let i=0,j=0,out='';
+  const push=(type,val)=>{
+    if(type==='eq') out+=esc(val);
+    else if(type==='del') out+=`<del>${esc(val)}</del>`;
+    else out+=`<ins>${esc(val)}</ins>`;
+  };
+  // merge adjacent same-type for cleaner markup
+  const seq=[];
+  while(i<n&&j<m){
+    if(a[i]===b[j]){seq.push(['eq',a[i]]);i++;j++;}
+    else if(dp[i+1][j]>=dp[i][j+1]){seq.push(['del',a[i]]);i++;}
+    else {seq.push(['ins',b[j]]);j++;}
+  }
+  while(i<n)seq.push(['del',a[i++]]);
+  while(j<m)seq.push(['ins',b[j++]]);
+  let buf='',cur=null;
+  const emit=()=>{if(cur!==null)push(cur,buf);buf='';};
+  seq.forEach(([t,v])=>{if(t!==cur){emit();cur=t;}buf+=v;});
+  emit();
+  // wrap into paragraphs on blank-line boundaries
+  return '<p>'+out.replace(/\n{2,}/g,'</p><p>').replace(/\n/g,' ')+'</p>';
+}
+
+/* ---------- record rendering ---------- */
+function renderLoading(){
+  record.innerHTML=`<div class="placeholder"><div class="spinner"></div>
+    <p>Pulling point-in-time text from the eCFR…</p></div>`;
+}
+function renderRecord(id,date,title,stamp,body,authority,isBase){
+  const legend=isBase?'':`<div class="legendrow">
+    <div class="legend">
+      <span><i class="swatch" style="border-color:var(--del)"></i>removed</span>
+      <span><i class="swatch" style="border-color:var(--ins)"></i>added</span>
+      <span style="color:var(--muted-2)">redline vs the prior captured version</span>
+    </div>
+    <div class="viewtoggle" role="group" aria-label="View mode">
+      <button class="on" data-v="redline">Redline</button>
+      <button data-v="clean">Clean (current)</button>
+    </div></div>`;
+  const auth=renderAuthority(authority);
+  record.innerHTML=`
+    <div class="record-head">
+      <div class="cite">FAR ${id} · 48 CFR ${id}</div>
+      <h1 class="sec-title">${esc(title||id)}</h1>
+      <div class="stamp">${stamp}</div>
+      ${legend}
+    </div>
+    <div class="doc"><div id="docbody">${body||'<p>(No text captured at this date.)</p>'}</div>${auth}</div>`;
+  if(!isBase){ redlineBody=body||''; wireViewToggle(); }
+  if(authority) decorateLedger(authority);
+}
+let redlineBody='';
+/* "Clean (current)" derives readable current text from the redline:
+   drop struck deletions, keep insertions without their markup. No refetch. */
+function wireViewToggle(){
+  const t=record.querySelector('.viewtoggle'); if(!t) return;
+  t.addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    [...t.children].forEach(c=>c.classList.toggle('on',c===b));
+    const db=record.querySelector('#docbody'); if(!db) return;
+    db.innerHTML = b.dataset.v==='clean'
+      ? redlineBody.replace(/<del>[\s\S]*?<\/del>/g,'').replace(/<\/?ins>/g,'')
+      : redlineBody;
+  });
+}
+function baseStamp(e){
+  return `<span>Viewing text as of <b>${fmt(e.date)}</b></span>
+    <span style="color:var(--muted-2)">earliest version in the eCFR record</span>`;
+}
+function diffStamp(prev,cur){
+  return `<span><b>${fmt(prev.date)}</b></span>
+    <span class="vs">→</span>
+    <span><b>${fmt(cur.date)}</b>${cur.removed?' · removed':cur.substantive?' · substantive change':' · administrative'}</span>`;
+}
+
+function renderStratum(active,count){
+  const el=$('#strat'); if(!el) return;
+  if(!active){
+    el.innerHTML=`<div class="stratum">
+      <h3>Deep history · 1996–2016</h3>
+      <p>The eCFR record begins in 2017. The FASA and Clinger-Cohen streamlining era
+      (annual editions back to the Oct 1, 1996 cut) lives in GovInfo and activates when
+      the KTHQ backend is connected. The authority trail below traces lineage further
+      back, toward CICA in the mid-1980s.</p></div>`;
+    return;
+  }
+  if(count>0){
+    el.innerHTML=`<div class="stratum">
+      <h3>Deep history · annual editions</h3>
+      <p>Snapshots above are GovInfo annual editions, revised each Oct 1. Numbering can
+      diverge from the modern FAR after the 1997 Part 15 rewrite, so an old number may
+      cover a different subject than it does today.</p></div>`;
+  }else{
+    el.innerHTML=`<div class="stratum">
+      <h3>No pre-2017 record for this number</h3>
+      <p>This exact citation has no 1996-2016 annual entry. The 1997 rewrite renumbered
+      many sections, so its predecessor likely sits under a different number.</p></div>`;
+  }
+}
+
+function showAnnual(id,year,prevYear){
+  renderLoading();
+  const get=y=>fetch(`${KTHQ_BACKEND}/api/annual?section=${encodeURIComponent(id)}&year=${y}`)
+    .then(r=>r.ok?r.json():null).catch(()=>null);
+  Promise.all([prevYear?get(prevYear):Promise.resolve(null),get(year)])
+  .then(([a,b])=>{
+    if(!b||b.found===false){
+      record.innerHTML=`<div class="errbox"><h3>No text captured</h3>
+        <p>The ${year} annual edition has no record for ${esc(id)}.</p></div>`;
+      return;
+    }
+    const title=b.subj||id;
+    const haveDiff=a&&a.found!==false;
+    const body=haveDiff
+      ? renderDiff(a.text,b.text)
+      : b.text.split(/\n{2,}/).map(p=>`<p>${esc(p)}</p>`).join('');
+    const stamp=haveDiff
+      ? `<span><b>${prevYear} edition</b></span><span class="vs">→</span><span><b>${year} edition</b> · revised Oct 1</span>`
+      : `<span>Annual edition <b>${year}</b> · revised Oct 1</span><span style="color:var(--muted-2)">GovInfo CFR</span>`;
+    renderRecord(id,year,title,stamp,body,b.cita||'',!haveDiff);
+  });
+}
+
+async function initRecent(){
+  if(!KTHQ_BACKEND) return;
+  let feed;
+  try{
+    const r=await fetch(`${KTHQ_BACKEND}/api/recent`);
+    if(!r.ok) return; feed=await r.json();
+  }catch(e){ return; }
+  if(!feed||!feed.items||!feed.items.length) return;
+  const t=$('#ticker'); t.hidden=false;
+  t.innerHTML=`<span class="tk-label">Latest FAR changes</span>`+
+    feed.items.slice(0,40).map(it=>
+      `<button class="tk-item" data-part="${parseInt(it.part,10)}" data-sec="${esc(it.section)}">
+        <b>${esc(it.section)}</b> ${fmt(it.date)}${it.removed?' · removed':it.substantive?'':' · admin'}
+      </button>`).join('');
+  t.querySelectorAll('.tk-item').forEach(b=>{
+    b.addEventListener('click',async()=>{
+      partSel.value=b.dataset.part;
+      await loadPart();
+      const id=b.dataset.sec;
+      if(idSet.has(id)) traceSection(id);
+      else { secSel.value=id; syncLoadBtn(); }
+    });
+  });
+}
+
+/* ---------- helpers ---------- */
+function showError(e){
+  record.innerHTML=`<div class="errbox">
+    <h3>Could not reach the eCFR</h3>
+    <p>The request to the eCFR versioner API failed
+    (<code>${esc(String(e.message||e))}</code>).</p>
+    <p style="margin-top:10px;color:var(--muted)">If this is running on a network that
+    filters outbound calls, route the API through the KTHQ Cloudflare Worker and point
+    <code>BASE</code> at that proxy. The eCFR sends <code>access-control-allow-origin: *</code>,
+    so direct browser calls work on open networks.</p></div>`;
+}
+function natCompare(a,b){
+  return a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'});
+}
+function cleanName(s){return collapse(s).replace(/\s{2,}/g,' ');}
+function collapse(s){return (s||'').replace(/\s+/g,' ').trim();}
+function fmt(d){
+  const [y,m,da]=d.split('-');
+  const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m-1];
+  return `${mo} ${+da}, ${y}`;
+}
+function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+</script>
+</body>
+</html>
