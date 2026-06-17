@@ -1,0 +1,21 @@
+name = "far-historian"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# KV namespace holding the annual (1996-2016) snapshots and the recent-changes feed.
+# Create it once with:  wrangler kv namespace create FAR_KV
+# then paste the returned id below.
+[[kv_namespaces]]
+binding = "FAR_KV"
+id = "PASTE_YOUR_KV_NAMESPACE_ID_HERE"
+
+# Daily auto-update. Polls the eCFR for FAR amendments and rebuilds the
+# "recently amended" feed. 11:00 UTC is ~06:00 ET, after the overnight eCFR refresh.
+[triggers]
+crons = ["0 11 * * *"]
+
+[vars]
+# Optional. If set, /api/ingest requires ?key=THIS. Leave blank to disable ingest route.
+INGEST_KEY = ""
+# How many days back the recent-changes feed reaches.
+RECENT_WINDOW_DAYS = "730"
