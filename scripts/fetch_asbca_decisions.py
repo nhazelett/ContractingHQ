@@ -30,7 +30,9 @@ from urllib.request import Request, urlopen
 ROOT = Path(__file__).resolve().parents[1]
 OUT_JSON = ROOT / "data" / "asbca-live.json"
 OUT_JS = ROOT / "data" / "asbca-live.js"
-DECISIONS_URL = "https://www.asbca.mil/Decisions/"
+DECISIONS_ROOT_URL = "https://www.asbca.mil/Decisions/"
+ASBCA_YEAR = int(os.environ.get("ASBCA_YEAR", str(datetime.now(timezone.utc).year)))
+DECISIONS_URL = f"{DECISIONS_ROOT_URL}{ASBCA_YEAR}/"
 READER_PREFIX = "https://r.jina.ai/http://r.jina.ai/http://"
 MAX_ITEMS = int(os.environ.get("ASBCA_MAX_ITEMS", "18"))
 REQUEST_TIMEOUT = 60
@@ -44,6 +46,8 @@ HEADERS = {
     "Accept-Language": "en-US,en;q=0.9",
     "Referer": "https://www.asbca.mil/",
 }
+
+MONTH_RE = r"(?:January|February|March|April|May|June|July|August|September|October|November|December)"
 
 
 @dataclass
@@ -193,7 +197,7 @@ def extract_date_from_text(value: str) -> str:
 
 
 def extract_case_numbers(value: str) -> list[str]:
-    nums = re.findall(r"\b(\d{5})(?:-(ADR|EAJA))?\b", clean_text(value), flags=re.I)
+    nums = re.findall(r"\b(\d{5})(?:-([A-Z]{2,5}))?\b", clean_text(value), flags=re.I)
     out: list[str] = []
     for num, suffix in nums:
         label = f"ASBCA No. {num}"
@@ -241,13 +245,19 @@ def normalize_case_name(text: str, filename: str) -> str:
 def parse_markdown_index(markdown: str) -> list[DecisionMeta]:
     rows: list[DecisionMeta] = []
     row_re = re.compile(r"^\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*\[([^\]]+)\]\(([^)]+)\)\s*\|\s*([^|]*?)\s*\|")
+    compact_re = re.compile(rf"^({MONTH_RE}\s+\d{{1,2}},\s+\d{{4}})\s+(.+?)\[([^\]]+)\]\(([^)]+)\)\s*(.*?)$")
     for line in markdown.splitlines():
-        match = row_re.match(line.strip())
-        if not match:
-            continue
-        date_text, number_text, case_name, href, judge = match.groups()
-        if "Date" in date_text and "Appeal" in number_text:
-            continue
+        text = line.strip()
+        match = row_re.match(text)
+        if match:
+            date_text, number_text, case_name, href, judge = match.groups()
+            if "Date" in date_text and "Appeal" in number_text:
+                continue
+        else:
+            match = compact_re.match(text)
+            if not match:
+                continue
+            date_text, number_text, case_name, href, judge = match.groups()
         decision_date = parse_display_date(date_text)
         if not decision_date:
             continue
@@ -326,6 +336,8 @@ def classify_type(filename: str, text: str) -> str:
         return "Consent judgment"
     if "eaja" in hay:
         return "EAJA"
+    if "-pet" in hay or "petition" in hay:
+        return "Petition"
     if "dismissal" in hay or "dismissed" in hay:
         return "Dismissal"
     if "recon" in hay or "reconsideration" in hay:
