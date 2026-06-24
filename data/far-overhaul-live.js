@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-06-23T11:31:22.999555+00:00",
+  "generatedAt": "2026-06-24T11:17:14.145085+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -12,7 +12,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "totalParts": 51,
     "issuedParts": 51,
     "updatedParts": 10,
-    "agencyDeviationCount": 1442,
+    "agencyDeviationCount": 1445,
     "uniqueAgencyCount": 39,
     "latestPartDate": "2026-04-20",
     "latestPartDateLabel": "Apr 20, 2026",
@@ -23,7 +23,65 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "baseline": false,
     "newParts": [],
     "updatedParts": [],
-    "newAgencyDeviations": [],
+    "newAgencyDeviations": [
+      {
+        "part": {
+          "partNumber": 9,
+          "partLabel": "Part 9",
+          "title": "Contractor Qualifications",
+          "fullTitle": "Part 9 - Contractor Qualifications",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
+          "issuanceDate": "2025-08-21",
+          "issuanceDateLabel": "Aug 21, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 33
+        },
+        "agency": {
+          "name": "Peace Corps (PC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PC_RFO_Deviation_Part-9.pdf",
+          "id": "9a8fee608ab8a9f5"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 12,
+          "partLabel": "Part 12",
+          "title": "Acquisition of Commercial Products and Commercial Services",
+          "fullTitle": "Part 12 - Acquisition of Commercial Products and Commercial Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 33
+        },
+        "agency": {
+          "name": "Peace Corps (PC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PC_RFO_Deviation_Part-12.pdf",
+          "id": "63269d21e60f8b17"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 22,
+          "partLabel": "Part 22",
+          "title": "Application of Labor Laws to Government Acquisitions",
+          "fullTitle": "Part 22 - Application of Labor Laws to Government Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-22",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 32
+        },
+        "agency": {
+          "name": "Peace Corps (PC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PC_RFO_Deviation_Part-22.pdf",
+          "id": "e92d1eb4cb43a68d"
+        }
+      }
+    ],
     "removedAgencyDeviations": []
   },
   "parts": [
@@ -1314,7 +1372,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-04-20",
       "updateDateLabel": "Apr 20, 2026",
       "isUpdated": true,
-      "deviationCount": 32,
+      "deviationCount": 33,
       "agencies": [
         {
           "name": "Department of the Interior (DOI)",
@@ -1385,6 +1443,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Environmental Protection Agency (EPA)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/EPA_RFO_Deviation_Part-9-12and22.pdf",
           "id": "22831a609f0f34b9"
+        },
+        {
+          "name": "Peace Corps (PC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PC_RFO_Deviation_Part-9.pdf",
+          "id": "9a8fee608ab8a9f5"
         },
         {
           "name": "Social Security Administration (SSA)",
@@ -1480,7 +1543,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Updated model text is posted. 32 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Updated model text is posted. 33 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 10,
@@ -1891,7 +1954,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-04-20",
       "updateDateLabel": "Apr 20, 2026",
       "isUpdated": true,
-      "deviationCount": 32,
+      "deviationCount": 33,
       "agencies": [
         {
           "name": "National Labor Relations Board (NLRB)",
@@ -1902,6 +1965,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Department of Energy (DOE)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-9-12-22.pdf",
           "id": "0cb618c88095c0a3"
+        },
+        {
+          "name": "Peace Corps (PC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PC_RFO_Deviation_Part-12.pdf",
+          "id": "63269d21e60f8b17"
         },
         {
           "name": "National Science Foundation (NSF)",
@@ -3198,7 +3266,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-04-20",
       "updateDateLabel": "Apr 20, 2026",
       "isUpdated": true,
-      "deviationCount": 31,
+      "deviationCount": 32,
       "agencies": [
         {
           "name": "Department of the Interior (DOI)",
@@ -3214,6 +3282,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Department of Energy (DOE)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-9-12-22.pdf",
           "id": "4d3da46b3feac7cd"
+        },
+        {
+          "name": "Peace Corps (PC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/PC_RFO_Deviation_Part-22.pdf",
+          "id": "e92d1eb4cb43a68d"
         },
         {
           "name": "National Science Foundation (NSF)",
