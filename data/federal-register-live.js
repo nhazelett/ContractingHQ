@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-06-23T10:42:54.122Z",
-  "since": "2024-12-30",
+  "generatedAt": "2026-06-24T10:27:36.985Z",
+  "since": "2024-12-31",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,14 +14,14 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 135,
+    "total": 132,
     "latestPublicationDate": "2026-06-23",
     "openCommentWindows": 21,
-    "rules": 59,
+    "rules": 57,
     "byTone": {
       "active": 5,
-      "monitor": 73,
-      "action": 37,
+      "monitor": 72,
+      "action": 35,
       "watch": 20
     }
   },
@@ -4765,114 +4765,6 @@ window.KTHQ_FEDREG_DATA = {
       ],
       "htmlUrl": "https://www.federalregister.gov/documents/2025/01/03/2024-31407/federal-acquisition-regulation-subcontracting-to-puerto-rican-and-covered-territory-small-businesses",
       "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-01-03/pdf/2024-31407.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2024-30947",
-      "documentNumber": "2024-30947",
-      "title": "Department of Defense Progress Payment Incentive Pilot",
-      "shortTitle": "Department of Defense Progress Payment Incentive Pilot",
-      "system": "DFARS",
-      "stage": "Notice",
-      "topic": "Payments",
-      "actionLevel": "Awareness",
-      "actionTone": "monitor",
-      "practitionerNote": "This is a payments item. Read enough to know whether it touches your current workload, then monitor for follow-on implementation.",
-      "nextSteps": [
-        "Skim the abstract",
-        "Check whether the affected topic matches your portfolio",
-        "Save the source link if it may affect an active file"
-      ],
-      "type": "Notice",
-      "publicationDate": "2024-12-30",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-01-29",
-      "datesText": "DoD will consider all comments received by January 29, 2025.",
-      "actionText": "Request for information.",
-      "summary": "DoD is seeking public input to inform the implementation of a section of the National Defense Authorization Act for Fiscal Year 2024 that authorizes DoD to establish a pilot program to incentivize performance for specific, measurable criteria under approved contracts by increasing the customary progress payment rate.",
-      "citation": "89 FR 106450",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Defense Department",
-        "Defense Acquisition Regulations System"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2024/12/30/2024-30947/department-of-defense-progress-payment-incentive-pilot",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-12-30/pdf/2024-30947.pdf",
-      "sourceQuery": "DFARS / DARS agency feed"
-    },
-    {
-      "id": "2024-30937",
-      "documentNumber": "2024-30937",
-      "title": "Federal Acquisition Regulation: Prohibition on Unmanned Aircraft Systems From Covered Foreign Entities",
-      "shortTitle": "Federal Acquisition Regulation: Prohibition on Unmanned Aircraft Systems From Covered Foreign Entities",
-      "system": "FAR",
-      "stage": "Interim rule",
-      "topic": "Acquisition policy",
-      "actionLevel": "Check templates",
-      "actionTone": "action",
-      "practitionerNote": "This is implemented rulemaking. Check effective dates, affected parts, and whether your templates, clauses, review checklists, or training notes need to change.",
-      "nextSteps": [
-        "Read the effective date language",
-        "Search local templates for the cited parts or clauses",
-        "Tell the team if open acquisitions are affected"
-      ],
-      "type": "Rule",
-      "publicationDate": "2024-12-30",
-      "effectiveDate": "",
-      "commentsCloseDate": "2024-01-27",
-      "datesText": "For the interim rule published on November 12, 2024, (89 FR 89464), the deadline to submit comments is extended. Submit comments by January 27, 2025.",
-      "actionText": "Interim rule; extension of comment period.",
-      "summary": "DoD, GSA, and NASA issued an interim rule on November 12, 2024, amending the Federal Acquisition Regulation (FAR) to implement a prohibition on the procurement and operation of unmanned aircraft systems manufactured or assembled by an American Security Drone Act- covered foreign entity. The deadline for submitting comments is being extended from January 13, 2025, to January 27, 2025, to provide additional time for interested parties to provide comments on the proposed rule. The effective date of this rule is not b...",
-      "citation": "89 FR 106364",
-      "regulationIds": [
-        "9000-AO70"
-      ],
-      "cfrReferences": "48 CFR part 4, 48 CFR part 13, 48 CFR part 39, 48 CFR part 40, 48 CFR part 52",
-      "agencies": [
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2024/12/30/2024-30937/federal-acquisition-regulation-prohibition-on-unmanned-aircraft-systems-from-covered-foreign",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-12-30/pdf/2024-30937.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2024-30935",
-      "documentNumber": "2024-30935",
-      "title": "Federal Acquisition Regulation: Training To Prevent Human Trafficking for Certain Air Carriers; Correction",
-      "shortTitle": "Federal Acquisition Regulation: Training To Prevent Human Trafficking for Certain Air Carriers; Correction",
-      "system": "FAR",
-      "stage": "Final rule",
-      "topic": "Supply chain",
-      "actionLevel": "Check templates",
-      "actionTone": "action",
-      "practitionerNote": "This is implemented rulemaking. Check effective dates, affected parts, and whether your templates, clauses, review checklists, or training notes need to change.",
-      "nextSteps": [
-        "Read the effective date language",
-        "Search local templates for the cited parts or clauses",
-        "Tell the team if open acquisitions are affected"
-      ],
-      "type": "Rule",
-      "publicationDate": "2024-12-30",
-      "effectiveDate": "2025-01-03",
-      "commentsCloseDate": "",
-      "datesText": "Effective January 3, 2025.",
-      "actionText": "Final rule.",
-      "summary": "DoD, GSA, and NASA are issuing a final rule amending the Federal Acquisition Regulation (FAR) to implement a section of the Frederick Douglass Trafficking Victims Prevention and Protection Reauthorization Act of 2018, which requires that domestic carriers who contract with the Federal Government to provide air transportation must submit an annual report with certain information related to prevention of human trafficking.",
-      "citation": "89 FR 106364",
-      "regulationIds": [
-        "9000-AO00"
-      ],
-      "cfrReferences": "48 CFR part 1, 48 CFR part 12, 48 CFR part 22, 48 CFR part 47, 48 CFR part 52",
-      "agencies": [
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2024/12/30/2024-30935/federal-acquisition-regulation-training-to-prevent-human-trafficking-for-certain-air-carriers",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2024-12-30/pdf/2024-30935.pdf",
       "sourceQuery": "Federal Acquisition Regulation keyword feed"
     }
   ]
