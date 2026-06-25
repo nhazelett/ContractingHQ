@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-06-24T10:27:36.985Z",
-  "since": "2024-12-31",
+  "generatedAt": "2026-06-25T10:19:31.575Z",
+  "since": "2025-01-01",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,18 +14,164 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 132,
-    "latestPublicationDate": "2026-06-23",
-    "openCommentWindows": 21,
-    "rules": 57,
+    "total": 136,
+    "latestPublicationDate": "2026-06-25",
+    "openCommentWindows": 25,
+    "rules": 59,
     "byTone": {
-      "active": 5,
-      "monitor": 72,
+      "active": 7,
+      "monitor": 74,
       "action": 35,
       "watch": 20
     }
   },
   "items": [
+    {
+      "id": "2026-12826",
+      "documentNumber": "2026-12826",
+      "title": "Defense Federal Acquisition Regulation Supplement: Certification Requirement for Military Recruitment Advertising (DFARS Case 2024-D022)",
+      "shortTitle": "DFARS: Certification Requirement for Military Recruitment Advertising (DFARS Case 2024-D022)",
+      "system": "DFARS",
+      "stage": "Proposed rule",
+      "topic": "Clauses / reps",
+      "actionLevel": "Comment window",
+      "actionTone": "active",
+      "practitionerNote": "This is not binding yet, but the comment period is open. Read it if the topic touches your office and consider whether your organization should comment.",
+      "nextSteps": [
+        "Check the comment due date",
+        "Skim the affected FAR/DFARS parts",
+        "Flag it for policy or leadership if it touches your buying lane"
+      ],
+      "type": "Proposed Rule",
+      "publicationDate": "2026-06-25",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-08-24",
+      "datesText": "Comments on the proposed rule should be submitted in writing to the address shown below on or before August 24, 2026, to be considered in the formation of a final rule.",
+      "actionText": "Proposed rule.",
+      "summary": "DoD is proposing to amend the Defense Federal Acquisition Regulation Supplement (DFARS) to implement sections of the National Defense Authorization Acts for Fiscal Years 2024, 2025, and 2026. These sections require a certification for certain DoD contracts related to military recruitment advertising and provide a sunset date for that requirement.",
+      "citation": "91 FR 38382",
+      "regulationIds": [
+        "0750-AM19"
+      ],
+      "cfrReferences": "48 CFR part 209, 48 CFR part 212, 48 CFR part 252",
+      "agencies": [
+        "Defense Department",
+        "Defense Acquisition Regulations System"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/06/25/2026-12826/defense-federal-acquisition-regulation-supplement-certification-requirement-for-military-recruitment",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-06-25/pdf/2026-12826.pdf",
+      "sourceQuery": "DFARS / DARS agency feed"
+    },
+    {
+      "id": "2026-12825",
+      "documentNumber": "2026-12825",
+      "title": "Defense Federal Acquisition Regulation Supplement: Small Purchase Exception for the Acquisition of U.S. Flags (DFARS Case 2024-D013)",
+      "shortTitle": "DFARS: Small Purchase Exception for the Acquisition of U.S. Flags (DFARS Case 2024-D013)",
+      "system": "DFARS",
+      "stage": "Proposed rule",
+      "topic": "Supply chain",
+      "actionLevel": "Comment window",
+      "actionTone": "active",
+      "practitionerNote": "This is not binding yet, but the comment period is open. Read it if the topic touches your office and consider whether your organization should comment.",
+      "nextSteps": [
+        "Check the comment due date",
+        "Skim the affected FAR/DFARS parts",
+        "Flag it for policy or leadership if it touches your buying lane"
+      ],
+      "type": "Proposed Rule",
+      "publicationDate": "2026-06-25",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-08-24",
+      "datesText": "Comments on the proposed rule should be submitted in writing to the address shown below on or before August 24, 2026, to be considered in the formation of a final rule.",
+      "actionText": "Proposed rule.",
+      "summary": "DoD is proposing to amend the Defense Federal Acquisition Regulation Supplement (DFARS) to implement sections of the National Defense Authorization Acts for Fiscal Years 2024, 2025, and 2026. These sections provide a requirement for full domestic production of flags of the United States acquired by DoD, amend an exception to the requirement to buy certain articles from American sources, and expand the domestic sourcing requirement for seafood acquired for commissary resale.",
+      "citation": "91 FR 38386",
+      "regulationIds": [
+        "0750-AM10"
+      ],
+      "cfrReferences": "48 CFR part 212, 48 CFR part 225, 48 CFR part 252",
+      "agencies": [
+        "Defense Department",
+        "Defense Acquisition Regulations System"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/06/25/2026-12825/defense-federal-acquisition-regulation-supplement-small-purchase-exception-for-the-acquisition-of-us",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-06-25/pdf/2026-12825.pdf",
+      "sourceQuery": "DFARS / DARS agency feed"
+    },
+    {
+      "id": "2026-12806",
+      "documentNumber": "2026-12806",
+      "title": "Information Collection; Paperwork Reduction Act Changes in FAR Case 2026-001, Revolutionary Federal Acquisition Regulation Overhaul Parts 1, 2, 4, 33, 39, 40, and 53",
+      "shortTitle": "Information Collection; Paperwork Reduction Act Changes in FAR Case 2026-001, Revolutionary Federal Acquisition Regulation Overhaul Parts 1, 2, 4, 33, 39, 40, and 53",
+      "system": "FAR",
+      "stage": "Information collection",
+      "topic": "Acquisition policy",
+      "actionLevel": "Monitor",
+      "actionTone": "monitor",
+      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
+      "nextSteps": [
+        "Identify the cited provision, clause, form, or system",
+        "Comment only if your office has burden data or a process concern",
+        "No template change unless a later rule follows"
+      ],
+      "type": "Notice",
+      "publicationDate": "2026-06-25",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-08-24",
+      "datesText": "The FAR Council will consider all comments received by August 24, 2026.",
+      "actionText": "Notice and request for comments.",
+      "summary": "OFPP, DoD, GSA, and NASA (collectively referred to as the Federal Acquisition Regulatory Council or FAR Council) invite public comments on the Paperwork Reduction Act changes in FAR Case 2026-001, \"Revolutionary Federal Acquisition Regulation Overhaul Parts 1, 2, 4, 33, 39, 40, and 53,\" specifically regarding changes to information collections due to the proposed rule. In accordance with the Paperwork Reduction Act (PRA) of 1995 and OMB regulations, public comments are particularly invited on: the necessity of the...",
+      "citation": "91 FR 38438",
+      "regulationIds": [],
+      "cfrReferences": "",
+      "agencies": [
+        "Management and Budget Office",
+        "Federal Procurement Policy Office",
+        "Defense Department",
+        "General Services Administration",
+        "National Aeronautics and Space Administration"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/06/25/2026-12806/information-collection-paperwork-reduction-act-changes-in-far-case-2026-001-revolutionary-federal",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-06-25/pdf/2026-12806.pdf",
+      "sourceQuery": "Federal Acquisition Regulation keyword feed"
+    },
+    {
+      "id": "2026-12807",
+      "documentNumber": "2026-12807",
+      "title": "Information Collection; Paperwork Reduction Act Changes in FAR Case 2026-002, Revolutionary Federal Acquisition Regulation Overhaul Parts 6, 7, 10, 18, 26, 37, and 41",
+      "shortTitle": "Information Collection; Paperwork Reduction Act Changes in FAR Case 2026-002, Revolutionary Federal Acquisition Regulation Overhaul Parts 6, 7, 10, 18, 26, 37, and 41",
+      "system": "FAR",
+      "stage": "Information collection",
+      "topic": "Acquisition policy",
+      "actionLevel": "Monitor",
+      "actionTone": "monitor",
+      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
+      "nextSteps": [
+        "Identify the cited provision, clause, form, or system",
+        "Comment only if your office has burden data or a process concern",
+        "No template change unless a later rule follows"
+      ],
+      "type": "Notice",
+      "publicationDate": "2026-06-25",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-08-24",
+      "datesText": "The FAR Council will consider all comments received by August 24, 2026.",
+      "actionText": "Notice and request for comments.",
+      "summary": "OFPP, DoD, GSA, and NASA (collectively referred to as the Federal Acquisition Regulatory Council or FAR Council) invite public comments on the Paperwork Reduction Act changes in FAR Case 2026-002, \"Revolutionary Federal Acquisition Regulation Overhaul Parts 6, 7, 10, 18, 26, 37, and 41,\" specifically regarding changes to information collections due to the proposed rule. In accordance with the Paperwork Reduction Act (PRA) of 1995 and OMB regulations, public comments are particularly invited on: the necessity of th...",
+      "citation": "91 FR 38440",
+      "regulationIds": [],
+      "cfrReferences": "",
+      "agencies": [
+        "Management and Budget Office",
+        "Federal Procurement Policy Office",
+        "Defense Department",
+        "General Services Administration",
+        "National Aeronautics and Space Administration"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/06/25/2026-12807/information-collection-paperwork-reduction-act-changes-in-far-case-2026-002-revolutionary-federal",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-06-25/pdf/2026-12807.pdf",
+      "sourceQuery": "Federal Acquisition Regulation keyword feed"
+    },
     {
       "id": "2026-12559",
       "documentNumber": "2026-12559",
