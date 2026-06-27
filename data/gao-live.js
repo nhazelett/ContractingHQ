@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-06-26T10:36:38.992Z",
+  "generatedAt": "2026-06-27T09:37:44.227Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -11,8 +11,8 @@ window.KTHQ_GAO_DATA = {
     "latestDecisionDate": "2026-06-23",
     "sustained": 0,
     "denied": 10,
-    "dismissed": 3,
-    "mixed": 2,
+    "dismissed": 2,
+    "mixed": 3,
     "unclassified": 0,
     "sourceStatus": {
       "rss": {
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 14
+        "parsedOutcomes": 16
       },
       "productPages": {
         "attempted": 15,
@@ -60,6 +60,32 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424377",
+      "caseName": "BCCG JV",
+      "title": "BCCG JV",
+      "bNumbers": [
+        "B-424377"
+      ],
+      "bNumberText": "B-424377",
+      "link": "https://www.gao.gov/products/b-424377",
+      "publicationDate": "2026-06-26",
+      "decisionDate": "2026-06-22",
+      "displayDate": "Jun 22, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We dismiss the protest.",
+      "officialSynopsis": "BCCG JV, of Montgomery, Alabama, protests the issuance of a task order to Cochrane USA Inc., of Fredericksburg, Virginia, by the Department of...",
+      "highlights": "",
+      "digest": "1. Protest challenging the issuance of a sole‑source task order is dismissed where the agency issued the task order on a sole‑source basis pursuant to a waiver under the Illegal Immigration Reform and Immigrant Responsibility Act of 1996, which vests exclusive jurisdiction over causes or claims arising from actions undertaken pursuant to such a waiver in the district courts of the United States. 2. Protest alleging that issuance of a task order violated restrictions on conflicts of interest is dismissed where it fails to provide factually and legally sufficient bases of protest.",
+      "tags": [
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -207,6 +233,35 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-424347,B-424347.2",
+      "caseName": "InterImage Inc.",
+      "title": "InterImage Inc.",
+      "bNumbers": [
+        "B-424347",
+        "B-424347.2"
+      ],
+      "bNumberText": "B-424347, B-424347.2",
+      "link": "https://www.gao.gov/products/b-424347%2Cb-424347.2",
+      "publicationDate": "2026-06-26",
+      "decisionDate": "2026-06-15",
+      "displayDate": "Jun 15, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "InterImage, Inc., of Arlington, Virginia, protests the issuance of a task order to Trillion Technology Solutions, Inc., of Reston, Virginia, under...",
+      "highlights": "",
+      "digest": "1. Protest alleging that the agency unreasonably evaluated the awardee's technical quotation is denied where the record shows the evaluation was reasonable and consistent with the terms of the solicitation. 2. Protest alleging that the agency unreasonably conducted the tradeoff analysis is denied where the record shows that the agency qualitatively compared the quotations in accordance with the terms of the solicitation.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms",
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
       "id": "B-424316,B-424316.2",
       "caseName": "Altus Technology Solutions",
       "title": "Altus Technology Solutions",
@@ -260,36 +315,6 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424508,B-424509,B-424510",
-      "caseName": "Oready, LLC",
-      "title": "Oready, LLC",
-      "bNumbers": [
-        "B-424508",
-        "B-424509",
-        "B-424510"
-      ],
-      "bNumberText": "B-424508, B-424509, B-424510",
-      "link": "https://www.gao.gov/products/b-424508%2Cb-424509%2Cb-424510",
-      "publicationDate": "2026-06-08",
-      "decisionDate": "2026-06-08",
-      "displayDate": "Jun 8, 2026",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protests.",
-      "officialSynopsis": "Oready, LLC, of Las Vegas, Nevada, a small business, protests the terms of three requests for quotations (RFQ) Nos. 140A2326Q0114; 140A2326Q0116; and...",
-      "highlights": "",
-      "digest": "1. Protests challenging terms of solicitations are dismissed as untimely where each protest was submitted to GAO on a business day, but after GAO had closed for filings at 5:30 p.m. Eastern Time and, as a result, each protest was filed when GAO reopened on the next business day, which was after the closing time set for receipt of quotations under the applicable solicitation. 2. Protests challenging terms of solicitations that were filed at GAO after the closing time set for receipt of quotations were not eligible for treatment as subsequent protests to GAO filed after timely agency-level protests under 4 C.F.R. 21.2(a)(3) because, even though the protester transmitted a copy of each GAO protest to the contracting officer before the applicable solicitation's closing time set for receipt of quotations, that submission did not constitute the filing of an agency-level protest.",
-      "tags": [
-        "Timeliness",
-        "Solicitation terms",
-        "Small business"
-      ],
-      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -437,36 +462,6 @@ window.KTHQ_GAO_DATA = {
         "Solicitation terms"
       ],
       "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424253,B-424253.4",
-      "caseName": "Octave Technologies Corporation",
-      "title": "Octave Technologies Corporation",
-      "bNumbers": [
-        "B-424253",
-        "B-424253.4"
-      ],
-      "bNumberText": "B-424253, B-424253.4",
-      "link": "https://www.gao.gov/products/b-424253%2Cb-424253.4",
-      "publicationDate": "2026-06-08",
-      "decisionDate": "2026-05-15",
-      "displayDate": "May 15, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Octave Technologies Corporation, of Baltimore, Maryland, a small business, protests the issuance of a Federal Supply Schedule (FSS) task order to...",
-      "highlights": "",
-      "digest": "1. Protest that agency misevaluated quotations and engaged in disparate treatment under competition for Federal Supply Schedule task order is denied where the record shows that the evaluation was reasonable and consistent with the solicitation criteria and differences in evaluation treatment was the result of differences in the vendors' quotations. 2. Protest challenging agency's selection of the best-suited vendor and the subsequent conduct of exchanges only with that firm is denied where the record shows the best-suited vendor determination was reasonable and consistent with the terms of the solicitation.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Small business",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     }
