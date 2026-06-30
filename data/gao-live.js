@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-06-29T12:16:02.294Z",
+  "generatedAt": "2026-06-30T10:43:21.447Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,10 +7,10 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 15,
+    "total": 14,
     "latestDecisionDate": "2026-06-23",
     "sustained": 0,
-    "denied": 10,
+    "denied": 9,
     "dismissed": 2,
     "mixed": 3,
     "unclassified": 0,
@@ -26,8 +26,8 @@ window.KTHQ_GAO_DATA = {
         "parsedOutcomes": 16
       },
       "productPages": {
-        "attempted": 15,
-        "enriched": 15,
+        "attempted": 14,
+        "enriched": 14,
         "blocked": 0
       },
       "legacyCache": {
@@ -315,36 +315,6 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424349,B-424349.2",
-      "caseName": "Servexo Protective Services, Inc.",
-      "title": "Servexo Protective Services, Inc.",
-      "bNumbers": [
-        "B-424349",
-        "B-424349.2"
-      ],
-      "bNumberText": "B-424349, B-424349.2",
-      "link": "https://www.gao.gov/products/b-424349%2Cb-424349.2",
-      "publicationDate": "2026-06-09",
-      "decisionDate": "2026-06-08",
-      "displayDate": "Jun 8, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Servexo Protective Services, Inc., a small business of Gardena, California, protests the issuance of a task order to Valletta Industries, a small...",
-      "highlights": "",
-      "digest": "Protest challenging the agency's evaluation of the protester's quotation as unacceptable is denied where the evaluation was reasonable and in accordance with the terms of the solicitation.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Small business",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
