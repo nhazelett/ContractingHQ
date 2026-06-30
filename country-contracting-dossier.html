@@ -1249,7 +1249,7 @@
                   <span class="badge badge-blue" id="awardBadge">USAspending</span>
                 </div>
                 <div class="card-body">
-                  <p class="card-note"><strong>Default pull:</strong> contract awards reported in USAspending with the selected country as the primary place of performance and an action date in the last five years. This is intentionally broad for Ctrl+F vendor research.</p>
+                  <p class="card-note"><strong>Default pull:</strong> contract awards reported in USAspending with the selected country as the primary place of performance and an action date in the last five years. U.S. states and territories use USAspending domestic location codes, such as USA/PR for Puerto Rico. This is intentionally broad for Ctrl+F vendor research.</p>
                   <div class="award-controls" style="margin-top: 0.85rem;">
                     <input class="award-search" id="awardSearchInput" type="search" placeholder="Filter loaded awards by company, NAICS, PSC, agency, city, or description" autocomplete="off" />
                     <button class="btn btn-muted" type="button" id="copyContractorsBtn"><i data-lucide="clipboard-copy"></i>Copy vendors</button>
@@ -1455,6 +1455,16 @@
         "SL.UEM.TOTL.ZS": "Unemployment",
         "NE.TRD.GNFS.ZS": "Trade % GDP",
         "IC.BUS.EASE.XQ": "Ease of business"
+      };
+
+      var US_SPENDING_DOMESTIC_LOCATIONS = {
+        USA: { country: "USA", label: "USA" },
+        PRI: { country: "USA", state: "PR", label: "USA/PR" },
+        GUM: { country: "USA", state: "GU", label: "USA/GU" },
+        ASM: { country: "USA", state: "AS", label: "USA/AS" },
+        MNP: { country: "USA", state: "MP", label: "USA/MP" },
+        VIR: { country: "USA", state: "VI", label: "USA/VI" },
+        UMI: { country: "USA", state: "UM", label: "USA/UM" }
       };
 
       var $ = function (id) { return document.getElementById(id); };
@@ -1672,6 +1682,24 @@
         return { start: iso(start), end: iso(end) };
       }
 
+      function usaSpendingLocationContext() {
+        var domestic = US_SPENDING_DOMESTIC_LOCATIONS[state.selectedIso3];
+        if (domestic) {
+          var domesticLocation = { country: domestic.country };
+          if (domestic.state) domesticLocation.state = domestic.state;
+          return {
+            scope: "domestic",
+            locations: [domesticLocation],
+            label: domestic.label
+          };
+        }
+        return {
+          scope: "foreign",
+          locations: [{ country: state.selectedIso3 }],
+          label: state.selectedIso3 || "-"
+        };
+      }
+
       async function loadUsaSpendingAwards(reset) {
         if (!state.selectedIso3 || state.awardLoading) return;
         if (reset) {
@@ -1683,12 +1711,13 @@
         state.awardLoading = true;
         renderAwards();
         var windowRange = state.awardWindow || fiveYearWindow();
+        var locationContext = usaSpendingLocationContext();
         var body = {
           filters: {
             award_type_codes: ["A", "B", "C", "D"],
             time_period: [{ start_date: windowRange.start, end_date: windowRange.end }],
-            place_of_performance_scope: "foreign",
-            place_of_performance_locations: [{ country: state.selectedIso3 }]
+            place_of_performance_scope: locationContext.scope,
+            place_of_performance_locations: locationContext.locations
           },
           fields: [
             "Award ID",
@@ -1929,13 +1958,14 @@
         var loadedContractors = contractorSummary(state.awards);
         var totalAmount = rows.reduce(function (sum, row) { return sum + Number(row["Award Amount"] || 0); }, 0);
         var windowRange = state.awardWindow || fiveYearWindow();
+        var locationContext = usaSpendingLocationContext();
         $("awardWindowBadge").textContent = windowRange.start + " to " + windowRange.end;
-        $("awardBadge").textContent = state.awardLoading ? "Loading" : "USAspending";
+        $("awardBadge").textContent = state.awardLoading ? "Loading" : locationContext.label;
         $("loadMoreAwardsBtn").disabled = state.awardLoading || !state.awardHasNext;
         $("loadMoreAwardsBtn").innerHTML = state.awardLoading ? '<i data-lucide="loader"></i>Loading' : '<i data-lucide="plus"></i>Load 100 more';
         $("awardLoadStatus").textContent = state.awardLoading
-          ? "Pulling USAspending award records..."
-          : (state.awardHasNext ? "Loaded " + state.awards.length + " award records. More records are available." : "Loaded " + state.awards.length + " award records. No additional page reported.");
+          ? "Pulling USAspending award records for " + locationContext.label + "..."
+          : (state.awardHasNext ? "Loaded " + state.awards.length + " award records for " + locationContext.label + ". More records are available." : "Loaded " + state.awards.length + " award records for " + locationContext.label + ". No additional page reported.");
 
         $("awardSummary").innerHTML = [
           '<div class="award-stat"><div class="award-stat-label">Loaded Awards</div><div class="award-stat-value">' + esc(fmtNumber(state.awards.length)) + '</div></div>',
@@ -1945,13 +1975,13 @@
         ].join("");
 
         if (state.awardLoading && !state.awards.length) {
-          $("contractorList").innerHTML = '<div class="empty-state">Pulling the first 100 contract award records from USAspending for ' + esc(countryName()) + '.</div>';
+          $("contractorList").innerHTML = '<div class="empty-state">Pulling the first 100 contract award records from USAspending for ' + esc(countryName()) + ' using ' + esc(locationContext.label) + '.</div>';
           $("awardList").innerHTML = "";
           iconRefresh();
           return;
         }
         if (!state.awards.length) {
-          $("contractorList").innerHTML = '<div class="empty-state">No USAspending contract awards loaded for ' + esc(countryName()) + '. Try the USAspending search link, or refresh the dossier if the public API timed out.</div>';
+          $("contractorList").innerHTML = '<div class="empty-state">No USAspending contract awards loaded for ' + esc(countryName()) + ' using ' + esc(locationContext.label) + '. Try the USAspending search link, or refresh the dossier if the public API timed out.</div>';
           $("awardList").innerHTML = "";
           iconRefresh();
           return;
