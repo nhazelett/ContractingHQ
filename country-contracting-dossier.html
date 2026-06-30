@@ -1467,6 +1467,16 @@
         UMI: { country: "USA", state: "UM", label: "USA/UM" }
       };
 
+      var COUNTRY_FACT_OVERRIDES = {
+        USA: { timezones: ["Multiple U.S. time zones"], drivingSide: "right" },
+        PRI: { timezones: ["Atlantic Standard Time (UTC-04:00)"], drivingSide: "right" },
+        GUM: { timezones: ["Chamorro Standard Time (UTC+10:00)"], drivingSide: "right" },
+        ASM: { timezones: ["Samoa Standard Time (UTC-11:00)"], drivingSide: "right" },
+        MNP: { timezones: ["Chamorro Standard Time (UTC+10:00)"], drivingSide: "right" },
+        VIR: { timezones: ["Atlantic Standard Time (UTC-04:00)"], drivingSide: "left" },
+        UMI: { timezones: ["Multiple remote island time zones"] }
+      };
+
       var $ = function (id) { return document.getElementById(id); };
 
       function iconRefresh() {
@@ -1517,6 +1527,22 @@
         if (!values) return "-";
         if (Array.isArray(values)) return values.filter(Boolean).join(", ") || "-";
         return Object.values(values).filter(Boolean).join(", ") || "-";
+      }
+
+      function countryTimeZones(country) {
+        var override = country && COUNTRY_FACT_OVERRIDES[country.cca3] ? COUNTRY_FACT_OVERRIDES[country.cca3] : {};
+        var timezones = country && Array.isArray(country.timezones) && country.timezones.length
+          ? country.timezones
+          : override.timezones;
+        return Array.isArray(timezones) && timezones.length
+          ? timezones.filter(Boolean).join(", ")
+          : "";
+      }
+
+      function countryDrivingSide(country) {
+        var override = country && COUNTRY_FACT_OVERRIDES[country.cca3] ? COUNTRY_FACT_OVERRIDES[country.cca3] : {};
+        var side = country && country.car && country.car.side ? String(country.car.side) : (override.drivingSide || "");
+        return side ? side.charAt(0).toUpperCase() + side.slice(1) : "";
       }
 
       function countryName() {
@@ -1778,6 +1804,8 @@
         var popDatum = state.indicators["SP.POP.TOTL"];
         var population = c.population || (popDatum && popDatum.value);
         var populationYear = c.population ? "" : (popDatum ? "World Bank " + popDatum.date : "");
+        var timeZones = countryTimeZones(c);
+        var drivingSide = countryDrivingSide(c);
 
         $("currencyStatus").textContent = currencyCodes[0] || "-";
         $("currencySub").textContent = currencyText;
@@ -1791,14 +1819,15 @@
         $("flagImg").src = c.flags && c.flags.svg ? c.flags.svg : (c.cca2 ? "https://flagcdn.com/" + c.cca2.toLowerCase() + ".svg" : "");
         $("flagImg").alt = c.flags && c.flags.alt ? c.flags.alt : c.name.common + " flag";
 
-        $("snapshotGrid").innerHTML = [
+        var snapshotRows = [
           kv("Capital", joinValues(c.capital)),
           kv("Languages", languages),
-          kv("Time zones", c.timezones ? joinValues(c.timezones) : "Manual check"),
           kv("Dialing code", dialing),
-          kv("Top-level domain", joinValues(c.tld)),
-          kv("Driving side", c.car && c.car.side ? c.car.side : "Manual check")
-        ].join("");
+          kv("Top-level domain", joinValues(c.tld))
+        ];
+        if (timeZones) snapshotRows.splice(2, 0, kv("Time zones", timeZones));
+        if (drivingSide) snapshotRows.push(kv("Driving side", drivingSide));
+        $("snapshotGrid").innerHTML = snapshotRows.join("");
 
         $("geoGrid").innerHTML = [
           kv("Region", c.region || "-"),
@@ -1853,7 +1882,7 @@
         $("financeGrid").innerHTML = [
           kv("Currency", $("currencySub").textContent),
           kv("USD exchange", $("exchangeStatus").textContent + " " + (code || "")),
-          kv("Exchange source", state.exchange ? "Open ER API, " + state.exchange.date : (code === "USD" ? "USD" : "Manual verification needed")),
+          kv("Exchange source", state.exchange ? "Open ER API, " + state.exchange.date : (code === "USD" ? "USD" : "Open FX feed unavailable")),
           kv("Central bank search", countryName() + " central bank"),
           kv("Payment concerns", "Confirm cash/card acceptance, wire reliability, taxes, VAT, and anti-corruption risk."),
           kv("Pricing note", "Capture local inflation, FX volatility, fuel sensitivity, and quote validity periods.")
@@ -2150,14 +2179,18 @@
           sourceCard({ name: "Labor and employment law search", desc: "Host-nation labor, wage, work permit, and subcontracting considerations.", url: googleSearch(name + " labor law work permit contractor employment"), badge: "Labor", badgeClass: "badge-blue" })
         ].join("");
 
-        $("logisticsGrid").innerHTML = [
+        var timeZones = countryTimeZones(state.country);
+        var drivingSide = countryDrivingSide(state.country);
+        var logisticsRows = [
           kv("Air movement", "Identify major passenger/cargo airports and customs procedures."),
           kv("Sea movement", "Identify seaports, inland routes, and freight forwarders."),
-          kv("Road movement", "Review road safety, seasonal constraints, border crossings, and convoy limitations."),
+          kv("Road movement", (drivingSide ? "Driving side: " + drivingSide + ". " : "") + "Review road safety, seasonal constraints, border crossings, and convoy limitations."),
           kv("Telecom", "Identify mobile operators, SIM/eSIM rules, and internet reliability."),
           kv("Power", "Confirm voltage, plug type, generator/fuel availability, and outages."),
           kv("Lodging", "Screen lodging market, security posture, payment methods, and tax treatment.")
-        ].join("");
+        ];
+        if (timeZones) logisticsRows.unshift(kv("Time zones", timeZones));
+        $("logisticsGrid").innerHTML = logisticsRows.join("");
 
         $("logisticsSources").innerHTML = [
           sourceCard({ name: "Airport and cargo search", desc: "Major airports, cargo handlers, and ground transport.", url: googleSearch(name + " major airports cargo handler freight forwarder"), badge: "Air", badgeClass: "badge-blue" }),
@@ -2230,7 +2263,8 @@
         var currency = c.currencies ? Object.keys(c.currencies).join(", ") : "-";
         var popDatum = state.indicators["SP.POP.TOTL"];
         var population = fmtNumber(c.population || (popDatum && popDatum.value));
-        var timezones = c.timezones ? joinValues(c.timezones) : "Manual check";
+        var timezones = countryTimeZones(c);
+        var drivingSide = countryDrivingSide(c);
         var gdp = state.indicators["NY.GDP.MKTP.CD"];
         var inflation = state.indicators["FP.CPI.TOTL.ZG"];
         var note = $("notesInput").value.trim();
@@ -2238,10 +2272,23 @@
         var topContractors = contractorSummary(state.awards).slice(0, 8).map(function (item) {
           return item.name + " (" + item.count + " awards loaded, " + awardAmount(item.amount) + ")";
         });
+        var countryFacts = [
+          "Capital: " + joinValues(c.capital),
+          "Population: " + population,
+          "Languages: " + joinValues(c.languages)
+        ];
+        if (timezones) countryFacts.push("Time zones: " + timezones);
+        if (drivingSide) countryFacts.push("Driving side: " + drivingSide);
+        var financeFacts = [
+          "Currency: " + currency,
+          "USD exchange: " + $("exchangeStatus").textContent
+        ];
+        if (gdp) financeFacts.push("GDP: " + fmtMoney(gdp.value) + " (" + gdp.date + ")");
+        if (inflation) financeFacts.push("Inflation: " + fmtPercent(inflation.value) + " (" + inflation.date + ")");
         var rows = [
           { title: "BLUF", desc: c.name.common + " dossier refreshed " + (state.lastRefreshed ? state.lastRefreshed.toLocaleString() : "today") + ". Validate clearance, legal, vendor, and payment decisions against official systems before use." },
-          { title: "Country facts", desc: "Capital: " + joinValues(c.capital) + ". Population: " + population + ". Languages: " + joinValues(c.languages) + ". Time zones: " + timezones + "." },
-          { title: "Finance", desc: "Currency: " + currency + ". USD exchange: " + $("exchangeStatus").textContent + ". GDP: " + (gdp ? fmtMoney(gdp.value) + " (" + gdp.date + ")" : "manual check needed") + ". Inflation: " + (inflation ? fmtPercent(inflation.value) + " (" + inflation.date + ")" : "manual check needed") + "." },
+          { title: "Country facts", desc: countryFacts.join(". ") + "." },
+          { title: "Finance", desc: financeFacts.join(". ") + "." },
           { title: "Market research", desc: "Review ITA Country Commercial Guide, World Bank indicators, UN Comtrade, local chamber/registry sources, and host-nation tender portals for requirement: " + requirementQuery() + "." },
           { title: "USG contractors", desc: topContractors.length ? topContractors.join(" | ") : "No USAspending award records loaded yet." },
           { title: "Vendor vetting", desc: "Screen vendor leads through OFAC, SAM.gov exclusions, World Bank debarment, UN sanctions, company registry data, and adverse media before relying on quotes." },
@@ -2258,7 +2305,8 @@
         if (!c) return "";
         var popDatum = state.indicators["SP.POP.TOTL"];
         var population = fmtNumber(c.population || (popDatum && popDatum.value));
-        var timezones = c.timezones ? joinValues(c.timezones) : "Manual check";
+        var timezones = countryTimeZones(c);
+        var drivingSide = countryDrivingSide(c);
         var lines = [];
         lines.push("KTHQ Country Contracting Dossier - " + c.name.common);
         lines.push("Refreshed: " + (state.lastRefreshed ? state.lastRefreshed.toLocaleString() : ""));
@@ -2269,7 +2317,8 @@
         lines.push("Population: " + population);
         lines.push("Region: " + [c.region, c.subregion].filter(Boolean).join(" / "));
         lines.push("Languages: " + joinValues(c.languages));
-        lines.push("Time zones: " + timezones);
+        if (timezones) lines.push("Time zones: " + timezones);
+        if (drivingSide) lines.push("Driving side: " + drivingSide);
         lines.push("Currency: " + $("currencySub").textContent);
         lines.push("USD exchange: " + $("exchangeSub").textContent);
         lines.push("");
