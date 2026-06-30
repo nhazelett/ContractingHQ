@@ -610,6 +610,109 @@
       justify-content: flex-end;
     }
 
+    .award-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto auto;
+      gap: 0.65rem;
+      align-items: center;
+      margin-bottom: 0.85rem;
+    }
+    .award-search {
+      min-height: 42px;
+      border: 1px solid rgba(74, 158, 255, 0.18);
+      background: rgba(4, 13, 31, 0.45);
+      border-radius: 8px;
+      padding: 0 0.75rem;
+    }
+    .award-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.65rem;
+      margin-bottom: 0.85rem;
+    }
+    .award-stat {
+      border: 1px solid rgba(74, 158, 255, 0.1);
+      background: rgba(4, 13, 31, 0.36);
+      border-radius: 8px;
+      padding: 0.7rem;
+      min-height: 72px;
+    }
+    .award-stat-label {
+      color: var(--muted);
+      font-size: 0.66rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.1px;
+      margin-bottom: 0.2rem;
+    }
+    .award-stat-value {
+      color: var(--white);
+      font-family: Rajdhani, sans-serif;
+      font-size: 1.28rem;
+      line-height: 1.05;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+    .award-list,
+    .contractor-list {
+      display: grid;
+      gap: 0.65rem;
+    }
+    .contractor-card,
+    .award-card {
+      border: 1px solid rgba(74, 158, 255, 0.1);
+      background: rgba(4, 13, 31, 0.4);
+      border-radius: 8px;
+      padding: 0.75rem;
+      min-width: 0;
+    }
+    .contractor-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.75rem;
+      align-items: start;
+    }
+    .contractor-name,
+    .award-title {
+      color: var(--white);
+      font-weight: 850;
+      font-size: 0.92rem;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+    .contractor-meta,
+    .award-meta,
+    .award-desc {
+      color: var(--muted);
+      font-size: 0.76rem;
+      line-height: 1.45;
+      margin-top: 0.18rem;
+    }
+    .award-meta strong,
+    .contractor-meta strong {
+      color: var(--muted-2);
+      font-weight: 800;
+    }
+    .award-desc {
+      color: var(--muted-2);
+      margin-top: 0.45rem;
+    }
+    .award-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.55rem;
+    }
+    .award-load-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-top: 0.85rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
     .indicator-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -859,7 +962,14 @@
       .content-grid.three,
       .side-rail,
       .kv-grid,
+      .award-summary,
       .indicator-grid {
+        grid-template-columns: 1fr;
+      }
+      .award-controls {
+        grid-template-columns: 1fr;
+      }
+      .contractor-card {
         grid-template-columns: 1fr;
       }
       .flag-wrap { grid-template-columns: 1fr; }
@@ -1017,6 +1127,7 @@
         <button class="tab-btn" type="button" data-tab="clearance"><i data-lucide="badge-check"></i>Clearance</button>
         <button class="tab-btn" type="button" data-tab="market"><i data-lucide="chart-no-axes-combined"></i>Market</button>
         <button class="tab-btn" type="button" data-tab="vendors"><i data-lucide="building-2"></i>Vendors</button>
+        <button class="tab-btn" type="button" data-tab="usg-awards"><i data-lucide="landmark"></i>USG Awards</button>
         <button class="tab-btn" type="button" data-tab="finance"><i data-lucide="wallet-cards"></i>Finance</button>
         <button class="tab-btn" type="button" data-tab="logistics"><i data-lucide="truck"></i>Logistics</button>
         <button class="tab-btn" type="button" data-tab="news"><i data-lucide="newspaper"></i>News</button>
@@ -1125,6 +1236,42 @@
                 </div>
                 <div class="card-body">
                   <div class="source-list" id="vettingSources"></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="tab-panel" id="panel-usg-awards">
+            <div class="content-grid single">
+              <article class="card">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="landmark"></i><h2>U.S. Government Contractors In-Country</h2></div>
+                  <span class="badge badge-blue" id="awardBadge">USAspending</span>
+                </div>
+                <div class="card-body">
+                  <p class="card-note"><strong>Default pull:</strong> contract awards reported in USAspending with the selected country as the primary place of performance and an action date in the last five years. This is intentionally broad for Ctrl+F vendor research.</p>
+                  <div class="award-controls" style="margin-top: 0.85rem;">
+                    <input class="award-search" id="awardSearchInput" type="search" placeholder="Filter loaded awards by company, NAICS, PSC, agency, city, or description" autocomplete="off" />
+                    <button class="btn btn-muted" type="button" id="copyContractorsBtn"><i data-lucide="clipboard-copy"></i>Copy vendors</button>
+                    <button class="btn btn-muted" type="button" id="exportAwardsBtn"><i data-lucide="download"></i>CSV</button>
+                    <button class="btn btn-primary" type="button" id="loadMoreAwardsBtn"><i data-lucide="plus"></i>Load 100 more</button>
+                  </div>
+                  <div class="award-summary" id="awardSummary"></div>
+                  <div class="contractor-list" id="contractorList"></div>
+                </div>
+              </article>
+
+              <article class="card" style="margin-top: 1rem;">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="list-filter"></i><h2>Loaded Award Records</h2></div>
+                  <span class="badge badge-gold" id="awardWindowBadge">5 years</span>
+                </div>
+                <div class="card-body">
+                  <div class="award-list" id="awardList"></div>
+                  <div class="award-load-row">
+                    <span id="awardLoadStatus">Awards load after a country is selected.</span>
+                    <a href="https://www.usaspending.gov/search" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 800; text-decoration: none;">Open USAspending</a>
+                  </div>
                 </div>
               </article>
             </div>
@@ -1277,6 +1424,11 @@
         exchange: null,
         indicators: {},
         news: [],
+        awards: [],
+        awardPage: 1,
+        awardHasNext: false,
+        awardLoading: false,
+        awardWindow: null,
         lastRefreshed: null,
         selectedIso3: "",
         selectedIso2: ""
@@ -1431,7 +1583,8 @@
           $("countrySelect").innerHTML = state.countries.map(function (c) {
             return '<option value="' + esc(c.cca3) + '">' + esc(c.name.common) + '</option>';
           }).join("");
-          var preferred = state.countries.find(function (c) { return c.cca3 === "QAT"; }) || state.countries[0];
+          var urlCountry = (new URLSearchParams(window.location.search).get("country") || "").toUpperCase();
+          var preferred = state.countries.find(function (c) { return c.cca3 === urlCountry; }) || state.countries.find(function (c) { return c.cca3 === "QAT"; }) || state.countries[0];
           $("countrySelect").value = preferred.cca3;
           await selectCountry(preferred.cca3);
         } catch (err) {
@@ -1452,14 +1605,15 @@
         await Promise.allSettled([
           loadExchange(),
           loadWorldBank(),
-          loadNews()
+          loadNews(),
+          loadUsaSpendingAwards(true)
         ]);
         renderAll();
         markLoading(false);
       }
 
       function markLoading(isLoading) {
-        ["indicatorGrid", "newsList"].forEach(function (id) {
+        ["indicatorGrid", "newsList", "awardList", "contractorList"].forEach(function (id) {
           var el = $(id);
           if (el) el.classList.toggle("loading", isLoading);
         });
@@ -1507,6 +1661,79 @@
           state.news = (data.articles || []).slice(0, 8);
         } catch (err) {
           state.news = [];
+        }
+      }
+
+      function fiveYearWindow() {
+        var end = new Date();
+        var start = new Date(end);
+        start.setFullYear(start.getFullYear() - 5);
+        function iso(d) { return d.toISOString().slice(0, 10); }
+        return { start: iso(start), end: iso(end) };
+      }
+
+      async function loadUsaSpendingAwards(reset) {
+        if (!state.selectedIso3 || state.awardLoading) return;
+        if (reset) {
+          state.awards = [];
+          state.awardPage = 1;
+          state.awardHasNext = false;
+          state.awardWindow = fiveYearWindow();
+        }
+        state.awardLoading = true;
+        renderAwards();
+        var windowRange = state.awardWindow || fiveYearWindow();
+        var body = {
+          filters: {
+            award_type_codes: ["A", "B", "C", "D"],
+            time_period: [{ start_date: windowRange.start, end_date: windowRange.end }],
+            place_of_performance_scope: "foreign",
+            place_of_performance_locations: [{ country: state.selectedIso3 }]
+          },
+          fields: [
+            "Award ID",
+            "Recipient Name",
+            "Recipient UEI",
+            "Start Date",
+            "End Date",
+            "Award Amount",
+            "Awarding Agency",
+            "Awarding Sub Agency",
+            "Funding Agency",
+            "Funding Sub Agency",
+            "Contract Award Type",
+            "NAICS",
+            "PSC",
+            "Description",
+            "Primary Place of Performance"
+          ],
+          page: state.awardPage,
+          limit: 100,
+          sort: "Award Amount",
+          order: "desc"
+        };
+        var controller = new AbortController();
+        var timer = window.setTimeout(function () { controller.abort(); }, 15000);
+        try {
+          var res = await fetch("https://api.usaspending.gov/api/v2/search/spending_by_award/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+            signal: controller.signal
+          });
+          if (!res.ok) throw new Error("USAspending returned " + res.status);
+          var data = await res.json();
+          var rows = Array.isArray(data.results) ? data.results : [];
+          state.awards = state.awards.concat(rows);
+          state.awardHasNext = !!(data.page_metadata && data.page_metadata.hasNext);
+          state.awardPage += 1;
+        } catch (err) {
+          if (!state.awards.length) state.awardHasNext = false;
+        } finally {
+          window.clearTimeout(timer);
+          state.awardLoading = false;
+          renderAwards();
+          renderBrief();
         }
       }
 
@@ -1571,6 +1798,7 @@
         renderExchange();
         renderIndicators();
         renderNews();
+        renderAwards();
         renderBrief();
       }
 
@@ -1631,6 +1859,209 @@
             '</div>'
           ].join("");
         }).join("");
+      }
+
+      function awardLocation(row) {
+        var loc = row["Primary Place of Performance"] || {};
+        return [loc.city_name, loc.state_name, loc.country_name || countryName()].filter(Boolean).join(", ") || countryName();
+      }
+
+      function awardCodeText(value) {
+        if (!value) return "-";
+        if (typeof value === "string") return value;
+        return [value.code, value.description].filter(Boolean).join(" - ") || "-";
+      }
+
+      function awardAmount(value) {
+        var num = Number(value || 0);
+        if (!num) return "$0";
+        return fmtMoney(num);
+      }
+
+      function awardSearchBlob(row) {
+        return [
+          row["Award ID"],
+          row["Recipient Name"],
+          row["Recipient UEI"],
+          row["Awarding Agency"],
+          row["Awarding Sub Agency"],
+          row["Funding Agency"],
+          row["Funding Sub Agency"],
+          row["Contract Award Type"],
+          awardCodeText(row.NAICS),
+          awardCodeText(row.PSC),
+          row.Description,
+          awardLocation(row)
+        ].join(" ").toLowerCase();
+      }
+
+      function filteredAwards() {
+        var term = (($("awardSearchInput") && $("awardSearchInput").value) || "").trim().toLowerCase();
+        if (!term) return state.awards;
+        return state.awards.filter(function (row) {
+          return awardSearchBlob(row).indexOf(term) !== -1;
+        });
+      }
+
+      function contractorSummary(rows) {
+        var map = {};
+        rows.forEach(function (row) {
+          var name = row["Recipient Name"] || "Unknown recipient";
+          if (!map[name]) {
+            map[name] = { name: name, uei: row["Recipient UEI"] || "", amount: 0, count: 0, agencies: {}, naics: {}, psc: {} };
+          }
+          map[name].amount += Number(row["Award Amount"] || 0);
+          map[name].count += 1;
+          if (row["Awarding Agency"]) map[name].agencies[row["Awarding Agency"]] = true;
+          var naics = awardCodeText(row.NAICS);
+          var psc = awardCodeText(row.PSC);
+          if (naics !== "-") map[name].naics[naics] = true;
+          if (psc !== "-") map[name].psc[psc] = true;
+          if (row["Recipient UEI"] && !map[name].uei) map[name].uei = row["Recipient UEI"];
+        });
+        return Object.values(map).sort(function (a, b) { return b.amount - a.amount; });
+      }
+
+      function renderAwards() {
+        if (!$("awardSummary") || !$("awardList")) return;
+        var rows = filteredAwards();
+        var contractors = contractorSummary(rows);
+        var loadedContractors = contractorSummary(state.awards);
+        var totalAmount = rows.reduce(function (sum, row) { return sum + Number(row["Award Amount"] || 0); }, 0);
+        var windowRange = state.awardWindow || fiveYearWindow();
+        $("awardWindowBadge").textContent = windowRange.start + " to " + windowRange.end;
+        $("awardBadge").textContent = state.awardLoading ? "Loading" : "USAspending";
+        $("loadMoreAwardsBtn").disabled = state.awardLoading || !state.awardHasNext;
+        $("loadMoreAwardsBtn").innerHTML = state.awardLoading ? '<i data-lucide="loader"></i>Loading' : '<i data-lucide="plus"></i>Load 100 more';
+        $("awardLoadStatus").textContent = state.awardLoading
+          ? "Pulling USAspending award records..."
+          : (state.awardHasNext ? "Loaded " + state.awards.length + " award records. More records are available." : "Loaded " + state.awards.length + " award records. No additional page reported.");
+
+        $("awardSummary").innerHTML = [
+          '<div class="award-stat"><div class="award-stat-label">Loaded Awards</div><div class="award-stat-value">' + esc(fmtNumber(state.awards.length)) + '</div></div>',
+          '<div class="award-stat"><div class="award-stat-label">Visible Awards</div><div class="award-stat-value">' + esc(fmtNumber(rows.length)) + '</div></div>',
+          '<div class="award-stat"><div class="award-stat-label">Unique Contractors</div><div class="award-stat-value">' + esc(fmtNumber(loadedContractors.length)) + '</div></div>',
+          '<div class="award-stat"><div class="award-stat-label">Visible Obligations</div><div class="award-stat-value">' + esc(awardAmount(totalAmount)) + '</div></div>'
+        ].join("");
+
+        if (state.awardLoading && !state.awards.length) {
+          $("contractorList").innerHTML = '<div class="empty-state">Pulling the first 100 contract award records from USAspending for ' + esc(countryName()) + '.</div>';
+          $("awardList").innerHTML = "";
+          iconRefresh();
+          return;
+        }
+        if (!state.awards.length) {
+          $("contractorList").innerHTML = '<div class="empty-state">No USAspending contract awards loaded for ' + esc(countryName()) + '. Try the USAspending search link, or refresh the dossier if the public API timed out.</div>';
+          $("awardList").innerHTML = "";
+          iconRefresh();
+          return;
+        }
+
+        $("contractorList").innerHTML = contractors.slice(0, 25).map(function (item) {
+          var agencies = Object.keys(item.agencies).slice(0, 3).join(" / ") || "-";
+          var naics = Object.keys(item.naics).slice(0, 3).join(" | ") || "-";
+          return [
+            '<div class="contractor-card">',
+            '<div>',
+            '<div class="contractor-name">' + esc(item.name) + '</div>',
+            '<div class="contractor-meta"><strong>UEI:</strong> ' + esc(item.uei || "-") + ' &nbsp; <strong>Awards:</strong> ' + esc(item.count) + ' &nbsp; <strong>Loaded amount:</strong> ' + esc(awardAmount(item.amount)) + '</div>',
+            '<div class="contractor-meta"><strong>Agencies:</strong> ' + esc(agencies) + '</div>',
+            '<div class="contractor-meta"><strong>NAICS:</strong> ' + esc(naics) + '</div>',
+            '</div>',
+            '<div class="source-actions"><span class="badge badge-blue">Vendor</span></div>',
+            '</div>'
+          ].join("");
+        }).join("");
+
+        if (!rows.length) {
+          $("awardList").innerHTML = '<div class="empty-state">No loaded awards match the current filter. Clear the filter or load more records.</div>';
+          iconRefresh();
+          return;
+        }
+
+        $("awardList").innerHTML = rows.map(function (row) {
+          var naics = awardCodeText(row.NAICS);
+          var psc = awardCodeText(row.PSC);
+          var awardUrl = row.generated_internal_id ? "https://www.usaspending.gov/award/" + encodeURIComponent(row.generated_internal_id) : "https://www.usaspending.gov/search";
+          return [
+            '<div class="award-card">',
+            '<div class="award-title">' + esc(row["Recipient Name"] || "Unknown recipient") + '</div>',
+            '<div class="award-meta"><strong>Award:</strong> <a href="' + esc(awardUrl) + '" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 800; text-decoration: none;">' + esc(row["Award ID"] || "-") + '</a> &nbsp; <strong>UEI:</strong> ' + esc(row["Recipient UEI"] || "-") + ' &nbsp; <strong>Amount:</strong> ' + esc(awardAmount(row["Award Amount"])) + '</div>',
+            '<div class="award-meta"><strong>Period:</strong> ' + esc([row["Start Date"], row["End Date"]].filter(Boolean).join(" to ") || "-") + ' &nbsp; <strong>Place:</strong> ' + esc(awardLocation(row)) + '</div>',
+            '<div class="award-meta"><strong>Awarding:</strong> ' + esc([row["Awarding Agency"], row["Awarding Sub Agency"]].filter(Boolean).join(" / ") || "-") + '</div>',
+            '<div class="award-desc">' + esc(row.Description || "No description provided.") + '</div>',
+            '<div class="award-tags">',
+            '<span class="badge badge-blue">' + esc(row["Contract Award Type"] || "Contract") + '</span>',
+            '<span class="badge badge-green">NAICS ' + esc(naics) + '</span>',
+            '<span class="badge badge-gold">PSC ' + esc(psc) + '</span>',
+            '</div>',
+            '</div>'
+          ].join("");
+        }).join("");
+        iconRefresh();
+      }
+
+      function csvEscape(value) {
+        var text = String(value == null ? "" : value);
+        return '"' + text.replace(/"/g, '""') + '"';
+      }
+
+      function exportAwardsCsv() {
+        var rows = filteredAwards();
+        if (!rows.length) {
+          showToast("No loaded awards to export.");
+          return;
+        }
+        var headers = ["Recipient Name", "Recipient UEI", "Award ID", "Award Amount", "Start Date", "End Date", "Awarding Agency", "Awarding Sub Agency", "Funding Agency", "Funding Sub Agency", "NAICS", "PSC", "Place of Performance", "Description"];
+        var csvRows = [headers.map(csvEscape).join(",")].concat(rows.map(function (row) {
+          return [
+            row["Recipient Name"],
+            row["Recipient UEI"],
+            row["Award ID"],
+            row["Award Amount"],
+            row["Start Date"],
+            row["End Date"],
+            row["Awarding Agency"],
+            row["Awarding Sub Agency"],
+            row["Funding Agency"],
+            row["Funding Sub Agency"],
+            awardCodeText(row.NAICS),
+            awardCodeText(row.PSC),
+            awardLocation(row),
+            row.Description
+          ].map(csvEscape).join(",");
+        }));
+        var blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8" });
+        var link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = (state.selectedIso3 || "country") + "-usg-awards-" + fiveYearWindow().end + ".csv";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.setTimeout(function () { URL.revokeObjectURL(link.href); }, 500);
+        showToast("CSV exported.");
+      }
+
+      async function copyContractors() {
+        var contractors = contractorSummary(filteredAwards());
+        if (!contractors.length) {
+          showToast("No loaded contractors to copy.");
+          return;
+        }
+        var text = contractors.map(function (item) {
+          return item.name + " | UEI: " + (item.uei || "-") + " | Awards loaded: " + item.count + " | Amount loaded: " + awardAmount(item.amount);
+        }).join("\n");
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch (err) {
+          var temp = document.createElement("textarea");
+          temp.value = text;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand("copy");
+          document.body.removeChild(temp);
+        }
+        showToast("Loaded contractor list copied.");
       }
 
       function renderSources() {
@@ -1774,11 +2205,15 @@
         var inflation = state.indicators["FP.CPI.TOTL.ZG"];
         var note = $("notesInput").value.trim();
         var topNews = state.news.slice(0, 3).map(function (item) { return item.title; }).filter(Boolean);
+        var topContractors = contractorSummary(state.awards).slice(0, 8).map(function (item) {
+          return item.name + " (" + item.count + " awards loaded, " + awardAmount(item.amount) + ")";
+        });
         var rows = [
           { title: "BLUF", desc: c.name.common + " dossier refreshed " + (state.lastRefreshed ? state.lastRefreshed.toLocaleString() : "today") + ". Validate clearance, legal, vendor, and payment decisions against official systems before use." },
           { title: "Country facts", desc: "Capital: " + joinValues(c.capital) + ". Population: " + population + ". Languages: " + joinValues(c.languages) + ". Time zones: " + timezones + "." },
           { title: "Finance", desc: "Currency: " + currency + ". USD exchange: " + $("exchangeStatus").textContent + ". GDP: " + (gdp ? fmtMoney(gdp.value) + " (" + gdp.date + ")" : "manual check needed") + ". Inflation: " + (inflation ? fmtPercent(inflation.value) + " (" + inflation.date + ")" : "manual check needed") + "." },
           { title: "Market research", desc: "Review ITA Country Commercial Guide, World Bank indicators, UN Comtrade, local chamber/registry sources, and host-nation tender portals for requirement: " + requirementQuery() + "." },
+          { title: "USG contractors", desc: topContractors.length ? topContractors.join(" | ") : "No USAspending award records loaded yet." },
           { title: "Vendor vetting", desc: "Screen vendor leads through OFAC, SAM.gov exclusions, World Bank debarment, UN sanctions, company registry data, and adverse media before relying on quotes." },
           { title: "Current operating picture", desc: topNews.length ? topNews.join(" | ") : "No live news pulled. Use GDELT, ReliefWeb, State, and local media searches." },
           { title: "Local notes", desc: note || "No local notes saved." }
@@ -1812,6 +2247,16 @@
         lines.push("Requirement keyword: " + requirementQuery());
         lines.push("Operating area: " + (locationQuery() || c.name.common));
         lines.push("Use ITA Country Commercial Guide, World Bank, UN Comtrade, local registry, chamber, tender portals, and adverse media searches.");
+        lines.push("");
+        lines.push("USG CONTRACTORS LOADED FROM USASPENDING");
+        var contractors = contractorSummary(state.awards).slice(0, 25);
+        if (contractors.length) {
+          contractors.forEach(function (item) {
+            lines.push("- " + item.name + " | UEI: " + (item.uei || "-") + " | awards loaded: " + item.count + " | amount loaded: " + awardAmount(item.amount));
+          });
+        } else {
+          lines.push("- No USAspending award records loaded yet.");
+        }
         lines.push("");
         lines.push("VETTING");
         lines.push("Screen vendors through OFAC, SAM.gov exclusions, World Bank debarment, UN sanctions, registry status, ownership, banking legitimacy, and adverse media.");
@@ -1873,6 +2318,10 @@
         });
         $("copyBriefBtn").addEventListener("click", copyBrief);
         $("printBtn").addEventListener("click", function () { window.print(); });
+        $("loadMoreAwardsBtn").addEventListener("click", function () { loadUsaSpendingAwards(false); });
+        $("awardSearchInput").addEventListener("input", renderAwards);
+        $("copyContractorsBtn").addEventListener("click", copyContractors);
+        $("exportAwardsBtn").addEventListener("click", exportAwardsCsv);
         $("saveNotesBtn").addEventListener("click", saveNotes);
         $("clearNotesBtn").addEventListener("click", clearNotes);
         $("notesInput").addEventListener("input", function () {
