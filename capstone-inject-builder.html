@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="CCO Capstone Inject Builder — build paired trainee and trainer exercise inject documents for contingency contracting capstone training." />
+<title>Capstone Inject Builder | KTHQ ContractingHQ</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+
+  :root {
+    --af-blue:    #1a4fa8;
+    --af-blue-lt: #2f6dc7;
+    --af-blue-dk: #0a1e42;
+    --af-gold:    #c9a227;
+    --steel:      #2c3e50;
+    --slate:      #4a5568;
+    --mist:       #eef1f8;
+    --paper:      #f4f7fc;
+    --white:      #ffffff;
+    --red:        #c0392b;
+    --green:      #1e7e4a;
+    --border:     #c8d0dc;
+    --shadow:     0 2px 8px rgba(0,0,0,0.10);
+    --radius:     4px;
+    --mono:       'IBM Plex Mono', monospace;
+    --sans:       'IBM Plex Sans', sans-serif;
+  }
+  .bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}
+
+  #app-header {
+    background: var(--af-blue-dk); color: #fff; padding: 14px 28px;
+    display: flex; align-items: center; gap: 18px;
+    border-bottom: 3px solid var(--af-gold);
+    position: sticky; top: 64px; z-index: 90;
+    font-family: var(--sans);
+  }
+  #app-header .shield {
+    width: 40px; height: 40px; background: var(--af-gold);
+    clip-path: polygon(50% 0%, 100% 15%, 100% 70%, 50% 100%, 0% 70%, 0% 15%);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 11px; color: var(--af-blue-dk); font-family: var(--mono); flex-shrink: 0;
+  }
+  #app-header h1 { font-size: 17px; font-weight: 700; letter-spacing: .04em; margin:0; }
+  #app-header p  { font-size: 11px; opacity: .75; font-family: var(--mono); margin: 2px 0 0; }
+
+  #progress-wrap {
+    background: #0d1828; border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 0 28px; display: flex;
+  }
+  .prog-step {
+    flex: 1; padding: 10px 6px; text-align: center; font-size: 11px;
+    font-family: var(--mono); font-weight: 600; letter-spacing: .03em;
+    color: #8a9bb0; border-bottom: 3px solid transparent; cursor: pointer;
+    text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    transition: all .2s;
+  }
+  .prog-step.active { color: #4a9eff; border-bottom-color: var(--af-gold); }
+  .prog-step.done   { color: #6ee7b7; border-bottom-color: #6ee7b7; }
+
+  #main { max-width: 960px; margin: 0 auto; padding: 28px 20px 60px; font-family: var(--sans); }
+
+  .step-panel { display: none; }
+  .step-panel.active { display: block; animation: fadeIn .25s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+  .step-title { font-size: 20px; font-weight: 700; color: #4a9eff; margin-bottom: 4px; }
+  .step-sub   { font-size: 12px; color: #a4b1c4; margin-bottom: 22px; font-family: var(--mono); text-transform: uppercase; }
+
+  .tile-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+  .tile {
+    background: var(--white); border: 2px solid var(--border); border-radius: 6px;
+    padding: 18px 16px; cursor: pointer; transition: all .15s; box-shadow: var(--shadow);
+  }
+  .tile:hover { border-color: var(--af-blue-lt); transform: translateY(-2px); }
+  .tile.selected { border-color: var(--af-gold); background: #fffdf4; }
+  .tile-icon  { font-size: 26px; margin-bottom: 8px; }
+  .tile-label { font-weight: 700; font-size: 14px; color: var(--steel); margin-bottom: 5px; }
+  .tile-sub   { font-size: 12px; color: var(--slate); line-height: 1.45; }
+
+  .card {
+    background: var(--white); border: 1px solid var(--border); border-radius: 6px;
+    padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow);
+  }
+  .card h3 { font-size: 13px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--af-blue); margin: 0 0 14px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  @media (max-width: 700px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  .field label {
+    display: block; font-size: 11px; font-family: var(--mono); font-weight: 600;
+    text-transform: uppercase; letter-spacing: .04em; color: var(--slate); margin-bottom: 5px;
+  }
+  .field input[type=text], .field select, .field textarea {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius);
+    font-family: var(--sans); font-size: 13px; color: var(--steel); background: var(--white);
+  }
+  .field textarea { resize: vertical; min-height: 64px; line-height: 1.5; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid var(--af-blue-lt); outline-offset: -1px; }
+  .field .hint { font-size: 11px; color: #8a94a6; margin-top: 4px; }
+
+  .check-row { display: flex; align-items: flex-start; gap: 9px; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--white); margin-bottom: 8px; cursor: pointer; }
+  .check-row:hover { border-color: var(--af-blue-lt); }
+  .check-row input { margin-top: 3px; }
+  .check-row .cr-label { font-size: 13px; font-weight: 600; color: var(--steel); }
+  .check-row .cr-sub   { font-size: 11.5px; color: var(--slate); margin-top: 2px; line-height: 1.4; }
+
+  .attach-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--white); margin-bottom: 8px; flex-wrap: wrap; }
+  .attach-row .ar-name { font-size: 13px; font-weight: 600; color: var(--steel); }
+  .attach-row .ar-sub  { font-size: 11.5px; color: var(--slate); margin-top: 2px; }
+  .attach-opts { display: flex; gap: 4px; }
+  .attach-opts button {
+    font-family: var(--mono); font-size: 10.5px; padding: 5px 10px; border: 1px solid var(--border);
+    background: var(--mist); color: var(--slate); border-radius: 3px; cursor: pointer; text-transform: uppercase;
+  }
+  .attach-opts button.sel-gen    { background: var(--green); color: #fff; border-color: var(--green); }
+  .attach-opts button.sel-manual { background: var(--af-blue); color: #fff; border-color: var(--af-blue); }
+  .attach-opts button.sel-omit   { background: var(--slate); color: #fff; border-color: var(--slate); }
+
+  .alert { padding: 12px 14px; border-radius: var(--radius); font-size: 12.5px; line-height: 1.5; margin-bottom: 16px; }
+  .alert-info { background: #e8f0fc; border: 1px solid #b9cdf0; color: #1e3a6e; }
+
+  .btn-row { display: flex; justify-content: space-between; margin-top: 22px; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    padding: 10px 22px; border-radius: var(--radius); border: none; cursor: pointer;
+    font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  }
+  .btn-next { background: var(--af-blue); color: #fff; }
+  .btn-next:hover { background: var(--af-blue-lt); }
+  .btn-back { background: var(--mist); color: var(--slate); border: 1px solid var(--border); }
+  .btn-gold { background: var(--af-gold); color: var(--af-blue-dk); }
+
+  /* ── OUTPUT ── */
+  #out-tabs { display: flex; gap: 6px; margin-bottom: 0; }
+  .out-tab {
+    padding: 10px 18px; font-family: var(--mono); font-size: 12px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .04em; cursor: pointer;
+    background: #0d1828; color: #8a9bb0; border: 1px solid rgba(255,255,255,.12); border-bottom: none;
+    border-radius: 6px 6px 0 0;
+  }
+  .out-tab.active { background: var(--white); color: var(--af-blue); }
+  #out-toolbar {
+    background: var(--af-blue-dk); border: 1px solid rgba(255,255,255,.12);
+    padding: 8px 12px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  }
+  .tb-btn {
+    background: rgba(255,255,255,.08); color: #dbe4f0; border: 1px solid rgba(255,255,255,.18);
+    font-family: var(--mono); font-size: 11px; padding: 6px 12px; border-radius: 3px; cursor: pointer;
+  }
+  .tb-btn:hover { background: rgba(255,255,255,.16); }
+  .tb-btn.gold  { background: var(--af-gold); color: var(--af-blue-dk); border-color: var(--af-gold); font-weight: 700; }
+  .tb-btn.green { background: var(--green); color: #fff; border-color: var(--green); }
+
+  .doc-sheet {
+    display: none; background: var(--white); border: 1px solid var(--border);
+    padding: 46px 54px; box-shadow: var(--shadow); min-height: 500px;
+    font-family: 'Times New Roman', Times, serif; font-size: 14px; color: #111; line-height: 1.5;
+  }
+  .doc-sheet.active { display: block; }
+  .doc-sheet:focus { outline: 2px dashed var(--af-blue-lt); outline-offset: 4px; }
+  @media (max-width: 640px) { .doc-sheet { padding: 24px 18px; } }
+
+  .doc-sheet .ex-banner {
+    text-align: center; font-weight: bold; letter-spacing: 2px; font-size: 15px;
+    padding: 6px 0; border-top: 3px double #111; border-bottom: 3px double #111; margin: 0 0 14px;
+  }
+  .doc-sheet .ex-banner.btm { margin: 22px 0 0; }
+  .doc-sheet .trainer-notice {
+    text-align: center; font-weight: bold; background: #f3f3f3; border: 2px solid #111;
+    padding: 5px 0; letter-spacing: 1px; font-size: 13px; margin-bottom: 14px;
+  }
+  .doc-sheet table.hdr { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13px; }
+  .doc-sheet table.hdr td { border: 1px solid #111; padding: 5px 8px; }
+  .doc-sheet table.hdr td.k { font-weight: bold; width: 20%; background: #f3f3f3; white-space: nowrap; }
+  .doc-sheet h2.sec {
+    font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: .5px;
+    border-bottom: 1px solid #111; padding-bottom: 2px; margin: 18px 0 8px;
+  }
+  .doc-sheet ul, .doc-sheet ol { margin: 6px 0 10px 24px; }
+  .doc-sheet li { margin-bottom: 5px; }
+  .doc-sheet p { margin: 0 0 10px; }
+  .doc-sheet .chk { list-style: none; margin-left: 4px; }
+  .doc-sheet .chk li::before { content: "\2610\00a0\00a0"; }
+  .doc-sheet .attach-page { border-top: 2px dashed #666; margin-top: 28px; padding-top: 18px; page-break-before: always; }
+  .doc-sheet .att-tag { font-family: var(--mono); font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+
+  @media print {
+    body * { visibility: hidden; }
+    .doc-sheet.active, .doc-sheet.active * { visibility: visible; }
+    .doc-sheet.active { position: absolute; left: 0; top: 0; width: 100%; border: none; box-shadow: none; padding: 0; }
+  }
+</style>
+
+  <!-- SEO: Open Graph & Twitter Card -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="ContractingHQ" />
+  <meta property="og:title"       content="Capstone Inject Builder | KTHQ ContractingHQ" />
+  <meta property="og:description" content="Build paired trainee and trainer exercise inject documents for contingency contracting capstone training." />
+  <meta property="og:url"         content="https://kthq.org/capstone-inject-builder.html" />
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:site"        content="@ContractingHQ" />
+  <meta name="twitter:title"       content="Capstone Inject Builder | KTHQ ContractingHQ" />
+  <meta name="twitter:description" content="Build paired trainee and trainer exercise inject documents for contingency contracting capstone training." />
+  <link rel="canonical"            href="https://kthq.org/capstone-inject-builder.html" />
+</head>
+<body>
+
+<!-- KTHQ SITE NAV -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="tools.html" class="active">Tools</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="https://www.buymeacoffee.com/nhazelett" target="_blank" rel="noopener" class="bmc-btn" style="margin-left:auto;font-size:.78rem;padding:.35rem .9rem;">&#9749; Support KTHQ</a>
+  </div>
+</nav>
+
+<div id="app-header">
+  <div class="shield">INJ</div>
+  <div>
+    <h1>CAPSTONE INJECT BUILDER</h1>
+    <p>CCO CAPSTONE EXERCISE &middot; TRAINEE + TRAINER DOCUMENTS</p>
+  </div>
+</div>
+
+<div style="max-width:1100px;margin:0.7rem auto 0;padding:0 1rem;font-size:0.72rem;color:#a4b1c4;font-family:'Inter',system-ui,sans-serif;font-style:italic;">Note: Don't enter CUI or other sensitive information &mdash; ContractingHQ is hosted on public infrastructure and isn't authorized for protected data. Everything this tool produces is exercise material for training use only.</div>
+
+<div id="progress-wrap">
+  <div class="prog-step active" id="prog-0" onclick="goStep(0)">1 &middot; Inject Type</div>
+  <div class="prog-step" id="prog-1" onclick="goStep(1)">2 &middot; Scenario</div>
+  <div class="prog-step" id="prog-2" onclick="goStep(2)">3 &middot; Tailoring</div>
+  <div class="prog-step" id="prog-3" onclick="goStep(3)">4 &middot; Attachments</div>
+  <div class="prog-step" id="prog-4" onclick="goStep(4)">5 &middot; Trainer Notes</div>
+  <div class="prog-step" id="prog-5" onclick="goStep(5)">6 &middot; Build &amp; Export</div>
+</div>
+
+<div id="main">
+
+<!-- ══════════ STEP 0 — INJECT TYPE ══════════ -->
+<div class="step-panel active" id="step-0">
+  <div class="step-title">Inject Type</div>
+  <div class="step-sub">Pick a base inject &mdash; it seeds the scenario, attachments, and trainer criteria, all of which you can edit</div>
+
+  <div class="alert alert-info">Each base inject is built around one core skill a contingency contracting officer (CCO) has to demonstrate under pressure. Pick the closest fit, then tailor it in the next steps. Every seeded field stays editable, so the template is a starting point, not a script.</div>
+
+  <div class="tile-row" id="type-tiles">
+    <div class="tile" data-tpl="emergency" onclick="selectTemplate('emergency')">
+      <div class="tile-icon">&#9889;</div>
+      <div class="tile-label">Urgent Requirement</div>
+      <div class="tile-sub">An urgent buy hits the desk. Tests method-of-purchase selection, funds verification, and price reasonableness under time pressure.</div>
+    </div>
+    <div class="tile" data-tpl="funding" onclick="selectTemplate('funding')">
+      <div class="tile-icon">&#128176;</div>
+      <div class="tile-label">Funding Problem</div>
+      <div class="tile-sub">The purchase request arrives without valid funding. Tests the discipline of never committing the government before funds are certified.</div>
+    </div>
+    <div class="tile" data-tpl="vendor" onclick="selectTemplate('vendor')">
+      <div class="tile-icon">&#128230;</div>
+      <div class="tile-label">Vendor Performance</div>
+      <div class="tile-sub">A vendor delivers late or nonconforming items on an existing order. Tests inspection, acceptance, remedies, and documentation.</div>
+    </div>
+    <div class="tile" data-tpl="questionable" onclick="selectTemplate('questionable')">
+      <div class="tile-icon">&#128270;</div>
+      <div class="tile-label">Questionable Requirement</div>
+      <div class="tile-sub">The requirement has a problem: a named brand, a suspicious split, or a scope issue. Tests requirement validation and customer education.</div>
+    </div>
+    <div class="tile" data-tpl="uc" onclick="selectTemplate('uc')">
+      <div class="tile-icon">&#9993;</div>
+      <div class="tile-label">Possible Unauthorized Commitment</div>
+      <div class="tile-sub">A vendor requests payment for work someone already directed. Tests fact gathering and whether the trainee verifies both elements before concluding anything.</div>
+    </div>
+    <div class="tile" data-tpl="hostnation" onclick="selectTemplate('hostnation')">
+      <div class="tile-icon">&#127758;</div>
+      <div class="tile-label">Host-Nation Vendor</div>
+      <div class="tile-sub">Only local sources can meet the need, and the vendor wants cash. Tests payment method selection and documentation standards abroad.</div>
+    </div>
+    <div class="tile" data-tpl="custom" onclick="selectTemplate('custom')">
+      <div class="tile-icon">&#9998;</div>
+      <div class="tile-label">Custom Inject</div>
+      <div class="tile-sub">Start from a blank frame. You write the situation, tasking, and trainer criteria yourself; the builder handles the format.</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <span></span>
+    <button class="btn btn-next" onclick="goStep(1)">Next: Scenario &rarr;</button>
+  </div>
+</div>
+
+<!-- ══════════ STEP 1 — SCENARIO ══════════ -->
+<div class="step-panel" id="step-1">
+  <div class="step-title">Scenario Details</div>
+  <div class="step-sub">Exercise administration and the facts of the buy &mdash; anything left blank becomes [TBD] in the output</div>
+
+  <div class="card">
+    <h3>Exercise Administration</h3>
+    <div class="grid-3">
+      <div class="field"><label>Exercise Name</label><input type="text" id="f_exname" placeholder="e.g., AGILE RESOLVE 26"></div>
+      <div class="field"><label>Inject Number</label><input type="text" id="f_injnum" placeholder="e.g., INJ-014"></div>
+      <div class="field"><label>Date-Time Group (DTG)</label><input type="text" id="f_dtg" placeholder="e.g., 011300Z JUL 26"></div>
+    </div>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="field"><label>Delivery Method</label>
+        <select id="f_delivery">
+          <option>Email to trainee</option>
+          <option>Phone call from role-player</option>
+          <option>Walk-in role-player</option>
+          <option>Tasking from contracting leadership</option>
+          <option>Written note / message drop</option>
+        </select>
+      </div>
+      <div class="field"><label>Time Limit</label><input type="text" id="f_timelimit" placeholder="e.g., 90 minutes"></div>
+      <div class="field"><label>Trainee Duty Position</label><input type="text" id="f_position" value="Contingency Contracting Officer"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>The Requirement</h3>
+    <div class="grid-2">
+      <div class="field"><label>Deployed Location</label><input type="text" id="f_location" placeholder="e.g., Forward Operating Site GRIFFIN"></div>
+      <div class="field"><label>Customer (name and unit)</label><input type="text" id="f_customer" placeholder="e.g., SSgt Rivera, 401st Civil Engineer Sq"></div>
+    </div>
+    <div class="field" style="margin-top:14px;"><label>Requirement Description</label>
+      <textarea id="f_req" placeholder="What is being bought? e.g., 40 lumber packages and fasteners for tent flooring in the expansion area"></textarea>
+    </div>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="field"><label>Estimated Value</label><input type="text" id="f_value" placeholder="e.g., $12,400"></div>
+      <div class="field"><label>Need-By Date</label><input type="text" id="f_needby" placeholder="e.g., 3 days from receipt"></div>
+      <div class="field"><label>Vendor Name (if the scenario names one)</label><input type="text" id="f_vendor" placeholder="e.g., Al Rafid Trading Co."></div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-back" onclick="goStep(0)">&larr; Back</button>
+    <button class="btn btn-next" onclick="goStep(2)">Next: Tailoring &rarr;</button>
+  </div>
+</div>
+
+<!-- ══════════ STEP 2 — TAILORING ══════════ -->
+<div class="step-panel" id="step-2">
+  <div class="step-title">Tailoring</div>
+  <div class="step-sub">Complications write matching text into both documents &mdash; narrative for the trainee, an observable for the trainer</div>
+
+  <div class="card">
+    <h3>Deliverable</h3>
+    <label class="check-row" for="f_deliverable_req">
+      <input type="checkbox" id="f_deliverable_req" onchange="document.getElementById('deliverable-opts').style.display=this.checked?'block':'none'">
+      <span>
+        <span class="cr-label">Deliverable required</span>
+        <span class="cr-sub" style="display:block;">If checked, the trainee copy states exactly what must be turned in and when.</span>
+      </span>
+    </label>
+    <div id="deliverable-opts" style="display:none; margin-top:10px;">
+      <div class="grid-2">
+        <div class="field"><label>What the trainee must produce</label>
+          <select id="f_deliverable_type">
+            <option>Memorandum for record documenting actions taken</option>
+            <option>Completed purchase request package</option>
+            <option>Draft award document</option>
+            <option>Written response to the customer</option>
+            <option>Verbal brief to the evaluator</option>
+          </select>
+        </div>
+        <div class="field"><label>Due</label><input type="text" id="f_deliverable_due" placeholder="e.g., end of the time limit"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Complications</h3>
+    <div id="complication-list"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-back" onclick="goStep(1)">&larr; Back</button>
+    <button class="btn btn-next" onclick="goStep(3)">Next: Attachments &rarr;</button>
+  </div>
+</div>
+
+<!-- ══════════ STEP 3 — ATTACHMENTS ══════════ -->
+<div class="step-panel" id="step-3">
+  <div class="step-title">Attachments</div>
+  <div class="step-sub">For each attachment: generate a fill-in version, prepare it yourself, or leave it out</div>
+
+  <div class="alert alert-info">Generated attachments use your scenario details and mark everything else [TBD] so you can finish them in the editor. Attachments you mark <strong>Manual</strong> still appear on the manifest in both documents, with a reminder on the trainer copy to prepare them before execution.</div>
+
+  <div id="attachment-list"></div>
+
+  <div class="btn-row">
+    <button class="btn btn-back" onclick="goStep(2)">&larr; Back</button>
+    <button class="btn btn-next" onclick="goStep(4)">Next: Trainer Notes &rarr;</button>
+  </div>
+</div>
+
+<!-- ══════════ STEP 4 — TRAINER NOTES ══════════ -->
+<div class="step-panel" id="step-4">
+  <div class="step-title">Trainer Notes</div>
+  <div class="step-sub">Seeded from the inject type &mdash; edit freely. One item per line; these appear only on the trainer copy</div>
+
+  <div class="card">
+    <h3>End State (the outcome this inject is designed to produce)</h3>
+    <div class="field"><textarea id="t_endstate" rows="2"></textarea>
+    <div class="hint">This stays off the trainee copy. The trainee has to find the path; the trainer copy defines what "found it" looks like.</div></div>
+  </div>
+
+  <div class="card">
+    <h3>Learning Objectives</h3>
+    <div class="field"><textarea id="t_objectives" rows="4"></textarea></div>
+  </div>
+
+  <div class="card">
+    <h3>Expected Actions (rough sequence)</h3>
+    <div class="field"><textarea id="t_expected" rows="6"></textarea></div>
+  </div>
+
+  <div class="card">
+    <h3>Acceptable Approaches</h3>
+    <div class="field"><textarea id="t_approaches" rows="4"></textarea>
+    <div class="hint">Most good injects have more than one defensible route. List each one, so the trainer evaluates the reasoning instead of hunting for a single school answer.</div></div>
+  </div>
+
+  <div class="card">
+    <h3>Red Flags (intervene or note for debrief)</h3>
+    <div class="field"><textarea id="t_redflags" rows="4"></textarea></div>
+  </div>
+
+  <div class="card">
+    <h3>Debrief Questions</h3>
+    <div class="field"><textarea id="t_debrief" rows="4"></textarea></div>
+  </div>
+
+  <div class="card">
+    <h3>References</h3>
+    <div class="field"><textarea id="t_refs" rows="3"></textarea>
+    <div class="hint">Verify citations against the current FAR before execution. Seeded citations follow the FAR Overhaul structure.</div></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-back" onclick="goStep(3)">&larr; Back</button>
+    <button class="btn btn-gold" onclick="buildDocs(); goStep(5);">Build Documents &rarr;</button>
+  </div>
+</div>
+
+<!-- ══════════ STEP 5 — BUILD & EXPORT ══════════ -->
+<div class="step-panel" id="step-5">
+  <div class="step-title">Build &amp; Export</div>
+  <div class="step-sub">Both documents are editable in place &mdash; click into either one to make final tweaks before printing or downloading</div>
+
+  <div id="out-tabs">
+    <div class="out-tab active" id="tab-trainee" onclick="showDoc('trainee')">Trainee Copy</div>
+    <div class="out-tab" id="tab-trainer" onclick="showDoc('trainer')">Trainer Copy</div>
+  </div>
+  <div id="out-toolbar">
+    <button class="tb-btn green" onclick="copyDoc()">&#x1F4CB; Copy Text</button>
+    <button class="tb-btn gold" onclick="window.print()">&#x1F5A8; Print / PDF</button>
+    <button class="tb-btn" onclick="downloadDoc()">&#x2B07; Download .doc</button>
+    <button class="tb-btn" onclick="buildDocs()">&#x21BB; Rebuild from form</button>
+    <button class="tb-btn" onclick="if(confirm('Start a new inject? Current entries will be cleared.'))location.reload()">&#x21BA; New Inject</button>
+  </div>
+  <div class="doc-sheet active" id="doc-trainee" contenteditable="true" spellcheck="false"></div>
+  <div class="doc-sheet" id="doc-trainer" contenteditable="true" spellcheck="false"></div>
+
+  <div class="btn-row">
+    <button class="btn btn-back" onclick="goStep(4)">&larr; Back to Trainer Notes</button>
+    <span></span>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<footer class="footer" style="margin-top:3rem;">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="community-tools.html">Community Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+<script src="main.js"></script>
+<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script src="player.js"></script>
+<script>
+/* ═══════════════ DATA ═══════════════ */
+
+const TEMPLATES = {
+  emergency: {
+    situation: "You are serving as the [[POSITION]] at [[LOCATION]]. [[CUSTOMER]] contacts your office with an urgent requirement: [[REQ]]. The estimated value is [[VALUE]] and the customer states the requirement must be met by [[NEEDBY]] to support ongoing operations.",
+    tasking: "Take the actions you believe are appropriate to satisfy this requirement. Work the requirement as you would on a real deployment, using the personnel, documents, and vendors available in the exercise scenario.",
+    endstate: "Trainee selects a purchase method appropriate to the dollar value and conditions, verifies funding before making any commitment, documents price reasonableness, and gives the customer a realistic timeline.",
+    objectives: [
+      "Select the correct method of purchase based on dollar value and conditions, not habit",
+      "Verify certified funding before committing the government",
+      "Document price reasonableness even under time pressure",
+      "Communicate a realistic timeline to the customer"
+    ],
+    expected: [
+      "Contact the customer to validate the requirement and confirm the need-by date is real",
+      "Confirm a certified purchase request exists before going further",
+      "Determine the correct purchase method for the value: Government Purchase Card (GPC) at or below the micro-purchase threshold, Standard Form 44 if the on-the-spot conditions are met, or a purchase order",
+      "Check vendor availability and seek competition to the extent practicable in the time available",
+      "Document how price reasonableness was determined",
+      "Tell the customer what will happen and when"
+    ],
+    approaches: [
+      "GPC purchase if the value is at or below the micro-purchase threshold and the vendor accepts the card",
+      "Standard Form 44 if this is an over-the-counter, on-the-spot buy that meets the conditions at FAR 12.403(b)",
+      "Purchase order when neither of the above fits; slower, but correct is better than fast",
+      "Sequencing may vary; verifying funds before commitment may not"
+    ],
+    redflags: [
+      "Commits the government, verbally or in writing, before confirming funds",
+      "Picks a purchase method without checking the dollar value against the thresholds",
+      "Skips price reasonableness entirely because of the time pressure",
+      "Promises the customer an award time the process cannot support"
+    ],
+    debrief: [
+      "Walk me through why you chose that purchase method. What would change if the value doubled?",
+      "How did you document price reasonableness, and would it survive a review?",
+      "What did you tell the customer about timeline, and why?",
+      "At what point were funds confirmed, and what had you done before that point?"
+    ],
+    refs: [
+      "FAR Part 12 (commercial acquisition)",
+      "FAR 12.403(a)(1) (Government Purchase Card); FAR 12.403(b) (Standard Form 44)",
+      "Micro-purchase threshold $15,000; simplified acquisition threshold $350,000 (verify current figures)"
+    ],
+    attachments: ["pr","funding","quote"]
+  },
+
+  funding: {
+    situation: "You are serving as the [[POSITION]] at [[LOCATION]]. A purchase request arrives from [[CUSTOMER]] for the following requirement: [[REQ]], estimated at [[VALUE]] with a need-by date of [[NEEDBY]]. When you review the package, the funding certification is missing. The customer follows up and asks you to start work anyway, stating the funding will catch up.",
+    tasking: "Review the package and take the actions you believe are appropriate. The customer is standing by for an answer.",
+    endstate: "Trainee identifies the funding defect, declines to commit the government until funds are certified, engages the resource advisor or finance office to fix the package, and gives the customer a clear path forward instead of a flat no.",
+    objectives: [
+      "Recognize an unfunded or improperly funded purchase request on review",
+      "Hold the line: no commitment before certified funds, regardless of urgency",
+      "Know who certifies funds and engage them directly",
+      "Manage the customer relationship while saying no to the shortcut"
+    ],
+    expected: [
+      "Review the purchase request package and identify the missing or defective funding certification",
+      "Explain to the customer why award cannot happen yet, in plain terms",
+      "Contact the resource advisor or finance office to get the package corrected",
+      "Prepare everything that can legally be done in parallel: vendor research, draft documents, price checks",
+      "Document the sequence of events"
+    ],
+    approaches: [
+      "Route the package back to the customer with specific instructions on what is missing",
+      "Work the correction directly with the resource advisor while keeping the customer informed",
+      "Either is fine; the constant is that no commitment happens before certification"
+    ],
+    redflags: [
+      "Places the order or makes any commitment on the promise that funding will catch up",
+      "Tells the customer no without explaining what would make it yes",
+      "Cannot identify who certifies funds at the deployed location",
+      "Does nothing in parallel and loses time that preparation could have saved"
+    ],
+    debrief: [
+      "What specifically was wrong with the package, and how did you find it?",
+      "Why can the government not commit before funds are certified? What is at stake for you personally as the contracting officer?",
+      "What work did you do in parallel while the funding was being fixed?",
+      "How did the customer react, and how did you keep the relationship working?"
+    ],
+    refs: [
+      "Purchase request funding certification requirements per local procedures",
+      "Anti-Deficiency Act considerations (31 U.S.C. 1341)",
+      "FAR 1.602-1(b): no contract unless all requirements of law and regulation are met"
+    ],
+    attachments: ["pr"]
+  },
+
+  vendor: {
+    situation: "You are serving as the [[POSITION]] at [[LOCATION]]. Your office previously awarded an order to [[VENDOR]] for [[REQ]], valued at [[VALUE]]. [[CUSTOMER]] reports the delivery is late, incomplete, or does not match what was ordered, and asks contracting to fix it. The customer needs conforming items by [[NEEDBY]].",
+    tasking: "Review the order and the reported discrepancy, then take the actions you believe are appropriate with the vendor and the customer.",
+    endstate: "Trainee verifies what was ordered against what was delivered, works the remedy from the terms of the order rather than from frustration, documents everything, and keeps the customer in the acceptance decision.",
+    objectives: [
+      "Verify the facts before acting: order terms versus what showed up",
+      "Apply inspection, acceptance, and remedy provisions from the order itself",
+      "Keep the government's acceptance decision with the right people",
+      "Document vendor communications in a way that supports later action if needed"
+    ],
+    expected: [
+      "Pull the order and read the line items, delivery terms, and inspection and acceptance provisions",
+      "Confirm with the customer exactly what was received and what is wrong with it",
+      "Contact the vendor, state the discrepancy factually, and ask for their account",
+      "Determine the remedy the order supports: repair, replacement, or price adjustment",
+      "Document every exchange in writing",
+      "Advise the customer on the acceptance decision; do not accept nonconforming items on the customer's behalf without their input"
+    ],
+    approaches: [
+      "Negotiated replacement or repair on a timeline that still meets the need",
+      "Rejection of the delivery with re-delivery instructions, if the order terms support it",
+      "Price adjustment if the customer can use the items as delivered and agrees",
+      "Any of these can be right; the discriminator is whether the trainee grounded the remedy in the order terms"
+    ],
+    redflags: [
+      "Accepts or rejects the delivery without checking what the order actually says",
+      "Makes demands of the vendor the contract does not support",
+      "Handles everything verbally and documents nothing",
+      "Cuts the customer out of the acceptance decision"
+    ],
+    debrief: [
+      "What did the order say about inspection and acceptance, and how did that drive your approach?",
+      "What remedy did you pursue and what was the contractual basis for it?",
+      "If the vendor had refused to correct the problem, what would your next step have been?",
+      "What does your documentation trail look like right now?"
+    ],
+    refs: [
+      "FAR 52.212-4, Contract Terms and Conditions, Commercial Products and Services (inspection, acceptance, and remedies paragraphs)",
+      "The terms of the awarded order itself, which govern the remedy",
+      "Verify current clause structure against the FAR Overhaul before execution"
+    ],
+    attachments: ["priorOrder","vendorEmail"]
+  },
+
+  questionable: {
+    situation: "You are serving as the [[POSITION]] at [[LOCATION]]. [[CUSTOMER]] submits a requirement: [[REQ]], estimated at [[VALUE]], needed by [[NEEDBY]]. Something about the package deserves a closer look before it moves forward. The customer is not trying to do anything wrong; they simply wrote the requirement the way it made sense to them and they are not the acquisition expert. That part is your job.",
+    tasking: "Review the requirement package and take the actions you believe are appropriate before processing it.",
+    endstate: "Trainee spots the defect, explains the issue to the customer without lecturing, and offers a compliant path that still meets the mission need.",
+    objectives: [
+      "Validate requirements instead of processing them on autopilot",
+      "Recognize common requirement defects: brand-name descriptions without support, requirements split across submissions, scope that does not match the stated need",
+      "Educate the customer as a partner, since the customer is not the acquisition expert",
+      "Offer a compliant alternative rather than a flat rejection"
+    ],
+    expected: [
+      "Read the requirement critically and identify the specific defect",
+      "Check whether related submissions from the same customer tell a bigger story",
+      "Call the customer, ask questions first, and understand the real need before judging the paperwork",
+      "Explain what has to change and why, in plain language",
+      "Propose the compliant path: a performance-based description, a properly combined requirement, or a supported brand-name justification if one is truly warranted",
+      "Document the resolution"
+    ],
+    approaches: [
+      "Rewrite the description around performance instead of a brand, with the customer's help",
+      "Combine related submissions into the single requirement they actually are, with the correct method for the combined value",
+      "Process a brand-name justification if the customer articulates a supportable basis",
+      "The right answer depends on what the real need turns out to be; the discriminator is that the trainee asked before deciding"
+    ],
+    redflags: [
+      "Processes the requirement exactly as submitted without questioning the defect",
+      "Accuses the customer of acting in bad faith instead of educating them",
+      "Rejects the package with no explanation and no path forward",
+      "Fixes the paperwork without ever learning what the customer actually needs"
+    ],
+    debrief: [
+      "What made you look twice at this requirement?",
+      "How did you approach the conversation with the customer, and how did they respond?",
+      "Where is the line between a legitimate requirement description and one that improperly restricts competition?",
+      "If the customer had insisted on the original version, what would you have done next?"
+    ],
+    refs: [
+      "FAR Part 10 and Part 11 (market research and describing agency needs; verify structure against the FAR Overhaul)",
+      "Splitting requirements to stay under a threshold is prohibited; combined value drives the method",
+      "Micro-purchase threshold $15,000; simplified acquisition threshold $350,000 (verify current figures)"
+    ],
+    attachments: ["pr"]
+  },
+
+  uc: {
+    situation: "You are serving as the [[POSITION]] at [[LOCATION]]. [[VENDOR]] contacts your office requesting payment of [[VALUE]] for [[REQ]]. According to the vendor, a member of [[CUSTOMER]] directed the work or delivery, and it has already been performed. This is the first your office has heard of it. No contract or order exists in your files.",
+    tasking: "Take the actions you believe are appropriate. The vendor is waiting on an answer about payment.",
+    endstate: "Trainee gathers facts before reaching any conclusion, verifies both elements of an unauthorized commitment (the person lacked authority AND made a commitment) rather than assuming one exists, and handles the vendor professionally without promising payment.",
+    objectives: [
+      "Establish facts before conclusions: who said what, to whom, when, and with what authority",
+      "Understand that an unauthorized commitment requires two elements: a commitment was made, and the person who made it lacked authority",
+      "Know the ratification process at FAR 1.602-3 and when it applies",
+      "Communicate with the vendor honestly without committing the government further"
+    ],
+    expected: [
+      "Get the vendor's account in writing: what was requested, by whom, when, and what was delivered or performed",
+      "Interview the unit member and their leadership; determine whether the member had any actual authority (for example, a GPC within limits, or a delegated authority)",
+      "Verify whether a commitment was actually made, as opposed to a misunderstanding about intent",
+      "Reach a supported conclusion: this either is or is not an unauthorized commitment, based on both elements",
+      "If both elements are present, explain the ratification process and begin assembling the package",
+      "Keep the vendor informed on process without promising payment or a timeline"
+    ],
+    approaches: [
+      "If the member actually had authority, this is not an unauthorized commitment; process the payment through the proper channel",
+      "If a commitment was made without authority, initiate the ratification package under FAR 1.602-3",
+      "If no commitment was actually made, resolve the misunderstanding with the vendor factually and document it",
+      "All three outcomes can be correct; the discriminator is whether the facts support the conclusion"
+    ],
+    redflags: [
+      "Declares an unauthorized commitment before establishing either element",
+      "Promises the vendor payment, or a payment date, before the facts are in",
+      "Treats the unit member as guilty in front of the vendor or their leadership",
+      "Skips the written record and works everything verbally"
+    ],
+    debrief: [
+      "What facts did you need to establish each element, and how did you get them?",
+      "What would have changed your conclusion? Walk me through the version of the facts where this is not an unauthorized commitment.",
+      "Who has ratification authority for this dollar value, and what goes in the package?",
+      "What did you tell the vendor, and what did you deliberately not tell them?"
+    ],
+    refs: [
+      "FAR 1.602-3, Ratification of unauthorized commitments",
+      "Local ratification approval thresholds and procedures (verify with your contracting office)",
+      "An unauthorized commitment requires both elements: a commitment, made without authority"
+    ],
+    attachments: ["vendorEmail"]
+  },
+
+  hostnation: {
+    situation: "You are serving as the [[POSITION]] at [[LOCATION]]. [[CUSTOMER]] has a requirement that only local sources can realistically meet: [[REQ]], estimated at [[VALUE]], needed by [[NEEDBY]]. The most capable local source is [[VENDOR]]. Initial contact reveals complications typical of the local market: the vendor deals in cash, documentation is not in English, and vendor access to the installation is not established.",
+    tasking: "Work the requirement using the vendors and conditions the scenario presents. Host-nation support offices, interpreters, and finance are available in the exercise environment if you seek them out.",
+    endstate: "Trainee selects a payment method that lawfully accommodates the cash requirement, uses available support channels rather than improvising, and keeps documentation to standard even in an expeditionary setting.",
+    objectives: [
+      "Select a payment method that fits local conditions: Standard Form 44, imprest funds, or another authorized mechanism",
+      "Use host-nation support structures, interpreters, and finance channels instead of working around them",
+      "Maintain documentation standards abroad, including translation notes where needed",
+      "Coordinate practical details, such as installation access, that a stateside buy never raises"
+    ],
+    expected: [
+      "Verify the vendor is a legitimate source to the extent practicable in the environment",
+      "Determine the payment method: Standard Form 44 under the conditions at FAR 12.403(b), or imprest funds under FAR 12.403(c), coordinated with finance",
+      "Engage an interpreter or host-nation support office for the language gap rather than guessing",
+      "Coordinate installation access for delivery, or arrange delivery to an access point",
+      "Document the buy in English, with translation notes attached where source documents are not",
+      "Confirm where their contingency contracting authority comes from if asked, and route up the chain if the delegation is unclear"
+    ],
+    approaches: [
+      "Standard Form 44 with a cash payment coordinated through finance, if the conditions are met",
+      "Imprest fund purchase where established and within limits",
+      "A purchase order with payment terms the vendor will accept, if cash turns out to be negotiable",
+      "The discriminator is that the payment method was selected deliberately and coordinated with finance, not improvised"
+    ],
+    redflags: [
+      "Arranges a cash payment outside any authorized payment mechanism",
+      "Skips documentation on the theory that a contingency excuses it",
+      "Ignores available interpreters or host-nation offices and creates avoidable misunderstandings",
+      "Cannot say where their authority to buy in this environment comes from and does not try to find out"
+    ],
+    debrief: [
+      "Why that payment method? What conditions did you verify before selecting it?",
+      "How did you handle the language and documentation gap?",
+      "What does your file look like, and could another contracting officer reconstruct this buy from it?",
+      "Where does your contingency authority come from, and how would you confirm it on a real deployment?"
+    ],
+    refs: [
+      "FAR 12.403(b) (Standard Form 44); FAR 12.403(c) (imprest funds)",
+      "Contingency authority flows from your delegation chain; confirm it is on paper",
+      "Local finance office procedures for cash payments (verify in the exercise scenario)"
+    ],
+    attachments: ["pr","quote"]
+  },
+
+  custom: {
+    situation: "",
+    tasking: "",
+    endstate: "",
+    objectives: [], expected: [], approaches: [], redflags: [], debrief: [], refs: [],
+    attachments: ["pr","funding","quote","vendorEmail","priorOrder"]
+  }
+};
+
+const COMPLICATIONS = [
+  { id:"c_fundmissing", label:"Funding document missing",
+    sub:"The purchase request arrives without a funding certification.",
+    trainee:"The purchase request package does not include a funding certification.",
+    trainer:"Identified the missing funding certification and did not commit the government before it was corrected" },
+  { id:"c_wrongfunds", label:"Funds look wrong for the requirement",
+    sub:"The cited funding does not appear to match what is being bought.",
+    trainee:"The funding line cited on the purchase request does not appear to match the nature of the requirement.",
+    trainer:"Questioned whether the cited funds were appropriate for the requirement and raised it with the resource advisor or finance" },
+  { id:"c_namedvendor", label:"Customer requests a specific vendor",
+    sub:"The customer names the vendor they want and pushes for them.",
+    trainee:"The customer states they want the purchase made from a specific vendor they have worked with before, and asks you to use that vendor.",
+    trainer:"Handled the named-vendor request correctly: sought competition where required, or documented the basis for restricting it, and educated the customer either way" },
+  { id:"c_onevendor", label:"Only one vendor can meet the date",
+    sub:"Market conditions leave a single realistic source.",
+    trainee:"Initial market checks suggest only one vendor can meet the required delivery date.",
+    trainer:"Verified the single-source claim independently rather than accepting it, and documented the resulting approach" },
+  { id:"c_cashonly", label:"Vendor accepts cash only",
+    sub:"The vendor will not take a card or purchase order terms.",
+    trainee:"The vendor states they deal in cash only and will not accept a Government Purchase Card or payment on invoice terms.",
+    trainer:"Selected an authorized payment mechanism for a cash transaction and coordinated it with finance instead of improvising" },
+  { id:"c_highprice", label:"Quoted price looks high",
+    sub:"The quote comes in well above what the item should cost.",
+    trainee:"The quote received is noticeably higher than what the requirement should reasonably cost.",
+    trainer:"Recognized the price as questionable and took a concrete step: comparison quotes, market data, or negotiation, with documentation" },
+  { id:"c_vague", label:"Requirement description is vague",
+    sub:"The description is too thin to buy from.",
+    trainee:"The requirement description in the package is too vague to purchase from as written.",
+    trainer:"Went back to the customer to firm up the requirement rather than guessing at what was wanted" },
+  { id:"c_started", label:"Work has already started",
+    sub:"Someone let the vendor begin before contracting was involved.",
+    trainee:"During your review you learn the vendor has already begun work or made delivery arrangements at the request of someone in the customer's unit.",
+    trainer:"Stopped and established the facts around the early start, including who directed it and with what authority, before proceeding with the buy" },
+  { id:"c_24hr", label:"Commander wants it in 24 hours",
+    sub:"Leadership compresses the timeline hard.",
+    trainee:"The customer adds that their commander expects this requirement to be satisfied within 24 hours.",
+    trainer:"Gave leadership a realistic timeline grounded in the process instead of promising 24 hours reflexively, and looked for lawful ways to compress the schedule" }
+];
+
+const ATTACH_DEFS = {
+  pr:        { name:"Purchase Request",       sub:"Customer's request document with requirement, value, and funding block" },
+  funding:   { name:"Funding Certification",  sub:"Funding line excerpt showing certification status" },
+  quote:     { name:"Vendor Quote",           sub:"Quotation from the scenario vendor with line items" },
+  vendorEmail:{ name:"Vendor Correspondence", sub:"Email or letter from the vendor that opens the scenario" },
+  priorOrder:{ name:"Existing Order Excerpt", sub:"Key terms of the previously awarded order" }
+};
+
+/* ═══════════════ STATE & WIZARD ═══════════════ */
+
+let currentTpl = null;
+let attachChoice = {};   // id -> 'gen' | 'manual' | 'omit'
+let currentStep = 0;
+
+function goStep(n){
+  if (n > 0 && !currentTpl) { alert("Pick an inject type first."); return; }
+  document.querySelectorAll(".step-panel").forEach(p => p.classList.remove("active"));
+  document.getElementById("step-" + n).classList.add("active");
+  for (let i = 0; i < 6; i++) {
+    const el = document.getElementById("prog-" + i);
+    el.classList.toggle("active", i === n);
+    el.classList.toggle("done", i < n);
+  }
+  currentStep = n;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function selectTemplate(key){
+  currentTpl = key;
+  document.querySelectorAll("#type-tiles .tile").forEach(t =>
+    t.classList.toggle("selected", t.dataset.tpl === key));
+  const T = TEMPLATES[key];
+  // Seed trainer notes
+  document.getElementById("t_endstate").value   = T.endstate;
+  document.getElementById("t_objectives").value = T.objectives.join("\n");
+  document.getElementById("t_expected").value   = T.expected.join("\n");
+  document.getElementById("t_approaches").value = T.approaches.join("\n");
+  document.getElementById("t_redflags").value   = T.redflags.join("\n");
+  document.getElementById("t_debrief").value    = T.debrief.join("\n");
+  document.getElementById("t_refs").value       = T.refs.join("\n");
+  // Seed attachment defaults: template's suggested list -> generate, others -> omit
+  attachChoice = {};
+  Object.keys(ATTACH_DEFS).forEach(id => {
+    attachChoice[id] = T.attachments.includes(id) ? "gen" : "omit";
+  });
+  renderAttachments();
+}
+
+function renderComplications(){
+  const wrap = document.getElementById("complication-list");
+  wrap.innerHTML = COMPLICATIONS.map(c =>
+    '<label class="check-row" for="' + c.id + '">' +
+      '<input type="checkbox" id="' + c.id + '">' +
+      '<span><span class="cr-label">' + c.label + '</span>' +
+      '<span class="cr-sub" style="display:block;">' + c.sub + '</span></span>' +
+    '</label>').join("");
+}
+
+function renderAttachments(){
+  const wrap = document.getElementById("attachment-list");
+  wrap.innerHTML = Object.keys(ATTACH_DEFS).map(id => {
+    const a = ATTACH_DEFS[id], ch = attachChoice[id] || "omit";
+    return '<div class="attach-row">' +
+      '<div><div class="ar-name">' + a.name + '</div><div class="ar-sub">' + a.sub + '</div></div>' +
+      '<div class="attach-opts">' +
+        '<button type="button" class="' + (ch==="gen"?"sel-gen":"") + '" onclick="setAttach(\'' + id + '\',\'gen\')">Generate</button>' +
+        '<button type="button" class="' + (ch==="manual"?"sel-manual":"") + '" onclick="setAttach(\'' + id + '\',\'manual\')">Manual</button>' +
+        '<button type="button" class="' + (ch==="omit"?"sel-omit":"") + '" onclick="setAttach(\'' + id + '\',\'omit\')">Not needed</button>' +
+      '</div></div>';
+  }).join("");
+}
+
+function setAttach(id, mode){ attachChoice[id] = mode; renderAttachments(); }
+
+/* ═══════════════ BUILD HELPERS ═══════════════ */
+
+function val(id){
+  const el = document.getElementById(id);
+  return el && el.value.trim() ? el.value.trim() : "";
+}
+function esc(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function tok(id){ const v = val(id); return v ? esc(v) : "[TBD]"; }
+
+function fill(str){
+  return esc(str)
+    .replace(/\[\[POSITION\]\]/g,  tok("f_position"))
+    .replace(/\[\[LOCATION\]\]/g,  tok("f_location"))
+    .replace(/\[\[CUSTOMER\]\]/g,  tok("f_customer"))
+    .replace(/\[\[REQ\]\]/g,       tok("f_req"))
+    .replace(/\[\[VALUE\]\]/g,     tok("f_value"))
+    .replace(/\[\[NEEDBY\]\]/g,    tok("f_needby"))
+    .replace(/\[\[VENDOR\]\]/g,    tok("f_vendor"));
+}
+
+function lines(id){
+  return document.getElementById(id).value.split("\n").map(s => s.trim()).filter(Boolean);
+}
+function ul(items){ return items.length ? "<ul>" + items.map(i => "<li>" + esc(i) + "</li>").join("") + "</ul>" : "<p>[TBD]</p>"; }
+function ol(items){ return items.length ? "<ol>" + items.map(i => "<li>" + esc(i) + "</li>").join("") + "</ol>" : "<p>[TBD]</p>"; }
+function chk(items){ return items.length ? '<ul class="chk">' + items.map(i => "<li>" + esc(i) + "</li>").join("") + "</ul>" : "<p>[TBD]</p>"; }
+
+const BANNER = '<div class="ex-banner">EXERCISE//EXERCISE//EXERCISE</div>';
+const BANNER_BTM = '<div class="ex-banner btm">EXERCISE//EXERCISE//EXERCISE</div>';
+
+function hdrTable(){
+  return '<table class="hdr">' +
+    '<tr><td class="k">EXERCISE</td><td>' + tok("f_exname") + '</td><td class="k">INJECT #</td><td>' + tok("f_injnum") + '</td></tr>' +
+    '<tr><td class="k">DTG</td><td>' + tok("f_dtg") + '</td><td class="k">TIME LIMIT</td><td>' + tok("f_timelimit") + '</td></tr>' +
+    '<tr><td class="k">DELIVERY</td><td>' + esc(val("f_delivery") || "[TBD]") + '</td><td class="k">TRAINEE ROLE</td><td>' + tok("f_position") + '</td></tr>' +
+    '</table>';
+}
+
+function activeComplications(){
+  return COMPLICATIONS.filter(c => document.getElementById(c.id).checked);
+}
+
+function attachManifest(){
+  const items = [];
+  Object.keys(ATTACH_DEFS).forEach(id => {
+    if (attachChoice[id] === "gen")    items.push(ATTACH_DEFS[id].name);
+    if (attachChoice[id] === "manual") items.push(ATTACH_DEFS[id].name);
+  });
+  return items;
+}
+
+/* ═══════════════ ATTACHMENT GENERATORS ═══════════════ */
+
+function genAttachment(id, num){
+  const t = '<div class="attach-page">' + BANNER +
+    '<div class="att-tag">Attachment ' + num + " &mdash; " + ATTACH_DEFS[id].name + " &mdash; EXERCISE MATERIAL</div>";
+  let body = "";
+  if (id === "pr") {
+    body =
+      '<p><b>PURCHASE REQUEST (EXERCISE)</b></p>' +
+      '<table class="hdr">' +
+      '<tr><td class="k">PR NUMBER</td><td>[TBD]</td><td class="k">DATE</td><td>' + tok("f_dtg") + '</td></tr>' +
+      '<tr><td class="k">REQUESTING UNIT</td><td colspan="3">' + tok("f_customer") + '</td></tr>' +
+      '<tr><td class="k">DESCRIPTION</td><td colspan="3">' + tok("f_req") + '</td></tr>' +
+      '<tr><td class="k">EST. VALUE</td><td>' + tok("f_value") + '</td><td class="k">NEED BY</td><td>' + tok("f_needby") + '</td></tr>' +
+      '<tr><td class="k">FUNDING</td><td colspan="3">' +
+        (document.getElementById("c_fundmissing").checked
+          ? "[No funding certification attached]"
+          : "Line of accounting: [TBD] &nbsp;&middot;&nbsp; Certified by: [TBD]") + '</td></tr>' +
+      '<tr><td class="k">JUSTIFICATION</td><td colspan="3">[TBD &mdash; write the customer’s stated justification here]</td></tr>' +
+      '</table>';
+  } else if (id === "funding") {
+    body =
+      '<p><b>FUNDING CERTIFICATION EXCERPT (EXERCISE)</b></p>' +
+      '<table class="hdr">' +
+      '<tr><td class="k">DOCUMENT #</td><td>[TBD]</td><td class="k">FY</td><td>[TBD]</td></tr>' +
+      '<tr><td class="k">LINE OF ACCOUNTING</td><td colspan="3">[TBD]</td></tr>' +
+      '<tr><td class="k">AMOUNT</td><td>' + tok("f_value") + '</td><td class="k">STATUS</td><td>' +
+        (document.getElementById("c_wrongfunds").checked ? "Certified [designed to look inappropriate for this requirement]" : "[TBD: Certified / Pending]") + '</td></tr>' +
+      '<tr><td class="k">CERTIFYING OFFICIAL</td><td colspan="3">[TBD]</td></tr>' +
+      '</table>';
+  } else if (id === "quote") {
+    body =
+      '<p><b>QUOTATION (EXERCISE)</b></p>' +
+      '<p>From: ' + tok("f_vendor") + '<br>To: Contracting Office, ' + tok("f_location") + '<br>Date: ' + tok("f_dtg") + '</p>' +
+      '<table class="hdr">' +
+      '<tr><td class="k">ITEM</td><td>' + tok("f_req") + '</td></tr>' +
+      '<tr><td class="k">QUOTED PRICE</td><td>' +
+        (document.getElementById("c_highprice").checked ? "[TBD &mdash; set this noticeably above " + tok("f_value") + "]" : tok("f_value")) + '</td></tr>' +
+      '<tr><td class="k">DELIVERY</td><td>[TBD]</td></tr>' +
+      '<tr><td class="k">PAYMENT TERMS</td><td>' +
+        (document.getElementById("c_cashonly").checked ? "Cash on delivery only" : "[TBD]") + '</td></tr>' +
+      '</table>';
+  } else if (id === "vendorEmail") {
+    body =
+      '<p><b>VENDOR CORRESPONDENCE (EXERCISE)</b></p>' +
+      '<p>From: ' + tok("f_vendor") + '<br>To: Contracting Office, ' + tok("f_location") + '<br>Subject: ' +
+      (currentTpl === "uc" ? "Request for payment" : "Regarding order for " + tok("f_req")) + '</p>' +
+      '<p>[TBD &mdash; write the vendor’s message here. Keep it realistic: businesslike, slightly frustrated if the scenario calls for it, and factually specific about names, dates, and amounts so the trainee has threads to pull.]</p>' +
+      (currentTpl === "uc"
+        ? '<p>Suggested content: the vendor names the unit member who directed the work, states what was requested and when, describes what was delivered or performed, and requests payment of ' + tok("f_value") + '.</p>'
+        : '');
+  } else if (id === "priorOrder") {
+    body =
+      '<p><b>EXISTING ORDER EXCERPT (EXERCISE)</b></p>' +
+      '<table class="hdr">' +
+      '<tr><td class="k">ORDER #</td><td>[TBD]</td><td class="k">AWARDED</td><td>[TBD]</td></tr>' +
+      '<tr><td class="k">VENDOR</td><td colspan="3">' + tok("f_vendor") + '</td></tr>' +
+      '<tr><td class="k">SUPPLIES/SERVICES</td><td colspan="3">' + tok("f_req") + '</td></tr>' +
+      '<tr><td class="k">VALUE</td><td>' + tok("f_value") + '</td><td class="k">DELIVERY DATE</td><td>[TBD]</td></tr>' +
+      '<tr><td class="k">INSPECTION/ACCEPTANCE</td><td colspan="3">[TBD &mdash; e.g., destination, by the customer unit]</td></tr>' +
+      '</table>';
+  }
+  return t + body + "</div>";
+}
+
+/* ═══════════════ BUILD DOCUMENTS ═══════════════ */
+
+function buildDocs(){
+  const comps = activeComplications();
+  const manifest = attachManifest();
+
+  /* ── TRAINEE COPY ── */
+  let situation = fill(TEMPLATES[currentTpl].situation || "");
+  if (currentTpl === "custom" && !situation) situation = "[TBD &mdash; write the scenario situation]";
+  const compNarrative = comps.map(c => esc(c.trainee)).join(" ");
+  let tasking = fill(TEMPLATES[currentTpl].tasking || "");
+  if (currentTpl === "custom" && !tasking) tasking = "[TBD &mdash; write what the trainee is asked to do]";
+
+  let deliverableBlock = "";
+  if (document.getElementById("f_deliverable_req").checked) {
+    deliverableBlock =
+      '<h2 class="sec">Deliverable</h2><p>Required deliverable: <b>' +
+      esc(val("f_deliverable_type") || "[TBD]") + '</b>, due ' +
+      tok("f_deliverable_due") + '.</p>';
+  }
+
+  let attachBlock = "";
+  if (manifest.length) {
+    attachBlock = '<h2 class="sec">Attachments</h2>' + ol(manifest);
+  }
+
+  let genPages = "", n = 0;
+  Object.keys(ATTACH_DEFS).forEach(id => {
+    if (attachChoice[id] === "gen" || attachChoice[id] === "manual") n++;
+    if (attachChoice[id] === "gen") genPages += genAttachment(id, n);
+  });
+
+  document.getElementById("doc-trainee").innerHTML =
+    BANNER + hdrTable() +
+    '<h2 class="sec">Situation</h2><p>' + situation + '</p>' +
+    (compNarrative ? '<p>' + compNarrative + '</p>' : '') +
+    '<h2 class="sec">Tasking</h2><p>' + tasking + '</p>' +
+    deliverableBlock + attachBlock +
+    BANNER_BTM + genPages;
+
+  /* ── TRAINER COPY ── */
+  const observables = lines("t_expected").concat(comps.map(c => c.trainer));
+
+  let manifestTrainer = "";
+  if (manifest.length) {
+    const items = [];
+    Object.keys(ATTACH_DEFS).forEach(id => {
+      if (attachChoice[id] === "gen")    items.push(ATTACH_DEFS[id].name + " (generated; review the [TBD] fields before execution)");
+      if (attachChoice[id] === "manual") items.push(ATTACH_DEFS[id].name + " (PREPARE MANUALLY before execution)");
+    });
+    manifestTrainer = '<h2 class="sec">Attachment Manifest</h2>' + ol(items);
+  }
+
+  document.getElementById("doc-trainer").innerHTML =
+    BANNER +
+    '<div class="trainer-notice">TRAINER COPY &mdash; NOT FOR TRAINEE</div>' +
+    hdrTable() +
+    '<h2 class="sec">Inject Summary</h2><p>' + situation + '</p>' +
+    (compNarrative ? '<p><b>Active complications:</b> ' + comps.map(c => esc(c.label)).join("; ") + '.</p>' : '') +
+    '<h2 class="sec">End State</h2><p>' + (val("t_endstate") ? esc(val("t_endstate")) : "[TBD]") + '</p>' +
+    '<h2 class="sec">Learning Objectives</h2>' + ul(lines("t_objectives")) +
+    '<h2 class="sec">Expected Actions</h2>' + ol(lines("t_expected")) +
+    '<h2 class="sec">Acceptable Approaches</h2>' + ul(lines("t_approaches")) +
+    '<h2 class="sec">Observable Behaviors (check as observed)</h2>' + chk(observables) +
+    '<h2 class="sec">Red Flags</h2>' + ul(lines("t_redflags")) +
+    '<h2 class="sec">Debrief Questions</h2>' + ol(lines("t_debrief")) +
+    '<h2 class="sec">References</h2>' + ul(lines("t_refs")) +
+    manifestTrainer +
+    BANNER_BTM;
+}
+
+/* ═══════════════ OUTPUT ACTIONS ═══════════════ */
+
+function showDoc(which){
+  document.getElementById("doc-trainee").classList.toggle("active", which === "trainee");
+  document.getElementById("doc-trainer").classList.toggle("active", which === "trainer");
+  document.getElementById("tab-trainee").classList.toggle("active", which === "trainee");
+  document.getElementById("tab-trainer").classList.toggle("active", which === "trainer");
+}
+
+function activeSheet(){
+  return document.querySelector(".doc-sheet.active");
+}
+
+function copyDoc(){
+  const sheet = activeSheet();
+  const range = document.createRange();
+  range.selectNodeContents(sheet);
+  const sel = window.getSelection();
+  sel.removeAllRanges(); sel.addRange(range);
+  document.execCommand("copy");
+  sel.removeAllRanges();
+}
+
+function downloadDoc(){
+  const sheet = activeSheet();
+  const isTrainer = sheet.id === "doc-trainer";
+  const inj = val("f_injnum") || "inject";
+  const fname = (val("f_exname") || "capstone").replace(/[^A-Za-z0-9-]+/g, "_") + "_" +
+                inj.replace(/[^A-Za-z0-9-]+/g, "_") + (isTrainer ? "_TRAINER" : "_TRAINEE") + ".doc";
+  const docHtml =
+    '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">' +
+    '<head><meta charset="utf-8"><title>' + (isTrainer ? "Trainer Copy" : "Trainee Copy") + '</title><style>' +
+    'body{font-family:"Times New Roman",serif;font-size:12pt;line-height:1.4;}' +
+    '.ex-banner{text-align:center;font-weight:bold;letter-spacing:2px;border-top:3px double #000;border-bottom:3px double #000;padding:4px 0;margin-bottom:12px;}' +
+    '.ex-banner.btm{margin:18px 0 0;}' +
+    '.trainer-notice{text-align:center;font-weight:bold;background:#f3f3f3;border:2px solid #000;padding:4px 0;margin-bottom:12px;}' +
+    'table.hdr{width:100%;border-collapse:collapse;margin-bottom:14px;}' +
+    'table.hdr td{border:1px solid #000;padding:4px 7px;font-size:11pt;}' +
+    'table.hdr td.k{font-weight:bold;background:#f3f3f3;}' +
+    'h2.sec{font-size:12pt;text-transform:uppercase;border-bottom:1px solid #000;padding-bottom:2px;margin:16px 0 6px;}' +
+    'ul.chk{list-style:none;margin-left:4px;} ul.chk li:before{content:"\\2610\\00a0\\00a0";}' +
+    '.attach-page{border-top:2px dashed #666;margin-top:24px;padding-top:14px;page-break-before:always;}' +
+    '.att-tag{font-weight:bold;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-size:10pt;}' +
+    '</style></head><body>' + sheet.innerHTML + '</body></html>';
+  const blob = new Blob(["﻿" + docHtml], { type: "application/msword" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = fname;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+
+/* ═══════════════ INIT ═══════════════ */
+renderComplications();
+renderAttachments();
+</script>
+</body>
+</html>
