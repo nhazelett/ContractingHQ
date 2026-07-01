@@ -219,7 +219,9 @@
 
   .doc-sheet .ex-banner {
     text-align: center; font-weight: bold; letter-spacing: 2px; font-size: 14px;
-    padding: 5px 0; border-top: 3px double #111; border-bottom: 3px double #111; margin: 0 0 14px;
+    padding: 5px 0; border-top: 3px double #b00020; border-bottom: 3px double #b00020; margin: 0 0 14px;
+    color: #b00020;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
   }
   .doc-sheet .ex-banner.btm { margin: 22px 0 0; }
   .doc-sheet .trainer-notice {
@@ -240,6 +242,23 @@
   .doc-sheet .chk li::before { content: "\2610\00a0\00a0"; }
   .doc-sheet .attach-page { border-top: 2px dashed #666; margin-top: 26px; padding-top: 16px; page-break-before: always; }
   .doc-sheet .att-tag { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+
+  /* form action bar */
+  .form-actions { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  .form-actions .autosave-note { font-size: 0.7rem; color: var(--txt-dim); margin-left: auto; }
+  .mini-btn {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--panel-brd2); color: var(--txt);
+    font-family: inherit; font-size: 0.74rem; font-weight: 600;
+    padding: 0.45rem 0.85rem; border-radius: 100px; cursor: pointer; transition: all 0.15s;
+  }
+  .mini-btn:hover { border-color: var(--accent); }
+  .mini-btn.gold { border-color: rgba(201,162,39,0.5); color: var(--gold); }
+  .mini-btn.gold:hover { background: rgba(201,162,39,0.14); }
+  .now-btn {
+    background: transparent; border: none; color: var(--accent);
+    font-family: inherit; font-size: 0.66rem; font-weight: 600; cursor: pointer; padding: 0;
+  }
+  .now-btn:hover { text-decoration: underline; }
 
   /* toast */
   #toast {
@@ -308,6 +327,12 @@
   <!-- ═════════ LEFT: FORM ═════════ -->
   <div class="pane-form">
 
+    <div class="form-actions">
+      <button type="button" class="mini-btn gold" onclick="newInject()" title="Keeps exercise name, delivery, time limit, role, and location. Clears the scenario and bumps the inject number.">&#65291; Next inject</button>
+      <button type="button" class="mini-btn" onclick="resetAll()">Reset all</button>
+      <span class="autosave-note">Entries auto-save in this browser</span>
+    </div>
+
     <!-- CATEGORY -->
     <div class="fcard">
       <div class="fcard-head">
@@ -334,7 +359,7 @@
         <div class="fld-row3">
           <div class="fld"><label>Exercise name</label><input type="text" id="f_exname" placeholder="AGILE RESOLVE 26"></div>
           <div class="fld"><label>Inject #</label><input type="text" id="f_injnum" placeholder="INJ-014"></div>
-          <div class="fld"><label>DTG</label><input type="text" id="f_dtg" placeholder="011300Z JUL 26"></div>
+          <div class="fld"><label>DTG <button type="button" class="now-btn" onclick="setDtgNow()">now</button></label><input type="text" id="f_dtg" placeholder="011300Z JUL 26"></div>
         </div>
         <div class="fld-row3">
           <div class="fld"><label>Delivery</label>
@@ -432,6 +457,7 @@
         <button type="button" class="pv-btn" onclick="copyDoc()">Copy</button>
         <button type="button" class="pv-btn" onclick="window.print()">Print / PDF</button>
         <button type="button" class="pv-btn primary" onclick="downloadDoc()">Download .doc</button>
+        <button type="button" class="pv-btn primary" onclick="downloadBoth()">Both</button>
       </div>
     </div>
     <div class="doc-sheet" id="doc-trainee" contenteditable="true" spellcheck="false"></div>
@@ -624,6 +650,7 @@ function setCategory(c){
   attachChoice = Object.assign({}, C.attachDefaults);
   renderAttachments();
   buildDocs();
+  saveState();
 }
 
 function captureTrainerVals(){
@@ -641,6 +668,7 @@ function setSub(s){
   renderSubs();
   renderTrainerFields(); // re-seed refs for new sub where user hasn't typed
   buildDocs();
+  saveState();
 }
 
 function renderSubs(){
@@ -684,7 +712,7 @@ function renderAttachments(){
   }).join("");
 }
 
-function setAttach(id, mode){ attachChoice[id] = mode; renderAttachments(); buildDocs(); }
+function setAttach(id, mode){ attachChoice[id] = mode; renderAttachments(); buildDocs(); saveState(); }
 
 function onDeliverableToggle(){
   document.getElementById("deliverable-opts").style.display =
@@ -871,8 +899,8 @@ function copyDoc(){
   toast("Copied to clipboard.");
 }
 
-function downloadDoc(){
-  const sheet = activeSheet();
+function downloadDoc(sheetArg){
+  const sheet = sheetArg || activeSheet();
   const isTrainer = sheet.id === "doc-trainer";
   const inj = val("f_injnum") || "inject";
   const fname = (val("f_exname") || "capstone").replace(/[^A-Za-z0-9-]+/g, "_") + "_" +
@@ -881,7 +909,7 @@ function downloadDoc(){
     '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">' +
     '<head><meta charset="utf-8"><title>' + (isTrainer ? "Trainer Copy" : "Trainee Copy") + '</title><style>' +
     'body{font-family:"Times New Roman",serif;font-size:12pt;line-height:1.4;}' +
-    '.ex-banner{text-align:center;font-weight:bold;letter-spacing:2px;border-top:3px double #000;border-bottom:3px double #000;padding:4px 0;margin-bottom:12px;}' +
+    '.ex-banner{text-align:center;font-weight:bold;letter-spacing:2px;color:#C00000;border-top:3px double #C00000;border-bottom:3px double #C00000;padding:4px 0;margin-bottom:12px;}' +
     '.ex-banner.btm{margin:18px 0 0;}' +
     '.trainer-notice{text-align:center;font-weight:bold;background:#f3f3f3;border:2px solid #000;padding:4px 0;margin-bottom:12px;}' +
     'table.hdr{width:100%;border-collapse:collapse;margin-bottom:14px;}' +
@@ -900,6 +928,96 @@ function downloadDoc(){
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(a.href);
+}
+
+function downloadBoth(){
+  downloadDoc(document.getElementById("doc-trainee"));
+  setTimeout(() => downloadDoc(document.getElementById("doc-trainer")), 400);
+  toast("Downloading both copies.");
+}
+
+function setDtgNow(){
+  const d = new Date();
+  const months = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  const p = n => String(n).padStart(2, "0");
+  document.getElementById("f_dtg").value =
+    p(d.getUTCDate()) + p(d.getUTCHours()) + p(d.getUTCMinutes()) + "Z " +
+    months[d.getUTCMonth()] + " " + String(d.getUTCFullYear()).slice(-2);
+  buildDocs();
+}
+
+/* ═══════════════ PERSISTENCE ═══════════════ */
+
+const STORAGE_KEY = "kthq-inject-builder-v2";
+const FIELD_IDS = ["f_exname","f_injnum","f_dtg","f_delivery","f_timelimit","f_position",
+  "f_location","f_customer","f_situation","f_tasking","f_req","f_value","f_needby","f_vendor",
+  "f_deliverable_type","f_deliverable_due"];
+
+function saveState(){
+  try {
+    captureTrainerVals();
+    const state = {
+      cat, sub, attachChoice, trainerVals,
+      deliverable: document.getElementById("f_deliverable_req").checked,
+      fields: {}
+    };
+    FIELD_IDS.forEach(id => { state.fields[id] = val(id); });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) { /* private browsing etc. — carry on without saving */ }
+}
+
+function restoreState(){
+  let state;
+  try { state = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch (e) { return false; }
+  if (!state || !CATEGORIES[state.cat]) return false;
+  cat = state.cat;
+  sub = CATEGORIES[cat].subs.some(x => x.id === state.sub) ? state.sub : CATEGORIES[cat].subs[0].id;
+  document.querySelectorAll("#cat-pills .pill").forEach(p =>
+    p.classList.toggle("on", p.dataset.cat === cat));
+  document.getElementById("subpill-label").textContent = CATEGORIES[cat].subLabel;
+  document.getElementById("counterpart-label").textContent = CATEGORIES[cat].counterpart;
+  document.getElementById("situation-hint").textContent = CATEGORIES[cat].situationHint;
+  trainerVals = state.trainerVals || {};
+  attachChoice = Object.assign({}, CATEGORIES[cat].attachDefaults, state.attachChoice || {});
+  FIELD_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && state.fields && state.fields[id] !== undefined) el.value = state.fields[id];
+  });
+  document.getElementById("f_deliverable_req").checked = !!state.deliverable;
+  document.getElementById("deliverable-opts").style.display = state.deliverable ? "block" : "none";
+  return true;
+}
+
+function bumpInjectNumber(){
+  const cur = val("f_injnum");
+  const m = cur.match(/^(.*?)(\d+)\s*$/);
+  if (m) {
+    const next = String(parseInt(m[2], 10) + 1).padStart(m[2].length, "0");
+    document.getElementById("f_injnum").value = m[1] + next;
+  }
+}
+
+function newInject(){
+  // keep exercise-level settings; clear inject-specific content
+  ["f_customer","f_situation","f_tasking","f_req","f_value","f_needby","f_vendor","f_deliverable_due"]
+    .forEach(id => { document.getElementById(id).value = ""; });
+  document.getElementById("f_deliverable_req").checked = false;
+  document.getElementById("deliverable-opts").style.display = "none";
+  bumpInjectNumber();
+  trainerVals = {};
+  attachChoice = Object.assign({}, CATEGORIES[cat].attachDefaults);
+  renderTrainerFields();
+  renderAttachments();
+  buildDocs();
+  saveState();
+  toast("New inject started. Exercise settings kept; inject number bumped.");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function resetAll(){
+  if (!confirm("Clear everything, including saved entries in this browser?")) return;
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  location.reload();
 }
 
 /* ═══════════════ TOAST ═══════════════ */
@@ -995,15 +1113,19 @@ document.querySelector(".pane-form").addEventListener("input", function(){
     trainerVals[t.dataset.slot] = t.value;
   });
   clearTimeout(rebuildTimer);
-  rebuildTimer = setTimeout(buildDocs, 250);
+  rebuildTimer = setTimeout(() => { buildDocs(); saveState(); }, 250);
 });
+
+document.querySelector(".pane-form").addEventListener("change", () => { buildDocs(); saveState(); });
 
 /* ═══════════════ INIT ═══════════════ */
 
+const restored = restoreState();
 renderSubs();
 renderTrainerFields();
 renderAttachments();
 buildDocs();
+if (restored) toast("Restored your last session. \"Next inject\" keeps exercise settings; \"Reset all\" starts clean.");
 </script>
 </body>
 </html>
