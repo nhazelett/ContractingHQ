@@ -257,12 +257,6 @@
   .mini-btn:hover { border-color: var(--accent); }
   .mini-btn.gold { border-color: rgba(201,162,39,0.5); color: var(--gold); }
   .mini-btn.gold:hover { background: rgba(201,162,39,0.14); }
-  .now-btn {
-    background: transparent; border: none; color: var(--accent);
-    font-family: inherit; font-size: 0.66rem; font-weight: 600; cursor: pointer; padding: 0;
-  }
-  .now-btn:hover { text-decoration: underline; }
-
   /* toast */
   #toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
@@ -359,10 +353,9 @@
     <details class="fcard" open>
       <summary><span class="fcard-title"><span class="dot"></span>Exercise Details</span><span class="chev">&#9654;</span></summary>
       <div class="fbody">
-        <div class="fld-row3">
+        <div class="fld-row">
           <div class="fld"><label>Exercise name</label><input type="text" id="f_exname" placeholder="AGILE RESOLVE 26"></div>
           <div class="fld"><label>Inject #</label><input type="text" id="f_injnum" placeholder="INJ-014"></div>
-          <div class="fld"><label>DTG <button type="button" class="now-btn" onclick="setDtgNow()">now</button></label><input type="text" id="f_dtg" placeholder="011300Z JUL 26"></div>
         </div>
         <div class="fld-row3">
           <div class="fld"><label>Delivery</label>
@@ -417,14 +410,15 @@
         <div id="deliverable-opts" style="display:none;">
           <div class="fld-row">
             <div class="fld"><label>What</label>
-              <select id="f_deliverable_type">
-                <option>Memorandum for record documenting actions taken</option>
-                <option>Completed purchase request package</option>
-                <option>Draft award document</option>
-                <option>Written response to the customer</option>
-                <option>Verbal brief to the evaluator</option>
-                <option>Prepared briefing (slides or talking paper)</option>
-              </select>
+              <input type="text" id="f_deliverable_type" list="deliverable-suggestions" placeholder="e.g., memorandum for record documenting actions taken">
+              <datalist id="deliverable-suggestions">
+                <option value="Memorandum for record documenting actions taken"></option>
+                <option value="Completed purchase request package"></option>
+                <option value="Draft award document"></option>
+                <option value="Written response to the customer"></option>
+                <option value="Verbal brief to the evaluator"></option>
+                <option value="Prepared briefing (slides or talking paper)"></option>
+              </datalist>
             </div>
             <div class="fld"><label>Due</label><input type="text" id="f_deliverable_due" placeholder="end of the time limit"></div>
           </div>
@@ -751,9 +745,8 @@ function subLabel(){
 function hdrTable(){
   return '<table class="hdr">' +
     '<tr><td class="k">EXERCISE</td><td>' + tok("f_exname") + '</td><td class="k">INJECT #</td><td>' + tok("f_injnum") + '</td></tr>' +
-    '<tr><td class="k">DTG</td><td>' + tok("f_dtg") + '</td><td class="k">TIME LIMIT</td><td>' + tok("f_timelimit") + '</td></tr>' +
-    '<tr><td class="k">DELIVERY</td><td>' + escHtml(val("f_delivery") || "[TBD]") + '</td><td class="k">TRAINEE ROLE</td><td>' + tok("f_position") + '</td></tr>' +
-    '<tr><td class="k">CATEGORY</td><td colspan="3">' + CATEGORIES[cat].label + " &middot; " + subLabel() + '</td></tr>' +
+    '<tr><td class="k">DELIVERY</td><td>' + escHtml(val("f_delivery") || "[TBD]") + '</td><td class="k">TIME LIMIT</td><td>' + tok("f_timelimit") + '</td></tr>' +
+    '<tr><td class="k">TRAINEE ROLE</td><td>' + tok("f_position") + '</td><td class="k">CATEGORY</td><td>' + CATEGORIES[cat].label + " &middot; " + subLabel() + '</td></tr>' +
     '</table>';
 }
 
@@ -767,7 +760,7 @@ function genAttachment(id, num){
     body =
       '<p><b>PURCHASE REQUEST (EXERCISE)</b></p>' +
       '<table class="hdr">' +
-      '<tr><td class="k">PR NUMBER</td><td>[TBD]</td><td class="k">DATE</td><td>' + tok("f_dtg") + '</td></tr>' +
+      '<tr><td class="k">PR NUMBER</td><td>[TBD]</td><td class="k">DATE</td><td>[TBD]</td></tr>' +
       '<tr><td class="k">REQUESTING UNIT</td><td colspan="3">' + tok("f_customer") + '</td></tr>' +
       '<tr><td class="k">DESCRIPTION</td><td colspan="3">' + tok("f_req") + '</td></tr>' +
       '<tr><td class="k">EST. VALUE</td><td>' + tok("f_value") + '</td><td class="k">NEED BY</td><td>' + tok("f_needby") + '</td></tr>' +
@@ -786,7 +779,7 @@ function genAttachment(id, num){
   } else if (id === "quote") {
     body =
       '<p><b>QUOTATION (EXERCISE)</b></p>' +
-      '<p>From: ' + tok("f_vendor") + '<br>To: Contracting Office, ' + tok("f_location") + '<br>Date: ' + tok("f_dtg") + '</p>' +
+      '<p>From: ' + tok("f_vendor") + '<br>To: Contracting Office, ' + tok("f_location") + '<br>Date: [TBD]</p>' +
       '<table class="hdr">' +
       '<tr><td class="k">ITEM</td><td>' + tok("f_req") + '</td></tr>' +
       '<tr><td class="k">QUOTED PRICE</td><td>' + tok("f_value") + '</td></tr>' +
@@ -939,20 +932,10 @@ function downloadBoth(){
   toast("Downloading both copies.");
 }
 
-function setDtgNow(){
-  const d = new Date();
-  const months = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
-  const p = n => String(n).padStart(2, "0");
-  document.getElementById("f_dtg").value =
-    p(d.getUTCDate()) + p(d.getUTCHours()) + p(d.getUTCMinutes()) + "Z " +
-    months[d.getUTCMonth()] + " " + String(d.getUTCFullYear()).slice(-2);
-  buildDocs();
-}
-
 /* ═══════════════ PERSISTENCE ═══════════════ */
 
 const STORAGE_KEY = "kthq-inject-builder-v2";
-const FIELD_IDS = ["f_exname","f_injnum","f_dtg","f_delivery","f_timelimit","f_position",
+const FIELD_IDS = ["f_exname","f_injnum","f_delivery","f_timelimit","f_position",
   "f_location","f_customer","f_situation","f_tasking","f_req","f_value","f_needby","f_vendor",
   "f_deliverable_type","f_deliverable_due"];
 
