@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-07-01T11:32:51.135173+00:00",
+  "generatedAt": "2026-07-02T10:50:57.534042+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -11,20 +11,89 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
   "stats": {
     "totalParts": 51,
     "issuedParts": 51,
-    "updatedParts": 10,
+    "updatedParts": 11,
     "agencyDeviationCount": 1453,
     "uniqueAgencyCount": 39,
-    "latestPartDate": "2026-04-20",
-    "latestPartDateLabel": "Apr 20, 2026",
+    "latestPartDate": "2026-07-01",
+    "latestPartDateLabel": "Jul 1, 2026",
     "announcementCount": 10,
     "federalRegisterCount": 3
   },
   "changes": {
     "baseline": false,
     "newParts": [],
-    "updatedParts": [],
-    "newAgencyDeviations": [],
-    "removedAgencyDeviations": []
+    "updatedParts": [
+      {
+        "partNumber": 16,
+        "partLabel": "Part 16",
+        "title": "Types of Contracts",
+        "fullTitle": "Part 16 - Types of Contracts",
+        "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16",
+        "issuanceDate": "2025-09-30",
+        "issuanceDateLabel": "Sep 30, 2025",
+        "updateDate": "2026-07-01",
+        "updateDateLabel": "Jul 1, 2026",
+        "deviationCount": 27,
+        "previousUpdateDate": "",
+        "previousUpdateDateLabel": ""
+      },
+      {
+        "partNumber": 52,
+        "partLabel": "Part 52",
+        "title": "Solicitation Provisions and Contract Clauses",
+        "fullTitle": "Part 52 - Solicitation Provisions and Contract Clauses",
+        "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-52",
+        "issuanceDate": "2025-10-28",
+        "issuanceDateLabel": "Oct 28, 2025",
+        "updateDate": "2026-07-01",
+        "updateDateLabel": "Jul 1, 2026",
+        "deviationCount": 0,
+        "previousUpdateDate": "2026-04-20",
+        "previousUpdateDateLabel": "Apr 20, 2026"
+      }
+    ],
+    "newAgencyDeviations": [
+      {
+        "part": {
+          "partNumber": 16,
+          "partLabel": "Part 16",
+          "title": "Types of Contracts",
+          "fullTitle": "Part 16 - Types of Contracts",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-07-01",
+          "updateDateLabel": "Jul 1, 2026",
+          "deviationCount": 27
+        },
+        "agency": {
+          "name": "General Services Administration (GSA)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-16_Supplement-1.pdf",
+          "id": "32c7b208ae59555a"
+        }
+      }
+    ],
+    "removedAgencyDeviations": [
+      {
+        "part": {
+          "partNumber": 16,
+          "partLabel": "Part 16",
+          "title": "Types of Contracts",
+          "fullTitle": "Part 16 - Types of Contracts",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-07-01",
+          "updateDateLabel": "Jul 1, 2026",
+          "deviationCount": 27
+        },
+        "agency": {
+          "name": "General Services Administration (GSA)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-16.pdf",
+          "id": "819011c6c0202dce"
+        }
+      }
+    ]
   },
   "parts": [
     {
@@ -2594,9 +2663,9 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16",
       "issuanceDate": "2025-09-30",
       "issuanceDateLabel": "Sep 30, 2025",
-      "updateDate": "",
-      "updateDateLabel": "",
-      "isUpdated": false,
+      "updateDate": "2026-07-01",
+      "updateDateLabel": "Jul 1, 2026",
+      "isUpdated": true,
       "deviationCount": 27,
       "agencies": [
         {
@@ -2721,8 +2790,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "General Services Administration (GSA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-16.pdf",
-          "id": "819011c6c0202dce"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-16_Supplement-1.pdf",
+          "id": "32c7b208ae59555a"
         },
         {
           "name": "Department of Commerce (DOC)",
@@ -2738,7 +2807,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. Read this before building solicitations; it affects acquisition strategy, competition, evaluation, and award approach."
+      "watchNote": "Updated model text is posted. Read this before building solicitations; it affects acquisition strategy, competition, evaluation, and award approach."
     },
     {
       "partNumber": 17,
@@ -8092,8 +8161,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-52",
       "issuanceDate": "2025-10-28",
       "issuanceDateLabel": "Oct 28, 2025",
-      "updateDate": "2026-04-20",
-      "updateDateLabel": "Apr 20, 2026",
+      "updateDate": "2026-07-01",
+      "updateDateLabel": "Jul 1, 2026",
       "isUpdated": true,
       "deviationCount": 0,
       "agencies": [],
