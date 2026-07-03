@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-07-02T10:50:57.534042+00:00",
+  "generatedAt": "2026-07-03T10:49:49.274477+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -22,75 +22,198 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
   "changes": {
     "baseline": false,
     "newParts": [],
-    "updatedParts": [
-      {
-        "partNumber": 16,
-        "partLabel": "Part 16",
-        "title": "Types of Contracts",
-        "fullTitle": "Part 16 - Types of Contracts",
-        "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16",
-        "issuanceDate": "2025-09-30",
-        "issuanceDateLabel": "Sep 30, 2025",
-        "updateDate": "2026-07-01",
-        "updateDateLabel": "Jul 1, 2026",
-        "deviationCount": 27,
-        "previousUpdateDate": "",
-        "previousUpdateDateLabel": ""
-      },
-      {
-        "partNumber": 52,
-        "partLabel": "Part 52",
-        "title": "Solicitation Provisions and Contract Clauses",
-        "fullTitle": "Part 52 - Solicitation Provisions and Contract Clauses",
-        "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-52",
-        "issuanceDate": "2025-10-28",
-        "issuanceDateLabel": "Oct 28, 2025",
-        "updateDate": "2026-07-01",
-        "updateDateLabel": "Jul 1, 2026",
-        "deviationCount": 0,
-        "previousUpdateDate": "2026-04-20",
-        "previousUpdateDateLabel": "Apr 20, 2026"
-      }
-    ],
+    "updatedParts": [],
     "newAgencyDeviations": [
       {
         "part": {
-          "partNumber": 16,
-          "partLabel": "Part 16",
-          "title": "Types of Contracts",
-          "fullTitle": "Part 16 - Types of Contracts",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16",
-          "issuanceDate": "2025-09-30",
-          "issuanceDateLabel": "Sep 30, 2025",
-          "updateDate": "2026-07-01",
-          "updateDateLabel": "Jul 1, 2026",
-          "deviationCount": 27
+          "partNumber": 9,
+          "partLabel": "Part 9",
+          "title": "Contractor Qualifications",
+          "fullTitle": "Part 9 - Contractor Qualifications",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
+          "issuanceDate": "2025-08-21",
+          "issuanceDateLabel": "Aug 21, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 34
         },
         "agency": {
-          "name": "General Services Administration (GSA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-16_Supplement-1.pdf",
-          "id": "32c7b208ae59555a"
+          "name": "Department of Labor (DOL)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOL_RFO_Deviation_Part-9.pdf",
+          "id": "0a38c35bab6aea96"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 12,
+          "partLabel": "Part 12",
+          "title": "Acquisition of Commercial Products and Commercial Services",
+          "fullTitle": "Part 12 - Acquisition of Commercial Products and Commercial Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 34
+        },
+        "agency": {
+          "name": "Department of Labor (DOL)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOL_RFO_Deviation_Part-12.pdf",
+          "id": "73647c342f117201"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 12,
+          "partLabel": "Part 12",
+          "title": "Acquisition of Commercial Products and Commercial Services",
+          "fullTitle": "Part 12 - Acquisition of Commercial Products and Commercial Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 34
+        },
+        "agency": {
+          "name": "Department of Transportation (DOT)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOT_RFO_Deviation_Part-12_Supplement.pdf",
+          "id": "4be8f11704362254"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 22,
+          "partLabel": "Part 22",
+          "title": "Application of Labor Laws to Government Acquisitions",
+          "fullTitle": "Part 22 - Application of Labor Laws to Government Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-22",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 33
+        },
+        "agency": {
+          "name": "Department of Labor (DOL)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOL_RFO_Deviation_Part-22.pdf",
+          "id": "dbc4faddd02497b0"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 22,
+          "partLabel": "Part 22",
+          "title": "Application of Labor Laws to Government Acquisitions",
+          "fullTitle": "Part 22 - Application of Labor Laws to Government Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-22",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 33
+        },
+        "agency": {
+          "name": "Department of Transportation (DOT)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOT_RFO_Deviation_Part-22_Supplement.pdf",
+          "id": "50f3112fdf81e82b"
         }
       }
     ],
     "removedAgencyDeviations": [
       {
         "part": {
-          "partNumber": 16,
-          "partLabel": "Part 16",
-          "title": "Types of Contracts",
-          "fullTitle": "Part 16 - Types of Contracts",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16",
-          "issuanceDate": "2025-09-30",
-          "issuanceDateLabel": "Sep 30, 2025",
-          "updateDate": "2026-07-01",
-          "updateDateLabel": "Jul 1, 2026",
-          "deviationCount": 27
+          "partNumber": 9,
+          "partLabel": "Part 9",
+          "title": "Contractor Qualifications",
+          "fullTitle": "Part 9 - Contractor Qualifications",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
+          "issuanceDate": "2025-08-21",
+          "issuanceDateLabel": "Aug 21, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 34
         },
         "agency": {
-          "name": "General Services Administration (GSA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-16.pdf",
-          "id": "819011c6c0202dce"
+          "name": "Department of Labor (DOL)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOL_RFO_Deviation_Part-9-12-22.pdf",
+          "id": "c388865bf7e6eebe"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 12,
+          "partLabel": "Part 12",
+          "title": "Acquisition of Commercial Products and Commercial Services",
+          "fullTitle": "Part 12 - Acquisition of Commercial Products and Commercial Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 34
+        },
+        "agency": {
+          "name": "Department of Labor (DOL)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOL_RFO_Deviation_Part-9-12-22.pdf",
+          "id": "b0d2c7f5a8cf6e76"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 12,
+          "partLabel": "Part 12",
+          "title": "Acquisition of Commercial Products and Commercial Services",
+          "fullTitle": "Part 12 - Acquisition of Commercial Products and Commercial Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 34
+        },
+        "agency": {
+          "name": "Department of Transportation (DOT)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOT_RFO_Deviation_Part-9-12-22.pdf",
+          "id": "0cec75654c147094"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 22,
+          "partLabel": "Part 22",
+          "title": "Application of Labor Laws to Government Acquisitions",
+          "fullTitle": "Part 22 - Application of Labor Laws to Government Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-22",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 33
+        },
+        "agency": {
+          "name": "Department of Labor (DOL)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOL_RFO_Deviation_Part-9-12-22.pdf",
+          "id": "adcd82c5a87fad5e"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 22,
+          "partLabel": "Part 22",
+          "title": "Application of Labor Laws to Government Acquisitions",
+          "fullTitle": "Part 22 - Application of Labor Laws to Government Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-22",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-04-20",
+          "updateDateLabel": "Apr 20, 2026",
+          "deviationCount": 33
+        },
+        "agency": {
+          "name": "Department of Transportation (DOT)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOT_RFO_Deviation_Part-9-12-22.pdf",
+          "id": "5ae34409e84cab3d"
         }
       }
     ]
@@ -1442,8 +1565,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "Department of Labor (DOL)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOL_RFO_Deviation_Part-9-12-22.pdf",
-          "id": "c388865bf7e6eebe"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOL_RFO_Deviation_Part-9.pdf",
+          "id": "0a38c35bab6aea96"
         },
         {
           "name": "Millennium Challenge Corporation (MCC)",
@@ -2064,8 +2187,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "Department of Labor (DOL)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOL_RFO_Deviation_Part-9-12-22.pdf",
-          "id": "b0d2c7f5a8cf6e76"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOL_RFO_Deviation_Part-12.pdf",
+          "id": "73647c342f117201"
         },
         {
           "name": "Department of Education (ED)",
@@ -2114,8 +2237,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "Department of Transportation (DOT)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOT_RFO_Deviation_Part-9-12-22.pdf",
-          "id": "0cec75654c147094"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOT_RFO_Deviation_Part-12_Supplement.pdf",
+          "id": "4be8f11704362254"
         },
         {
           "name": "Securities and Exchange Commission (SEC)",
@@ -3421,8 +3544,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "Department of Labor (DOL)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOL_RFO_Deviation_Part-9-12-22.pdf",
-          "id": "adcd82c5a87fad5e"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOL_RFO_Deviation_Part-22.pdf",
+          "id": "dbc4faddd02497b0"
         },
         {
           "name": "Millennium Challenge Corporation (MCC)",
@@ -3441,8 +3564,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "Department of Transportation (DOT)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOT_RFO_Deviation_Part-9-12-22.pdf",
-          "id": "5ae34409e84cab3d"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOT_RFO_Deviation_Part-22_Supplement.pdf",
+          "id": "50f3112fdf81e82b"
         },
         {
           "name": "United States Department of Agriculture (USDA)",
