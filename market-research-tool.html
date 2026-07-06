@@ -438,9 +438,11 @@ const SOURCES = [
   { key: 'gleif', route: '/entity/lei', title: 'Legal Entity (GLEIF)', sourceLabel: 'GLEIF', paramKeys: ['q'], render: renderGleif },
   { key: 'opencorporates', route: '/entity/oc', title: 'Corporate Registry', sourceLabel: 'OpenCorporates', paramKeys: ['q'], render: renderOpenCorporates },
   { key: 'sam-exclusions', route: '/entity/sanctions', title: 'Federal Exclusions / Debarment', sourceLabel: 'SAM.gov', paramKeys: ['q'], render: renderSanctions, flagWhenResults: true, note: 'Public information per FAR 9.404 \u2014 same data as <a href="https:\/\/sam.gov\/exclusions-new\/" target="_blank" rel="noopener" style="color:var(--accent);">sam.gov\/exclusions-new<\/a>.' },
-  { key: 'usaspending', route: '/search/spend', title: 'Federal Spend History', sourceLabel: 'USAspending.gov', paramKeys: ['q', 'naics', 'psc', 'agency', 'min', 'max'], render: renderSpend, fullWidth: true },
+  { key: 'usaspending', route: '/search/spend', title: 'Federal Spend History', sourceLabel: 'USAspending.gov', paramKeys: ['q', 'naics', 'psc', 'agency', 'min', 'max'], render: renderSpend, fullWidth: true, direct: fetchSpendDirect },
+  { key: 'small-biz', route: null, title: 'Small Business Landscape — Rule of Two', sourceLabel: 'USAspending.gov (FPDS)', paramKeys: [], render: renderSmallBiz, fullWidth: true, direct: fetchSmallBizDirect, alwaysRender: true },
   { key: 'sam-opps', route: '/search/opps', title: 'Active Opportunities', sourceLabel: 'SAM.gov', paramKeys: ['q', 'naics', 'psc', 'agency'], render: renderOpps, fullWidth: true },
-  { key: 'federal-register', route: '/search/regulations', title: 'Regulations & Notices', sourceLabel: 'Federal Register', paramKeys: ['q'], render: renderRegulations },
+  { key: 'vehicles', route: null, title: 'Existing Vehicles (IDIQs / GWACs / BPAs)', sourceLabel: 'USAspending.gov', paramKeys: [], render: renderVehicles, fullWidth: true, direct: fetchVehiclesDirect },
+  { key: 'federal-register', route: '/search/regulations', title: 'Regulations & Notices', sourceLabel: 'Federal Register', paramKeys: ['q'], render: renderRegulations, direct: fetchRegulationsDirect },
   { key: 'uspto', route: '/search/patents', title: 'Patents', sourceLabel: 'USPTO', paramKeys: ['q'], render: renderPatents },
   { key: 'newsapi', route: '/search/news', title: 'Recent News', sourceLabel: 'NewsAPI', paramKeys: ['q'], render: renderNews, fullWidth: true },
 ];
@@ -494,6 +496,8 @@ async function runSearch() {
   const promises = SOURCES.map(s => fetchSource(s, q, filters));
   await Promise.allSettled(promises);
 
+  await buildSummary();
+
   els.searchBtn.disabled = false;
   els.searchBtn.textContent = 'Search';
   const anyResults = Object.values(state.bySource).some(r => r.ok && r.results && r.results.length);
@@ -522,6 +526,26 @@ function buildUrl(source, q, filters) {
 }
 
 async function fetchSource(source, q, filters) {
+  // Sources with a `direct` fetcher call the upstream API straight from the
+  // browser (public, keyless, CORS-open). The Worker proxy stays as fallback —
+  // e.g. api.usaspending.gov intermittently 525s when called FROM a Cloudflare
+  // Worker, but browser calls work fine.
+  if (source.direct) {
+    try {
+      const data = await source.direct(q, filters);
+      state.bySource[source.key] = data;
+      renderSection(source, data);
+      return;
+    } catch (e) {
+      if (!source.route) {
+        // Direct-only source (no worker route) — report the error.
+        state.bySource[source.key] = { ok: false, source: source.key, error: e.message };
+        renderSection(source, state.bySource[source.key]);
+        return;
+      }
+      /* fall through to worker proxy */
+    }
+  }
   const url = buildUrl(source, q, filters);
   try {
     const r = await fetch(url);
@@ -534,9 +558,365 @@ async function fetchSource(source, q, filters) {
   }
 }
 
+// ===== Direct upstream fetchers (keyless, CORS-open APIs) =====
+function isoToday() { return new Date().toISOString().slice(0, 10); }
+function isoYearAgo() {
+  const d = new Date();
+  d.setFullYear(d.getFullYear() - 1);
+  return d.toISOString().slice(0, 10);
+}
+
+function buildSpendFilters(q, filters, awardTypes) {
+  const f = {
+    time_period: [{ start_date: isoYearAgo(), end_date: isoToday() }],
+    award_type_codes: awardTypes || ['A', 'B', 'C', 'D'],
+  };
+  if (q) f.keywords = [q];
+  if (filters.naics) f.naics_codes = [filters.naics];
+  if (filters.psc) f.psc_codes = [filters.psc];
+  if (filters.agency) f.agencies = [{ type: 'awarding', tier: 'toptier', name: filters.agency }];
+  const min = parseFloat(filters.min || '0'), max = parseFloat(filters.max || '0');
+  if (min || max) {
+    f.award_amounts = [{
+      ...(min ? { lower_bound: min } : {}),
+      ...(max ? { upper_bound: max } : {}),
+    }];
+  }
+  return f;
+}
+
+async function postSpendQuery(body) {
+  const r = await fetch('https://api.usaspending.gov/api/v2/search/spending_by_award/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!r.ok) throw new Error('USAspending upstream ' + r.status);
+  return r.json();
+}
+
+async function fetchSpendDirect(q, filters) {
+  const from = isoYearAgo(), to = isoToday();
+  const f = buildSpendFilters(q, filters);
+  // Field names per the current API contract (contracts/v2/search/spending_by_award.md):
+  // contract-type awards use 'Start Date'/'End Date'/'NAICS'/'PSC'.
+  const body = {
+    filters: f,
+    fields: [
+      'Award ID', 'Recipient Name', 'Recipient UEI', 'Award Amount',
+      'Awarding Agency', 'Awarding Sub Agency', 'Start Date', 'End Date',
+      'Description', 'NAICS', 'PSC', 'generated_internal_id',
+    ],
+    page: 1,
+    limit: 25,
+    order: 'desc',
+    sort: 'Award Amount',
+  };
+  const data = await postSpendQuery(body);
+  const results = (data.results || []).map(normalizeSpendRow);
+  return { ok: true, source: 'usaspending', count: results.length, results, meta: { from, to } };
+}
+
+// Federal Register — keyless, CORS-open. Relevance-ranked (the worker's
+// 'newest' ordering buried keyword matches under the day's unrelated docs).
+async function fetchRegulationsDirect(q) {
+  const params = new URLSearchParams({
+    'conditions[term]': q,
+    'per_page': '20',
+    'order': 'relevance',
+  });
+  const r = await fetch(`https://www.federalregister.gov/api/v1/documents.json?${params}`);
+  if (!r.ok) throw new Error('Federal Register upstream ' + r.status);
+  const data = await r.json();
+  const results = (data.results || []).map(d => ({
+    id: d.document_number,
+    title: d.title,
+    type: d.type,
+    agency: (d.agencies || []).map(a => a.name).join(', '),
+    publishedDate: d.publication_date,
+    abstract: d.abstract,
+    url: d.html_url,
+  }));
+  return { ok: true, source: 'federal-register', count: results.length, results, meta: { count: data.count } };
+}
+
+const IDV_TYPE_CODES = ['IDV_A', 'IDV_B', 'IDV_B_A', 'IDV_B_B', 'IDV_B_C', 'IDV_C', 'IDV_D', 'IDV_E'];
+
+async function fetchVehiclesDirect(q, filters) {
+  const from = isoYearAgo(), to = isoToday();
+  const body = {
+    filters: buildSpendFilters(q, filters, IDV_TYPE_CODES),
+    fields: [
+      'Award ID', 'Recipient Name', 'Award Amount', 'Awarding Agency',
+      'Awarding Sub Agency', 'Start Date', 'Last Date to Order',
+      'Contract Award Type', 'Description', 'NAICS', 'PSC', 'generated_internal_id',
+    ],
+    page: 1,
+    limit: 15,
+    order: 'desc',
+    sort: 'Award Amount',
+  };
+  const data = await postSpendQuery(body);
+  const results = (data.results || []).map(row => ({
+    id: row['Award ID'] || row.generated_internal_id,
+    title: row['Recipient Name'] || '(unknown holder)',
+    vehicleId: row['Award ID'],
+    amount: row['Award Amount'],
+    type: row['Contract Award Type'],
+    agency: [row['Awarding Agency'], row['Awarding Sub Agency']].filter(Boolean).join(' / '),
+    naics: codeOf(row['NAICS']),
+    psc: codeOf(row['PSC']),
+    start: row['Start Date'],
+    lastOrder: row['Last Date to Order'],
+    description: row['Description'],
+    url: row.generated_internal_id
+      ? `https://www.usaspending.gov/award/${encodeURIComponent(row.generated_internal_id)}`
+      : null,
+  }));
+  return { ok: true, source: 'vehicles', count: results.length, results, meta: { from, to } };
+}
+
+// Socioeconomic categories checked for the set-aside picture. Category names
+// are USAspending/FPDS business_categories values; small_business maps to the
+// contracting officer's size determination (FPDS) on each award.
+const SB_CATEGORIES = [
+  { key: '8a_program_participant', label: '8(a)' },
+  { key: 'historically_underutilized_business_firm', label: 'HUBZone' },
+  { key: 'women_owned_small_business', label: 'WOSB' },
+  { key: 'service_disabled_veteran_owned_business', label: 'SDVOSB' },
+];
+
+async function fetchSmallBizDirect(q, filters) {
+  const from = isoYearAgo(), to = isoToday();
+  const mkBody = (types) => ({
+    filters: { ...buildSpendFilters(q, filters), recipient_type_names: types },
+    fields: ['Award ID', 'Recipient Name', 'Recipient UEI', 'Award Amount', 'NAICS'],
+    page: 1,
+    limit: 100,
+    order: 'desc',
+    sort: 'Award Amount',
+  });
+
+  const [smallData, ...catData] = await Promise.all([
+    postSpendQuery(mkBody(['small_business'])),
+    ...SB_CATEGORIES.map(c => postSpendQuery(mkBody([c.key])).catch(() => null)),
+  ]);
+
+  // Distinct small-business vendors, aggregated across their awards.
+  const byVendor = new Map();
+  for (const row of (smallData.results || [])) {
+    const key = row['Recipient UEI'] || (row['Recipient Name'] || '').toUpperCase();
+    if (!key) continue;
+    const v = byVendor.get(key) || { name: row['Recipient Name'], uei: row['Recipient UEI'], total: 0, awards: 0, naics: new Set() };
+    v.total += Number(row['Award Amount']) || 0;
+    v.awards += 1;
+    const n = codeOf(row['NAICS']);
+    if (n) v.naics.add(n);
+    byVendor.set(key, v);
+  }
+  const vendors = [...byVendor.values()]
+    .sort((a, b) => b.total - a.total)
+    .map(v => ({ name: v.name, uei: v.uei, total: v.total, awards: v.awards, naics: [...v.naics].join(', ') }));
+
+  const catCounts = {};
+  SB_CATEGORIES.forEach((c, i) => {
+    const d = catData[i];
+    if (!d) { catCounts[c.label] = null; return; }
+    const names = new Set((d.results || []).map(r => r['Recipient UEI'] || (r['Recipient Name'] || '').toUpperCase()).filter(Boolean));
+    catCounts[c.label] = names.size;
+  });
+
+  return {
+    ok: true,
+    source: 'small-biz',
+    count: vendors.length,
+    results: vendors,
+    meta: { from, to, distinctSmall: vendors.length, catCounts, ruleOfTwo: vendors.length >= 2 },
+  };
+}
+
+// NAICS/PSC come back as strings on some deployments and {code, description}
+// objects on others; take the code either way.
+function codeOf(v) {
+  if (v == null) return null;
+  if (typeof v === 'object') return v.code || v.toString();
+  return v;
+}
+
+function normalizeSpendRow(row) {
+  return {
+    id: row['Award ID'] || row.generated_internal_id,
+    gid: row.generated_internal_id,
+    title: row['Recipient Name'] || '(unknown recipient)',
+    uei: row['Recipient UEI'],
+    amount: row['Award Amount'],
+    agency: [row['Awarding Agency'], row['Awarding Sub Agency']].filter(Boolean).join(' / '),
+    naics: codeOf(row['NAICS']) || codeOf(row['NAICS Code']),
+    psc: codeOf(row['PSC']) || codeOf(row['PSC Code']),
+    start: row['Start Date'] || row['Period of Performance Start Date'],
+    end: row['End Date'] || row['Period of Performance Current End Date'],
+    description: row['Description'],
+    url: row.generated_internal_id
+      ? `https://www.usaspending.gov/award/${encodeURIComponent(row.generated_internal_id)}`
+      : null,
+  };
+}
+
+// ===== NAICS / SBA size standard enrichment =====
+let sizeStandardsPromise = null;
+function getSizeStandards() {
+  if (!sizeStandardsPromise) {
+    sizeStandardsPromise = (async () => {
+      // Try the SBA API directly from the browser first, then the worker proxy.
+      try {
+        const r = await fetch('https://api.sba.gov/naics/naics.json');
+        if (r.ok) {
+          const raw = await r.json();
+          const map = normalizeSbaMap(raw);
+          if (map) return map;
+        }
+      } catch (e) { /* CORS or network — fall through */ }
+      try {
+        const r = await fetch(PROXY_BASE.replace(/\/$/, '') + '/reference/size-standards');
+        const data = await r.json();
+        if (data.ok && data.map) return data.map;
+      } catch (e) { /* unavailable */ }
+      return null;
+    })();
+  }
+  return sizeStandardsPromise;
+}
+
+function normalizeSbaMap(raw) {
+  const list = Array.isArray(raw) ? raw : (raw.naics || raw.data || raw.results || raw.items || []);
+  const map = {};
+  for (const e of list) {
+    const code = String(e.code ?? e.naicsCode ?? e.naics_code ?? e.id ?? '').trim();
+    if (!/^\d{6}$/.test(code)) continue;
+    map[code] = {
+      title: e.title ?? e.description ?? e.industryTitle ?? e.industry_title ?? null,
+      receiptsMillions: e.revenueLimit ?? e.revenue_limit ?? e.receiptsLimit ?? e.receipts_limit ?? null,
+      employees: e.employeeCountLimit ?? e.employee_count_limit ?? e.employeeLimit ?? e.employees ?? null,
+    };
+  }
+  return Object.keys(map).length ? map : null;
+}
+
+function sizeStandardText(std) {
+  if (!std) return null;
+  if (std.receiptsMillions) return `$${std.receiptsMillions} million average annual receipts`;
+  if (std.employees) return `${std.employees} employees`;
+  return null;
+}
+
+// Most frequent code (ties broken by dollars) across spend results.
+function dominantCode(rows, field) {
+  const tally = new Map();
+  for (const r of rows || []) {
+    const c = r[field];
+    if (!c) continue;
+    const t = tally.get(c) || { n: 0, amt: 0 };
+    t.n += 1;
+    t.amt += Number(r.amount) || 0;
+    tally.set(c, t);
+  }
+  let best = null;
+  for (const [code, t] of tally) {
+    if (!best || t.n > best.n || (t.n === best.n && t.amt > best.amt)) best = { code, ...t };
+  }
+  return best ? best.code : null;
+}
+
+// FPDS commercial item acquisition procedures codes: A = commercial item,
+// B/C = supplies or services acquired under FAR 12.102(f)/(g); D = not used.
+function isCommercialCode(code, desc) {
+  if (code && ['A', 'B', 'C'].includes(String(code).toUpperCase())) return true;
+  if (desc && /COMMERCIAL/i.test(desc) && !/NOT USED/i.test(desc)) return true;
+  return false;
+}
+
+async function fetchCommercialSignal(spendRows) {
+  const gids = spendRows.map(r => r.gid).filter(Boolean).slice(0, 8);
+  if (!gids.length) return null;
+  const details = (await Promise.all(gids.map(async gid => {
+    try {
+      const r = await fetch('https://api.usaspending.gov/api/v2/awards/' + encodeURIComponent(gid) + '/');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (e) { return null; }
+  }))).filter(Boolean);
+  if (!details.length) return null;
+  let commercial = 0, offersSum = 0, offersN = 0, setAside = 0;
+  for (const d of details) {
+    const t = d.latest_transaction_contract_data || {};
+    if (isCommercialCode(t.commercial_item_acquisition, t.commercial_item_acquisition_description)) commercial++;
+    const offers = parseInt(t.number_of_offers_received, 10);
+    if (isFinite(offers)) { offersSum += offers; offersN++; }
+    if (t.type_set_aside && !/^(NONE|NO SET ASIDE)/i.test(t.type_set_aside_description || t.type_set_aside)) setAside++;
+  }
+  return {
+    sampled: details.length,
+    commercial,
+    pct: Math.round((commercial / details.length) * 100),
+    avgOffers: offersN ? (offersSum / offersN).toFixed(1) : null,
+    setAside,
+  };
+}
+
+function commercialStatement(cs) {
+  if (!cs) return 'Commercial availability: could not be determined from award-level FPDS data during this search; assess directly (product literature, GSA Advantage, sources sought).';
+  let read;
+  if (cs.pct >= 60) read = 'a strong commercial availability signal';
+  else if (cs.pct >= 25) read = 'a mixed commercial availability signal';
+  else read = 'a weak commercial availability signal; the requirement may not be routinely bought commercially';
+  return `Commercial availability: ${cs.commercial} of ${cs.sampled} sampled recent awards (${cs.pct}%) were acquired using commercial item procedures per FPDS, ${read}.`
+    + (cs.avgOffers ? ` Sampled awards averaged ${cs.avgOffers} offers received.` : '')
+    + (cs.setAside ? ` ${cs.setAside} of ${cs.sampled} sampled awards used a small business set-aside.` : '');
+}
+
+async function buildSummary() {
+  const box = document.getElementById('mrSummary');
+  if (!box) return;
+  const spend = state.bySource['usaspending'];
+  const spendRows = (spend && spend.ok && spend.results) || [];
+  const naics = state.filters.naics || dominantCode(spendRows, 'naics');
+  const psc = state.filters.psc || dominantCode(spendRows, 'psc');
+
+  let sizeLine = null, naicsTitle = null, commercial = null;
+  const [mapResult, csResult] = await Promise.allSettled([
+    naics ? getSizeStandards() : Promise.resolve(null),
+    spendRows.length ? fetchCommercialSignal(spendRows) : Promise.resolve(null),
+  ]);
+  if (naics && mapResult.status === 'fulfilled' && mapResult.value) {
+    const std = mapResult.value[naics];
+    naicsTitle = std && std.title;
+    sizeLine = sizeStandardText(std);
+  }
+  if (csResult.status === 'fulfilled') commercial = csResult.value;
+  state.enrichment = { naics, psc, naicsTitle, sizeStandard: sizeLine, commercial };
+
+  const bits = [];
+  if (naics) {
+    bits.push(`Applicable NAICS: <strong>${escapeHtml(naics)}</strong>${naicsTitle ? ' — ' + escapeHtml(naicsTitle) : ''}${state.filters.naics ? '' : ' (most frequent across matching awards)'}`);
+    bits.push(sizeLine
+      ? `SBA size standard: <strong>${escapeHtml(sizeLine)}</strong> (13 CFR 121.201; FAR 19.102)`
+      : `SBA size standard: lookup unavailable — check <a href="https://www.sba.gov/size-standards/" target="_blank" rel="noopener" style="color:var(--accent);">sba.gov/size-standards</a>`);
+  } else {
+    bits.push(`Applicable NAICS: none identified from awards — set one in Advanced filters to pull the SBA size standard`);
+  }
+  if (psc) bits.push(`Dominant PSC: <strong>${escapeHtml(psc)}</strong>${state.filters.psc ? '' : ' (most frequent across matching awards)'}`);
+  if (spendRows.length) bits.push(escapeHtml(commercialStatement(commercial)));
+
+  box.innerHTML = `
+    <div style="background:rgba(10,22,50,0.55);border:1px solid rgba(74,158,255,0.25);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:1rem 1.2rem;margin-bottom:1.2rem;">
+      <div style="font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;font-size:.78rem;color:var(--accent);margin-bottom:.5rem;">Codes, Size Standard &amp; Commercial Signal</div>
+      ${bits.map(b => `<div class="ri-meta" style="font-size:.85rem;padding:.15rem 0;">${b}</div>`).join('')}
+    </div>`;
+}
+
 // ===== Rendering =====
 function renderSectionSkeletons() {
-  els.results.innerHTML = '<div class="results-grid" id="resultsGrid"></div>';
+  els.results.innerHTML = '<div id="mrSummary"></div><div class="results-grid" id="resultsGrid"></div>';
   const grid = document.getElementById('resultsGrid');
   for (const source of SOURCES) {
     const sec = document.createElement('div');
@@ -594,7 +974,7 @@ function renderSection(source, data) {
     }
     return;
   }
-  if (!data.results || data.results.length === 0) {
+  if ((!data.results || data.results.length === 0) && !source.alwaysRender) {
     sec.innerHTML = head + `<div class="section-status muted">No matches.</div>`;
     return;
   }
@@ -669,6 +1049,38 @@ function renderSpend(rows, meta) {
       ${r.description ? `<div class="ri-snippet">${escapeHtml(truncate(r.description, 220))}</div>` : ''}
     </li>`));
 }
+function renderSmallBiz(rows, meta) {
+  const cats = Object.entries(meta.catCounts || {})
+    .map(([label, n]) => `${escapeHtml(label)}: <strong>${n == null ? '?' : n}</strong>`)
+    .join(' · ');
+  let verdict, color;
+  if (meta.distinctSmall >= 2) {
+    verdict = `RULE OF TWO SIGNAL: POSITIVE. ${meta.distinctSmall} distinct small business concerns received contract awards matching this search in the last 12 months (size per the contracting officer's determination reported in FPDS). This supports a reasonable expectation of offers from two or more responsible small businesses under FAR 19.104-1. Verify current size status and capability before relying on it.`;
+    color = '#86efac';
+  } else if (meta.distinctSmall === 1) {
+    verdict = `RULE OF TWO SIGNAL: WEAK. Only 1 small business received a matching award in the last 12 months. A total small business set-aside under FAR 19.104-1 needs a reasonable expectation of two or more responsible small business offerors; look at sources-sought responses or broaden the search before concluding either way.`;
+    color = '#fbbf24';
+  } else {
+    verdict = `RULE OF TWO SIGNAL: NO RECENT SMALL BUSINESS AWARDS FOUND. Zero small businesses received matching awards in the last 12 months. That is evidence, not proof; supplement with a sources-sought notice or SBA Dynamic Small Business Search before ruling out a set-aside.`;
+    color = '#fca5a5';
+  }
+  const head = `
+    <div class="ri-meta" style="padding:.4rem .6rem;margin-bottom:.8rem;border-left:3px solid ${color};background:rgba(255,255,255,0.02);">
+      <span style="color:${color};font-weight:700;">${escapeHtml(verdict)}</span>
+    </div>
+    <div class="ri-meta" style="padding-bottom:.8rem;">Distinct firms with matching awards by socioeconomic category (last 12 months): ${cats}</div>`;
+  if (!rows.length) return head;
+  return head + ulOf(rows.slice(0, 10).map(r => `
+    <li class="result-item">
+      <span class="ri-title">${escapeHtml(r.name || '(unnamed)')}</span>
+      <div class="ri-meta">
+        <span class="ri-amount">${fmtCurrency(r.total)}</span> across ${r.awards} award${r.awards === 1 ? '' : 's'}
+        ${r.uei ? ` · UEI <strong>${escapeHtml(r.uei)}</strong>` : ''}
+        ${r.naics ? ` · NAICS ${escapeHtml(r.naics)}` : ''}
+      </div>
+    </li>`));
+}
+
 function renderOpps(rows) {
   return ulOf(rows.slice(0, 12).map(r => `
     <li class="result-item">
@@ -686,6 +1098,22 @@ function renderOpps(rows) {
       </div>
     </li>`));
 }
+function renderVehicles(rows) {
+  const intro = `<div class="ri-meta" style="padding:.3rem 0 .8rem;">Indefinite-delivery vehicles awarded in the last 12 months that match this search. An existing vehicle in scope may mean a task/delivery order beats a new contract.</div>`;
+  return intro + ulOf(rows.slice(0, 10).map(r => `
+    <li class="result-item">
+      <span class="ri-title">${linkOrText(r.url, (r.vehicleId ? r.vehicleId + ' — ' : '') + (r.title || '(unknown holder)'))}</span>
+      <div class="ri-meta">
+        ${escapeHtml(r.type || 'IDV')} ·
+        <span class="ri-amount">${fmtCurrency(r.amount)}</span> ·
+        ${escapeHtml(r.agency || '—')}
+        ${r.naics ? ` · NAICS ${escapeHtml(r.naics)}` : ''}
+        ${r.lastOrder ? ` · last date to order ${escapeHtml(r.lastOrder)}` : ''}
+      </div>
+      ${r.description ? `<div class="ri-snippet">${escapeHtml(truncate(r.description, 180))}</div>` : ''}
+    </li>`));
+}
+
 function renderRegulations(rows) {
   return ulOf(rows.slice(0, 6).map(r => `
     <li class="result-item">
@@ -753,17 +1181,34 @@ async function generateMemo() {
     sectionNum++;
   }
 
+  const enr = state.enrichment || {};
+  if (enr.naics || enr.psc) {
+    children.push(heading(`${sectionNum}. Applicable Codes and SBA Size Standard`, HeadingLevel.HEADING_2));
+    if (enr.naics) {
+      children.push(body(`NAICS: ${enr.naics}${enr.naicsTitle ? ' — ' + enr.naicsTitle : ''}${state.filters.naics ? ' (specified by requester)' : ' (most frequent code across matching awards)'}`));
+      children.push(body(enr.sizeStandard
+        ? `SBA size standard for NAICS ${enr.naics}: ${enr.sizeStandard} (13 CFR 121.201; FAR 19.102).`
+        : `SBA size standard: not retrieved during this search; verify at sba.gov/size-standards before finalizing.`));
+    }
+    if (enr.psc) children.push(body(`PSC: ${enr.psc}${state.filters.psc ? ' (specified by requester)' : ' (most frequent code across matching awards)'}`));
+    children.push(blank());
+    sectionNum++;
+  }
+
   for (const source of SOURCES) {
     const data = state.bySource[source.key];
-    if (!data || !data.ok || !data.results || !data.results.length) continue;
+    if (!data || !data.ok) continue;
+    if ((!data.results || !data.results.length) && !source.alwaysRender) continue;
     children.push(heading(`${sectionNum}. ${source.title} (${source.sourceLabel})`, HeadingLevel.HEADING_2));
-    for (const item of memoLinesFor(source, data.results)) children.push(body(item));
+    for (const item of memoLinesFor(source, data.results, data.meta || {})) children.push(body(item));
     children.push(blank());
     sectionNum++;
   }
 
   children.push(heading(`${sectionNum}. Determination`, HeadingLevel.HEADING_2));
-  children.push(body('[Contracting Officer: summarize what the data shows about availability of sources, price reasonableness reference points, set-aside potential, and any flags from the sanctions/exclusions check.]'));
+  for (const para of determinationParagraphs()) children.push(body(para));
+  children.push(blank());
+  children.push(body('[Contracting Officer: the paragraphs above are drafted from the data returned by this search. Review each statement, adjust for requirement-specific knowledge, and delete anything the record does not support before signing.]'));
   children.push(blank());
 
   children.push(heading(`${sectionNum + 1}. Sources Consulted`, HeadingLevel.HEADING_2));
@@ -772,9 +1217,15 @@ async function generateMemo() {
     if (!data) continue;
     const status = data.ok
       ? `${data.count} record${data.count === 1 ? '' : 's'}`
-      : `unavailable (${data.error || 'error'})`;
-    children.push(body(`• ${source.sourceLabel} — ${status}`));
+      : (data.disabled ? 'not configured' : `unavailable (${data.error || 'error'})`);
+    children.push(body(`• ${source.sourceLabel} (${source.title}) — ${status}`));
   }
+  children.push(blank());
+  children.push(body(`Market research conducted per FAR Part 10 on ${state.searchedAt.toLocaleDateString()}.`));
+  children.push(blank());
+  children.push(body('Prepared by: ____________________________          Date: ______________'));
+  children.push(blank());
+  children.push(body('Contracting Officer: _____________________          Date: ______________'));
 
   const doc = new Document({ sections: [{ children }] });
   const blob = await Packer.toBlob(doc);
@@ -792,7 +1243,69 @@ function filterSummaryLines(f) {
   return out;
 }
 
-function memoLinesFor(source, rows) {
+function determinationParagraphs() {
+  const paras = [];
+  const enr = state.enrichment || {};
+
+  // Spend history summary.
+  const spend = state.bySource['usaspending'];
+  if (spend && spend.ok && spend.results && spend.results.length) {
+    const rows = spend.results;
+    const total = rows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+    const agencies = [...new Set(rows.map(r => (r.agency || '').split(' / ')[0]).filter(Boolean))];
+    const recipients = new Set(rows.map(r => r.uei || r.title).filter(Boolean));
+    paras.push(`Government purchase history: ${rows.length} contract award${rows.length === 1 ? '' : 's'} matching this requirement were identified in USAspending for the prior 12 months, with a combined value of ${fmtCurrency(total)}, awarded to ${recipients.size} distinct recipient${recipients.size === 1 ? '' : 's'} by ${agencies.length} agenc${agencies.length === 1 ? 'y' : 'ies'}${agencies.length ? ' (' + agencies.slice(0, 4).join('; ') + (agencies.length > 4 ? '; others' : '') + ')' : ''}. The Government buys this requirement; recent prices are available as price reasonableness reference points.`);
+  } else {
+    paras.push(`Government purchase history: no matching contract awards were identified in USAspending for the prior 12 months. Either the requirement is new to the Government, or the search term does not match how past awards were described; consider alternate terms before concluding there is no purchase history.`);
+  }
+
+  // Rule of two.
+  const sb = state.bySource['small-biz'];
+  if (sb && sb.ok) paras.push(ruleOfTwoStatement(sb.meta || {}));
+
+  // Commercial availability.
+  if (spend && spend.ok && spend.results && spend.results.length) {
+    paras.push(commercialStatement(enr.commercial));
+  }
+
+  // Existing vehicles.
+  const veh = state.bySource['vehicles'];
+  if (veh && veh.ok) {
+    paras.push(veh.results && veh.results.length
+      ? `Existing vehicles: ${veh.results.length} indefinite-delivery vehicle${veh.results.length === 1 ? ' (IDIQ/GWAC/BPA) matching this search was' : 's (IDIQ/GWAC/BPA) matching this search were'} awarded in the prior 12 months. Before starting a new contract action, check whether an existing vehicle is in scope and available for ordering.`
+      : `Existing vehicles: no matching indefinite-delivery vehicles were identified in the prior 12 months.`);
+  }
+
+  // Exclusions.
+  const excl = state.bySource['sam-exclusions'];
+  if (excl && excl.ok) {
+    paras.push(excl.count === 0
+      ? `Exclusions: the SAM.gov exclusions check returned no matches for this search term (FAR 9.404). Exclusion status must be re-verified against the apparent awardee by name and UEI at time of award.`
+      : `Exclusions: the SAM.gov exclusions check returned ${excl.count} record${excl.count === 1 ? '' : 's'} matching this search term. Review each match; do not award to an excluded entity (FAR 9.404).`);
+  }
+
+  return paras;
+}
+
+function ruleOfTwoStatement(meta) {
+  const n = meta.distinctSmall || 0;
+  if (n >= 2) {
+    return `Rule of two: Market research identified ${n} distinct small business concerns that received contract awards matching this requirement in the last 12 months (business size per the contracting officer's determination reported in FPDS). Based on this data there is a reasonable expectation of receiving offers from two or more responsible small business concerns (FAR 19.104-1). Socioeconomic breakout (distinct firms): ${Object.entries(meta.catCounts || {}).map(([l, c]) => `${l}: ${c == null ? 'not checked' : c}`).join('; ')}.`;
+  }
+  if (n === 1) {
+    return `Rule of two: Only one small business concern received a matching contract award in the last 12 months. Recent award data alone does not support a reasonable expectation of two or more responsible small business offerors (FAR 19.104-1); additional market research (e.g., a sources-sought notice, SBA Dynamic Small Business Search) is recommended before a set-aside decision.`;
+  }
+  return `Rule of two: No small business concerns were identified among matching contract awards in the last 12 months. This data does not support a reasonable expectation of two or more responsible small business offerors (FAR 19.104-1). Recent award history is one indicator; a sources-sought notice or SBA Dynamic Small Business Search should be used to confirm before ruling out a set-aside.`;
+}
+
+function memoLinesFor(source, rows, meta) {
+  if (source.key === 'small-biz') {
+    const lines = [ruleOfTwoStatement(meta || {})];
+    for (const r of rows.slice(0, 10)) {
+      lines.push(`${r.name || '(unnamed)'} — ${fmtCurrency(r.total)} across ${r.awards} award${r.awards === 1 ? '' : 's'}${r.uei ? ', UEI ' + r.uei : ''}${r.naics ? ', NAICS ' + r.naics : ''}.`);
+    }
+    return lines;
+  }
   const limit = source.fullWidth ? 10 : 5;
   return rows.slice(0, limit).map(r => {
     switch (source.key) {
@@ -806,6 +1319,8 @@ function memoLinesFor(source, rows) {
         return `${r.name || '(unnamed)'} — ${r.exclusionType || r.classificationType || 'excluded'}; excluded by ${r.excludingAgency || '—'}; active ${r.activationDate || '—'}${r.terminationDate ? ' to ' + r.terminationDate : ''}. ${r.address || ''}`;
       case 'usaspending':
         return `${r.title || '(unnamed)'} — ${fmtCurrency(r.amount)} from ${r.agency || '—'} (${r.start || '?'} → ${r.end || '?'}). ${truncate(r.description || '', 200)}`;
+      case 'vehicles':
+        return `${r.vehicleId || '(no ID)'} held by ${r.title || '(unknown)'} — ${r.type || 'IDV'}, ${fmtCurrency(r.amount)}, ${r.agency || '—'}${r.lastOrder ? ', last date to order ' + r.lastOrder : ''}. ${truncate(r.description || '', 160)}`;
       case 'sam-opps':
         return `${r.title || '(untitled)'} — ${r.type || '—'}, Sol# ${r.solicitationNumber || '—'}, ${r.department || '—'}; posted ${r.postedDate || '—'}${r.responseDeadline ? ', response by ' + r.responseDeadline : ''}.`;
       case 'federal-register':
