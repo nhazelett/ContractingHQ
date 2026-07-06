@@ -440,6 +440,7 @@ const SOURCES = [
   { key: 'sam-exclusions', route: '/entity/sanctions', title: 'Federal Exclusions / Debarment', sourceLabel: 'SAM.gov', paramKeys: ['q'], render: renderSanctions, flagWhenResults: true, note: 'Public information per FAR 9.404 \u2014 same data as <a href="https:\/\/sam.gov\/exclusions-new\/" target="_blank" rel="noopener" style="color:var(--accent);">sam.gov\/exclusions-new<\/a>.' },
   { key: 'usaspending', route: '/search/spend', title: 'Federal Spend History', sourceLabel: 'USAspending.gov', paramKeys: ['q', 'naics', 'psc', 'agency', 'min', 'max'], render: renderSpend, fullWidth: true, direct: fetchSpendDirect },
   { key: 'small-biz', route: null, title: 'Small Business Landscape — Rule of Two', sourceLabel: 'USAspending.gov (FPDS)', paramKeys: [], render: renderSmallBiz, fullWidth: true, direct: fetchSmallBizDirect, alwaysRender: true },
+  { key: 'sole-source', route: null, title: 'Sole Source Candidates (8(a) / WOSB)', sourceLabel: 'SAM.gov', paramKeys: [], render: renderSoleSource, fullWidth: true, direct: fetchSoleSourceDirect, alwaysRender: true, deferred: true },
   { key: 'sam-opps', route: '/search/opps', title: 'Active Opportunities', sourceLabel: 'SAM.gov', paramKeys: ['q', 'naics', 'psc', 'agency'], render: renderOpps, fullWidth: true },
   { key: 'vehicles', route: null, title: 'Existing Vehicles (IDIQs / GWACs / BPAs)', sourceLabel: 'USAspending.gov', paramKeys: [], render: renderVehicles, fullWidth: true, direct: fetchVehiclesDirect },
   { key: 'federal-register', route: '/search/regulations', title: 'Regulations & Notices', sourceLabel: 'Federal Register', paramKeys: ['q'], render: renderRegulations, direct: fetchRegulationsDirect },
@@ -493,8 +494,16 @@ async function runSearch() {
 
   renderSectionSkeletons();
 
-  const promises = SOURCES.map(s => fetchSource(s, q, filters));
+  // First pass: everything that can run on the raw keyword/filters.
+  const promises = SOURCES.filter(s => !s.deferred).map(s => fetchSource(s, q, filters));
   await Promise.allSettled(promises);
+
+  // Second pass: sources that need the resolved NAICS (user filter, or the
+  // dominant code across the spend results that just arrived).
+  const spendData = state.bySource['usaspending'];
+  state.resolvedNaics = filters.naics ||
+    dominantCode((spendData && spendData.ok && spendData.results) || [], 'naics');
+  await Promise.allSettled(SOURCES.filter(s => s.deferred).map(s => fetchSource(s, q, filters)));
 
   await buildSummary();
 
@@ -674,6 +683,51 @@ async function fetchVehiclesDirect(q, filters) {
       : null,
   }));
   return { ok: true, source: 'vehicles', count: results.length, results, meta: { from, to } };
+}
+
+// Sole source candidate scouting — currently certified 8(a) and WOSB firms
+// registered in SAM with the requirement's NAICS as their primary NAICS.
+// Runs in the second pass (needs state.resolvedNaics). Worker-only (SAM key).
+const SOLE_SOURCE_TYPES = ['8a', 'wosb'];
+
+async function fetchSoleSourceDirect() {
+  const naics = state.resolvedNaics;
+  if (!naics) {
+    return { ok: true, source: 'sole-source', count: 0, results: [], meta: { noNaics: true } };
+  }
+  const base = PROXY_BASE.replace(/\/$/, '') + '/entity/certified';
+  const settled = await Promise.all(SOLE_SOURCE_TYPES.map(async type => {
+    try {
+      const r = await fetch(`${base}?type=${type}&naics=${encodeURIComponent(naics)}`);
+      return await r.json();
+    } catch (e) {
+      return { ok: false, error: e.message };
+    }
+  }));
+  const results = [];
+  const totals = {};
+  let anyOk = false, disabledMsg = null, errMsg = null;
+  settled.forEach((d, i) => {
+    const label = i === 0 ? '8(a)' : 'WOSB';
+    if (d && d.ok) {
+      anyOk = true;
+      totals[label] = d.meta && d.meta.totalRecords != null ? d.meta.totalRecords : (d.results || []).length;
+      for (const r of (d.results || [])) results.push(r);
+    } else if (d && d.disabled) {
+      disabledMsg = d.error;
+      totals[label] = null;
+    } else {
+      errMsg = (d && d.error) || 'unavailable';
+      totals[label] = null;
+    }
+  });
+  if (!anyOk && disabledMsg) return { ok: false, disabled: true, source: 'sole-source', error: disabledMsg };
+  if (!anyOk) {
+    throw new Error(/Unknown route/i.test(errMsg || '')
+      ? 'Worker update not deployed yet — redeploy market-research-worker (see its README)'
+      : errMsg);
+  }
+  return { ok: true, source: 'sole-source', count: results.length, results, meta: { naics, totals } };
 }
 
 // Socioeconomic categories checked for the set-aside picture. Category names
@@ -1081,6 +1135,32 @@ function renderSmallBiz(rows, meta) {
     </li>`));
 }
 
+function renderSoleSource(rows, meta) {
+  if (meta.noNaics) {
+    return `<div class="section-status muted">No NAICS resolved from this search. Set a NAICS in Advanced filters (or search a term with award history) to scout certified 8(a) and WOSB firms for potential sole source.</div>`;
+  }
+  const totals = Object.entries(meta.totals || {})
+    .map(([label, n]) => `${escapeHtml(label)}: <strong>${n == null ? '?' : n}</strong>`)
+    .join(' · ');
+  const intro = `
+    <div class="ri-meta" style="padding:.3rem 0 .5rem;">
+      Firms registered in SAM with primary NAICS <strong>${escapeHtml(meta.naics)}</strong> holding the certification — ${totals}.
+      8(a) status is SBA-fed with program entry/exit dates; a sole source still requires current eligibility, program dollar limits, and (for 8(a)) an SBA offering letter (13 CFR 124; 13 CFR 127).
+    </div>`;
+  if (!rows.length) return intro + `<div class="section-status muted">No certified firms found under this NAICS. Try a related NAICS, or check SBA Dynamic Small Business Search.</div>`;
+  return intro + ulOf(rows.slice(0, 12).map(r => `
+    <li class="result-item">
+      <span class="ri-title">${escapeHtml(r.name || '(unnamed)')} <span style="color:var(--accent);font-size:.78rem;font-weight:700;">[${escapeHtml(r.certType)}]</span></span>
+      <div class="ri-meta">
+        UEI <strong>${escapeHtml(r.uei || '—')}</strong>
+        ${r.cage ? ` · CAGE <strong>${escapeHtml(r.cage)}</strong>` : ''}
+        ${r.address ? ` · ${escapeHtml(r.address)}` : ''}
+        ${r.certEntry ? ` · certified ${escapeHtml(r.certEntry)}` : ''}
+        ${r.certExit ? ` → exits ${escapeHtml(r.certExit)}` : ''}
+      </div>
+    </li>`));
+}
+
 function renderOpps(rows) {
   return ulOf(rows.slice(0, 12).map(r => `
     <li class="result-item">
@@ -1299,6 +1379,17 @@ function ruleOfTwoStatement(meta) {
 }
 
 function memoLinesFor(source, rows, meta) {
+  if (source.key === 'sole-source') {
+    if (meta && meta.noNaics) {
+      return ['Certified-firm scouting was not run: no NAICS was resolved from this search. Re-run with a NAICS filter to identify 8(a) and WOSB sole source candidates.'];
+    }
+    const totals = Object.entries((meta && meta.totals) || {}).map(([l, n]) => `${l}: ${n == null ? 'not checked' : n}`).join('; ');
+    const lines = [`Certified firms registered in SAM with primary NAICS ${meta.naics} (${totals}). Sole source use requires verification of current program eligibility and applicable dollar limits (13 CFR 124 for 8(a), 13 CFR 127 for WOSB); an 8(a) sole source additionally requires SBA acceptance of the offering.`];
+    for (const r of rows.slice(0, 12)) {
+      lines.push(`[${r.certType}] ${r.name || '(unnamed)'} — UEI ${r.uei || '—'}${r.cage ? ', CAGE ' + r.cage : ''}${r.address ? ', ' + r.address : ''}${r.certEntry ? ', certified ' + r.certEntry : ''}${r.certExit ? ' to ' + r.certExit : ''}.`);
+    }
+    return lines;
+  }
   if (source.key === 'small-biz') {
     const lines = [ruleOfTwoStatement(meta || {})];
     for (const r of rows.slice(0, 10)) {
