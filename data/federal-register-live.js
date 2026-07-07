@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-07-06T11:42:52.099Z",
-  "since": "2025-01-12",
+  "generatedAt": "2026-07-07T10:30:54.754Z",
+  "since": "2025-01-13",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -16,13 +16,13 @@ window.KTHQ_FEDREG_DATA = {
   "stats": {
     "total": 130,
     "latestPublicationDate": "2026-07-02",
-    "openCommentWindows": 26,
+    "openCommentWindows": 24,
     "rules": 53,
     "byTone": {
-      "active": 8,
+      "active": 7,
       "monitor": 74,
       "action": 30,
-      "watch": 18
+      "watch": 19
     }
   },
   "items": [
@@ -942,9 +942,9 @@ window.KTHQ_FEDREG_DATA = {
       "system": "DFARS",
       "stage": "Proposed rule",
       "topic": "Acquisition policy",
-      "actionLevel": "Comment window",
-      "actionTone": "active",
-      "practitionerNote": "This is not binding yet, but the comment period is open. Read it if the topic touches your office and consider whether your organization should comment.",
+      "actionLevel": "Review",
+      "actionTone": "watch",
+      "practitionerNote": "This is proposed rulemaking, not a current requirement. Keep it on your radar for the final rule.",
       "nextSteps": [
         "Check the comment due date",
         "Skim the affected FAR/DFARS parts",
