@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One Acquisition, Start to Finish | KTHQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B1120;
+  --ink-2:#111A2E;
+  --amber:#FFB627;
+  --amber-dim:#B57F16;
+  --white:#F4F6FB;
+  --steel:#8A97AD;
+  --steel-dim:#414E66;
+  --display:'Barlow Condensed','Arial Narrow',Impact,sans-serif;
+  --mono:'IBM Plex Mono','Courier New',monospace;
+  --body:'Inter',-apple-system,'Segoe UI',Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--ink);
+  color:var(--white);
+  font-family:var(--body);
+  overflow:hidden;
+  cursor:pointer;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;
+  background-image:linear-gradient(var(--steel) 1px,transparent 1px),linear-gradient(90deg,var(--steel) 1px,transparent 1px);
+  background-size:56px 56px;
+}
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+.scene{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:6vmin;visibility:hidden;opacity:0;
+}
+.scene.active{visibility:visible;opacity:1}
+
+/* ---------- start gate ---------- */
+#gate{
+  position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  background:var(--ink);padding:6vmin;
+}
+#gate .eyebrow{margin-bottom:3vmin}
+#gate .mega{margin-bottom:4.5vmin}
+#startBtn{
+  font-family:var(--mono);font-size:clamp(13px,2.1vmin,18px);
+  letter-spacing:.28em;text-transform:uppercase;color:var(--ink);
+  background:var(--amber);border:none;padding:2vmin 4.4vmin;cursor:pointer;
+  animation:breathe 2.4s ease-in-out infinite;
+}
+#startBtn:hover{background:var(--white)}
+#startBtn:focus-visible{outline:3px solid var(--white);outline-offset:3px}
+@keyframes breathe{0%,100%{box-shadow:0 0 0 rgba(255,182,39,0)}50%{box-shadow:0 0 40px rgba(255,182,39,.35)}}
+#gate .gate-sub{
+  margin-top:3vmin;font-family:var(--mono);font-size:clamp(10px,1.6vmin,13px);
+  letter-spacing:.22em;text-transform:uppercase;color:var(--steel-dim);
+}
+#gate.hidden{display:none}
+
+/* ---------- shared type roles ---------- */
+.eyebrow{
+  font-family:var(--mono);font-size:clamp(11px,1.6vmin,14px);
+  letter-spacing:.32em;color:var(--amber);text-transform:uppercase;
+  margin-bottom:2.4vmin;
+}
+.mega{
+  font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(42px,11vmin,140px);line-height:.95;letter-spacing:.01em;
+}
+.big{
+  font-family:var(--display);font-weight:700;text-transform:uppercase;
+  font-size:clamp(28px,6.8vmin,84px);line-height:1;
+}
+.mid{
+  font-family:var(--display);font-weight:700;text-transform:uppercase;
+  font-size:clamp(22px,4.6vmin,56px);line-height:1.05;
+}
+.line{
+  font-family:var(--body);font-weight:500;
+  font-size:clamp(16px,2.8vmin,28px);color:var(--steel);
+  max-width:38ch;line-height:1.45;
+}
+.line strong{color:var(--white);font-weight:600}
+.amber{color:var(--amber)}
+
+/* the CO's voice — comms chatter */
+.co{
+  font-family:var(--mono);font-size:clamp(13px,2.2vmin,19px);
+  color:var(--amber);letter-spacing:.04em;line-height:1.6;
+  max-width:52ch;
+}
+.co::before{content:"> ";opacity:.7}
+.co + .co{margin-top:1.2vmin}
+
+/* ---------- entrance animations ---------- */
+.anim{opacity:0}
+.play .anim{animation-fill-mode:both;animation-play-state:running}
+.play .rise{animation-name:rise;animation-duration:.7s;animation-timing-function:cubic-bezier(.2,.9,.25,1)}
+.play .slam{animation-name:slam;animation-duration:.5s;animation-timing-function:cubic-bezier(.15,1.2,.3,1)}
+.play .fadein{animation-name:fadein;animation-duration:.8s;animation-timing-function:ease}
+@keyframes rise{from{opacity:0;transform:translateY(4.5vmin)}to{opacity:1;transform:none}}
+@keyframes slam{from{opacity:0;transform:scale(2.4)}60%{opacity:1;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+
+/* ---------- chaos ---------- */
+#chaosField{position:absolute;inset:0}
+.chaos-word{
+  position:absolute;font-family:var(--display);font-weight:700;text-transform:uppercase;
+  color:var(--steel);white-space:nowrap;opacity:0;
+  animation:chaosIn .4s ease both,jitter .28s steps(2) infinite alternate,flicker 1.7s ease-in-out infinite;
+}
+@keyframes chaosIn{from{opacity:0;transform:scale(.6)}to{opacity:var(--o,.75);transform:scale(1)}}
+@keyframes jitter{from{translate:calc(var(--jx,3px)*-1) calc(var(--jy,2px)*-1)}to{translate:var(--jx,3px) var(--jy,2px)}}
+@keyframes flicker{0%,100%{filter:brightness(1)}50%{filter:brightness(1.6)}}
+.chaos-caption{
+  position:relative;z-index:2;font-family:var(--mono);
+  font-size:clamp(13px,2.2vmin,20px);letter-spacing:.22em;text-transform:uppercase;
+  color:var(--white);background:var(--ink);padding:1.2vmin 2.4vmin;
+  border:1px solid var(--steel-dim);
+}
+.chaos-co{position:relative;z-index:2;margin-top:2.4vmin;background:var(--ink);padding:1vmin 2vmin}
+.scatter .chaos-word{animation:scatterOut .8s ease-in both !important}
+@keyframes scatterOut{to{opacity:0;transform:scale(.4) translate(var(--sx,0),var(--sy,0));filter:blur(3px)}}
+
+/* ---------- extraction ---------- */
+.pulled{position:relative;z-index:3;text-shadow:0 0 60px rgba(255,182,39,.35)}
+.play .pull{animation:pull 1.1s cubic-bezier(.2,1.1,.3,1) both}
+@keyframes pull{
+  0%{opacity:0;transform:scale(.55) rotate(-2deg);letter-spacing:.2em;filter:blur(4px)}
+  55%{opacity:1;filter:blur(0)}
+  100%{opacity:1;transform:scale(1) rotate(0);letter-spacing:.01em}
+}
+.underline-sweep{height:.55vmin;background:var(--amber);width:0;margin:1.6vmin auto 0}
+.play .underline-sweep{animation:sweep .6s ease-out both}
+@keyframes sweep{from{width:0;opacity:1}to{width:100%;opacity:1}}
+
+/* ---------- document / PR cards ---------- */
+.doc{
+  width:min(66vmin,90vw);border:1px solid var(--steel-dim);background:var(--ink-2);
+  padding:3vmin 3.6vmin;text-align:left;
+}
+.doc-title{
+  font-family:var(--mono);font-size:clamp(10px,1.6vmin,14px);letter-spacing:.26em;
+  color:var(--amber);text-transform:uppercase;border-bottom:1px solid var(--steel-dim);
+  padding-bottom:1.3vmin;margin-bottom:1.8vmin;display:flex;justify-content:space-between;gap:2vmin;
+}
+.doc-title .right{color:var(--steel)}
+.doc-line{
+  font-family:var(--mono);font-size:clamp(12px,1.9vmin,16px);color:var(--steel);
+  padding:.8vmin 0;display:flex;justify-content:space-between;gap:2vmin;align-items:baseline;
+}
+.doc-line .fill{flex:1;border-bottom:1px dashed var(--steel-dim);transform:translateY(-.4em)}
+.doc-line.core{color:var(--white)}
+.doc-line.core .tag{color:var(--amber)}
+
+/* ---------- checklists ---------- */
+.check-stack{display:flex;flex-direction:column;gap:1.8vmin;align-items:stretch;width:min(70vmin,92vw)}
+.check{
+  display:flex;align-items:center;gap:2.2vmin;text-align:left;
+  border:1px solid var(--steel-dim);background:var(--ink-2);padding:1.6vmin 2.4vmin;
+}
+.check .box{
+  font-family:var(--mono);color:var(--amber);font-size:clamp(15px,2.6vmin,24px);
+  min-width:1.4em;text-align:center;
+}
+.check .what{
+  font-family:var(--display);font-weight:700;text-transform:uppercase;
+  font-size:clamp(17px,3.1vmin,34px);line-height:1;color:var(--white);
+}
+.check .how{
+  font-family:var(--mono);font-size:clamp(11px,1.7vmin,14px);color:var(--steel);
+  margin-top:.5vmin;letter-spacing:.03em;
+}
+
+/* ---------- boom moments ---------- */
+.boom{
+  font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(38px,9vmin,120px);line-height:.95;color:var(--amber);
+}
+.boom-frame{border:3px solid var(--amber);padding:2.4vmin 4.8vmin}
+.play .flash{animation:slam .5s cubic-bezier(.15,1.2,.3,1) both,glowPulse 1.6s ease-in-out .5s infinite}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 0 rgba(255,182,39,0)}50%{box-shadow:0 0 44px rgba(255,182,39,.28)}}
+
+/* ---------- factors / pills ---------- */
+.factor-row{display:flex;gap:2.4vmin;flex-wrap:wrap;justify-content:center}
+.factor{
+  font-family:var(--mono);font-size:clamp(12px,2.2vmin,20px);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--white);
+  border:1px solid var(--steel-dim);padding:1.4vmin 2.4vmin;background:var(--ink-2);
+}
+.factor .sub{display:block;font-size:.72em;color:var(--steel);letter-spacing:.04em;margin-top:.6vmin;text-transform:none}
+
+/* ---------- quotes ---------- */
+.quote-row{display:flex;gap:1.8vmin;flex-wrap:wrap;justify-content:center}
+.quote-card{
+  font-family:var(--mono);font-size:clamp(11px,1.8vmin,15px);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--steel);
+  border:1px solid var(--steel-dim);background:var(--ink-2);padding:1.6vmin 2.2vmin;
+}
+.quote-card.win{border-color:var(--amber);color:var(--amber)}
+.win-note{
+  font-family:var(--mono);font-size:clamp(12px,2vmin,17px);color:var(--white);
+  letter-spacing:.06em;
+}
+.win-note .amber{color:var(--amber)}
+
+/* ---------- stamps ---------- */
+.stamp{
+  font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(46px,12vmin,150px);line-height:.92;color:var(--white);
+}
+.stamp-sub{
+  font-family:var(--mono);font-size:clamp(11px,1.8vmin,15px);
+  letter-spacing:.26em;text-transform:uppercase;color:var(--steel);
+}
+
+/* ---------- chain closer ---------- */
+.chain{
+  display:flex;flex-wrap:wrap;justify-content:center;align-items:center;
+  gap:1.6vmin;max-width:92vw;
+}
+.chain .node{
+  font-family:var(--display);font-weight:700;text-transform:uppercase;
+  font-size:clamp(17px,3.4vmin,40px);color:var(--white);
+  border-bottom:.4vmin solid var(--amber);padding-bottom:.4vmin;
+}
+.chain .arrow{font-family:var(--mono);color:var(--amber);font-size:clamp(13px,2.4vmin,26px)}
+.replay{
+  margin-top:4vmin;font-family:var(--mono);font-size:clamp(12px,1.9vmin,16px);
+  letter-spacing:.24em;text-transform:uppercase;color:var(--ink);
+  background:var(--amber);border:none;padding:1.6vmin 3.4vmin;cursor:pointer;
+}
+.replay:hover{background:var(--white)}
+.replay:focus-visible{outline:3px solid var(--white);outline-offset:3px}
+.site{
+  margin-top:2vmin;font-family:var(--mono);font-size:clamp(11px,1.7vmin,14px);
+  letter-spacing:.3em;color:var(--steel);text-transform:uppercase;
+}
+
+/* ---------- chrome ---------- */
+#progress{position:fixed;left:0;right:0;bottom:0;display:flex;gap:3px;padding:0 3px 3px;z-index:10}
+#progress .seg{flex:1;height:4px;background:var(--steel-dim);opacity:.5;overflow:hidden}
+#progress .seg .fillbar{display:block;height:100%;width:0;background:var(--amber)}
+#progress .seg.done .fillbar{width:100%}
+#progress .seg.now .fillbar{animation:segFill linear both;animation-duration:var(--dur)}
+@keyframes segFill{to{width:100%}}
+#hint{
+  position:fixed;bottom:2.4vmin;right:2.8vmin;z-index:10;
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--steel-dim);pointer-events:none;transition:opacity .6s;
+}
+@media (max-width:640px){#hint{display:none}}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  .anim,.play .anim,.chaos-word,.play .pull,.play .flash,.play .underline-sweep{
+    animation:fadein .3s ease both !important;
+  }
+  .chaos-word{opacity:var(--o,.75) !important;translate:none !important}
+  #progress .seg.now .fillbar{animation:none;width:100%}
+  #startBtn{animation:none}
+}
+</style>
+</head>
+<body>
+
+<!-- START GATE (also satisfies browser audio autoplay policy) -->
+<div id="gate">
+  <div class="eyebrow">KTHQ // Training Short</div>
+  <div class="mega">One Acquisition.<br>Start to Finish.</div>
+  <button id="startBtn">&#9658; Start the ride</button>
+  <div class="gate-sub">3 minutes &middot; sound on &middot; click or space to skip ahead</div>
+</div>
+
+<audio id="track" src="The_Frontier.mp3" preload="auto"></audio>
+
+<div id="stage">
+
+  <!-- 0 · TITLE · music: quiet intro · 0:00 -->
+  <section class="scene" data-dur="7000">
+    <div class="eyebrow anim rise" style="--d:.2s">KTHQ // Training Short</div>
+    <div class="mega anim rise" style="--d:.6s">One Acquisition.<br>Start to Finish.</div>
+    <div class="line anim rise" style="--d:1.6s;margin-top:2.6vmin">Ride along. Your CO is driving.</div>
+    <div class="co anim fadein" style="--d:3.4s;margin-top:3.4vmin">First one's always the loudest. Watch the road, not the noise.</div>
+  </section>
+
+  <!-- 1 · THE REQUIREMENT LANDS · 0:07 -->
+  <section class="scene" data-dur="11000">
+    <div class="eyebrow anim fadein" style="--d:0s">0800 // Monday</div>
+    <div class="mid anim slam" style="--d:.2s;margin-bottom:3vmin">A purchase request drops.</div>
+    <div class="doc anim rise" style="--d:1.2s">
+      <div class="doc-title"><span>Purchase Request</span><span class="right">Funded &#10003; Certified &#10003;</span></div>
+      <div class="doc-line anim fadein" style="--d:2s"><span>Item</span><span class="fill"></span><span style="color:var(--white)">Ride-on floor scrubber, qty 1</span></div>
+      <div class="doc-line anim fadein" style="--d:2.7s"><span>Customer</span><span class="fill"></span><span>Maintenance Group, Hangar 4</span></div>
+      <div class="doc-line anim fadein" style="--d:3.4s"><span>Need by</span><span class="fill"></span><span>60 days</span></div>
+    </div>
+    <div class="co anim fadein" style="--d:5s;margin-top:3.2vmin">First check, every time: is it funded? No money, no action.</div>
+    <div class="co anim fadein" style="--d:7.2s">It is. Real requirement, real customer waiting on you. Let's go.</div>
+  </section>
+
+  <!-- 2 · WHY IT MATTERS · 0:18 · music: first swell -->
+  <section class="scene" data-dur="9000">
+    <div class="line anim rise" style="--d:0s">A floor scrubber. Sounds boring, right?</div>
+    <div class="big anim slam" style="--d:1.4s;margin:2.6vmin 0">It's not about clean floors.<br><span class="amber">It's about FOD.</span></div>
+    <div class="co anim fadein" style="--d:3.6s">One loose bolt on that hangar floor can total a jet engine. Every buy traces back to the mission. Find the thread.</div>
+  </section>
+
+  <!-- 3 · CHAOS · 0:27 · music: rising build -->
+  <section class="scene" data-dur="12000" id="sceneChaos">
+    <div id="chaosField"></div>
+    <div class="chaos-caption anim fadein" style="--d:1.8s">Meanwhile, your brain:</div>
+    <div class="co chaos-co anim fadein" style="--d:4.6s">I know. I've been there. Breathe.</div>
+  </section>
+
+  <!-- 4 · EXTRACTION · 0:39 · music: THE DROP -->
+  <section class="scene" data-dur="9000" id="sceneExtract">
+    <div id="ghostField"></div>
+    <div class="pulled">
+      <div class="mega amber anim pull" style="--d:.3s">Market<br>Research</div>
+      <div class="underline-sweep anim" style="--d:1.3s"></div>
+    </div>
+    <div class="co anim fadein" style="--d:2.6s;margin-top:3.2vmin">Every acquisition starts here. Every. Single. One. Three questions.</div>
+  </section>
+
+  <!-- 5 · MR Q1: WHAT IS IT · 0:48 -->
+  <section class="scene" data-dur="14000">
+    <div class="eyebrow anim fadein" style="--d:0s">Market Research // Question 1 of 3</div>
+    <div class="big anim slam" style="--d:.3s;margin-bottom:3vmin">What is it?</div>
+    <div class="doc anim rise" style="--d:1.8s">
+      <div class="doc-title"><span>Salient characteristics</span><span class="right">from the customer, not from you</span></div>
+      <div class="doc-line anim fadein" style="--d:2.8s"><span>Cleaning path</span><span class="fill"></span><span style="color:var(--white)">~40 inches</span></div>
+      <div class="doc-line anim fadein" style="--d:3.5s"><span>Power</span><span class="fill"></span><span style="color:var(--white)">Battery, full-shift runtime</span></div>
+      <div class="doc-line anim fadein" style="--d:4.2s"><span>Size limit</span><span class="fill"></span><span style="color:var(--white)">Fits the personnel door</span></div>
+    </div>
+    <div class="co anim fadein" style="--d:6.4s;margin-top:3vmin">Read the PR. Then call the customer anyway. If you can't describe it in plain English, you can't buy it.</div>
+  </section>
+
+  <!-- 6 · MR Q2: WHO SELLS IT · 1:02 -->
+  <section class="scene" data-dur="20000">
+    <div class="eyebrow anim fadein" style="--d:0s">Market Research // Question 2 of 3</div>
+    <div class="big anim slam" style="--d:.3s;margin-bottom:3vmin">Who sells it?</div>
+    <div class="check-stack">
+      <div class="check anim rise" style="--d:1.8s">
+        <span class="box">01</span>
+        <div><div class="what">Is it on GSA?</div>
+        <div class="how">GSA Advantage, schedules. If it's sitting on a shelf, don't reinvent it.</div></div>
+      </div>
+      <div class="check anim rise" style="--d:4.8s">
+        <span class="box">02</span>
+        <div><div class="what">Existing contract vehicle?</div>
+        <div class="how">Base BPAs. MAJCOM vehicles. Another base's contract. Ask around.</div></div>
+      </div>
+      <div class="check anim rise" style="--d:7.8s">
+        <span class="box">03</span>
+        <div><div class="what">Open market?</div>
+        <div class="how">SAM.gov, manufacturer sites, dealer networks. Who actually stocks this thing?</div></div>
+      </div>
+    </div>
+    <div class="co anim fadein" style="--d:11s;margin-top:3vmin">Never build what you can borrow. An existing vehicle can save you weeks.</div>
+    <div class="co anim fadein" style="--d:13.6s">And while you're looking? Write the prices down. You'll want them later.</div>
+  </section>
+
+  <!-- 7 · MR Q3: SMALL BUSINESS · 1:22 -->
+  <section class="scene" data-dur="13000">
+    <div class="eyebrow anim fadein" style="--d:0s">Market Research // Question 3 of 3</div>
+    <div class="big anim slam" style="--d:.3s;margin-bottom:3vmin">Do small businesses<br>sell it?</div>
+    <div class="factor-row anim fadein" style="--d:2.2s">
+      <div class="factor">SAM.gov search<span class="sub">dealers in every state</span></div>
+      <div class="factor">Dynamic Small Business Search<span class="sub">capable &amp; registered</span></div>
+    </div>
+    <div class="mid anim slam" style="--d:4.8s;margin-top:3.4vmin">Two or more? <span class="amber">Set it aside.</span></div>
+    <div class="co anim fadein" style="--d:6.8s;margin-top:2.8vmin">The Rule of Two isn't a hurdle. It's your default answer. Small business is where this stuff lives anyway.</div>
+  </section>
+
+  <!-- 8 · STRATEGY BOOM · 1:35 -->
+  <section class="scene" data-dur="11000">
+    <div class="eyebrow anim fadein" style="--d:0s">Three questions answered</div>
+    <div class="boom boom-frame anim flash" style="--d:.35s">You have a strategy.</div>
+    <div class="factor-row anim fadein" style="--d:1.9s;margin-top:3.4vmin">
+      <div class="factor">Commercial product</div>
+      <div class="factor">Small business set-aside</div>
+      <div class="factor">Competitive quotes</div>
+    </div>
+    <div class="co anim fadein" style="--d:4.2s;margin-top:3vmin">Twenty minutes of research just wrote your entire approach. That's the trade: research up front, speed everywhere else.</div>
+  </section>
+
+  <!-- 9 · EVALUATION FACTORS · 1:46 -->
+  <section class="scene" data-dur="13000">
+    <div class="eyebrow anim fadein" style="--d:0s">Next Question</div>
+    <div class="big anim rise" style="--d:.3s">What do you need to <span class="amber">see</span><br>to know it meets the need?</div>
+    <div class="factor-row" style="margin-top:4vmin">
+      <div class="factor anim slam" style="--d:2.4s">Technical<span class="sub">meets the characteristics</span></div>
+      <div class="factor anim slam" style="--d:3.3s">Delivery<span class="sub">in Hangar 4 within 60 days</span></div>
+      <div class="factor anim slam" style="--d:4.2s">Price<span class="sub">fair and reasonable</span></div>
+    </div>
+    <div class="line anim rise" style="--d:5.4s;margin-top:3.2vmin">Those are your <strong>evaluation factors</strong>.</div>
+    <div class="co anim fadein" style="--d:6.8s;margin-top:2.4vmin">If a factor doesn't help you pick a winner, cut it.</div>
+    <div class="co anim fadein" style="--d:9s">Then decide how you'll pick: lowest price that meets the need, or pay more for better? Make that call now, not after quotes show up.</div>
+  </section>
+
+  <!-- 10 · COMBINED SYNOPSIS/SOLICITATION · 1:59 · music: breakdown/bridge -->
+  <section class="scene" data-dur="19000">
+    <div class="eyebrow anim fadein" style="--d:0s">The Solicitation</div>
+    <div class="mid anim slam" style="--d:.3s;margin-bottom:1.6vmin">Commercial buy? One document does both jobs.</div>
+    <div class="line anim rise" style="--d:1.6s;margin-bottom:2.8vmin">The <strong>combined synopsis/solicitation</strong>: the public notice and the solicitation, fused into a single posting.</div>
+    <div class="doc anim rise" style="--d:3.2s">
+      <div class="doc-title"><span>Combined Synopsis/Solicitation</span><span class="right">posts to SAM.gov</span></div>
+      <div class="doc-line core anim fadein" style="--d:4.2s"><span>Description &amp; salient characteristics</span><span class="fill"></span><span class="tag">YOU WROTE THIS</span></div>
+      <div class="doc-line core anim fadein" style="--d:5s"><span>Evaluation factors</span><span class="fill"></span><span class="tag">YOU WROTE THIS</span></div>
+      <div class="doc-line core anim fadein" style="--d:5.8s"><span>Basis for award</span><span class="fill"></span><span class="tag">YOU CHOSE THIS</span></div>
+      <div class="doc-line core anim fadein" style="--d:6.6s"><span>Set-aside decision</span><span class="fill"></span><span class="tag">YOU DECIDED THIS</span></div>
+      <div class="doc-line anim fadein" style="--d:7.4s"><span>Line item &amp; delivery terms</span><span class="fill"></span><span>drops in</span></div>
+      <div class="doc-line anim fadein" style="--d:8s"><span>Provisions &amp; clauses</span><span class="fill"></span><span>pull from the system</span></div>
+      <div class="doc-line anim fadein" style="--d:8.6s"><span>Instructions to offerors</span><span class="fill"></span><span>tell them exactly what to send</span></div>
+      <div class="doc-line anim fadein" style="--d:9.2s"><span>Response deadline</span><span class="fill"></span><span>date &amp; time, no ambiguity</span></div>
+    </div>
+    <div class="co anim fadein" style="--d:11.4s;margin-top:2.8vmin">Look at the top four lines. You already made the hard calls. The rest is assembly.</div>
+  </section>
+
+  <!-- 11 · SOLICIT · 2:18 · music: building back -->
+  <section class="scene" data-dur="13000">
+    <div class="stamp anim slam" style="--d:.2s">Solicit.</div>
+    <div class="stamp-sub anim fadein" style="--d:.9s">Post it. Let the market answer.</div>
+    <div class="factor-row anim fadein" style="--d:2.4s;margin-top:4vmin">
+      <div class="factor">Vendors ask questions<span class="sub">answer fast</span></div>
+      <div class="factor">Answer everyone the same<span class="sub">amend if it changes the deal</span></div>
+    </div>
+    <div class="co anim fadein" style="--d:5.2s;margin-top:3.2vmin">The clock is running and vendors are pricing. A question sitting in your inbox is a quote you might not get.</div>
+  </section>
+
+  <!-- 12 · EVALUATE · 2:31 -->
+  <section class="scene" data-dur="17000">
+    <div class="stamp anim slam" style="--d:.2s">Evaluate.</div>
+    <div class="quote-row anim fadein" style="--d:1.6s;margin-top:3.4vmin">
+      <div class="quote-card">Quote 01</div>
+      <div class="quote-card">Quote 02</div>
+      <div class="quote-card win">Quote 03</div>
+      <div class="quote-card">Quote 04</div>
+      <div class="quote-card">Quote 05</div>
+    </div>
+    <div class="win-note anim fadein" style="--d:3.4s;margin-top:2.4vmin">Quote 03 wins &mdash; <span class="amber">under the rules you posted.</span></div>
+    <div class="factor-row anim fadein" style="--d:5s;margin-top:3vmin">
+      <div class="factor">Technically acceptable?<span class="sub">against YOUR factors</span></div>
+      <div class="factor">Can they deliver?<span class="sub">60 days, Hangar 4</span></div>
+      <div class="factor">Price fair &amp; reasonable?<span class="sub">five quotes — competition did the work</span></div>
+    </div>
+    <div class="co anim fadein" style="--d:8s;margin-top:3vmin">Remember the prices you wrote down during research? Now they matter. You already know what fair looks like.</div>
+    <div class="co anim fadein" style="--d:11s">Lowest price won this one because that's the game you set up front. Another buy, better might beat cheaper. Either way, the posted rules decide. Never move the goalposts.</div>
+  </section>
+
+  <!-- 13 · AWARD · 2:48 -->
+  <section class="scene" data-dur="12000">
+    <div class="stamp anim slam" style="--d:.2s">Award.</div>
+    <div class="factor-row anim fadein" style="--d:1.6s;margin-top:3.6vmin">
+      <div class="factor">Document the decision</div>
+      <div class="factor">Notify the winner</div>
+      <div class="factor">Notify everyone else</div>
+    </div>
+    <div class="co anim fadein" style="--d:4.2s;margin-top:3.2vmin">Write the file like you won't be here to explain it. It should tell the whole story without you in the room.</div>
+  </section>
+
+  <!-- 14 · ADMINISTER · 3:00 -->
+  <section class="scene" data-dur="13000">
+    <div class="stamp anim slam" style="--d:.2s">Administer.</div>
+    <div class="stamp-sub anim fadein" style="--d:.9s">Signature isn't the finish line.</div>
+    <div class="factor-row anim fadein" style="--d:2.4s;margin-top:3.6vmin">
+      <div class="factor">Delivery<span class="sub">it shows up</span></div>
+      <div class="factor">Inspect &amp; accept<span class="sub">it's what you asked for</span></div>
+      <div class="factor">Invoice paid<span class="sub">vendor gets their money</span></div>
+      <div class="factor">Closeout<span class="sub">file complete, done</span></div>
+    </div>
+    <div class="co anim fadein" style="--d:5.6s;margin-top:3.2vmin">The government gets what it paid for, and the vendor gets paid on time. Both of those are you.</div>
+  </section>
+
+  <!-- 15 · CLOSER · 3:13 · music: wind-down, final hit ~3:24 -->
+  <section class="scene" data-dur="999999" id="sceneEnd">
+    <div class="line anim rise" style="--d:0s">Scrubber's in Hangar 4. Customer's happy. File's closed.</div>
+    <div class="big anim rise" style="--d:1.2s;margin:2.4vmin 0 4vmin">That was one rep.</div>
+    <div class="chain">
+      <span class="node anim slam" style="--d:2.4s">Research</span><span class="arrow anim fadein" style="--d:2.7s">&gt;&gt;</span>
+      <span class="node anim slam" style="--d:2.9s">Factors</span><span class="arrow anim fadein" style="--d:3.2s">&gt;&gt;</span>
+      <span class="node anim slam" style="--d:3.4s">Solicit</span><span class="arrow anim fadein" style="--d:3.7s">&gt;&gt;</span>
+      <span class="node anim slam" style="--d:3.9s">Evaluate</span><span class="arrow anim fadein" style="--d:4.2s">&gt;&gt;</span>
+      <span class="node anim slam" style="--d:4.4s">Award</span><span class="arrow anim fadein" style="--d:4.7s">&gt;&gt;</span>
+      <span class="node anim slam" style="--d:4.9s">Administer</span>
+    </div>
+    <div class="line anim rise" style="--d:6.2s;margin-top:4vmin"><strong>Every acquisition runs this road.</strong><br>Complexity just adds lanes.</div>
+    <div class="co anim fadein" style="--d:8.2s;margin-top:2.8vmin">Your tenth buy will feel like breathing. Get your reps in.</div>
+    <button class="replay anim slam" style="--d:10.8s" id="replayBtn" aria-label="Replay animation">&#8635; Run it back</button>
+    <div class="site anim fadein" style="--d:11.4s">kthq.org</div>
+  </section>
+
+</div>
+
+<div id="progress" aria-hidden="true"></div>
+<div id="hint">Click / space: skip &middot; &#8592;: back &middot; M: mute</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var CHAOS_TERMS = [
+    "Form 9","SF 1449","DD 1155","Solicitation","Evaluation","Award","Clauses",
+    "Provisions","Cost","Price","Market Research","GSA","SAM.gov","Set-Aside",
+    "J&A","SOW","PWS","IGCE","CLIN","Funding","Purchase Request","Synopsis",
+    "LPTA","Tradeoff","Ratification","Options","Inspection","Closeout","COR",
+    "Socioeconomic","Fair Opportunity","Sole Source","Debrief","Protest","PALT",
+    "Obligations","Invoices","Period of Performance","Rule of Two","BPA",
+    "Salient Characteristics","Amendments"
+  ];
+
+  var scenes = Array.prototype.slice.call(document.querySelectorAll(".scene"));
+  var progress = document.getElementById("progress");
+  var hint = document.getElementById("hint");
+  var gate = document.getElementById("gate");
+  var track = document.getElementById("track");
+  var current = -1;
+  var timer = null;
+  var subTimers = [];
+  var started = false;
+  var audioOK = false;
+
+  // cumulative scene start times (seconds) for audio sync
+  var startTimes = [];
+  (function(){
+    var t = 0;
+    scenes.forEach(function(sc){
+      startTimes.push(t);
+      t += (+sc.dataset.dur)/1000;
+    });
+  })();
+
+  scenes.forEach(function(){
+    var seg = document.createElement("div");
+    seg.className = "seg";
+    seg.innerHTML = "<span class='fillbar'></span>";
+    progress.appendChild(seg);
+  });
+  var segs = Array.prototype.slice.call(progress.children);
+
+  function buildChaos(container, ghost){
+    container.innerHTML = "";
+    CHAOS_TERMS.forEach(function(term){
+      var el = document.createElement("span");
+      el.className = "chaos-word";
+      el.textContent = term;
+      var size = 14 + Math.random()*46;
+      var x = 4 + Math.random()*80;
+      var y = 4 + Math.random()*86;
+      el.style.fontSize = size + "px";
+      el.style.left = x + "%";
+      el.style.top = y + "%";
+      el.style.setProperty("--o", ghost ? (0.08 + Math.random()*0.12) : (0.35 + Math.random()*0.5));
+      el.style.setProperty("--jx", (1+Math.random()*4).toFixed(1) + "px");
+      el.style.setProperty("--jy", (1+Math.random()*3).toFixed(1) + "px");
+      var dx = (x - 50), dy = (y - 50);
+      el.style.setProperty("--sx", (dx*3) + "px");
+      el.style.setProperty("--sy", (dy*3) + "px");
+      el.style.animationDelay = (Math.random()*1.4).toFixed(2) + "s, " +
+                                (Math.random()*0.3).toFixed(2) + "s, " +
+                                (Math.random()*1.7).toFixed(2) + "s";
+      container.appendChild(el);
+    });
+  }
+
+  function clearSubTimers(){
+    subTimers.forEach(clearTimeout);
+    subTimers = [];
+  }
+  function sub(fn, ms){ subTimers.push(setTimeout(fn, ms)); }
+
+  function syncAudio(i, force){
+    if (!audioOK) return;
+    var target = startTimes[i];
+    var drift = Math.abs(track.currentTime - target);
+    // hard-sync on manual jumps; soft-correct drift > 0.35s on auto-advance
+    if (force || drift > 0.35){
+      try { track.currentTime = target; } catch(e){}
+    }
+  }
+
+  function show(i, manual){
+    if (i === current || i < 0 || i >= scenes.length) return;
+    clearTimeout(timer);
+    clearSubTimers();
+
+    if (current >= 0){
+      scenes[current].classList.remove("active","play","scatter");
+    }
+    current = i;
+    var sc = scenes[i];
+
+    syncAudio(i, !!manual);
+
+    if (sc.id === "sceneChaos"){
+      buildChaos(document.getElementById("chaosField"), false);
+      sub(function(){ sc.classList.add("scatter"); }, (+sc.dataset.dur) - 1100);
+    }
+    if (sc.id === "sceneExtract"){
+      buildChaos(document.getElementById("ghostField"), true);
+      sub(function(){ sc.classList.add("scatter"); }, 700);
+    }
+
+    Array.prototype.forEach.call(sc.querySelectorAll(".anim"), function(el){
+      el.style.animationDelay = el.style.getPropertyValue("--d") || "0s";
+    });
+
+    sc.classList.add("active");
+    void sc.offsetWidth;
+    sc.classList.add("play");
+
+    var isEnd = (sc.id === "sceneEnd");
+    segs.forEach(function(s, idx){
+      s.classList.toggle("done", idx < i || (isEnd && idx === i));
+      s.classList.toggle("now", idx === i && !isEnd);
+      if (idx === i && !isEnd) s.style.setProperty("--dur", sc.dataset.dur + "ms");
+      if (idx > i){ s.classList.remove("done","now"); }
+    });
+
+    hint.style.opacity = isEnd ? "0" : "1";
+
+    if (i < scenes.length - 1){
+      timer = setTimeout(function(){ show(i+1); }, +sc.dataset.dur);
+    }
+  }
+
+  function next(){ if (current < scenes.length - 1) show(current + 1, true); }
+  function prev(){ if (current > 0) show(current - 1, true); }
+  function restart(){
+    segs.forEach(function(s){ s.classList.remove("done","now"); });
+    current = -1;
+    if (audioOK){
+      try { track.currentTime = 0; track.play(); } catch(e){}
+    }
+    show(0);
+  }
+
+  function begin(){
+    if (started) return;
+    started = true;
+    var p = track.play();
+    if (p && p.then){
+      p.then(function(){ audioOK = true; })
+       .catch(function(){ audioOK = false; }); // no file or blocked: run silent
+    } else {
+      audioOK = true;
+    }
+    gate.classList.add("hidden");
+    show(0);
+  }
+
+  document.getElementById("startBtn").addEventListener("click", function(e){
+    e.stopPropagation();
+    begin();
+  });
+
+  document.body.addEventListener("click", function(e){
+    if (!started) return;
+    if (e.target.id === "replayBtn"){ restart(); return; }
+    if (scenes[current] && scenes[current].id === "sceneEnd") return;
+    next();
+  });
+
+  document.addEventListener("keydown", function(e){
+    if (!started){
+      if (e.code === "Space" || e.code === "Enter"){ e.preventDefault(); begin(); }
+      return;
+    }
+    if (e.code === "Space" || e.code === "ArrowRight"){
+      e.preventDefault();
+      if (scenes[current] && scenes[current].id === "sceneEnd") restart();
+      else next();
+    }
+    if (e.code === "ArrowLeft"){ e.preventDefault(); prev(); }
+    if (e.code === "KeyM"){
+      track.muted = !track.muted;
+    }
+  });
+})();
+</script>
+</body>
+</html>
