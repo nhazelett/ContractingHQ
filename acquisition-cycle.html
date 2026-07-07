@@ -580,12 +580,11 @@ body::before{
 
   function syncAudio(i, force){
     if (!audioOK) return;
-    var target = startTimes[i];
-    var drift = Math.abs(track.currentTime - target);
-    // hard-sync on manual jumps; soft-correct drift > 0.35s on auto-advance
-    if (force || drift > 0.35){
-      try { track.currentTime = target; } catch(e){}
-    }
+    // Only seek on manual jumps (click / arrows / replay). On auto-advance,
+    // let the track play straight through -- seeking mid-playback forces the
+    // mp3 to re-buffer, which is the audible hiccup at each transition.
+    if (!force) return;
+    try { track.currentTime = startTimes[i]; } catch(e){}
   }
 
   function show(i, manual){
