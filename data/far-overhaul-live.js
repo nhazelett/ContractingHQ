@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-07-06T12:13:01.571862+00:00",
+  "generatedAt": "2026-07-07T11:18:54.961987+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -8264,6 +8264,16 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
   ],
   "announcements": [
     {
+      "id": "a9e06d65db50df9e",
+      "title": "FAR Overhaul Updates for Parts 16 and 52 - Implementation of E.O. 14402, Promoting Efficiency, Accountability, and Performance in Federal Contracting",
+      "url": "https://www.acquisition.gov/content/far-overhaul-updates-parts-16-and-52-implementation-e.o.-14402-promoting-efficiency-accountability-and-performance-federal-contracting",
+      "date": "2026-07-01",
+      "dateLabel": "Jul 1, 2026",
+      "source": "Acquisition.gov",
+      "type": "Official announcement",
+      "summary": "FAR Overhaul Updates for Parts 16 and 52 - Implementation of E.O. 14402, Promoting Efficiency, Accountability, and Performance in Federal Contracting Anonymous (not verified) Wed, 07/01/2026 - 17:00 On July 1, 2026, the Federal Acquisition Regulatory Council published guidance..."
+    },
+    {
       "id": "0286ec48afc90b21",
       "title": "FAR Overhaul PA Updates Resulting from Trade Agreement Threshold Increases",
       "url": "https://www.acquisition.gov/content/far-overhaul-pa-updates-resulting-trade-agreement-threshold-increases",
@@ -8352,16 +8362,6 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "source": "Acquisition.gov",
       "type": "Official announcement",
       "summary": "FAR Overhaul Community Crowdsourcing Campaign Anonymous (not verified) Mon, 12/15/2025 - 16:00 The Office of Federal Procurement Policy (OFPP) invites the acquisition workforce, businesses, and other stakeholders to share feedback to inform the next phase of the Revolutionary..."
-    },
-    {
-      "id": "d5715634b3c985cd",
-      "title": "FAR Overhaul | FAR Companion Guide",
-      "url": "https://www.acquisition.gov/content/far-overhaul-far-companion-guide",
-      "date": "2025-10-30",
-      "dateLabel": "Oct 30, 2025",
-      "source": "Acquisition.gov",
-      "type": "Official announcement",
-      "summary": "FAR Overhaul | FAR Companion Guide Anonymous (not verified) Thu, 10/30/2025 - 16:00 The Federal Acquisition Regulatory Council has released an update to the FAR Companion as part of the ongoing Revolutionary FAR Overhaul (RFO) Initiative, in accordance with Executive Order 14275..."
     }
   ],
   "federalRegister": [
