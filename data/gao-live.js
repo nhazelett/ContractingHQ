@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-07-07T10:38:25.075Z",
+  "generatedAt": "2026-07-08T09:56:22.727Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,12 +7,12 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 12,
-    "latestDecisionDate": "2026-07-02",
+    "total": 13,
+    "latestDecisionDate": "2026-07-06",
     "sustained": 0,
-    "denied": 7,
+    "denied": 9,
     "dismissed": 1,
-    "mixed": 4,
+    "mixed": 3,
     "unclassified": 0,
     "sourceStatus": {
       "rss": {
@@ -26,8 +26,8 @@ window.KTHQ_GAO_DATA = {
         "parsedOutcomes": 14
       },
       "productPages": {
-        "attempted": 12,
-        "enriched": 12,
+        "attempted": 13,
+        "enriched": 13,
         "blocked": 0
       },
       "legacyCache": {
@@ -36,6 +36,60 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424375",
+      "caseName": "Oready, LLC",
+      "title": "Oready, LLC",
+      "bNumbers": [
+        "B-424375"
+      ],
+      "bNumberText": "B-424375",
+      "link": "https://www.gao.gov/products/b-424375",
+      "publicationDate": "2026-07-07",
+      "decisionDate": "2026-07-06",
+      "displayDate": "Jul 6, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Oready, LLC, a small business of Las Vegas, Nevada, protests the Government Publishing Office's (GPO) determination that Oready was not responsible...",
+      "highlights": "",
+      "digest": "Protest challenging agency's determination that the protester is not responsible is denied where the record shows that the agency's determination was reasonable and supported by the record.",
+      "tags": [
+        "Small business"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424439",
+      "caseName": "Stondoh LLC",
+      "title": "Stondoh LLC",
+      "bNumbers": [
+        "B-424439"
+      ],
+      "bNumberText": "B-424439",
+      "link": "https://www.gao.gov/products/b-424439",
+      "publicationDate": "2026-07-07",
+      "decisionDate": "2026-07-06",
+      "displayDate": "Jul 6, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Stondoh LLC, a small business of Baltimore, Maryland, protests the issuance of a task order to WINTrio LLC, a small business of Leesburg, Virginia,...",
+      "highlights": "",
+      "digest": "Protest challenging reasonableness of best-value tradeoff decision is denied where the record reflects that the decision was consistent with the solicitation and adequately documented.",
+      "tags": [
+        "Solicitation terms",
+        "Small business",
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-423306.19",
       "caseName": "Strategic Alliance Business Group, LLC",
@@ -140,6 +194,36 @@ window.KTHQ_GAO_DATA = {
         "Orders / IDIQ"
       ],
       "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424322,B-424322.3,B-424322.2,B-424322.4",
+      "caseName": "Weston Solutions, Inc.; Tetra Tech, Inc.",
+      "title": "Weston Solutions, Inc.; Tetra Tech, Inc.",
+      "bNumbers": [
+        "B-424322",
+        "B-424322.3",
+        "B-424322.2",
+        "B-424322.4"
+      ],
+      "bNumberText": "B-424322, B-424322.3, B-424322.2, B-424322.4",
+      "link": "https://www.gao.gov/products/b-424322%2Cb-424322.3%2Cb-424322.2%2Cb-424322.4",
+      "publicationDate": "2026-07-07",
+      "decisionDate": "2026-06-18",
+      "displayDate": "Jun 18, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protests.",
+      "officialSynopsis": "Weston Solutions, Inc., of West Chester, Pennsylvania, and Tetra Tech, Inc., of Collinsville, Illinois, protest the award of a contract to Pond...",
+      "highlights": "",
+      "digest": "1. Protests challenging the agency's evaluation of technical proposals are denied where the evaluation was reasonable and consistent with the solicitation. 2. Challenge to the agency's evaluation of the protester's past performance is denied where the evaluation was reasonable and consistent with the terms of the solicitation. 3. Protest challenging the agency's comparative analysis and source selection decision is denied where the agency's best-value tradeoff and source selection decision were reasonable, adequately documented, and consistent with the terms of the solicitation.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -312,64 +396,6 @@ window.KTHQ_GAO_DATA = {
         "Orders / IDIQ"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424306",
-      "caseName": "DarkStar Intelligence, LLC",
-      "title": "DarkStar Intelligence, LLC",
-      "bNumbers": [
-        "B-424306"
-      ],
-      "bNumberText": "B-424306",
-      "link": "https://www.gao.gov/products/b-424306",
-      "publicationDate": "2026-06-18",
-      "decisionDate": "2026-06-03",
-      "displayDate": "Jun 3, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "DarkStar Intelligence, LLC, of Woodbridge, Virginia, protests the Department of the Air Force's issuance of a task order to Starlo Innovation, LLC,...",
-      "highlights": "",
-      "digest": "1. Protest that the agency unreasonably evaluated the protester's proposal under the technical subfactor and utilized unstated evaluation criteria is denied where the record reflects that the agency's evaluation was reasonable and consistent with the terms of the solicitation. 2. Protest that the agency failed to consider price in its best-value tradeoff decision is denied where the agency documented its consideration of the awardee's higher price and its best-value tradeoff decision was reasonable and consistent with the terms of the solicitation.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Price / cost",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424060.2",
-      "caseName": "Highlight Technologies, Inc.",
-      "title": "Highlight Technologies, Inc.",
-      "bNumbers": [
-        "B-424060.2"
-      ],
-      "bNumberText": "B-424060.2",
-      "link": "https://www.gao.gov/products/b-424060.2",
-      "publicationDate": "2026-06-18",
-      "decisionDate": "2026-05-22",
-      "displayDate": "May 22, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Highlight Technologies, Inc., a small business of Fairfax, Virginia, protests the issuance of a call order to FedTec, LLC, a small business of Reston...",
-      "highlights": "",
-      "digest": "1. Protest of agency's post-corrective action technical evaluation is dismissed as untimely where the protester failed to timely challenge similar evaluation findings following the original award. 2. Protest alleging that agency misled protester into submitting a higher‑priced quotation is denied where all offerors were provided the same information and were permitted to structure their quotations to best address the solicitation requirements based on their own business judgements. 3. Protest challenging agency's best‑value tradeoff and source selection decision is denied where the agency's tradeoff decision was reasonable, adequately documented, and consistent with the terms of the solicitation. 4. Protest that awardee violated the Procurement Integrity Act is dismissed as legally and factually insufficient where the protester's allegations, even if unrebutted, fail to establish a violation of law by the agency.",
-      "tags": [
-        "Timeliness",
-        "Evaluation",
-        "Corrective action",
-        "Solicitation terms"
-      ],
-      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     }
