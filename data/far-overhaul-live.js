@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-07-09T11:21:37.970433+00:00",
+  "generatedAt": "2026-07-10T11:18:56.356196+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -23,124 +23,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "baseline": false,
     "newParts": [],
     "updatedParts": [],
-    "newAgencyDeviations": [
-      {
-        "part": {
-          "partNumber": 9,
-          "partLabel": "Part 9",
-          "title": "Contractor Qualifications",
-          "fullTitle": "Part 9 - Contractor Qualifications",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
-          "issuanceDate": "2025-08-21",
-          "issuanceDateLabel": "Aug 21, 2025",
-          "updateDate": "2026-04-20",
-          "updateDateLabel": "Apr 20, 2026",
-          "deviationCount": 34
-        },
-        "agency": {
-          "name": "United States Department of Agriculture (USDA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/USDA_RFO_Deviation_Part-9.pdf",
-          "id": "9cbf54322c59aa7f"
-        }
-      },
-      {
-        "part": {
-          "partNumber": 12,
-          "partLabel": "Part 12",
-          "title": "Acquisition of Commercial Products and Commercial Services",
-          "fullTitle": "Part 12 - Acquisition of Commercial Products and Commercial Services",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12",
-          "issuanceDate": "2025-08-14",
-          "issuanceDateLabel": "Aug 14, 2025",
-          "updateDate": "2026-04-20",
-          "updateDateLabel": "Apr 20, 2026",
-          "deviationCount": 34
-        },
-        "agency": {
-          "name": "United States Department of Agriculture (USDA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/USDA_RFO_Deviation_Part-12.pdf",
-          "id": "8f2b724d858eeeac"
-        }
-      },
-      {
-        "part": {
-          "partNumber": 22,
-          "partLabel": "Part 22",
-          "title": "Application of Labor Laws to Government Acquisitions",
-          "fullTitle": "Part 22 - Application of Labor Laws to Government Acquisitions",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-22",
-          "issuanceDate": "2025-09-30",
-          "issuanceDateLabel": "Sep 30, 2025",
-          "updateDate": "2026-04-20",
-          "updateDateLabel": "Apr 20, 2026",
-          "deviationCount": 33
-        },
-        "agency": {
-          "name": "United States Department of Agriculture (USDA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/USDA_RFO_Deviation_Part-22.pdf",
-          "id": "08b20891262baf90"
-        }
-      }
-    ],
-    "removedAgencyDeviations": [
-      {
-        "part": {
-          "partNumber": 9,
-          "partLabel": "Part 9",
-          "title": "Contractor Qualifications",
-          "fullTitle": "Part 9 - Contractor Qualifications",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
-          "issuanceDate": "2025-08-21",
-          "issuanceDateLabel": "Aug 21, 2025",
-          "updateDate": "2026-04-20",
-          "updateDateLabel": "Apr 20, 2026",
-          "deviationCount": 34
-        },
-        "agency": {
-          "name": "United States Department of Agriculture (USDA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/USDA_RFO_Deviation_Part-9-12-22.pdf",
-          "id": "fc35055e224b7d9e"
-        }
-      },
-      {
-        "part": {
-          "partNumber": 12,
-          "partLabel": "Part 12",
-          "title": "Acquisition of Commercial Products and Commercial Services",
-          "fullTitle": "Part 12 - Acquisition of Commercial Products and Commercial Services",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12",
-          "issuanceDate": "2025-08-14",
-          "issuanceDateLabel": "Aug 14, 2025",
-          "updateDate": "2026-04-20",
-          "updateDateLabel": "Apr 20, 2026",
-          "deviationCount": 34
-        },
-        "agency": {
-          "name": "United States Department of Agriculture (USDA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/USDA_RFO_Deviation_Part-9-12-22.pdf",
-          "id": "cef5fbfa69ee6f20"
-        }
-      },
-      {
-        "part": {
-          "partNumber": 22,
-          "partLabel": "Part 22",
-          "title": "Application of Labor Laws to Government Acquisitions",
-          "fullTitle": "Part 22 - Application of Labor Laws to Government Acquisitions",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-22",
-          "issuanceDate": "2025-09-30",
-          "issuanceDateLabel": "Sep 30, 2025",
-          "updateDate": "2026-04-20",
-          "updateDateLabel": "Apr 20, 2026",
-          "deviationCount": 33
-        },
-        "agency": {
-          "name": "United States Department of Agriculture (USDA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/USDA_RFO_Deviation_Part-9-12-22.pdf",
-          "id": "13417e61389478c4"
-        }
-      }
-    ]
+    "newAgencyDeviations": [],
+    "removedAgencyDeviations": []
   },
   "parts": [
     {
