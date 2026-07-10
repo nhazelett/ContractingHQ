@@ -1348,15 +1348,13 @@
       </div>
     </div>
 
-    <aside class="home-redesign-brief" aria-label="Quick briefing">
+    <aside class="home-redesign-brief" id="homeLatestBrief" data-brief-state="fallback" aria-label="Quick briefing">
       <div class="home-redesign-brief-header">
-        <span>Today's Brief</span>
-        <time datetime="2026-05-05">May 5</time>
+        <span id="homeLatestBriefLabel">Latest Brief</span>
+        <time id="homeLatestBriefDate" datetime="2026-06-03">Jun 3, 2026</time>
       </div>
       <div class="home-redesign-brief-list">
-        <a href="federal-register.html"><span class="home-redesign-kicker">FAR</span>Federal Register tracker and DFARS rulemaking activity.</a>
-        <a href="gao-decisions.html"><span class="home-redesign-kicker">GAO</span>Recent protest decisions summarized with CO takeaways.</a>
-        <a href="training.html"><span class="home-redesign-kicker">Training</span>Structured tracks from beginner to advanced.</a>
+        <a id="homeLatestBriefLink" href="pws-builder.html"><span class="home-redesign-kicker" id="homeLatestBriefKicker">New</span><span id="homeLatestBriefTitle">AI lives in the PWS Builder.</span></a>
       </div>
     </aside>
   </div>
@@ -1482,6 +1480,95 @@
 
 <script src="main.js"></script>
 <script src="player.js"></script>
+<script>
+  (function () {
+    var MONTHS = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+
+    function parsePublicationDate(text) {
+      var match = /^([A-Z][a-z]{2})\s+(\d{1,2}),\s+(\d{4})$/.exec((text || '').trim());
+      if (!match || MONTHS[match[1]] === undefined) return null;
+      var year = Number(match[3]);
+      var month = MONTHS[match[1]];
+      var day = Number(match[2]);
+      var date = new Date(Date.UTC(year, month, day, 12));
+      if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month || date.getUTCDate() !== day) return null;
+      return {
+        sortValue: date.getTime(),
+        dateKey: year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0'),
+        display: match[1] + ' ' + day + ', ' + year
+      };
+    }
+
+    function easternDateKey(value) {
+      var parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).formatToParts(value);
+      var byType = {};
+      parts.forEach(function (part) { byType[part.type] = part.value; });
+      return byType.year + '-' + byType.month + '-' + byType.day;
+    }
+
+    function collectBriefs(root) {
+      return Array.prototype.map.call(root.querySelectorAll('.announce-list .announce-item'), function (item) {
+        var dateElement = item.querySelector('.announce-date');
+        var content = item.querySelector('.announce-text');
+        var parsed = parsePublicationDate(dateElement && dateElement.textContent);
+        if (!parsed || !content) return null;
+        var sourceLink = content.querySelector('a[href]');
+        var titleElement = content.querySelector('strong');
+        return {
+          sortValue: parsed.sortValue,
+          dateKey: parsed.dateKey,
+          display: parsed.display,
+          kicker: (item.querySelector('.announce-badge') || {}).textContent || 'Update',
+          title: (titleElement ? titleElement.textContent : content.textContent).trim(),
+          href: sourceLink ? sourceLink.getAttribute('href') : '#welcome',
+          target: sourceLink ? sourceLink.getAttribute('target') : '',
+          rel: sourceLink ? sourceLink.getAttribute('rel') : ''
+        };
+      }).filter(Boolean).sort(function (a, b) { return b.sortValue - a.sortValue; });
+    }
+
+    function renderLatestBrief(options) {
+      options = options || {};
+      var root = options.root || document;
+      var briefs = options.items || collectBriefs(root);
+      var latest = briefs[0];
+      if (!latest) return null;
+
+      var label = root.getElementById('homeLatestBriefLabel');
+      var date = root.getElementById('homeLatestBriefDate');
+      var link = root.getElementById('homeLatestBriefLink');
+      var kicker = root.getElementById('homeLatestBriefKicker');
+      var title = root.getElementById('homeLatestBriefTitle');
+      var card = root.getElementById('homeLatestBrief');
+      if (!label || !date || !link || !kicker || !title || !card) return null;
+
+      label.textContent = latest.dateKey === easternDateKey(options.now || new Date()) ? 'Today’s Brief' : 'Latest Brief';
+      date.dateTime = latest.dateKey;
+      date.textContent = latest.display;
+      link.setAttribute('href', latest.href || '#welcome');
+      if (latest.target) link.setAttribute('target', latest.target); else link.removeAttribute('target');
+      if (latest.rel) link.setAttribute('rel', latest.rel); else link.removeAttribute('rel');
+      kicker.textContent = (latest.kicker || 'Update').trim();
+      title.textContent = latest.title;
+      card.setAttribute('data-brief-state', 'automatic');
+      return latest;
+    }
+
+    window.KTHQBrief = {
+      parsePublicationDate: parsePublicationDate,
+      easternDateKey: easternDateKey,
+      collectBriefs: collectBriefs,
+      renderLatestBrief: renderLatestBrief
+    };
+
+    try { renderLatestBrief(); } catch (error) { /* Keep the static fallback card intact. */ }
+  })();
+</script>
 <!-- GoatCounter analytics + visitor count display -->
 <script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <script>
