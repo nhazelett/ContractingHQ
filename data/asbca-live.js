@@ -1,5 +1,5 @@
 window.KTHQ_ASBCA_DATA = {
-  "generatedAt": "2026-07-09T10:42:19.300591+00:00",
+  "generatedAt": "2026-07-10T10:41:28.507801+00:00",
   "source": {
     "name": "Armed Services Board of Contract Appeals",
     "decisionsUrl": "https://www.asbca.mil/Decisions/2026/"
@@ -7,11 +7,12 @@ window.KTHQ_ASBCA_DATA = {
   "note": "Automated KTHQ ASBCA decision watch. Official excerpts are extracted from ASBCA PDF text when available. Practitioner prompts are deterministic triage notes, not legal advice.",
   "stats": {
     "total": 18,
-    "latestDecisionDate": "2026-06-16",
+    "latestDecisionDate": "2026-06-23",
     "downloadedPdfs": 18,
     "metadataOnly": 0,
     "outcomes": {
-      "dismissed": 9,
+      "denied": 1,
+      "dismissed": 8,
       "unclassified": 2,
       "settled": 7
     },
@@ -22,14 +23,41 @@ window.KTHQ_ASBCA_DATA = {
         "readerUrl": "https://r.jina.ai/http://r.jina.ai/http://https://www.asbca.mil/Decisions/2026/",
         "mode": "reader-markdown",
         "error": "",
-        "linksFound": 118,
+        "linksFound": 119,
         "linksUsed": 18
       }
     }
   },
   "items": [
     {
-      "id": "2026-06-16-nes-pacific-limited-liability-co--0",
+      "id": "2026-06-23-wild-hare-haulers-llc-0",
+      "caseName": "Wild Hare Haulers, LLC",
+      "caseNumberText": "ASBCA Nos. 64442, 64443",
+      "caseNumbers": [
+        "ASBCA No. 64442",
+        "ASBCA No. 64443"
+      ],
+      "decisionDate": "2026-06-23",
+      "displayDate": "Jun 23, 2026",
+      "decisionType": "Decision",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "judge": "McIlmail",
+      "officialExcerpt": "17 On May 23, Contracting Officer Jackie Peacock emailed WHH that \"[t]he government may consider a termination for convenience.\" 18 Then on July 23, Contracting Officer Peacock emailed WHH that \"[t]he government intends to terminate for default.\" 19 On August 7, the government switched gears again: Contracting Officer Peacock and Contracting Officer Jason King separately informed WHH that the contract would be terminated for the convenience of the government.",
+      "tags": [
+        "Termination",
+        "Delivery",
+        "CDA process"
+      ],
+      "practitionerPrompt": "Termination actions need clean documentation. If performance is effectively ended, make sure the file and notices match the legal theory.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=BRQaZn8fB1M%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-06-16-nes-pacific-limited-liability-co--1",
       "caseName": "NES Pacific Limited Liability Co.",
       "caseNumberText": "ASBCA No. 63710-EAJA",
       "caseNumbers": [
@@ -53,7 +81,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-16-arctic-swan-construction-inc--1",
+      "id": "2026-06-16-arctic-swan-construction-inc--2",
       "caseName": "Arctic Swan Construction Inc.",
       "caseNumberText": "ASBCA Nos. 63510, 64085",
       "caseNumbers": [
@@ -82,7 +110,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-15-magna-jv-2",
+      "id": "2026-06-15-magna-jv-3",
       "caseName": "MAGNA JV",
       "caseNumberText": "ASBCA No. 64427",
       "caseNumbers": [
@@ -106,7 +134,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-12-kunj-construction-corporation-3",
+      "id": "2026-06-12-kunj-construction-corporation-4",
       "caseName": "KUNJ Construction Corporation",
       "caseNumberText": "ASBCA No. 63240",
       "caseNumbers": [
@@ -131,7 +159,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-10-j-star-enterprises-inc--6",
+      "id": "2026-06-10-j-star-enterprises-inc--7",
       "caseName": "J. Star Enterprises, Inc.",
       "caseNumberText": "ASBCA Nos. 63627, 63647, 63656, 63657, 63658",
       "caseNumbers": [
@@ -159,7 +187,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-10-first-street-contractors-llc-5",
+      "id": "2026-06-10-first-street-contractors-llc-6",
       "caseName": "First Street Contractors, LLC",
       "caseNumberText": "ASBCA No. 64028",
       "caseNumbers": [
@@ -186,7 +214,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-10-al-tasmem-for-logistics-4",
+      "id": "2026-06-10-al-tasmem-for-logistics-5",
       "caseName": "AL TASMEM For Logistics",
       "caseNumberText": "ASBCA No. 64555",
       "caseNumbers": [
@@ -210,7 +238,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-09-j-star-enterprises-inc--7",
+      "id": "2026-06-09-j-star-enterprises-inc--8",
       "caseName": "J. Star Enterprises, Inc.",
       "caseNumberText": "ASBCA No. 63603",
       "caseNumbers": [
@@ -234,7 +262,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-08-nes-pacific-limited-liability-co--8",
+      "id": "2026-06-08-nes-pacific-limited-liability-co--9",
       "caseName": "NES Pacific Limited Liability Co.",
       "caseNumberText": "ASBCA No. 63710",
       "caseNumbers": [
@@ -259,7 +287,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-04-iva-al-solutions-llc-9",
+      "id": "2026-06-04-iva-al-solutions-llc-10",
       "caseName": "IVA'AL Solutions, LLC",
       "caseNumberText": "ASBCA No. 63430",
       "caseNumbers": [
@@ -284,7 +312,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-04-drs-laurel-technologies-11",
+      "id": "2026-06-04-drs-laurel-technologies-12",
       "caseName": "DRS Laurel Technologies",
       "caseNumberText": "ASBCA Nos. 63059, 63151",
       "caseNumbers": [
@@ -310,7 +338,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-04-akima-range-readiness-operations-llc-10",
+      "id": "2026-06-04-akima-range-readiness-operations-llc-11",
       "caseName": "Akima Range Readiness Operations, LLC",
       "caseNumberText": "ASBCA No. 64012-ADR",
       "caseNumbers": [
@@ -336,7 +364,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-03-gilbane-smcc-ecc-llc-14",
+      "id": "2026-06-03-gilbane-smcc-ecc-llc-15",
       "caseName": "Gilbane, SMCC ECC, LLC",
       "caseNumberText": "ASBCA Nos. 64102, 64108, 64135, 64136",
       "caseNumbers": [
@@ -364,7 +392,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-03-drs-laurel-technologies-12",
+      "id": "2026-06-03-drs-laurel-technologies-13",
       "caseName": "DRS Laurel Technologies",
       "caseNumberText": "ASBCA No. 63303",
       "caseNumbers": [
@@ -389,7 +417,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-03-asturian-consigli-jv-llc-13",
+      "id": "2026-06-03-asturian-consigli-jv-llc-14",
       "caseName": "Asturian-Consigli JV, LLC",
       "caseNumberText": "ASBCA Nos. 64103, 64104, 64275",
       "caseNumbers": [
@@ -417,7 +445,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-02-j-a-m-construction-services-inc--15",
+      "id": "2026-06-02-j-a-m-construction-services-inc--16",
       "caseName": "J.A.M. Construction Services, Inc.",
       "caseNumberText": "ASBCA Nos. 63378, 64226, 64439",
       "caseNumbers": [
@@ -447,7 +475,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-01-puyenpa-services-llc-16",
+      "id": "2026-06-01-puyenpa-services-llc-17",
       "caseName": "Puyenpa Services, LLC",
       "caseNumberText": "ASBCA Nos. 64412, 64413",
       "caseNumbers": [
@@ -467,30 +495,6 @@ window.KTHQ_ASBCA_DATA = {
       "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
       "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=YdeNR_bsWl4%3d&portalid=143",
       "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-06-01-innosense-corporation-17",
-      "caseName": "InnoSense Corporation",
-      "caseNumberText": "ASBCA No. 64364",
-      "caseNumbers": [
-        "ASBCA No. 64364"
-      ],
-      "decisionDate": "2026-06-01",
-      "displayDate": "Jun 1, 2026",
-      "decisionType": "Dismissal",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "judge": "Wilson",
-      "officialExcerpt": "The dispute has been settled. The appeal is dismissed with prejudice.",
-      "tags": [
-        "Settlement"
-      ],
-      "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
-      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64364%20InnoSense%20Corporation%206.1.26%20%20Dismissal.pdf?ver=nMh2d01p_f_mjx-HkgvhPA%3d%3d",
-      "filename": "64364 InnoSense Corporation 6.1.26 Dismissal.pdf",
       "sourceStatus": "reader-extracted",
       "sourceStatusLabel": "ASBCA PDF text extracted",
       "sourceError": ""
