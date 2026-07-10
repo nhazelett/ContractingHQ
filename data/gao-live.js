@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-07-09T10:41:17.618Z",
+  "generatedAt": "2026-07-10T10:35:12.014Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,12 +7,12 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 14,
-    "latestDecisionDate": "2026-07-07",
+    "total": 15,
+    "latestDecisionDate": "2026-07-08",
     "sustained": 0,
-    "denied": 9,
-    "dismissed": 1,
-    "mixed": 4,
+    "denied": 8,
+    "dismissed": 2,
+    "mixed": 5,
     "unclassified": 0,
     "sourceStatus": {
       "rss": {
@@ -23,11 +23,11 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 12
+        "parsedOutcomes": 14
       },
       "productPages": {
-        "attempted": 14,
-        "enriched": 14,
+        "attempted": 15,
+        "enriched": 15,
         "blocked": 0
       },
       "legacyCache": {
@@ -36,6 +36,33 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-423306.22,B-423306.9",
+      "caseName": "z SofTech Solutions, Inc.--Reconsideration",
+      "title": "z SofTech Solutions, Inc.--Reconsideration",
+      "bNumbers": [
+        "B-423306.22",
+        "B-423306.9"
+      ],
+      "bNumberText": "B-423306.22, B-423306.9",
+      "link": "https://www.gao.gov/products/b-423306.22",
+      "publicationDate": "2026-07-09",
+      "decisionDate": "2026-07-08",
+      "displayDate": "Jul 8, 2026",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We dismiss the request for reconsideration.",
+      "officialSynopsis": "z SofTech Solutions, Inc., a small business of Atlanta, Georgia, requests reconsideration of our decision in z SofTech Solutions, Inc., B-423306.9, B...",
+      "highlights": "",
+      "digest": "Request for reconsideration of prior decision is dismissed where requester repeats arguments made in original protest, misunderstands or disagrees with our decision in the original protest, and relies on an incorrect statement of our regulations.",
+      "tags": [
+        "Small business"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424390",
       "caseName": "The NORDAM Group, LLC",
@@ -315,33 +342,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-423306.20",
-      "caseName": "InnoVet Technologies, LLC",
-      "title": "InnoVet Technologies, LLC",
-      "bNumbers": [
-        "B-423306.20"
-      ],
-      "bNumberText": "B-423306.20",
-      "link": "https://www.gao.gov/products/b-423306.20",
-      "publicationDate": "2026-06-22",
-      "decisionDate": "2026-06-16",
-      "displayDate": "Jun 16, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "InnoVet Technologies, LLC, a small business of Frederick, Maryland, protests the elimination of its proposal from the competition under request for...",
-      "highlights": "",
-      "digest": "Protest is denied where agency reasonably eliminated protester's proposal from award consideration because the proposal failed to include information required by solicitation.",
-      "tags": [
-        "Solicitation terms",
-        "Small business"
-      ],
-      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
       "id": "B-424382",
       "caseName": "OS-DB-JV-2, LLC",
       "title": "OS-DB-JV-2, LLC",
@@ -420,6 +420,35 @@ window.KTHQ_GAO_DATA = {
       "tags": [
         "Evaluation",
         "Solicitation terms",
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424002,B-424002.2",
+      "caseName": "INDUS Technology, Inc.",
+      "title": "INDUS Technology, Inc.",
+      "bNumbers": [
+        "B-424002",
+        "B-424002.2"
+      ],
+      "bNumberText": "B-424002, B-424002.2",
+      "link": "https://www.gao.gov/products/b-424002%2Cb-424002.2",
+      "publicationDate": "2026-07-09",
+      "decisionDate": "2026-02-17",
+      "displayDate": "Feb 17, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "INDUS Technology, Inc., of San Diego, California, protests the elimination of its proposal from the competition under request for proposals (RFP) No...",
+      "highlights": "",
+      "digest": "1. Protest challenging the agency's elimination of protester's proposal from the competition is denied where the agency reasonably concluded that the protester's proposal failed to demonstrate how it would provide at least 30 percent of the total proposed value of the task order to small business concerns. 2. Protest challenging the remaining portions of the agency's evaluation are dismissed where the protester fails to show competitive prejudice.",
+      "tags": [
+        "Evaluation",
+        "Small business",
         "Orders / IDIQ"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
