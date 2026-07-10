@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-07-09T10:41:06.902Z",
-  "since": "2025-01-15",
+  "generatedAt": "2026-07-10T10:28:46.024Z",
+  "since": "2025-01-16",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,15 +14,15 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 129,
+    "total": 125,
     "latestPublicationDate": "2026-07-08",
     "openCommentWindows": 24,
-    "rules": 53,
+    "rules": 49,
     "byTone": {
       "action": 31,
       "active": 7,
       "monitor": 73,
-      "watch": 18
+      "watch": 14
     }
   },
   "items": [
@@ -4509,154 +4509,6 @@ window.KTHQ_FEDREG_DATA = {
       "htmlUrl": "https://www.federalregister.gov/documents/2025/01/17/2025-00722/defense-federal-acquisition-regulation-supplement-update-of-challenge-period-for-validation-of",
       "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-01-17/pdf/2025-00722.pdf",
       "sourceQuery": "DFARS / DARS agency feed"
-    },
-    {
-      "id": "2024-30437",
-      "documentNumber": "2024-30437",
-      "title": "Federal Acquisition Regulation: Controlled Unclassified Information",
-      "shortTitle": "Federal Acquisition Regulation: Controlled Unclassified Information",
-      "system": "FAR",
-      "stage": "Proposed rule",
-      "topic": "Acquisition policy",
-      "actionLevel": "Review",
-      "actionTone": "watch",
-      "practitionerNote": "This is proposed rulemaking, not a current requirement. Keep it on your radar for the final rule.",
-      "nextSteps": [
-        "Check the comment due date",
-        "Skim the affected FAR/DFARS parts",
-        "Flag it for policy or leadership if it touches your buying lane"
-      ],
-      "type": "Proposed Rule",
-      "publicationDate": "2025-01-15",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-03-17",
-      "datesText": "Interested parties should submit written comments to the Regulatory Secretariat Division at the address shown below on or before March 17, 2025 to be considered in the formation of the final rule.",
-      "actionText": "Proposed rule.",
-      "summary": "DoD, GSA, and NASA are proposing to amend the Federal Acquisition Regulation (FAR) to implement the National Archives and Records Administration's Controlled Unclassified Information Program enacted under an Executive Order entitled Controlled Unclassified Information.",
-      "citation": "90 FR 4278",
-      "regulationIds": [
-        "9000-AN56"
-      ],
-      "cfrReferences": "48 CFR part 1, 48 CFR part 2, 48 CFR part 3, 48 CFR part 4, 48 CFR part 5, 48 CFR part 7, 48 CFR part 9, 48 CFR part 11, 48 CFR part 12, 48 CFR part 15, 48 CFR part 27, 48 CFR part 33, 48 CFR part 42, 48 CFR part 52, 48 CFR part 53",
-      "agencies": [
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/01/15/2024-30437/federal-acquisition-regulation-controlled-unclassified-information",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-01-15/pdf/2024-30437.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2024-31561",
-      "documentNumber": "2024-31561",
-      "title": "Federal Acquisition Regulation: Preventing Organizational Conflicts of Interest in Federal Acquisition",
-      "shortTitle": "Federal Acquisition Regulation: Preventing Organizational Conflicts of Interest in Federal Acquisition",
-      "system": "FAR",
-      "stage": "Proposed rule",
-      "topic": "Clauses / reps",
-      "actionLevel": "Review",
-      "actionTone": "watch",
-      "practitionerNote": "This is proposed rulemaking, not a current requirement. Keep it on your radar for the final rule.",
-      "nextSteps": [
-        "Check the comment due date",
-        "Skim the affected FAR/DFARS parts",
-        "Flag it for policy or leadership if it touches your buying lane"
-      ],
-      "type": "Proposed Rule",
-      "publicationDate": "2025-01-15",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-03-17",
-      "datesText": "Interested parties should submit written comments to the Regulatory Secretariat Division at the address shown below on or before March 17, 2025 to be considered in the formation of the final rule.",
-      "actionText": "Proposed rule.",
-      "summary": "DoD, GSA, and NASA are proposing to amend the Federal Acquisition Regulation (FAR) to implement the Preventing Organizational Conflicts of Interest in Federal Acquisition Act. The statute requires the FAR to provide and update definitions, guidance, and examples related to organizational conflicts of interest, including the creation of solicitation provisions and contract clauses to avoid or mitigate organizational conflicts of interest. The statute also requires the FAR to permit contracting officers to consider...",
-      "citation": "90 FR 4376",
-      "regulationIds": [
-        "9000-AO54"
-      ],
-      "cfrReferences": "48 CFR part 1, 48 CFR part 2, 48 CFR part 3, 48 CFR part 7, 48 CFR part 8, 48 CFR part 9, 48 CFR part 10, 48 CFR part 11, 48 CFR part 12, 48 CFR part 13, 48 CFR part 15, 48 CFR part 16, 48 CFR part 17, 48 CFR part 18, 48 CFR part 37, 48 CFR part 42, 48 CFR part 50, 48 CFR part 52",
-      "agencies": [
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/01/15/2024-31561/federal-acquisition-regulation-preventing-organizational-conflicts-of-interest-in-federal",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-01-15/pdf/2024-31561.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2025-00616",
-      "documentNumber": "2025-00616",
-      "title": "Federal Acquisition Regulation: Protests of Orders Under Certain Multiple-Award Contracts",
-      "shortTitle": "Federal Acquisition Regulation: Protests of Orders Under Certain Multiple-Award Contracts",
-      "system": "FAR",
-      "stage": "Proposed rule",
-      "topic": "Acquisition policy",
-      "actionLevel": "Review",
-      "actionTone": "watch",
-      "practitionerNote": "This is proposed rulemaking, not a current requirement. Keep it on your radar for the final rule.",
-      "nextSteps": [
-        "Check the comment due date",
-        "Skim the affected FAR/DFARS parts",
-        "Flag it for policy or leadership if it touches your buying lane"
-      ],
-      "type": "Proposed Rule",
-      "publicationDate": "2025-01-15",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-03-17",
-      "datesText": "Interested parties should submit written comments to the Regulatory Secretariat Division at the address shown below on or before March 17, 2025, to be considered in the formation of the final rule.",
-      "actionText": "Proposed rule.",
-      "summary": "DoD, GSA, and NASA are proposing to amend the Federal Acquisition Regulation (FAR) to clarify protest rights for orders set aside under certain multiple-award contracts.",
-      "citation": "90 FR 3761",
-      "regulationIds": [
-        "9000-AO76"
-      ],
-      "cfrReferences": "48 CFR part 16",
-      "agencies": [
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/01/15/2025-00616/federal-acquisition-regulation-protests-of-orders-under-certain-multiple-award-contracts",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-01-15/pdf/2025-00616.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2025-00615",
-      "documentNumber": "2025-00615",
-      "title": "Federal Acquisition Regulation: Small Business Participation on Certain Multiple-Award Contracts",
-      "shortTitle": "Federal Acquisition Regulation: Small Business Participation on Certain Multiple-Award Contracts",
-      "system": "FAR",
-      "stage": "Proposed rule",
-      "topic": "Small business",
-      "actionLevel": "Review",
-      "actionTone": "watch",
-      "practitionerNote": "This is proposed rulemaking, not a current requirement. Keep it on your radar for the final rule.",
-      "nextSteps": [
-        "Check the comment due date",
-        "Skim the affected FAR/DFARS parts",
-        "Flag it for policy or leadership if it touches your buying lane"
-      ],
-      "type": "Proposed Rule",
-      "publicationDate": "2025-01-15",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-03-17",
-      "datesText": "Interested parties should submit written comments to the Regulatory Secretariat Division at the address shown below on or before March 17, 2025, to be considered in the formation of the final rule.",
-      "actionText": "Proposed rule.",
-      "summary": "DoD, GSA, and NASA are proposing to amend the Federal Acquisition Regulation (FAR) to issue policy on small business participation on certain multiple-award contracts.",
-      "citation": "90 FR 3753",
-      "regulationIds": [
-        "9000-AO59"
-      ],
-      "cfrReferences": "48 CFR part 1, 48 CFR part 7, 48 CFR part 12, 48 CFR part 16, 48 CFR part 19, 48 CFR part 52",
-      "agencies": [
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/01/15/2025-00615/federal-acquisition-regulation-small-business-participation-on-certain-multiple-award-contracts",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-01-15/pdf/2025-00615.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
     }
   ]
 };
