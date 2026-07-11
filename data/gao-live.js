@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-07-10T10:35:12.014Z",
+  "generatedAt": "2026-07-11T09:08:21.138Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,10 +7,10 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 15,
+    "total": 16,
     "latestDecisionDate": "2026-07-08",
     "sustained": 0,
-    "denied": 8,
+    "denied": 9,
     "dismissed": 2,
     "mixed": 5,
     "unclassified": 0,
@@ -23,11 +23,11 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 14
+        "parsedOutcomes": 15
       },
       "productPages": {
-        "attempted": 15,
-        "enriched": 15,
+        "attempted": 16,
+        "enriched": 16,
         "blocked": 0
       },
       "legacyCache": {
@@ -60,6 +60,35 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424395,B-424395.2,B-424395.3",
+      "caseName": "Hudson Technologies Company",
+      "title": "Hudson Technologies Company",
+      "bNumbers": [
+        "B-424395",
+        "B-424395.2",
+        "B-424395.3"
+      ],
+      "bNumberText": "B-424395, B-424395.2, B-424395.3",
+      "link": "https://www.gao.gov/products/b-424395%2Cb-424395.2%2Cb-424395.3",
+      "publicationDate": "2026-07-10",
+      "decisionDate": "2026-07-07",
+      "displayDate": "Jul 7, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Hudson Technologies Company, of Woodcliff Lake, New Jersey, protests the award of a contract to RGAS LLC, of Houston, Texas, under request for...",
+      "highlights": "",
+      "digest": "1. Protest that the agency unreasonably relied on awardee's certification that it was offering domestic end products is denied where the record reflects the reasonableness of the agency's evaluation. 2. Protest challenging agency's past performance evaluation is denied where the evaluation was consistent with the requirements of the solicitation and reasonable.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -174,6 +203,32 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-424373",
+      "caseName": "Crowley Government Services, Inc.",
+      "title": "Crowley Government Services, Inc.",
+      "bNumbers": [
+        "B-424373"
+      ],
+      "bNumberText": "B-424373",
+      "link": "https://www.gao.gov/products/b-424373",
+      "publicationDate": "2026-07-10",
+      "decisionDate": "2026-06-30",
+      "displayDate": "Jun 30, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Crowley Government Services, Inc. (Crowley), of Jacksonville, Florida, protests the terms of request for proposals (RFP) No. N0002426R2421, issued by...",
+      "highlights": "",
+      "digest": "1. Protest challenging the terms of the solicitation as creating unreasonable risk is denied where the record demonstrates that the solicitation does not impose unreasonable risk on offerors, contains risk‑mitigating terms, and ultimately provides offerors with sufficient information to compete intelligently and equally. 2. Protest that the terms of the solicitation are inconsistent with customary commercial practice is denied where the record contains a valid waiver issued by the agency. 3. Protest challenging the amount of time afforded to offerors to respond to the solicitation is denied where the record demonstrates that the agency provided offerors with sufficient time to prepare and submit proposals.",
+      "tags": [
+        "Solicitation terms"
+      ],
+      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
       "id": "B-424249.2,B-424249",
       "caseName": "FCN Inc.--Reconsideration",
       "title": "FCN Inc.--Reconsideration",
@@ -254,6 +309,35 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-424182.2,B-424182.3",
+      "caseName": "Veterans Management Services, Inc.",
+      "title": "Veterans Management Services, Inc.",
+      "bNumbers": [
+        "B-424182.2",
+        "B-424182.3"
+      ],
+      "bNumberText": "B-424182.2, B-424182.3",
+      "link": "https://www.gao.gov/products/b-424182.2%2Cb-424182.3",
+      "publicationDate": "2026-07-10",
+      "decisionDate": "2026-06-22",
+      "displayDate": "Jun 22, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We sustain the protest in part and deny it in part.",
+      "officialSynopsis": "Veterans Management Services, Inc. (VMSI), a service-disabled veteran-owned small business (SDVOSB) of Sterling, Virginia, challenges the award of a...",
+      "highlights": "",
+      "digest": "1. Protest that the agency unreasonably evaluated the protester's past performance is sustained where the record demonstrates that the evaluation was not consistent with the terms of the solicitation. 2. Protest that the awardee failed to comply with a material solicitation requirement regarding the period of performance is denied where the protester has not demonstrated that it was competitively prejudiced.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms",
+        "Small business"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
       "id": "B-424314.2",
       "caseName": "GSINA-Pacific JV II, LLC",
       "title": "GSINA-Pacific JV II, LLC",
@@ -308,63 +392,6 @@ window.KTHQ_GAO_DATA = {
         "Solicitation terms"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424358,B-424358.2",
-      "caseName": "DexteriTech Solutions, LLC",
-      "title": "DexteriTech Solutions, LLC",
-      "bNumbers": [
-        "B-424358",
-        "B-424358.2"
-      ],
-      "bNumberText": "B-424358, B-424358.2",
-      "link": "https://www.gao.gov/products/b-424358%2Cb-424358.2",
-      "publicationDate": "2026-06-23",
-      "decisionDate": "2026-06-16",
-      "displayDate": "Jun 16, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest in part and dismiss it in part.",
-      "officialSynopsis": "DexteriTech Solutions, LLC, a service-disabled veteran-owned small business (SDVOSB) of Gaithersburg, Maryland, protests the issuance of a task order...",
-      "highlights": "",
-      "digest": "1. Protest challenging the agency's evaluation of the protester's proposal under the technical factor is denied where the record shows that the evaluation was reasonable and in accordance with the stated evaluation criteria. 2. Protest challenging the awardee's ability to meet the solicitation's requirements based on the awardee's lower proposed price is dismissed where the solicitation did not contemplate a price realism analysis.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Price / cost",
-        "Small business"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424382",
-      "caseName": "OS-DB-JV-2, LLC",
-      "title": "OS-DB-JV-2, LLC",
-      "bNumbers": [
-        "B-424382"
-      ],
-      "bNumberText": "B-424382",
-      "link": "https://www.gao.gov/products/b-424382",
-      "publicationDate": "2026-06-22",
-      "decisionDate": "2026-06-16",
-      "displayDate": "Jun 16, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "OS-DB-JV-2, LLC, a service-disabled, veteran owned small business (SDVOSB) of Toa Baja, Puerto Rico, protests the exclusion of its proposal from the...",
-      "highlights": "",
-      "digest": "Protest that the agency unreasonably eliminated the protester's proposal from competition is denied where the record shows the agency reasonably determined that the protester's proposal failed to conform to the terms of the solicitation.",
-      "tags": [
-        "Solicitation terms",
-        "Small business"
-      ],
-      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
