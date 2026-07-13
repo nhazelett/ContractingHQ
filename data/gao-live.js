@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-07-12T09:27:34.064Z",
+  "generatedAt": "2026-07-13T10:39:34.617Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
