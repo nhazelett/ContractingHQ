@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-07-13T10:34:28.704Z",
-  "since": "2025-01-19",
+  "generatedAt": "2026-07-14T09:15:26.618Z",
+  "since": "2025-01-20",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -16,7 +16,7 @@ window.KTHQ_FEDREG_DATA = {
   "stats": {
     "total": 121,
     "latestPublicationDate": "2026-07-08",
-    "openCommentWindows": 24,
+    "openCommentWindows": 19,
     "rules": 45,
     "byTone": {
       "action": 28,
