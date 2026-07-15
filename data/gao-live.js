@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-07-14T09:26:52.288Z",
+  "generatedAt": "2026-07-15T09:30:11.326Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,13 +7,13 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 18,
+    "total": 20,
     "latestDecisionDate": "2026-07-08",
     "sustained": 0,
-    "denied": 9,
+    "denied": 10,
     "dismissed": 2,
-    "mixed": 7,
-    "unclassified": 0,
+    "mixed": 6,
+    "unclassified": 2,
     "sourceStatus": {
       "rss": {
         "ok": true,
@@ -118,6 +118,33 @@ window.KTHQ_GAO_DATA = {
         "Solicitation terms"
       ],
       "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424391",
+      "caseName": "American Correctional Healthcare, Inc.",
+      "title": "American Correctional Healthcare, Inc.",
+      "bNumbers": [
+        "B-424391"
+      ],
+      "bNumberText": "B-424391",
+      "link": "https://www.gao.gov/products/b-424391",
+      "publicationDate": "2026-07-14",
+      "decisionDate": "2026-07-06",
+      "displayDate": "Jul 6, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "American Correctional Healthcare, Inc., a small business of Fort Worth, Texas, challenges the terms of request for proposals (RFP) No....",
+      "highlights": "",
+      "digest": "Protest challenging solicitation pricing benchmark is denied where the benchmark is reasonably related to the services to be procured, and the protester cannot articulate a reasonable possibility of competitive prejudice.",
+      "tags": [
+        "Solicitation terms",
+        "Small business"
+      ],
+      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -229,6 +256,62 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-424364,B-424364.2",
+      "caseName": "Tyonek Technical Innovations, LLC",
+      "title": "Tyonek Technical Innovations, LLC",
+      "bNumbers": [
+        "B-424364",
+        "B-424364.2"
+      ],
+      "bNumberText": "B-424364, B-424364.2",
+      "link": "https://www.gao.gov/products/b-424364%2Cb-424364.2",
+      "publicationDate": "2026-07-14",
+      "decisionDate": "2026-06-30",
+      "displayDate": "Jun 30, 2026",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We dismiss the protest.",
+      "officialSynopsis": "Tyonek Technical Innovations, LLC, a small business of Anchorage, Alaska, protests the terms of request for proposals (RFP) No. FA8773-25-R-0002...",
+      "highlights": "",
+      "digest": "1. Protest challenging terms of solicitation as inconsistent with Defense Federal Acquisition Regulation Supplement (DFARS) 215.305(a)(2)(C) requirement to consider the past performance of a small business concern's affiliates is dismissed as untimely. 2. Protest challenging agency's past performance evaluation is dismissed as premature when brought prior to award.",
+      "tags": [
+        "Timeliness",
+        "Evaluation",
+        "Solicitation terms",
+        "Small business"
+      ],
+      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424377",
+      "caseName": "BCCG JV",
+      "title": "BCCG JV",
+      "bNumbers": [
+        "B-424377"
+      ],
+      "bNumberText": "B-424377",
+      "link": "https://www.gao.gov/products/b-424377",
+      "publicationDate": "2026-06-26",
+      "decisionDate": "2026-06-26",
+      "displayDate": "Jun 26, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "BCCG JV, of Montgomery, Alabama, protests the issuance of a task order to Cochrane USA Inc., of Fredericksburg, Virginia, by the Department of...",
+      "highlights": "",
+      "digest": "",
+      "tags": [
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
+    },
+    {
       "id": "B-424249.2,B-424249",
       "caseName": "FCN Inc.--Reconsideration",
       "title": "FCN Inc.--Reconsideration",
@@ -256,57 +339,31 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424376",
-      "caseName": "FedWriters, Inc.",
-      "title": "FedWriters, Inc.",
+      "id": "B-424156.2,B-424156.3",
+      "caseName": "Indigo Ridge Farms, LLC",
+      "title": "Indigo Ridge Farms, LLC",
       "bNumbers": [
-        "B-424376"
+        "B-424156.2",
+        "B-424156.3"
       ],
-      "bNumberText": "B-424376",
-      "link": "https://www.gao.gov/products/b-424376",
+      "bNumberText": "B-424156.2, B-424156.3",
+      "link": "https://www.gao.gov/products/b-424156.2%2Cb-424156.3",
       "publicationDate": "2026-06-25",
-      "decisionDate": "2026-06-23",
-      "displayDate": "Jun 23, 2026",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protest.",
-      "officialSynopsis": "FedWriters, Inc., a small business of Fairfax, Virginia, protests the terms of request for proposals (RFP) No. 49100426R0002, issued by the National...",
+      "decisionDate": "2026-06-25",
+      "displayDate": "Jun 25, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "Indigo Ridge Farms, LLC, a women-owned small business of Mount Jackson, Virginia, protests the award of a contract to SOF Landing, LLC, a small...",
       "highlights": "",
-      "digest": "Protest that an agency, when issuing a solicitation for the establishment of a blanket purchase agreement (BPA), failed to meet the consolidation analysis requirements of Revolutionary Federal Acquisition Regulation Overhaul section 7.107-2 is dismissed because the plain language of the provision does not apply to BPAs.",
+      "digest": "",
       "tags": [
-        "Solicitation terms",
         "Small business"
       ],
-      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424377",
-      "caseName": "BCCG JV",
-      "title": "BCCG JV",
-      "bNumbers": [
-        "B-424377"
-      ],
-      "bNumberText": "B-424377",
-      "link": "https://www.gao.gov/products/b-424377",
-      "publicationDate": "2026-06-26",
-      "decisionDate": "2026-06-22",
-      "displayDate": "Jun 22, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protest.",
-      "officialSynopsis": "BCCG JV, of Montgomery, Alabama, protests the issuance of a task order to Cochrane USA Inc., of Fredericksburg, Virginia, by the Department of...",
-      "highlights": "",
-      "digest": "1. Protest challenging the issuance of a sole‑source task order is dismissed where the agency issued the task order on a sole‑source basis pursuant to a waiver under the Illegal Immigration Reform and Immigrant Responsibility Act of 1996, which vests exclusive jurisdiction over causes or claims arising from actions undertaken pursuant to such a waiver in the district courts of the United States. 2. Protest alleging that issuance of a task order violated restrictions on conflicts of interest is dismissed where it fails to provide factually and legally sufficient bases of protest.",
-      "tags": [
-        "Orders / IDIQ"
-      ],
       "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
     },
     {
       "id": "B-424182.2,B-424182.3",
@@ -454,35 +511,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424156.2,B-424156.3",
-      "caseName": "Indigo Ridge Farms, LLC",
-      "title": "Indigo Ridge Farms, LLC",
-      "bNumbers": [
-        "B-424156.2",
-        "B-424156.3"
-      ],
-      "bNumberText": "B-424156.2, B-424156.3",
-      "link": "https://www.gao.gov/products/b-424156.2%2Cb-424156.3",
-      "publicationDate": "2026-06-25",
-      "decisionDate": "2026-06-15",
-      "displayDate": "Jun 15, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Indigo Ridge Farms, LLC, a women-owned small business of Mount Jackson, Virginia, protests the award of a contract to SOF Landing, LLC, a small...",
-      "highlights": "",
-      "digest": "Protest that agency should have evaluated awardee's proposal as technically unacceptable and ineligible for award is denied where the agency's evaluation was reasonable and consistent with the solicitation criteria.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Small business"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
       "id": "B-424347,B-424347.2",
       "caseName": "InterImage Inc.",
       "title": "InterImage Inc.",
@@ -508,6 +536,34 @@ window.KTHQ_GAO_DATA = {
         "Orders / IDIQ"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424332",
+      "caseName": "Sea Box, Inc.",
+      "title": "Sea Box, Inc.",
+      "bNumbers": [
+        "B-424332"
+      ],
+      "bNumberText": "B-424332",
+      "link": "https://www.gao.gov/products/b-424332",
+      "publicationDate": "2026-07-14",
+      "decisionDate": "2026-06-15",
+      "displayDate": "Jun 15, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Sea Box, Inc., a small business of Cinnaminson, New Jersey, protests the terms of request for proposals (RFP) No. SPE8ED-26-R-0002, issued by the...",
+      "highlights": "",
+      "digest": "Protest is denied where the agency's decision to issue two contract line item numbers on an unrestricted basis was reasonable, as the agency's market research was sufficient to conclude that the agency would likely not receive proposals from at least two responsible small business concerns that could meet the solicitation's requirements at a fair market price for those contract line item numbers.",
+      "tags": [
+        "Solicitation terms",
+        "Price / cost",
+        "Small business"
+      ],
+      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
