@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-07-15T09:30:11.326Z",
+  "generatedAt": "2026-07-16T09:35:42.948Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 17
+        "parsedOutcomes": 19
       },
       "productPages": {
         "attempted": 18,
@@ -312,6 +312,33 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "RSS fallback"
     },
     {
+      "id": "B-424347,B-424347.2",
+      "caseName": "InterImage Inc.",
+      "title": "InterImage Inc.",
+      "bNumbers": [
+        "B-424347",
+        "B-424347.2"
+      ],
+      "bNumberText": "B-424347, B-424347.2",
+      "link": "https://www.gao.gov/products/b-424347%2Cb-424347.2",
+      "publicationDate": "2026-06-26",
+      "decisionDate": "2026-06-26",
+      "displayDate": "Jun 26, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "InterImage, Inc., of Arlington, Virginia, protests the issuance of a task order to Trillion Technology Solutions, Inc., of Reston, Virginia, under...",
+      "highlights": "",
+      "digest": "",
+      "tags": [
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
+    },
+    {
       "id": "B-424249.2,B-424249",
       "caseName": "FCN Inc.--Reconsideration",
       "title": "FCN Inc.--Reconsideration",
@@ -337,33 +364,6 @@ window.KTHQ_GAO_DATA = {
       "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424156.2,B-424156.3",
-      "caseName": "Indigo Ridge Farms, LLC",
-      "title": "Indigo Ridge Farms, LLC",
-      "bNumbers": [
-        "B-424156.2",
-        "B-424156.3"
-      ],
-      "bNumberText": "B-424156.2, B-424156.3",
-      "link": "https://www.gao.gov/products/b-424156.2%2Cb-424156.3",
-      "publicationDate": "2026-06-25",
-      "decisionDate": "2026-06-25",
-      "displayDate": "Jun 25, 2026",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "outcomeSource": "Inferred from GAO RSS",
-      "decisionLine": "",
-      "officialSynopsis": "Indigo Ridge Farms, LLC, a women-owned small business of Mount Jackson, Virginia, protests the award of a contract to SOF Landing, LLC, a small...",
-      "highlights": "",
-      "digest": "",
-      "tags": [
-        "Small business"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
     },
     {
       "id": "B-424182.2,B-424182.3",
@@ -511,35 +511,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424347,B-424347.2",
-      "caseName": "InterImage Inc.",
-      "title": "InterImage Inc.",
-      "bNumbers": [
-        "B-424347",
-        "B-424347.2"
-      ],
-      "bNumberText": "B-424347, B-424347.2",
-      "link": "https://www.gao.gov/products/b-424347%2Cb-424347.2",
-      "publicationDate": "2026-06-26",
-      "decisionDate": "2026-06-15",
-      "displayDate": "Jun 15, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "InterImage, Inc., of Arlington, Virginia, protests the issuance of a task order to Trillion Technology Solutions, Inc., of Reston, Virginia, under...",
-      "highlights": "",
-      "digest": "1. Protest alleging that the agency unreasonably evaluated the awardee's technical quotation is denied where the record shows the evaluation was reasonable and consistent with the terms of the solicitation. 2. Protest alleging that the agency unreasonably conducted the tradeoff analysis is denied where the record shows that the agency qualitatively compared the quotations in accordance with the terms of the solicitation.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
       "id": "B-424332",
       "caseName": "Sea Box, Inc.",
       "title": "Sea Box, Inc.",
@@ -564,6 +535,35 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424314,B-424314.3",
+      "caseName": "Pacific Ohana Laulima, LLC",
+      "title": "Pacific Ohana Laulima, LLC",
+      "bNumbers": [
+        "B-424314",
+        "B-424314.3"
+      ],
+      "bNumberText": "B-424314, B-424314.3",
+      "link": "https://www.gao.gov/products/b-424314%2Cb-424314.3",
+      "publicationDate": "2026-07-15",
+      "decisionDate": "2026-06-09",
+      "displayDate": "Jun 9, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Pacific Ohana Laulima, LLC (Pacific), a small business located in Tamuning, Guam, protests the exclusion of its proposal from the second phase of...",
+      "highlights": "",
+      "digest": "Protest challenging the agency's evaluation of the protester's proposal and resulting exclusion from the competition is denied where the record shows that the evaluation was reasonable and the exclusion of its proposal was consistent with the solicitation's two-phase selection process.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms",
+        "Small business"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
