@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-07-16T10:20:36.237598+00:00",
+  "generatedAt": "2026-07-17T10:11:42.574154+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -12,8 +12,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "totalParts": 51,
     "issuedParts": 51,
     "updatedParts": 11,
-    "agencyDeviationCount": 1453,
-    "uniqueAgencyCount": 39,
+    "agencyDeviationCount": 1457,
+    "uniqueAgencyCount": 40,
     "latestPartDate": "2026-07-01",
     "latestPartDateLabel": "Jul 1, 2026",
     "announcementCount": 10,
@@ -23,7 +23,84 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "baseline": false,
     "newParts": [],
     "updatedParts": [],
-    "newAgencyDeviations": [],
+    "newAgencyDeviations": [
+      {
+        "part": {
+          "partNumber": 3,
+          "partLabel": "Part 3",
+          "title": "Improper Business Practices and Personal Conflicts of Interest",
+          "fullTitle": "Part 3 - Improper Business Practices and Personal Conflicts of Interest",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-3",
+          "issuanceDate": "2025-09-11",
+          "issuanceDateLabel": "Sep 11, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Consumer Product Safety Commission (CPSC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CPSC_RFO_Deviation_Part-3.pdf",
+          "id": "25d77bc9bbab22e8"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 13,
+          "partLabel": "Part 13",
+          "title": "Simplified Procedures for Noncommercial Acquisitions",
+          "fullTitle": "Part 13 - Simplified Procedures for Noncommercial Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-13",
+          "issuanceDate": "2025-09-18",
+          "issuanceDateLabel": "Sep 18, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Consumer Product Safety Commission (CPSC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CPSC_RFO_Deviation_Part-13.pdf",
+          "id": "aa88e74441f926ad"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 15,
+          "partLabel": "Part 15",
+          "title": "Contracting by Negotiation",
+          "fullTitle": "Part 15 - Contracting by Negotiation",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-15",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "International Boundary and Water Commission (IBWC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/IBWC_RFO_Deviation_Part-15.pdf",
+          "id": "92d07d2c6c87d106"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 42,
+          "partLabel": "Part 42",
+          "title": "Contract Administration and Audit Services",
+          "fullTitle": "Part 42 - Contract Administration and Audit Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-42",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 28
+        },
+        "agency": {
+          "name": "Social Security Administration (SSA)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/SSA_RFO_Deviaiton_Parts-42.pdf",
+          "id": "c9e5f336d4ba6def"
+        }
+      }
+    ],
     "removedAgencyDeviations": []
   },
   "parts": [
@@ -265,7 +342,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 28,
+      "deviationCount": 29,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -406,12 +483,17 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Consumer Financial Protection Bureau (CFPB)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CFPB_RFO_Deviation_Part-3.pdf",
           "id": "f278e408573283cb"
+        },
+        {
+          "name": "Consumer Product Safety Commission (CPSC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CPSC_RFO_Deviation_Part-3.pdf",
+          "id": "25d77bc9bbab22e8"
         }
       ],
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 4,
@@ -2105,7 +2187,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 30,
+      "deviationCount": 31,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -2256,6 +2338,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Consumer Financial Protection Bureau (CFPB)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CFPB_RFO_Deviation_Part-13.pdf",
           "id": "35e3f8f8335e5c40"
+        },
+        {
+          "name": "Consumer Product Safety Commission (CPSC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CPSC_RFO_Deviation_Part-13.pdf",
+          "id": "aa88e74441f926ad"
         }
       ],
       "tags": [
@@ -2438,7 +2525,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 28,
+      "deviationCount": 29,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -2579,6 +2666,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Consumer Financial Protection Bureau (CFPB)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CFPB_RFO_Deviation_Part-15.pdf",
           "id": "f5958dea1a98e54e"
+        },
+        {
+          "name": "International Boundary and Water Commission (IBWC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/IBWC_RFO_Deviation_Part-15.pdf",
+          "id": "92d07d2c6c87d106"
         }
       ],
       "tags": [
@@ -6489,7 +6581,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 27,
+      "deviationCount": 28,
       "agencies": [
         {
           "name": "Office of Personnel Management (OPM)",
@@ -6625,6 +6717,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Department of Commerce (DOC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOC_RFO_Deviation_Parts-1-53.pdf",
           "id": "e9da85856b1ea5a3"
+        },
+        {
+          "name": "Social Security Administration (SSA)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/SSA_RFO_Deviaiton_Parts-42.pdf",
+          "id": "c9e5f336d4ba6def"
         }
       ],
       "tags": [
