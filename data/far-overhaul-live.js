@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-07-17T10:11:42.574154+00:00",
+  "generatedAt": "2026-07-18T09:44:22.597248+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -23,84 +23,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "baseline": false,
     "newParts": [],
     "updatedParts": [],
-    "newAgencyDeviations": [
-      {
-        "part": {
-          "partNumber": 3,
-          "partLabel": "Part 3",
-          "title": "Improper Business Practices and Personal Conflicts of Interest",
-          "fullTitle": "Part 3 - Improper Business Practices and Personal Conflicts of Interest",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-3",
-          "issuanceDate": "2025-09-11",
-          "issuanceDateLabel": "Sep 11, 2025",
-          "updateDate": "",
-          "updateDateLabel": "",
-          "deviationCount": 29
-        },
-        "agency": {
-          "name": "Consumer Product Safety Commission (CPSC)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CPSC_RFO_Deviation_Part-3.pdf",
-          "id": "25d77bc9bbab22e8"
-        }
-      },
-      {
-        "part": {
-          "partNumber": 13,
-          "partLabel": "Part 13",
-          "title": "Simplified Procedures for Noncommercial Acquisitions",
-          "fullTitle": "Part 13 - Simplified Procedures for Noncommercial Acquisitions",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-13",
-          "issuanceDate": "2025-09-18",
-          "issuanceDateLabel": "Sep 18, 2025",
-          "updateDate": "",
-          "updateDateLabel": "",
-          "deviationCount": 31
-        },
-        "agency": {
-          "name": "Consumer Product Safety Commission (CPSC)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CPSC_RFO_Deviation_Part-13.pdf",
-          "id": "aa88e74441f926ad"
-        }
-      },
-      {
-        "part": {
-          "partNumber": 15,
-          "partLabel": "Part 15",
-          "title": "Contracting by Negotiation",
-          "fullTitle": "Part 15 - Contracting by Negotiation",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-15",
-          "issuanceDate": "2025-09-30",
-          "issuanceDateLabel": "Sep 30, 2025",
-          "updateDate": "",
-          "updateDateLabel": "",
-          "deviationCount": 29
-        },
-        "agency": {
-          "name": "International Boundary and Water Commission (IBWC)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/IBWC_RFO_Deviation_Part-15.pdf",
-          "id": "92d07d2c6c87d106"
-        }
-      },
-      {
-        "part": {
-          "partNumber": 42,
-          "partLabel": "Part 42",
-          "title": "Contract Administration and Audit Services",
-          "fullTitle": "Part 42 - Contract Administration and Audit Services",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-42",
-          "issuanceDate": "2025-09-30",
-          "issuanceDateLabel": "Sep 30, 2025",
-          "updateDate": "",
-          "updateDateLabel": "",
-          "deviationCount": 28
-        },
-        "agency": {
-          "name": "Social Security Administration (SSA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/SSA_RFO_Deviaiton_Parts-42.pdf",
-          "id": "c9e5f336d4ba6def"
-        }
-      }
-    ],
+    "newAgencyDeviations": [],
     "removedAgencyDeviations": []
   },
   "parts": [
