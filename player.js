@@ -1429,6 +1429,18 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
 .cfm-sb-favs-btn:hover { color: #8a9bb0; background: rgba(255,255,255,0.03); }
 .cfm-sb-favs-btn.active { color: #ef4444; background: rgba(239,68,68,0.06); }
 .cfm-sb-favs-btn.disabled { opacity: 0.35; cursor: default; }
+.cfm-sb-spotify {
+  width: 100%; padding: 0.6rem 1rem; box-sizing: border-box;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  background: rgba(30,215,96,0.07);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.3px;
+  color: #9fb3c8; text-decoration: none;
+  display: flex; align-items: center; justify-content: center; gap: 0.45rem;
+  transition: color 0.2s, background 0.2s;
+}
+.cfm-sb-spotify:hover, .cfm-sb-spotify:focus-visible { color: #e6f2ea; background: rgba(30,215,96,0.15); }
+.cfm-sb-spotify svg { flex: none; width: 15px; height: 15px; fill: #1ed760; }
 .cfm-sb-song-panel {
   display: none;
   border-top: 1px solid rgba(255,255,255,0.06);
@@ -1881,6 +1893,10 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
           '<button class="cfm-sb-np-heart" id="cfm-sb-heart" title="Like this track">&#9825;</button>',
         '</div>',
         '<button class="cfm-sb-favs-btn" id="cfm-sb-favs-btn">&#10084; Play Liked Songs Only</button>',
+        '<a class="cfm-sb-spotify" href="https://open.spotify.com/artist/7oNrK1I1AKGpqlHLNyDdtk" target="_blank" rel="noopener">',
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0Zm5.5 17.3a.75.75 0 0 1-1.03.25c-2.82-1.72-6.37-2.11-10.55-1.16a.75.75 0 1 1-.33-1.46c4.57-1.04 8.5-.59 11.66 1.34.35.22.46.68.25 1.03Zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.23-1.98-8.15-2.56-11.97-1.4a.94.94 0 0 1-.54-1.79c4.36-1.32 9.78-.68 13.49 1.6.44.27.58.85.31 1.28Zm.13-3.4C15.23 8.33 8.9 8.12 5.2 9.24a1.12 1.12 0 1 1-.65-2.15c4.25-1.29 11.24-1.04 15.67 1.59a1.12 1.12 0 0 1-1.15 1.93l.03.02Z"/></svg>',
+          'Also on Spotify, Apple Music &amp; more',
+        '</a>',
         '<div class="cfm-sb-song-panel" id="cfm-sb-song-panel"></div>',
       '</div>'
     ].join('');
