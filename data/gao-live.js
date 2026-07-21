@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-07-20T10:25:39.185Z",
+  "generatedAt": "2026-07-21T10:03:56.254Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,13 +7,13 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 20,
+    "total": 19,
     "latestDecisionDate": "2026-07-08",
     "sustained": 0,
     "denied": 10,
     "dismissed": 2,
     "mixed": 6,
-    "unclassified": 2,
+    "unclassified": 1,
     "sourceStatus": {
       "rss": {
         "ok": true,
@@ -284,32 +284,6 @@ window.KTHQ_GAO_DATA = {
       "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424377",
-      "caseName": "BCCG JV",
-      "title": "BCCG JV",
-      "bNumbers": [
-        "B-424377"
-      ],
-      "bNumberText": "B-424377",
-      "link": "https://www.gao.gov/products/b-424377",
-      "publicationDate": "2026-06-26",
-      "decisionDate": "2026-06-26",
-      "displayDate": "Jun 26, 2026",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "outcomeSource": "Inferred from GAO RSS",
-      "decisionLine": "",
-      "officialSynopsis": "BCCG JV, of Montgomery, Alabama, protests the issuance of a task order to Cochrane USA Inc., of Fredericksburg, Virginia, by the Department of...",
-      "highlights": "",
-      "digest": "",
-      "tags": [
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
     },
     {
       "id": "B-424347,B-424347.2",
