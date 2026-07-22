@@ -1,5 +1,5 @@
 window.KTHQ_ASBCA_DATA = {
-  "generatedAt": "2026-07-21T10:09:34.907917+00:00",
+  "generatedAt": "2026-07-22T10:10:31.216794+00:00",
   "source": {
     "name": "Armed Services Board of Contract Appeals",
     "decisionsUrl": "https://www.asbca.mil/Decisions/2026/"
