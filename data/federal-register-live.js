@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-07-24T09:31:09.795Z",
-  "since": "2025-01-30",
+  "generatedAt": "2026-07-25T09:10:05.871Z",
+  "since": "2025-01-31",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,18 +14,52 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 121,
-    "latestPublicationDate": "2026-07-08",
-    "openCommentWindows": 12,
+    "total": 122,
+    "latestPublicationDate": "2026-07-27",
+    "openCommentWindows": 13,
     "rules": 45,
     "byTone": {
+      "monitor": 74,
       "action": 28,
       "active": 3,
-      "monitor": 73,
       "watch": 17
     }
   },
   "items": [
+    {
+      "id": "2026-15068",
+      "documentNumber": "2026-15068",
+      "title": "Information Collection Requirement; Defense Federal Acquisition Regulation Supplement; Covered Defense Telecommunications Equipment or Services",
+      "shortTitle": "Information Collection Requirement; Defense Federal Acquisition Regulation Supplement; Covered Defense Telecommunications Equipment or Services",
+      "system": "DFARS",
+      "stage": "Information collection",
+      "topic": "Clauses / reps",
+      "actionLevel": "Monitor",
+      "actionTone": "monitor",
+      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
+      "nextSteps": [
+        "Identify the cited provision, clause, form, or system",
+        "Comment only if your office has burden data or a process concern",
+        "No template change unless a later rule follows"
+      ],
+      "type": "Notice",
+      "publicationDate": "2026-07-27",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-09-25",
+      "datesText": "DoD will consider all comments received by September 25, 2026.",
+      "actionText": "Notice and request for comments regarding a proposed extension of an approved information collection requirement.",
+      "summary": "In compliance with the Paperwork Reduction Act of 1995, DoD announces the proposed extension of a public information collection requirement and seeks public comment on the provisions thereof. DoD invites comments on: whether the proposed collection of information is necessary for the proper performance of the functions of DoD, including whether the information will have practical utility; the accuracy of DoD's estimate of the burden of the proposed information collection; ways to enhance the quality, utility, and...",
+      "citation": "91 FR 46902",
+      "regulationIds": [],
+      "cfrReferences": "",
+      "agencies": [
+        "Defense Department",
+        "Defense Acquisition Regulations System"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/07/27/2026-15068/information-collection-requirement-defense-federal-acquisition-regulation-supplement-covered-defense",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-07-27/pdf/2026-15068.pdf",
+      "sourceQuery": "DFARS / DARS agency feed"
+    },
     {
       "id": "2026-13764",
       "documentNumber": "2026-13764",
