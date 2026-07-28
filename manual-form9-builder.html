@@ -16,90 +16,36 @@
   <style>.bmc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#FFDD00;color:#000;border-radius:8px;padding:.45rem 1rem;font-weight:700;font-size:.83rem;text-decoration:none;transition:opacity .2s,transform .15s}.bmc-btn:hover{opacity:.88;transform:translateY(-1px)}</style>
   <!-- jsPDF — used directly to draw the form at exact mm positions -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.3/jspdf.umd.min.js"></script>
-  <style>
-    .bldr-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
-    .bldr-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
-    .bldr-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
-    .bldr-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
-    .bldr-intro p { color: var(--silver); font-size: 0.9rem; max-width: 660px; margin: 0 auto 1.5rem; line-height: 1.6; }
-
-    .bldr-form { max-width: 800px; margin: 2rem auto; padding: 0 1.5rem; }
-
-    .bldr-section { background: rgba(10,22,50,0.4); border: 1px solid rgba(74,158,255,0.15); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; }
-    .bldr-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.5rem; }
-    .bldr-section .sec-desc { color: var(--silver); font-size: 0.82rem; margin-bottom: 1rem; line-height: 1.5; }
-    .bldr-section label { display: block; color: var(--silver); font-size: 0.82rem; font-weight: 600; margin-bottom: 0.3rem; margin-top: 0.75rem; }
-    .bldr-section input[type="text"], .bldr-section input[type="number"] {
+  <style>.bldr-bg{ background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }.bldr-intro{ text-align: center; padding: 2.5rem 1.5rem 0; }.bldr-intro-tag{ display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }.bldr-intro h2, .bldr-intro h1{ font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }.bldr-intro p{ color: var(--silver); font-size: 0.9rem; max-width: 660px; margin: 0 auto 1.5rem; line-height: 1.6; }.bldr-form{ max-width: 800px; margin: 2rem auto; padding: 0 1.5rem; }.bldr-section{ background: rgba(10,22,50,0.4); border: 1px solid rgba(74,158,255,0.15); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; }.bldr-section h3, .bldr-section h2{ font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.5rem; }.bldr-section .sec-desc{ color: var(--silver); font-size: 0.82rem; margin-bottom: 1rem; line-height: 1.5; }.bldr-section label{ display: block; color: var(--silver); font-size: 0.82rem; font-weight: 600; margin-bottom: 0.3rem; margin-top: 0.75rem; }.bldr-section input[type="text"], .bldr-section input[type="number"]{
       width: 100%; box-sizing: border-box; background: rgba(4,13,31,0.8); border: 1px solid rgba(74,158,255,0.2); color: var(--white); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.88rem; font-family: inherit;
-    }
-    .bldr-section textarea {
+    }.bldr-section textarea{
       width: 100%; box-sizing: border-box; background: rgba(4,13,31,0.8); border: 1px solid rgba(74,158,255,0.2); color: var(--white); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.85rem; font-family: inherit; min-height: 70px; resize: vertical; line-height: 1.6;
-    }
-    .bldr-section select {
+    }.bldr-section select{
       width: 100%; box-sizing: border-box; background: rgba(4,13,31,0.8); border: 1px solid rgba(74,158,255,0.2); color: var(--white); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.88rem; font-family: inherit;
       appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a9eff' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; padding-right: 2rem; cursor: pointer;
-    }
-    .bldr-section select option { background: #0a1632; color: #e2eaf4; padding: 0.4rem; }
-    .bldr-section input:focus, .bldr-section textarea:focus, .bldr-section select:focus { outline: none; border-color: var(--accent); }
-    .bldr-section .optional-tag { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: #fcd34d; opacity: 0.7; font-weight: 700; }
-
-    .item-row { display: grid; grid-template-columns: 50px 1fr 60px 60px 90px 36px; gap: 0.5rem; align-items: start; margin-bottom: 0.5rem; }
-    @media (max-width: 700px) { .item-row { grid-template-columns: 1fr 1fr; } .item-row .item-desc { grid-column: 1 / -1; } }
-    .item-row input { margin-top: 0 !important; }
-    .item-header { display: grid; grid-template-columns: 50px 1fr 60px 60px 90px 36px; gap: 0.5rem; margin-bottom: 0.35rem; font-size: 0.72rem; color: var(--silver); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    @media (max-width: 700px) { .item-header { display: none; } }
-
-    .item-remove { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; border-radius: 6px; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700; transition: background 0.12s; margin-top: 0; }
-    .item-remove:hover { background: rgba(248,113,113,0.2); }
-
-    .add-btn { background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.2); color: var(--accent); border-radius: 8px; padding: 0.45rem 0.9rem; cursor: pointer; font-size: 0.8rem; font-weight: 600; font-family: inherit; transition: background 0.12s; margin-top: 0.5rem; }
-    .add-btn:hover { background: rgba(74,158,255,0.2); }
-
-    .btn-row { display: flex; gap: 0.75rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap; }
-    .gen-btn { background: var(--accent); color: #040d1f; border: none; border-radius: 10px; padding: 0.75rem 2rem; font-size: 0.95rem; font-weight: 700; font-family: 'Rajdhani', sans-serif; cursor: pointer; letter-spacing: 0.5px; transition: opacity 0.12s; }
-    .gen-btn:hover { opacity: 0.85; }
-    .preview-btn { background: rgba(52,211,153,0.15); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.3); border-radius: 10px; padding: 0.75rem 2rem; font-size: 0.95rem; font-weight: 700; font-family: 'Rajdhani', sans-serif; cursor: pointer; transition: opacity 0.12s; }
-    .preview-btn:hover { opacity: 0.85; }
-    .util-btn { background: rgba(167,139,250,0.13); color: #c4b5fd; border: 1px solid rgba(167,139,250,0.32); border-radius: 10px; padding: 0.75rem 1.4rem; font-size: 0.9rem; font-weight: 700; font-family: 'Rajdhani', sans-serif; cursor: pointer; transition: opacity 0.12s; }
-    .util-btn:hover { opacity: 0.85; }
-
-    .preview-area { background: #fff; color: #000; border-radius: 10px; padding: 0; margin-top: 1.5rem; max-height: 800px; overflow: auto; display: flex; justify-content: center; }
-
-    .capstone-note { background: rgba(252,211,77,0.08); border: 1px solid rgba(252,211,77,0.2); border-radius: 10px; padding: 0.85rem 1rem; margin: 1rem auto 0; max-width: 800px; color: #fde68a; font-size: 0.82rem; line-height: 1.5; }
-    .capstone-note strong { color: #fcd34d; }
-
-    /* HTML preview only — PDF is drawn directly with jsPDF */
-    .f9-doc {
+    }.bldr-section select option{ background: #0a1632; color: #e2eaf4; padding: 0.4rem; }.bldr-section input:focus, .bldr-section textarea:focus, .bldr-section select:focus{ outline: none; border-color: var(--accent); }.bldr-section .optional-tag{ font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: #fcd34d; opacity: 0.7; font-weight: 700; }.item-row{ display: grid; grid-template-columns: 50px 1fr 60px 60px 90px 36px; gap: 0.5rem; align-items: start; margin-bottom: 0.5rem; }@media (max-width: 700px){.item-row{ grid-template-columns: 1fr 1fr; }.item-row .item-desc{ grid-column: 1 / -1; } }.item-row input{ margin-top: 0 !important; }.item-header{ display: grid; grid-template-columns: 50px 1fr 60px 60px 90px 36px; gap: 0.5rem; margin-bottom: 0.35rem; font-size: 0.72rem; color: var(--silver); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }@media (max-width: 700px){.item-header{ display: none; } }.item-remove{ background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; border-radius: 6px; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700; transition: background 0.12s; margin-top: 0; }.item-remove:hover{ background: rgba(248,113,113,0.2); }.add-btn{ background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.2); color: var(--accent); border-radius: 8px; padding: 0.45rem 0.9rem; cursor: pointer; font-size: 0.8rem; font-weight: 600; font-family: inherit; transition: background 0.12s; margin-top: 0.5rem; }.add-btn:hover{ background: rgba(74,158,255,0.2); }.btn-row{ display: flex; gap: 0.75rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap; }.gen-btn{ background: var(--accent); color: #040d1f; border: none; border-radius: 10px; padding: 0.75rem 2rem; font-size: 0.95rem; font-weight: 700; font-family: 'Rajdhani', sans-serif; cursor: pointer; letter-spacing: 0.5px; transition: opacity 0.12s; }.gen-btn:hover{ opacity: 0.85; }.preview-btn{ background: rgba(52,211,153,0.15); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.3); border-radius: 10px; padding: 0.75rem 2rem; font-size: 0.95rem; font-weight: 700; font-family: 'Rajdhani', sans-serif; cursor: pointer; transition: opacity 0.12s; }.preview-btn:hover{ opacity: 0.85; }.util-btn{ background: rgba(167,139,250,0.13); color: #c4b5fd; border: 1px solid rgba(167,139,250,0.32); border-radius: 10px; padding: 0.75rem 1.4rem; font-size: 0.9rem; font-weight: 700; font-family: 'Rajdhani', sans-serif; cursor: pointer; transition: opacity 0.12s; }.util-btn:hover{ opacity: 0.85; }.preview-area{ background: #fff; color: #000; border-radius: 10px; padding: 0; margin-top: 1.5rem; max-height: 800px; overflow: auto; display: flex; justify-content: center; }.capstone-note{ background: rgba(252,211,77,0.08); border: 1px solid rgba(252,211,77,0.2); border-radius: 10px; padding: 0.85rem 1rem; margin: 1rem auto 0; max-width: 800px; color: #fde68a; font-size: 0.82rem; line-height: 1.5; }.capstone-note strong{ color: #fcd34d; }/* HTML preview only — PDF is drawn directly with jsPDF */
+    .f9-doc{
       background: #fff; color: #000;
       font-family: Arial, Helvetica, sans-serif;
       width: 215.9mm; height: 279.4mm;
       position: relative;
       box-sizing: border-box;
       flex-shrink: 0;
-    }
-    .f9-doc * { box-sizing: border-box; }
-    .f9-label {
+    }.f9-doc *{ box-sizing: border-box; }.f9-label{
       position: absolute;
       font-size: 7pt; line-height: 1.05;
       color: #000;
       text-align: center;
       overflow: hidden;
       white-space: nowrap;
-    }
-    .f9-label.wrap { white-space: normal; }
-    .f9-line-h { position: absolute; height: 0; border-top: 0.3mm solid #000; }
-    .f9-line-v { position: absolute; width: 0; border-left: 0.3mm solid #000; }
-    .f9-rect { position: absolute; border: 0.3mm solid #000; }
-    .f9-val {
+    }.f9-label.wrap{ white-space: normal; }.f9-line-h{ position: absolute; height: 0; border-top: 0.3mm solid #000; }.f9-line-v{ position: absolute; width: 0; border-left: 0.3mm solid #000; }.f9-rect{ position: absolute; border: 0.3mm solid #000; }.f9-val{
       position: absolute;
       font-size: 9pt; line-height: 1.1;
       font-family: 'Courier New', monospace;
       color: #000;
       padding: 0.3mm 0.5mm;
       overflow: hidden;
-    }
-    .f9-val.center { text-align: center; }
-    .f9-val.right { text-align: right; }
+    }.f9-val.center{ text-align: center; }.f9-val.right{ text-align: right; }
   </style>
   <!-- Open Graph & Twitter Card -->
   <meta property="og:type"        content="website" />
@@ -177,7 +123,7 @@
 <div class="bldr-bg">
   <div class="bldr-intro">
     <div class="bldr-intro-tag">CCO Capstone Tool</div>
-    <h2>Form 9 Builder</h2>
+    <h1>Form 9 Builder</h1>
     <p>Generates a Request for Purchase (Form 9) PDF that matches the real form layout. PR Number, dates, installation, routing, and contracting office all auto-fill so you don't handjam them every time. Pick the customer and describe the buy.</p>
   </div>
 
@@ -191,7 +137,7 @@
 
     <!-- Customer -->
     <div class="bldr-section">
-      <h3>Customer (Requesting Activity)</h3>
+      <h2>Customer (Requesting Activity)</h2>
       <div class="sec-desc">The squadron asking for the buy. "Through" routing auto-fills as the customer's commander (e.g., XXX ECES &rarr; XXX ECES/CC). Installation, Contracting Office, and Class auto-fill with non-descript defaults that work across exercises.</div>
       <label for="f9-from">From (Customer)</label>
       <select id="f9-from">
