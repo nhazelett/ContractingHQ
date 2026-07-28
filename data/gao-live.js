@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-07-27T10:54:29.703Z",
+  "generatedAt": "2026-07-28T10:10:02.644Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,13 +7,13 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 22,
-    "latestDecisionDate": "2026-07-21",
+    "total": 20,
+    "latestDecisionDate": "2026-07-24",
     "sustained": 0,
-    "denied": 10,
+    "denied": 9,
     "dismissed": 3,
-    "mixed": 5,
-    "unclassified": 4,
+    "mixed": 6,
+    "unclassified": 1,
     "sourceStatus": {
       "rss": {
         "ok": true,
@@ -36,6 +36,33 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424245.2",
+      "caseName": "Cashel Strategic, LLC",
+      "title": "Cashel Strategic, LLC",
+      "bNumbers": [
+        "B-424245.2"
+      ],
+      "bNumberText": "B-424245.2",
+      "link": "https://www.gao.gov/products/b-424245.2",
+      "publicationDate": "2026-07-27",
+      "decisionDate": "2026-07-24",
+      "displayDate": "Jul 24, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We dismiss the protest.",
+      "officialSynopsis": "Cashel Strategic, LLC, a service-disabled, veteran-owned small business of Sheridan, Wyoming, protests its elimination from the competition under...",
+      "highlights": "",
+      "digest": "Protest alleging conflicts of interest and competition improprieties is dismissed where the protester lacks the requisite economic interest to challenge the agency's actions because even if its protest grounds were sustained, it would not be next in line for award where it failed to challenge either its technical unacceptability or the technical acceptability of other offerors.",
+      "tags": [
+        "Evaluation",
+        "Small business"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424437,B-424437.2",
       "caseName": "CVJV LLC",
@@ -145,30 +172,34 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424390",
-      "caseName": "The NORDAM Group, LLC",
-      "title": "The NORDAM Group, LLC",
+      "id": "B-424405,B-424405.2",
+      "caseName": "Raven Advisory, LLC",
+      "title": "Raven Advisory, LLC",
       "bNumbers": [
-        "B-424390"
+        "B-424405",
+        "B-424405.2"
       ],
-      "bNumberText": "B-424390",
-      "link": "https://www.gao.gov/products/b-424390",
-      "publicationDate": "2026-07-08",
-      "decisionDate": "2026-07-08",
-      "displayDate": "Jul 8, 2026",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "outcomeSource": "Inferred from GAO RSS",
-      "decisionLine": "",
-      "officialSynopsis": "The NORDAM Group, LLC (NORDAM), of Tulsa, Oklahoma, protests the award of an indefinite-delivery, indefinite-delivery (IDIQ) contract to Vertex...",
+      "bNumberText": "B-424405, B-424405.2",
+      "link": "https://www.gao.gov/products/b-424405%2Cb-424405.2",
+      "publicationDate": "2026-07-27",
+      "decisionDate": "2026-07-14",
+      "displayDate": "Jul 14, 2026",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We dismiss the protest.",
+      "officialSynopsis": "Raven Advisory, LLC, a small business of Fayetteville, North Carolina, protests the award of a contract to Ragged Edge Solutions, LLC, a small...",
       "highlights": "",
-      "digest": "",
+      "digest": "1. Protest challenging issuance of solicitation amendment is dismissed as untimely where the protest was not filed before the due date for revised quotations established by the amendment. 2. Protest challenging agency's evaluation of protester's price as unreasonable is dismissed for lack of prejudice. Even if the agency had found the protester's price to be reasonable, the protester would not have been in line for award because the solicitation provided for award to be made on a lowest‑priced, technically acceptable basis and the protester did not submit the lowest-priced, technically acceptable quotation.",
       "tags": [
-        "Orders / IDIQ"
+        "Timeliness",
+        "Evaluation",
+        "Solicitation terms",
+        "Price / cost"
       ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
+      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
     },
     {
       "id": "B-423306.22,B-423306.9",
@@ -181,21 +212,48 @@ window.KTHQ_GAO_DATA = {
       "bNumberText": "B-423306.22, B-423306.9",
       "link": "https://www.gao.gov/products/b-423306.22",
       "publicationDate": "2026-07-09",
-      "decisionDate": "2026-07-08",
-      "displayDate": "Jul 8, 2026",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the request for reconsideration.",
+      "decisionDate": "2026-07-09",
+      "displayDate": "Jul 9, 2026",
+      "outcome": "reconsideration",
+      "outcomeLabel": "Reconsideration",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
       "officialSynopsis": "z SofTech Solutions, Inc., a small business of Atlanta, Georgia, requests reconsideration of our decision in z SofTech Solutions, Inc., B-423306.9, B...",
       "highlights": "",
-      "digest": "Request for reconsideration of prior decision is dismissed where requester repeats arguments made in original protest, misunderstands or disagrees with our decision in the original protest, and relies on an incorrect statement of our regulations.",
+      "digest": "",
       "tags": [
         "Small business"
       ],
       "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
+    },
+    {
+      "id": "B-424314.2",
+      "caseName": "GSINA-Pacific JV II, LLC",
+      "title": "GSINA-Pacific JV II, LLC",
+      "bNumbers": [
+        "B-424314.2"
+      ],
+      "bNumberText": "B-424314.2",
+      "link": "https://www.gao.gov/products/b-424314.2",
+      "publicationDate": "2026-07-08",
+      "decisionDate": "2026-07-08",
+      "displayDate": "Jul 8, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "GSINA-Pacific JV II, LLC (GSI), a small business located in Flemington, New Jersey, protests the evaluation and exclusion of its proposal from the...",
+      "highlights": "",
+      "digest": "",
+      "tags": [
+        "Evaluation",
+        "Small business"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
     },
     {
       "id": "B-424395,B-424395.2,B-424395.3",
@@ -225,86 +283,6 @@ window.KTHQ_GAO_DATA = {
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424375",
-      "caseName": "Oready, LLC",
-      "title": "Oready, LLC",
-      "bNumbers": [
-        "B-424375"
-      ],
-      "bNumberText": "B-424375",
-      "link": "https://www.gao.gov/products/b-424375",
-      "publicationDate": "2026-07-07",
-      "decisionDate": "2026-07-07",
-      "displayDate": "Jul 7, 2026",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "outcomeSource": "Inferred from GAO RSS",
-      "decisionLine": "",
-      "officialSynopsis": "Oready, LLC, a small business of Las Vegas, Nevada, protests the Government Publishing Office's (GPO) determination that Oready was not responsible...",
-      "highlights": "",
-      "digest": "",
-      "tags": [
-        "Small business"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
-    },
-    {
-      "id": "B-424439",
-      "caseName": "Stondoh LLC",
-      "title": "Stondoh LLC",
-      "bNumbers": [
-        "B-424439"
-      ],
-      "bNumberText": "B-424439",
-      "link": "https://www.gao.gov/products/b-424439",
-      "publicationDate": "2026-07-07",
-      "decisionDate": "2026-07-07",
-      "displayDate": "Jul 7, 2026",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "outcomeSource": "Inferred from GAO RSS",
-      "decisionLine": "",
-      "officialSynopsis": "Stondoh LLC, a small business of Baltimore, Maryland, protests the issuance of a task order to WINTrio LLC, a small business of Leesburg, Virginia,...",
-      "highlights": "",
-      "digest": "",
-      "tags": [
-        "Small business",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
-    },
-    {
-      "id": "B-424322,B-424322.3,B-424322.2,B-424322.4",
-      "caseName": "Weston Solutions, Inc.; Tetra Tech, Inc.",
-      "title": "Weston Solutions, Inc.; Tetra Tech, Inc.",
-      "bNumbers": [
-        "B-424322",
-        "B-424322.3",
-        "B-424322.2",
-        "B-424322.4"
-      ],
-      "bNumberText": "B-424322, B-424322.3, B-424322.2, B-424322.4",
-      "link": "https://www.gao.gov/products/b-424322%2Cb-424322.3%2Cb-424322.2%2Cb-424322.4",
-      "publicationDate": "2026-07-07",
-      "decisionDate": "2026-07-07",
-      "displayDate": "Jul 7, 2026",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "outcomeSource": "Inferred from GAO RSS",
-      "decisionLine": "",
-      "officialSynopsis": "Weston Solutions, Inc., of West Chester, Pennsylvania, and Tetra Tech, Inc., of Collinsville, Illinois, protest the award of a contract to Pond...",
-      "highlights": "",
-      "digest": "",
-      "tags": [],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
     },
     {
       "id": "B-424391",
@@ -470,34 +448,6 @@ window.KTHQ_GAO_DATA = {
         "Solicitation terms",
         "Price / cost",
         "Staffing"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424314.2",
-      "caseName": "GSINA-Pacific JV II, LLC",
-      "title": "GSINA-Pacific JV II, LLC",
-      "bNumbers": [
-        "B-424314.2"
-      ],
-      "bNumberText": "B-424314.2",
-      "link": "https://www.gao.gov/products/b-424314.2",
-      "publicationDate": "2026-07-08",
-      "decisionDate": "2026-06-18",
-      "displayDate": "Jun 18, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "GSINA-Pacific JV II, LLC (GSI), a small business located in Flemington, New Jersey, protests the evaluation and exclusion of its proposal from the...",
-      "highlights": "",
-      "digest": "1. Protest challenging the agency's evaluation of proposals under the past performance and management/technical approach evaluation factors is denied where the record shows that the agency's evaluation was reasonable and consistent with the terms of the solicitation. 2. Protest that agency unreasonably and disparately evaluated proposals is denied where the record shows the agency evaluated proposals in accordance with the terms of the solicitation and did not engage in disparate treatment.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Small business"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
