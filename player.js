@@ -1616,6 +1616,8 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
 
     floatEl = document.createElement('div');
     floatEl.id = 'cfm-float';
+    floatEl.setAttribute('role', 'complementary');
+    floatEl.setAttribute('aria-label', 'ContractingFM music player');
     if (currentMode === 'cco') floatEl.className = 'cfm-mode-cco';
     floatEl.innerHTML = [
       '<div class="cfm-brand">',
@@ -1660,6 +1662,8 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
 
     drawerEl = document.createElement('div');
     drawerEl.id = 'cfm-drawer';
+    drawerEl.setAttribute('role', 'complementary');
+    drawerEl.setAttribute('aria-label', 'Song list');
     if (currentMode === 'cco') drawerEl.className = 'cfm-mode-cco';
 
     document.body.appendChild(floatEl);

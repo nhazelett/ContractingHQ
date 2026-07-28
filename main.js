@@ -144,7 +144,7 @@
     });
   }
 
-  function addFloatingTrainingButton(direction, target, label) {
+  function addFloatingTrainingButton(direction, target, label, container) {
     var button = document.createElement("a");
     button.className = "training-floating-nav training-" + direction + "-float training-nav-auto";
     button.href = target[0];
@@ -154,11 +154,11 @@
     } else {
       button.innerHTML = '<span>' + esc(label) + '</span><strong>' + esc(target[1]) + '</strong><em>&rarr;</em>';
     }
-    document.body.appendChild(button);
+    (container || document.body).appendChild(button);
   }
 
   function mountTrainingNav() {
-    document.querySelectorAll(".training-nav-auto, .training-prev-float, .training-next-float").forEach(function (node) {
+    document.querySelectorAll(".training-nav-auto, .training-prev-float, .training-next-float, #training-float-nav").forEach(function (node) {
       if (node.parentNode) node.parentNode.removeChild(node);
     });
 
@@ -169,8 +169,13 @@
     var prev = idx > 0 ? TRAINING_CHAIN[idx - 1] : null;
     var next = idx < TRAINING_CHAIN.length - 1 ? TRAINING_CHAIN[idx + 1] : null;
 
-    addFloatingTrainingButton("prev", prev || ["training.html", "Training Home"], prev ? "Previous Training" : "Training Home");
-    addFloatingTrainingButton("next", next || ["training.html", "Training Home"], next ? "Next Training" : "Training Home");
+    var floatNav = document.createElement("nav");
+    floatNav.id = "training-float-nav";
+    floatNav.setAttribute("aria-label", "Training navigation");
+    document.body.appendChild(floatNav);
+
+    addFloatingTrainingButton("prev", prev || ["training.html", "Training Home"], prev ? "Previous Training" : "Training Home", floatNav);
+    addFloatingTrainingButton("next", next || ["training.html", "Training Home"], next ? "Next Training" : "Training Home", floatNav);
   }
 
   window.KTHQ_mountTrainingNav = mountTrainingNav;
