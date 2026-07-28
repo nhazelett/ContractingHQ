@@ -774,7 +774,7 @@
   transition: color 0.3s, background 0.3s, border-color 0.3s;
 }
 .cfm-on-air.off-air {
-  color: #445; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1);
+  color: #8a92a6; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1);
   animation: none;
 }
 @keyframes cfm-pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
@@ -798,7 +798,7 @@
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .cfm-meta-sub {
-  font-size: 0.68rem; color: #556; margin-top: 0.1rem;
+  font-size: 0.68rem; color: #8a92a6; margin-top: 0.1rem;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .cfm-meta-genre {
@@ -809,7 +809,7 @@
 }
 .cfm-heart {
   background: none; border: none; cursor: pointer; font-size: 1rem;
-  color: #445; transition: color 0.2s, transform 0.15s; flex-shrink: 0; padding: 0.2rem;
+  color: #8a92a6; transition: color 0.2s, transform 0.15s; flex-shrink: 0; padding: 0.2rem;
 }
 .cfm-heart.active { color: #ef4444; }
 .cfm-heart:hover { transform: scale(1.2); }
@@ -838,7 +838,7 @@
   flex: 1; display: flex; align-items: center; gap: 0.6rem;
   padding: 0 1.1rem; min-width: 0;
 }
-.cfm-time { font-size: 0.68rem; color: #445; flex-shrink: 0; min-width: 32px; }
+.cfm-time { font-size: 0.68rem; color: #8a92a6; flex-shrink: 0; min-width: 32px; }
 .cfm-time.right { text-align: right; }
 .cfm-bar-wrap { flex: 1; position: relative; height: 4px; cursor: pointer; }
 .cfm-bar-bg {
@@ -861,7 +861,7 @@
   display: flex; align-items: center; gap: 0.5rem;
   padding: 0 1rem; border-left: 1px solid rgba(255,255,255,0.06); flex-shrink: 0;
 }
-.cfm-vol-icon { font-size: 0.75rem; color: #445; cursor: pointer; }
+.cfm-vol-icon { font-size: 0.75rem; color: #8a92a6; cursor: pointer; }
 input[type=range].cfm-vol-slider {
   -webkit-appearance: none; appearance: none;
   width: 70px; height: 3px; border-radius: 3px;
@@ -980,7 +980,7 @@ input[type=range].cfm-vol-slider::-moz-range-thumb {
   font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700;
   color: #fff; text-transform: uppercase; letter-spacing: 1.2px;
 }
-.cfm-drawer-count { color: #556; font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
+.cfm-drawer-count { color: #8a92a6; font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
 .cfm-drawer-actions {
   display: flex; align-items: center; gap: 0.45rem; margin-top: 0.65rem;
 }
@@ -1036,7 +1036,7 @@ input[type=range].cfm-vol-slider::-moz-range-thumb {
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .cfm-track-item.active .cfm-track-name { color: #fff; }
-.cfm-track-genre { font-size: 0.67rem; color: #445; margin-top: 0.1rem; }
+.cfm-track-genre { font-size: 0.67rem; color: #8a92a6; margin-top: 0.1rem; }
 .cfm-track-fav {
   background: none; border: none; cursor: pointer; font-size: 0.85rem;
   color: #334; transition: color 0.18s; padding: 0.2rem;
@@ -1046,7 +1046,7 @@ input[type=range].cfm-vol-slider::-moz-range-thumb {
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 999px;
   background: rgba(255,255,255,0.035);
-  color: #66758a;
+  color: #8a92a6;
   cursor: pointer;
   font: inherit;
   font-size: 0.64rem;
@@ -1328,7 +1328,7 @@ body.has-cfm-player { padding-bottom: 68px; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .cfm-sb-sub {
-  font-size: 0.7rem; color: #445; margin-top: 0.12rem;
+  font-size: 0.7rem; color: #8a92a6; margin-top: 0.12rem;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .cfm-sb-genre-tag {
@@ -1410,7 +1410,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   font-size: 0.8rem; font-weight: 600; color: #e2e8f0;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.cfm-sb-np-label { font-size: 0.62rem; color: #445; margin-bottom: 0.1rem; letter-spacing: 0.5px; }
+.cfm-sb-np-label { font-size: 0.62rem; color: #8a92a6; margin-bottom: 0.1rem; letter-spacing: 0.5px; }
 .cfm-sb-np-heart {
   background: none; border: none; cursor: pointer;
   font-size: 1.1rem; color: #334; padding: 0.2rem; flex-shrink: 0;
@@ -1423,7 +1423,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   background: none; border: none; border-top: 1px solid rgba(255,255,255,0.05);
   cursor: pointer; font-family: 'Inter', sans-serif;
   font-size: 0.78rem; font-weight: 600; letter-spacing: 0.3px;
-  color: #445; transition: color 0.2s, background 0.2s;
+  color: #8a92a6; transition: color 0.2s, background 0.2s;
   display: flex; align-items: center; justify-content: center; gap: 0.4rem;
 }
 .cfm-sb-favs-btn:hover { color: #8a9bb0; background: rgba(255,255,255,0.03); }
@@ -1475,7 +1475,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   text-transform: uppercase;
 }
 .cfm-sb-song-panel-count {
-  color: #556;
+  color: #8a92a6;
   font-size: 0.68rem;
   font-weight: 800;
   white-space: nowrap;
@@ -1531,7 +1531,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
 }
 .cfm-sb-track-item.active .cfm-sb-track-name { color: #fff; }
 .cfm-sb-track-genre {
-  color: #445;
+  color: #8a92a6;
   font-size: 0.62rem;
   margin-top: 0.08rem;
 }
@@ -1548,7 +1548,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 999px;
   background: rgba(255,255,255,0.035);
-  color: #66758a;
+  color: #8a92a6;
   cursor: pointer;
   font: inherit;
   font-size: 0.6rem;
@@ -1650,7 +1650,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       '</div>',
       '<div class="cfm-volume-zone">',
         '<span class="cfm-vol-icon" id="cfm-vol-icon">&#128266;</span>',
-        '<input type="range" class="cfm-vol-slider" id="cfm-vol" min="0" max="1" step="0.01" value="' + state.vol + '">',
+        '<input type="range" class="cfm-vol-slider" id="cfm-vol" aria-label="Volume" min="0" max="1" step="0.01" value="' + state.vol + '">',
       '</div>',
       ccoToggleHtml('cfm-cco-toggle', 'cfm-cco-toggle'),
       '<button class="cfm-playlist-btn" id="cfm-list-btn" type="button" title="Open song list" aria-label="Open song list, ' + TRACKS.length + ' tracks" aria-controls="cfm-drawer" aria-expanded="false">',
@@ -1882,7 +1882,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
         '</div>',
         '<div class="cfm-sb-vol">',
           '<span class="cfm-sb-vol-icon">&#128266;</span>',
-          '<input type="range" class="cfm-sb-vol-slider" id="cfm-sb-vol" min="0" max="1" step="0.01" value="' + state.vol + '">',
+          '<input type="range" class="cfm-sb-vol-slider" id="cfm-sb-vol" aria-label="Volume" min="0" max="1" step="0.01" value="' + state.vol + '">',
         '</div>',
         '<div class="cfm-sb-now-playing">',
           '<div class="cfm-sb-np-dot" id="cfm-sb-np-dot"></div>',
