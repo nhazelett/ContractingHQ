@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAR-CADE Score Admin (local tool — do not link publicly)</title>
+<style>
+body{background:#0a0118;color:#f4f0ff;font-family:monospace;max-width:760px;margin:30px auto;padding:0 16px;line-height:1.5}
+h1{color:#ffd23f;font-size:20px}
+fieldset{border:2px solid rgba(25,227,255,.35);margin:16px 0;padding:14px}
+legend{color:#19e3ff;padding:0 8px}
+input,select{background:#140a2e;color:#f4f0ff;border:2px solid rgba(25,227,255,.35);padding:8px;font:inherit;margin:4px 0}
+button{background:#140a2e;color:#ffd23f;border:2px solid rgba(255,210,63,.5);padding:8px 16px;font:inherit;cursor:pointer;margin:4px 4px 4px 0}
+button:hover{background:#241250}
+button.danger{color:#ff3355;border-color:rgba(255,51,85,.5)}
+#out{white-space:pre-wrap;background:#05000d;border:2px solid rgba(154,143,192,.3);padding:12px;min-height:80px;font-size:13px;overflow-x:auto}
+small{color:#9a8fc0}
+</style>
+</head>
+<body>
+<h1>FAR-CADE SCORE ADMIN</h1>
+<small>Local tool. Keep this file off GitHub if you can; even if pushed, every action requires the token. Token is remembered in this browser only.</small>
+
+<fieldset><legend>auth</legend>
+  <label>Worker URL<br><input id="url" size="60" value="https://farcade-leaderboard.nickhazelett.workers.dev"></label><br>
+  <label>Admin token<br><input id="token" type="password" size="40" placeholder="ADMIN_TOKEN secret"></label>
+</fieldset>
+
+<fieldset><legend>purge a callsign (every board, all weeks, all dailies)</legend>
+  <input id="purgeName" maxlength="18" placeholder="CALLSIGN">
+  <button id="purgeBtn" class="danger">PURGE EVERYWHERE</button>
+</fieldset>
+
+<fieldset><legend>inspect / wipe a single board</legend>
+  <button id="keysBtn">LOAD KEY LIST</button>
+  <select id="keySel"><option>load keys first</option></select>
+  <button id="showBtn">SHOW</button>
+  <button id="wipeBtn" class="danger">WIPE THIS BOARD</button>
+</fieldset>
+
+<div id="out">ready.</div>
+
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+$('token').value=localStorage.getItem('farcade_admin_token')||'';
+function out(x){$('out').textContent=typeof x==='string'?x:JSON.stringify(x,null,2)}
+async function call(body){
+  localStorage.setItem('farcade_admin_token',$('token').value);
+  out('working…');
+  try{
+    const r=await fetch($('url').value.replace(/\/$/,'')+'/admin',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(Object.assign({token:$('token').value},body))});
+    const d=await r.json();
+    if(!r.ok){out('ERROR '+r.status+': '+JSON.stringify(d));return null}
+    return d;
+  }catch(e){out('REQUEST FAILED: '+e.message);return null}
+}
+$('purgeBtn').onclick=async()=>{
+  const name=$('purgeName').value.trim().toUpperCase();
+  if(!name){out('enter a callsign');return}
+  if(!confirm('Remove every score by "'+name+'" from every board?'))return;
+  const d=await call({action:'purge_name',name});
+  if(d)out('Purged "'+name+'" — '+d.removed+' entries removed across all boards.');
+};
+$('keysBtn').onclick=async()=>{
+  const d=await call({action:'keys'});
+  if(!d)return;
+  const sel=$('keySel');sel.innerHTML='';
+  d.keys.forEach(k=>{const o=document.createElement('option');o.value=o.textContent=k;sel.appendChild(o)});
+  out(d.keys.length+' boards:\n'+d.keys.join('\n'));
+};
+$('showBtn').onclick=async()=>{
+  const d=await call({action:'show',key:$('keySel').value});
+  if(d)out(d);
+};
+$('wipeBtn').onclick=async()=>{
+  const key=$('keySel').value;
+  if(!key||key==='load keys first'){out('load and pick a key first');return}
+  if(!confirm('Delete board "'+key+'" entirely?'))return;
+  const d=await call({action:'wipe_key',key});
+  if(d)out('Deleted '+d.deleted);
+};
+</script>
+</body>
+</html>

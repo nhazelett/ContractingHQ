@@ -252,6 +252,21 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;tou
 #rankUp{color:var(--cyan);text-shadow:0 0 10px rgba(25,227,255,.6)}
 #badgeLine{color:var(--pink);text-shadow:0 0 10px rgba(255,45,149,.6)}
 #scopeRow{display:flex;gap:10px;margin-bottom:10px}
+/* ---------- fever mode (heat x4) ---------- */
+#feverFx{position:absolute;inset:0;pointer-events:none;z-index:34;opacity:0;transition:opacity .3s}
+#stage.fever #feverFx{opacity:1}
+#feverFx .edge{position:absolute;inset:0;animation:feveredge .5s ease-in-out infinite alternate;
+  box-shadow:inset 0 0 60px rgba(255,45,149,.35),inset 0 0 120px rgba(255,210,63,.15)}
+@keyframes feveredge{from{box-shadow:inset 0 0 60px rgba(255,45,149,.35),inset 0 0 120px rgba(255,210,63,.15)}
+  to{box-shadow:inset 0 0 90px rgba(25,227,255,.4),inset 0 0 150px rgba(255,210,63,.25)}}
+#feverFx .lines{position:absolute;inset:0;
+  background:repeating-linear-gradient(105deg,transparent 0 90px,rgba(255,255,255,.05) 90px 92px,transparent 92px 200px,rgba(25,227,255,.06) 200px 203px);
+  background-size:320px 100%;animation:feverlines .45s linear infinite}
+@keyframes feverlines{to{background-position:-320px 0}}
+#stage.fever #score,#stage.fever #mult{animation:feverscore .4s steps(2) infinite}
+@keyframes feverscore{50%{color:#fff;text-shadow:0 0 16px var(--gold),0 0 28px var(--pink)}}
+#stage.fever #term{text-shadow:0 0 16px rgba(255,45,149,.6),0 0 28px rgba(25,227,255,.35)}
+
 @media(max-width:640px){
   #answers{grid-template-columns:1fr}
   .ans{min-height:58px}
@@ -268,6 +283,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;tou
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
   #floor{display:none}
+  #feverFx{display:none}
 }
 </style>
 </head>
@@ -374,6 +390,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;tou
       <button id="sfxBtn" class="railBtn">SFX</button>
     </span>
   </div>
+  <div id="feverFx"><div class="edge"></div><div class="lines"></div></div>
   <div id="ready" class="px"></div>
   <div id="flash"></div>
 </div>
@@ -577,7 +594,8 @@ const QUIP={
   heat:['HEAT RISING!','MULTIPLIER UP!','COOKING NOW!'],
   miss:['OOF.','STUDY THAT ONE.','WRONG LOCKER.','LOG IT. MOVE ON.'],
   last:['LAST HEART. FOCUS.','ONE LIFE LEFT. BREATHE.'],
-  start:['GOOD LUCK OUT THERE.','EYES UP. CLOCK MOVES FAST.','SHOW THE REG WHO IS BOSS.']
+  start:['GOOD LUCK OUT THERE.','EYES UP. CLOCK MOVES FAST.','SHOW THE REG WHO IS BOSS.'],
+  fever:['UNSTOPPABLE!','ON FIRE!','ABSOLUTE HEATER!','THE REG CANNOT HOLD YOU!']
 };
 function pick(a){return a[Math.floor(Math.random()*a.length)]}
 let ollieTimer=null;
@@ -678,6 +696,7 @@ function updateHud(){
   const heatPct=Math.min(cur.streak/15,1)*100;
   $('heatFill').style.height=heatPct+'%';
   $('heat').classList.toggle('max',cur.mult>=4);
+  $('stage').classList.toggle('fever',cur.mult>=4&&screens.game.classList.contains('on'));
 }
 function nextQ(){
   if(cur.q>=RUN_LEN){endRun(true);return}
@@ -735,7 +754,7 @@ function answer(p,btn){
     $('feed').textContent='+'+gained+(cur.mult>prevMult?' · HEAT UP! x'+cur.mult:cur.mult>1?' · HEAT x'+cur.mult:'');
     $('feed').className='vt good';
     burst(btn);flash('goldf');
-    ollieReact('talk',cur.mult>prevMult?pick(QUIP.heat):pick(QUIP.hit));
+    ollieReact('talk',cur.mult>prevMult?(cur.mult>=4?'MAX HEAT. FEVER MODE!':pick(QUIP.heat)):(cur.mult>=4?pick(QUIP.fever):pick(QUIP.hit)));
   }else{
     btn&&btn.classList.add('miss');sfx.miss();
     cur.lives--;cur.streak=0;cur.mult=1;
@@ -772,6 +791,7 @@ function burst(el){
 /* =============== DEBRIEF + NAME ENTRY =============== */
 function endRun(survived){
   cancelAnimationFrame(cur.timerId);
+  $('stage').classList.remove('fever');
   const win=survived&&cur.lives>0;
   $('dbHd').textContent=cur.mode==='daily'?(win?'DAILY COMPLETE':'DAILY OVER'):cur.mode==='drill'?(win?'ROTATION CLEARED':'GAME OVER'):(win?'SECTOR CLEARED':'GAME OVER');
   $('dbHd').className='hd '+(win?'win':'lose');

@@ -409,6 +409,15 @@ partSel.value=15; // sensible default: Contracting by Negotiation
 partSel.addEventListener('change',loadPart);
 secSel.addEventListener('input',syncLoadBtn);
 secSel.addEventListener('change',syncLoadBtn);
+// Reopen the full list on click after a selection. A datalist filters to the
+// current value, so an exact match hides every other option and the field looks
+// stuck. Clear on entry (remembering the pick); restore on blur if unchanged.
+let _secPrev='';
+secSel.addEventListener('mousedown',()=>{
+  if(document.activeElement!==secSel && secSel.value){ _secPrev=secSel.value; secSel.value=''; }
+});
+secSel.addEventListener('focus',()=>{ if(secSel.value){ _secPrev=secSel.value; secSel.value=''; } });
+secSel.addEventListener('blur',()=>{ if(!secSel.value.trim() && _secPrev) secSel.value=_secPrev; syncLoadBtn(); });
 secSel.addEventListener('keydown',e=>{
   if(e.key==='Enter'){e.preventDefault(); const id=resolveSection(); if(id) traceSection(id);}
 });

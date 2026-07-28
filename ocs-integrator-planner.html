@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Operational Contract Support integrator and planner tool. Learn the three functions, the contracting C2 continuum, the OCSIC, and the planning products, then use the job aids in the field." />
+<title>OCS Integrator &amp; Planner | ContractingHQ</title>
+<style>
+/* ============================================================
+   Theme tokens. Retheme here.
+   ============================================================ */
+:root {
+  --bg: #040d1f;
+  --bg-raised: #0a1632;
+  --panel: rgba(10, 22, 50, 0.55);
+  --panel-solid: #0c1a3a;
+  --panel-border: rgba(74, 158, 255, 0.18);
+  --panel-border-strong: rgba(74, 158, 255, 0.4);
+  --accent: #4a9eff;
+  --accent-dim: rgba(74, 158, 255, 0.12);
+  --text: #c9d5e3;
+  --muted: #8a9bb0;
+  --faint: #5b6f8a;
+  --white: #f2f6fa;
+  --good: #4ade80;
+  --warn: #fbbf24;
+  --bad: #f87171;
+  --verify: #fbbf24;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+/* ===== Header ===== */
+.hdr {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(4, 13, 31, 0.96);
+  border-bottom: 1px solid var(--panel-border);
+  padding: .6rem 1rem;
+  display: flex; align-items: center; gap: .7rem; flex-wrap: wrap;
+}
+.hdr .brand {
+  font-weight: 800; letter-spacing: 1px; color: var(--white);
+  text-decoration: none; font-size: .95rem; white-space: nowrap;
+}
+.hdr .brand span { color: var(--accent); }
+.hdr .tool-name { color: var(--muted); font-size: .82rem; white-space: nowrap; }
+.hdr .spacer { flex: 1; }
+.hdr .role-tag {
+  font-size: .72rem; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--accent); border: 1px solid var(--panel-border-strong);
+  border-radius: 20px; padding: .15rem .7rem; white-space: nowrap;
+}
+.btn {
+  background: var(--accent); color: #04102a; border: none; border-radius: 8px;
+  font-family: var(--font); font-weight: 700; font-size: .88rem;
+  padding: .55rem 1.1rem; cursor: pointer; transition: opacity .15s;
+}
+.btn:hover { opacity: .88; }
+.btn.ghost {
+  background: transparent; color: var(--accent);
+  border: 1px solid var(--panel-border-strong);
+}
+.btn.ghost:hover { background: var(--accent-dim); opacity: 1; }
+.btn.small { font-size: .76rem; padding: .35rem .8rem; }
+.btn:disabled { opacity: .35; cursor: not-allowed; }
+
+/* ===== Layout ===== */
+.wrap { max-width: 1040px; margin: 0 auto; padding: 1.4rem 1rem 5rem; }
+h1 { color: var(--white); font-size: 1.55rem; margin: .2rem 0 .4rem; line-height: 1.25; }
+h2 { color: var(--white); font-size: 1.18rem; margin: 1.6rem 0 .5rem; }
+h3 { color: var(--white); font-size: 1rem; margin: 1.1rem 0 .35rem; }
+p { margin: .5rem 0; }
+.sub { color: var(--muted); font-size: .92rem; }
+.card {
+  background: var(--panel); border: 1px solid var(--panel-border);
+  border-radius: 10px; padding: 1rem 1.1rem; margin: .8rem 0;
+}
+.card.accent-left { border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; }
+.grid { display: grid; gap: .8rem; }
+@media (min-width: 720px) {
+  .grid.cols2 { grid-template-columns: 1fr 1fr; }
+  .grid.cols4 { grid-template-columns: repeat(4, 1fr); }
+}
+.kicker {
+  font-size: .7rem; letter-spacing: 1.6px; text-transform: uppercase;
+  color: var(--accent); font-weight: 700; margin-bottom: .25rem;
+}
+ul.tight { margin: .4rem 0; padding-left: 1.15rem; }
+ul.tight li { margin: .3rem 0; }
+
+/* ===== Role cards (landing) ===== */
+.role-card {
+  display: block; width: 100%; text-align: left; cursor: pointer;
+  background: var(--panel); border: 1px solid var(--panel-border);
+  border-radius: 10px; padding: 1rem 1.1rem; color: var(--text);
+  font-family: var(--font); font-size: .92rem; transition: border-color .15s, transform .15s;
+}
+.role-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.role-card .rc-title { color: var(--white); font-weight: 700; font-size: 1.02rem; display: block; margin-bottom: .25rem; }
+.role-card .rc-sub { color: var(--muted); font-size: .84rem; }
+.role-card .rc-time { color: var(--faint); font-size: .74rem; display: block; margin-top: .5rem; }
+
+/* ===== Term chips + popover ===== */
+.term {
+  color: var(--accent); border-bottom: 1px dotted rgba(74,158,255,.5);
+  cursor: pointer; font-weight: 600;
+}
+.pop-back {
+  position: fixed; inset: 0; background: rgba(2,7,17,.72); z-index: 90;
+  display: flex; align-items: flex-end; justify-content: center; padding: 0;
+}
+@media (min-width: 720px) { .pop-back { align-items: center; padding: 2rem; } }
+.pop {
+  background: var(--panel-solid); border: 1px solid var(--panel-border-strong);
+  border-radius: 12px 12px 0 0; padding: 1.1rem 1.2rem 1.4rem;
+  width: 100%; max-width: 560px; max-height: 80vh; overflow: auto;
+}
+@media (min-width: 720px) { .pop { border-radius: 12px; } }
+.pop .pop-title { color: var(--white); font-weight: 700; font-size: 1.05rem; margin: 0 0 .1rem; }
+.pop .pop-full { color: var(--muted); font-size: .8rem; margin-bottom: .6rem; }
+.pop .pop-links { margin-top: .8rem; display: flex; flex-wrap: wrap; gap: .4rem; }
+.pop-close { float: right; background: none; border: none; color: var(--muted); font-size: 1.3rem; cursor: pointer; padding: 0 .2rem; }
+.link-chip {
+  display: inline-block; font-size: .74rem; padding: .2rem .6rem;
+  border: 1px solid var(--panel-border); border-radius: 14px;
+  color: var(--text); cursor: pointer; background: var(--accent-dim);
+}
+.link-chip:hover { border-color: var(--accent); }
+.badge {
+  display: inline-block; font-size: .66rem; letter-spacing: 1px; text-transform: uppercase;
+  padding: .1rem .5rem; border-radius: 10px; font-weight: 700; vertical-align: middle;
+}
+.badge.fn { background: rgba(74,222,128,.12); color: var(--good); }
+.badge.c2 { background: rgba(251,191,36,.12); color: var(--warn); }
+.badge.cell { background: rgba(74,158,255,.15); color: var(--accent); }
+.badge.product { background: rgba(196,145,255,.14); color: #c491ff; }
+.badge.term { background: rgba(148,163,184,.15); color: var(--muted); }
+.sme-verify {
+  display: inline-block; background: rgba(251,191,36,.12); color: var(--verify);
+  border: 1px solid rgba(251,191,36,.4); border-radius: 4px;
+  font-size: .68rem; font-weight: 700; letter-spacing: .8px; padding: 0 .4rem;
+  text-transform: uppercase;
+}
+
+/* ===== Concept map ===== */
+.map-box { overflow-x: auto; }
+.map-svg { width: 100%; min-width: 640px; height: auto; display: block; }
+.map-hint { font-size: .74rem; color: var(--faint); margin: .2rem 0 .5rem; }
+.map-node { cursor: pointer; }
+.map-node rect { fill: var(--panel-solid); stroke: var(--panel-border-strong); stroke-width: 1; rx: 8; transition: stroke .15s; }
+.map-node text { fill: var(--text); font-family: var(--font); font-size: 13px; pointer-events: none; }
+.map-node .nlabel { fill: var(--white); font-weight: 700; }
+.map-node .nsub { fill: var(--muted); font-size: 10.5px; }
+.map-node.sel rect { stroke: var(--accent); stroke-width: 2; fill: #10254d; }
+.map-node.linked rect { stroke: var(--good); stroke-width: 1.6; }
+.map-node.dim { opacity: .32; }
+.map-edge { stroke: rgba(74,158,255,.28); stroke-width: 1.4; fill: none; transition: stroke .15s; }
+.map-edge.hot { stroke: var(--good); stroke-width: 2.2; }
+.map-edge.dim { opacity: .15; }
+.map-lane { fill: var(--faint); font-size: 10px; letter-spacing: 2px; font-family: var(--font); text-transform: uppercase; }
+.map-detail { min-height: 90px; }
+
+/* ===== Learn track ===== */
+.progress-row { display: flex; align-items: center; gap: .6rem; margin: .6rem 0 1rem; flex-wrap: wrap; }
+.pbar { flex: 1 1 160px; height: 8px; background: var(--accent-dim); border-radius: 4px; overflow: hidden; }
+.pbar > div { height: 100%; background: var(--accent); border-radius: 4px; transition: width .3s; }
+.pcount { font-size: .78rem; color: var(--muted); white-space: nowrap; }
+.toc { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: 1rem; }
+.toc button {
+  background: none; border: 1px solid var(--panel-border); color: var(--muted);
+  font-size: .72rem; border-radius: 14px; padding: .2rem .65rem; cursor: pointer; font-family: var(--font);
+}
+.toc button.done { color: var(--good); border-color: rgba(74,222,128,.4); }
+.toc button.cur { color: var(--accent); border-color: var(--accent); font-weight: 700; }
+.nav-row { display: flex; justify-content: space-between; gap: .6rem; margin-top: 1.4rem; }
+
+/* ===== Quiz ===== */
+.quiz { border: 1px solid var(--panel-border-strong); border-radius: 10px; padding: 1rem 1.1rem; margin: 1.1rem 0; background: rgba(4,13,31,.5); }
+.quiz .q-kicker { font-size: .68rem; letter-spacing: 1.4px; text-transform: uppercase; color: var(--warn); font-weight: 700; }
+.quiz .q-text { color: var(--white); font-weight: 600; margin: .35rem 0 .7rem; }
+.q-opt {
+  display: block; width: 100%; text-align: left; margin: .35rem 0;
+  background: var(--panel); border: 1px solid var(--panel-border); color: var(--text);
+  border-radius: 8px; padding: .55rem .8rem; cursor: pointer; font-family: var(--font); font-size: .88rem;
+}
+.q-opt:hover { border-color: var(--accent); }
+.q-opt.right { border-color: var(--good); color: var(--good); }
+.q-opt.wrong { border-color: var(--bad); color: var(--bad); }
+.q-fb { font-size: .84rem; margin-top: .6rem; display: none; }
+.q-fb.show { display: block; }
+
+/* ===== Decision aid ===== */
+.aid-q { margin: 1rem 0; }
+.aid-q .aq-label { color: var(--white); font-weight: 600; font-size: .94rem; margin-bottom: .4rem; }
+.aid-opt {
+  display: block; width: 100%; text-align: left; margin: .3rem 0;
+  background: var(--panel); border: 1px solid var(--panel-border); color: var(--text);
+  border-radius: 8px; padding: .5rem .75rem; cursor: pointer; font-family: var(--font); font-size: .85rem;
+}
+.aid-opt:hover { border-color: var(--accent); }
+.aid-opt.on { border-color: var(--accent); background: var(--accent-dim); color: var(--white); }
+.aid-result { border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; }
+.aid-verdict { color: var(--white); font-size: 1.15rem; font-weight: 800; }
+.spectrum { display: flex; gap: .3rem; margin: .7rem 0; flex-wrap: wrap; }
+.spec-step {
+  flex: 1 1 90px; text-align: center; font-size: .68rem; letter-spacing: .5px;
+  padding: .45rem .3rem; border: 1px solid var(--panel-border); border-radius: 6px; color: var(--muted);
+}
+.spec-step.on { border-color: var(--accent); color: var(--white); background: var(--accent-dim); font-weight: 700; }
+.disclaimer {
+  border: 1px solid rgba(251,191,36,.35); border-left: 3px solid var(--warn);
+  border-radius: 0 8px 8px 0; padding: .6rem .9rem; font-size: .8rem; color: #fbe28b; margin-top: 1rem;
+}
+
+/* ===== Checklists / job aid bits ===== */
+.check-item { display: flex; gap: .55rem; align-items: flex-start; padding: .3rem 0; font-size: .9rem; }
+.check-item input { margin-top: .25rem; accent-color: var(--accent); }
+.mini-table { width: 100%; border-collapse: collapse; font-size: .84rem; margin: .6rem 0; }
+.mini-table th { text-align: left; color: var(--accent); font-size: .72rem; letter-spacing: 1px; text-transform: uppercase; padding: .4rem .5rem; border-bottom: 1px solid var(--panel-border-strong); }
+.mini-table td { padding: .45rem .5rem; border-bottom: 1px solid var(--panel-border); vertical-align: top; }
+.mini-table td:first-child { color: var(--white); font-weight: 600; white-space: nowrap; }
+.table-scroll { overflow-x: auto; }
+
+/* ===== Scenario stepper + reveals ===== */
+.phase-tabs { display: flex; gap: .35rem; flex-wrap: wrap; margin: .8rem 0; }
+.phase-tabs button {
+  flex: 1 1 120px; background: var(--panel); border: 1px solid var(--panel-border);
+  color: var(--muted); border-radius: 8px; padding: .5rem .4rem; cursor: pointer;
+  font-family: var(--font); font-size: .74rem; line-height: 1.3;
+}
+.phase-tabs button strong { display: block; color: var(--text); font-size: .82rem; }
+.phase-tabs button.on { border-color: var(--accent); background: var(--accent-dim); }
+.phase-tabs button.on strong { color: var(--white); }
+.beat { display: flex; gap: .6rem; align-items: flex-start; padding: .45rem 0; border-bottom: 1px solid var(--panel-border); font-size: .9rem; }
+.beat:last-child { border-bottom: none; }
+.beat .beat-n {
+  flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--accent-dim); color: var(--accent); font-weight: 800; font-size: .74rem;
+  display: flex; align-items: center; justify-content: center; margin-top: .1rem;
+}
+.new-chips { margin-top: .7rem; }
+.new-chips .kicker { margin-bottom: .3rem; }
+.reveal-item { border: 1px solid var(--panel-border); border-radius: 8px; margin: .55rem 0; overflow: hidden; }
+.reveal-btn {
+  display: block; width: 100%; text-align: left; background: var(--panel);
+  border: none; color: var(--text); font-family: var(--font); font-size: .9rem;
+  padding: .65rem .85rem; cursor: pointer;
+}
+.reveal-btn .rv-time { color: var(--accent); font-weight: 700; font-family: var(--mono); font-size: .8rem; margin-right: .5rem; }
+.reveal-btn:hover { background: var(--accent-dim); }
+.reveal-body { padding: .6rem .85rem .8rem; border-top: 1px solid var(--panel-border); font-size: .86rem; background: rgba(4,13,31,.5); }
+.reveal-body .rv-tag { color: var(--good); font-weight: 700; font-size: .74rem; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: .25rem; }
+
+.back-link { background: none; border: none; color: var(--accent); cursor: pointer; font-size: .82rem; font-family: var(--font); padding: 0; margin-bottom: .6rem; }
+.back-link:hover { text-decoration: underline; }
+footer.ft { border-top: 1px solid var(--panel-border); color: var(--faint); font-size: .74rem; padding: 1.2rem 1rem 2rem; text-align: center; }
+footer.ft a { color: var(--accent); text-decoration: none; }
+.index-list { columns: 2; column-gap: 1.5rem; }
+@media (max-width: 560px) { .index-list { columns: 1; } }
+.index-list button { display: block; background: none; border: none; color: var(--accent); font-family: var(--font); font-size: .86rem; cursor: pointer; padding: .18rem 0; text-align: left; }
+.index-list button:hover { text-decoration: underline; }
+.synth {
+  font-size: 1.02rem; color: var(--white); font-weight: 600;
+  border: 1px solid var(--panel-border-strong); border-radius: 10px;
+  padding: .9rem 1rem; background: var(--accent-dim); margin: 1rem 0;
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <a class="brand" href="index.html"><span>KTHQ</span> ContractingHQ</a>
+  <span class="tool-name">OCS Integrator &amp; Planner</span>
+  <span class="spacer"></span>
+  <span class="role-tag" id="roleTag" style="display:none;"></span>
+  <button class="btn ghost small" id="homeBtn" style="display:none;">Change role</button>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<footer class="ft">
+  Operational Contract Support planning aid. Educational tool, not an authority document. Doctrine basis: JP 4-10.
+  Items tagged SME-VERIFY need confirmation against current doctrine before you rely on them.
+  Part of <a href="tools.html">KTHQ Tools</a>.
+</footer>
+
+<script>
+"use strict";
+/* ============================================================
+   CONTENT MODEL
+   Every node answers one of four questions:
+     who integrates (cell), who decides the approach (c2),
+     who executes (fn), what gets produced (product).
+   Terms anchor to a function, a C2 option, or a product.
+   Text supports {{t:id}} inline term chips.
+   ============================================================ */
+
+const NODES = {
+  /* ----- the integration cell ----- */
+  ocsic: {
+    type: "cell", short: "OCSIC", full: "Operational Contract Support Integration Cell",
+    def: "The staff cell in the combatant command or joint force command J4 that plans and integrates Operational Contract Support across the force. The OCSIC runs the {{t:csi}} function, drafts {{t:annexw}}, the {{t:csip}}, and the {{t:cmp}}, and drives the OCS battle rhythm ({{t:jrrb}}, {{t:jcsb}}). It is a staff cell, not a command. It exists no matter which C2 option the commander picks, and it sits above the C2 continuum: the continuum decides who contracts, the OCSIC keeps the whole effort synchronized.",
+    connects: ["csi", "annexw", "csip", "cmp", "jrrb", "jcsb"],
+    roles: ["planner", "integrator", "cco"]
+  },
+
+  /* ----- three functions (JP 4-10) ----- */
+  csi: {
+    type: "fn", short: "CSI", full: "Contract Support Integration",
+    def: "Planning and synchronizing contracted support across the joint force. CSI turns every component's requirements into one coherent picture: what gets contracted, by whom, in what phase, and how it stays aligned with the operation. The {{t:ocsic}} performs this function at the theater level, and its main written outputs are {{t:annexw}} and the {{t:csip}}.",
+    connects: ["ocsic", "csip", "annexw", "jrrb"],
+    roles: ["planner", "integrator"]
+  },
+  csupport: {
+    type: "fn", short: "Contracting Support", full: "Contracting Support",
+    def: "Awarding and administering contracts in support of the operation: solicit, award, administer, close out. This is the contracting officer's function. The {{t:continuum}} decides how this function is organized across components, which is why the C2 choice matters so much to the {{t:cco}}. Most of the continuum applies to {{t:theater}}; external and systems support contracts keep their own chains.",
+    connects: ["sr", "lscc", "lsc", "joint", "theater", "cco"],
+    roles: ["planner", "integrator", "cco"]
+  },
+  cmgmt: {
+    type: "fn", short: "Contractor Management", full: "Contractor Management",
+    def: "Maintaining accountability, visibility, and force protection of contractor personnel in the operational area. It covers {{t:caaf}} status decisions, {{t:spot}} registration and reporting, movement control, medical support, and life support. The written plan for all of it is the {{t:cmp}}.",
+    connects: ["caaf", "spot", "cmp"],
+    roles: ["planner", "integrator", "cco"]
+  },
+
+  /* ----- the contracting C2 continuum ----- */
+  sr: {
+    type: "c2", short: "Service-retained", full: "Service-Retained Contracting (default)",
+    verb: "each for itself",
+    def: "The default. Each component contracts for its own requirements under its own authorities. No lead designated, no cross-component structure. Every other option on the {{t:continuum}} is a deliberate move away from this starting point, made because overlap, competition for the same vendors, or common requirements start costing the force money and effectiveness.",
+    connects: ["csupport", "lscc"],
+    roles: ["planner", "integrator", "cco"]
+  },
+  lscc: {
+    type: "c2", short: "LSCC", full: "Lead Service for Contracting Coordination",
+    verb: "COORDINATE",
+    def: "One Service coordinates and deconflicts contracting across components: shared visibility, deconflicted buys, common business rules, often through a {{t:jcsb}}. Coordination only. Each component keeps its own contracting authority, and the lead has no directive authority and does not execute contracts for the others. If someone tells you an LSCC can direct another component's contracting, they have it wrong.",
+    connects: ["csupport", "sr", "lsc", "jcsb"],
+    roles: ["planner", "integrator", "cco"]
+  },
+  lsc: {
+    type: "c2", short: "LSC", full: "Lead Service for Contracting",
+    verb: "EXECUTE",
+    def: "The designated Service executes contracting for specified common supplies and services on behalf of the other components. That is the jump from LSCC: the lead stops just coordinating and starts awarding for others, but only for the designated common items. Components still contract for everything outside that list under their own authorities.",
+    connects: ["csupport", "lscc", "joint"],
+    roles: ["planner", "integrator", "cco"]
+  },
+  joint: {
+    type: "c2", short: "Joint construct", full: "Joint Theater Support Contracting Command (JTSCC) or lead Service with a joint command element",
+    verb: "DIRECT",
+    def: "A joint contracting command with directive authority over theater support contracting. Contracting forces from multiple components work under one commander with one set of priorities. This is the Iraq and Afghanistan model (the JTSCC). It buys unity of effort at the price of standing up and running a joint command, so it fits large, sustained, highly joint operations.",
+    connects: ["csupport", "lsc"],
+    roles: ["planner", "integrator", "cco"]
+  },
+  continuum: {
+    type: "c2", short: "C2 continuum", full: "The contracting command and control continuum",
+    verb: "the spectrum",
+    def: "The range of options for organizing theater contracting, in increasing degrees of centralization: {{t:sr}}, then {{t:lscc}}, then {{t:lsc}}, then the {{t:joint}}. The central lesson is the verb ladder: an LSCC coordinates, an LSC executes for designated common items, and a joint construct directs. The continuum decides who contracts. It does not replace the {{t:ocsic}}, which integrates above all of it.",
+    connects: ["sr", "lscc", "lsc", "joint", "ocsic"],
+    roles: ["planner", "integrator", "cco"]
+  },
+
+  /* ----- planning products ----- */
+  annexw: {
+    type: "product", short: "Annex W", full: "Annex W (Operational Contract Support annex to the OPLAN or OPORD)",
+    def: "The Operational Contract Support annex to the operation plan or order. It states how contracted support will be integrated, organized, and managed for the operation, including the C2 approach for theater contracting. The {{t:ocsic}} drafts it through the {{t:csi}} function. The {{t:csip}} and {{t:cmp}} are developed with it and normally published as appendices to it. <span class=\"sme-verify\">SME-VERIFY</span> Confirm your command's Annex W format and appendix structure against current JOPES/JPP guidance.",
+    connects: ["ocsic", "csi", "csip", "cmp"],
+    roles: ["planner", "integrator"]
+  },
+  csip: {
+    type: "product", short: "CSIP", full: "Contract Support Integration Plan",
+    def: "The detailed plan for synchronizing contracted support: requirements by phase, the theater contracting organization, boards and review gates, and priorities of support. The {{t:ocsic}} produces it through the {{t:csi}} function. If {{t:annexw}} says what the approach is, the CSIP is the working plan that makes it executable.",
+    connects: ["ocsic", "csi", "annexw"],
+    roles: ["planner", "integrator"]
+  },
+  cmp: {
+    type: "product", short: "CMP", full: "Contractor Management Plan",
+    def: "The plan for accountability, visibility, and support of contractor personnel: {{t:caaf}} determinations and support levels, {{t:spot}} business rules, movement, medical, life support, and force protection. It is the tangible output of the {{t:cmgmt}} function, and the place a {{t:cco}} looks to know what contractor management language belongs in contracts.",
+    connects: ["cmgmt", "caaf", "spot", "annexw"],
+    roles: ["planner", "integrator", "cco"]
+  },
+
+  /* ----- supporting terms ----- */
+  caaf: {
+    type: "term", short: "CAAF", full: "Contractors Authorized to Accompany the Force",
+    def: "Contractor employees designated to accompany the force in the operational area. CAAF status brings specified government support (life support, medical care, protection as designated) and a letter of authorization. Who gets CAAF status and what support they receive is a {{t:cmgmt}} decision recorded in the {{t:cmp}}.",
+    connects: ["cmgmt", "cmp", "spot"],
+    roles: ["planner", "integrator", "cco"]
+  },
+  spot: {
+    type: "term", short: "SPOT", full: "Synchronized Predeployment and Operational Tracker",
+    def: "The system of record for contractor personnel accountability and visibility in the operational area. Contractor personnel data, letters of authorization, and headcount reporting run through it. Contracts must require registration and reporting; the {{t:cmp}} carries the theater business rules. <span class=\"sme-verify\">SME-VERIFY</span> Confirm the current system name and reporting mandate for your theater; business rules and system baselines change.",
+    connects: ["cmgmt", "cmp", "caaf"],
+    roles: ["planner", "integrator", "cco"]
+  },
+  jrrb: {
+    type: "term", short: "JRRB", full: "Joint Requirements Review Board (requirements review board)",
+    def: "The forum that validates and prioritizes contract support requirements before they go to a contracting activity. It keeps the force from buying the same thing twice and keeps scarce contracting capacity pointed at the commander's priorities. The {{t:ocsic}} typically runs it in the battle rhythm.",
+    connects: ["ocsic", "csi"],
+    roles: ["planner", "integrator", "cco"]
+  },
+  jcsb: {
+    type: "term", short: "JCSB", full: "Joint Contracting Support Board",
+    def: "The board that coordinates and deconflicts contracting actions across components: who buys what, from which vendor base, under which vehicle. Under an {{t:lscc}} this board is the lead's main coordination tool. Sits in the contracting lane, alongside the requirements lane of the {{t:jrrb}}.",
+    connects: ["lscc", "ocsic", "csupport"],
+    roles: ["planner", "integrator", "cco"]
+  },
+  jopec: {
+    type: "term", short: "JOPEC", full: "Joint Operational Contract Support Planning and Execution Course",
+    def: "The joint course that trains Operational Contract Support planners and integrators. If you are building an {{t:ocsic}} bench or headed to a planner billet, this is the schoolhouse route. <span class=\"sme-verify\">SME-VERIFY</span> Confirm current course name, proponent, and offerings before citing in orders.",
+    connects: ["ocsic", "csi"],
+    roles: ["planner", "integrator"]
+  },
+  theater: {
+    type: "term", short: "Types of contracted support", full: "Theater support, external support, and systems support contracts",
+    def: "Three kinds of contracted support arrive in an operational area. Theater support contracts are awarded in theater under the joint force's contracting construct; the {{t:continuum}} is mostly about these. External support contracts are awarded by organizations outside the theater (LOGCAP is the classic example). Systems support contracts follow fielded weapon systems and are awarded by program offices. All three carry contractor personnel, so {{t:cmgmt}} covers all three even though the C2 continuum does not.",
+    connects: ["csupport", "continuum", "cmgmt"],
+    roles: ["planner", "integrator", "cco"]
+  },
+  cco: {
+    type: "term", short: "CCO", full: "Contingency Contracting Officer",
+    def: "The warranted contracting officer executing the {{t:csupport}} function in the operational area. The C2 option determines who the CCO answers to for theater contracting and where common items get bought. The {{t:cmp}} tells the CCO what contractor management requirements belong in contracts.",
+    connects: ["csupport", "cmp"],
+    roles: ["planner", "integrator", "cco"]
+  }
+};
+
+const EDGES = [
+  ["ocsic", "csi"], ["ocsic", "annexw"], ["ocsic", "csip"], ["ocsic", "cmp"],
+  ["csi", "csip"], ["csi", "annexw"],
+  ["csupport", "sr"], ["csupport", "lscc"], ["csupport", "lsc"], ["csupport", "joint"],
+  ["cmgmt", "cmp"],
+  ["sr", "lscc"], ["lscc", "lsc"], ["lsc", "joint"]
+];
+
+const SYNTH = "The OCSIC integrates. The C2 option decides who contracts. The three functions describe what gets done.";
+
+/* ============================================================
+   SCENARIO: Operation RESOLUTE ANCHOR (fictional)
+   ============================================================ */
+const SCENARIO = {
+  intro: "Fictional country, fictional operation, real mechanics. A magnitude 7.8 earthquake hits the Republic of Torvana and wrecks the port city of Kanavar. The combatant commander stands up Joint Task Force RESOLUTE ANCHOR: maritime units into the harbor, ground forces to the airfield, engineers everywhere. The force will run on contracted support from day one. Walk the four steps.",
+  phases: [
+    {
+      tab: "First", time: "D-day to D+14", title: "Crisis response",
+      situation: "Components flow in fast. Nobody can wait 60 days for a support contract. Water, ground transportation, interpreters, and sanitation have to happen this week.",
+      beats: [
+        "The combatant command J4's {{t:ocsic}} pulls {{t:annexw}} from the standing plan. It is thin, and the {{t:csip}} behind it is thinner. They start rewriting both against the real operation immediately.",
+        "First-in {{t:cco}}s land with the lead elements and award the first contracts within days: bottled water, line haul from the port, interpreters, portable sanitation.",
+        "Contracting runs {{t:sr}}: each component buys for itself under its own authority. Fastest option, zero coordination overhead, and the correct answer on day one.",
+        "The OCSIC stands up a requirements review board ({{t:jrrb}}) before the requirement flood peaks, so every contract requirement gets validated and prioritized before it hits a contracting office."
+      ],
+      chips: ["ocsic", "annexw", "jrrb", "sr", "cco"]
+    },
+    {
+      tab: "Second", time: "Weeks 2 to 8", title: "Growth and friction",
+      situation: "The footprint triples. Three components now operate in one port city with one vendor base. Two components lease the same warehouse through different brokers. Line haul rates jump 40 percent in two weeks because components bid against each other.",
+      beats: [
+        "The {{t:ocsic}} documents the friction in dollars and takes it to the joint force commander with a recommendation: designate a lead Service for contracting coordination ({{t:lscc}}).",
+        "The LSCC stands up a {{t:jcsb}} and publishes common business rules: rate ceilings for line haul, one broker registry, shared vendor vetting. Each component keeps its own contracting authority. The board deconflicts; it does not direct.",
+        "Contractor personnel surge with the contracts. The OCSIC publishes the {{t:cmp}}: {{t:caaf}} determinations, letters of authorization, {{t:spot}} registration rules.",
+      ],
+      chips: ["lscc", "jcsb", "cmp", "caaf", "spot"]
+    },
+    {
+      tab: "Third", time: "Months 2 to 9", title: "Consolidation",
+      situation: "The mission settles into three base camps plus the port. The same requirements repeat every month: base life support, bulk fuel handling, line haul. Coordination keeps components from colliding, but the force still buys dining support four different ways.",
+      beats: [
+        "Planners run the numbers: substantial common demand, several components with real contracting workload. Recommendation: step up from coordination to execution, {{t:lscc}} to {{t:lsc}}.",
+        "The commander designates the lead. The lead Service now executes contracting for the designated common items (life support, fuel handling, line haul) on behalf of every component. Everything off that list stays with the components.",
+        "An external support contract ({{t:theater}}: LOGCAP-class, awarded outside the theater) takes over camp operations at the largest site. Different contracting chain, untouched by the theater C2 construct, but its contractor employees still ride the {{t:cmp}}: CAAF status, SPOT, movement, medical."
+      ],
+      chips: ["lsc", "theater", "cmp"]
+    },
+    {
+      tab: "Fourth", time: "Month 9 and beyond", title: "The decision point",
+      situation: "The operation extends into a stabilization presence. At the next planning review someone asks the question the continuum exists to answer: is it time for a joint contracting command?",
+      beats: [
+        "The planning team runs the ladder logic one more time. Scale is moderate. The footprint is stable. The common items are already consolidated under the {{t:lsc}}. A {{t:joint}} would add a command to stand up and run without adding control the force actually needs.",
+        "Recommendation: hold at LSC, and write the triggers that would change the answer into {{t:annexw}}: major expansion, a multi-year horizon, or contracting forces from every component needing one commander and one set of priorities.",
+        "That is the lesson of the fourth step. The continuum is a decision each time, not an escalator. Iraq and Afghanistan reached the top rung (a JTSCC with directive authority) because their scale demanded it. Torvana's does not."
+      ],
+      chips: ["joint", "annexw", "continuum"]
+    }
+  ]
+};
+
+/* ============================================================
+   LEARN TRACK (6 sections, comprehension checks between)
+   ============================================================ */
+const LEARN = [
+  {
+    id: "why", title: "What OCS is and why it exists",
+    body: `
+      <p>Operational Contract Support (OCS) is how the joint force plans for, obtains, and manages contracted support in operations. Modern operations run on contractors: base life support, transportation, translators, maintenance, construction. In Iraq and Afghanistan contractor headcount rivaled or exceeded uniformed strength.</p>
+      <p>That much contracted support creates three problems. Someone has to plan and synchronize it. Someone has to award and administer the contracts. And someone has to keep accountability and protection over thousands of contractor personnel inside the operational area. OCS exists because those three problems will get solved either deliberately or badly, and the joint force learned the "badly" version the hard way.</p>
+      <p>Doctrine home: JP 4-10, Operational Contract Support. One usage note to model from day one: the term is Operational Contract Support. Say it that way and you will be understood at every echelon.</p>
+      <p>The rest of this track runs on a scenario. You will watch a fictional operation stand up, grow, and force every OCS decision in sequence, then zoom down to a single contracting officer's desk to see how it all lands.</p>
+    `,
+    check: {
+      q: "Which statement best captures why OCS exists as a discipline?",
+      opts: [
+        { t: "Contracting officers needed a joint career path.", fb: "No. OCS is about the joint force's problem set, not career management." },
+        { t: "Contracted support at operational scale must be planned, executed, and managed deliberately or it degrades the operation.", ok: true, fb: "Right. Three problems: synchronize it, contract it, manage the people. OCS is the deliberate answer to all three." },
+        { t: "It replaces military logistics with contractors.", fb: "No. OCS integrates contracted support with military logistics; it does not replace it." }
+      ]
+    }
+  },
+  {
+    id: "scenario", title: "The scenario: Operation RESOLUTE ANCHOR",
+    body: `
+      <p>${SCENARIO.intro}</p>
+      <div id="scnStepper"></div>
+      <p>Keep the sequence. Service-retained got the force through the first weeks. Friction bought an LSCC. Repeating common demand bought an LSC. And the fourth step stayed a question with a documented answer. Every operation walks some version of this path; the speed and the stopping point change, the logic does not.</p>
+    `,
+    scenario: true,
+    check: {
+      q: "In week 6, line haul rates spiked 40 percent because components bid against each other. What is the right first move?",
+      opts: [
+        { t: "Stand up a JTSCC with directive authority over theater contracting.", fb: "Too far, too fast. Directive authority is the top rung; this problem is deconfliction, which coordination solves at far lower cost." },
+        { t: "Designate an LSCC: one Service coordinates, deconflicts, and publishes common business rules.", ok: true, fb: "Right. Components bidding against each other is a coordination failure. An LSCC with a JCSB and rate ceilings attacks it directly, and nobody loses contracting authority." },
+        { t: "Nothing. Service-retained is the doctrinal default and should be kept.", fb: "The default is a starting point, not a position to defend. When the default starts costing 40 percent rate spikes, the continuum exists to fix it." }
+      ]
+    }
+  },
+  {
+    id: "functions", title: "The three functions",
+    body: `
+      <p>Everything in OCS falls under one of three functions (JP 4-10):</p>
+      <div class="card accent-left"><strong style="color:var(--white);">1. {{t:csi}}.</strong> Planning and synchronization of OCS across the force. The thinking and integrating work: requirements, phasing, priorities, and the written plan.</div>
+      <div class="card accent-left"><strong style="color:var(--white);">2. {{t:csupport}}.</strong> Awarding and administering the contracts. The {{t:cco}}'s function: solicit, award, administer, close out.</div>
+      <div class="card accent-left"><strong style="color:var(--white);">3. {{t:cmgmt}}.</strong> Accountability, visibility, and force protection of contractor personnel in the operational area: {{t:caaf}}, {{t:spot}}, movement, medical, and life support.</div>
+      <p>Map them back to the scenario. Rewriting Annex W and standing up the requirements board in week one: contract support integration. The first-in contracting officers awarding water and line haul contracts: contracting support. The letters of authorization and SPOT registrations when contractor personnel surged: contractor management.</p>
+      <p>A quick self-test for any OCS task that crosses your desk: is this about planning the support, buying the support, or managing the people who deliver it? That sorts almost everything.</p>
+      <p>One more distinction worth loading early: contracted support arrives three ways ({{t:theater}}). The C2 discussion in the next section applies mainly to theater support contracts.</p>
+    `,
+    check: {
+      q: "A contracting officer in theater awards and administers a base life support contract. Which function is that?",
+      opts: [
+        { t: "Contract support integration", fb: "Not quite. CSI is the planning and synchronization work, not the award itself." },
+        { t: "Contracting support", ok: true, fb: "Correct. Award and administration is the contracting support function, the CCO's lane." },
+        { t: "Contractor management", fb: "No. Contractor management covers the people delivering the support: accountability, visibility, protection." }
+      ]
+    }
+  },
+  {
+    id: "c2", title: "The contracting C2 continuum",
+    body: `
+      <p>The most confused part of OCS, and you just watched Torvana climb it one rung at a time. Now name the rungs and fix the verbs. The question the continuum answers: how is theater contracting organized across the components? The answer is a spectrum of increasing centralization, not a menu of unrelated options.</p>
+      <div class="spectrum">
+        <div class="spec-step on">Service-retained<br><span style="color:var(--faint)">each for itself</span></div>
+        <div class="spec-step on">LSCC<br><span style="color:var(--warn)">COORDINATE</span></div>
+        <div class="spec-step on">LSC<br><span style="color:var(--warn)">EXECUTE</span></div>
+        <div class="spec-step on">Joint<br><span style="color:var(--warn)">DIRECT</span></div>
+      </div>
+      <p><strong style="color:var(--white);">{{t:sr}}.</strong> The default. Each component contracts for itself. No lead.</p>
+      <p><strong style="color:var(--white);">{{t:lscc}}.</strong> One Service coordinates and deconflicts across components, usually through a {{t:jcsb}}. Coordination only: every component keeps its own contracting authority, and the lead cannot direct anyone.</p>
+      <p><strong style="color:var(--white);">{{t:lsc}}.</strong> The lead Service executes contracting for specified common supplies and services on behalf of the others. Execution authority for the designated items only.</p>
+      <p><strong style="color:var(--white);">{{t:joint}}.</strong> A joint contracting command (JTSCC, or a lead Service with a joint command element) with directive authority over theater support contracting. The Iraq and Afghanistan model.</p>
+      <p>The lesson to burn in is the verb ladder: <strong style="color:var(--white);">coordinate, then execute, then direct.</strong> An LSCC coordinates other components' contracting. An LSC executes contracting for the designated common items. A joint construct directs theater support contracting. People who miss OCS questions almost always miss them on this ladder, usually by giving an LSCC powers only an LSC or a JTSCC has.</p>
+    `,
+    check: {
+      q: "The designated lead runs a board that deconflicts buys across components, but each component still awards its own contracts. Which option is in effect?",
+      opts: [
+        { t: "LSC", fb: "No. Under an LSC the lead would be awarding contracts for the designated common items itself." },
+        { t: "LSCC", ok: true, fb: "Right. Deconfliction and shared business rules with no transfer of execution: that is coordination, the LSCC lane." },
+        { t: "Joint construct (JTSCC)", fb: "No. A JTSCC has directive authority; this scenario describes coordination only." }
+      ]
+    },
+    check2: {
+      q: "What actually changes at the step from LSCC to LSC?",
+      opts: [
+        { t: "The lead gains directive authority over all theater contracting.", fb: "No. Directive authority over theater support contracting is the joint construct step, not LSC." },
+        { t: "The lead starts executing contracting for specified common supplies and services on behalf of the other components.", ok: true, fb: "Correct. Coordinate becomes execute, but only for the designated common items." },
+        { t: "Components lose their contracting authority entirely.", fb: "No. Components keep contracting for everything outside the designated common items." }
+      ]
+    }
+  },
+  {
+    id: "ocsic", title: "The OCSIC and where it sits",
+    body: `
+      <p>The {{t:ocsic}} is the staff cell in the combatant command or joint force command J4 that plans and integrates OCS across the force. It runs the {{t:csi}} function, drafts the planning products, and drives the OCS battle rhythm: the {{t:jrrb}} for requirements, coordination with the {{t:jcsb}} on the contracting side.</p>
+      <p>Two facts about the OCSIC keep people oriented:</p>
+      <ul class="tight">
+        <li><strong style="color:var(--white);">It is a staff cell, not a command.</strong> It integrates and synchronizes. It does not award contracts and it does not command contracting forces.</li>
+        <li><strong style="color:var(--white);">It sits above the C2 continuum.</strong> The commander might pick service-retained, LSCC, LSC, or a joint construct. The OCSIC exists and does its integration job under every one of those. Standing up a JTSCC does not dissolve the OCSIC; the two answer different questions.</li>
+      </ul>
+      <p>This cell is the home base for the planner and integrator roles this tool supports. If you own {{t:annexw}}, the {{t:csip}}, or the {{t:cmp}}, you are doing OCSIC work.</p>
+    `,
+    check: {
+      q: "The joint force stands up a JTSCC. What happens to the OCSIC?",
+      opts: [
+        { t: "It dissolves; the JTSCC absorbs its integration mission.", fb: "No. The JTSCC is a contracting command. The OCSIC's integration role continues above it." },
+        { t: "It keeps integrating OCS across the force; the JTSCC executes and directs theater support contracting.", ok: true, fb: "Correct. The OCSIC integrates, the C2 construct contracts. Different questions, both still answered." },
+        { t: "It converts into a contracting activity and starts awarding contracts.", fb: "No. The OCSIC is a staff cell. It never awards contracts under any C2 option." }
+      ]
+    }
+  },
+  {
+    id: "products", title: "The planning products",
+    body: `
+      <p>OCS planning produces three tangible outputs. If the thinking never lands in these documents, it did not happen.</p>
+      <div class="card accent-left"><strong style="color:var(--white);">{{t:annexw}}.</strong> The OCS annex to the OPLAN or OPORD. States how contracted support will be integrated, organized, and managed, including the theater contracting C2 approach.</div>
+      <div class="card accent-left"><strong style="color:var(--white);">{{t:csip}}.</strong> The Contract Support Integration Plan. The working synchronization plan: requirements by phase, contracting organization, boards, priorities. Output of the {{t:csi}} function.</div>
+      <div class="card accent-left"><strong style="color:var(--white);">{{t:cmp}}.</strong> The Contractor Management Plan. {{t:caaf}} determinations, {{t:spot}} business rules, movement, medical, life support, force protection. Output of the {{t:cmgmt}} function.</div>
+      <p>The CSIP and CMP are developed with Annex W and normally published as appendices to it. <span class="sme-verify">SME-VERIFY</span> Confirm your command's annex format and appendix structure.</p>
+      <p>Notice the mapping: CSI produces the CSIP, contractor management produces the CMP, and Annex W wraps the whole approach into the plan. Each product belongs to a function; none of them floats free.</p>
+    `,
+    check: {
+      q: "Your theater needs written business rules for SPOT registration and CAAF support levels. Which product carries them?",
+      opts: [
+        { t: "The CSIP", fb: "No. The CSIP synchronizes contracted support requirements and organization. People rules live elsewhere." },
+        { t: "The CMP", ok: true, fb: "Correct. Contractor accountability, visibility, and support rules are the Contractor Management Plan's job." },
+        { t: "The base OPORD only", fb: "No. The base order will reference it, but the CMP is the product built to carry those rules." }
+      ]
+    }
+  },
+  {
+    id: "ground", title: "On the ground: a CCO's Tuesday in Kanavar",
+    body: `
+      <p>Month 4 of RESOLUTE ANCHOR. You are the contracting officer at the port. Above your head: an {{t:lsc}} executing the common items, a {{t:jrrb}} validating requirements, a published {{t:cmp}}, and an {{t:ocsic}} keeping it synchronized. You see none of that directly. You see a Tuesday. Tap each event to see the OCS machinery behind it.</p>
+      <div class="card">
+        <div class="reveal-item">
+          <button class="reveal-btn" data-reveal="rv1"><span class="rv-time">0730</span>An engineer unit wants a 30-day generator rental for a water purification site. First question you ask: has this been through the requirements board?</button>
+          <div class="reveal-body" id="rv1" hidden><span class="rv-tag">Contract support integration at work</span>The {{t:jrrb}} the OCSIC stood up in week one is why you ask. Validation and prioritization before award keeps the force from buying duplicates and keeps your limited capacity on the commander's priorities. The requirement comes back validated by 0900.</div>
+        </div>
+        <div class="reveal-item">
+          <button class="reveal-btn" data-reveal="rv2"><span class="rv-time">0900</span>A battalion asks you to contract bottled water resupply. You do not award it. You route it to the lead Service's contracting office.</button>
+          <div class="reveal-body" id="rv2" hidden><span class="rv-tag">The C2 decision at work</span>Bottled water is on the designated common-items list, so under the {{t:lsc}} the lead Service buys it for everyone. One contract instead of four, one price instead of a bidding war. Everything off the list is still yours.</div>
+        </div>
+        <div class="reveal-item">
+          <button class="reveal-btn" data-reveal="rv3"><span class="rv-time">1030</span>You award a perimeter fence contract to a local firm. Before signature you check it carries the letter of authorization and personnel tracking language.</button>
+          <div class="reveal-body" id="rv3" hidden><span class="rv-tag">Contractor management at work</span>That language comes from the {{t:cmp}}: {{t:spot}} registration, {{t:caaf}} rules, theater entry requirements. You did not write those rules; the contractor management function did. Your job is making sure every award carries them.</div>
+        </div>
+        <div class="reveal-item">
+          <button class="reveal-btn" data-reveal="rv4"><span class="rv-time">1300</span>At the contracting board, another component is chasing the same crane vendor you need for port clearance. The board deconflicts: they take week one, you take week two.</button>
+          <div class="reveal-body" id="rv4" hidden><span class="rv-tag">Coordination still running underneath</span>The {{t:jcsb}} and its business rules date from the LSCC phase, and they keep working under the LSC for everything outside the common-items list. Stepping up the continuum adds authority; it does not switch off coordination.</div>
+        </div>
+        <div class="reveal-item">
+          <button class="reveal-btn" data-reveal="rv5"><span class="rv-time">1500</span>The gate calls: six contractor employees arrived for the camp operations contract with no letters of authorization. You pull up the tracking system and their contract's terms.</button>
+          <div class="reveal-body" id="rv5" hidden><span class="rv-tag">Contractor management, external contract edition</span>That camp contract is external support, awarded outside the theater. The C2 construct never touched it, but the {{t:cmp}} still governs its people: {{t:caaf}} status, {{t:spot}} records, letters of authorization. You flag the contractor to the contract's administering office and the OCSIC's contractor management lead.</div>
+        </div>
+        <div class="reveal-item">
+          <button class="reveal-btn" data-reveal="rv6"><span class="rv-time">1630</span>The OCSIC integrator calls: the next phase moves a battalion north. What contracted support will that demand, and what should the plan pre-position?</button>
+          <div class="reveal-body" id="rv6" hidden><span class="rv-tag">Integration closing the loop</span>Your answer feeds the {{t:csip}} update: requirements by phase, before they become emergencies. The cell plans, you inform the plan, and next month's Tuesday gets easier.</div>
+        </div>
+      </div>
+      <p>Count what just happened. Six desk events, and every one worked because someone did OCS months earlier: a board stood up in week one, a common-items list argued over in month two, a management plan published before the contractor surge. That is the tie: the machinery above you is invisible right up until it saves your Tuesday.</p>
+    `,
+    check: {
+      q: "The water resupply went to the lead Service but the fence contract stayed with you. What explains the split?",
+      opts: [
+        { t: "The lead Service handles all contracts over a dollar threshold.", fb: "No. The LSC split is by designated common items, not dollar value." },
+        { t: "Water is on the designated common-items list the LSC executes; the fence is not, so it stays with the component.", ok: true, fb: "Correct. Under an LSC the lead executes the designated common supplies and services; everything else remains component business." },
+        { t: "The JRRB rejected the fence requirement.", fb: "No. The JRRB validates requirements; it does not decide which contracting office executes them." }
+      ]
+    }
+  },
+  {
+    id: "synth", title: "The synthesis",
+    body: `
+      <div class="synth">${"The OCSIC integrates. The C2 option decides who contracts. The three functions describe what gets done."}</div>
+      <p>Run any OCS question through that sentence.</p>
+      <ul class="tight">
+        <li>Who plans and synchronizes contracted support for the joint force? The {{t:ocsic}}, doing {{t:csi}}, writing {{t:annexw}} and the {{t:csip}}.</li>
+        <li>Who awards the theater contracts? Whoever the {{t:continuum}} answer says: each component (service-retained), each component with a coordinating lead ({{t:lscc}}), the lead for designated common items ({{t:lsc}}), or a joint command with directive authority ({{t:joint}}).</li>
+        <li>Who keeps accountability of contractor personnel? The {{t:cmgmt}} function, executed to the rules in the {{t:cmp}}, tracked in {{t:spot}}, with support driven by {{t:caaf}} status.</li>
+      </ul>
+      <p>And keep the Kanavar Tuesday in your head. The board that validated the generator requirement, the common-items list that rerouted the water buy, the tracking language in the fence contract: each one traces back to a line in this synthesis. When the machinery is planned well, the person at the bottom just has a normal day.</p>
+      <p>From here, pick the job aid that matches your seat: Planner for building the products, Integrator for running the OCSIC, CCO for executing in the field. The concept map below ties every piece together; click any node.</p>
+    `,
+    mapAfter: true,
+    check: {
+      q: "Final check. Who decides which organization awards theater support contracts?",
+      opts: [
+        { t: "The OCSIC, because it integrates OCS.", fb: "No. The OCSIC integrates; it does not hold or assign contracting authority." },
+        { t: "The chosen C2 option: service-retained, LSCC, LSC, or a joint construct.", ok: true, fb: "Correct. The C2 decision assigns who contracts. The OCSIC integrates above it either way." },
+        { t: "The CMP.", fb: "No. The CMP governs contractor personnel management, not contracting organization." }
+      ]
+    }
+  }
+];
+
+/* ============================================================
+   C2 DECISION AID
+   ============================================================ */
+const AID = {
+  questions: [
+    {
+      id: "scale", label: "Scale and duration of the operation",
+      opts: [
+        "Small or short: limited footprint, single phase",
+        "Moderate: months long, one operational area",
+        "Large: multiple components, sustained presence",
+        "Major sustained campaign with an enduring footprint"
+      ]
+    },
+    {
+      id: "jointness", label: "How joint is the contracting workload",
+      opts: [
+        "One component does nearly all the contracting",
+        "One component dominates; others contract at the margins",
+        "Several components each carry real contracting workload",
+        "Fully joint: every component contracts heavily in the same space"
+      ]
+    },
+    {
+      id: "commonality", label: "How common are requirements across components",
+      opts: [
+        "Mostly unique to each component",
+        "Some overlap in a few categories",
+        "Substantial common demand (life support, fuel handling, transportation)",
+        "Most theater requirements are common across the force"
+      ]
+    },
+    {
+      id: "maturity", label: "Maturity of the theater contracting footprint",
+      opts: [
+        "Little or no theater contracting structure yet",
+        "Component activities operating independently, little friction so far",
+        "Established activities with overlap and competition for the same vendors",
+        "Large mature footprint with persistent overlap and enduring common requirements"
+      ]
+    }
+  ],
+  /* returns {pick, reasons[], capNote} */
+  evaluate(a) {
+    const score = a.scale + a.jointness + a.commonality + a.maturity;
+    let pick;
+    if (score <= 2) pick = "sr";
+    else if (score <= 5) pick = "lscc";
+    else if (score <= 8) pick = "lsc";
+    else pick = "joint";
+
+    let capNote = null;
+    const order = ["sr", "lscc", "lsc", "joint"];
+    const cap = (max, note) => {
+      if (order.indexOf(pick) > order.indexOf(max)) { pick = max; capNote = note; }
+    };
+    if (a.jointness === 0) {
+      cap("sr", "One component is doing nearly all the contracting, so there is no cross-component problem to solve. Centralizing would add structure without adding value.");
+    }
+    if (a.commonality === 0) {
+      cap("lscc", "With little common demand there is nothing for a lead to execute on behalf of others. Coordination (visibility and deconfliction) is the ceiling until common requirements emerge.");
+    }
+    if (pick === "joint" && (a.scale < 2 || a.jointness < 2)) {
+      pick = "lsc";
+      capNote = "A joint construct needs scale and jointness to pay for itself. Below that threshold, designating a lead Service to execute the common items gets most of the benefit without standing up a joint command.";
+    }
+
+    const reasons = [];
+    reasons.push(["Scale",
+      ["Small and short favors the default: each component contracts for itself and the fight ends before centralization pays off.",
+       "Moderate scale starts to reward shared visibility across components.",
+       "Large sustained operations generate enough volume that overlap costs real money and vendor capacity.",
+       "A major campaign makes centralized theater contracting a question of when, not whether."][a.scale]]);
+    reasons.push(["Jointness",
+      ["With one component doing the contracting, cross-component C2 solves a problem you do not have.",
+       "A dominant component with minor players usually needs coordination at most.",
+       "Several components with real workload means real collision: same vendors, same commodities, same battlespace.",
+       "A fully joint contracting picture is the strongest driver toward a lead or a joint command."][a.jointness]]);
+    reasons.push(["Commonality",
+      ["Unique requirements stay with the component that owns them; no lead can buy them better.",
+       "Limited overlap supports common business rules, not common execution.",
+       "Substantial common demand is the classic trigger for an LSC: designate the items, let one Service buy them once.",
+       "When most demand is common, consolidated execution or joint direction captures the most value."][a.commonality]]);
+    reasons.push(["Footprint maturity",
+      ["No structure yet means keep it simple and build visibility first.",
+       "Independent activities without friction do not yet justify a lead.",
+       "Overlap and vendor competition between activities is the symptom coordination (and then execution) exists to fix.",
+       "Persistent overlap with enduring common requirements is the picture that historically drove the joint construct."][a.maturity]]);
+
+    return { pick, reasons, capNote, score };
+  }
+};
+
+/* ============================================================
+   ROLE DEFINITIONS (scoped views)
+   ============================================================ */
+const ROLES = {
+  learn:      { name: "Learn OCS", tag: "Learn track" },
+  planner:    { name: "Planner", tag: "Planner" },
+  integrator: { name: "Integrator", tag: "Integrator" },
+  cco:        { name: "CCO in the field", tag: "CCO" }
+};
+/* ============================================================
+   ENGINE
+   ============================================================ */
+const app = document.getElementById("app");
+const roleTag = document.getElementById("roleTag");
+const homeBtn = document.getElementById("homeBtn");
+const STORE_KEY = "kthq-ocs-tool";
+
+let S = loadState();
+function loadState() {
+  try {
+    const raw = sessionStorage.getItem(STORE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) { /* storage unavailable; run stateless */ }
+  return { role: null, learnIdx: 0, learnDone: {}, aid: {}, checks: {} };
+}
+function save() {
+  try { sessionStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch (e) { /* ignore */ }
+}
+
+/* ----- inline term chips ----- */
+function T(text) {
+  return text.replace(/\{\{t:([a-z0-9]+)\}\}/g, (m, id) => {
+    const n = NODES[id];
+    if (!n) return m;
+    return `<span class="term" data-term="${id}">${n.short}</span>`;
+  });
+}
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+const TYPE_BADGE = { fn: ["fn", "Function"], c2: ["c2", "C2 option"], cell: ["cell", "Integration cell"], product: ["product", "Planning product"], term: ["term", "Supporting term"] };
+
+/* ----- term popover ----- */
+function openTerm(id) {
+  closePop();
+  const n = NODES[id];
+  if (!n) return;
+  const [cls, label] = TYPE_BADGE[n.type];
+  const back = document.createElement("div");
+  back.className = "pop-back";
+  back.dataset.popback = "1";
+  back.innerHTML = `
+    <div class="pop" role="dialog" aria-label="${esc(n.short)}">
+      <button class="pop-close" data-popclose="1" aria-label="Close">&times;</button>
+      <div class="pop-title">${esc(n.short)} <span class="badge ${cls}">${label}</span></div>
+      <div class="pop-full">${esc(n.full)}</div>
+      <div>${T(n.def)}</div>
+      <div class="pop-links">
+        ${n.connects.map(c => NODES[c] ? `<span class="link-chip" data-term="${c}">${NODES[c].short}</span>` : "").join("")}
+        ${MAP_POS[id] ? `<span class="link-chip" data-mapjump="${id}">See on concept map</span>` : ""}
+      </div>
+    </div>`;
+  document.body.appendChild(back);
+}
+function closePop() {
+  document.querySelectorAll(".pop-back").forEach(el => el.remove());
+}
+
+/* ----- concept map ----- */
+const MAP_POS = {
+  ocsic:    { x: 280, y: 16,  w: 200, h: 52, sub: "integrates, above the continuum" },
+  csi:      { x: 20,  y: 120, w: 226, h: 52, sub: "plan and synchronize" },
+  csupport: { x: 266, y: 120, w: 226, h: 52, sub: "award and administer" },
+  cmgmt:    { x: 512, y: 120, w: 228, h: 52, sub: "account, protect, support" },
+  sr:       { x: 20,  y: 250, w: 166, h: 52, sub: "each for itself" },
+  lscc:     { x: 206, y: 250, w: 166, h: 52, sub: "COORDINATE" },
+  lsc:      { x: 392, y: 250, w: 166, h: 52, sub: "EXECUTE" },
+  joint:    { x: 578, y: 250, w: 162, h: 52, sub: "DIRECT" },
+  annexw:   { x: 110, y: 400, w: 180, h: 52, sub: "OCS annex to the plan" },
+  csip:     { x: 310, y: 400, w: 160, h: 52, sub: "integration plan" },
+  cmp:      { x: 490, y: 400, w: 170, h: 52, sub: "contractor mgmt plan" }
+};
+function edgePath(a, b) {
+  const A = MAP_POS[a], B = MAP_POS[b];
+  if (!A || !B) return null;
+  let x1, y1, x2, y2;
+  if (Math.abs(A.y - B.y) < 10) {
+    if (A.x < B.x) { x1 = A.x + A.w; y1 = A.y + A.h / 2; x2 = B.x; y2 = B.y + B.h / 2; }
+    else { x1 = A.x; y1 = A.y + A.h / 2; x2 = B.x + B.w; y2 = B.y + B.h / 2; }
+    return `M ${x1} ${y1} L ${x2} ${y2}`;
+  }
+  const top = A.y < B.y ? A : B, bot = A.y < B.y ? B : A;
+  x1 = top.x + top.w / 2; y1 = top.y + top.h;
+  x2 = bot.x + bot.w / 2; y2 = bot.y;
+  const my = (y1 + y2) / 2;
+  return `M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`;
+}
+function conceptMapHTML() {
+  const edges = EDGES.map(([a, b], i) => {
+    const d = edgePath(a, b);
+    return d ? `<path class="map-edge" id="edge-${i}" data-a="${a}" data-b="${b}" d="${d}"/>` : "";
+  }).join("");
+  const nodes = Object.entries(MAP_POS).map(([id, p]) => {
+    const n = NODES[id];
+    return `<g class="map-node" data-node="${id}">
+      <rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" rx="8"/>
+      <text class="nlabel" x="${p.x + p.w / 2}" y="${p.y + 21}" text-anchor="middle">${esc(n.short)}</text>
+      <text class="nsub" x="${p.x + p.w / 2}" y="${p.y + 38}" text-anchor="middle">${esc(p.sub)}</text>
+    </g>`;
+  }).join("");
+  return `
+  <div class="card" id="mapCard">
+    <div class="kicker">Concept map</div>
+    <div class="map-hint">Tap a node. Green shows what it connects to; the detail appears under the map. Scroll sideways on a phone.</div>
+    <div class="map-box"><svg class="map-svg" viewBox="0 0 760 470" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OCS concept map">
+      <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="rgba(251,191,36,.6)"/></marker></defs>
+      <text class="map-lane" x="8" y="10">Integration</text>
+      <text class="map-lane" x="8" y="112">The three functions</text>
+      <text class="map-lane" x="8" y="242">C2 continuum</text>
+      <text class="map-lane" x="8" y="392">Planning products</text>
+      <g id="edgeLayer">${edges}</g>
+      ${nodes}
+      <g>
+        <line x1="30" y1="330" x2="710" y2="330" stroke="rgba(251,191,36,.45)" stroke-width="1.4" marker-end="url(#arr)"/>
+        <text x="375" y="348" text-anchor="middle" style="fill:var(--warn);font-size:11px;letter-spacing:1px;">centralization increases: coordinate, execute, direct</text>
+      </g>
+    </svg></div>
+    <div class="map-detail" id="mapDetail">
+      <p class="sub">Nothing selected yet. Start with OCSIC at the top, then walk the C2 row.</p>
+    </div>
+  </div>`;
+}
+function selectMapNode(id) {
+  const n = NODES[id];
+  if (!n || !MAP_POS[id]) return;
+  document.querySelectorAll(".map-node").forEach(g => {
+    g.classList.remove("sel", "linked", "dim");
+    const gid = g.dataset.node;
+    if (gid === id) g.classList.add("sel");
+    else if (n.connects.includes(gid)) g.classList.add("linked");
+    else g.classList.add("dim");
+  });
+  document.querySelectorAll(".map-edge").forEach(e => {
+    e.classList.remove("hot", "dim");
+    if (e.dataset.a === id || e.dataset.b === id) e.classList.add("hot");
+    else e.classList.add("dim");
+  });
+  const det = document.getElementById("mapDetail");
+  if (det) {
+    const [cls, label] = TYPE_BADGE[n.type];
+    det.innerHTML = `
+      <h3 style="margin-top:.4rem;">${esc(n.short)} <span class="badge ${cls}">${label}</span></h3>
+      <p class="sub" style="margin:0 0 .4rem;">${esc(n.full)}</p>
+      <div>${T(n.def)}</div>
+      <div class="pop-links">${n.connects.map(c => NODES[c] ? (MAP_POS[c] ? `<span class="link-chip" data-mapjump="${c}">${NODES[c].short}</span>` : `<span class="link-chip" data-term="${c}">${NODES[c].short}</span>`) : "").join("")}</div>`;
+  }
+}
+
+/* ----- quiz ----- */
+function quizHTML(check, key) {
+  return `
+  <div class="quiz" data-quizbox="${key}">
+    <div class="q-kicker">Check yourself</div>
+    <div class="q-text">${esc(check.q)}</div>
+    ${check.opts.map((o, i) => `<button class="q-opt" data-quiz="${key}" data-opt="${i}">${esc(o.t)}</button>`).join("")}
+    <div class="q-fb" id="fb-${esc(key)}"></div>
+  </div>`;
+}
+function findCheck(key) {
+  const parts = key.split("|");
+  const sec = LEARN.find(s => s.id === parts[0]);
+  if (!sec) return null;
+  return parts[1] === "2" ? sec.check2 : sec.check;
+}
+function answerQuiz(key, optIdx) {
+  const check = findCheck(key);
+  if (!check) return;
+  S.checks[key] = optIdx;
+  save();
+  const box = document.querySelector(`[data-quizbox="${key}"]`);
+  if (!box) return;
+  box.querySelectorAll(".q-opt").forEach((b, i) => {
+    b.classList.remove("right", "wrong");
+    if (check.opts[i].ok) b.classList.add("right");
+    else if (i === optIdx) b.classList.add("wrong");
+  });
+  const fb = box.querySelector(".q-fb");
+  fb.textContent = check.opts[optIdx].fb;
+  fb.classList.add("show");
+}
+
+/* ----- decision aid ----- */
+function aidHTML(context) {
+  const qs = AID.questions.map(q => `
+    <div class="aid-q">
+      <div class="aq-label">${esc(q.label)}</div>
+      ${q.opts.map((o, i) => `<button class="aid-opt${S.aid[q.id] === i ? " on" : ""}" data-aid="${q.id}" data-val="${i}">${esc(o)}</button>`).join("")}
+    </div>`).join("");
+  return `
+  <div class="card" id="aidBox">
+    <div class="kicker">C2 decision aid</div>
+    <p class="sub">Answer the four questions for the operation you are planning. The aid walks the same logic a planning team walks: how much centralization does this contracting picture need?</p>
+    ${qs}
+    <div id="aidResult">${aidResultHTML()}</div>
+    <div class="disclaimer"><strong>Planning aid, not authority.</strong> This tool helps you reason toward a recommendation. Designating a lead Service or standing up a joint construct is a commander's decision made through the joint planning process and Service channels. Take the reasoning, not just the verdict, into your estimate.</div>
+  </div>`;
+}
+function aidResultHTML() {
+  const a = S.aid;
+  const ids = ["scale", "jointness", "commonality", "maturity"];
+  if (!ids.every(k => typeof a[k] === "number")) {
+    const remaining = ids.filter(k => typeof a[k] !== "number").length;
+    return `<p class="sub" style="margin-top:.8rem;">${remaining} of 4 questions left to answer.</p>`;
+  }
+  const r = AID.evaluate(a);
+  const n = NODES[r.pick];
+  const order = ["sr", "lscc", "lsc", "joint"];
+  const steps = order.map(id => `<div class="spec-step${id === r.pick ? " on" : ""}">${NODES[id].short}<br><span style="color:${id === r.pick ? "var(--warn)" : "var(--faint)"}">${NODES[id].verb}</span></div>`).join("");
+  return `
+  <div class="card aid-result">
+    <div class="kicker">Recommendation</div>
+    <div class="aid-verdict">${esc(n.short)}</div>
+    <p class="sub">${esc(n.full)}</p>
+    <div class="spectrum">${steps}</div>
+    <p>${T(n.def)}</p>
+    ${r.capNote ? `<p><strong style="color:var(--warn);">Why not further right:</strong> ${esc(r.capNote)}</p>` : ""}
+    <h3>Reasoning from your inputs</h3>
+    <ul class="tight">${r.reasons.map(([k, v]) => `<li><strong style="color:var(--white);">${k}:</strong> ${esc(v)}</li>`).join("")}</ul>
+    <p class="sub">The ladder, one more time: an LSCC coordinates, an LSC executes for designated common items, a joint construct directs theater support contracting.</p>
+  </div>`;
+}
+
+/* ----- alphabetical index (secondary lookup) ----- */
+function indexHTML() {
+  const items = Object.entries(NODES)
+    .sort((a, b) => a[1].short.localeCompare(b[1].short))
+    .map(([id, n]) => `<button data-term="${id}">${esc(n.short)}: ${esc(n.full)}</button>`).join("");
+  return `
+  <details class="card">
+    <summary style="cursor:pointer;color:var(--accent);font-weight:700;">A to Z index (secondary lookup)</summary>
+    <p class="sub">Every term in the tool. The primary way to meet a term is in context; this list is for quick reference.</p>
+    <div class="index-list">${items}</div>
+  </details>`;
+}
+/* ============================================================
+   VIEWS
+   ============================================================ */
+function renderLanding() {
+  app.innerHTML = `
+    <div class="kicker">Operational Contract Support</div>
+    <h1>OCS Integrator &amp; Planner</h1>
+    <p class="sub">Learn Operational Contract Support from the skeleton up, or jump straight to the job aid for your seat. Both run on the same content model, so the terms mean the same thing everywhere.</p>
+    <div class="grid cols2" style="margin-top:1.2rem;">
+      <button class="role-card" data-role="learn">
+        <span class="rc-title">1. Learn OCS</span>
+        <span class="rc-sub">The teaching track, built on a scenario. Watch a fictional operation force every OCS decision in sequence, walk the doctrine that explains each one, then zoom down to a single CCO's desk to see it all land. Checks along the way.</span>
+        <span class="rc-time">30 to 40 minutes, resumable</span>
+      </button>
+      <button class="role-card" data-role="planner">
+        <span class="rc-title">2. Planner</span>
+        <span class="rc-sub">Job aid for building the plan: mission analysis prompts, Annex W / CSIP / CMP product guides, the C2 decision aid, and the boards.</span>
+        <span class="rc-time">Job aid, browse as needed</span>
+      </button>
+      <button class="role-card" data-role="integrator">
+        <span class="rc-title">3. Integrator</span>
+        <span class="rc-sub">Job aid for running the OCSIC: the three functions as a watch lens, contractor management essentials, and what you can ask for under each C2 option.</span>
+        <span class="rc-time">Job aid, browse as needed</span>
+      </button>
+      <button class="role-card" data-role="cco">
+        <span class="rc-title">4. CCO in the field</span>
+        <span class="rc-sub">The lightest view. Figure out which construct you are working under, what it means for your desk, and the handful of terms that will hit your contracts.</span>
+        <span class="rc-time">5 minutes</span>
+      </button>
+    </div>
+    <p class="sub" style="margin-top:1rem;">Not sure? Take the learn track once; the job aids assume its vocabulary.</p>
+    ${indexHTML()}
+  `;
+}
+
+/* ----- learn track ----- */
+function renderLearn() {
+  const idx = Math.min(S.learnIdx, LEARN.length - 1);
+  const sec = LEARN[idx];
+  const doneCount = LEARN.filter(s => S.learnDone[s.id]).length;
+  const toc = LEARN.map((s, i) => `<button class="${S.learnDone[s.id] ? "done " : ""}${i === idx ? "cur" : ""}" data-goto="${i}">${i + 1}. ${esc(s.title)}</button>`).join("");
+  app.innerHTML = `
+    <button class="back-link" data-role-clear="1">&#8592; All roles</button>
+    <div class="kicker">Learn track &middot; Section ${idx + 1} of ${LEARN.length}</div>
+    <h1>${esc(sec.title)}</h1>
+    <div class="progress-row">
+      <div class="pbar"><div style="width:${Math.round((doneCount / LEARN.length) * 100)}%"></div></div>
+      <span class="pcount">${doneCount} of ${LEARN.length} sections done</span>
+    </div>
+    <div class="toc">${toc}</div>
+    <div>${T(sec.body)}</div>
+    ${sec.check ? quizHTML(sec.check, sec.id + "|1") : ""}
+    ${sec.check2 ? quizHTML(sec.check2, sec.id + "|2") : ""}
+    ${sec.mapAfter ? conceptMapHTML() : ""}
+    <div class="nav-row">
+      <button class="btn ghost" data-learn-nav="-1" ${idx === 0 ? "disabled" : ""}>Back</button>
+      ${idx < LEARN.length - 1
+        ? `<button class="btn" data-learn-nav="1">Mark done, next section</button>`
+        : `<button class="btn" data-learn-finish="1">Finish the track</button>`}
+    </div>
+  `;
+  restoreQuiz(sec.id + "|1");
+  restoreQuiz(sec.id + "|2");
+  if (sec.scenario) renderPhase(typeof S.scnPhase === "number" ? S.scnPhase : 0);
+  window.scrollTo(0, 0);
+}
+
+/* ----- scenario phase stepper ----- */
+function renderPhase(i) {
+  const box = document.getElementById("scnStepper");
+  if (!box) return;
+  const p = SCENARIO.phases[i];
+  const tabs = SCENARIO.phases.map((ph, j) =>
+    `<button class="${j === i ? "on" : ""}" data-phase="${j}"><strong>${esc(ph.tab)}</strong>${esc(ph.time)}</button>`).join("");
+  box.innerHTML = `
+    <div class="phase-tabs">${tabs}</div>
+    <div class="card accent-left">
+      <div class="kicker">${esc(p.tab)} &middot; ${esc(p.time)}</div>
+      <h3 style="margin-top:.1rem;">${esc(p.title)}</h3>
+      <p class="sub">${esc(p.situation)}</p>
+      ${p.beats.map((b, k) => `<div class="beat"><span class="beat-n">${k + 1}</span><span>${T(b)}</span></div>`).join("")}
+      <div class="new-chips">
+        <div class="kicker">New on the board</div>
+        ${p.chips.map(id => NODES[id] ? `<span class="link-chip" data-term="${id}">${NODES[id].short}</span>` : "").join(" ")}
+      </div>
+    </div>`;
+}
+function restoreQuiz(key) {
+  if (S.checks[key] != null && findCheck(key)) answerQuiz(key, S.checks[key]);
+}
+
+/* ----- planner job aid ----- */
+function renderPlanner() {
+  app.innerHTML = `
+    <button class="back-link" data-role-clear="1">&#8592; All roles</button>
+    <div class="kicker">Job aid</div>
+    <h1>OCS Planner</h1>
+    <p class="sub">You sit in (or feed) the ${"OCSIC"} lane: turn the force's contracted support picture into a plan the commander can approve and a {{t:cco}} can execute. Three products carry that plan: {{t:annexw}}, the {{t:csip}}, and the {{t:cmp}}.</p>
+
+    <h2>Start of planning: the questions to answer first</h2>
+    <div class="card">
+      ${[
+        "What does the concept of operations assume gets done by contract? Make the implicit explicit.",
+        "Which requirements are common across components (life support, fuel handling, transportation) and which are unique?",
+        "What contracting organizations will be in the operational area, and under whose authority?",
+        "What is the contractor personnel picture: how many, where, CAAF or not?",
+        "Which C2 option fits (run the decision aid below), and what would trigger a shift to the next one?",
+        "What boards will control requirements and deconfliction ({{t:jrrb}}, {{t:jcsb}}), and who chairs them?"
+      ].map((c, i) => `<label class="check-item"><input type="checkbox" data-check="plan${i}" ${S["plan" + i] ? "checked" : ""}/> <span>${T(c)}</span></label>`).join("")}
+    </div>
+
+    <h2>The three products, and what good looks like</h2>
+    <div class="grid cols2">
+      <div class="card accent-left">
+        <h3 style="margin-top:0;">${T("{{t:annexw}}")}</h3>
+        <ul class="tight">
+          <li>States the theater contracting C2 approach and who leads what.</li>
+          <li>Ties contracted support to the phases of the operation.</li>
+          <li>Assigns the boards and battle rhythm.</li>
+          <li>Carries the {{t:csip}} and {{t:cmp}} with it (normally as appendices, <span class="sme-verify">SME-VERIFY</span> your command's format).</li>
+        </ul>
+      </div>
+      <div class="card accent-left">
+        <h3 style="margin-top:0;">${T("{{t:csip}}")}</h3>
+        <ul class="tight">
+          <li>Requirements by phase, mapped to who contracts them.</li>
+          <li>The theater contracting organization drawn out, not implied.</li>
+          <li>Review gates: how a requirement gets validated ({{t:jrrb}}) before award.</li>
+          <li>Priorities of support when contracting capacity runs short.</li>
+        </ul>
+      </div>
+      <div class="card accent-left">
+        <h3 style="margin-top:0;">${T("{{t:cmp}}")}</h3>
+        <ul class="tight">
+          <li>{{t:caaf}} determination logic and support levels.</li>
+          <li>{{t:spot}} business rules: who registers, who reports, how often.</li>
+          <li>Movement, medical, life support, and force protection for contractor personnel.</li>
+          <li>Language the {{t:cco}} can lift into contracts.</li>
+        </ul>
+      </div>
+      <div class="card accent-left">
+        <h3 style="margin-top:0;">Synthesis to plan by</h3>
+        <div class="synth" style="margin:.4rem 0;">${esc(SYNTH)}</div>
+        <p class="sub">If a paragraph in your annex does not serve one of those three sentences, question the paragraph.</p>
+      </div>
+    </div>
+
+    <h2>Pick the C2 recommendation</h2>
+    ${aidHTML("planner")}
+
+    <h2>See the whole model</h2>
+    ${conceptMapHTML()}
+    ${indexHTML()}
+  `;
+  hydrateTermTokens();
+  window.scrollTo(0, 0);
+}
+
+/* ----- integrator job aid ----- */
+function renderIntegrator() {
+  app.innerHTML = `
+    <button class="back-link" data-role-clear="1">&#8592; All roles</button>
+    <div class="kicker">Job aid</div>
+    <h1>OCS Integrator</h1>
+    <p class="sub">You run the {{t:ocsic}}: a staff cell in the J4 that keeps Operational Contract Support synchronized across the force. You do not award contracts and you do not command contracting forces. You integrate, and the three functions are your watch lens.</p>
+
+    <h2>The three functions as a watch lens</h2>
+    <div class="table-scroll"><table class="mini-table">
+      <tr><th>Function</th><th>You watch</th><th>Product</th><th>Warning signs</th></tr>
+      <tr><td>${T("{{t:csi}}")}</td><td>Requirements flow, phase alignment, board discipline</td><td>${T("{{t:csip}}")}, ${T("{{t:annexw}}")}</td><td>Requirements reaching contracting activities without {{t:jrrb}} validation; components planning around the cell</td></tr>
+      <tr><td>${T("{{t:csupport}}")}</td><td>Workload across contracting activities, deconfliction, vendor base stress</td><td>C2 construct per ${T("{{t:annexw}}")}</td><td>Two components bidding up the same vendors; common items bought four different ways</td></tr>
+      <tr><td>${T("{{t:cmgmt}}")}</td><td>Contractor headcount and visibility, {{t:caaf}} discipline, support burdens</td><td>${T("{{t:cmp}}")}</td><td>{{t:spot}} data diverging from ground truth; contractors drawing support with no CAAF basis</td></tr>
+    </table></div>
+
+    <h2>What you can ask for under each C2 option</h2>
+    <p class="sub">Your cell integrates under every option. What changes is who can make contracting-side decisions stick.</p>
+    <div class="table-scroll"><table class="mini-table">
+      <tr><th>Option</th><th>Contracting side</th><th>Your play as integrator</th></tr>
+      <tr><td>${T("{{t:sr}}")}</td><td>Each component contracts for itself</td><td>Build visibility first: shared common operating picture, voluntary deconfliction, groundwork for a lead if friction grows</td></tr>
+      <tr><td>${T("{{t:lscc}}")}</td><td>Lead coordinates, no directive authority</td><td>Feed the {{t:jcsb}}; broker business rules the components will actually follow; escalate what coordination cannot fix</td></tr>
+      <tr><td>${T("{{t:lsc}}")}</td><td>Lead executes designated common items</td><td>Police the common-items list: keep it current, push new common demand onto it, keep unique demand off it</td></tr>
+      <tr><td>${T("{{t:joint}}")}</td><td>Joint command directs theater support contracting</td><td>Integrate at the command level: priorities, phasing, and contractor management stay yours to synchronize</td></tr>
+    </table></div>
+
+    <h2>Contractor management essentials</h2>
+    <div class="card">
+      ${[
+        "CAAF determinations current and recorded in the {{t:cmp}}, with support levels the force can actually deliver.",
+        "{{t:spot}} business rules published, and a battle rhythm item comparing SPOT numbers to ground truth.",
+        "Movement, medical, and life support entitlements matched to CAAF status, not to habit.",
+        "Force protection responsibilities for contractor personnel assigned in writing.",
+        "Theater entry requirements for contractor personnel in the {{t:cmp}} and echoed in contract language."
+      ].map((c, i) => `<label class="check-item"><input type="checkbox" data-check="int${i}" ${S["int" + i] ? "checked" : ""}/> <span>${T(c)}</span></label>`).join("")}
+    </div>
+
+    <h2>See the whole model</h2>
+    ${conceptMapHTML()}
+    ${indexHTML()}
+  `;
+  hydrateTermTokens();
+  window.scrollTo(0, 0);
+}
+
+/* ----- CCO job aid (lightest) ----- */
+function renderCco() {
+  app.innerHTML = `
+    <button class="back-link" data-role-clear="1">&#8592; All roles</button>
+    <div class="kicker">Job aid</div>
+    <h1>CCO in the field</h1>
+    <p class="sub">You execute the {{t:csupport}} function. The C2 construct was decided above your head; your job is to know which one you are in, because it determines who coordinates you and where common items get bought.</p>
+
+    <h2>Figure out which construct you are in</h2>
+    <div class="table-scroll"><table class="mini-table">
+      <tr><th>If</th><th>You are in</th><th>What it means for you</th></tr>
+      <tr><td>No lead designated</td><td>${T("{{t:sr}}")}</td><td>Your component's contracting chain runs your world. Watch for other components buying in your vendor pool and deconflict informally.</td></tr>
+      <tr><td>A lead Service runs a coordination board ({{t:jcsb}}) but your authority chain is unchanged</td><td>${T("{{t:lscc}}")}</td><td>Show up to the board, follow the common business rules, keep your own warrant and chain. The lead coordinates; it cannot direct you.</td></tr>
+      <tr><td>A lead Service awards the common items (life support, fuel handling, transportation) for everyone</td><td>${T("{{t:lsc}}")}</td><td>Route designated common requirements to the lead instead of buying them yourself. Everything else stays yours.</td></tr>
+      <tr><td>A joint contracting command (JTSCC) sits over theater contracting</td><td>${T("{{t:joint}}")}</td><td>Theater support contracting runs under one commander with directive authority. Expect consolidated priorities and centralized taskings.</td></tr>
+    </table></div>
+
+    <h2>Day one checklist</h2>
+    <div class="card">
+      ${[
+        "Confirm the construct using the table above, then confirm it against {{t:annexw}} for the operation.",
+        "Find the requirements gate: is there a {{t:jrrb}}, and do your customers know their requirements go through it?",
+        "Get the {{t:cmp}}: it carries the {{t:caaf}} and {{t:spot}} requirements your contracts must include.",
+        "Meet the {{t:ocsic}}: they hold the integrated picture and can deconflict before problems reach award.",
+        "Learn the designated common-items list if a lead Service is executing (LSC), so you do not duplicate a buy."
+      ].map((c, i) => `<label class="check-item"><input type="checkbox" data-check="cco${i}" ${S["cco" + i] ? "checked" : ""}/> <span>${T(c)}</span></label>`).join("")}
+    </div>
+
+    <h2>Terms that will hit your desk</h2>
+    <div class="pop-links" style="margin:.4rem 0 1rem;">
+      ${["caaf", "spot", "jrrb", "jcsb", "cmp", "ocsic", "theater"].map(id => `<span class="link-chip" data-term="${id}">${NODES[id].short}</span>`).join("")}
+    </div>
+    <p class="sub">Need the full model or the C2 reasoning? Switch to the Planner view, or run the learn track once: about 30 minutes, and the boards will make sense forever.</p>
+    ${indexHTML()}
+  `;
+  hydrateTermTokens();
+  window.scrollTo(0, 0);
+}
+
+/* Template strings above embed {{t:x}} inside plain HTML in a few spots; convert them after render. */
+function hydrateTermTokens() {
+  if (/\{\{t:/.test(app.innerHTML)) app.innerHTML = T(app.innerHTML);
+}
+
+/* ============================================================
+   ROUTER + EVENTS
+   ============================================================ */
+function route() {
+  closePop();
+  if (!S.role) {
+    roleTag.style.display = "none";
+    homeBtn.style.display = "none";
+    renderLanding();
+  } else {
+    roleTag.textContent = ROLES[S.role].tag;
+    roleTag.style.display = "";
+    homeBtn.style.display = "";
+    if (S.role === "learn") renderLearn();
+    else if (S.role === "planner") renderPlanner();
+    else if (S.role === "integrator") renderIntegrator();
+    else renderCco();
+  }
+}
+
+document.addEventListener("click", (ev) => {
+  const t = ev.target.closest("[data-role],[data-role-clear],[data-term],[data-node],[data-mapjump],[data-quiz],[data-aid],[data-learn-nav],[data-learn-finish],[data-goto],[data-popclose],[data-popback],[data-phase],[data-reveal]");
+  if (!t) return;
+  if (t.dataset.popback === "1" && ev.target !== t) {
+    /* click inside the dialog: ignore backdrop close */
+  } else if (t.dataset.popback === "1") { closePop(); return; }
+  if (t.dataset.popclose) { closePop(); return; }
+  if (t.dataset.role) { S.role = t.dataset.role; save(); route(); return; }
+  if (t.dataset.roleClear) { S.role = null; save(); route(); return; }
+  if (t.dataset.term) { openTerm(t.dataset.term); return; }
+  if (t.dataset.node) { selectMapNode(t.dataset.node); return; }
+  if (t.dataset.mapjump) {
+    closePop();
+    const id = t.dataset.mapjump;
+    const card = document.getElementById("mapCard");
+    if (card) { selectMapNode(id); card.scrollIntoView({ behavior: "smooth", block: "start" }); }
+    else openTerm(id);
+    return;
+  }
+  if (t.dataset.quiz) { answerQuiz(t.dataset.quiz, parseInt(t.dataset.opt, 10)); return; }
+  if (t.dataset.aid) {
+    S.aid[t.dataset.aid] = parseInt(t.dataset.val, 10);
+    save();
+    const box = document.getElementById("aidBox");
+    if (box) {
+      box.querySelectorAll(`[data-aid="${t.dataset.aid}"]`).forEach(b => b.classList.toggle("on", b === t));
+      document.getElementById("aidResult").innerHTML = aidResultHTML();
+    }
+    return;
+  }
+  if (t.dataset.learnNav) {
+    const dir = parseInt(t.dataset.learnNav, 10);
+    if (dir > 0) S.learnDone[LEARN[S.learnIdx].id] = true;
+    S.learnIdx = Math.max(0, Math.min(LEARN.length - 1, S.learnIdx + dir));
+    save();
+    renderLearn();
+    return;
+  }
+  if (t.dataset.learnFinish) {
+    S.learnDone[LEARN[S.learnIdx].id] = true;
+    S.role = null;
+    save();
+    route();
+    return;
+  }
+  if (t.dataset.goto) { S.learnIdx = parseInt(t.dataset.goto, 10); save(); renderLearn(); return; }
+  if (t.dataset.phase) { S.scnPhase = parseInt(t.dataset.phase, 10); save(); renderPhase(S.scnPhase); return; }
+  if (t.dataset.reveal) {
+    const body = document.getElementById(t.dataset.reveal);
+    if (body) body.hidden = !body.hidden;
+    return;
+  }
+});
+
+document.addEventListener("change", (ev) => {
+  const t = ev.target.closest("[data-check]");
+  if (!t) return;
+  S[t.dataset.check] = t.checked;
+  save();
+});
+
+document.addEventListener("keydown", (ev) => { if (ev.key === "Escape") closePop(); });
+
+homeBtn.addEventListener("click", () => { S.role = null; save(); route(); });
+
+route();
+</script>
+</body>
+</html>
