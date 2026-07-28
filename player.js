@@ -9,16 +9,16 @@
   // ── PLAYLIST ────────────────────────────────────────────────────
   var TRACKS = [
     { id: 1, title: '52.217-8',                          subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-01.mp3', color: '#4a9eff' },
-    { id: 2, title: 'FAR Part 1 Guiding Principals',     subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-02.mp3', color: '#8b5cf6' },
+    { id: 2, title: 'FAR Part 1 Guiding Principals',     subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-02.mp3', color: '#a78bfa' },
     { id: 3, title: "FAR Part 6 Doesn't Apply to SAP",   subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-03.mp3', color: '#059669' },
     { id: 4, title: 'Start at Zero',                     subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-04.mp3', color: '#d97706' },
-    { id: 5, title: 'Stop Putting Ceilings on your BPAs!', subtitle: 'ContractingFM', genre: 'ContractingFM', file: 'audio/track-05.mp3', color: '#dc2626' },
+    { id: 5, title: 'Stop Putting Ceilings on your BPAs!', subtitle: 'ContractingFM', genre: 'ContractingFM', file: 'audio/track-05.mp3', color: '#ef4444' },
     { id: 6, title: '7 Exceptions to Full & Open Competition', subtitle: 'ContractingFM', genre: 'ContractingFM', file: 'audio/track-06.mp3', color: '#0891b2' },
-    { id: 7, title: 'Personal or Non-Personal',           subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-07.mp3', color: '#7c3aed' },
-    { id: 8, title: 'Two Five Seven Nine',                subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-08.mp3', color: '#e11d48' },
+    { id: 7, title: 'Personal or Non-Personal',           subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-07.mp3', color: '#a78bfa' },
+    { id: 8, title: 'Two Five Seven Nine',                subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-08.mp3', color: '#f43f5e' },
     { id: 9, title: 'Build the Lane with a BPA',          subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-09.mp3', color: '#f59e0b' },
     { id: 10, title: 'Evaluate What They Wrote',           subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-10.mp3', color: '#10b981' },
-    { id: 11, title: 'Government Purchase Card',            subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-11.mp3', color: '#6366f1' },
+    { id: 11, title: 'Government Purchase Card',            subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-11.mp3', color: '#818cf8' },
     { id: 12, title: 'Let the Record Speak',                subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-12.mp3', color: '#ec4899' },
     { id: 13, title: 'Market Research',                     subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-13.mp3', color: '#14b8a6' },
     { id: 14, title: '39 CONS Aşkı',                        subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-14.mp3', color: '#f97316' },
@@ -28,18 +28,18 @@
     { id: 18, title: "Price Ain't Cost",                    subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-18.mp3', color: '#f43f5e' },
     { id: 19, title: 'Quello Che Hai Scritto',              subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-19.mp3', color: '#22c55e' },
     { id: 20, title: 'Roll that Record',                    subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-20.mp3', color: '#3b82f6' },
-    { id: 22, title: "The Quotation Doesn't Lie",           subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-22.mp3', color: '#8b5cf6' },
+    { id: 22, title: "The Quotation Doesn't Lie",           subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-22.mp3', color: '#a78bfa' },
     { id: 23, title: 'Write It Clean',                      subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-23.mp3', color: '#0ea5e9' },
     { id: 24, title: 'Хто це все придумав',                 subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-24.mp3', color: '#ef4444' },
     { id: 25, title: '견적 더 줘',                           subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-25.mp3', color: '#10b981' },
     { id: 26, title: 'A Hundred Bad Awards',                subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-26.mp3', color: '#4a9eff' },
-    { id: 27, title: 'Ask Me Again Tomorrow',               subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-27.mp3', color: '#8b5cf6' },
+    { id: 27, title: 'Ask Me Again Tomorrow',               subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-27.mp3', color: '#a78bfa' },
     { id: 28, title: 'One More Mod',                        subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-28.mp3', color: '#059669' },
     { id: 29, title: 'Pull Up a Chair',                     subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-29.mp3', color: '#d97706' },
-    { id: 30, title: 'Somebody Stayed Late for Me',         subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-30.mp3', color: '#dc2626' },
+    { id: 30, title: 'Somebody Stayed Late for Me',         subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-30.mp3', color: '#ef4444' },
     { id: 31, title: 'The Myth Collector',                  subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-31.mp3', color: '#0891b2' },
-    { id: 32, title: 'The Quiet Part of the Fight',         subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-32.mp3', color: '#7c3aed' },
-    { id: 33, title: 'Turning Into Them',                   subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-33.mp3', color: '#e11d48' },
+    { id: 32, title: 'The Quiet Part of the Fight',         subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-32.mp3', color: '#a78bfa' },
+    { id: 33, title: 'Turning Into Them',                   subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-33.mp3', color: '#f43f5e' },
     { id: 34, title: "What I Wish I'd Known",               subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-34.mp3', color: '#f59e0b' },
     { id: 35, title: 'Yes, If',                             subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-35.mp3', color: '#10b981' }
   ];
@@ -66,17 +66,17 @@
   ];
   var CCO_TRACKS = [
     { id: 1, title: 'Build the Base',             subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Build the Base.mp3', color: '#d99a31' },
-    { id: 2, title: 'EXECUTE',                    subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/EXECUTE.mp3', color: '#b54a31' },
+    { id: 2, title: 'EXECUTE',                    subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/EXECUTE.mp3', color: '#d46a44' },
     { id: 3, title: 'Force Multiplier',           subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Force Multiplier.mp3', color: '#93a85b' },
     { id: 4, title: 'No Time for Perfect',        subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/No Time for Perfect.mp3', color: '#c5b77a' },
     { id: 5, title: 'Speed is a Weapon',          subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Speed is a Weapon.mp3', color: '#d2a64c' },
     { id: 6, title: 'The Requirement is Trash',   subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/The Requirement is Trash.mp3', color: '#df6b2f' },
-    { id: 7, title: 'Warrant in my Hand',         subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Warrant in my Hand.mp3', color: '#657c40' },
+    { id: 7, title: 'Warrant in my Hand',         subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Warrant in my Hand.mp3', color: '#8fa65e' },
     { id: 8, title: "Bend, Don't Break",          subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: "audio/cco/Bend, Don't Break.mp3", color: '#c07a2d' },
     { id: 9, title: 'Good Enough / Not Enough',   subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Good Enough _ Not Enough.mp3', color: '#f4c04d' },
     { id: 10, title: 'KTHQ',                      subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/KTHQ.mp3', color: '#a7b36b' },
-    { id: 11, title: 'Legal Enough to Move',      subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Legal Enough to Move.mp3', color: '#8b7744' },
-    { id: 12, title: 'Risk Accepted',             subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Risk Accepted.mp3', color: '#b54a31' }
+    { id: 11, title: 'Legal Enough to Move',      subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Legal Enough to Move.mp3', color: '#a89055' },
+    { id: 12, title: 'Risk Accepted',             subtitle: 'CCO Field Radio', genre: 'Contingency Contracting', file: 'audio/cco/Risk Accepted.mp3', color: '#d46a44' }
   ];
 
   function pageFileName(value) {
