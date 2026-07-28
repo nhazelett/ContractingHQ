@@ -272,3 +272,36 @@
     } catch (err) { /* never block the click */ }
   }, true);
 })();
+
+
+// ══════════════════════════════════════════════
+// A11Y — TABLIST BEHAVIOR (aria-selected sync + arrow keys)
+// ══════════════════════════════════════════════
+(function () {
+  function syncTablist(tablist, activeTab) {
+    tablist.querySelectorAll('[role="tab"]').forEach(function (t) {
+      t.setAttribute('aria-selected', t === activeTab ? 'true' : 'false');
+    });
+  }
+  document.addEventListener('click', function (e) {
+    if (!e.target || !e.target.closest) return;
+    var tab = e.target.closest('[role="tab"]');
+    if (!tab) return;
+    var list = tab.closest('[role="tablist"]');
+    if (list) syncTablist(list, tab);
+  }, true);
+  document.addEventListener('keydown', function (e) {
+    if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].indexOf(e.key) === -1) return;
+    if (!e.target || !e.target.closest) return;
+    var tab = e.target.closest('[role="tab"]');
+    if (!tab) return;
+    var list = tab.closest('[role="tablist"]');
+    if (!list) return;
+    var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+    var i = tabs.indexOf(tab);
+    var next = e.key === 'ArrowLeft' ? tabs[(i - 1 + tabs.length) % tabs.length]
+      : e.key === 'ArrowRight' ? tabs[(i + 1) % tabs.length]
+      : e.key === 'Home' ? tabs[0] : tabs[tabs.length - 1];
+    if (next) { e.preventDefault(); next.focus(); next.click(); }
+  });
+})();
