@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-07-30T10:33:34.858444+00:00",
+  "generatedAt": "2026-07-31T10:50:17.021774+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -12,8 +12,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "totalParts": 51,
     "issuedParts": 51,
     "updatedParts": 11,
-    "agencyDeviationCount": 1460,
-    "uniqueAgencyCount": 40,
+    "agencyDeviationCount": 1493,
+    "uniqueAgencyCount": 42,
     "latestPartDate": "2026-07-01",
     "latestPartDateLabel": "Jul 1, 2026",
     "announcementCount": 10,
@@ -23,8 +23,675 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "baseline": false,
     "newParts": [],
     "updatedParts": [],
-    "newAgencyDeviations": [],
-    "removedAgencyDeviations": []
+    "newAgencyDeviations": [
+      {
+        "part": {
+          "partNumber": 3,
+          "partLabel": "Part 3",
+          "title": "Improper Business Practices and Personal Conflicts of Interest",
+          "fullTitle": "Part 3 - Improper Business Practices and Personal Conflicts of Interest",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-3",
+          "issuanceDate": "2025-09-11",
+          "issuanceDateLabel": "Sep 11, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 30
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-3.pdf",
+          "id": "51706200946736d5"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 4,
+          "partLabel": "Part 4",
+          "title": "Administrative and Information Matters",
+          "fullTitle": "Part 4 - Administrative and Information Matters",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-4",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 33
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-4.pdf",
+          "id": "15a427314effead6"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 5,
+          "partLabel": "Part 5",
+          "title": "Publicizing Contract Actions",
+          "fullTitle": "Part 5 - Publicizing Contract Actions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-5",
+          "issuanceDate": "2025-08-08",
+          "issuanceDateLabel": "Aug 8, 2025",
+          "updateDate": "2026-03-16",
+          "updateDateLabel": "Mar 16, 2026",
+          "deviationCount": 33
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-5.pdf",
+          "id": "bfeb1e96bf9ac381"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 7,
+          "partLabel": "Part 7",
+          "title": "Acquisition Planning",
+          "fullTitle": "Part 7 - Acquisition Planning",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-7",
+          "issuanceDate": "2025-09-04",
+          "issuanceDateLabel": "Sep 4, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 30
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-7.pdf",
+          "id": "32cec952e2994aa9"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 8,
+          "partLabel": "Part 8",
+          "title": "Required Sources of Supplies and Services",
+          "fullTitle": "Part 8 - Required Sources of Supplies and Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-8",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "2025-08-29",
+          "updateDateLabel": "Aug 29, 2025",
+          "deviationCount": 35
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-8.pdf",
+          "id": "de2e63b31a4c5045"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 15,
+          "partLabel": "Part 15",
+          "title": "Contracting by Negotiation",
+          "fullTitle": "Part 15 - Contracting by Negotiation",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-15",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 30
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-15.pdf",
+          "id": "56541fe8de7ac365"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 16,
+          "partLabel": "Part 16",
+          "title": "Types of Contracts",
+          "fullTitle": "Part 16 - Types of Contracts",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-07-01",
+          "updateDateLabel": "Jul 1, 2026",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-16.pdf",
+          "id": "da989e5cec2bdc92"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 16,
+          "partLabel": "Part 16",
+          "title": "Types of Contracts",
+          "fullTitle": "Part 16 - Types of Contracts",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-07-01",
+          "updateDateLabel": "Jul 1, 2026",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Office of Management and Budget (OMB)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OMBEOP_RFO_Deviation_Part-16.pdf",
+          "id": "6e1a49d073a73a4a"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 16,
+          "partLabel": "Part 16",
+          "title": "Types of Contracts",
+          "fullTitle": "Part 16 - Types of Contracts",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-07-01",
+          "updateDateLabel": "Jul 1, 2026",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Housing and Urban Development (HUD)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/HUD_RFO_Deviation_Part-16.pdf",
+          "id": "f0836a7626a31b21"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 17,
+          "partLabel": "Part 17",
+          "title": "Special Contracting Methods",
+          "fullTitle": "Part 17 - Special Contracting Methods",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-17",
+          "issuanceDate": "2025-09-11",
+          "issuanceDateLabel": "Sep 11, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 27
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-17.pdf",
+          "id": "35a8ac0c73468d9a"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 18,
+          "partLabel": "Part 18",
+          "title": "Emergency Acquisitions",
+          "fullTitle": "Part 18 - Emergency Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-18",
+          "issuanceDate": "2025-06-12",
+          "issuanceDateLabel": "Jun 12, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 32
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-18.pdf",
+          "id": "4f906ec5799dc9d1"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 19,
+          "partLabel": "Part 19",
+          "title": "Small Business",
+          "fullTitle": "Part 19 - Small Business",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-19",
+          "issuanceDate": "2025-09-26",
+          "issuanceDateLabel": "Sep 26, 2025",
+          "updateDate": "2026-02-20",
+          "updateDateLabel": "Feb 20, 2026",
+          "deviationCount": 30
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-19.pdf",
+          "id": "7542f988dd804db0"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 23,
+          "partLabel": "Part 23",
+          "title": "Sustainable Acquisition, Material Safety, and Pollution Prevention",
+          "fullTitle": "Part 23 - Sustainable Acquisition, Material Safety, and Pollution Prevention",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-23",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 30
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-23.pdf",
+          "id": "79941c46978e920d"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 24,
+          "partLabel": "Part 24",
+          "title": "Protection of Privacy and Freedom of Information",
+          "fullTitle": "Part 24 - Protection of Privacy and Freedom of Information",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-24",
+          "issuanceDate": "2025-09-04",
+          "issuanceDateLabel": "Sep 4, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 28
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-24.pdf",
+          "id": "ae4143a534e884e8"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 25,
+          "partLabel": "Part 25",
+          "title": "Foreign Acquisition",
+          "fullTitle": "Part 25 - Foreign Acquisition",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-25",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-03-16",
+          "updateDateLabel": "Mar 16, 2026",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-25.pdf",
+          "id": "df39970bd6929bea"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 26,
+          "partLabel": "Part 26",
+          "title": "Other Socioeconomic Programs",
+          "fullTitle": "Part 26 - Other Socioeconomic Programs",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-26",
+          "issuanceDate": "2025-08-08",
+          "issuanceDateLabel": "Aug 8, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-26.pdf",
+          "id": "751073bac4263f91"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 27,
+          "partLabel": "Part 27",
+          "title": "Patents, Data, and Copyrights",
+          "fullTitle": "Part 27 - Patents, Data, and Copyrights",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-27",
+          "issuanceDate": "2025-09-11",
+          "issuanceDateLabel": "Sep 11, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 27
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-27.pdf",
+          "id": "782ebb7c94d34100"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 28,
+          "partLabel": "Part 28",
+          "title": "Bonds and Insurance",
+          "fullTitle": "Part 28 - Bonds and Insurance",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-28",
+          "issuanceDate": "2025-08-28",
+          "issuanceDateLabel": "Aug 28, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 28
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-28.pdf",
+          "id": "3038f936245fed1f"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 29,
+          "partLabel": "Part 29",
+          "title": "Taxes",
+          "fullTitle": "Part 29 - Taxes",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-29",
+          "issuanceDate": "2025-07-17",
+          "issuanceDateLabel": "Jul 17, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 30
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-29.pdf",
+          "id": "749ed296734b3e22"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 30,
+          "partLabel": "Part 30",
+          "title": "Cost Accounting Standards Administration",
+          "fullTitle": "Part 30 - Cost Accounting Standards Administration",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-30",
+          "issuanceDate": "2025-08-28",
+          "issuanceDateLabel": "Aug 28, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-30.pdf",
+          "id": "51a8bc8ecef8a062"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 31,
+          "partLabel": "Part 31",
+          "title": "Contract Cost Principles and Procedures",
+          "fullTitle": "Part 31 - Contract Cost Principles and Procedures",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-31",
+          "issuanceDate": "2025-07-17",
+          "issuanceDateLabel": "Jul 17, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 30
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-31.pdf",
+          "id": "294e472d2c63afe0"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 32,
+          "partLabel": "Part 32",
+          "title": "Contract Financing",
+          "fullTitle": "Part 32 - Contract Financing",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-32",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 28
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-32.pdf",
+          "id": "2a00f26a6a1709de"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 33,
+          "partLabel": "Part 33",
+          "title": "Protests, Disputes, and Appeals",
+          "fullTitle": "Part 33 - Protests, Disputes, and Appeals",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-33",
+          "issuanceDate": "2025-08-21",
+          "issuanceDateLabel": "Aug 21, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-33.pdf",
+          "id": "304cec262bfd57d0"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 35,
+          "partLabel": "Part 35",
+          "title": "Research and Development Contracting",
+          "fullTitle": "Part 35 - Research and Development Contracting",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-35",
+          "issuanceDate": "2025-07-24",
+          "issuanceDateLabel": "Jul 24, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 30
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-35.pdf",
+          "id": "dea9a93567d6449d"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 36,
+          "partLabel": "Part 36",
+          "title": "Construction and Architect-Engineer Contracts",
+          "fullTitle": "Part 36 - Construction and Architect-Engineer Contracts",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-36",
+          "issuanceDate": "2025-07-24",
+          "issuanceDateLabel": "Jul 24, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 30
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-36.pdf",
+          "id": "10e00acef19ebf16"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 38,
+          "partLabel": "Part 38",
+          "title": "Reserved",
+          "fullTitle": "Part 38 - Reserved",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-38",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-38.pdf",
+          "id": "e3d623c1dfe84845"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 39,
+          "partLabel": "Part 39",
+          "title": "Acquisition of Information and Communication Technology",
+          "fullTitle": "Part 39 - Acquisition of Information and Communication Technology",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-39",
+          "issuanceDate": "2025-06-12",
+          "issuanceDateLabel": "Jun 12, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-39.pdf",
+          "id": "6ff31001598c41b8"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 40,
+          "partLabel": "Part 40",
+          "title": "Information Security and Supply Chain Security",
+          "fullTitle": "Part 40 - Information Security and Supply Chain Security",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-40",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 30
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-40.pdf",
+          "id": "41914a809e29c7f6"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 44,
+          "partLabel": "Part 44",
+          "title": "Subcontracting Policies and Procedures",
+          "fullTitle": "Part 44 - Subcontracting Policies and Procedures",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-44",
+          "issuanceDate": "2025-09-04",
+          "issuanceDateLabel": "Sep 4, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 28
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-44.pdf",
+          "id": "fb80e94584a1013c"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 45,
+          "partLabel": "Part 45",
+          "title": "Government Property",
+          "fullTitle": "Part 45 - Government Property",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-45",
+          "issuanceDate": "2025-09-11",
+          "issuanceDateLabel": "Sep 11, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 28
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-45.pdf",
+          "id": "f914a18eca2a8064"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 46,
+          "partLabel": "Part 46",
+          "title": "Quality Assurance",
+          "fullTitle": "Part 46 - Quality Assurance",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-46",
+          "issuanceDate": "2025-08-21",
+          "issuanceDateLabel": "Aug 21, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-46.pdf",
+          "id": "996d21b73a897ae1"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 48,
+          "partLabel": "Part 48",
+          "title": "Value Engineering",
+          "fullTitle": "Part 48 - Value Engineering",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-48",
+          "issuanceDate": "2025-08-28",
+          "issuanceDateLabel": "Aug 28, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-48.pdf",
+          "id": "1f3d2f2f9d41f74e"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 50,
+          "partLabel": "Part 50",
+          "title": "Extraordinary Contractual Actions and the SAFETY Act",
+          "fullTitle": "Part 50 - Extraordinary Contractual Actions and the SAFETY Act",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-50",
+          "issuanceDate": "2025-07-31",
+          "issuanceDateLabel": "Jul 31, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 30
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-50.pdf",
+          "id": "12fe8973d5f6f1eb"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 51,
+          "partLabel": "Part 51",
+          "title": "Reserved",
+          "fullTitle": "Part 51 - Reserved",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-51",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-51.pdf",
+          "id": "a1d7dda8f566302d"
+        }
+      }
+    ],
+    "removedAgencyDeviations": [
+      {
+        "part": {
+          "partNumber": 16,
+          "partLabel": "Part 16",
+          "title": "Types of Contracts",
+          "fullTitle": "Part 16 - Types of Contracts",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-07-01",
+          "updateDateLabel": "Jul 1, 2026",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Housing and Urban Development (HUD)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/HUD_RFO_Deviation-Part-16.pdf",
+          "id": "0643286052f45979"
+        }
+      }
+    ]
   },
   "parts": [
     {
@@ -265,8 +932,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 29,
+      "deviationCount": 30,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-3.pdf",
+          "id": "51706200946736d5"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-3.pdf",
@@ -416,7 +1088,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 30 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 4,
@@ -429,8 +1101,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 32,
+      "deviationCount": 33,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-4.pdf",
+          "id": "15a427314effead6"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-4.pdf",
@@ -595,7 +1272,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 32 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 33 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 5,
@@ -608,8 +1285,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-03-16",
       "updateDateLabel": "Mar 16, 2026",
       "isUpdated": true,
-      "deviationCount": 32,
+      "deviationCount": 33,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-5.pdf",
+          "id": "bfeb1e96bf9ac381"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-5.pdf",
@@ -774,7 +1456,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Updated model text is posted. 32 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Updated model text is posted. 33 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 6,
@@ -976,8 +1658,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 29,
+      "deviationCount": 30,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-7.pdf",
+          "id": "32cec952e2994aa9"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-7.pdf",
@@ -1127,7 +1814,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "Requirements"
       ],
-      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 30 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 8,
@@ -1140,8 +1827,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2025-08-29",
       "updateDateLabel": "Aug 29, 2025",
       "isUpdated": true,
-      "deviationCount": 34,
+      "deviationCount": 35,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-8.pdf",
+          "id": "de2e63b31a4c5045"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-8.pdf",
@@ -1316,7 +2008,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Updated model text is posted. 34 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Updated model text is posted. 35 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 9,
@@ -2448,8 +3140,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 29,
+      "deviationCount": 30,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-15.pdf",
+          "id": "56541fe8de7ac365"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-15.pdf",
@@ -2612,12 +3309,22 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-07-01",
       "updateDateLabel": "Jul 1, 2026",
       "isUpdated": true,
-      "deviationCount": 27,
+      "deviationCount": 29,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-16.pdf",
+          "id": "da989e5cec2bdc92"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-16.pdf",
           "id": "ae4dac535991bbbf"
+        },
+        {
+          "name": "Office of Management and Budget (OMB)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OMBEOP_RFO_Deviation_Part-16.pdf",
+          "id": "6e1a49d073a73a4a"
         },
         {
           "name": "Social Security Administration (SSA)",
@@ -2646,8 +3353,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "Housing and Urban Development (HUD)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/HUD_RFO_Deviation-Part-16.pdf",
-          "id": "0643286052f45979"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/HUD_RFO_Deviation_Part-16.pdf",
+          "id": "f0836a7626a31b21"
         },
         {
           "name": "Consumer Product Safety Commission (CPSC)",
@@ -2766,8 +3473,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 26,
+      "deviationCount": 27,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-17.pdf",
+          "id": "35a8ac0c73468d9a"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-17.pdf",
@@ -2902,7 +3614,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 26 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 27 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 18,
@@ -2915,8 +3627,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 31,
+      "deviationCount": 32,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-18.pdf",
+          "id": "4f906ec5799dc9d1"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-18.pdf",
@@ -3076,7 +3793,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 31 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 32 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 19,
@@ -3089,8 +3806,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-02-20",
       "updateDateLabel": "Feb 20, 2026",
       "isUpdated": true,
-      "deviationCount": 29,
+      "deviationCount": 30,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-19.pdf",
+          "id": "7542f988dd804db0"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-19.pdf",
@@ -3437,8 +4159,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 29,
+      "deviationCount": 30,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-23.pdf",
+          "id": "79941c46978e920d"
+        },
         {
           "name": "Department of the Interior (DOI)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOI_RFO_Deviation_Part-23.pdf",
@@ -3601,8 +4328,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 27,
+      "deviationCount": 28,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-24.pdf",
+          "id": "ae4143a534e884e8"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-24.pdf",
@@ -3742,7 +4474,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 27 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 25,
@@ -3755,8 +4487,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-03-16",
       "updateDateLabel": "Mar 16, 2026",
       "isUpdated": true,
-      "deviationCount": 28,
+      "deviationCount": 29,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-25.pdf",
+          "id": "df39970bd6929bea"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-25.pdf",
@@ -3914,8 +4651,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 30,
+      "deviationCount": 31,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-26.pdf",
+          "id": "751073bac4263f91"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-26.pdf",
@@ -4070,7 +4812,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "Policy"
       ],
-      "watchNote": "Model text is posted. 30 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 31 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 27,
@@ -4083,8 +4825,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 26,
+      "deviationCount": 27,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-27.pdf",
+          "id": "782ebb7c94d34100"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-27.pdf",
@@ -4219,7 +4966,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 26 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 27 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 28,
@@ -4232,8 +4979,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 27,
+      "deviationCount": 28,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-28.pdf",
+          "id": "3038f936245fed1f"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-28.pdf",
@@ -4373,7 +5125,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 27 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 29,
@@ -4386,8 +5138,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 29,
+      "deviationCount": 30,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-29.pdf",
+          "id": "749ed296734b3e22"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-29.pdf",
@@ -4537,7 +5294,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 30 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 30,
@@ -4550,8 +5307,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 28,
+      "deviationCount": 29,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-30.pdf",
+          "id": "51a8bc8ecef8a062"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-30.pdf",
@@ -4697,7 +5459,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         "Money",
         "Performance"
       ],
-      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 31,
@@ -4710,8 +5472,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 29,
+      "deviationCount": 30,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-31.pdf",
+          "id": "294e472d2c63afe0"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-31.pdf",
@@ -4874,8 +5641,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 27,
+      "deviationCount": 28,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-32.pdf",
+          "id": "2a00f26a6a1709de"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-32.pdf",
@@ -5028,8 +5800,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 28,
+      "deviationCount": 29,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-33.pdf",
+          "id": "304cec262bfd57d0"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-33.pdf",
@@ -5174,7 +5951,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 34,
@@ -5376,8 +6153,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 29,
+      "deviationCount": 30,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-35.pdf",
+          "id": "dea9a93567d6449d"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-35.pdf",
@@ -5527,7 +6309,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 30 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 36,
@@ -5540,8 +6322,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 29,
+      "deviationCount": 30,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-36.pdf",
+          "id": "10e00acef19ebf16"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-36.pdf",
@@ -5691,7 +6478,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 30 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 37,
@@ -5863,8 +6650,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 28,
+      "deviationCount": 29,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-38.pdf",
+          "id": "e3d623c1dfe84845"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-38.pdf",
@@ -6009,7 +6801,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 39,
@@ -6022,8 +6814,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 30,
+      "deviationCount": 31,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-39.pdf",
+          "id": "6ff31001598c41b8"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-39.pdf",
@@ -6178,7 +6975,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 30 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 31 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 40,
@@ -6191,8 +6988,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 29,
+      "deviationCount": 30,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-40.pdf",
+          "id": "41914a809e29c7f6"
+        },
         {
           "name": "National Science Foundation (NSF)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NSF_RFO_Deviation_Part-40.pdf",
@@ -6342,7 +7144,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 30 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 41,
@@ -6853,8 +7655,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 27,
+      "deviationCount": 28,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-44.pdf",
+          "id": "fb80e94584a1013c"
+        },
         {
           "name": "Office of Personnel Management (OPM)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-44.pdf",
@@ -6994,7 +7801,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 27 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 45,
@@ -7007,8 +7814,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 27,
+      "deviationCount": 28,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-45.pdf",
+          "id": "f914a18eca2a8064"
+        },
         {
           "name": "Office of Personnel Management (OPM)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-45.pdf",
@@ -7148,7 +7960,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 27 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 46,
@@ -7161,8 +7973,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 28,
+      "deviationCount": 29,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-46.pdf",
+          "id": "996d21b73a897ae1"
+        },
         {
           "name": "Office of Personnel Management (OPM)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-46.pdf",
@@ -7307,7 +8124,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "Performance"
       ],
-      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 47,
@@ -7484,8 +8301,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 28,
+      "deviationCount": 29,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-48.pdf",
+          "id": "1f3d2f2f9d41f74e"
+        },
         {
           "name": "Office of Personnel Management (OPM)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-48.pdf",
@@ -7630,7 +8452,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 49,
@@ -7807,8 +8629,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 29,
+      "deviationCount": 30,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-50.pdf",
+          "id": "12fe8973d5f6f1eb"
+        },
         {
           "name": "Office of Personnel Management (OPM)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-50.pdf",
@@ -7958,7 +8785,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 30 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 51,
@@ -7971,8 +8798,13 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 28,
+      "deviationCount": 29,
       "agencies": [
+        {
+          "name": "Department of Energy DOE",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOE_RFO_Deviation_Part-51.pdf",
+          "id": "a1d7dda8f566302d"
+        },
         {
           "name": "Office of Personnel Management (OPM)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-51.pdf",
@@ -8117,7 +8949,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 52,
