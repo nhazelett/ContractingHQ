@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-07-30T09:59:51.726Z",
+  "generatedAt": "2026-07-31T10:06:59.008Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -8,11 +8,11 @@ window.KTHQ_GAO_DATA = {
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
     "total": 19,
-    "latestDecisionDate": "2026-07-28",
+    "latestDecisionDate": "2026-07-29",
     "sustained": 0,
-    "denied": 10,
+    "denied": 11,
     "dismissed": 4,
-    "mixed": 4,
+    "mixed": 3,
     "unclassified": 1,
     "sourceStatus": {
       "rss": {
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 16
+        "parsedOutcomes": 18
       },
       "productPages": {
         "attempted": 18,
@@ -36,6 +36,34 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424450",
+      "caseName": "Equipment Solutions & Personnel, LLC",
+      "title": "Equipment Solutions & Personnel, LLC",
+      "bNumbers": [
+        "B-424450"
+      ],
+      "bNumberText": "B-424450",
+      "link": "https://www.gao.gov/products/b-424450",
+      "publicationDate": "2026-07-30",
+      "decisionDate": "2026-07-29",
+      "displayDate": "Jul 29, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Equipment Solutions & Personnel, LLC (ESP), a small business of Mount Airy, North Carolina, protests the issuance of a purchase order to Aerial...",
+      "highlights": "",
+      "digest": "Protest challenging agency's best-value determination is denied where the agency reasonably concluded that the awardee's significantly lower performance risk warranted payment of the associated price premium.",
+      "tags": [
+        "Price / cost",
+        "Staffing",
+        "Small business"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-218453.2",
       "caseName": "[Protest of DLA Procurement]",
@@ -314,31 +342,59 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424182.2,B-424182.3",
-      "caseName": "Veterans Management Services, Inc.",
-      "title": "Veterans Management Services, Inc.",
+      "id": "B-424321.2,B-424321.3",
+      "caseName": "Absolute Strategic Technologies, LLC",
+      "title": "Absolute Strategic Technologies, LLC",
       "bNumbers": [
-        "B-424182.2",
-        "B-424182.3"
+        "B-424321.2",
+        "B-424321.3"
       ],
-      "bNumberText": "B-424182.2, B-424182.3",
-      "link": "https://www.gao.gov/products/b-424182.2%2Cb-424182.3",
-      "publicationDate": "2026-07-10",
-      "decisionDate": "2026-07-10",
-      "displayDate": "Jul 10, 2026",
+      "bNumberText": "B-424321.2, B-424321.3",
+      "link": "https://www.gao.gov/products/b-424321.2%2Cb-424321.3",
+      "publicationDate": "2026-07-13",
+      "decisionDate": "2026-07-13",
+      "displayDate": "Jul 13, 2026",
       "outcome": "unclassified",
       "outcomeLabel": "Read Decision",
       "outcomeSource": "Inferred from GAO RSS",
       "decisionLine": "",
-      "officialSynopsis": "Veterans Management Services, Inc. (VMSI), a service-disabled veteran-owned small business (SDVOSB) of Sterling, Virginia, challenges the award of a...",
+      "officialSynopsis": "Absolute Strategic Technologies, LLC (AST), of Southlake, Texas, protests the Department of the Air Force's issuance of a task order to Concept Plus...",
       "highlights": "",
       "digest": "",
       "tags": [
-        "Small business"
+        "Orders / IDIQ"
       ],
       "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
       "sourceStatus": "rss",
       "sourceStatusLabel": "RSS fallback"
+    },
+    {
+      "id": "B-424397,B-424397.2",
+      "caseName": "Red Cat Holdings, Inc.",
+      "title": "Red Cat Holdings, Inc.",
+      "bNumbers": [
+        "B-424397",
+        "B-424397.2"
+      ],
+      "bNumberText": "B-424397, B-424397.2",
+      "link": "https://www.gao.gov/products/b-424397%2Cb-424397.2",
+      "publicationDate": "2026-07-30",
+      "decisionDate": "2026-07-10",
+      "displayDate": "Jul 10, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest in part and dismiss it in part.",
+      "officialSynopsis": "Red Cat Holdings, Inc., of South Salt Lake City, Utah, protests the terms of delivery order request for quotations (RFQ) No. 2026031231625, and the...",
+      "highlights": "",
+      "digest": "1. Protest alleging that delivery order for drone products is outside the scope of the underlying indefinite-delivery indefinite-quantity (IDIQ) contract is denied where the record shows the delivery order is reasonably within the contract's scope. 2. Protest that delivery order solicitation improperly required a brand-name product is dismissed where protester is not an interested party to raise the allegation because it does not hold the IDIQ contract under which the delivery order solicitation was issued.",
+      "tags": [
+        "Solicitation terms",
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
     },
     {
       "id": "B-424391",
@@ -421,64 +477,6 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424321.2,B-424321.3",
-      "caseName": "Absolute Strategic Technologies, LLC",
-      "title": "Absolute Strategic Technologies, LLC",
-      "bNumbers": [
-        "B-424321.2",
-        "B-424321.3"
-      ],
-      "bNumberText": "B-424321.2, B-424321.3",
-      "link": "https://www.gao.gov/products/b-424321.2%2Cb-424321.3",
-      "publicationDate": "2026-07-13",
-      "decisionDate": "2026-06-18",
-      "displayDate": "Jun 18, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest in part and dismiss it in part.",
-      "officialSynopsis": "Absolute Strategic Technologies, LLC (AST), of Southlake, Texas, protests the Department of the Air Force's issuance of a task order to Concept Plus...",
-      "highlights": "",
-      "digest": "1. Protest challenging agency's evaluation of protester's proposal under the technical subfactors is denied where the evaluation was reasonable and consistent with the terms of the solicitation. 2. Protest that agency was required to perform a price realism evaluation fails to state a valid basis for protest where solicitation made no reference to price realism and did not advise offerors that their proposals could be rejected for offering prices that were too low. 3. Protest challenging various aspects of agency's evaluation of awardee's proposal is denied where the agency reasonably evaluated awardee's proposed costs as realistic; reasonably evaluated awardee's technical proposal as outstanding under the staffing approach evaluation subfactor; and did not treat offerors unequally. 4. Protest is denied where agency's best value determination was based on the agency's reasonable consideration of the relative merits and costs/prices of the competing proposals.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Price / cost",
-        "Staffing"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424321",
-      "caseName": "Salience Technologies, LLC",
-      "title": "Salience Technologies, LLC",
-      "bNumbers": [
-        "B-424321"
-      ],
-      "bNumberText": "B-424321",
-      "link": "https://www.gao.gov/products/b-424321",
-      "publicationDate": "2026-07-13",
-      "decisionDate": "2026-06-17",
-      "displayDate": "Jun 17, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest in part and dismiss it in part.",
-      "officialSynopsis": "Salience Technologies, Inc., of Reston, Virginia, protests the Department of the Air Force's issuance of a task order to Concept Plus, LLC (CPL) Inc...",
-      "highlights": "",
-      "digest": "1. Protest challenging the agency's evaluation of protester's proposal is denied where the record shows the evaluation was reasonable and consistent with the terms of the solicitation. 2. Protester that is not in line for award does not qualify as an interested party to challenge the agency's best-value determination.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
