@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-08-02T10:07:13.194107+00:00",
+  "generatedAt": "2026-08-03T11:43:12.299373+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -17,7 +17,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "latestPartDate": "2026-07-01",
     "latestPartDateLabel": "Jul 1, 2026",
     "announcementCount": 10,
-    "federalRegisterCount": 3
+    "federalRegisterCount": 0
   },
   "changes": {
     "baseline": false,
@@ -8564,38 +8564,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "summary": "FAR Overhaul Community Crowdsourcing Campaign Anonymous (not verified) Mon, 12/15/2025 - 16:00 The Office of Federal Procurement Policy (OFPP) invites the acquisition workforce, businesses, and other stakeholders to share feedback to inform the next phase of the Revolutionary..."
     }
   ],
-  "federalRegister": [
-    {
-      "id": "3b88caa1a07d4e2f",
-      "title": "Federal Acquisition Regulation; Federal Acquisition Circular 2026-01; Introduction",
-      "url": "https://www.federalregister.gov/documents/2026/03/13/2026-04911/federal-acquisition-regulation-federal-acquisition-circular-2026-01-introduction",
-      "date": "2026-03-13",
-      "dateLabel": "Mar 13, 2026",
-      "source": "Federal Register",
-      "type": "Rule",
-      "summary": "This document summarizes the Federal Acquisition Regulation (FAR) rules agreed to by OFPP, DoD, GSA, and NASA (collectively referred to as the Federal Acquisition Regulatory Council) in this Federal Acquisition Circular (FAC) 2026-01. A companion document, the Small Entity Compliance Guide (SECG), is published..."
-    },
-    {
-      "id": "2cf7bebdc5d719d7",
-      "title": "Federal Acquisition Regulation; Federal Acquisition Circular 2026-01; Small Entity Compliance Guide",
-      "url": "https://www.federalregister.gov/documents/2026/03/13/2026-04913/federal-acquisition-regulation-federal-acquisition-circular-2026-01-small-entity-compliance-guide",
-      "date": "2026-03-13",
-      "dateLabel": "Mar 13, 2026",
-      "source": "Federal Register",
-      "type": "Rule",
-      "summary": "This document is issued under the joint authority of OFPP, DoD, GSA, and NASA. This Small Entity Compliance Guide has been prepared in accordance with section 212 of the Small Business Regulatory Enforcement Fairness Act of 1996. It consists of a summary of the rule appearing in Federal Acquisition Circular (FAC)..."
-    },
-    {
-      "id": "d4520fe22c4e3750",
-      "title": "Federal Acquisition Regulation: Small Business Innovation Research and Technology Transfer Programs",
-      "url": "https://www.federalregister.gov/documents/2025/06/12/2025-10609/federal-acquisition-regulation-small-business-innovation-research-and-technology-transfer-programs",
-      "date": "2025-06-12",
-      "dateLabel": "Jun 12, 2025",
-      "source": "Federal Register",
-      "type": "Proposed Rule",
-      "summary": "OFPP, DoD, GSA, and NASA (collectively referred to as the Federal Acquisition Regulatory Council, or FAR Council) are withdrawing the proposed rule to amend the Federal Acquisition Regulation (FAR) titled: Small Business Innovation Research and Technology Transfer. The FAR Council will re-evaluate implementation..."
-    }
-  ],
+  "federalRegister": [],
   "resources": [
     {
       "title": "FAR Overhaul Hub",
