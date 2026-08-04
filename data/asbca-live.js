@@ -1,5 +1,5 @@
 window.KTHQ_ASBCA_DATA = {
-  "generatedAt": "2026-08-03T11:01:06.689873+00:00",
+  "generatedAt": "2026-08-04T10:22:16.788591+00:00",
   "source": {
     "name": "Armed Services Board of Contract Appeals",
     "decisionsUrl": "https://www.asbca.mil/Decisions/2026/"
@@ -7,15 +7,15 @@ window.KTHQ_ASBCA_DATA = {
   "note": "Automated KTHQ ASBCA decision watch. Official excerpts are extracted from ASBCA PDF text when available. Practitioner prompts are deterministic triage notes, not legal advice.",
   "stats": {
     "total": 18,
-    "latestDecisionDate": "2026-07-01",
+    "latestDecisionDate": "2026-07-08",
     "downloadedPdfs": 18,
     "metadataOnly": 0,
     "outcomes": {
+      "denied": 2,
       "dismissed": 10,
-      "unclassified": 2,
+      "unclassified": 1,
       "settled": 4,
-      "sustained": 1,
-      "denied": 1
+      "sustained": 1
     },
     "sourceStatus": {
       "decisionsPage": {
@@ -24,14 +24,67 @@ window.KTHQ_ASBCA_DATA = {
         "readerUrl": "https://r.jina.ai/http://r.jina.ai/http://https://www.asbca.mil/Decisions/2026/",
         "mode": "reader-markdown",
         "error": "",
-        "linksFound": 134,
+        "linksFound": 136,
         "linksUsed": 18
       }
     }
   },
   "items": [
     {
-      "id": "2026-07-01-zodiac-poettker-hbz-joint-venture-llc-1",
+      "id": "2026-07-08-tyd-services-0",
+      "caseName": "TYD Services",
+      "caseNumberText": "ASBCA Nos. 64429, 64430",
+      "caseNumbers": [
+        "ASBCA No. 64429",
+        "ASBCA No. 64430"
+      ],
+      "decisionDate": "2026-07-08",
+      "displayDate": "Jul 8, 2026",
+      "decisionType": "Decision",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "judge": "Stinson",
+      "officialExcerpt": "Contracting Officer (CO): A person with authority to enter into, administer, and or terminate contracts, and make related determinations and findings on behalf of the USG [United States government].",
+      "tags": [
+        "Termination",
+        "REA / changes",
+        "Costs",
+        "Delivery",
+        "CDA process"
+      ],
+      "practitionerPrompt": "Termination actions need clean documentation. If performance is effectively ended, make sure the file and notices match the legal theory.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=XTyn_03oe5Y%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-07-07-potomac-yard-contractors-1",
+      "caseName": "Potomac Yard Contractors",
+      "caseNumberText": "ASBCA No. 63032",
+      "caseNumbers": [
+        "ASBCA No. 63032"
+      ],
+      "decisionDate": "2026-07-07",
+      "displayDate": "Jul 7, 2026",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "%207.7.2026.pdf?ver=i3DpcDGsQdbIdZf7jBQjBA%3d%3d)Eyester",
+      "officialExcerpt": "An official website of the United States government Here's how you know **Official websites use .mil** A **.mil** website belongs to an official U.S. **Secure .mil websites use HTTPS** A **lock ()** or **https://** means you've safely connected to the .mil website.",
+      "tags": [
+        "ADR"
+      ],
+      "practitionerPrompt": "Dismissals often turn on threshold mistakes. New specialists should read these for what must happen before the Board can reach the merits.",
+      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/63032%20Potomac%20Yard%20Constructors%20(Dismissal",
+      "filename": "63032 Potomac Yard Constructors (Dismissal",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-07-01-zodiac-poettker-hbz-joint-venture-llc-3",
       "caseName": "Zodiac-Poettker HBZ Joint Venture LLC",
       "caseNumberText": "ASBCA Nos. 64386, 64387, 64388",
       "caseNumbers": [
@@ -57,7 +110,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-01-perry-management-corporation-of-south-dakota-llc-2",
+      "id": "2026-07-01-perry-management-corporation-of-south-dakota-llc-4",
       "caseName": "Perry Management Corporation of South Dakota, LLC",
       "caseNumberText": "ASBCA No. 64100",
       "caseNumbers": [
@@ -81,7 +134,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-01-kbt-contracting-corp--0",
+      "id": "2026-07-01-kbt-contracting-corp--2",
       "caseName": "KBT Contracting Corp.",
       "caseNumberText": "ASBCA No. 64581-PET",
       "caseNumbers": [
@@ -105,7 +158,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-01-gilbane-federal-4",
+      "id": "2026-07-01-gilbane-federal-6",
       "caseName": "Gilbane Federal",
       "caseNumberText": "ASBCA Nos. 63702, 63717, 63755, 64409, 64410",
       "caseNumbers": [
@@ -133,7 +186,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-01-filanc-orion-jv-3",
+      "id": "2026-07-01-filanc-orion-jv-5",
       "caseName": "Filanc-Orion, JV",
       "caseNumberText": "ASBCA Nos. 63730, 63928, 63979",
       "caseNumbers": [
@@ -160,7 +213,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-29-siler-excavating-llc-5",
+      "id": "2026-06-29-siler-excavating-llc-7",
       "caseName": "Siler Excavating, LLC",
       "caseNumberText": "ASBCA Nos. 63715, 64180, 64181",
       "caseNumbers": [
@@ -186,7 +239,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-25-kiewitphelps-6",
+      "id": "2026-06-25-kiewitphelps-8",
       "caseName": "KiewitPhelps",
       "caseNumberText": "ASBCA Nos. 61184, 62119, 62980",
       "caseNumbers": [
@@ -214,7 +267,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-24-jaxon-construction-inc--8",
+      "id": "2026-06-24-jaxon-construction-inc--10",
       "caseName": "Jaxon Construction, Inc.",
       "caseNumberText": "ASBCA No. 64432",
       "caseNumbers": [
@@ -240,7 +293,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-24-industrial-marine-inc--9",
+      "id": "2026-06-24-industrial-marine-inc--11",
       "caseName": "Industrial Marine, Inc.",
       "caseNumberText": "ASBCA No. 63975",
       "caseNumbers": [
@@ -262,7 +315,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-24-disys-solutions-inc--7",
+      "id": "2026-06-24-disys-solutions-inc--9",
       "caseName": "DISYS Solutions, Inc.",
       "caseNumberText": "ASBCA No. 64554",
       "caseNumbers": [
@@ -284,7 +337,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-23-wild-hare-haulers-llc-13",
+      "id": "2026-06-23-wild-hare-haulers-llc-15",
       "caseName": "Wild Hare Haulers, LLC",
       "caseNumberText": "ASBCA Nos. 64442, 64443",
       "caseNumbers": [
@@ -311,7 +364,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-23-k-mar-industries-inc--14",
+      "id": "2026-06-23-k-mar-industries-inc--16",
       "caseName": "K-MAR Industries, Inc.",
       "caseNumberText": "ASBCA Nos. 64556, 64557",
       "caseNumbers": [
@@ -334,7 +387,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-23-granite-construction-company-12",
+      "id": "2026-06-23-granite-construction-company-14",
       "caseName": "Granite Construction Company",
       "caseNumberText": "ASBCA No. 63667",
       "caseNumbers": [
@@ -358,7 +411,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-23-fluor-amec-ii-llc-10",
+      "id": "2026-06-23-fluor-amec-ii-llc-12",
       "caseName": "Fluor-AMEC II, LLC",
       "caseNumberText": "ASBCA No. 64131",
       "caseNumbers": [
@@ -383,7 +436,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-23-advanced-aerospace-reconnaissance-llc-11",
+      "id": "2026-06-23-advanced-aerospace-reconnaissance-llc-13",
       "caseName": "Advanced Aerospace Reconnaissance, LLC",
       "caseNumberText": "ASBCA No. 64233",
       "caseNumbers": [
@@ -407,7 +460,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-22-constellation-newenergy-inc--15",
+      "id": "2026-06-22-constellation-newenergy-inc--17",
       "caseName": "Constellation NewEnergy, Inc.",
       "caseNumberText": "ASBCA Nos. 63773-ADR, 63831-ADR, 63853-ADR, 63854-ADR, 63855-ADR, 63856-ADR, 63857-ADR",
       "caseNumbers": [
@@ -433,59 +486,6 @@ window.KTHQ_ASBCA_DATA = {
       ],
       "practitionerPrompt": "Consent judgments are a practical off-ramp. Use them when exposure is clear and the negotiated number is better than continued litigation.",
       "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=dG5FNuGqAfs%3d&portalid=143",
-      "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-06-16-nes-pacific-limited-liability-co--16",
-      "caseName": "NES Pacific Limited Liability Co.",
-      "caseNumberText": "ASBCA No. 63710-EAJA",
-      "caseNumbers": [
-        "ASBCA No. 63710-EAJA"
-      ],
-      "decisionDate": "2026-06-16",
-      "displayDate": "Jun 16, 2026",
-      "decisionType": "EAJA",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "judge": "Arnett",
-      "officialExcerpt": "ARMED SERVICES BOARD OF CONTRACT APPEALS Appeal of - ) ) NES Pacific Limited Liability Co. Rose Rose Consulting Law Firm Valdosta, GA APPEARANCES FOR THE GOVERNMENT: Caryl A.",
-      "tags": [
-        "EAJA"
-      ],
-      "practitionerPrompt": "EAJA deadlines and party identity rules are strict. The contractor entity, not just an owner, usually needs to be the prevailing applicant.",
-      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/63710-EAJA%20NES%20Pacific%20Limited%20Liability%20Co.%206.16.26%20Dismissal.pdf?ver=5cTlAWu6Ysfxczc8pZL4JA%3d%3d",
-      "filename": "63710-EAJA NES Pacific Limited Liability Co. 6.16.26 Dismissal.pdf",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-06-16-arctic-swan-construction-inc--17",
-      "caseName": "Arctic Swan Construction Inc.",
-      "caseNumberText": "ASBCA Nos. 63510, 64085",
-      "caseNumbers": [
-        "ASBCA No. 63510",
-        "ASBCA No. 64085"
-      ],
-      "decisionDate": "2026-06-16",
-      "displayDate": "Jun 16, 2026",
-      "decisionType": "Decision",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "judge": "Woodrow",
-      "officialExcerpt": "On November 7, 2024, following the government's submission of a Motion to Dismiss the Appeal for Lack of Jurisdiction, Arctic Swan submitted what it characterized as a \"full certified claim\" in the amount of $334,213. Because no claim amount was stated, it is unclear whether certification was required. (Arctic Swan or appellant), to install, connect, and disconnect washers and dryers as a part of the base contract price, or if such requirements were out-of-scope work warranting an equitable adjustment.",
-      "tags": [
-        "Jurisdiction",
-        "REA / changes",
-        "Motions",
-        "Delivery",
-        "CDA process"
-      ],
-      "practitionerPrompt": "Check the claim before the final decision: sum certain, certification, privity, and whether the contractor actually presented the same claim to the CO.",
-      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=1Mrk7r64anE%3d&portalid=143",
       "filename": "LinkClick.aspx",
       "sourceStatus": "reader-extracted",
       "sourceStatusLabel": "ASBCA PDF text extracted",
