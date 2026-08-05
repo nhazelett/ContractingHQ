@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-08-04T10:12:48.695Z",
+  "generatedAt": "2026-08-05T10:09:01.692Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -10,9 +10,9 @@ window.KTHQ_GAO_DATA = {
     "total": 19,
     "latestDecisionDate": "2026-07-31",
     "sustained": 0,
-    "denied": 10,
+    "denied": 8,
     "dismissed": 5,
-    "mixed": 3,
+    "mixed": 5,
     "unclassified": 1,
     "sourceStatus": {
       "rss": {
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 16
+        "parsedOutcomes": 18
       },
       "productPages": {
         "attempted": 18,
@@ -118,6 +118,36 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-423607.6,B-423607.13",
+      "caseName": "Abacus Technology Corporation--Costs",
+      "title": "Abacus Technology Corporation--Costs",
+      "bNumbers": [
+        "B-423607.6",
+        "B-423607.13"
+      ],
+      "bNumberText": "B-423607.6, B-423607.13",
+      "link": "https://www.gao.gov/products/b-423607.6%2Cb-423607.13",
+      "publicationDate": "2026-08-04",
+      "decisionDate": "2026-07-28",
+      "displayDate": "Jul 28, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We grant the request in part and deny it in part.",
+      "officialSynopsis": "Abacus Technology Corporation, a small business of Chevy Chase, Maryland, requests that our Office recommend that the protester be reimbursed the...",
+      "highlights": "",
+      "digest": "1. Request that GAO recommend reimbursement of protest costs related to the challenges to the agency's price realism evaluation and best-value tradeoff analysis are granted where the agency unduly delayed taking corrective action in response to clearly meritorious allegations. 2. Request that GAO recommend reimbursement of costs of filing and pursuing protest related to the challenge of the evaluation of the awardee's technical proposal is denied where the allegation was not clearly meritorious and was severable from the clearly meritorious grounds.",
+      "tags": [
+        "Evaluation",
+        "Corrective action",
+        "Price / cost",
+        "Small business"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
       "id": "B-424245.2",
       "caseName": "Cashel Strategic, LLC",
       "title": "Cashel Strategic, LLC",
@@ -139,6 +169,36 @@ window.KTHQ_GAO_DATA = {
       "tags": [
         "Evaluation",
         "Small business"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-423916.2,B-423916.3",
+      "caseName": "Ardmore Consulting Group, Inc.",
+      "title": "Ardmore Consulting Group, Inc.",
+      "bNumbers": [
+        "B-423916.2",
+        "B-423916.3"
+      ],
+      "bNumberText": "B-423916.2, B-423916.3",
+      "link": "https://www.gao.gov/products/b-423916.2%2Cb-423916.3",
+      "publicationDate": "2026-08-04",
+      "decisionDate": "2026-07-23",
+      "displayDate": "Jul 23, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest in part and dismiss it in part.",
+      "officialSynopsis": "Ardmore Consulting Group, Inc., of Atlanta, Georgia, protests the Department of Homeland Security's award of a contract to T47 International, Inc.,...",
+      "highlights": "",
+      "digest": "1. Protest that agency failed to hold meaningful discussions with protester regarding omission of information in the price proposal is denied where agency's communications with offerors did not constitute discussions. 2. Protest challenging evaluation of protester's price proposal is denied where protester's proposal failed to comply with the solicitation provisions regarding submission of a price breakdown. 3. Protest challenging other aspects of the agency's evaluation and source selection decision are dismissed where agency reasonably determined that protester's price proposal was unacceptable.",
+      "tags": [
+        "Evaluation",
+        "Discussions / FPR",
+        "Solicitation terms",
+        "Price / cost"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
@@ -259,6 +319,32 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-424400",
+      "caseName": "SPARC JV, LLC",
+      "title": "SPARC JV, LLC",
+      "bNumbers": [
+        "B-424400"
+      ],
+      "bNumberText": "B-424400",
+      "link": "https://www.gao.gov/products/b-424400",
+      "publicationDate": "2026-07-21",
+      "decisionDate": "2026-07-21",
+      "displayDate": "Jul 21, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "SPARC JV, LLC, a service-disabled veteran-owned small business (SDVOSB) of Orlando, Florida, protests the terms of request for proposals (RFP) No....",
+      "highlights": "",
+      "digest": "",
+      "tags": [
+        "Small business"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
+    },
+    {
       "id": "B-424443",
       "caseName": "J Caye Premier Dining, Inc.",
       "title": "J Caye Premier Dining, Inc.",
@@ -284,32 +370,6 @@ window.KTHQ_GAO_DATA = {
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424391",
-      "caseName": "American Correctional Healthcare, Inc.",
-      "title": "American Correctional Healthcare, Inc.",
-      "bNumbers": [
-        "B-424391"
-      ],
-      "bNumberText": "B-424391",
-      "link": "https://www.gao.gov/products/b-424391",
-      "publicationDate": "2026-07-14",
-      "decisionDate": "2026-07-14",
-      "displayDate": "Jul 14, 2026",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "outcomeSource": "Inferred from GAO RSS",
-      "decisionLine": "",
-      "officialSynopsis": "American Correctional Healthcare, Inc., a small business of Fort Worth, Texas, challenges the terms of request for proposals (RFP) No....",
-      "highlights": "",
-      "digest": "",
-      "tags": [
-        "Small business"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
     },
     {
       "id": "B-424403",
@@ -423,36 +483,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424364,B-424364.2",
-      "caseName": "Tyonek Technical Innovations, LLC",
-      "title": "Tyonek Technical Innovations, LLC",
-      "bNumbers": [
-        "B-424364",
-        "B-424364.2"
-      ],
-      "bNumberText": "B-424364, B-424364.2",
-      "link": "https://www.gao.gov/products/b-424364%2Cb-424364.2",
-      "publicationDate": "2026-07-14",
-      "decisionDate": "2026-06-30",
-      "displayDate": "Jun 30, 2026",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protest.",
-      "officialSynopsis": "Tyonek Technical Innovations, LLC, a small business of Anchorage, Alaska, protests the terms of request for proposals (RFP) No. FA8773-25-R-0002...",
-      "highlights": "",
-      "digest": "1. Protest challenging terms of solicitation as inconsistent with Defense Federal Acquisition Regulation Supplement (DFARS) 215.305(a)(2)(C) requirement to consider the past performance of a small business concern's affiliates is dismissed as untimely. 2. Protest challenging agency's past performance evaluation is dismissed as premature when brought prior to award.",
-      "tags": [
-        "Timeliness",
-        "Evaluation",
-        "Solicitation terms",
-        "Small business"
-      ],
-      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
       "id": "B-424352,B-424352.2",
       "caseName": "Serco Inc.",
       "title": "Serco Inc.",
@@ -481,58 +511,28 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424400",
-      "caseName": "SPARC JV, LLC",
-      "title": "SPARC JV, LLC",
+      "id": "B-423597.4,B-423597.2,B-423597.3",
+      "caseName": "Strategic Resources, Inc.--Reconsideration",
+      "title": "Strategic Resources, Inc.--Reconsideration",
       "bNumbers": [
-        "B-424400"
+        "B-423597.4",
+        "B-423597.2",
+        "B-423597.3"
       ],
-      "bNumberText": "B-424400",
-      "link": "https://www.gao.gov/products/b-424400",
-      "publicationDate": "2026-07-21",
+      "bNumberText": "B-423597.4, B-423597.2, B-423597.3",
+      "link": "https://www.gao.gov/products/b-423597.4",
+      "publicationDate": "2026-08-04",
       "decisionDate": "2026-06-25",
       "displayDate": "Jun 25, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
       "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "SPARC JV, LLC, a service-disabled veteran-owned small business (SDVOSB) of Orlando, Florida, protests the terms of request for proposals (RFP) No....",
+      "decisionLine": "We dismiss the request for reconsideration.",
+      "officialSynopsis": "Strategic Resources, Inc. (SRI), of Vienna, Virginia, requests reconsideration of our decision in Strategic Resources, Inc., B-423597.2, B-423597.3,...",
       "highlights": "",
-      "digest": "Protest challenging solicitation requirement--that offerors demonstrate experience with directly managing five or more employees subject to the Service Contract Labor Standards simultaneously--as overly restrictive is denied where the agency reasonably concluded that the requirement reflected the agency's minimum needs.",
-      "tags": [
-        "Solicitation terms",
-        "Small business"
-      ],
-      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424314,B-424314.3",
-      "caseName": "Pacific Ohana Laulima, LLC",
-      "title": "Pacific Ohana Laulima, LLC",
-      "bNumbers": [
-        "B-424314",
-        "B-424314.3"
-      ],
-      "bNumberText": "B-424314, B-424314.3",
-      "link": "https://www.gao.gov/products/b-424314%2Cb-424314.3",
-      "publicationDate": "2026-07-15",
-      "decisionDate": "2026-06-09",
-      "displayDate": "Jun 9, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Pacific Ohana Laulima, LLC (Pacific), a small business located in Tamuning, Guam, protests the exclusion of its proposal from the second phase of...",
-      "highlights": "",
-      "digest": "Protest challenging the agency's evaluation of the protester's proposal and resulting exclusion from the competition is denied where the record shows that the evaluation was reasonable and the exclusion of its proposal was consistent with the solicitation's two-phase selection process.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Small business"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "digest": "Request for reconsideration is dismissed where the requesting party only repeats arguments previously made and rejected by our Office and has not otherwise shown that our prior decision contains errors of fact or law that warrant reversal or modification of the decision.",
+      "tags": [],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
