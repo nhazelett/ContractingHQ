@@ -1,5 +1,5 @@
 window.KTHQ_ASBCA_DATA = {
-  "generatedAt": "2026-08-04T10:22:16.788591+00:00",
+  "generatedAt": "2026-08-05T10:18:52.717367+00:00",
   "source": {
     "name": "Armed Services Board of Contract Appeals",
     "decisionsUrl": "https://www.asbca.mil/Decisions/2026/"
@@ -7,14 +7,14 @@ window.KTHQ_ASBCA_DATA = {
   "note": "Automated KTHQ ASBCA decision watch. Official excerpts are extracted from ASBCA PDF text when available. Practitioner prompts are deterministic triage notes, not legal advice.",
   "stats": {
     "total": 18,
-    "latestDecisionDate": "2026-07-08",
+    "latestDecisionDate": "2026-07-16",
     "downloadedPdfs": 18,
     "metadataOnly": 0,
     "outcomes": {
-      "denied": 2,
+      "denied": 3,
       "dismissed": 10,
       "unclassified": 1,
-      "settled": 4,
+      "settled": 3,
       "sustained": 1
     },
     "sourceStatus": {
@@ -24,14 +24,40 @@ window.KTHQ_ASBCA_DATA = {
         "readerUrl": "https://r.jina.ai/http://r.jina.ai/http://https://www.asbca.mil/Decisions/2026/",
         "mode": "reader-markdown",
         "error": "",
-        "linksFound": 136,
+        "linksFound": 137,
         "linksUsed": 18
       }
     }
   },
   "items": [
     {
-      "id": "2026-07-08-tyd-services-0",
+      "id": "2026-07-16-wild-hare-haulers-llc-0",
+      "caseName": "Wild Hare Haulers, LLC",
+      "caseNumberText": "ASBCA Nos. 64442, 64443",
+      "caseNumbers": [
+        "ASBCA No. 64442",
+        "ASBCA No. 64443"
+      ],
+      "decisionDate": "2026-07-16",
+      "displayDate": "Jul 16, 2026",
+      "decisionType": "Reconsideration",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "judge": "McIlmail",
+      "officialExcerpt": "64442, we denied the appeal, upholding the government's termination of appellant's laundry and dry-cleaning contract for cause; in ASBCA No.",
+      "tags": [
+        "Termination",
+        "Reconsideration"
+      ],
+      "practitionerPrompt": "Termination actions need clean documentation. If performance is effectively ended, make sure the file and notices match the legal theory.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=SlyMm_brbnI%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-07-08-tyd-services-1",
       "caseName": "TYD Services",
       "caseNumberText": "ASBCA Nos. 64429, 64430",
       "caseNumbers": [
@@ -60,7 +86,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-07-potomac-yard-contractors-1",
+      "id": "2026-07-07-potomac-yard-contractors-2",
       "caseName": "Potomac Yard Contractors",
       "caseNumberText": "ASBCA No. 63032",
       "caseNumbers": [
@@ -84,7 +110,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-01-zodiac-poettker-hbz-joint-venture-llc-3",
+      "id": "2026-07-01-zodiac-poettker-hbz-joint-venture-llc-4",
       "caseName": "Zodiac-Poettker HBZ Joint Venture LLC",
       "caseNumberText": "ASBCA Nos. 64386, 64387, 64388",
       "caseNumbers": [
@@ -110,7 +136,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-01-perry-management-corporation-of-south-dakota-llc-4",
+      "id": "2026-07-01-perry-management-corporation-of-south-dakota-llc-5",
       "caseName": "Perry Management Corporation of South Dakota, LLC",
       "caseNumberText": "ASBCA No. 64100",
       "caseNumbers": [
@@ -134,7 +160,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-01-kbt-contracting-corp--2",
+      "id": "2026-07-01-kbt-contracting-corp--3",
       "caseName": "KBT Contracting Corp.",
       "caseNumberText": "ASBCA No. 64581-PET",
       "caseNumbers": [
@@ -158,7 +184,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-01-gilbane-federal-6",
+      "id": "2026-07-01-gilbane-federal-7",
       "caseName": "Gilbane Federal",
       "caseNumberText": "ASBCA Nos. 63702, 63717, 63755, 64409, 64410",
       "caseNumbers": [
@@ -186,7 +212,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-01-filanc-orion-jv-5",
+      "id": "2026-07-01-filanc-orion-jv-6",
       "caseName": "Filanc-Orion, JV",
       "caseNumberText": "ASBCA Nos. 63730, 63928, 63979",
       "caseNumbers": [
@@ -213,7 +239,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-29-siler-excavating-llc-7",
+      "id": "2026-06-29-siler-excavating-llc-8",
       "caseName": "Siler Excavating, LLC",
       "caseNumberText": "ASBCA Nos. 63715, 64180, 64181",
       "caseNumbers": [
@@ -239,7 +265,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-25-kiewitphelps-8",
+      "id": "2026-06-25-kiewitphelps-9",
       "caseName": "KiewitPhelps",
       "caseNumberText": "ASBCA Nos. 61184, 62119, 62980",
       "caseNumbers": [
@@ -267,7 +293,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-24-jaxon-construction-inc--10",
+      "id": "2026-06-24-jaxon-construction-inc--11",
       "caseName": "Jaxon Construction, Inc.",
       "caseNumberText": "ASBCA No. 64432",
       "caseNumbers": [
@@ -293,7 +319,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-24-industrial-marine-inc--11",
+      "id": "2026-06-24-industrial-marine-inc--12",
       "caseName": "Industrial Marine, Inc.",
       "caseNumberText": "ASBCA No. 63975",
       "caseNumbers": [
@@ -315,7 +341,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-24-disys-solutions-inc--9",
+      "id": "2026-06-24-disys-solutions-inc--10",
       "caseName": "DISYS Solutions, Inc.",
       "caseNumberText": "ASBCA No. 64554",
       "caseNumbers": [
@@ -337,7 +363,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-23-wild-hare-haulers-llc-15",
+      "id": "2026-06-23-wild-hare-haulers-llc-16",
       "caseName": "Wild Hare Haulers, LLC",
       "caseNumberText": "ASBCA Nos. 64442, 64443",
       "caseNumbers": [
@@ -364,7 +390,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-23-k-mar-industries-inc--16",
+      "id": "2026-06-23-k-mar-industries-inc--17",
       "caseName": "K-MAR Industries, Inc.",
       "caseNumberText": "ASBCA Nos. 64556, 64557",
       "caseNumbers": [
@@ -387,7 +413,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-23-granite-construction-company-14",
+      "id": "2026-06-23-granite-construction-company-15",
       "caseName": "Granite Construction Company",
       "caseNumberText": "ASBCA No. 63667",
       "caseNumbers": [
@@ -411,7 +437,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-23-fluor-amec-ii-llc-12",
+      "id": "2026-06-23-fluor-amec-ii-llc-13",
       "caseName": "Fluor-AMEC II, LLC",
       "caseNumberText": "ASBCA No. 64131",
       "caseNumbers": [
@@ -436,7 +462,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-06-23-advanced-aerospace-reconnaissance-llc-13",
+      "id": "2026-06-23-advanced-aerospace-reconnaissance-llc-14",
       "caseName": "Advanced Aerospace Reconnaissance, LLC",
       "caseNumberText": "ASBCA No. 64233",
       "caseNumbers": [
@@ -454,38 +480,6 @@ window.KTHQ_ASBCA_DATA = {
       ],
       "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
       "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=EpNyG5TB2a8%3d&portalid=143",
-      "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-06-22-constellation-newenergy-inc--17",
-      "caseName": "Constellation NewEnergy, Inc.",
-      "caseNumberText": "ASBCA Nos. 63773-ADR, 63831-ADR, 63853-ADR, 63854-ADR, 63855-ADR, 63856-ADR, 63857-ADR",
-      "caseNumbers": [
-        "ASBCA No. 63773-ADR",
-        "ASBCA No. 63831-ADR",
-        "ASBCA No. 63853-ADR",
-        "ASBCA No. 63854-ADR",
-        "ASBCA No. 63855-ADR",
-        "ASBCA No. 63856-ADR",
-        "ASBCA No. 63857-ADR"
-      ],
-      "decisionDate": "2026-06-22",
-      "displayDate": "Jun 22, 2026",
-      "decisionType": "Consent judgment",
-      "outcome": "settled",
-      "outcomeLabel": "Settled",
-      "judge": "Arnett",
-      "officialExcerpt": "It is the Board's decision, pursuant to 41 U.S.C. \u00a7\u00a7 7105(e), 7108(b), and the parties' stipulation and agreement, that the appeals are sustained. In the nature of a consent judgment, the Board makes a monetary award to appellant in the amount of $12,000,000. This amount is inclusive of Contract Disputes Act interest. No further interest shall be paid.",
-      "tags": [
-        "Settlement",
-        "ADR",
-        "CDA process"
-      ],
-      "practitionerPrompt": "Consent judgments are a practical off-ramp. Use them when exposure is clear and the negotiated number is better than continued litigation.",
-      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=dG5FNuGqAfs%3d&portalid=143",
       "filename": "LinkClick.aspx",
       "sourceStatus": "reader-extracted",
       "sourceStatusLabel": "ASBCA PDF text extracted",
