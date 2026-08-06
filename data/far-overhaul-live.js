@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-08-05T10:45:52.668583+00:00",
+  "generatedAt": "2026-08-06T10:48:35.651353+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -23,86 +23,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "baseline": false,
     "newParts": [],
     "updatedParts": [],
-    "newAgencyDeviations": [
-      {
-        "part": {
-          "partNumber": 12,
-          "partLabel": "Part 12",
-          "title": "Acquisition of Commercial Products and Commercial Services",
-          "fullTitle": "Part 12 - Acquisition of Commercial Products and Commercial Services",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12",
-          "issuanceDate": "2025-08-14",
-          "issuanceDateLabel": "Aug 14, 2025",
-          "updateDate": "2026-04-20",
-          "updateDateLabel": "Apr 20, 2026",
-          "deviationCount": 34
-        },
-        "agency": {
-          "name": "Social Security Administration (SSA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/SSA_RFO_Deviations_Part-12.pdf",
-          "id": "177b4d7a7b636f7b"
-        }
-      },
-      {
-        "part": {
-          "partNumber": 42,
-          "partLabel": "Part 42",
-          "title": "Contract Administration and Audit Services",
-          "fullTitle": "Part 42 - Contract Administration and Audit Services",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-42",
-          "issuanceDate": "2025-09-30",
-          "issuanceDateLabel": "Sep 30, 2025",
-          "updateDate": "",
-          "updateDateLabel": "",
-          "deviationCount": 28
-        },
-        "agency": {
-          "name": "Social Security Administration (SSA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/SSA_RFO_Deviation_Parts-42.pdf",
-          "id": "5e014e76bae70ab4"
-        }
-      }
-    ],
-    "removedAgencyDeviations": [
-      {
-        "part": {
-          "partNumber": 12,
-          "partLabel": "Part 12",
-          "title": "Acquisition of Commercial Products and Commercial Services",
-          "fullTitle": "Part 12 - Acquisition of Commercial Products and Commercial Services",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-12",
-          "issuanceDate": "2025-08-14",
-          "issuanceDateLabel": "Aug 14, 2025",
-          "updateDate": "2026-04-20",
-          "updateDateLabel": "Apr 20, 2026",
-          "deviationCount": 34
-        },
-        "agency": {
-          "name": "Social Security Administration (SSA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/SSA_RFO_Deviation_Part-4-5-8-12-26-38-40and51.pdf",
-          "id": "f0533f4f0e3a392a"
-        }
-      },
-      {
-        "part": {
-          "partNumber": 42,
-          "partLabel": "Part 42",
-          "title": "Contract Administration and Audit Services",
-          "fullTitle": "Part 42 - Contract Administration and Audit Services",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-42",
-          "issuanceDate": "2025-09-30",
-          "issuanceDateLabel": "Sep 30, 2025",
-          "updateDate": "",
-          "updateDateLabel": "",
-          "deviationCount": 28
-        },
-        "agency": {
-          "name": "Social Security Administration (SSA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/SSA_RFO_Deviaiton_Parts-42.pdf",
-          "id": "c9e5f336d4ba6def"
-        }
-      }
-    ]
+    "newAgencyDeviations": [],
+    "removedAgencyDeviations": []
   },
   "parts": [
     {
