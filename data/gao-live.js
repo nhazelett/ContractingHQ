@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-08-06T10:10:39.223Z",
+  "generatedAt": "2026-08-07T08:35:03.198Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 16
+        "parsedOutcomes": 15
       },
       "productPages": {
         "attempted": 18,
@@ -231,6 +231,33 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-424419.2",
+      "caseName": "ProteQ",
+      "title": "ProteQ",
+      "bNumbers": [
+        "B-424419.2"
+      ],
+      "bNumberText": "B-424419.2",
+      "link": "https://www.gao.gov/products/b-424419.2",
+      "publicationDate": "2026-08-06",
+      "decisionDate": "2026-07-24",
+      "displayDate": "Jul 24, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "KENTCO Corporation, doing business as ProteQ, of Herndon, Virginia, protests the issuance of a task order to Systems Planning and Analysis, Inc. (SPA...",
+      "highlights": "",
+      "digest": "Protest that agency improperly found the protester's proposal ineligible for award is denied where the agency reasonably concluded that the protester's proposal omitted required information and the solicitation advised that failure to submit that information would render a proposal ineligible for award.",
+      "tags": [
+        "Solicitation terms",
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
       "id": "B-423916.2,B-423916.3",
       "caseName": "Ardmore Consulting Group, Inc.",
       "title": "Ardmore Consulting Group, Inc.",
@@ -290,6 +317,63 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-424437,B-424437.2",
+      "caseName": "CVJV LLC",
+      "title": "CVJV LLC",
+      "bNumbers": [
+        "B-424437",
+        "B-424437.2"
+      ],
+      "bNumberText": "B-424437, B-424437.2",
+      "link": "https://www.gao.gov/products/b-424437%2Cb-424437.2",
+      "publicationDate": "2026-07-22",
+      "decisionDate": "2026-07-22",
+      "displayDate": "Jul 22, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "CVJV, LLC, a small business of Duxbury, Massachusetts, protests the award of several multiple-award task order contracts (MATOCs) under request for...",
+      "highlights": "",
+      "digest": "",
+      "tags": [
+        "Small business",
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
+    },
+    {
+      "id": "B-423965.2,B-423965.3,B-423965.4",
+      "caseName": "Veros Real Estate Solutions, LLC",
+      "title": "Veros Real Estate Solutions, LLC",
+      "bNumbers": [
+        "B-423965.2",
+        "B-423965.3",
+        "B-423965.4"
+      ],
+      "bNumberText": "B-423965.2, B-423965.3, B-423965.4",
+      "link": "https://www.gao.gov/products/b-423965.2%2Cb-423965.3%2Cb-423965.4",
+      "publicationDate": "2026-08-06",
+      "decisionDate": "2026-07-22",
+      "displayDate": "Jul 22, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We sustain the protest.",
+      "officialSynopsis": "Veros Real Estate Solutions, LLC (Veros), a small business of Santa Ana, California, protests the award of a contract to Lynch Consultants, LLC (...",
+      "highlights": "",
+      "digest": "1. Protest challenging the evaluation of the awardee's past performance for relevancy is sustained where the evaluation was unreasonable and insufficiently documented. 2. Protest alleging disparate treatment under the technical evaluation is denied where the different evaluation results were reasonably based on differences in the proposals. 3. Protest alleging that the awardee's proposal materially misrepresented the involvement of a proposed subcontractor is denied where the protester fails to demonstrate a material misrepresentation made to the procuring agency via the awardee's proposal.",
+      "tags": [
+        "Evaluation",
+        "Small business"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
       "id": "B-424517,B-424517.2",
       "caseName": "AFCO Global Solutions",
       "title": "AFCO Global Solutions",
@@ -314,34 +398,6 @@ window.KTHQ_GAO_DATA = {
         "Staffing"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424437,B-424437.2",
-      "caseName": "CVJV LLC",
-      "title": "CVJV LLC",
-      "bNumbers": [
-        "B-424437",
-        "B-424437.2"
-      ],
-      "bNumberText": "B-424437, B-424437.2",
-      "link": "https://www.gao.gov/products/b-424437%2Cb-424437.2",
-      "publicationDate": "2026-07-22",
-      "decisionDate": "2026-07-21",
-      "displayDate": "Jul 21, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "CVJV, LLC, a small business of Duxbury, Massachusetts, protests the award of several multiple-award task order contracts (MATOCs) under request for...",
-      "highlights": "",
-      "digest": "Protest challenging the agency's decision to exclude the protester's expired proposal from the competition is denied where the record shows that the agency never received an email from the protester extending the proposal acceptance period.",
-      "tags": [
-        "Small business",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -375,32 +431,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424386",
-      "caseName": "ProSource360 Consulting Services, Inc.",
-      "title": "ProSource360 Consulting Services, Inc.",
-      "bNumbers": [
-        "B-424386"
-      ],
-      "bNumberText": "B-424386",
-      "link": "https://www.gao.gov/products/b-424386",
-      "publicationDate": "2026-07-21",
-      "decisionDate": "2026-07-21",
-      "displayDate": "Jul 21, 2026",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "outcomeSource": "Inferred from GAO RSS",
-      "decisionLine": "",
-      "officialSynopsis": "ProSource360 Consulting Services, Inc., a small business of Washington, D.C., challenges the terms of request for proposals (RFP) No. W911QY-26-R-...",
-      "highlights": "",
-      "digest": "",
-      "tags": [
-        "Small business"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
-    },
-    {
       "id": "B-424443",
       "caseName": "J Caye Premier Dining, Inc.",
       "title": "J Caye Premier Dining, Inc.",
@@ -424,35 +454,6 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424412",
-      "caseName": "Goldbelt Nighthawk, LLC",
-      "title": "Goldbelt Nighthawk, LLC",
-      "bNumbers": [
-        "B-424412"
-      ],
-      "bNumberText": "B-424412",
-      "link": "https://www.gao.gov/products/b-424412",
-      "publicationDate": "2026-07-22",
-      "decisionDate": "2026-07-14",
-      "displayDate": "Jul 14, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest in part and dismiss it in part.",
-      "officialSynopsis": "Goldbelt Nighthawk, LLC, of Newport News, Virginia, protests the issuance of a task order to CyberStar, LLC, of Lorton, Virginia, under task order...",
-      "highlights": "",
-      "digest": "1. Protest challenging various aspects of the agency's evaluation is denied where the evaluation was reasonable and consistent with the terms of the solicitation. 2. Protest that awardee has an unmitigated organizational conflict of interest is dismissed as academic where the agency waived the alleged conflict, and the waiver was consistent with the requirements of applicable procurement regulations.",
-      "tags": [
-        "Evaluation",
-        "OCI",
-        "Solicitation terms",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
