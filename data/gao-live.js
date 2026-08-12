@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-08-11T08:30:51.723Z",
+  "generatedAt": "2026-08-12T08:48:43.443Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,13 +7,13 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 18,
+    "total": 20,
     "latestDecisionDate": "2026-08-05",
     "sustained": 0,
-    "denied": 8,
-    "dismissed": 4,
+    "denied": 9,
+    "dismissed": 3,
     "mixed": 6,
-    "unclassified": 0,
+    "unclassified": 2,
     "sourceStatus": {
       "rss": {
         "ok": true,
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 17
+        "parsedOutcomes": 15
       },
       "productPages": {
         "attempted": 18,
@@ -36,6 +36,33 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424049.5",
+      "caseName": "Accura Engineering and Consulting Services, Inc.--Costs--Reconsideration",
+      "title": "Accura Engineering and Consulting Services, Inc.--Costs--Reconsideration",
+      "bNumbers": [
+        "B-424049.5"
+      ],
+      "bNumberText": "B-424049.5",
+      "link": "https://www.gao.gov/products/b-424049.5",
+      "publicationDate": "2026-08-11",
+      "decisionDate": "2026-08-05",
+      "displayDate": "Aug 5, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the request for reconsideration.",
+      "officialSynopsis": "Accura Engineering and Consulting Services, Inc., a small business of Atlanta, Georgia, requests that our Office reconsider our decision in Accura...",
+      "highlights": "",
+      "digest": "Request for reconsideration is denied where the requester has not shown that our prior decision contained a material error of fact warranting reversal or modification.",
+      "tags": [
+        "Price / cost",
+        "Small business"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424521,B-424521.2",
       "caseName": "Praescient Analytics, LLC",
@@ -118,6 +145,34 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-423820.6",
+      "caseName": "DCS Corporation",
+      "title": "DCS Corporation",
+      "bNumbers": [
+        "B-423820.6"
+      ],
+      "bNumberText": "B-423820.6",
+      "link": "https://www.gao.gov/products/b-423820.6",
+      "publicationDate": "2026-08-11",
+      "decisionDate": "2026-07-29",
+      "displayDate": "Jul 29, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We dismiss the protest in part and deny it in part.",
+      "officialSynopsis": "DCS Corporation, of Alexandria, Virginia, challenges the scope of corrective action proposed by the Department of the Army in response to DCS's prior...",
+      "highlights": "",
+      "digest": "1. Original awardee qualifies as an intervenor under 4 C.F.R. § 21.0(b)(1) in a pre-award protest challenging the scope of agency corrective action when the protest alleges that the original awardee should be excluded from the competition and that the corrective action was undertaken solely to benefit the original awardee. 2. Protest challenging scope of agency corrective action is denied where agency reasonably limited the scope of discussions and proposal revisions to address narrow issues identified during previous protests. 3. Protest challenging agency's decision not to reconsider certain portions of its previous technical evaluation during corrective action is dismissed as premature when brought prior to award during the course of corrective action.",
+      "tags": [
+        "Evaluation",
+        "Corrective action",
+        "Discussions / FPR"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -206,6 +261,32 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-424245.2",
+      "caseName": "Cashel Strategic, LLC",
+      "title": "Cashel Strategic, LLC",
+      "bNumbers": [
+        "B-424245.2"
+      ],
+      "bNumberText": "B-424245.2",
+      "link": "https://www.gao.gov/products/b-424245.2",
+      "publicationDate": "2026-07-27",
+      "decisionDate": "2026-07-27",
+      "displayDate": "Jul 27, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "Cashel Strategic, LLC, a service-disabled, veteran-owned small business of Sheridan, Wyoming, protests its elimination from the competition under...",
+      "highlights": "",
+      "digest": "",
+      "tags": [
+        "Small business"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
+    },
+    {
       "id": "B-424328.2",
       "caseName": "MAGPRO Alliance, JV",
       "title": "MAGPRO Alliance, JV",
@@ -233,31 +314,31 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424245.2",
-      "caseName": "Cashel Strategic, LLC",
-      "title": "Cashel Strategic, LLC",
+      "id": "B-424405,B-424405.2",
+      "caseName": "Raven Advisory, LLC",
+      "title": "Raven Advisory, LLC",
       "bNumbers": [
-        "B-424245.2"
+        "B-424405",
+        "B-424405.2"
       ],
-      "bNumberText": "B-424245.2",
-      "link": "https://www.gao.gov/products/b-424245.2",
+      "bNumberText": "B-424405, B-424405.2",
+      "link": "https://www.gao.gov/products/b-424405%2Cb-424405.2",
       "publicationDate": "2026-07-27",
-      "decisionDate": "2026-07-24",
-      "displayDate": "Jul 24, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protest.",
-      "officialSynopsis": "Cashel Strategic, LLC, a service-disabled, veteran-owned small business of Sheridan, Wyoming, protests its elimination from the competition under...",
+      "decisionDate": "2026-07-27",
+      "displayDate": "Jul 27, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "Raven Advisory, LLC, a small business of Fayetteville, North Carolina, protests the award of a contract to Ragged Edge Solutions, LLC, a small...",
       "highlights": "",
-      "digest": "Protest alleging conflicts of interest and competition improprieties is dismissed where the protester lacks the requisite economic interest to challenge the agency's actions because even if its protest grounds were sustained, it would not be next in line for award where it failed to challenge either its technical unacceptability or the technical acceptability of other offerors.",
+      "digest": "",
       "tags": [
-        "Evaluation",
         "Small business"
       ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
     },
     {
       "id": "B-424419.2",
@@ -428,36 +509,6 @@ window.KTHQ_GAO_DATA = {
         "Staffing"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424405,B-424405.2",
-      "caseName": "Raven Advisory, LLC",
-      "title": "Raven Advisory, LLC",
-      "bNumbers": [
-        "B-424405",
-        "B-424405.2"
-      ],
-      "bNumberText": "B-424405, B-424405.2",
-      "link": "https://www.gao.gov/products/b-424405%2Cb-424405.2",
-      "publicationDate": "2026-07-27",
-      "decisionDate": "2026-07-14",
-      "displayDate": "Jul 14, 2026",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protest.",
-      "officialSynopsis": "Raven Advisory, LLC, a small business of Fayetteville, North Carolina, protests the award of a contract to Ragged Edge Solutions, LLC, a small...",
-      "highlights": "",
-      "digest": "1. Protest challenging issuance of solicitation amendment is dismissed as untimely where the protest was not filed before the due date for revised quotations established by the amendment. 2. Protest challenging agency's evaluation of protester's price as unreasonable is dismissed for lack of prejudice. Even if the agency had found the protester's price to be reasonable, the protester would not have been in line for award because the solicitation provided for award to be made on a lowest‑priced, technically acceptable basis and the protester did not submit the lowest-priced, technically acceptable quotation.",
-      "tags": [
-        "Timeliness",
-        "Evaluation",
-        "Solicitation terms",
-        "Price / cost"
-      ],
-      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
