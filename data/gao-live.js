@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-08-12T08:48:43.443Z",
+  "generatedAt": "2026-08-13T08:51:46.234Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,13 +7,13 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 20,
-    "latestDecisionDate": "2026-08-05",
+    "total": 21,
+    "latestDecisionDate": "2026-08-11",
     "sustained": 0,
-    "denied": 9,
+    "denied": 8,
     "dismissed": 3,
-    "mixed": 6,
-    "unclassified": 2,
+    "mixed": 7,
+    "unclassified": 3,
     "sourceStatus": {
       "rss": {
         "ok": true,
@@ -36,6 +36,35 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424433.3,B-424433.7",
+      "caseName": "Intelligence Consulting Enterprise Solutions, Inc.",
+      "title": "Intelligence Consulting Enterprise Solutions, Inc.",
+      "bNumbers": [
+        "B-424433.3",
+        "B-424433.7"
+      ],
+      "bNumberText": "B-424433.3, B-424433.7",
+      "link": "https://www.gao.gov/products/b-424433.3%2Cb-424433.7",
+      "publicationDate": "2026-08-12",
+      "decisionDate": "2026-08-11",
+      "displayDate": "Aug 11, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We sustain the protest in part and deny the protest in part.",
+      "officialSynopsis": "Intelligence Consulting Enterprise Solutions, Inc. (ICES), a small business of Alexandria, Virginia, protests the terms of request for proposals (RFP...",
+      "highlights": "",
+      "digest": "1. Protest taking issue with agency's solicitation numbering method and manner of posting solicitation amendments is denied. The protester was not adversely impacted by the agency's solicitation posting method because it had actual knowledge of solicitation amendments, and numbering method and use of standard forms are consistent with applicable procurement regulations. 2. Protest challenging as unduly restrictive of competition solicitation's prohibition on the use of classified contracts as past performance reference projects is denied where the agency provides a rational explanation for the prohibition demonstrating it reasonably relates to the agency's needs. 3. Protest contending agency unreasonably failed to provide substantive responses to pre-proposal questions and that solicitation is ambiguous and fails to provide sufficient information for offerors to compete intelligently and on a common basis, is denied where the protester does not demonstrate that the challenged solicitation areas are inadequate, unclear, or ambiguous. 4. Protest arguing solicitation's prohibition on small business offerors forming teaming arrangements violates applicable small business requirements is sustained where the prohibition is inconsistent with both the purpose and plain language of the S...",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms",
+        "Small business"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424049.5",
       "caseName": "Accura Engineering and Consulting Services, Inc.--Costs--Reconsideration",
@@ -261,6 +290,33 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-424410",
+      "caseName": "Integrated Enterprise Systems Engineering Solutions, Inc.",
+      "title": "Integrated Enterprise Systems Engineering Solutions, Inc.",
+      "bNumbers": [
+        "B-424410"
+      ],
+      "bNumberText": "B-424410",
+      "link": "https://www.gao.gov/products/b-424410",
+      "publicationDate": "2026-07-28",
+      "decisionDate": "2026-07-28",
+      "displayDate": "Jul 28, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "Integrated Enterprise Systems Engineering (IESE) Solutions, Inc., a small business of El Segundo, California, protests the issuance of a task order...",
+      "highlights": "",
+      "digest": "",
+      "tags": [
+        "Small business",
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
+    },
+    {
       "id": "B-424245.2",
       "caseName": "Cashel Strategic, LLC",
       "title": "Cashel Strategic, LLC",
@@ -477,35 +533,6 @@ window.KTHQ_GAO_DATA = {
       "digest": "1. Protest alleging material misrepresentation of availability of key personnel is denied where the awardee's quotation included signed letters of commitment from those individuals and the protester offers no contrary credible evidence that the individuals will not perform on the order. 2. Protest alleging unreasonable and unequal evaluation of quotations is denied where the record shows that the agency's evaluation was generally reasonable, and to the extent the agency unequally evaluated quotations, the protester cannot demonstrate a reasonable possibility of competitive prejudice.",
       "tags": [
         "Evaluation",
-        "Staffing"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424410",
-      "caseName": "Integrated Enterprise Systems Engineering Solutions, Inc.",
-      "title": "Integrated Enterprise Systems Engineering Solutions, Inc.",
-      "bNumbers": [
-        "B-424410"
-      ],
-      "bNumberText": "B-424410",
-      "link": "https://www.gao.gov/products/b-424410",
-      "publicationDate": "2026-07-28",
-      "decisionDate": "2026-07-21",
-      "displayDate": "Jul 21, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Integrated Enterprise Systems Engineering (IESE) Solutions, Inc., a small business of El Segundo, California, protests the issuance of a task order...",
-      "highlights": "",
-      "digest": "1. Protest challenging the agency's evaluation of the awardee's staffing matrix and professional employee compensation is denied where the record shows that the evaluation was reasonable and consistent with the terms of the solicitation. 2. Protest that solicitation deprives vendors of the ability to compete on a common basis is denied where the solicitation is drafted in a manner that enables vendors to intelligently prepare their quotations. 3. Protest that agency's best-value decision was unreasonable is denied where we find the agency's underlying evaluation to be reasonable.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Price / cost",
         "Staffing"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
