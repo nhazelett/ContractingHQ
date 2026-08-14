@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-08-13T09:32:55.387977+00:00",
+  "generatedAt": "2026-08-14T09:19:56.578104+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -23,8 +23,48 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "baseline": false,
     "newParts": [],
     "updatedParts": [],
-    "newAgencyDeviations": [],
-    "removedAgencyDeviations": []
+    "newAgencyDeviations": [
+      {
+        "part": {
+          "partNumber": 16,
+          "partLabel": "Part 16",
+          "title": "Types of Contracts",
+          "fullTitle": "Part 16 - Types of Contracts",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-07-01",
+          "updateDateLabel": "Jul 1, 2026",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Commodity Futures Trading Commission (CFTC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CFTC_RFO_Deviation_Part-16_Supplement-1.pdf",
+          "id": "4c6f693bd825b205"
+        }
+      }
+    ],
+    "removedAgencyDeviations": [
+      {
+        "part": {
+          "partNumber": 16,
+          "partLabel": "Part 16",
+          "title": "Types of Contracts",
+          "fullTitle": "Part 16 - Types of Contracts",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-07-01",
+          "updateDateLabel": "Jul 1, 2026",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Commodity Futures Trading Commission (CFTC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CFTC_RFO_Deviation_Part-16.pdf",
+          "id": "8dae7d663eed4868"
+        }
+      }
+    ]
   },
   "parts": [
     {
@@ -2741,8 +2781,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "Commodity Futures Trading Commission (CFTC)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CFTC_RFO_Deviation_Part-16.pdf",
-          "id": "8dae7d663eed4868"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CFTC_RFO_Deviation_Part-16_Supplement-1.pdf",
+          "id": "4c6f693bd825b205"
         },
         {
           "name": "Health and Human Services (HHS)",
