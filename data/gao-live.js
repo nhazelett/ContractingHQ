@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-08-20T08:06:01.885Z",
+  "generatedAt": "2026-08-21T08:06:33.842Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -10,9 +10,9 @@ window.KTHQ_GAO_DATA = {
     "total": 18,
     "latestDecisionDate": "2026-08-17",
     "sustained": 0,
-    "denied": 8,
+    "denied": 9,
     "dismissed": 2,
-    "mixed": 8,
+    "mixed": 7,
     "unclassified": 0,
     "sourceStatus": {
       "rss": {
@@ -461,30 +461,31 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424397,B-424397.2",
-      "caseName": "Red Cat Holdings, Inc.",
-      "title": "Red Cat Holdings, Inc.",
+      "id": "B-423954.2",
+      "caseName": "Ideal Innovations, Inc.",
+      "title": "Ideal Innovations, Inc.",
       "bNumbers": [
-        "B-424397",
-        "B-424397.2"
+        "B-423954.2"
       ],
-      "bNumberText": "B-424397, B-424397.2",
-      "link": "https://www.gao.gov/products/b-424397%2Cb-424397.2",
-      "publicationDate": "2026-07-30",
-      "decisionDate": "2026-07-10",
-      "displayDate": "Jul 10, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
+      "bNumberText": "B-423954.2",
+      "link": "https://www.gao.gov/products/b-423954.2",
+      "publicationDate": "2026-08-20",
+      "decisionDate": "2026-07-02",
+      "displayDate": "Jul 2, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
       "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest in part and dismiss it in part.",
-      "officialSynopsis": "Red Cat Holdings, Inc., of South Salt Lake City, Utah, protests the terms of delivery order request for quotations (RFQ) No. 2026031231625, and the...",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Ideal Innovations, Inc. (I-3), a small business of Arlington, Virginia, protests the issuance of a task order to Allegheny Science & Technology...",
       "highlights": "",
-      "digest": "1. Protest alleging that delivery order for drone products is outside the scope of the underlying indefinite-delivery indefinite-quantity (IDIQ) contract is denied where the record shows the delivery order is reasonably within the contract's scope. 2. Protest that delivery order solicitation improperly required a brand-name product is dismissed where protester is not an interested party to raise the allegation because it does not hold the IDIQ contract under which the delivery order solicitation was issued.",
+      "digest": "1. Protest that award was tainted by conflicts of interest is denied where the record shows that the agency meaningfully considered the alleged conflicts and reasonably concluded that the award should not be disturbed based on the alleged conflicts. 2. Protest challenging the agency's evaluation of proposals under the technical factor is denied where the record shows that the agency's evaluation was reasonable, consistent with the terms of the solicitation, and sufficiently documented.",
       "tags": [
+        "Evaluation",
         "Solicitation terms",
+        "Small business",
         "Orders / IDIQ"
       ],
-      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
