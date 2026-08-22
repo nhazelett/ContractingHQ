@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-08-21T08:06:33.842Z",
+  "generatedAt": "2026-08-22T07:55:57.835Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,12 +7,12 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 18,
+    "total": 14,
     "latestDecisionDate": "2026-08-17",
     "sustained": 0,
-    "denied": 9,
-    "dismissed": 2,
-    "mixed": 7,
+    "denied": 8,
+    "dismissed": 0,
+    "mixed": 6,
     "unclassified": 0,
     "sourceStatus": {
       "rss": {
@@ -26,8 +26,8 @@ window.KTHQ_GAO_DATA = {
         "parsedOutcomes": 12
       },
       "productPages": {
-        "attempted": 18,
-        "enriched": 18,
+        "attempted": 14,
+        "enriched": 14,
         "blocked": 0
       },
       "legacyCache": {
@@ -236,33 +236,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424433.22",
-      "caseName": "The JAAW Group, LLC",
-      "title": "The JAAW Group, LLC",
-      "bNumbers": [
-        "B-424433.22"
-      ],
-      "bNumberText": "B-424433.22",
-      "link": "https://www.gao.gov/products/b-424433.22",
-      "publicationDate": "2026-08-03",
-      "decisionDate": "2026-07-31",
-      "displayDate": "Jul 31, 2026",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protest.",
-      "officialSynopsis": "The JAAW Group, LLC (JAAW), a small business of Ogden, Utah and the managing member of joint venture (JV) Paralaxx LLC, protests the rejection of...",
-      "highlights": "",
-      "digest": "Protester's challenge of the rejection of its proposal due to allegedly conflicting file naming convention instructions between the solicitation and proposal submission portal is dismissed for failing to state factually sufficient grounds of protest where the record reflects the protest is premised on factually inaccurate assertions.",
-      "tags": [
-        "Solicitation terms",
-        "Small business"
-      ],
-      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
       "id": "B-423820.6",
       "caseName": "DCS Corporation",
       "title": "DCS Corporation",
@@ -285,36 +258,6 @@ window.KTHQ_GAO_DATA = {
         "Evaluation",
         "Corrective action",
         "Discussions / FPR"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-423607.6,B-423607.13",
-      "caseName": "Abacus Technology Corporation--Costs",
-      "title": "Abacus Technology Corporation--Costs",
-      "bNumbers": [
-        "B-423607.6",
-        "B-423607.13"
-      ],
-      "bNumberText": "B-423607.6, B-423607.13",
-      "link": "https://www.gao.gov/products/b-423607.6%2Cb-423607.13",
-      "publicationDate": "2026-08-04",
-      "decisionDate": "2026-07-28",
-      "displayDate": "Jul 28, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We grant the request in part and deny it in part.",
-      "officialSynopsis": "Abacus Technology Corporation, a small business of Chevy Chase, Maryland, requests that our Office recommend that the protester be reimbursed the...",
-      "highlights": "",
-      "digest": "1. Request that GAO recommend reimbursement of protest costs related to the challenges to the agency's price realism evaluation and best-value tradeoff analysis are granted where the agency unduly delayed taking corrective action in response to clearly meritorious allegations. 2. Request that GAO recommend reimbursement of costs of filing and pursuing protest related to the challenge of the evaluation of the awardee's technical proposal is denied where the allegation was not clearly meritorious and was severable from the clearly meritorious grounds.",
-      "tags": [
-        "Evaluation",
-        "Corrective action",
-        "Price / cost",
-        "Small business"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
@@ -486,60 +429,6 @@ window.KTHQ_GAO_DATA = {
         "Orders / IDIQ"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424352,B-424352.2",
-      "caseName": "Serco Inc.",
-      "title": "Serco Inc.",
-      "bNumbers": [
-        "B-424352",
-        "B-424352.2"
-      ],
-      "bNumberText": "B-424352, B-424352.2",
-      "link": "https://www.gao.gov/products/b-424352%2Cb-424352.2",
-      "publicationDate": "2026-07-31",
-      "decisionDate": "2026-06-29",
-      "displayDate": "Jun 29, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Serco, Inc., of Herndon, Virginia, protests the award of a contract to Booz Allen Hamilton Inc., of McLean, Virginia, under request for proposals (...",
-      "highlights": "",
-      "digest": "1. Protest alleging that awardee had an unfair competitive advantage based on its hiring of a former Army employee with access to non‑public, competitively useful information is denied where the record shows that the agency meaningfully considered the matter and reasonably concluded that the awardee did not have an unfair competitive advantage. 2. Protest challenging agency's evaluation of proposals under the solicitation's technical factor is denied where the agency's evaluation was reasonable and consistent with the solicitation's evaluation criteria.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-423597.4,B-423597.2,B-423597.3",
-      "caseName": "Strategic Resources, Inc.--Reconsideration",
-      "title": "Strategic Resources, Inc.--Reconsideration",
-      "bNumbers": [
-        "B-423597.4",
-        "B-423597.2",
-        "B-423597.3"
-      ],
-      "bNumberText": "B-423597.4, B-423597.2, B-423597.3",
-      "link": "https://www.gao.gov/products/b-423597.4",
-      "publicationDate": "2026-08-04",
-      "decisionDate": "2026-06-25",
-      "displayDate": "Jun 25, 2026",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the request for reconsideration.",
-      "officialSynopsis": "Strategic Resources, Inc. (SRI), of Vienna, Virginia, requests reconsideration of our decision in Strategic Resources, Inc., B-423597.2, B-423597.3,...",
-      "highlights": "",
-      "digest": "Request for reconsideration is dismissed where the requesting party only repeats arguments previously made and rejected by our Office and has not otherwise shown that our prior decision contains errors of fact or law that warrant reversal or modification of the decision.",
-      "tags": [],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     }
