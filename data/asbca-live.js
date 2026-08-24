@@ -1,5 +1,5 @@
 window.KTHQ_ASBCA_DATA = {
-  "generatedAt": "2026-08-23T08:14:19.437969+00:00",
+  "generatedAt": "2026-08-24T08:31:54.471927+00:00",
   "source": {
     "name": "Armed Services Board of Contract Appeals",
     "decisionsUrl": "https://www.asbca.mil/Decisions/2026/"
@@ -8,12 +8,12 @@ window.KTHQ_ASBCA_DATA = {
   "stats": {
     "total": 18,
     "latestDecisionDate": "2026-07-30",
-    "downloadedPdfs": 17,
-    "metadataOnly": 1,
+    "downloadedPdfs": 18,
+    "metadataOnly": 0,
     "outcomes": {
       "dismissed": 11,
-      "unclassified": 3,
-      "settled": 1,
+      "settled": 2,
+      "unclassified": 2,
       "procedural": 1,
       "denied": 2
     },
@@ -63,18 +63,21 @@ window.KTHQ_ASBCA_DATA = {
       ],
       "decisionDate": "2026-07-30",
       "displayDate": "Jul 30, 2026",
-      "decisionType": "Decision",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
+      "decisionType": "Consent judgment",
+      "outcome": "settled",
+      "outcomeLabel": "Settled",
       "judge": "D'Alessandris",
-      "officialExcerpt": "Metadata from the ASBCA decisions index. Open the PDF for the Board's full reasoning.",
-      "tags": [],
-      "practitionerPrompt": "Open the PDF when the facts resemble your contract file. ASBCA decisions are usually about claims discipline, final decisions, and dispute documentation.",
+      "officialExcerpt": "It is the Board's decision, pursuant to 5 U.S.C. \u00a7 504, and the parties' stipulation and agreement, that the appeal is sustained. In the nature of a consent judgment, the Board makes a monetary award to appellant in the amount of $25,965.66.",
+      "tags": [
+        "EAJA",
+        "Settlement"
+      ],
+      "practitionerPrompt": "EAJA deadlines and party identity rules are strict. The contractor entity, not just an owner, usually needs to be the prevailing applicant.",
       "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=W--n-DQc2zs%3d&portalid=143",
       "filename": "LinkClick.aspx",
-      "sourceStatus": "metadata-only",
-      "sourceStatusLabel": "ASBCA index metadata",
-      "sourceError": "HTTP Error 503: Service Unavailable"
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
     },
     {
       "id": "2026-07-30-cardinal-contracting-co-llc-0",
