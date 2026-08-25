@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-08-24T08:11:33.614Z",
+  "generatedAt": "2026-08-25T08:08:33.889Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -8,11 +8,11 @@ window.KTHQ_GAO_DATA = {
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
     "total": 14,
-    "latestDecisionDate": "2026-08-17",
-    "sustained": 0,
+    "latestDecisionDate": "2026-08-21",
+    "sustained": 1,
     "denied": 8,
     "dismissed": 0,
-    "mixed": 6,
+    "mixed": 5,
     "unclassified": 0,
     "sourceStatus": {
       "rss": {
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 12
+        "parsedOutcomes": 10
       },
       "productPages": {
         "attempted": 14,
@@ -36,6 +36,32 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424348.2",
+      "caseName": "Phoenix International Holdings, Inc.",
+      "title": "Phoenix International Holdings, Inc.",
+      "bNumbers": [
+        "B-424348.2"
+      ],
+      "bNumberText": "B-424348.2",
+      "link": "https://www.gao.gov/products/b-424348.2",
+      "publicationDate": "2026-08-24",
+      "decisionDate": "2026-08-21",
+      "displayDate": "Aug 21, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Phoenix International Holdings, Inc., a small business of Largo, Maryland, protests the issuance of a contract modification to Oceaneering...",
+      "highlights": "",
+      "digest": "Protest that agency improperly extended a previously awarded contract for submarine operations and maintenance services to bridge the period until the agency can conduct a competitive procurement for follow-on services is denied where the record shows that the agency reasonably concluded that the incumbent contractor was the only firm capable of meeting the agency's interim need for the services.",
+      "tags": [
+        "Small business"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424592",
       "caseName": "Davos Francois",
@@ -90,6 +116,33 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424487",
+      "caseName": "LJR Solutions, LLC",
+      "title": "LJR Solutions, LLC",
+      "bNumbers": [
+        "B-424487"
+      ],
+      "bNumberText": "B-424487",
+      "link": "https://www.gao.gov/products/b-424487",
+      "publicationDate": "2026-08-24",
+      "decisionDate": "2026-08-14",
+      "displayDate": "Aug 14, 2026",
+      "outcome": "sustained",
+      "outcomeLabel": "Sustained",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We sustain the protest.",
+      "officialSynopsis": "LJR Solutions, LLC, a small business of Myrtle Beach, South Carolina, protests the terms of request for proposals (RFP) No. 75N98026R00042, issued by...",
+      "highlights": "",
+      "digest": "Protest challenging agency's decision not to set aside a multiple‑award indefinite‑delivery, indefinite‑quantity contract for small business concerns is sustained where the record shows that the agency's consideration of whether it had a reasonable expectation of receiving competitive offers in terms of fair market prices, quality, and delivery from two or more responsible small business concerns was unreasonable or otherwise inadequately documented.",
+      "tags": [
+        "Price / cost",
+        "Small business"
+      ],
+      "practitionerNote": "Read sustained decisions closely. They usually point to a file habit that can be fixed before the next protest.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -207,35 +260,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424491",
-      "caseName": "Core Government Services Corporation",
-      "title": "Core Government Services Corporation",
-      "bNumbers": [
-        "B-424491"
-      ],
-      "bNumberText": "B-424491",
-      "link": "https://www.gao.gov/products/b-424491",
-      "publicationDate": "2026-08-05",
-      "decisionDate": "2026-08-03",
-      "displayDate": "Aug 3, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Core Government Services Corporation, of Leesburg, Virginia, a small business, protests the award of a contract to Encore JV1, LLC, of Chantilly,...",
-      "highlights": "",
-      "digest": "1. Protest that agency misevaluated protester's experience as providing low confidence of successful performance is denied where the record shows the agency's evaluation was reasonable and consistent with solicitation criteria. 2. Protest that agency improperly eliminated protester's proposal from consideration for award after evaluating the firm's experience is denied where the solicitation expressly provided that the agency could eliminate any proposal that was rated low confidence under any non-price evaluation factor.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Price / cost",
-        "Small business"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
       "id": "B-423820.6",
       "caseName": "DCS Corporation",
       "title": "DCS Corporation",
@@ -314,36 +338,6 @@ window.KTHQ_GAO_DATA = {
         "Orders / IDIQ"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-423916.2,B-423916.3",
-      "caseName": "Ardmore Consulting Group, Inc.",
-      "title": "Ardmore Consulting Group, Inc.",
-      "bNumbers": [
-        "B-423916.2",
-        "B-423916.3"
-      ],
-      "bNumberText": "B-423916.2, B-423916.3",
-      "link": "https://www.gao.gov/products/b-423916.2%2Cb-423916.3",
-      "publicationDate": "2026-08-04",
-      "decisionDate": "2026-07-23",
-      "displayDate": "Jul 23, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest in part and dismiss it in part.",
-      "officialSynopsis": "Ardmore Consulting Group, Inc., of Atlanta, Georgia, protests the Department of Homeland Security's award of a contract to T47 International, Inc.,...",
-      "highlights": "",
-      "digest": "1. Protest that agency failed to hold meaningful discussions with protester regarding omission of information in the price proposal is denied where agency's communications with offerors did not constitute discussions. 2. Protest challenging evaluation of protester's price proposal is denied where protester's proposal failed to comply with the solicitation provisions regarding submission of a price breakdown. 3. Protest challenging other aspects of the agency's evaluation and source selection decision are dismissed where agency reasonably determined that protester's price proposal was unacceptable.",
-      "tags": [
-        "Evaluation",
-        "Discussions / FPR",
-        "Solicitation terms",
-        "Price / cost"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
