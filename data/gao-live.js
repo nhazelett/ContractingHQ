@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-08-25T08:08:33.889Z",
+  "generatedAt": "2026-08-26T08:09:05.311Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,12 +7,12 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 14,
+    "total": 15,
     "latestDecisionDate": "2026-08-21",
     "sustained": 1,
     "denied": 8,
     "dismissed": 0,
-    "mixed": 5,
+    "mixed": 6,
     "unclassified": 0,
     "sourceStatus": {
       "rss": {
@@ -26,8 +26,8 @@ window.KTHQ_GAO_DATA = {
         "parsedOutcomes": 10
       },
       "productPages": {
-        "attempted": 14,
-        "enriched": 14,
+        "attempted": 15,
+        "enriched": 15,
         "blocked": 0
       },
       "legacyCache": {
@@ -143,6 +143,35 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "Read sustained decisions closely. They usually point to a file habit that can be fixed before the next protest.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424490",
+      "caseName": "Integrity Management Consulting, Inc.",
+      "title": "Integrity Management Consulting, Inc.",
+      "bNumbers": [
+        "B-424490"
+      ],
+      "bNumberText": "B-424490",
+      "link": "https://www.gao.gov/products/b-424490",
+      "publicationDate": "2026-08-25",
+      "decisionDate": "2026-08-13",
+      "displayDate": "Aug 13, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We dismiss the protest in part and deny it in part.",
+      "officialSynopsis": "Integrity Management Consulting, Inc., of McLean, Virginia, protests the issuance of a call order to ASET Partners Corporation, of Alexandria,...",
+      "highlights": "",
+      "digest": "1. Protest alleging the agency disparately evaluated the protester's and awardee's quotations under certain factors is dismissed as untimely where the information underpinning such arguments was previously available, and the protester failed to raise these arguments in a timely manner. 2. Protest that agency failed to assess additional strengths or the evaluation reflected disparate treatment is denied where the record shows that the evaluation was reasonable and consistent with the solicitation criteria. 3. Protest challenging agency's award decision is denied where the record reflects that the selection official reasonably found the quotations of the awardee and the protester to be relatively equal under the non-price factors and selected the lower-priced quotation for award.",
+      "tags": [
+        "Timeliness",
+        "Evaluation",
+        "Solicitation terms",
+        "Price / cost"
+      ],
+      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
