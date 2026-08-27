@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-08-26T09:01:38.182835+00:00",
+  "generatedAt": "2026-08-27T19:04:42.013851+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -12,7 +12,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "totalParts": 51,
     "issuedParts": 51,
     "updatedParts": 11,
-    "agencyDeviationCount": 1496,
+    "agencyDeviationCount": 1509,
     "uniqueAgencyCount": 42,
     "latestPartDate": "2026-07-01",
     "latestPartDateLabel": "Jul 1, 2026",
@@ -23,7 +23,255 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "baseline": false,
     "newParts": [],
     "updatedParts": [],
-    "newAgencyDeviations": [],
+    "newAgencyDeviations": [
+      {
+        "part": {
+          "partNumber": 3,
+          "partLabel": "Part 3",
+          "title": "Improper Business Practices and Personal Conflicts of Interest",
+          "fullTitle": "Part 3 - Improper Business Practices and Personal Conflicts of Interest",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-3",
+          "issuanceDate": "2025-09-11",
+          "issuanceDateLabel": "Sep 11, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-3.pdf",
+          "id": "6c1c85e01f33fe47"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 6,
+          "partLabel": "Part 6",
+          "title": "Competition Requirements",
+          "fullTitle": "Part 6 - Competition Requirements",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-6",
+          "issuanceDate": "2025-06-27",
+          "issuanceDateLabel": "Jun 27, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 35
+        },
+        "agency": {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-6.pdf",
+          "id": "e172ff10c6ac472e"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 7,
+          "partLabel": "Part 7",
+          "title": "Acquisition Planning",
+          "fullTitle": "Part 7 - Acquisition Planning",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-7",
+          "issuanceDate": "2025-09-04",
+          "issuanceDateLabel": "Sep 4, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-7.pdf",
+          "id": "8388cf72a41a6744"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 13,
+          "partLabel": "Part 13",
+          "title": "Simplified Procedures for Noncommercial Acquisitions",
+          "fullTitle": "Part 13 - Simplified Procedures for Noncommercial Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-13",
+          "issuanceDate": "2025-09-18",
+          "issuanceDateLabel": "Sep 18, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 32
+        },
+        "agency": {
+          "name": "National Archives and Records Administration (NARA)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NARA_RFO_Deviation_Part-13.pdf",
+          "id": "b5f89137ccd59fa4"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 14,
+          "partLabel": "Part 14",
+          "title": "Sealed Bidding",
+          "fullTitle": "Part 14 - Sealed Bidding",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-14",
+          "issuanceDate": "2025-09-25",
+          "issuanceDateLabel": "Sep 25, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 30
+        },
+        "agency": {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-14.pdf",
+          "id": "cf45d25f1da1580a"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 15,
+          "partLabel": "Part 15",
+          "title": "Contracting by Negotiation",
+          "fullTitle": "Part 15 - Contracting by Negotiation",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-15",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-15.pdf",
+          "id": "ac58b2a9b1ee7f9f"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 16,
+          "partLabel": "Part 16",
+          "title": "Types of Contracts",
+          "fullTitle": "Part 16 - Types of Contracts",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-16",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-07-01",
+          "updateDateLabel": "Jul 1, 2026",
+          "deviationCount": 30
+        },
+        "agency": {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-16.pdf",
+          "id": "2c15ee0b9313be10"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 17,
+          "partLabel": "Part 17",
+          "title": "Special Contracting Methods",
+          "fullTitle": "Part 17 - Special Contracting Methods",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-17",
+          "issuanceDate": "2025-09-11",
+          "issuanceDateLabel": "Sep 11, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 28
+        },
+        "agency": {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-17.pdf",
+          "id": "22888bf4c96c7608"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 18,
+          "partLabel": "Part 18",
+          "title": "Emergency Acquisitions",
+          "fullTitle": "Part 18 - Emergency Acquisitions",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-18",
+          "issuanceDate": "2025-06-12",
+          "issuanceDateLabel": "Jun 12, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 33
+        },
+        "agency": {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-18.pdf",
+          "id": "6aa951600596be93"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 19,
+          "partLabel": "Part 19",
+          "title": "Small Business",
+          "fullTitle": "Part 19 - Small Business",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-19",
+          "issuanceDate": "2025-09-26",
+          "issuanceDateLabel": "Sep 26, 2025",
+          "updateDate": "2026-02-20",
+          "updateDateLabel": "Feb 20, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-19.pdf",
+          "id": "37646873a99558a9"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 24,
+          "partLabel": "Part 24",
+          "title": "Protection of Privacy and Freedom of Information",
+          "fullTitle": "Part 24 - Protection of Privacy and Freedom of Information",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-24",
+          "issuanceDate": "2025-09-04",
+          "issuanceDateLabel": "Sep 4, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 29
+        },
+        "agency": {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-24.pdf",
+          "id": "79a052f5a6548d4e"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 25,
+          "partLabel": "Part 25",
+          "title": "Foreign Acquisition",
+          "fullTitle": "Part 25 - Foreign Acquisition",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-25",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-03-16",
+          "updateDateLabel": "Mar 16, 2026",
+          "deviationCount": 30
+        },
+        "agency": {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-25.pdf",
+          "id": "a5a4889154a9ecf4"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 40,
+          "partLabel": "Part 40",
+          "title": "Information Security and Supply Chain Security",
+          "fullTitle": "Part 40 - Information Security and Supply Chain Security",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-40",
+          "issuanceDate": "2025-08-14",
+          "issuanceDateLabel": "Aug 14, 2025",
+          "updateDate": "",
+          "updateDateLabel": "",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-40.pdf",
+          "id": "9202a8c48afe0ab4"
+        }
+      }
+    ],
     "removedAgencyDeviations": []
   },
   "parts": [
@@ -265,7 +513,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 30,
+      "deviationCount": 31,
       "agencies": [
         {
           "name": "Department of Energy DOE",
@@ -416,12 +664,17 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Consumer Product Safety Commission (CPSC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CPSC_RFO_Deviation_Part-3.pdf",
           "id": "25d77bc9bbab22e8"
+        },
+        {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-3.pdf",
+          "id": "6c1c85e01f33fe47"
         }
       ],
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 30 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 31 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 4,
@@ -802,7 +1055,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 34,
+      "deviationCount": 35,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -973,6 +1226,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Consumer Financial Protection Bureau (CFPB)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CFPB_RFO_Deviation_Part-6.pdf",
           "id": "08fa2330d206c140"
+        },
+        {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-6.pdf",
+          "id": "e172ff10c6ac472e"
         }
       ],
       "tags": [
@@ -991,7 +1249,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 30,
+      "deviationCount": 31,
       "agencies": [
         {
           "name": "Department of Energy DOE",
@@ -1142,12 +1400,17 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Consumer Financial Protection Bureau (CFPB)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CFPB_RFO_Deviation_Part-7.pdf",
           "id": "3a066ede4536346c"
+        },
+        {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-7.pdf",
+          "id": "8388cf72a41a6744"
         }
       ],
       "tags": [
         "Requirements"
       ],
-      "watchNote": "Model text is posted. 30 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 31 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 8,
@@ -2145,7 +2408,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 31,
+      "deviationCount": 32,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -2301,6 +2564,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Consumer Product Safety Commission (CPSC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CPSC_RFO_Deviation_Part-13.pdf",
           "id": "aa88e74441f926ad"
+        },
+        {
+          "name": "National Archives and Records Administration (NARA)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/NARA_RFO_Deviation_Part-13.pdf",
+          "id": "b5f89137ccd59fa4"
         }
       ],
       "tags": [
@@ -2319,7 +2587,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 29,
+      "deviationCount": 30,
       "agencies": [
         {
           "name": "National Science Foundation (NSF)",
@@ -2465,6 +2733,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Consumer Financial Protection Bureau (CFPB)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CFPB_RFO_Deviation_Part-14.pdf",
           "id": "834a61c552c0c06f"
+        },
+        {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-14.pdf",
+          "id": "cf45d25f1da1580a"
         }
       ],
       "tags": [
@@ -2483,7 +2756,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 30,
+      "deviationCount": 31,
       "agencies": [
         {
           "name": "Department of Energy DOE",
@@ -2634,6 +2907,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "International Boundary and Water Commission (IBWC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/IBWC_RFO_Deviation_Part-15.pdf",
           "id": "92d07d2c6c87d106"
+        },
+        {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-15.pdf",
+          "id": "ac58b2a9b1ee7f9f"
         }
       ],
       "tags": [
@@ -2652,7 +2930,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-07-01",
       "updateDateLabel": "Jul 1, 2026",
       "isUpdated": true,
-      "deviationCount": 29,
+      "deviationCount": 30,
       "agencies": [
         {
           "name": "Department of Energy DOE",
@@ -2798,6 +3076,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Office of Personnel Management (OPM)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-16.pdf",
           "id": "9bf0e2105830f0ca"
+        },
+        {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-16.pdf",
+          "id": "2c15ee0b9313be10"
         }
       ],
       "tags": [
@@ -2816,7 +3099,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 27,
+      "deviationCount": 28,
       "agencies": [
         {
           "name": "Department of Energy DOE",
@@ -2952,12 +3235,17 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Office of Personnel Management (OPM)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-17.pdf",
           "id": "a7b1fe47adc7c70a"
+        },
+        {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-17.pdf",
+          "id": "22888bf4c96c7608"
         }
       ],
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 27 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 18,
@@ -2970,7 +3258,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 32,
+      "deviationCount": 33,
       "agencies": [
         {
           "name": "Department of Energy DOE",
@@ -3131,12 +3419,17 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Office of Personnel Management (OPM)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-18.pdf",
           "id": "4abfd885d6cba385"
+        },
+        {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-18.pdf",
+          "id": "6aa951600596be93"
         }
       ],
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 32 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 33 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 19,
@@ -3149,7 +3442,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-02-20",
       "updateDateLabel": "Feb 20, 2026",
       "isUpdated": true,
-      "deviationCount": 30,
+      "deviationCount": 31,
       "agencies": [
         {
           "name": "Department of Energy DOE",
@@ -3300,6 +3593,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Consumer Financial Protection Bureau (CFPB)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/CFPB_RFO_Deviation_Part-19.pdf",
           "id": "dd293ea87ae0c9db"
+        },
+        {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-19.pdf",
+          "id": "37646873a99558a9"
         }
       ],
       "tags": [
@@ -3676,7 +3974,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 28,
+      "deviationCount": 29,
       "agencies": [
         {
           "name": "Department of Energy DOE",
@@ -3817,12 +4115,17 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Office of Personnel Management (OPM)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-24.pdf",
           "id": "c9961fbafe7036bb"
+        },
+        {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-24.pdf",
+          "id": "79a052f5a6548d4e"
         }
       ],
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 28 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 29 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 25,
@@ -3835,7 +4138,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "2026-03-16",
       "updateDateLabel": "Mar 16, 2026",
       "isUpdated": true,
-      "deviationCount": 29,
+      "deviationCount": 30,
       "agencies": [
         {
           "name": "Department of Energy DOE",
@@ -3981,6 +4284,11 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Office of Personnel Management (OPM)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/OPM_RFO_Deviation_Part-25.pdf",
           "id": "700d57a7e17cbc5c"
+        },
+        {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-25.pdf",
+          "id": "a5a4889154a9ecf4"
         }
       ],
       "tags": [
@@ -6336,7 +6644,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "updateDate": "",
       "updateDateLabel": "",
       "isUpdated": false,
-      "deviationCount": 30,
+      "deviationCount": 31,
       "agencies": [
         {
           "name": "Department of Energy DOE",
@@ -6487,12 +6795,17 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
           "name": "Department of Commerce (DOC)",
           "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/DOC_RFO_Deviation_Parts-1-53.pdf",
           "id": "2b482732b29e037d"
+        },
+        {
+          "name": "Federal Communications Commission (FCC)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/FCC_RFO_Deviation_Part-40.pdf",
+          "id": "9202a8c48afe0ab4"
         }
       ],
       "tags": [
         "FAR part"
       ],
-      "watchNote": "Model text is posted. 30 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
+      "watchNote": "Model text is posted. 31 agency deviation source(s) are listed; open your agency's PDF before applying the model text."
     },
     {
       "partNumber": 41,
