@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-08-26T07:56:27.887Z",
-  "since": "2025-03-04",
+  "generatedAt": "2026-08-27T18:16:18.235Z",
+  "since": "2025-03-05",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,18 +14,52 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 135,
-    "latestPublicationDate": "2026-08-17",
-    "openCommentWindows": 14,
+    "total": 136,
+    "latestPublicationDate": "2026-08-27",
+    "openCommentWindows": 15,
     "rules": 45,
     "byTone": {
-      "monitor": 87,
+      "monitor": 88,
       "action": 28,
       "active": 1,
       "watch": 19
     }
   },
   "items": [
+    {
+      "id": "2026-17485",
+      "documentNumber": "2026-17485",
+      "title": "Information Collection Requirement; Organizational Conflicts of Interest in Major Defense Acquisition Programs",
+      "shortTitle": "Information Collection Requirement; Organizational Conflicts of Interest in Major Defense Acquisition Programs",
+      "system": "DFARS",
+      "stage": "Information collection",
+      "topic": "Clauses / reps",
+      "actionLevel": "Monitor",
+      "actionTone": "monitor",
+      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
+      "nextSteps": [
+        "Identify the cited provision, clause, form, or system",
+        "Comment only if your office has burden data or a process concern",
+        "No template change unless a later rule follows"
+      ],
+      "type": "Notice",
+      "publicationDate": "2026-08-27",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-09-28",
+      "datesText": "Consideration will be given to all comments received by September 28, 2026.",
+      "actionText": "Notice.",
+      "summary": "The Defense Acquisition Regulations System has submitted to OMB for clearance the following proposal for collection of information under the provisions of the Paperwork Reduction Act.",
+      "citation": "91 FR 55328",
+      "regulationIds": [],
+      "cfrReferences": "",
+      "agencies": [
+        "Defense Department",
+        "Defense Acquisition Regulations System"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/08/27/2026-17485/information-collection-requirement-organizational-conflicts-of-interest-in-major-defense-acquisition",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-08-27/pdf/2026-17485.pdf",
+      "sourceQuery": "DFARS / DARS agency feed"
+    },
     {
       "id": "2026-16682",
       "documentNumber": "2026-16682",
