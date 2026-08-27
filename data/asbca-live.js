@@ -1,5 +1,5 @@
 window.KTHQ_ASBCA_DATA = {
-  "generatedAt": "2026-08-26T08:26:44.207294+00:00",
+  "generatedAt": "2026-08-27T18:26:52.918175+00:00",
   "source": {
     "name": "Armed Services Board of Contract Appeals",
     "decisionsUrl": "https://www.asbca.mil/Decisions/2026/"
@@ -7,15 +7,15 @@ window.KTHQ_ASBCA_DATA = {
   "note": "Automated KTHQ ASBCA decision watch. Official excerpts are extracted from ASBCA PDF text when available. Practitioner prompts are deterministic triage notes, not legal advice.",
   "stats": {
     "total": 18,
-    "latestDecisionDate": "2026-07-30",
+    "latestDecisionDate": "2026-08-07",
     "downloadedPdfs": 18,
     "metadataOnly": 0,
     "outcomes": {
-      "dismissed": 11,
+      "denied": 2,
+      "dismissed": 10,
+      "unclassified": 3,
       "settled": 2,
-      "unclassified": 2,
-      "procedural": 1,
-      "denied": 2
+      "procedural": 1
     },
     "sourceStatus": {
       "decisionsPage": {
@@ -24,14 +24,119 @@ window.KTHQ_ASBCA_DATA = {
         "readerUrl": "https://r.jina.ai/http://r.jina.ai/http://https://www.asbca.mil/Decisions/2026/",
         "mode": "reader-markdown",
         "error": "",
-        "linksFound": 156,
+        "linksFound": 160,
         "linksUsed": 18
       }
     }
   },
   "items": [
     {
-      "id": "2026-07-30-perma-fix-environmental-services-inc--3",
+      "id": "2026-08-07-warrior-construction-services-inc--0",
+      "caseName": "Warrior Construction Services, Inc.",
+      "caseNumberText": "ASBCA No. 64497",
+      "caseNumbers": [
+        "ASBCA No. 64497"
+      ],
+      "decisionDate": "2026-08-07",
+      "displayDate": "Aug 7, 2026",
+      "decisionType": "Decision",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "judge": "Arnett",
+      "officialExcerpt": "the appeal is denied.",
+      "tags": [
+        "Costs"
+      ],
+      "practitionerPrompt": "Denied appeals are useful file-discipline examples. Look for what evidence the Board expected and what the appellant could not prove.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=r1OSANCTosk%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-08-06-u-s-aeroteam-inc--1",
+      "caseName": "U.S. Aeroteam, Inc.",
+      "caseNumberText": "ASBCA Nos. 61972, 61973",
+      "caseNumbers": [
+        "ASBCA No. 61972",
+        "ASBCA No. 61973"
+      ],
+      "decisionDate": "2026-08-06",
+      "displayDate": "Aug 6, 2026",
+      "decisionType": "Decision",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "O'Connell",
+      "officialExcerpt": "The Board dismisses the appeals in part for lack of jurisdiction. In addition, \"[a]n adequate statement of a claim requires a sufficient quantification, both as to length of delay claimed and the amount of monetary adjustment attributable to delays or changes or the like; the information must be sufficient to enable the CO to undertake a meaningful review and to then be able to render the requested determination.\" Id. The contracts have an extensive litigation history, which can be traced to two requests for equitable adjustment that appellant, U.S. The complaint raised a variety of theories including construc...",
+      "tags": [
+        "Jurisdiction",
+        "Termination",
+        "REA / changes",
+        "Settlement",
+        "Costs"
+      ],
+      "practitionerPrompt": "Check the claim before the final decision: sum certain, certification, privity, and whether the contractor actually presented the same claim to the CO.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=n0jFtW2cwEI%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-08-06-marine-hydraulics-international-llc-2",
+      "caseName": "Marine Hydraulics International, LLC",
+      "caseNumberText": "ASBCA Nos. 63429, 63511",
+      "caseNumbers": [
+        "ASBCA No. 63429",
+        "ASBCA No. 63511"
+      ],
+      "decisionDate": "2026-08-06",
+      "displayDate": "Aug 6, 2026",
+      "decisionType": "Decision",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "judge": "McLish",
+      "officialExcerpt": "Considering all of the circumstances, we find that the contracting officer agreed with and adopted, at least implicitly, PM Samonte's determination that the rovers and cleanup work were necessary and should be performed. We find only that IMIA provided some amount of the work for which MHI contends it is entitled to an equitable adjustment. MHI's sole legal theory for each of its claims is constructive change.",
+      "tags": [
+        "Jurisdiction",
+        "Termination",
+        "REA / changes",
+        "CDA process"
+      ],
+      "practitionerPrompt": "Check the claim before the final decision: sum certain, certification, privity, and whether the contractor actually presented the same claim to the CO.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=NfKSzLu_DpY%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-08-04-relyant-global-llc-3",
+      "caseName": "Relyant Global LLC",
+      "caseNumberText": "ASBCA No. 64199",
+      "caseNumbers": [
+        "ASBCA No. 64199"
+      ],
+      "decisionDate": "2026-08-04",
+      "displayDate": "Aug 4, 2026",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "%208.4.2026.pdf?ver=8RVM_RzbPz9ngss8CrhOlw%3d%3d)McIlmail",
+      "officialExcerpt": "An official website of the United States government Here's how you know **Official websites use .mil** A **.mil** website belongs to an official U.S. **Secure .mil websites use HTTPS** A **lock ()** or **https://** means you've safely connected to the .mil website.",
+      "tags": [
+        "ADR"
+      ],
+      "practitionerPrompt": "Dismissals often turn on threshold mistakes. New specialists should read these for what must happen before the Board can reach the merits.",
+      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64199%20Relyant%20Global%20LLC%20(Dismissal",
+      "filename": "64199 Relyant Global LLC (Dismissal",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-07-30-perma-fix-environmental-services-inc--7",
       "caseName": "Perma-Fix Environmental Services, Inc.",
       "caseNumberText": "ASBCA No. 64438",
       "caseNumbers": [
@@ -55,7 +160,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-30-globe-trailer-manufacturing-inc--1",
+      "id": "2026-07-30-globe-trailer-manufacturing-inc--5",
       "caseName": "Globe Trailer Manufacturing, Inc.",
       "caseNumberText": "ASBCA No. 60979-EAJA",
       "caseNumbers": [
@@ -80,7 +185,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-30-cardinal-contracting-co-llc-0",
+      "id": "2026-07-30-cardinal-contracting-co-llc-4",
       "caseName": "Cardinal Contracting Co., LLC",
       "caseNumberText": "ASBCA No. 62872",
       "caseNumbers": [
@@ -106,7 +211,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-30-blackstone-consulting-inc--2",
+      "id": "2026-07-30-blackstone-consulting-inc--6",
       "caseName": "Blackstone Consulting, Inc.",
       "caseNumberText": "ASBCA No. 64558",
       "caseNumbers": [
@@ -134,7 +239,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-29-weil-construction-inc--5",
+      "id": "2026-07-29-weil-construction-inc--9",
       "caseName": "Weil Construction, Inc.",
       "caseNumberText": "ASBCA Nos. 62742, 63155, 64045",
       "caseNumbers": [
@@ -161,7 +266,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-29-relyant-global-llc-4",
+      "id": "2026-07-29-relyant-global-llc-8",
       "caseName": "Relyant Global LLC",
       "caseNumberText": "ASBCA Nos. 64230, 64032, 64111, 64231, 64517",
       "caseNumbers": [
@@ -193,7 +298,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-28-j-a-m-construction-services-inc--6",
+      "id": "2026-07-28-j-a-m-construction-services-inc--10",
       "caseName": "J.A.M. Construction Services, Inc.",
       "caseNumberText": "ASBCA Nos. 63378, 64226, 64439",
       "caseNumbers": [
@@ -223,7 +328,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-28-caelum-research-corporation-7",
+      "id": "2026-07-28-caelum-research-corporation-11",
       "caseName": "Caelum Research Corporation",
       "caseNumberText": "ASBCA No. 64486",
       "caseNumbers": [
@@ -247,7 +352,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-27-rq-magann-jv-8",
+      "id": "2026-07-27-rq-magann-jv-12",
       "caseName": "RQ-Magann JV",
       "caseNumberText": "ASBCA Nos. 64286, 64287",
       "caseNumbers": [
@@ -272,7 +377,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-24-mpg-west-9",
+      "id": "2026-07-24-mpg-west-13",
       "caseName": "MPG West",
       "caseNumberText": "ASBCA Nos. 61100-ADR, 61560-ADR, 61570-ADR",
       "caseNumbers": [
@@ -298,7 +403,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-23-pdo-ahusaka-joint-venture-llc-10",
+      "id": "2026-07-23-pdo-ahusaka-joint-venture-llc-14",
       "caseName": "PDO Ahusaka Joint Venture LLC",
       "caseNumberText": "ASBCA No. 64490",
       "caseNumbers": [
@@ -323,7 +428,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-17-vision-distributors-llc-11",
+      "id": "2026-07-17-vision-distributors-llc-15",
       "caseName": "Vision Distributors LLC",
       "caseNumberText": "ASBCA No. 64357",
       "caseNumbers": [
@@ -351,33 +456,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-16-wild-hare-haulers-llc-15",
-      "caseName": "Wild Hare Haulers, LLC",
-      "caseNumberText": "ASBCA Nos. 64442, 64443",
-      "caseNumbers": [
-        "ASBCA No. 64442",
-        "ASBCA No. 64443"
-      ],
-      "decisionDate": "2026-07-16",
-      "displayDate": "Jul 16, 2026",
-      "decisionType": "Reconsideration",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "judge": "McIlmail",
-      "officialExcerpt": "64442, we denied the appeal, upholding the government's termination of appellant's laundry and dry-cleaning contract for cause; in ASBCA No.",
-      "tags": [
-        "Termination",
-        "Reconsideration"
-      ],
-      "practitionerPrompt": "Termination actions need clean documentation. If performance is effectively ended, make sure the file and notices match the legal theory.",
-      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=SlyMm_brbnI%3d&portalid=143",
-      "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-07-16-hal-hays-construction-inc--13",
+      "id": "2026-07-16-hal-hays-construction-inc--17",
       "caseName": "Hal Hays Construction, Inc.",
       "caseNumberText": "ASBCA Nos. 63714, 63944",
       "caseNumbers": [
@@ -400,7 +479,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-07-16-bahadir-construction-engineering-contracting-trading-inc-co-and-impreza-costruzioni-giuseppe-maltauro-s-p-a-joint-venture-12",
+      "id": "2026-07-16-bahadir-construction-engineering-contracting-trading-inc-co-and-impreza-costruzioni-giuseppe-maltauro-s-p-a-joint-venture-16",
       "caseName": "Bahadir Construction Engineering Contracting & Trading Inc. Co. and Impreza Costruzioni Giuseppe Maltauro S.p.A Joint Venture",
       "caseNumberText": "ASBCA Nos. 64038, 64336, 64428",
       "caseNumbers": [
@@ -425,83 +504,6 @@ window.KTHQ_ASBCA_DATA = {
       "practitionerPrompt": "Check the claim before the final decision: sum certain, certification, privity, and whether the contractor actually presented the same claim to the CO.",
       "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/PUBLISH%20PROTECTIVE%20ORDER%2064038%20et%20al.%20Bahadir%20Construction%20Engineering%207.16.26%20NonDispDec%20Cover.pdf?ver=cfrcc_rPxOizGPjQyeCzCg%3d%3d",
       "filename": "PUBLISH PROTECTIVE ORDER 64038 et al. Bahadir Construction Engineering 7.16.26 NonDispDec Cover.pdf",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-07-16-acc-construction-co-inc--14",
-      "caseName": "ACC Construction Co., Inc.",
-      "caseNumberText": "ASBCA Nos. 63528, 64067",
-      "caseNumbers": [
-        "ASBCA No. 63528",
-        "ASBCA No. 64067"
-      ],
-      "decisionDate": "2026-07-16",
-      "displayDate": "Jul 16, 2026",
-      "decisionType": "Dismissal",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "judge": "Melnick",
-      "officialExcerpt": "For all these reasons, the government's motion to dismiss ACC's appeals as they pertain to liquidated damages is denied. The government requests dismissal for lack of jurisdiction of the liquidated damages portion, claiming that it is time barred. On December 14, 2021, ACC submitted a prompt payment certification and supporting data for payment invoice 33, dated December 13 (R4, tab 120; gov't prop. 2) That provision permits the > 5 We leave for the merits proceedings our determination whether he was authorized to withhold contract funds as liquidated damages in light of the limitations upon his authority. Net...",
-      "tags": [
-        "Jurisdiction",
-        "Termination",
-        "REA / changes",
-        "Motions",
-        "Costs"
-      ],
-      "practitionerPrompt": "Check the claim before the final decision: sum certain, certification, privity, and whether the contractor actually presented the same claim to the CO.",
-      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=iAtK68R5B4o%3d&portalid=143",
-      "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-07-14-viakorp-corporation-16",
-      "caseName": "ViaKorp Corporation",
-      "caseNumberText": "ASBCA No. 64531",
-      "caseNumbers": [
-        "ASBCA No. 64531"
-      ],
-      "decisionDate": "2026-07-14",
-      "displayDate": "Jul 14, 2026",
-      "decisionType": "Dismissal",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "judge": "%207.15.2026.pdf?ver=L-fjuzbfXJSwBod62KJTnQ%3d%3d)Wilson",
-      "officialExcerpt": "An official website of the United States government Here's how you know **Official websites use .mil** A **.mil** website belongs to an official U.S. **Secure .mil websites use HTTPS** A **lock ()** or **https://** means you've safely connected to the .mil website.",
-      "tags": [
-        "ADR"
-      ],
-      "practitionerPrompt": "Dismissals often turn on threshold mistakes. New specialists should read these for what must happen before the Board can reach the merits.",
-      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64531%20Viakorp%20Corporation%20(Dismissal",
-      "filename": "64531 Viakorp Corporation (Dismissal",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-07-14-m-a-mortenson-company-17",
-      "caseName": "M.A. Mortenson Company",
-      "caseNumberText": "ASBCA No. 64072-ADR",
-      "caseNumbers": [
-        "ASBCA No. 64072-ADR"
-      ],
-      "decisionDate": "2026-07-14",
-      "displayDate": "Jul 14, 2026",
-      "decisionType": "Dismissal",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "judge": "%207.14.2026.pdf?ver=TfgELqeSKkXqA66gUtnQPA%3d%3d)Laufgraben",
-      "officialExcerpt": "An official website of the United States government Here's how you know **Official websites use .mil** A **.mil** website belongs to an official U.S. **Secure .mil websites use HTTPS** A **lock ()** or **https://** means you've safely connected to the .mil website.",
-      "tags": [
-        "ADR"
-      ],
-      "practitionerPrompt": "Dismissals often turn on threshold mistakes. New specialists should read these for what must happen before the Board can reach the merits.",
-      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64072-ADR%20M.A.%20Mortensen%20Co.%20(Dismissal",
-      "filename": "64072-ADR M.A. Mortensen Co. (Dismissal",
       "sourceStatus": "reader-extracted",
       "sourceStatusLabel": "ASBCA PDF text extracted",
       "sourceError": ""
