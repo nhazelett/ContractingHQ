@@ -71,6 +71,18 @@
     .fc-divider:hover, .fc-divider.dragging { background: var(--accent, #4a9eff); }
     .fc-divider::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 3px; height: 40px; border-radius: 2px; background: rgba(255,255,255,0.1); }
 
+    /* Side order: which pane sits left. Default new-left; .swapped = old FAR left */
+    .fc-pane-new { order: 1; }
+    .fc-divider { order: 2; }
+    .fc-pane-old { order: 3; }
+    .fc-panes.swapped .fc-pane-new { order: 3; }
+    .fc-panes.swapped .fc-pane-old { order: 1; }
+    .fc-swap { background: rgba(4,13,31,0.9); color: var(--text-primary, #e2e8f0); border: 1px solid rgba(74,158,255,0.2); border-radius: 6px; padding: 0.38rem 0.75rem; font-size: 0.78rem; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap; }
+    .fc-swap:hover { background: rgba(74,158,255,0.08); border-color: var(--accent, #4a9eff); }
+    .fc-swap:focus-visible { outline: 2px solid var(--accent, #4a9eff); outline-offset: 1px; }
+    .fc-swap .fc-swap-new { color: #4a9eff; font-weight: 700; }
+    .fc-swap .fc-swap-old { color: #fbbf24; font-weight: 700; }
+
     .fc-bottom { background: rgba(10,22,50,0.95); border-top: 1px solid rgba(74,158,255,0.12); padding: 0.5rem 1.5rem; display: flex; align-items: center; font-size: 0.75rem; color: var(--silver, #8b949e); flex-wrap: wrap; gap: 0.5rem; }
     .fc-bottom a { color: var(--accent, #4a9eff); text-decoration: none; }
     .fc-bottom a:hover { text-decoration: underline; }
@@ -187,6 +199,7 @@
         <option value="">-- Select a Part --</option>
       </select>
       <button class="fc-go" id="goBtn">Compare</button>
+      <button class="fc-swap" id="swapBtn" aria-pressed="false" title="Swap which side shows the prior FAR">&#8646; <span class="fc-swap-new">New</span> | <span class="fc-swap-old">Old</span></button>
     </div>
     <div class="fc-links">
       <a href="https://acquisition.gov/far-overhaul/far-part-deviation-guide" target="_blank" rel="noopener" class="fc-ext">&#8599; RFO Deviation Guide</a>
@@ -195,8 +208,8 @@
   </div>
 
   <div class="fc-panes" id="fcPanes">
-    <!-- LEFT PANE: New FAR -->
-    <div class="fc-pane">
+    <!-- NEW FAR PANE (left by default; the swap toggle moves it right) -->
+    <div class="fc-pane fc-pane-new">
       <div class="fc-pane-head">
         <span class="fc-pane-label">New FAR</span>
         <span class="fc-badge fc-badge-new">RFO Deviation Guide</span>
@@ -216,8 +229,8 @@
     <!-- DIVIDER -->
     <div class="fc-divider" id="fcDivider"></div>
 
-    <!-- RIGHT PANE: Prior FAR -->
-    <div class="fc-pane">
+    <!-- PRIOR FAR PANE (right by default; the swap toggle moves it left) -->
+    <div class="fc-pane fc-pane-old">
       <div class="fc-pane-head">
         <span class="fc-pane-label">Prior FAR</span>
         <span class="fc-badge fc-badge-old">Pre-Overhaul Text</span>
@@ -543,6 +556,30 @@ function highlightPane(inputId, bodyId, countId) {
   var first = body.querySelector('.fc-highlight');
   if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
+
+/* ── Side order toggle: old FAR left ⇄ new FAR left (persisted) ── */
+(function() {
+  var btn = document.getElementById('swapBtn');
+  var panes = document.getElementById('fcPanes');
+  function applySwap(sw) {
+    panes.classList.toggle('swapped', sw);
+    btn.setAttribute('aria-pressed', sw ? 'true' : 'false');
+    btn.innerHTML = sw
+      ? '&#8646; <span class="fc-swap-old">Old</span> | <span class="fc-swap-new">New</span>'
+      : '&#8646; <span class="fc-swap-new">New</span> | <span class="fc-swap-old">Old</span>';
+    btn.title = sw
+      ? 'Prior FAR is on the left — click to put the new FAR back on the left'
+      : 'New FAR is on the left — click to put the prior FAR on the left';
+  }
+  var saved = false;
+  try { saved = localStorage.getItem('fc-swap') === '1'; } catch (e) {}
+  applySwap(saved);
+  btn.addEventListener('click', function() {
+    var sw = !panes.classList.contains('swapped');
+    try { localStorage.setItem('fc-swap', sw ? '1' : '0'); } catch (e) {}
+    applySwap(sw);
+  });
+})();
 
 /* ── Event listeners (no inline onclick) ── */
 document.getElementById('goBtn').addEventListener('click', loadComparison);
