@@ -1,0 +1,2723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="KTHQ Country Contracting Dossier - open-source country research for contingency contracting officers." />
+  <title>Country Contracting Dossier Prototype | ContractingHQ</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta property="og:title" content="Country Contracting Dossier | ContractingHQ" />
+  <meta property="og:description" content="Open-source country research, vendor discovery, clearance references, finance data, and CCO briefing support." />
+  <meta property="og:url" content="https://kthq.org/country-contracting-dossier.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@ContractingHQ" />
+  <meta name="twitter:title" content="Country Contracting Dossier | ContractingHQ" />
+  <meta name="twitter:description" content="Country research and CCO briefing support for contingency contracting." />
+  <link rel="canonical" href="https://kthq.org/country-contracting-dossier.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      min-width: 320px;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #e2eaf4;
+      background: #040d1f;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    :root {
+      --accent: #4a9eff;
+      --accent-2: #3fe0d2;
+      --gold: #f2c24e;
+      --orange: #ff9163;
+      --red: #fb7185;
+      --green: #6ee7b7;
+      --bg: #040d1f;
+      --panel: rgba(10, 22, 50, 0.74);
+      --panel-strong: rgba(10, 22, 50, 0.92);
+      --panel-soft: rgba(255, 255, 255, 0.04);
+      --line: rgba(74, 158, 255, 0.14);
+      --line-strong: rgba(74, 158, 255, 0.28);
+      --text: #e2eaf4;
+      --muted: #8a9bb0;
+      --muted-2: #c8d4e0;
+      --white: #ffffff;
+      --shadow: 0 18px 55px rgba(0, 0, 0, 0.36);
+    }
+
+    a { color: inherit; }
+    button, input, select, textarea { font: inherit; }
+    button { border: 0; }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(10, 22, 50, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(74, 158, 255, 0.15);
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      height: 64px;
+    }
+    .nav-logo {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+      text-decoration: none;
+      margin-right: 2rem;
+      flex-shrink: 0;
+    }
+    .logo-kthq {
+      font-family: Rajdhani, sans-serif;
+      font-weight: 700;
+      font-size: 1.45rem;
+      color: var(--accent);
+      letter-spacing: 2px;
+    }
+    .logo-full {
+      color: var(--muted-2);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      opacity: 0.75;
+      margin-top: 1px;
+    }
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 0.25rem;
+      flex: 1;
+      min-width: 0;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links a {
+      color: var(--muted-2);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 0.5rem 0.85rem;
+      border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--white);
+      background: rgba(74, 158, 255, 0.12);
+    }
+
+    .page-shell {
+      background:
+        linear-gradient(180deg, rgba(10, 30, 66, 0.7) 0%, rgba(4, 13, 31, 0) 36rem),
+        #040d1f;
+      min-height: 100vh;
+    }
+
+    .tool-hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 1.5rem;
+    }
+    .tool-hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+    .hero-copy {
+      min-height: 330px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border: 1px solid rgba(74, 158, 255, 0.18);
+      background:
+        linear-gradient(135deg, rgba(10, 22, 50, 0.92), rgba(8, 18, 42, 0.78)),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 42px);
+      border-radius: 12px;
+      padding: clamp(1.35rem, 3vw, 2.25rem);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-copy::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), rgba(63, 224, 210, 0.6), rgba(242, 194, 78, 0.5));
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      width: max-content;
+      max-width: 100%;
+      gap: 0.45rem;
+      background: rgba(74, 158, 255, 0.12);
+      border: 1px solid rgba(74, 158, 255, 0.28);
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 0.32rem 0.85rem;
+      border-radius: 999px;
+      margin-bottom: 0.9rem;
+    }
+    .tool-hero h1 {
+      font-family: Rajdhani, sans-serif;
+      font-size: clamp(2.1rem, 5vw, 4.25rem);
+      line-height: 0.98;
+      color: var(--white);
+      margin-bottom: 1rem;
+      letter-spacing: 0;
+    }
+    .hero-copy p {
+      color: var(--muted-2);
+      max-width: 700px;
+      font-size: 1rem;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.35rem;
+    }
+
+    .selector-panel {
+      border: 1px solid rgba(74, 158, 255, 0.18);
+      background: rgba(10, 22, 50, 0.82);
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      box-shadow: var(--shadow);
+    }
+    .selector-topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 800;
+    }
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 14px rgba(110, 231, 183, 0.7);
+      flex-shrink: 0;
+    }
+    .field-group {
+      display: grid;
+      gap: 0.4rem;
+    }
+    .field-group label {
+      color: var(--muted-2);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+    .select-wrap,
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      border: 1px solid rgba(74, 158, 255, 0.22);
+      background: rgba(4, 13, 31, 0.72);
+      border-radius: 8px;
+      padding: 0 0.75rem;
+      min-height: 44px;
+    }
+    .select-wrap svg,
+    .input-wrap svg {
+      color: var(--accent);
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+    select,
+    input,
+    textarea {
+      width: 100%;
+      color: var(--text);
+      background: transparent;
+      border: 0;
+      outline: none;
+      min-width: 0;
+    }
+    select { height: 44px; cursor: pointer; }
+    select option { color: #0a1632; background: #fff; }
+    textarea {
+      resize: vertical;
+      min-height: 92px;
+      padding: 0.75rem;
+      background: rgba(4, 13, 31, 0.72);
+      border: 1px solid rgba(74, 158, 255, 0.2);
+      border-radius: 8px;
+      line-height: 1.5;
+    }
+    .selector-foot {
+      color: var(--muted);
+      font-size: 0.77rem;
+      line-height: 1.5;
+      border-top: 1px solid rgba(74, 158, 255, 0.1);
+      padding-top: 0.75rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 42px;
+      padding: 0.68rem 1rem;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.16s, box-shadow 0.2s, background 0.2s, border-color 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .btn svg { width: 17px; height: 17px; flex-shrink: 0; }
+    .btn-primary {
+      background: var(--accent);
+      color: #041126;
+      box-shadow: 0 8px 22px rgba(74, 158, 255, 0.22);
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(74, 158, 255, 0.34); }
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+    }
+    .btn-outline:hover { background: rgba(255, 255, 255, 0.07); border-color: rgba(255, 255, 255, 0.42); }
+    .btn-muted {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted-2);
+      border: 1px solid rgba(74, 158, 255, 0.15);
+    }
+    .btn-muted:hover { color: var(--white); border-color: rgba(74, 158, 255, 0.3); }
+
+    .tool-main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+    .status-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin: 0.5rem 0 1rem;
+    }
+    .status-tile {
+      min-height: 78px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(74, 158, 255, 0.12);
+      border-radius: 10px;
+      padding: 0.85rem 0.95rem;
+      overflow: hidden;
+    }
+    .status-label {
+      color: var(--muted);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      font-weight: 800;
+      margin-bottom: 0.18rem;
+    }
+    .status-value {
+      color: var(--white);
+      font-family: Rajdhani, sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.1;
+      overflow-wrap: anywhere;
+    }
+    .status-sub {
+      color: var(--muted);
+      font-size: 0.72rem;
+      margin-top: 0.18rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tabbar {
+      position: sticky;
+      top: 64px;
+      z-index: 35;
+      display: flex;
+      gap: 0.4rem;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      background: rgba(4, 13, 31, 0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(74, 158, 255, 0.12);
+      border-radius: 10px;
+      padding: 0.45rem;
+      margin: 1rem 0;
+    }
+    .tabbar {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .tabbar::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      flex: 0 0 auto;
+      min-height: 38px;
+      color: var(--muted-2);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.83rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .tab-btn svg { width: 16px; height: 16px; }
+    .tab-btn.active {
+      color: #05142b;
+      background: var(--accent);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 1rem;
+      align-items: start;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .content-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .content-grid.single { grid-template-columns: 1fr; }
+
+    .card {
+      background: rgba(10, 22, 50, 0.64);
+      border: 1px solid rgba(74, 158, 255, 0.12);
+      border-radius: 10px;
+      overflow: hidden;
+      min-width: 0;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.95rem 1rem 0.65rem;
+      border-bottom: 1px solid rgba(74, 158, 255, 0.08);
+    }
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      min-width: 0;
+    }
+    .card-title svg {
+      width: 18px;
+      height: 18px;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .card h2,
+    .card h3 {
+      font-family: Rajdhani, sans-serif;
+      color: var(--white);
+      font-size: 1.2rem;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+    .card-body {
+      padding: 1rem;
+    }
+    .card-note {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+    .card-note strong { color: var(--muted-2); }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 24px;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.62rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+      white-space: nowrap;
+    }
+    .badge-blue { color: var(--accent); background: rgba(74, 158, 255, 0.12); border: 1px solid rgba(74, 158, 255, 0.28); }
+    .badge-green { color: var(--green); background: rgba(52, 211, 153, 0.1); border: 1px solid rgba(52, 211, 153, 0.26); }
+    .badge-gold { color: var(--gold); background: rgba(242, 194, 78, 0.1); border: 1px solid rgba(242, 194, 78, 0.26); }
+    .badge-red { color: var(--red); background: rgba(251, 113, 133, 0.1); border: 1px solid rgba(251, 113, 133, 0.26); }
+
+    .flag-wrap {
+      display: grid;
+      grid-template-columns: 152px minmax(0, 1fr);
+      gap: 1rem;
+      align-items: center;
+    }
+    .flag-frame {
+      width: 152px;
+      aspect-ratio: 4 / 3;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: rgba(4, 13, 31, 0.74);
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+    .flag-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: rgba(255, 255, 255, 0.92);
+    }
+    .country-name {
+      color: var(--white);
+      font-family: Rajdhani, sans-serif;
+      font-size: clamp(1.65rem, 3vw, 2.25rem);
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 0.35rem;
+      overflow-wrap: anywhere;
+    }
+    .country-sub {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    .kv-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.55rem;
+    }
+    .kv {
+      border: 1px solid rgba(74, 158, 255, 0.1);
+      background: rgba(4, 13, 31, 0.38);
+      border-radius: 8px;
+      padding: 0.62rem 0.7rem;
+      min-height: 70px;
+      overflow: hidden;
+    }
+    .kv dt {
+      color: var(--muted);
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 1.1px;
+      font-weight: 800;
+      margin-bottom: 0.22rem;
+    }
+    .kv dd {
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 600;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .source-list,
+    .news-list,
+    .checklist,
+    .brief-list {
+      display: grid;
+      gap: 0.65rem;
+    }
+    .source-card,
+    .news-card,
+    .check-row,
+    .brief-row {
+      border: 1px solid rgba(74, 158, 255, 0.1);
+      background: rgba(4, 13, 31, 0.4);
+      border-radius: 8px;
+      padding: 0.75rem;
+      min-width: 0;
+    }
+    .source-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .source-name,
+    .news-title,
+    .brief-title {
+      color: var(--white);
+      font-weight: 800;
+      font-size: 0.9rem;
+      line-height: 1.3;
+    }
+    .source-desc,
+    .news-meta,
+    .brief-desc {
+      color: var(--muted);
+      font-size: 0.77rem;
+      line-height: 1.45;
+      margin-top: 0.18rem;
+    }
+    .source-card a,
+    .news-card a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+    .source-card a:hover,
+    .news-card a:hover { text-decoration: underline; }
+    .source-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .award-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto auto;
+      gap: 0.65rem;
+      align-items: center;
+      margin-bottom: 0.85rem;
+    }
+    .award-search {
+      min-height: 42px;
+      border: 1px solid rgba(74, 158, 255, 0.18);
+      background: rgba(4, 13, 31, 0.45);
+      border-radius: 8px;
+      padding: 0 0.75rem;
+    }
+    .award-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.65rem;
+      margin-bottom: 0.85rem;
+    }
+    .award-stat {
+      border: 1px solid rgba(74, 158, 255, 0.1);
+      background: rgba(4, 13, 31, 0.36);
+      border-radius: 8px;
+      padding: 0.7rem;
+      min-height: 72px;
+    }
+    .award-stat-label {
+      color: var(--muted);
+      font-size: 0.66rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.1px;
+      margin-bottom: 0.2rem;
+    }
+    .award-stat-value {
+      color: var(--white);
+      font-family: Rajdhani, sans-serif;
+      font-size: 1.28rem;
+      line-height: 1.05;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+    .award-list,
+    .contractor-list {
+      display: grid;
+      gap: 0.65rem;
+    }
+    .contractor-card,
+    .award-card {
+      border: 1px solid rgba(74, 158, 255, 0.1);
+      background: rgba(4, 13, 31, 0.4);
+      border-radius: 8px;
+      padding: 0.75rem;
+      min-width: 0;
+    }
+    .contractor-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.75rem;
+      align-items: start;
+    }
+    .contractor-name,
+    .award-title {
+      color: var(--white);
+      font-weight: 850;
+      font-size: 0.92rem;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+    .contractor-meta,
+    .award-meta,
+    .award-desc {
+      color: var(--muted);
+      font-size: 0.76rem;
+      line-height: 1.45;
+      margin-top: 0.18rem;
+    }
+    .award-meta strong,
+    .contractor-meta strong {
+      color: var(--muted-2);
+      font-weight: 800;
+    }
+    .award-desc {
+      color: var(--muted-2);
+      margin-top: 0.45rem;
+    }
+    .award-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.55rem;
+    }
+    .award-load-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-top: 0.85rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .indicator-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+    }
+    .indicator {
+      border: 1px solid rgba(74, 158, 255, 0.1);
+      background: rgba(4, 13, 31, 0.36);
+      border-radius: 8px;
+      padding: 0.7rem;
+      min-height: 92px;
+    }
+    .indicator-label {
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.1px;
+      margin-bottom: 0.28rem;
+    }
+    .indicator-value {
+      color: var(--white);
+      font-family: Rajdhani, sans-serif;
+      font-size: 1.4rem;
+      line-height: 1.05;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+    .indicator-year {
+      color: var(--muted);
+      font-size: 0.72rem;
+      margin-top: 0.15rem;
+    }
+
+    .side-rail {
+      display: grid;
+      gap: 1rem;
+      position: sticky;
+      top: 130px;
+    }
+    .readiness-score {
+      display: grid;
+      grid-template-columns: 90px minmax(0, 1fr);
+      gap: 0.85rem;
+      align-items: center;
+    }
+    .score-ring {
+      --score: 0deg;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background:
+        conic-gradient(var(--accent-2) var(--score), rgba(255,255,255,0.08) 0),
+        rgba(4, 13, 31, 0.6);
+      border: 1px solid rgba(74, 158, 255, 0.12);
+    }
+    .score-ring span {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #071634;
+      color: var(--white);
+      font-family: Rajdhani, sans-serif;
+      font-weight: 700;
+      font-size: 1.45rem;
+    }
+    .check-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 0.55rem;
+      align-items: start;
+      cursor: pointer;
+    }
+    .check-row input {
+      width: 18px;
+      height: 18px;
+      margin-top: 0.1rem;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .check-row span {
+      color: var(--muted-2);
+      font-size: 0.83rem;
+      line-height: 1.45;
+    }
+    .check-row input:checked + span {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .notes-panel textarea { min-height: 170px; }
+    .notes-actions {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-top: 0.7rem;
+    }
+
+    .search-links {
+      display: grid;
+      gap: 0.6rem;
+    }
+    .search-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      min-height: 42px;
+      color: var(--muted-2);
+      background: rgba(4, 13, 31, 0.36);
+      border: 1px solid rgba(74, 158, 255, 0.1);
+      border-radius: 8px;
+      padding: 0.62rem 0.7rem;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+    .search-link:hover {
+      color: var(--white);
+      border-color: rgba(74, 158, 255, 0.28);
+      background: rgba(74, 158, 255, 0.08);
+    }
+    .search-link svg {
+      width: 15px;
+      height: 15px;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .toast {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 80;
+      max-width: min(360px, calc(100vw - 2rem));
+      color: #05142b;
+      background: var(--green);
+      border-radius: 8px;
+      padding: 0.75rem 0.9rem;
+      box-shadow: var(--shadow);
+      font-weight: 800;
+      transform: translateY(140%);
+      transition: transform 0.2s;
+    }
+    .toast.show { transform: translateY(0); }
+
+    .footer {
+      border-top: 1px solid rgba(74,158,255,0.12);
+      background: rgba(4, 13, 31, 0.88);
+      padding: 2rem 1.5rem;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      gap: 1rem;
+      text-align: center;
+    }
+    .footer-brand {
+      display: flex;
+      gap: 0.75rem;
+      align-items: baseline;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .footer-tagline { color: var(--muted); font-size: 0.83rem; }
+    .footer-nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+    .footer-nav a {
+      color: var(--muted-2);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .footer-nav a:hover { color: var(--accent); }
+    .footer-disclaimer,
+    .footer-copy {
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .loading {
+      position: relative;
+      overflow: hidden;
+    }
+    .loading::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+      transform: translateX(-100%);
+      animation: shimmer 1.2s infinite;
+    }
+    @keyframes shimmer {
+      to { transform: translateX(100%); }
+    }
+
+    .empty-state {
+      border: 1px dashed rgba(74, 158, 255, 0.18);
+      background: rgba(255, 255, 255, 0.025);
+      border-radius: 8px;
+      padding: 1rem;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 1040px) {
+      .tool-hero-grid,
+      .panel-grid {
+        grid-template-columns: 1fr;
+      }
+      .side-rail {
+        position: static;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .content-grid.three { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 760px) {
+      .nav-inner {
+        height: auto;
+        min-height: 64px;
+        align-items: flex-start;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+        flex-direction: column;
+      }
+      .nav-logo { margin-right: 0; }
+      .nav-links {
+        width: 100%;
+        flex-wrap: wrap;
+        overflow: visible;
+        padding-bottom: 0;
+      }
+      .tool-hero { padding-top: 2rem; }
+      .hero-copy { min-height: auto; }
+      .status-strip,
+      .content-grid,
+      .content-grid.three,
+      .side-rail,
+      .kv-grid,
+      .award-summary,
+      .indicator-grid {
+        grid-template-columns: 1fr;
+      }
+      .award-controls {
+        grid-template-columns: 1fr;
+      }
+      .contractor-card {
+        grid-template-columns: 1fr;
+      }
+      .flag-wrap { grid-template-columns: 1fr; }
+      .flag-frame { width: min(180px, 100%); }
+      .source-card {
+        grid-template-columns: 1fr;
+      }
+      .source-actions {
+        justify-content: flex-start;
+      }
+      .tabbar { top: 0; }
+      .btn { width: 100%; }
+      .hero-actions .btn { width: auto; }
+    }
+    /* Forward operating intelligence dossier */
+    :root {
+      --accent: #d89b42;
+      --accent-2: #58ad9e;
+      --gold: #e2b967;
+      --orange: #d98052;
+      --red: #d56f6a;
+      --green: #77bea8;
+      --bg: #050806;
+      --panel: rgba(13, 20, 18, 0.86);
+      --panel-strong: rgba(10, 16, 14, 0.96);
+      --panel-soft: rgba(226, 233, 221, 0.04);
+      --line: rgba(190, 205, 187, 0.13);
+      --line-strong: rgba(216, 155, 66, 0.34);
+      --text: #e6ebe2;
+      --muted: #8d9a8f;
+      --muted-2: #c1cbbf;
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.48);
+    }
+    body {
+      color: var(--text);
+      background:
+        radial-gradient(circle at 82% 12%, rgba(56, 116, 105, 0.16), transparent 31rem),
+        radial-gradient(circle at 8% 44%, rgba(216, 155, 66, 0.07), transparent 26rem),
+        linear-gradient(rgba(177, 198, 181, 0.032) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(177, 198, 181, 0.032) 1px, transparent 1px),
+        #050806;
+      background-size: auto, auto, 42px 42px, 42px 42px, auto;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        repeating-radial-gradient(ellipse at 78% 18%, transparent 0 33px, rgba(118, 158, 137, .025) 34px 35px),
+        linear-gradient(110deg, transparent 0 48%, rgba(194, 218, 200, .018) 50%, transparent 52% 100%);
+    }
+    .navbar {
+      background: rgba(4, 8, 6, 0.86);
+      border-bottom-color: rgba(183, 204, 185, 0.11);
+      backdrop-filter: blur(22px) saturate(120%);
+      box-shadow: 0 12px 42px rgba(0, 0, 0, .22);
+    }
+    .nav-inner { max-width: 1460px; height: 70px; }
+    .logo-kthq { color: var(--gold); text-shadow: 0 0 22px rgba(216, 155, 66, .2); }
+    .nav-links a { color: #9aa69c; }
+    .nav-links a:hover, .nav-links a.active { color: #f4f6f1; background: rgba(216, 155, 66, .09); }
+    .page-shell { position: relative; }
+    .tool-hero { max-width: 1460px; padding-top: clamp(3rem, 7vw, 7.5rem); }
+    .tool-hero-grid { grid-template-columns: minmax(0, 1.35fr) minmax(330px, .65fr); gap: 1.25rem; }
+    .hero-copy, .selector-panel {
+      position: relative;
+      border-color: rgba(183, 204, 185, .15);
+      background: linear-gradient(145deg, rgba(17, 27, 23, .92), rgba(7, 12, 10, .97));
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,.035);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+    }
+    .hero-copy {
+      min-height: 470px;
+      padding: clamp(2rem, 4.5vw, 4.8rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      border-radius: 20px 5px 20px 5px;
+      background:
+        radial-gradient(circle at 86% 10%, rgba(81, 151, 137, .15), transparent 28%),
+        linear-gradient(145deg, rgba(18, 29, 25, .94), rgba(6, 11, 9, .98));
+    }
+    .hero-copy::before {
+      content: "THEATER ACQUISITION INTELLIGENCE // OSINT";
+      position: absolute;
+      left: auto;
+      top: 1.6rem;
+      right: 1.8rem;
+      height: auto;
+      color: rgba(193, 210, 194, .27);
+      background: none;
+      font: 500 .58rem/1 IBM Plex Mono, monospace;
+      letter-spacing: .19em;
+      z-index: 1;
+    }
+    .hero-copy::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(115deg, transparent 0 62%, rgba(89, 168, 153, .032) 64%, transparent 66% 100%);
+      background-size: 220px 100%;
+      animation: dossier-scan 13s ease-in-out infinite;
+    }
+    .eyebrow {
+      align-self: flex-start;
+      color: #79bdae;
+      background: rgba(72, 150, 135, .09);
+      border-color: rgba(89, 173, 156, .24);
+      border-radius: 100px;
+    }
+    .tool-hero h1 {
+      max-width: 780px;
+      margin: 1.05rem 0 1rem;
+      color: #f0f2ec;
+      font-family: Rajdhani, Inter, sans-serif;
+      font-size: clamp(3.6rem, 7.4vw, 7.4rem);
+      font-weight: 700;
+      line-height: .82;
+      letter-spacing: -.055em;
+      text-transform: uppercase;
+      text-wrap: balance;
+    }
+    .hero-copy p { max-width: 760px; color: #a8b4a9; font-size: 1rem; line-height: 1.75; }
+    .hero-actions { position: relative; z-index: 1; }
+    .btn { border-radius: 7px; }
+    .btn-primary {
+      color: #14130f;
+      background: linear-gradient(135deg, #edbd6e, #c88834);
+      border-color: rgba(237, 189, 110, .45);
+      box-shadow: 0 12px 28px rgba(193, 128, 42, .16), inset 0 1px 0 rgba(255,255,255,.42);
+    }
+    .btn-primary:hover { background: linear-gradient(135deg, #f4c980, #d7973f); transform: translateY(-1px); }
+    .btn-outline, .btn-muted { color: #cbd3ca; border-color: rgba(183, 204, 185, .15); background: rgba(232, 240, 230, .035); }
+    .selector-panel {
+      border-radius: 5px 20px 5px 20px;
+      padding: clamp(1.5rem, 3vw, 2.35rem);
+    }
+    .selector-panel::after {
+      content: "CONTROL / 01";
+      position: absolute;
+      right: 1.25rem;
+      bottom: 1rem;
+      color: rgba(193, 210, 194, .16);
+      font: 500 .55rem IBM Plex Mono, monospace;
+      letter-spacing: .16em;
+    }
+    .selector-topline { color: #a7b3a8; }
+    .live-dot { background: #66bea8; box-shadow: 0 0 0 5px rgba(83, 175, 153, .1), 0 0 18px rgba(83, 175, 153, .4); }
+    .field-group label { color: #8c9b8e; }
+    .input-wrap, .select-wrap {
+      border-color: rgba(183, 204, 185, .16);
+      border-radius: 8px;
+      background: rgba(3, 8, 6, .68);
+    }
+    .input-wrap:focus-within, .select-wrap:focus-within { border-color: rgba(216, 155, 66, .56); box-shadow: 0 0 0 3px rgba(216, 155, 66, .08); }
+    .input-wrap i, .select-wrap i { color: var(--gold); }
+    .input-wrap input, .select-wrap select { color: #e7ece4; }
+    .tool-main { max-width: 1460px; padding-top: 1.35rem; }
+    .status-strip { gap: .7rem; }
+    .status-tile {
+      min-height: 118px;
+      border-color: rgba(183, 204, 185, .12);
+      border-radius: 12px;
+      background: linear-gradient(145deg, rgba(17, 27, 23, .88), rgba(8, 14, 11, .94));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.028), 0 16px 36px rgba(0,0,0,.18);
+    }
+    .status-tile::before { background: linear-gradient(90deg, var(--gold), transparent 82%); }
+    .status-label { color: #718176; font-family: IBM Plex Mono, monospace; }
+    .status-value { color: #f1f3ee; }
+    .vendor-intelligence {
+      position: relative;
+      margin: 1.1rem 0 1.25rem;
+      padding: clamp(1.1rem, 2.5vw, 2rem);
+      border: 1px solid rgba(216, 155, 66, .28);
+      border-radius: 18px 5px 18px 5px;
+      background:
+        radial-gradient(circle at 98% 0%, rgba(216, 155, 66, .1), transparent 30%),
+        linear-gradient(145deg, rgba(20, 28, 23, .95), rgba(7, 12, 9, .98));
+      box-shadow: 0 30px 80px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.035);
+      overflow: hidden;
+    }
+    .vendor-intelligence::before {
+      content: "PRIOR AWARD SIGNAL";
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: .55rem .9rem;
+      color: #17140e;
+      background: var(--gold);
+      font: 700 .55rem IBM Plex Mono, monospace;
+      letter-spacing: .14em;
+    }
+    .vendor-intel-heading {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, .6fr);
+      gap: 2rem;
+      align-items: end;
+      padding: .35rem .25rem 1.4rem;
+      border-bottom: 1px solid rgba(183, 204, 185, .11);
+    }
+    .intel-kicker { color: var(--gold); font: 600 .64rem IBM Plex Mono, monospace; letter-spacing: .16em; text-transform: uppercase; }
+    .vendor-intel-heading h2 { margin-top: .35rem; color: #f2f3ee; font: 700 clamp(2rem, 4vw, 3.8rem)/.98 Rajdhani, sans-serif; letter-spacing: -.035em; text-transform: uppercase; }
+    .vendor-intel-heading p { color: #97a498; font-size: .86rem; line-height: 1.7; }
+    .vendor-intel-slot { padding-top: 1rem; }
+    .vendor-intel-slot > .tab-panel { display: block; }
+    .vendor-intel-slot .content-grid.single { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(330px, .55fr); gap: 1rem; }
+    .vendor-intel-slot .card { margin-top: 0 !important; }
+    .vendor-intel-slot .card:first-child { border-color: rgba(216, 155, 66, .24); }
+    .vendor-intel-slot .card:last-child { border-color: rgba(88, 173, 158, .18); }
+    .vendor-intel-slot .contractor-list { max-height: 620px; overflow: auto; padding-right: .2rem; }
+    .vendor-intel-slot .award-list { max-height: 620px; overflow: auto; padding-right: .2rem; }
+    .tabbar {
+      top: 70px;
+      gap: .25rem;
+      border-color: rgba(183, 204, 185, .12);
+      border-radius: 10px;
+      background: rgba(5, 10, 7, .88);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 16px 34px rgba(0,0,0,.18);
+    }
+    .tab-btn { color: #89968c; border-radius: 6px; }
+    .tab-btn:hover { color: #eef1eb; background: rgba(216, 155, 66, .06); }
+    .tab-btn.active { color: #16140f; background: linear-gradient(135deg, #e9ba6b, #c88834); box-shadow: inset 0 1px 0 rgba(255,255,255,.38); }
+    .panel-grid { grid-template-columns: minmax(0, 1fr) 320px; }
+    .card {
+      border-color: rgba(183, 204, 185, .12);
+      border-radius: 12px;
+      background: linear-gradient(145deg, rgba(16, 25, 21, .9), rgba(8, 14, 11, .96));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.025), 0 18px 44px rgba(0,0,0,.2);
+    }
+    .card-header { border-color: rgba(183, 204, 185, .1); background: rgba(238, 243, 234, .018); }
+    .card-title h2, .card-title h3 { color: #e8ece5; font-family: Rajdhani, Inter, sans-serif; letter-spacing: -.01em; }
+    .card-title i { color: var(--gold); }
+    .badge { border-radius: 100px; }
+    .badge-blue { color: #87c8bb; border-color: rgba(88,173,158,.26); background: rgba(88,173,158,.07); }
+    .badge-gold { color: #e2b967; border-color: rgba(216,155,66,.28); background: rgba(216,155,66,.08); }
+    .badge-green { color: #83c9ac; border-color: rgba(104,190,151,.25); background: rgba(104,190,151,.07); }
+    .contractor-card, .award-card, .source-card, .indicator-card, .brief-card {
+      border-color: rgba(183, 204, 185, .1);
+      border-radius: 9px;
+      background: rgba(231, 238, 227, .027);
+    }
+    .contractor-card { border-left-color: var(--gold); }
+    .contractor-name, .award-title, .source-name, .news-title, .brief-title { color: #e4eae1; }
+    .award-stat { border-color: rgba(183, 204, 185, .1); background: rgba(231, 238, 227, .025); }
+    .award-stat-label { color: #758278; }
+    .award-stat-value { color: #f0f2ed; }
+    .side-rail .card { background: linear-gradient(145deg, rgba(15, 24, 20, .96), rgba(7, 12, 9, .98)); }
+    .score-ring { box-shadow: inset 0 0 0 7px rgba(116, 146, 123, .12), 0 0 26px rgba(88,173,158,.07); }
+    .check-item { border-color: rgba(183,204,185,.09); background: rgba(231,238,227,.02); }
+    .notes-panel textarea, .award-search { border-color: rgba(183,204,185,.14); background: rgba(3,8,6,.7); color: #e6ebe2; }
+    .footer { border-top-color: rgba(183,204,185,.1); background: #030604; }
+    @keyframes dossier-scan {
+      0%, 18% { background-position: -260px 0; opacity: .2; }
+      48% { opacity: 1; }
+      82%, 100% { background-position: calc(100% + 260px) 0; opacity: .2; }
+    }
+    @media (max-width: 1120px) {
+      .tool-hero-grid, .panel-grid { grid-template-columns: 1fr; }
+      .side-rail { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .vendor-intel-slot .content-grid.single { grid-template-columns: 1fr; }
+      .vendor-intel-slot .contractor-list, .vendor-intel-slot .award-list { max-height: none; }
+    }
+    @media (max-width: 760px) {
+      .nav-inner { height: auto; min-height: 64px; align-items: flex-start; padding-top: .75rem; padding-bottom: .75rem; flex-direction: column; }
+      .nav-logo { margin-right: 0; }
+      .nav-links { width: 100%; flex-wrap: wrap; overflow: visible; padding-bottom: 0; }
+      .tool-hero { padding-top: 2rem; }
+      .tool-hero h1 { font-size: clamp(3.1rem, 17vw, 5.2rem); }
+      .hero-copy { min-height: 400px; padding: 1.5rem; }
+      .hero-copy::before { display: none; }
+      .selector-panel { border-radius: 5px 15px 5px 15px; }
+      .side-rail { grid-template-columns: 1fr; }
+      .vendor-intelligence { margin-left: -.25rem; margin-right: -.25rem; padding: 1rem; }
+      .vendor-intel-heading { grid-template-columns: 1fr; gap: .7rem; padding-top: 1.9rem; }
+      .vendor-intelligence::before { font-size: .48rem; }
+      .tabbar { top: 0; }
+    }
+
+    @media print {
+      .navbar,
+      .tabbar,
+      .selector-panel,
+      .side-rail,
+      .hero-actions,
+      .footer,
+      .toast { display: none !important; }
+      body { background: #fff; color: #111827; }
+      .page-shell { background: #fff; }
+      .tool-hero,
+      .tool-main { max-width: none; padding: 0; }
+      .tool-hero-grid,
+      .panel-grid,
+      .content-grid,
+      .content-grid.three,
+      .status-strip { display: block; }
+      .hero-copy,
+      .card,
+      .status-tile {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        color: #111827;
+        margin-bottom: 0.75rem;
+      }
+      .tool-hero h1,
+      .card h2,
+      .card h3,
+      .country-name,
+      .status-value,
+      .indicator-value,
+      .source-name,
+      .news-title,
+      .brief-title { color: #111827; }
+      .hero-copy p,
+      .card-note,
+      .source-desc,
+      .news-meta,
+      .brief-desc,
+      .status-sub,
+      .country-sub { color: #334155; }
+      .tab-panel { display: block !important; }
+      .vendor-intelligence { break-inside: auto; border: 1px solid #cbd5e1; background: #fff; box-shadow: none; }
+      .vendor-intelligence::before { display: none; }
+      .vendor-intel-heading h2 { color: #111827; }
+      .vendor-intel-heading p { color: #334155; }
+      .vendor-intel-slot .content-grid.single { display: block; }
+      a { color: #0f4c9d; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar" id="navbar" aria-label="Primary">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html" aria-label="ContractingHQ home">
+        <span class="logo-kthq">KTHQ</span>
+        <span class="logo-full">ContractingHQ</span>
+      </a>
+      <ul class="nav-links" aria-label="Primary navigation">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="training.html">Training</a></li>
+        <li><a href="gao-decisions.html">GAO Decisions</a></li>
+        <li><a class="active" href="tools.html">Tools</a></li>
+        <li><a href="community-tools.html">Community Tools</a></li>
+        <li><a href="federal-register.html">FAR Updates</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-shell">
+    <header class="tool-hero">
+      <div class="tool-hero-grid">
+        <section class="hero-copy" aria-labelledby="page-title">
+          <span class="eyebrow"><i data-lucide="radar"></i> CCO Field Desk</span>
+          <h1 id="page-title">Country Contracting Dossier</h1>
+          <p>Select a country and assemble open-source country facts, commercial market signals, current news, clearance references, vendor discovery links, vetting sources, and finance/logistics data for contingency contracting prep.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" type="button" id="copyBriefBtn"><i data-lucide="clipboard-copy"></i>Copy brief</button>
+            <button class="btn btn-outline" type="button" id="printBtn"><i data-lucide="printer"></i>Print dossier</button>
+            <a class="btn btn-muted" href="tools.html"><i data-lucide="arrow-left"></i>Tools hub</a>
+          </div>
+        </section>
+
+        <aside class="selector-panel" aria-label="Country dossier controls">
+          <div class="selector-topline">
+            <span>Open-source pull</span>
+            <span class="live-dot" aria-hidden="true"></span>
+          </div>
+          <div class="field-group">
+            <label for="countrySelect">Country</label>
+            <div class="select-wrap">
+              <i data-lucide="globe-2"></i>
+              <select id="countrySelect">
+                <option value="">Loading countries...</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="requirementInput">Requirement keyword</label>
+            <div class="input-wrap">
+              <i data-lucide="package-search"></i>
+              <input id="requirementInput" type="text" value="construction logistics fuel lodging" autocomplete="off" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="cityInput">Operating city or region</label>
+            <div class="input-wrap">
+              <i data-lucide="map-pin"></i>
+              <input id="cityInput" type="text" placeholder="Optional" autocomplete="off" />
+            </div>
+          </div>
+          <button class="btn btn-primary" type="button" id="refreshBtn"><i data-lucide="refresh-cw"></i>Refresh dossier</button>
+          <p class="selector-foot">Live panels use public endpoints where available. Restricted systems, source-selection material, CUI, PII, and contractor proprietary details should stay out of the browser.</p>
+        </aside>
+      </div>
+    </header>
+
+    <main class="tool-main">
+      <section class="status-strip" aria-label="Country summary">
+        <div class="status-tile">
+          <div class="status-label">Currency</div>
+          <div class="status-value" id="currencyStatus">-</div>
+          <div class="status-sub" id="currencySub">Select a country</div>
+        </div>
+        <div class="status-tile">
+          <div class="status-label">Exchange</div>
+          <div class="status-value" id="exchangeStatus">-</div>
+          <div class="status-sub" id="exchangeSub">USD baseline</div>
+        </div>
+        <div class="status-tile">
+          <div class="status-label">Population</div>
+          <div class="status-value" id="populationStatus">-</div>
+          <div class="status-sub" id="regionStatus">-</div>
+        </div>
+        <div class="status-tile">
+          <div class="status-label">Last refreshed</div>
+          <div class="status-value" id="refreshStatus">-</div>
+          <div class="status-sub" id="sourceStatus">Waiting on source pull</div>
+        </div>
+      </section>
+
+      <section class="vendor-intelligence" aria-labelledby="vendor-intel-title">
+        <div class="vendor-intel-heading">
+          <div>
+            <span class="intel-kicker">Awarded vendor intelligence</span>
+            <h2 id="vendor-intel-title">Who is already operating here</h2>
+          </div>
+          <p>Contractors with reported U.S. Government awards in the selected country are a primary market signal—not a secondary tab. Search, filter, copy, and export the live award pull here.</p>
+        </div>
+        <div class="vendor-intel-slot" id="vendorIntelSlot"></div>
+      </section>
+
+      <nav class="tabbar" aria-label="Dossier sections">
+        <button class="tab-btn active" type="button" data-tab="snapshot"><i data-lucide="layout-dashboard"></i>Snapshot</button>
+        <button class="tab-btn" type="button" data-tab="clearance"><i data-lucide="badge-check"></i>Clearance</button>
+        <button class="tab-btn" type="button" data-tab="market"><i data-lucide="chart-no-axes-combined"></i>Market</button>
+        <button class="tab-btn" type="button" data-tab="vendors"><i data-lucide="building-2"></i>Vendors</button>
+        <button class="tab-btn" type="button" data-tab="finance"><i data-lucide="wallet-cards"></i>Finance</button>
+        <button class="tab-btn" type="button" data-tab="logistics"><i data-lucide="truck"></i>Logistics</button>
+        <button class="tab-btn" type="button" data-tab="news"><i data-lucide="newspaper"></i>News</button>
+        <button class="tab-btn" type="button" data-tab="export"><i data-lucide="file-text"></i>Export</button>
+      </nav>
+
+      <div class="panel-grid">
+        <div class="panel-stack">
+          <section class="tab-panel active" id="panel-snapshot">
+            <div class="content-grid">
+              <article class="card">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="flag"></i><h2>Country Snapshot</h2></div>
+                  <span class="badge badge-blue" id="cca2Badge">ISO</span>
+                </div>
+                <div class="card-body">
+                  <div class="flag-wrap">
+                    <div class="flag-frame"><img id="flagImg" alt="" /></div>
+                    <div>
+                      <div class="country-name" id="countryName">Select a country</div>
+                      <div class="country-sub" id="countryAltName">Country facts will populate here.</div>
+                    </div>
+                  </div>
+                  <dl class="kv-grid" id="snapshotGrid" style="margin-top: 1rem;"></dl>
+                </div>
+              </article>
+
+              <article class="card">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="map"></i><h2>Geography & Operating Context</h2></div>
+                  <span class="badge badge-green" id="mapsBadge">Maps</span>
+                </div>
+                <div class="card-body">
+                  <dl class="kv-grid" id="geoGrid"></dl>
+                  <div class="search-links" id="mapLinks" style="margin-top: 0.85rem;"></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="tab-panel" id="panel-clearance">
+            <div class="content-grid">
+              <article class="card">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="shield-check"></i><h2>Clearance & Entry</h2></div>
+                  <span class="badge badge-gold">Verify</span>
+                </div>
+                <div class="card-body">
+                  <p class="card-note"><strong>FCG/APACS note:</strong> keep authoritative clearance decisions in the approved system. This tool links to clearance and entry references; it should not store restricted FCG content.</p>
+                  <div class="source-list" id="clearanceSources" style="margin-top: 0.85rem;"></div>
+                </div>
+              </article>
+
+              <article class="card">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="heart-pulse"></i><h2>Health & Embassy</h2></div>
+                  <span class="badge badge-blue">Open Web</span>
+                </div>
+                <div class="card-body">
+                  <div class="source-list" id="healthSources"></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="tab-panel" id="panel-market">
+            <div class="content-grid">
+              <article class="card">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="bar-chart-3"></i><h2>Economic Indicators</h2></div>
+                  <span class="badge badge-blue" id="worldBankBadge">World Bank</span>
+                </div>
+                <div class="card-body">
+                  <div class="indicator-grid" id="indicatorGrid"></div>
+                </div>
+              </article>
+
+              <article class="card">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="store"></i><h2>Commercial Market Sources</h2></div>
+                  <span class="badge badge-green">Research</span>
+                </div>
+                <div class="card-body">
+                  <div class="source-list" id="marketSources"></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="tab-panel" id="panel-vendors">
+            <div class="content-grid">
+              <article class="card">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="search-check"></i><h2>Vendor Discovery</h2></div>
+                  <span class="badge badge-blue">Sources</span>
+                </div>
+                <div class="card-body">
+                  <div class="source-list" id="vendorSources"></div>
+                </div>
+              </article>
+
+              <article class="card">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="user-round-check"></i><h2>Vendor Vetting</h2></div>
+                  <span class="badge badge-red">Due Diligence</span>
+                </div>
+                <div class="card-body">
+                  <div class="source-list" id="vettingSources"></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="tab-panel" id="panel-usg-awards">
+            <div class="content-grid single">
+              <article class="card">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="landmark"></i><h2>U.S. Government Contractors In-Country</h2></div>
+                  <span class="badge badge-blue" id="awardBadge">USAspending</span>
+                </div>
+                <div class="card-body">
+                  <p class="card-note"><strong>Default pull:</strong> contract awards reported in USAspending with the selected country as the primary place of performance and an action date in the last five years. U.S. states and territories use USAspending domestic location codes, such as USA/PR for Puerto Rico. This is intentionally broad for Ctrl+F vendor research.</p>
+                  <div class="award-controls" style="margin-top: 0.85rem;">
+                    <input class="award-search" id="awardSearchInput" type="search" placeholder="Filter loaded awards by company, NAICS, PSC, agency, city, or description" autocomplete="off" />
+                    <button class="btn btn-muted" type="button" id="copyContractorsBtn"><i data-lucide="clipboard-copy"></i>Copy vendors</button>
+                    <button class="btn btn-muted" type="button" id="exportAwardsBtn"><i data-lucide="download"></i>CSV</button>
+                    <button class="btn btn-primary" type="button" id="loadMoreAwardsBtn"><i data-lucide="plus"></i>Load 100 more</button>
+                  </div>
+                  <div class="award-summary" id="awardSummary"></div>
+                  <div class="contractor-list" id="contractorList"></div>
+                </div>
+              </article>
+
+              <article class="card" style="margin-top: 1rem;">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="list-filter"></i><h2>Loaded Award Records</h2></div>
+                  <span class="badge badge-gold" id="awardWindowBadge">5 years</span>
+                </div>
+                <div class="card-body">
+                  <div class="award-list" id="awardList"></div>
+                  <div class="award-load-row">
+                    <span id="awardLoadStatus">Awards load after a country is selected.</span>
+                    <a href="https://www.usaspending.gov/search" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 800; text-decoration: none;">Open USAspending</a>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="tab-panel" id="panel-finance">
+            <div class="content-grid">
+              <article class="card">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="banknote"></i><h2>Currency & Payment</h2></div>
+                  <span class="badge badge-blue" id="fxBadge">FX</span>
+                </div>
+                <div class="card-body">
+                  <dl class="kv-grid" id="financeGrid"></dl>
+                  <div class="source-list" id="financeSources" style="margin-top: 0.85rem;"></div>
+                </div>
+              </article>
+
+              <article class="card">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="receipt-text"></i><h2>Compliance Signals</h2></div>
+                  <span class="badge badge-gold">Flag</span>
+                </div>
+                <div class="card-body">
+                  <div class="source-list" id="complianceSources"></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="tab-panel" id="panel-logistics">
+            <div class="content-grid">
+              <article class="card">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="route"></i><h2>Infrastructure & Movement</h2></div>
+                  <span class="badge badge-green">Planning</span>
+                </div>
+                <div class="card-body">
+                  <dl class="kv-grid" id="logisticsGrid"></dl>
+                </div>
+              </article>
+
+              <article class="card">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="ship"></i><h2>Logistics Research Links</h2></div>
+                  <span class="badge badge-blue">Search</span>
+                </div>
+                <div class="card-body">
+                  <div class="source-list" id="logisticsSources"></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="tab-panel" id="panel-news">
+            <div class="content-grid single">
+              <article class="card">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="radio"></i><h2>Current Operating Picture</h2></div>
+                  <span class="badge badge-blue" id="newsBadge">GDELT</span>
+                </div>
+                <div class="card-body">
+                  <div class="news-list" id="newsList"></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="tab-panel" id="panel-export">
+            <div class="content-grid single">
+              <article class="card">
+                <div class="card-header">
+                  <div class="card-title"><i data-lucide="file-output"></i><h2>CCO Briefing Package</h2></div>
+                  <span class="badge badge-green">Draft</span>
+                </div>
+                <div class="card-body">
+                  <div class="brief-list" id="briefOutput"></div>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <aside class="side-rail" aria-label="Dossier working notes">
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title"><i data-lucide="clipboard-check"></i><h3>Readiness</h3></div>
+              <span class="badge badge-blue" id="readinessBadge">0%</span>
+            </div>
+            <div class="card-body">
+              <div class="readiness-score">
+                <div class="score-ring" id="scoreRing"><span id="scoreText">0%</span></div>
+                <p class="card-note">Use this as a working queue for market research and country file prep.</p>
+              </div>
+              <div class="checklist" id="checklist" style="margin-top: 0.85rem;"></div>
+            </div>
+          </article>
+
+          <article class="card notes-panel">
+            <div class="card-header">
+              <div class="card-title"><i data-lucide="notebook-pen"></i><h3>Internal Notes</h3></div>
+              <span class="badge badge-gold">Local</span>
+            </div>
+            <div class="card-body">
+              <textarea id="notesInput" placeholder="Add local notes, vendor leads, questions for legal, payment concerns, or clearance follow-ups. Saved in this browser only."></textarea>
+              <div class="notes-actions">
+                <button class="btn btn-muted" type="button" id="saveNotesBtn"><i data-lucide="save"></i>Save</button>
+                <button class="btn btn-muted" type="button" id="clearNotesBtn"><i data-lucide="trash-2"></i>Clear</button>
+              </div>
+            </div>
+          </article>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo-kthq">KTHQ</span>
+        <span class="footer-tagline">ContractingHQ - Built by practitioners, for practitioners.</span>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="index.html">Home</a>
+        <a href="training.html">Training</a>
+        <a href="gao-decisions.html">GAO Decisions</a>
+        <a href="tools.html">Tools</a>
+        <a href="community-tools.html">Community Tools</a>
+        <a href="federal-register.html">FAR Updates</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+      <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function promoteVendorIntelligence() {
+      var awardPanel = document.getElementById("panel-usg-awards");
+      var vendorSlot = document.getElementById("vendorIntelSlot");
+      if (!awardPanel || !vendorSlot) return;
+      awardPanel.classList.remove("tab-panel");
+      awardPanel.classList.remove("active");
+      vendorSlot.appendChild(awardPanel);
+    })();
+  </script>
+
+  <script src="main.js"></script>
+  <script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  <script src="player.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      var state = {
+        countries: [],
+        country: null,
+        exchange: null,
+        indicators: {},
+        news: [],
+        awards: [],
+        awardPage: 1,
+        awardHasNext: false,
+        awardLoading: false,
+        awardWindow: null,
+        lastRefreshed: null,
+        selectedIso3: "",
+        selectedIso2: ""
+      };
+
+      var CHECK_ITEMS = [
+        "Confirm Foreign Clearance Guide/APACS requirements in the authorized system.",
+        "Review State Department advisory and embassy contact information.",
+        "Check visa, passport validity, customs, and restricted item notes.",
+        "Pull CDC destination health guidance and medication restrictions.",
+        "Review ITA Country Commercial Guide and market barriers.",
+        "Build local vendor search list for the requirement keyword.",
+        "Screen vendor leads through OFAC, SAM.gov exclusions, World Bank debarment, and adverse media.",
+        "Document currency, payment, tax/VAT, banking, and price volatility risks.",
+        "Identify airports, seaports, customs brokers, freight forwarders, and telecom providers.",
+        "Save market research notes and export the CCO brief."
+      ];
+
+      var INDICATORS = {
+        "SP.POP.TOTL": "Population",
+        "NY.GDP.MKTP.CD": "GDP",
+        "NY.GDP.PCAP.CD": "GDP per capita",
+        "FP.CPI.TOTL.ZG": "Inflation",
+        "SL.UEM.TOTL.ZS": "Unemployment",
+        "NE.TRD.GNFS.ZS": "Trade % GDP",
+        "IC.BUS.EASE.XQ": "Ease of business"
+      };
+
+      var US_SPENDING_DOMESTIC_LOCATIONS = {
+        USA: { country: "USA", label: "USA" },
+        PRI: { country: "USA", state: "PR", label: "USA/PR" },
+        GUM: { country: "USA", state: "GU", label: "USA/GU" },
+        ASM: { country: "USA", state: "AS", label: "USA/AS" },
+        MNP: { country: "USA", state: "MP", label: "USA/MP" },
+        VIR: { country: "USA", state: "VI", label: "USA/VI" },
+        UMI: { country: "USA", state: "UM", label: "USA/UM" }
+      };
+
+      var COUNTRY_FACT_OVERRIDES = {
+        USA: { timezones: ["Multiple U.S. time zones"], drivingSide: "right" },
+        PRI: { timezones: ["Atlantic Standard Time (UTC-04:00)"], drivingSide: "right" },
+        GUM: { timezones: ["Chamorro Standard Time (UTC+10:00)"], drivingSide: "right" },
+        ASM: { timezones: ["Samoa Standard Time (UTC-11:00)"], drivingSide: "right" },
+        MNP: { timezones: ["Chamorro Standard Time (UTC+10:00)"], drivingSide: "right" },
+        VIR: { timezones: ["Atlantic Standard Time (UTC-04:00)"], drivingSide: "left" },
+        UMI: { timezones: ["Multiple remote island time zones"] }
+      };
+
+      var $ = function (id) { return document.getElementById(id); };
+
+      function iconRefresh() {
+        if (window.lucide) window.lucide.createIcons();
+      }
+
+      function esc(value) {
+        return String(value == null ? "" : value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function compact(value) {
+        if (value == null || value === "") return "-";
+        return String(value);
+      }
+
+      function fmtNumber(value) {
+        if (value == null || Number.isNaN(Number(value))) return "-";
+        return Number(value).toLocaleString(undefined, { maximumFractionDigits: 0 });
+      }
+
+      function fmtMoney(value) {
+        if (value == null || Number.isNaN(Number(value))) return "-";
+        var abs = Math.abs(Number(value));
+        if (abs >= 1000000000000) return "$" + (Number(value) / 1000000000000).toFixed(2) + "T";
+        if (abs >= 1000000000) return "$" + (Number(value) / 1000000000).toFixed(2) + "B";
+        if (abs >= 1000000) return "$" + (Number(value) / 1000000).toFixed(2) + "M";
+        return "$" + Number(value).toLocaleString(undefined, { maximumFractionDigits: 0 });
+      }
+
+      function fmtPercent(value) {
+        if (value == null || Number.isNaN(Number(value))) return "-";
+        return Number(value).toFixed(1) + "%";
+      }
+
+      function fmtIndicator(code, value) {
+        if (value == null) return "-";
+        if (code === "NY.GDP.MKTP.CD" || code === "NY.GDP.PCAP.CD") return fmtMoney(value);
+        if (code === "FP.CPI.TOTL.ZG" || code === "SL.UEM.TOTL.ZS" || code === "NE.TRD.GNFS.ZS") return fmtPercent(value);
+        return fmtNumber(value);
+      }
+
+      function joinValues(values) {
+        if (!values) return "-";
+        if (Array.isArray(values)) return values.filter(Boolean).join(", ") || "-";
+        return Object.values(values).filter(Boolean).join(", ") || "-";
+      }
+
+      function countryTimeZones(country) {
+        var override = country && COUNTRY_FACT_OVERRIDES[country.cca3] ? COUNTRY_FACT_OVERRIDES[country.cca3] : {};
+        var timezones = country && Array.isArray(country.timezones) && country.timezones.length
+          ? country.timezones
+          : override.timezones;
+        return Array.isArray(timezones) && timezones.length
+          ? timezones.filter(Boolean).join(", ")
+          : "";
+      }
+
+      function countryDrivingSide(country) {
+        var override = country && COUNTRY_FACT_OVERRIDES[country.cca3] ? COUNTRY_FACT_OVERRIDES[country.cca3] : {};
+        var side = country && country.car && country.car.side ? String(country.car.side) : (override.drivingSide || "");
+        return side ? side.charAt(0).toUpperCase() + side.slice(1) : "";
+      }
+
+      function countryName() {
+        return state.country ? state.country.name.common : "";
+      }
+
+      function encodedCountry() {
+        return encodeURIComponent(countryName());
+      }
+
+      function requirementQuery() {
+        var raw = $("requirementInput").value.trim();
+        return raw || "construction logistics fuel lodging";
+      }
+
+      function locationQuery() {
+        var city = $("cityInput").value.trim();
+        return [city, countryName()].filter(Boolean).join(" ");
+      }
+
+      function googleSearch(query) {
+        return "https://www.google.com/search?q=" + encodeURIComponent(query);
+      }
+
+      function sourceCard(source) {
+        var badge = source.badge ? '<span class="badge ' + esc(source.badgeClass || "badge-blue") + '">' + esc(source.badge) + '</span>' : "";
+        return [
+          '<div class="source-card">',
+          '<div>',
+          '<div class="source-name">' + esc(source.name) + '</div>',
+          '<div class="source-desc">' + esc(source.desc || "") + '</div>',
+          '</div>',
+          '<div class="source-actions">',
+          badge,
+          '<a href="' + esc(source.url) + '" target="_blank" rel="noopener">Open</a>',
+          '</div>',
+          '</div>'
+        ].join("");
+      }
+
+      function linkRow(label, url) {
+        return '<a class="search-link" href="' + esc(url) + '" target="_blank" rel="noopener"><span>' + esc(label) + '</span><i data-lucide="external-link"></i></a>';
+      }
+
+      function kv(label, value) {
+        return '<div class="kv"><dt>' + esc(label) + '</dt><dd>' + esc(compact(value)) + '</dd></div>';
+      }
+
+      function indicatorCard(code, label, datum) {
+        var value = datum ? fmtIndicator(code, datum.value) : "-";
+        var year = datum ? "Latest World Bank value: " + datum.date : "No recent API value returned";
+        return '<div class="indicator"><div class="indicator-label">' + esc(label) + '</div><div class="indicator-value">' + esc(value) + '</div><div class="indicator-year">' + esc(year) + '</div></div>';
+      }
+
+      async function fetchJson(url, timeoutMs) {
+        var controller = new AbortController();
+        var timer = window.setTimeout(function () { controller.abort(); }, timeoutMs || 9000);
+        try {
+          var res = await fetch(url, { signal: controller.signal });
+          if (!res.ok) throw new Error("Fetch failed: " + res.status);
+          return res.json();
+        } finally {
+          window.clearTimeout(timer);
+        }
+      }
+
+      async function loadCountries() {
+        try {
+          var data = await fetchJson("https://raw.githubusercontent.com/mledoze/countries/master/countries.json", 16000);
+          if (!Array.isArray(data)) throw new Error("Country dataset did not return an array.");
+          state.countries = data
+            .filter(function (c) { return c && c.name && c.name.common && c.cca3; })
+            .sort(function (a, b) { return a.name.common.localeCompare(b.name.common); });
+          $("countrySelect").innerHTML = state.countries.map(function (c) {
+            return '<option value="' + esc(c.cca3) + '">' + esc(c.name.common) + '</option>';
+          }).join("");
+          var urlCountry = (new URLSearchParams(window.location.search).get("country") || "").toUpperCase();
+          var preferred = state.countries.find(function (c) { return c.cca3 === urlCountry; }) || state.countries.find(function (c) { return c.cca3 === "QAT"; }) || state.countries[0];
+          $("countrySelect").value = preferred.cca3;
+          await selectCountry(preferred.cca3);
+        } catch (err) {
+          $("countrySelect").innerHTML = '<option value="">Country API unavailable</option>';
+          showToast("Country list could not load. Check network access.");
+        }
+      }
+
+      async function selectCountry(iso3) {
+        var selected = state.countries.find(function (c) { return c.cca3 === iso3; });
+        if (!selected) return;
+        state.country = selected;
+        state.selectedIso3 = selected.cca3;
+        state.selectedIso2 = selected.cca2;
+        state.lastRefreshed = new Date();
+        markLoading(true);
+        renderBase();
+        await Promise.allSettled([
+          loadExchange(),
+          loadWorldBank(),
+          loadNews(),
+          loadUsaSpendingAwards(true)
+        ]);
+        renderAll();
+        markLoading(false);
+      }
+
+      function markLoading(isLoading) {
+        ["indicatorGrid", "newsList", "awardList", "contractorList"].forEach(function (id) {
+          var el = $(id);
+          if (el) el.classList.toggle("loading", isLoading);
+        });
+      }
+
+      async function loadExchange() {
+        state.exchange = null;
+        var currencies = state.country && state.country.currencies ? Object.keys(state.country.currencies) : [];
+        var code = currencies[0];
+        if (!code || code === "USD") return;
+        try {
+          var data = await fetchJson("https://open.er-api.com/v6/latest/USD", 7000);
+          if (data && data.rates && data.rates[code]) {
+            state.exchange = { code: code, rate: data.rates[code], date: data.time_last_update_utc || "latest" };
+          }
+        } catch (err) {
+          state.exchange = null;
+        }
+      }
+
+      async function loadWorldBank() {
+        state.indicators = {};
+        var iso2 = state.selectedIso2;
+        if (!iso2) return;
+        var codes = Object.keys(INDICATORS);
+        await Promise.all(codes.map(async function (code) {
+          try {
+            var url = "https://api.worldbank.org/v2/country/" + encodeURIComponent(iso2) + "/indicator/" + encodeURIComponent(code) + "?format=json&per_page=8";
+            var data = await fetchJson(url, 7000);
+            var rows = Array.isArray(data) ? data[1] : [];
+            var latest = rows && rows.find(function (row) { return row && row.value != null; });
+            if (latest) state.indicators[code] = { value: latest.value, date: latest.date };
+          } catch (err) {
+            state.indicators[code] = null;
+          }
+        }));
+      }
+
+      async function loadNews() {
+        state.news = [];
+        var q = '"' + countryName() + '" (contracting OR procurement OR economy OR security OR logistics OR election OR unrest OR sanctions OR airport OR port)';
+        var url = "https://api.gdeltproject.org/api/v2/doc/doc?query=" + encodeURIComponent(q) + "&mode=ArtList&format=json&maxrecords=8&sort=HybridRel&format=json";
+        try {
+          var data = await fetchJson(url, 7000);
+          state.news = (data.articles || []).slice(0, 8);
+        } catch (err) {
+          state.news = [];
+        }
+      }
+
+      function fiveYearWindow() {
+        var end = new Date();
+        var start = new Date(end);
+        start.setFullYear(start.getFullYear() - 5);
+        function iso(d) { return d.toISOString().slice(0, 10); }
+        return { start: iso(start), end: iso(end) };
+      }
+
+      function usaSpendingLocationContext() {
+        var domestic = US_SPENDING_DOMESTIC_LOCATIONS[state.selectedIso3];
+        if (domestic) {
+          var domesticLocation = { country: domestic.country };
+          if (domestic.state) domesticLocation.state = domestic.state;
+          return {
+            scope: "domestic",
+            locations: [domesticLocation],
+            label: domestic.label
+          };
+        }
+        return {
+          scope: "foreign",
+          locations: [{ country: state.selectedIso3 }],
+          label: state.selectedIso3 || "-"
+        };
+      }
+
+      async function loadUsaSpendingAwards(reset) {
+        if (!state.selectedIso3 || state.awardLoading) return;
+        if (reset) {
+          state.awards = [];
+          state.awardPage = 1;
+          state.awardHasNext = false;
+          state.awardWindow = fiveYearWindow();
+        }
+        state.awardLoading = true;
+        renderAwards();
+        var windowRange = state.awardWindow || fiveYearWindow();
+        var locationContext = usaSpendingLocationContext();
+        var body = {
+          filters: {
+            award_type_codes: ["A", "B", "C", "D"],
+            time_period: [{ start_date: windowRange.start, end_date: windowRange.end }],
+            place_of_performance_scope: locationContext.scope,
+            place_of_performance_locations: locationContext.locations
+          },
+          fields: [
+            "Award ID",
+            "Recipient Name",
+            "Recipient UEI",
+            "Start Date",
+            "End Date",
+            "Award Amount",
+            "Awarding Agency",
+            "Awarding Sub Agency",
+            "Funding Agency",
+            "Funding Sub Agency",
+            "Contract Award Type",
+            "NAICS",
+            "PSC",
+            "Description",
+            "Primary Place of Performance"
+          ],
+          page: state.awardPage,
+          limit: 100,
+          sort: "Award Amount",
+          order: "desc"
+        };
+        var controller = new AbortController();
+        var timer = window.setTimeout(function () { controller.abort(); }, 15000);
+        try {
+          var res = await fetch("https://api.usaspending.gov/api/v2/search/spending_by_award/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+            signal: controller.signal
+          });
+          if (!res.ok) throw new Error("USAspending returned " + res.status);
+          var data = await res.json();
+          var rows = Array.isArray(data.results) ? data.results : [];
+          state.awards = state.awards.concat(rows);
+          state.awardHasNext = !!(data.page_metadata && data.page_metadata.hasNext);
+          state.awardPage += 1;
+        } catch (err) {
+          if (!state.awards.length) state.awardHasNext = false;
+        } finally {
+          window.clearTimeout(timer);
+          state.awardLoading = false;
+          renderAwards();
+          renderBrief();
+        }
+      }
+
+      function renderBase() {
+        var c = state.country;
+        var currencyCodes = c.currencies ? Object.keys(c.currencies) : [];
+        var currencyText = currencyCodes.map(function (code) {
+          var item = c.currencies[code];
+          return code + (item && item.name ? " - " + item.name : "");
+        }).join(", ") || "-";
+        var languages = c.languages ? Object.values(c.languages).join(", ") : "-";
+        var dialing = c.idd && c.idd.root ? c.idd.root + ((c.idd.suffixes || [])[0] || "") : "-";
+        var popDatum = state.indicators["SP.POP.TOTL"];
+        var population = c.population || (popDatum && popDatum.value);
+        var populationYear = c.population ? "" : (popDatum ? "World Bank " + popDatum.date : "");
+        var timeZones = countryTimeZones(c);
+        var drivingSide = countryDrivingSide(c);
+
+        $("currencyStatus").textContent = currencyCodes[0] || "-";
+        $("currencySub").textContent = currencyText;
+        $("populationStatus").textContent = fmtNumber(population);
+        $("regionStatus").textContent = [c.region, c.subregion, populationYear].filter(Boolean).join(" / ") || "-";
+        $("refreshStatus").textContent = state.lastRefreshed ? state.lastRefreshed.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "-";
+        $("sourceStatus").textContent = "Open country data, World Bank, GDELT, linked sources";
+        $("countryName").textContent = c.name.common;
+        $("countryAltName").textContent = c.name.official || "";
+        $("cca2Badge").textContent = [c.cca2, c.cca3].filter(Boolean).join(" / ");
+        $("flagImg").src = c.flags && c.flags.svg ? c.flags.svg : (c.cca2 ? "https://flagcdn.com/" + c.cca2.toLowerCase() + ".svg" : "");
+        $("flagImg").alt = c.flags && c.flags.alt ? c.flags.alt : c.name.common + " flag";
+
+        var snapshotRows = [
+          kv("Capital", joinValues(c.capital)),
+          kv("Languages", languages),
+          kv("Dialing code", dialing),
+          kv("Top-level domain", joinValues(c.tld))
+        ];
+        if (timeZones) snapshotRows.splice(2, 0, kv("Time zones", timeZones));
+        if (drivingSide) snapshotRows.push(kv("Driving side", drivingSide));
+        $("snapshotGrid").innerHTML = snapshotRows.join("");
+
+        $("geoGrid").innerHTML = [
+          kv("Region", c.region || "-"),
+          kv("Subregion", c.subregion || "-"),
+          kv("Continents", c.continents ? joinValues(c.continents) : (c.region || "-")),
+          kv("Area", c.area ? fmtNumber(c.area) + " sq km" : "-"),
+          kv("Landlocked", c.landlocked ? "Yes" : "No"),
+          kv("Coordinates", c.latlng ? c.latlng.join(", ") : "-")
+        ].join("");
+
+        $("mapLinks").innerHTML = [
+          linkRow("Google Maps", c.maps && c.maps.googleMaps ? c.maps.googleMaps : googleSearch(countryName() + " map")),
+          linkRow("OpenStreetMap", "https://www.openstreetmap.org/search?query=" + encodedCountry()),
+          linkRow("Airports search", googleSearch(countryName() + " major airports cargo airport")),
+          linkRow("Ports search", googleSearch(countryName() + " seaports freight customs"))
+        ].join("");
+
+        renderSources();
+        renderChecklist();
+        loadNotes();
+        iconRefresh();
+      }
+
+      function renderAll() {
+        renderBase();
+        renderExchange();
+        renderIndicators();
+        renderNews();
+        renderAwards();
+        renderBrief();
+      }
+
+      function renderExchange() {
+        var c = state.country;
+        var currencyCodes = c.currencies ? Object.keys(c.currencies) : [];
+        var code = currencyCodes[0] || "";
+        $("fxBadge").textContent = code || "FX";
+        if (!code) {
+          $("exchangeStatus").textContent = "-";
+          $("exchangeSub").textContent = "No currency returned";
+        } else if (code === "USD") {
+          $("exchangeStatus").textContent = "1.00";
+          $("exchangeSub").textContent = "Uses USD";
+        } else if (state.exchange) {
+          $("exchangeStatus").textContent = state.exchange.rate.toLocaleString(undefined, { maximumFractionDigits: 4 });
+          $("exchangeSub").textContent = "1 USD to " + state.exchange.code + " on " + state.exchange.date;
+        } else {
+          $("exchangeStatus").textContent = "Check";
+          $("exchangeSub").textContent = "Rate unavailable from open FX feed";
+        }
+
+        $("financeGrid").innerHTML = [
+          kv("Currency", $("currencySub").textContent),
+          kv("USD exchange", $("exchangeStatus").textContent + " " + (code || "")),
+          kv("Exchange source", state.exchange ? "Open ER API, " + state.exchange.date : (code === "USD" ? "USD" : "Open FX feed unavailable")),
+          kv("Central bank search", countryName() + " central bank"),
+          kv("Payment concerns", "Confirm cash/card acceptance, wire reliability, taxes, VAT, and anti-corruption risk."),
+          kv("Pricing note", "Capture local inflation, FX volatility, fuel sensitivity, and quote validity periods.")
+        ].join("");
+      }
+
+      function renderIndicators() {
+        $("indicatorGrid").innerHTML = Object.keys(INDICATORS).map(function (code) {
+          return indicatorCard(code, INDICATORS[code], state.indicators[code]);
+        }).join("");
+        $("worldBankBadge").textContent = state.selectedIso2 || "World Bank";
+      }
+
+      function renderNews() {
+        $("newsBadge").textContent = state.news.length ? "GDELT Live" : "Search Links";
+        if (!state.news.length) {
+          $("newsList").innerHTML = [
+            '<div class="empty-state">Live news could not be pulled from GDELT in this browser session. Use the current-news source links below and capture relevant items in notes.</div>',
+            sourceCard({ name: "GDELT country search", desc: "Open-source global news search for country operating picture.", url: "https://api.gdeltproject.org/api/v2/doc/doc?query=" + encodeURIComponent(countryName()) + "&mode=ArtList&format=html&sort=HybridRel", badge: "News", badgeClass: "badge-blue" }),
+            sourceCard({ name: "ReliefWeb country updates", desc: "Humanitarian, disaster, health, and security updates.", url: "https://reliefweb.int/countries", badge: "Relief", badgeClass: "badge-green" }),
+            sourceCard({ name: "Google News search", desc: "Recent reporting on security, economy, logistics, sanctions, and politics.", url: googleSearch(countryName() + " security economy logistics sanctions procurement news"), badge: "News", badgeClass: "badge-gold" })
+          ].join("");
+          return;
+        }
+        $("newsList").innerHTML = state.news.map(function (item) {
+          var date = item.seendate ? String(item.seendate).slice(0, 8) : "";
+          return [
+            '<div class="news-card">',
+            '<div class="news-title">' + esc(item.title || "Untitled article") + '</div>',
+            '<div class="news-meta">' + esc([item.domain, item.sourcecountry, date].filter(Boolean).join(" / ")) + '</div>',
+            '<a href="' + esc(item.url || "#") + '" target="_blank" rel="noopener">Open article</a>',
+            '</div>'
+          ].join("");
+        }).join("");
+      }
+
+      function awardLocation(row) {
+        var loc = row["Primary Place of Performance"] || {};
+        return [loc.city_name, loc.state_name, loc.country_name || countryName()].filter(Boolean).join(", ") || countryName();
+      }
+
+      function awardCodeText(value) {
+        if (!value) return "-";
+        if (typeof value === "string") return value;
+        return [value.code, value.description].filter(Boolean).join(" - ") || "-";
+      }
+
+      function awardAmount(value) {
+        var num = Number(value || 0);
+        if (!num) return "$0";
+        return fmtMoney(num);
+      }
+
+      function awardSearchBlob(row) {
+        return [
+          row["Award ID"],
+          row["Recipient Name"],
+          row["Recipient UEI"],
+          row["Awarding Agency"],
+          row["Awarding Sub Agency"],
+          row["Funding Agency"],
+          row["Funding Sub Agency"],
+          row["Contract Award Type"],
+          awardCodeText(row.NAICS),
+          awardCodeText(row.PSC),
+          row.Description,
+          awardLocation(row)
+        ].join(" ").toLowerCase();
+      }
+
+      function filteredAwards() {
+        var term = (($("awardSearchInput") && $("awardSearchInput").value) || "").trim().toLowerCase();
+        if (!term) return state.awards;
+        return state.awards.filter(function (row) {
+          return awardSearchBlob(row).indexOf(term) !== -1;
+        });
+      }
+
+      function contractorSummary(rows) {
+        var map = {};
+        rows.forEach(function (row) {
+          var name = row["Recipient Name"] || "Unknown recipient";
+          if (!map[name]) {
+            map[name] = { name: name, uei: row["Recipient UEI"] || "", amount: 0, count: 0, agencies: {}, naics: {}, psc: {} };
+          }
+          map[name].amount += Number(row["Award Amount"] || 0);
+          map[name].count += 1;
+          if (row["Awarding Agency"]) map[name].agencies[row["Awarding Agency"]] = true;
+          var naics = awardCodeText(row.NAICS);
+          var psc = awardCodeText(row.PSC);
+          if (naics !== "-") map[name].naics[naics] = true;
+          if (psc !== "-") map[name].psc[psc] = true;
+          if (row["Recipient UEI"] && !map[name].uei) map[name].uei = row["Recipient UEI"];
+        });
+        return Object.values(map).sort(function (a, b) { return b.amount - a.amount; });
+      }
+
+      function renderAwards() {
+        if (!$("awardSummary") || !$("awardList")) return;
+        var rows = filteredAwards();
+        var contractors = contractorSummary(rows);
+        var loadedContractors = contractorSummary(state.awards);
+        var totalAmount = rows.reduce(function (sum, row) { return sum + Number(row["Award Amount"] || 0); }, 0);
+        var windowRange = state.awardWindow || fiveYearWindow();
+        var locationContext = usaSpendingLocationContext();
+        $("awardWindowBadge").textContent = windowRange.start + " to " + windowRange.end;
+        $("awardBadge").textContent = state.awardLoading ? "Loading" : locationContext.label;
+        $("loadMoreAwardsBtn").disabled = state.awardLoading || !state.awardHasNext;
+        $("loadMoreAwardsBtn").innerHTML = state.awardLoading ? '<i data-lucide="loader"></i>Loading' : '<i data-lucide="plus"></i>Load 100 more';
+        $("awardLoadStatus").textContent = state.awardLoading
+          ? "Pulling USAspending award records for " + locationContext.label + "..."
+          : (state.awardHasNext ? "Loaded " + state.awards.length + " award records for " + locationContext.label + ". More records are available." : "Loaded " + state.awards.length + " award records for " + locationContext.label + ". No additional page reported.");
+
+        $("awardSummary").innerHTML = [
+          '<div class="award-stat"><div class="award-stat-label">Loaded Awards</div><div class="award-stat-value">' + esc(fmtNumber(state.awards.length)) + '</div></div>',
+          '<div class="award-stat"><div class="award-stat-label">Visible Awards</div><div class="award-stat-value">' + esc(fmtNumber(rows.length)) + '</div></div>',
+          '<div class="award-stat"><div class="award-stat-label">Unique Contractors</div><div class="award-stat-value">' + esc(fmtNumber(loadedContractors.length)) + '</div></div>',
+          '<div class="award-stat"><div class="award-stat-label">Visible Obligations</div><div class="award-stat-value">' + esc(awardAmount(totalAmount)) + '</div></div>'
+        ].join("");
+
+        if (state.awardLoading && !state.awards.length) {
+          $("contractorList").innerHTML = '<div class="empty-state">Pulling the first 100 contract award records from USAspending for ' + esc(countryName()) + ' using ' + esc(locationContext.label) + '.</div>';
+          $("awardList").innerHTML = "";
+          iconRefresh();
+          return;
+        }
+        if (!state.awards.length) {
+          $("contractorList").innerHTML = '<div class="empty-state">No USAspending contract awards loaded for ' + esc(countryName()) + ' using ' + esc(locationContext.label) + '. Try the USAspending search link, or refresh the dossier if the public API timed out.</div>';
+          $("awardList").innerHTML = "";
+          iconRefresh();
+          return;
+        }
+
+        $("contractorList").innerHTML = contractors.slice(0, 25).map(function (item) {
+          var agencies = Object.keys(item.agencies).slice(0, 3).join(" / ") || "-";
+          var naics = Object.keys(item.naics).slice(0, 3).join(" | ") || "-";
+          return [
+            '<div class="contractor-card">',
+            '<div>',
+            '<div class="contractor-name">' + esc(item.name) + '</div>',
+            '<div class="contractor-meta"><strong>UEI:</strong> ' + esc(item.uei || "-") + ' &nbsp; <strong>Awards:</strong> ' + esc(item.count) + ' &nbsp; <strong>Loaded amount:</strong> ' + esc(awardAmount(item.amount)) + '</div>',
+            '<div class="contractor-meta"><strong>Agencies:</strong> ' + esc(agencies) + '</div>',
+            '<div class="contractor-meta"><strong>NAICS:</strong> ' + esc(naics) + '</div>',
+            '</div>',
+            '<div class="source-actions"><span class="badge badge-blue">Vendor</span></div>',
+            '</div>'
+          ].join("");
+        }).join("");
+
+        if (!rows.length) {
+          $("awardList").innerHTML = '<div class="empty-state">No loaded awards match the current filter. Clear the filter or load more records.</div>';
+          iconRefresh();
+          return;
+        }
+
+        $("awardList").innerHTML = rows.map(function (row) {
+          var naics = awardCodeText(row.NAICS);
+          var psc = awardCodeText(row.PSC);
+          var awardUrl = row.generated_internal_id ? "https://www.usaspending.gov/award/" + encodeURIComponent(row.generated_internal_id) : "https://www.usaspending.gov/search";
+          return [
+            '<div class="award-card">',
+            '<div class="award-title">' + esc(row["Recipient Name"] || "Unknown recipient") + '</div>',
+            '<div class="award-meta"><strong>Award:</strong> <a href="' + esc(awardUrl) + '" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 800; text-decoration: none;">' + esc(row["Award ID"] || "-") + '</a> &nbsp; <strong>UEI:</strong> ' + esc(row["Recipient UEI"] || "-") + ' &nbsp; <strong>Amount:</strong> ' + esc(awardAmount(row["Award Amount"])) + '</div>',
+            '<div class="award-meta"><strong>Period:</strong> ' + esc([row["Start Date"], row["End Date"]].filter(Boolean).join(" to ") || "-") + ' &nbsp; <strong>Place:</strong> ' + esc(awardLocation(row)) + '</div>',
+            '<div class="award-meta"><strong>Awarding:</strong> ' + esc([row["Awarding Agency"], row["Awarding Sub Agency"]].filter(Boolean).join(" / ") || "-") + '</div>',
+            '<div class="award-desc">' + esc(row.Description || "No description provided.") + '</div>',
+            '<div class="award-tags">',
+            '<span class="badge badge-blue">' + esc(row["Contract Award Type"] || "Contract") + '</span>',
+            '<span class="badge badge-green">NAICS ' + esc(naics) + '</span>',
+            '<span class="badge badge-gold">PSC ' + esc(psc) + '</span>',
+            '</div>',
+            '</div>'
+          ].join("");
+        }).join("");
+        iconRefresh();
+      }
+
+      function csvEscape(value) {
+        var text = String(value == null ? "" : value);
+        return '"' + text.replace(/"/g, '""') + '"';
+      }
+
+      function exportAwardsCsv() {
+        var rows = filteredAwards();
+        if (!rows.length) {
+          showToast("No loaded awards to export.");
+          return;
+        }
+        var headers = ["Recipient Name", "Recipient UEI", "Award ID", "Award Amount", "Start Date", "End Date", "Awarding Agency", "Awarding Sub Agency", "Funding Agency", "Funding Sub Agency", "NAICS", "PSC", "Place of Performance", "Description"];
+        var csvRows = [headers.map(csvEscape).join(",")].concat(rows.map(function (row) {
+          return [
+            row["Recipient Name"],
+            row["Recipient UEI"],
+            row["Award ID"],
+            row["Award Amount"],
+            row["Start Date"],
+            row["End Date"],
+            row["Awarding Agency"],
+            row["Awarding Sub Agency"],
+            row["Funding Agency"],
+            row["Funding Sub Agency"],
+            awardCodeText(row.NAICS),
+            awardCodeText(row.PSC),
+            awardLocation(row),
+            row.Description
+          ].map(csvEscape).join(",");
+        }));
+        var blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8" });
+        var link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = (state.selectedIso3 || "country") + "-usg-awards-" + fiveYearWindow().end + ".csv";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.setTimeout(function () { URL.revokeObjectURL(link.href); }, 500);
+        showToast("CSV exported.");
+      }
+
+      async function copyContractors() {
+        var contractors = contractorSummary(filteredAwards());
+        if (!contractors.length) {
+          showToast("No loaded contractors to copy.");
+          return;
+        }
+        var text = contractors.map(function (item) {
+          return item.name + " | UEI: " + (item.uei || "-") + " | Awards loaded: " + item.count + " | Amount loaded: " + awardAmount(item.amount);
+        }).join("\n");
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch (err) {
+          var temp = document.createElement("textarea");
+          temp.value = text;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand("copy");
+          document.body.removeChild(temp);
+        }
+        showToast("Loaded contractor list copied.");
+      }
+
+      function renderSources() {
+        var name = countryName();
+        var q = requirementQuery();
+        var loc = locationQuery();
+        var marketQuery = name + " Country Commercial Guide market procurement business customs";
+        var travelQuery = name + " site:travel.state.gov International Travel Country Information";
+        var embassyQuery = "U.S. Embassy " + name;
+
+        $("clearanceSources").innerHTML = [
+          sourceCard({ name: "APACS / Foreign Clearance Guide", desc: "Authorized country clearance and FCG access point. Do not copy restricted content into this tool.", url: "https://apacs.milcloud.mil/fcg/index.html", badge: "Official", badgeClass: "badge-gold" }),
+          sourceCard({ name: "State Department travel advisory", desc: "Country risk level, entry/exit, local laws, and safety notes.", url: "https://travel.state.gov/content/travel/en/international-travel/travel-advisories.html", badge: "State", badgeClass: "badge-blue" }),
+          sourceCard({ name: "Country information page search", desc: "Direct search for passport validity, visa, customs, and local law information.", url: googleSearch(travelQuery), badge: "Entry", badgeClass: "badge-blue" }),
+          sourceCard({ name: "U.S. Embassy search", desc: "Embassy/consulate contacts, security messages, and local services.", url: googleSearch(embassyQuery), badge: "Embassy", badgeClass: "badge-green" })
+        ].join("");
+
+        $("healthSources").innerHTML = [
+          sourceCard({ name: "CDC Travelers' Health", desc: "Vaccines, destination health notices, disease risks, and medication considerations.", url: "https://wwwnc.cdc.gov/travel/destinations/list", badge: "CDC", badgeClass: "badge-green" }),
+          sourceCard({ name: "WHO country profile search", desc: "Health system and disease context.", url: googleSearch("WHO " + name + " country health profile"), badge: "WHO", badgeClass: "badge-blue" }),
+          sourceCard({ name: "Medical facilities search", desc: "Open-source hospital, clinic, and medevac planning searches.", url: googleSearch(loc + " hospitals international clinic emergency medical"), badge: "Medical", badgeClass: "badge-red" })
+        ].join("");
+
+        $("marketSources").innerHTML = [
+          sourceCard({ name: "ITA Country Commercial Guides", desc: "Market overview, trade regulations, leading sectors, business customs, and barriers.", url: "https://www.trade.gov/country-commercial-guides", badge: "ITA", badgeClass: "badge-blue" }),
+          sourceCard({ name: "ITA guide search", desc: "Search the ITA guide and related market intelligence for this country.", url: googleSearch("site:trade.gov " + marketQuery), badge: "Guide", badgeClass: "badge-blue" }),
+          sourceCard({ name: "World Bank country data", desc: "GDP, inflation, trade, business environment, and development indicators.", url: "https://data.worldbank.org/country/" + state.selectedIso2, badge: "Data", badgeClass: "badge-green" }),
+          sourceCard({ name: "UN Comtrade", desc: "Imports, exports, trade partners, and commodity movement data.", url: "https://comtradeplus.un.org/", badge: "Trade", badgeClass: "badge-gold" })
+        ].join("");
+
+        $("vendorSources").innerHTML = [
+          sourceCard({ name: "Local vendor keyword search", desc: "Requirement-specific supplier discovery in the selected operating area.", url: googleSearch(loc + " " + q + " vendor supplier contractor"), badge: "Search", badgeClass: "badge-blue" }),
+          sourceCard({ name: "Company registry search", desc: "Find the official company registry or business registration portal.", url: googleSearch(name + " official company registry business registration"), badge: "Registry", badgeClass: "badge-green" }),
+          sourceCard({ name: "Tender/procurement portal search", desc: "Locate host-nation tenders, procurement notices, and supplier lists.", url: googleSearch(name + " government tender procurement portal suppliers"), badge: "Tender", badgeClass: "badge-gold" }),
+          sourceCard({ name: "Chamber of commerce search", desc: "Local chambers, U.S. business councils, and industry associations.", url: googleSearch(name + " chamber of commerce " + q), badge: "Chamber", badgeClass: "badge-blue" }),
+          sourceCard({ name: "SAM.gov opportunity search", desc: "Federal opportunities and award context tied to the country or requirement.", url: "https://sam.gov/search/?index=opp&keywords=" + encodeURIComponent(name + " " + q), badge: "SAM", badgeClass: "badge-green" })
+        ].join("");
+
+        $("vettingSources").innerHTML = [
+          sourceCard({ name: "OFAC sanctions search", desc: "Screen vendor names, owners, banks, and counterparties.", url: "https://sanctionssearch.ofac.treas.gov/", badge: "Sanctions", badgeClass: "badge-red" }),
+          sourceCard({ name: "SAM.gov exclusions", desc: "Check exclusions and responsibility-related restrictions.", url: "https://sam.gov/search/?index=ei", badge: "Exclusions", badgeClass: "badge-red" }),
+          sourceCard({ name: "World Bank debarred firms", desc: "Screen debarred and cross-debarred firms and individuals.", url: "https://www.worldbank.org/en/projects-operations/procurement/debarred-firms", badge: "Debarment", badgeClass: "badge-red" }),
+          sourceCard({ name: "UN Security Council sanctions", desc: "Screen applicable UN sanctions lists.", url: "https://main.un.org/securitycouncil/en/content/un-sc-consolidated-list", badge: "UN", badgeClass: "badge-red" }),
+          sourceCard({ name: "Adverse media search", desc: "Search for corruption, fraud, litigation, sanctions, or reputational red flags.", url: googleSearch('"' + q + '" "' + name + '" vendor corruption fraud sanctions litigation'), badge: "Media", badgeClass: "badge-gold" })
+        ].join("");
+
+        $("financeSources").innerHTML = [
+          sourceCard({ name: "Central bank search", desc: "Currency, banking rules, foreign exchange guidance, and payment environment.", url: googleSearch(name + " central bank foreign exchange rules"), badge: "Bank", badgeClass: "badge-blue" }),
+          sourceCard({ name: "Tax / VAT search", desc: "Local VAT, withholding tax, invoicing, and import tax considerations.", url: googleSearch(name + " VAT tax withholding invoice foreign contractor"), badge: "Tax", badgeClass: "badge-gold" }),
+          sourceCard({ name: "IMF country page search", desc: "Macro conditions, Article IV reports, inflation, and fiscal context.", url: googleSearch("IMF " + name + " country report inflation exchange rate"), badge: "IMF", badgeClass: "badge-green" })
+        ].join("");
+
+        $("complianceSources").innerHTML = [
+          sourceCard({ name: "Transparency International CPI", desc: "Corruption perception signal for source selection and vendor risk context.", url: "https://www.transparency.org/en/cpi", badge: "CPI", badgeClass: "badge-gold" }),
+          sourceCard({ name: "Export control / restricted item search", desc: "Screen import/export controls, sanctions, and restricted commodities.", url: googleSearch(name + " import restrictions export controls restricted goods"), badge: "Controls", badgeClass: "badge-red" }),
+          sourceCard({ name: "Labor and employment law search", desc: "Host-nation labor, wage, work permit, and subcontracting considerations.", url: googleSearch(name + " labor law work permit contractor employment"), badge: "Labor", badgeClass: "badge-blue" })
+        ].join("");
+
+        var timeZones = countryTimeZones(state.country);
+        var drivingSide = countryDrivingSide(state.country);
+        var logisticsRows = [
+          kv("Air movement", "Identify major passenger/cargo airports and customs procedures."),
+          kv("Sea movement", "Identify seaports, inland routes, and freight forwarders."),
+          kv("Road movement", (drivingSide ? "Driving side: " + drivingSide + ". " : "") + "Review road safety, seasonal constraints, border crossings, and convoy limitations."),
+          kv("Telecom", "Identify mobile operators, SIM/eSIM rules, and internet reliability."),
+          kv("Power", "Confirm voltage, plug type, generator/fuel availability, and outages."),
+          kv("Lodging", "Screen lodging market, security posture, payment methods, and tax treatment.")
+        ];
+        if (timeZones) logisticsRows.unshift(kv("Time zones", timeZones));
+        $("logisticsGrid").innerHTML = logisticsRows.join("");
+
+        $("logisticsSources").innerHTML = [
+          sourceCard({ name: "Airport and cargo search", desc: "Major airports, cargo handlers, and ground transport.", url: googleSearch(name + " major airports cargo handler freight forwarder"), badge: "Air", badgeClass: "badge-blue" }),
+          sourceCard({ name: "Port and customs broker search", desc: "Seaports, customs brokers, freight forwarders, and import requirements.", url: googleSearch(name + " seaport customs broker freight forwarder import requirements"), badge: "Port", badgeClass: "badge-green" }),
+          sourceCard({ name: "Telecom provider search", desc: "Mobile carriers, internet providers, SIM rules, and coverage.", url: googleSearch(name + " mobile operators internet providers SIM card business"), badge: "Comms", badgeClass: "badge-blue" }),
+          sourceCard({ name: "Weather and disaster search", desc: "Seasonal constraints, flooding, heat, storms, or other operating hazards.", url: googleSearch(name + " seasonal weather disaster risk logistics"), badge: "Weather", badgeClass: "badge-gold" })
+        ].join("");
+
+        iconRefresh();
+      }
+
+      function renderChecklist() {
+        var key = checklistKey();
+        var saved = JSON.parse(localStorage.getItem(key) || "[]");
+        $("checklist").innerHTML = CHECK_ITEMS.map(function (item, idx) {
+          var checked = saved.indexOf(idx) !== -1 ? " checked" : "";
+          return '<label class="check-row"><input type="checkbox" data-check="' + idx + '"' + checked + '><span>' + esc(item) + '</span></label>';
+        }).join("");
+        $("checklist").querySelectorAll("input").forEach(function (box) {
+          box.addEventListener("change", saveChecklist);
+        });
+        updateScore();
+      }
+
+      function checklistKey() {
+        return "kthq-country-dossier-checks-" + (state.selectedIso3 || "none");
+      }
+
+      function notesKey() {
+        return "kthq-country-dossier-notes-" + (state.selectedIso3 || "none");
+      }
+
+      function saveChecklist() {
+        var values = Array.from($("checklist").querySelectorAll("input:checked")).map(function (box) {
+          return Number(box.getAttribute("data-check"));
+        });
+        localStorage.setItem(checklistKey(), JSON.stringify(values));
+        updateScore();
+      }
+
+      function updateScore() {
+        var checked = $("checklist").querySelectorAll("input:checked").length;
+        var total = CHECK_ITEMS.length;
+        var pct = total ? Math.round((checked / total) * 100) : 0;
+        $("readinessBadge").textContent = pct + "%";
+        $("scoreText").textContent = pct + "%";
+        $("scoreRing").style.setProperty("--score", (pct * 3.6) + "deg");
+      }
+
+      function loadNotes() {
+        $("notesInput").value = localStorage.getItem(notesKey()) || "";
+      }
+
+      function saveNotes() {
+        localStorage.setItem(notesKey(), $("notesInput").value);
+        showToast("Notes saved for " + countryName() + ".");
+        renderBrief();
+      }
+
+      function clearNotes() {
+        $("notesInput").value = "";
+        localStorage.removeItem(notesKey());
+        showToast("Notes cleared.");
+        renderBrief();
+      }
+
+      function renderBrief() {
+        var c = state.country;
+        if (!c) return;
+        var currency = c.currencies ? Object.keys(c.currencies).join(", ") : "-";
+        var popDatum = state.indicators["SP.POP.TOTL"];
+        var population = fmtNumber(c.population || (popDatum && popDatum.value));
+        var timezones = countryTimeZones(c);
+        var drivingSide = countryDrivingSide(c);
+        var gdp = state.indicators["NY.GDP.MKTP.CD"];
+        var inflation = state.indicators["FP.CPI.TOTL.ZG"];
+        var note = $("notesInput").value.trim();
+        var topNews = state.news.slice(0, 3).map(function (item) { return item.title; }).filter(Boolean);
+        var topContractors = contractorSummary(state.awards).slice(0, 8).map(function (item) {
+          return item.name + " (" + item.count + " awards loaded, " + awardAmount(item.amount) + ")";
+        });
+        var countryFacts = [
+          "Capital: " + joinValues(c.capital),
+          "Population: " + population,
+          "Languages: " + joinValues(c.languages)
+        ];
+        if (timezones) countryFacts.push("Time zones: " + timezones);
+        if (drivingSide) countryFacts.push("Driving side: " + drivingSide);
+        var financeFacts = [
+          "Currency: " + currency,
+          "USD exchange: " + $("exchangeStatus").textContent
+        ];
+        if (gdp) financeFacts.push("GDP: " + fmtMoney(gdp.value) + " (" + gdp.date + ")");
+        if (inflation) financeFacts.push("Inflation: " + fmtPercent(inflation.value) + " (" + inflation.date + ")");
+        var rows = [
+          { title: "BLUF", desc: c.name.common + " dossier refreshed " + (state.lastRefreshed ? state.lastRefreshed.toLocaleString() : "today") + ". Validate clearance, legal, vendor, and payment decisions against official systems before use." },
+          { title: "Country facts", desc: countryFacts.join(". ") + "." },
+          { title: "Finance", desc: financeFacts.join(". ") + "." },
+          { title: "Market research", desc: "Review ITA Country Commercial Guide, World Bank indicators, UN Comtrade, local chamber/registry sources, and host-nation tender portals for requirement: " + requirementQuery() + "." },
+          { title: "USG contractors", desc: topContractors.length ? topContractors.join(" | ") : "No USAspending award records loaded yet." },
+          { title: "Vendor vetting", desc: "Screen vendor leads through OFAC, SAM.gov exclusions, World Bank debarment, UN sanctions, company registry data, and adverse media before relying on quotes." },
+          { title: "Current operating picture", desc: topNews.length ? topNews.join(" | ") : "No live news pulled. Use GDELT, ReliefWeb, State, and local media searches." },
+          { title: "Local notes", desc: note || "No local notes saved." }
+        ];
+        $("briefOutput").innerHTML = rows.map(function (row) {
+          return '<div class="brief-row"><div class="brief-title">' + esc(row.title) + '</div><div class="brief-desc">' + esc(row.desc) + '</div></div>';
+        }).join("");
+      }
+
+      function briefText() {
+        var c = state.country;
+        if (!c) return "";
+        var popDatum = state.indicators["SP.POP.TOTL"];
+        var population = fmtNumber(c.population || (popDatum && popDatum.value));
+        var timezones = countryTimeZones(c);
+        var drivingSide = countryDrivingSide(c);
+        var lines = [];
+        lines.push("KTHQ Country Contracting Dossier - " + c.name.common);
+        lines.push("Refreshed: " + (state.lastRefreshed ? state.lastRefreshed.toLocaleString() : ""));
+        lines.push("");
+        lines.push("COUNTRY SNAPSHOT");
+        lines.push("Official name: " + (c.name.official || c.name.common));
+        lines.push("Capital: " + joinValues(c.capital));
+        lines.push("Population: " + population);
+        lines.push("Region: " + [c.region, c.subregion].filter(Boolean).join(" / "));
+        lines.push("Languages: " + joinValues(c.languages));
+        if (timezones) lines.push("Time zones: " + timezones);
+        if (drivingSide) lines.push("Driving side: " + drivingSide);
+        lines.push("Currency: " + $("currencySub").textContent);
+        lines.push("USD exchange: " + $("exchangeSub").textContent);
+        lines.push("");
+        lines.push("MARKET / VENDOR RESEARCH");
+        lines.push("Requirement keyword: " + requirementQuery());
+        lines.push("Operating area: " + (locationQuery() || c.name.common));
+        lines.push("Use ITA Country Commercial Guide, World Bank, UN Comtrade, local registry, chamber, tender portals, and adverse media searches.");
+        lines.push("");
+        lines.push("USG CONTRACTORS LOADED FROM USASPENDING");
+        var contractors = contractorSummary(state.awards).slice(0, 25);
+        if (contractors.length) {
+          contractors.forEach(function (item) {
+            lines.push("- " + item.name + " | UEI: " + (item.uei || "-") + " | awards loaded: " + item.count + " | amount loaded: " + awardAmount(item.amount));
+          });
+        } else {
+          lines.push("- No USAspending award records loaded yet.");
+        }
+        lines.push("");
+        lines.push("VETTING");
+        lines.push("Screen vendors through OFAC, SAM.gov exclusions, World Bank debarment, UN sanctions, registry status, ownership, banking legitimacy, and adverse media.");
+        lines.push("");
+        lines.push("CURRENT NEWS");
+        if (state.news.length) {
+          state.news.slice(0, 5).forEach(function (item) {
+            lines.push("- " + (item.title || "Untitled") + " (" + (item.domain || "source") + ") " + (item.url || ""));
+          });
+        } else {
+          lines.push("- Live news unavailable. Check GDELT, ReliefWeb, State, and local media.");
+        }
+        lines.push("");
+        lines.push("NOTES");
+        lines.push($("notesInput").value.trim() || "No notes saved.");
+        return lines.join("\n");
+      }
+
+      async function copyBrief() {
+        var text = briefText();
+        if (!text) return;
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast("Brief copied to clipboard.");
+        } catch (err) {
+          var temp = document.createElement("textarea");
+          temp.value = text;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand("copy");
+          document.body.removeChild(temp);
+          showToast("Brief copied to clipboard.");
+        }
+      }
+
+      function showToast(message) {
+        var toast = $("toast");
+        toast.textContent = message;
+        toast.classList.add("show");
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(function () {
+          toast.classList.remove("show");
+        }, 2200);
+      }
+
+      function bindEvents() {
+        $("countrySelect").addEventListener("change", function (event) {
+          selectCountry(event.target.value);
+        });
+        $("refreshBtn").addEventListener("click", function () {
+          selectCountry($("countrySelect").value);
+        });
+        $("requirementInput").addEventListener("input", function () {
+          renderSources();
+          renderBrief();
+        });
+        $("cityInput").addEventListener("input", function () {
+          renderSources();
+        });
+        $("copyBriefBtn").addEventListener("click", copyBrief);
+        $("printBtn").addEventListener("click", function () { window.print(); });
+        $("loadMoreAwardsBtn").addEventListener("click", function () { loadUsaSpendingAwards(false); });
+        $("awardSearchInput").addEventListener("input", renderAwards);
+        $("copyContractorsBtn").addEventListener("click", copyContractors);
+        $("exportAwardsBtn").addEventListener("click", exportAwardsCsv);
+        $("saveNotesBtn").addEventListener("click", saveNotes);
+        $("clearNotesBtn").addEventListener("click", clearNotes);
+        $("notesInput").addEventListener("input", function () {
+          window.clearTimeout(bindEvents.noteTimer);
+          bindEvents.noteTimer = window.setTimeout(saveNotes, 900);
+        });
+        document.querySelectorAll(".tab-btn").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var tab = btn.getAttribute("data-tab");
+            document.querySelectorAll(".tab-btn").forEach(function (b) { b.classList.toggle("active", b === btn); });
+            document.querySelectorAll(".tab-panel").forEach(function (panel) {
+              panel.classList.toggle("active", panel.id === "panel-" + tab);
+            });
+          });
+        });
+      }
+
+      bindEvents();
+      iconRefresh();
+      loadCountries();
+    })();
+  </script>
+</body>
+</html>
