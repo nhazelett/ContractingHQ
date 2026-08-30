@@ -823,9 +823,6 @@
   }
 
   /* ══════════ RING INTRO ══════════ */
-  var played = false;
-  try { played = sessionStorage.getItem('kthq_training_intro') === '1'; } catch (e) {}
-
   function runIntro() {
     document.body.classList.add('storm-intro');
     var box = scope.getBoundingClientRect();
@@ -833,9 +830,21 @@
       var r = c.getBoundingClientRect();
       return { cx: r.left + r.width / 2, cy: r.top + r.height / 2 };
     });
+    /* On a phone the cards stack into one tall column, so the average of their
+       centres sits far below the fold and the whole spin would happen off
+       screen. Anchor the orbit in the visible viewport and tighten it. */
+    var narrow = window.innerWidth < 760;
     var hubX = box.left + box.width / 2;
-    var hubY = start.reduce(function (a, p) { return a + p.cy; }, 0) / start.length;
-    var R = Math.min(box.width * 0.30, 330);
+    var hubY;
+    if (narrow) {
+      var vis = Math.max(box.top, 0);
+      hubY = vis + Math.min(window.innerHeight, box.height - (vis - box.top)) * 0.42;
+      hubY = Math.max(150, Math.min(hubY, window.innerHeight * 0.62));
+    } else {
+      hubY = start.reduce(function (a, p) { return a + p.cy; }, 0) / start.length;
+    }
+    var R = narrow ? Math.min(box.width * 0.28, 104) : Math.min(box.width * 0.30, 330);
+    var SQUASH = narrow ? 0.80 : 0.52;
     var N = cards.length, T0 = performance.now(), SPIN = 1700, FLY = 950;
     var END = SPIN + FLY + N * 70 + 120;
     cards.forEach(function (c) { c.classList.add('is-flying'); });
@@ -843,7 +852,6 @@
     function finish() {
       cards.forEach(function (c) { c.classList.remove('is-flying'); c.style.transform = ''; });
       document.body.classList.add('intro-done');
-      try { sessionStorage.setItem('kthq_training_intro', '1'); } catch (e) {}
       nextStrikeAt = performance.now() + 300;
       loop();
     }
@@ -862,13 +870,13 @@
           var p = t / SPIN, ease = 1 - Math.pow(1 - p, 3);
           var ang = base + ease * Math.PI * 2, rad = R * Math.min(1, p * 3);
           c.style.transform = 'translate3d(' + (hubX + Math.cos(ang) * rad - start[i].cx) + 'px,' +
-            (hubY + Math.sin(ang) * rad * 0.52 - start[i].cy) + 'px,0) rotate(' + (Math.sin(ang) * 4) + 'deg)';
+            (hubY + Math.sin(ang) * rad * SQUASH - start[i].cy) + 'px,0) rotate(' + (Math.sin(ang) * 4) + 'deg)';
         } else {
           var d = Math.min(1, (t - SPIN - i * 70) / FLY);
           if (d < 0) return;
           var e2 = 1 - Math.pow(1 - d, 4), ang2 = base + Math.PI * 2;
           var fx = hubX + Math.cos(ang2) * R - start[i].cx;
-          var fy = hubY + Math.sin(ang2) * R * 0.52 - start[i].cy;
+          var fy = hubY + Math.sin(ang2) * R * SQUASH - start[i].cy;
           c.style.transform = 'translate3d(' + (fx + (jx - fx) * e2) + 'px,' +
             (fy + (jy - fy) * e2) + 'px,0) rotate(' + (jr * e2) + 'deg)';
         }
@@ -890,10 +898,6 @@
 
   if (reduced) {
     document.body.classList.add('intro-done');
-  } else if (played) {
-    document.body.classList.add('intro-done');
-    nextStrikeAt = performance.now() + 700 + Math.random() * 1600;
-    loop();
   } else {
     runIntro();
   }
