@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Unit Deployment Manager Module 02: what a unit type code is and what it is made of, standard versus non-standard UTCs, pilot unit responsibilities, where contracting forces fit, and the force packages contracting support plugs into." />
+  <title>UDM Module 02: Unit Type Codes and Force Packages - ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>
+    .udm-page-bg {
+      --udm-cyan: #22d3ee;
+      background:
+        radial-gradient(ellipse 110% 35% at 50% 0%,   rgba(34,211,238,0.09) 0%, transparent 65%),
+        radial-gradient(ellipse 80%  25% at 0%   50%, rgba(34,211,238,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 80%  25% at 100% 50%, rgba(34,211,238,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 110% 30% at 50% 100%, rgba(34,211,238,0.07) 0%, transparent 65%),
+        #040d1f;
+      padding: 0 0 6rem;
+      min-height: 100vh;
+    }
+
+    /* ── Hero ── */
+    .udm-intro { text-align: center; margin: 0 auto; max-width: 820px; padding: 4rem 1.5rem 1.5rem; }
+    .udm-intro-tag {
+      display: inline-block;
+      background: rgba(34,211,238,0.1);
+      border: 1px solid rgba(34,211,238,0.3);
+      color: var(--udm-cyan);
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 0.28rem 0.95rem; border-radius: 100px;
+      margin-bottom: 0.85rem;
+    }
+    .udm-intro h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(1.7rem, 3.8vw, 2.4rem);
+      font-weight: 700; color: var(--white);
+      margin-bottom: 0.35rem; line-height: 1.15;
+    }
+    .udm-intro .subtitle {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.9rem; font-weight: 600;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--udm-cyan); margin-bottom: 1.1rem;
+    }
+    .udm-intro .lead { color: var(--silver); font-size: 0.95rem; max-width: 700px; margin: 0 auto; line-height: 1.7; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      color: var(--silver); font-size: 0.82rem; text-decoration: none;
+      margin-top: 1.35rem; transition: color 0.15s;
+    }
+    .back-link:hover, .back-link:focus-visible { color: var(--udm-cyan); }
+
+    /* ── Sticky table of contents ── */
+    .toc-bar {
+      position: sticky; top: 0; z-index: 90;
+      background: rgba(4,13,31,0.95);
+      border-top: 1px solid rgba(34,211,238,0.15);
+      border-bottom: 1px solid rgba(34,211,238,0.25);
+      backdrop-filter: blur(10px);
+      margin: 1.75rem 0 3rem;
+      box-shadow: 0 2px 12px rgba(34,211,238,0.06);
+    }
+    .toc-inner {
+      max-width: 1000px; margin: 0 auto;
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.7rem 1.5rem; flex-wrap: wrap;
+    }
+    .toc-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 1.6px; text-transform: uppercase;
+      color: #7c8ca3; flex-shrink: 0;
+    }
+    .toc-list { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+    .toc-list a {
+      color: var(--silver); font-size: 0.8rem; text-decoration: none;
+      padding: 0.3rem 0.7rem; border-radius: 6px;
+      border: 1px solid transparent; transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .toc-list a:hover, .toc-list a:focus-visible {
+      color: var(--udm-cyan); background: rgba(34,211,238,0.07);
+      border-color: rgba(34,211,238,0.25);
+    }
+
+    /* ── Sections ── */
+    .udm-wrap { max-width: 1000px; margin: 0 auto; padding: 0 1.5rem; }
+    .udm-section { max-width: 820px; margin: 0 auto 3.25rem; scroll-margin-top: 90px; }
+    .udm-section.wide { max-width: 1000px; }
+    .udm-section h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.5rem; font-weight: 700; color: var(--white);
+      margin-bottom: 0.9rem; display: flex; align-items: baseline; gap: 0.75rem;
+    }
+    .udm-section h2 .num {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.85rem; font-weight: 700;
+      letter-spacing: 1.5px; color: var(--udm-cyan);
+      border: 1px solid rgba(34,211,238,0.35);
+      border-radius: 5px; padding: 0.12rem 0.45rem; flex-shrink: 0;
+    }
+    .udm-section h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem; font-weight: 700; color: #dbe6f3;
+      margin: 1.75rem 0 0.6rem;
+    }
+    .udm-section p { color: var(--silver); font-size: 0.92rem; line-height: 1.75; margin-bottom: 1rem; }
+    .udm-section.wide > p { max-width: 820px; }
+    .udm-section ul { color: var(--silver); font-size: 0.92rem; line-height: 1.75; padding-left: 1.15rem; margin-bottom: 1rem; }
+    .udm-section li { margin-bottom: 0.5rem; }
+    .udm-section strong { color: #dbe6f3; }
+
+    /* ── Callout ── */
+    .udm-callout {
+      background: rgba(34,211,238,0.06);
+      border: 1px solid rgba(34,211,238,0.22);
+      border-left: 3px solid var(--udm-cyan);
+      border-radius: 8px; padding: 1.05rem 1.25rem; margin: 1.5rem 0;
+    }
+    .udm-callout .callout-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 1.8px; text-transform: uppercase;
+      color: var(--udm-cyan); margin-bottom: 0.4rem;
+    }
+    .udm-callout p { margin: 0; color: #c9d6e5; font-size: 0.9rem; line-height: 1.7; }
+    .udm-callout p + p { margin-top: 0.7rem; }
+
+    /* ── Role cards ── */
+    .role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 0.9rem; margin: 1.5rem 0; }
+    .role-card {
+      background: rgba(10,22,50,0.7);
+      border: 1px solid rgba(34,211,238,0.13);
+      border-radius: 10px; padding: 1.05rem 1.15rem;
+    }
+    .role-card.key { border-color: rgba(34,211,238,0.42); background: rgba(34,211,238,0.05); }
+    .role-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.05rem; font-weight: 700; color: var(--white);
+      line-height: 1.25; margin-bottom: 0.15rem;
+    }
+    .role-abbr {
+      font-family: 'IBM Plex Mono', 'Courier New', monospace;
+      font-size: 0.68rem; letter-spacing: 1.2px;
+      color: var(--udm-cyan); text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .role-card p { font-size: 0.86rem; line-height: 1.65; margin: 0; color: var(--silver); }
+
+    /* ── Station flow ── */
+    .flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin: 1.5rem 0; }
+    .flow-step {
+      background: rgba(10,22,50,0.7);
+      border: 1px solid rgba(34,211,238,0.13);
+      border-radius: 10px; padding: 0.95rem 1rem;
+      position: relative;
+    }
+    .flow-num {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 1.4px;
+      color: var(--udm-cyan); margin-bottom: 0.3rem;
+    }
+    .flow-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.98rem; font-weight: 700; color: var(--white);
+      line-height: 1.25; margin-bottom: 0.35rem;
+    }
+    .flow-step p { font-size: 0.82rem; line-height: 1.6; margin: 0; color: var(--silver); }
+    .flow-step.muted { opacity: 0.72; }
+
+    /* ── Order cards ── */
+    .order-list { display: flex; flex-direction: column; gap: 0.75rem; margin: 1.5rem 0; }
+    .order-card {
+      background: rgba(10,22,50,0.7);
+      border: 1px solid rgba(34,211,238,0.13);
+      border-left: 3px solid rgba(34,211,238,0.5);
+      border-radius: 10px; padding: 1rem 1.2rem;
+      display: grid; grid-template-columns: 200px 1fr; gap: 1.2rem; align-items: start;
+    }
+    .order-head { min-width: 0; }
+    .order-abbr {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.15rem; font-weight: 700; color: var(--udm-cyan);
+      line-height: 1.2;
+    }
+    .order-full { font-size: 0.78rem; color: #8a9bb0; line-height: 1.4; margin-top: 0.15rem; }
+    .order-body p { margin: 0; font-size: 0.88rem; line-height: 1.7; color: var(--silver); }
+    .order-body p + p { margin-top: 0.5rem; }
+    .order-body .says { color: #dbe6f3; }
+
+    /* ── IDRC handoff ── */
+    .handoff {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+      border: 1px solid rgba(34,211,238,0.28);
+      border-radius: 12px; overflow: hidden; margin: 1.5rem 0 0;
+      background: rgba(10,22,50,0.6);
+    }
+    .handoff-col { padding: 1.25rem 1.4rem; }
+    .handoff-col + .handoff-col { border-left: 1px solid rgba(34,211,238,0.2); }
+    .handoff.three { grid-template-columns: repeat(3, 1fr); }
+    @media (max-width: 900px) {
+      .handoff.three { grid-template-columns: 1fr; }
+      .handoff.three .handoff-col + .handoff-col { border-left: none; border-top: 1px solid rgba(34,211,238,0.2); }
+    }
+    .handoff-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 1.8px; text-transform: uppercase;
+      color: var(--udm-cyan); margin-bottom: 0.7rem;
+    }
+    .handoff-col ul { margin: 0; padding-left: 1.1rem; }
+    .handoff-col li { font-size: 0.86rem; line-height: 1.6; color: var(--silver); margin-bottom: 0.45rem; }
+    .handoff-col li:last-child { margin-bottom: 0; }
+
+    /* ── Next / prev ── */
+    .module-nav {
+      max-width: 820px; margin: 3.5rem auto 0;
+      display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    }
+    .module-nav a {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: rgba(10,22,50,0.8);
+      border: 1px solid rgba(34,211,238,0.2);
+      border-radius: 8px; padding: 0.7rem 1.1rem;
+      color: #c9d6e5; font-size: 0.85rem; text-decoration: none;
+      transition: border-color 0.18s, color 0.18s, background 0.18s;
+    }
+    .module-nav a:hover, .module-nav a:focus-visible {
+      border-color: rgba(34,211,238,0.5); color: var(--udm-cyan); background: rgba(34,211,238,0.06);
+    }
+
+    .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(34,211,238,0.22), transparent); margin: 0 auto 3.25rem; max-width: 900px; }
+
+    @media (max-width: 700px) {
+      .order-card { grid-template-columns: 1fr; gap: 0.5rem; }
+      .handoff { grid-template-columns: 1fr; }
+      .handoff-col + .handoff-col { border-left: none; border-top: 1px solid rgba(34,211,238,0.2); }
+    }
+
+    /* ── Data table ── */
+    .utc-table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+    .utc-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; min-width: 520px; }
+    .utc-table caption { text-align: left; font-size: 0.8rem; color: #7c8ca3; padding-bottom: 0.6rem; }
+    .utc-table th {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 1.3px; text-transform: uppercase;
+      color: var(--udm-cyan); text-align: left;
+      padding: 0.6rem 0.85rem;
+      border-bottom: 1px solid rgba(34,211,238,0.3);
+    }
+    .utc-table td {
+      padding: 0.7rem 0.85rem; color: var(--silver);
+      line-height: 1.6; border-bottom: 1px solid rgba(74,158,255,0.08);
+      vertical-align: top;
+    }
+    .utc-table tr:last-child td { border-bottom: none; }
+    .utc-table td:first-child { color: #dbe6f3; font-weight: 600; white-space: nowrap; }
+
+    /* ── Chip row ── */
+    .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.25rem 0; }
+    .chip {
+      background: rgba(10,22,50,0.8);
+      border: 1px solid rgba(34,211,238,0.2);
+      border-radius: 100px; padding: 0.4rem 0.9rem;
+      font-size: 0.82rem; color: #c9d6e5;
+    }
+    .chip span { color: var(--udm-cyan); font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: 0.8px; }
+    .chip.code {
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: 0.95rem; letter-spacing: 1.4px; color: #dbe6f3;
+      padding: 0.45rem 1.05rem;
+    }
+    .chip.code.common { border-color: rgba(34,211,238,0.55); background: rgba(34,211,238,0.08); color: var(--udm-cyan); }
+    .chip-note { font-size: 0.8rem; color: #7c8ca3; margin: 0.3rem 0 1.25rem; }
+  </style>
+    <!-- Open Graph & Twitter Card -->
+  <meta property="og:type"        content="article" />
+  <meta property="og:site_name"   content="ContractingHQ" />
+  <meta property="og:title"       content="UDM Module 02: Unit Type Codes and Force Packages - ContractingHQ" />
+  <meta property="og:description" content="What a unit type code is and what it is made of, standard versus non-standard, pilot unit responsibilities, where contracting forces fit, and the force packages contracting plugs into." />
+  <meta property="og:url"         content="https://kthq.org/udm-force.html" />
+  <meta property="og:image"       content="https://kthq.org/og-image.png" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@ContractingHQ" />
+  <meta name="twitter:title"       content="UDM Module 02: Unit Type Codes and Force Packages - ContractingHQ" />
+  <meta name="twitter:description" content="What a unit type code is and what it is made of, standard versus non-standard, pilot unit responsibilities, where contracting forces fit, and the force packages contracting plugs into." />
+  <meta name="twitter:image"       content="https://kthq.org/og-image.png" />
+  <link rel="canonical"            href="https://kthq.org/udm-force.html" />
+</head>
+<body>
+<!-- NAV -->
+<nav class="navbar" id="navbar" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main id="main">
+<div class="udm-page-bg">
+
+  <!-- HERO -->
+  <div class="udm-intro">
+    <div class="udm-intro-tag">Module 02</div>
+    <h1>Unit Type Codes and Force Packages</h1>
+    <div class="subtitle">Unit Deployment Manager</div>
+    <p class="lead">A unit type code is how the Air Force turns "we need contracting support at this location" into a specific set of people with specific skills. Understanding what sits inside one explains most of why readiness reporting works the way it does, and why a name in a slot carries more weight than it looks like it does.</p>
+    <div><a href="unit-deployment-manager.html" class="back-link">&larr; Back to the UDM hub</a></div>
+  </div>
+
+  <!-- TOC -->
+  <nav class="toc-bar" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-label">On this page</div>
+      <div class="toc-list">
+        <a href="#what">What a UTC is</a>
+        <a href="#parts">The three parts</a>
+        <a href="#ownership">Standard, non-standard, and ownership</a>
+        <a href="#contracting">Where contracting fits</a>
+        <a href="#packages">Force packages</a>
+        <a href="#afforgen">AFFORGEN in one page</a>
+        <a href="#handoff">Working with the IDRC</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="udm-wrap">
+
+    <!-- 01 -->
+    <section class="udm-section" id="what">
+      <h2><span class="num">01</span>What a unit type code is</h2>
+      <p>A unit type code (UTC) is a capability, packaged so that a planner somewhere can request it without knowing anything about the squadron that will fill it. Each one carries a unique five character alphanumeric identifier, and the guidance describes them as rightsized, modular, and scalable, deliberately not tied to a specific theater or a specific unit.</p>
+      <p>That last part is the useful bit. A planner building a requirement for an operation does not ask for people from a named squadron. They ask for a capability by its code, and the sourcing process works out which unit provides it. A UDM sits on the receiving end of that process.</p>
+      <div class="udm-callout">
+        <div class="callout-label">Worth holding onto</div>
+        <p>A unit type code describes what a capability can do, not who is currently filling it. The squadron supplies the names. The code makes a promise about what those names can accomplish, which is where a UDM's readiness tracking starts to matter.</p>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 02 -->
+    <section class="udm-section wide" id="parts">
+      <h2><span class="num">02</span>The three parts</h2>
+      <p>Every unit type code is built from three elements. A UDM works directly with one of them, indirectly with the second, and rarely with the third.</p>
+
+      <div class="role-grid">
+        <div class="role-card key">
+          <div class="role-name">Mission Capability Statement</div>
+          <div class="role-abbr">MISCAP</div>
+          <p>Plain language description of what the capability does, its basic mission, where it typically operates, and which other unit type codes travel with it. This is the promise being made to the commander who requested the capability. It is also the one element that can carry a classification, up to and including SECRET, which is a good indicator of how seriously the content is treated.</p>
+        </div>
+        <div class="role-card key">
+          <div class="role-name">Manpower Force Element</div>
+          <div class="role-abbr">MFE, also called MANFOR</div>
+          <p>The people. Lists the minimum personnel needed to deliver the capability, broken out by Air Force specialty code, grade, and quantity. Planning assumes a bare base operation lasting about thirty days. When a squadron fills a tasking, this is the list the names have to satisfy, and a slot calling for a particular skill level means a person who can perform at that level.</p>
+        </div>
+        <div class="role-card">
+          <div class="role-name">Logistics Detail</div>
+          <div class="role-abbr">LOGDET</div>
+          <p>The equipment that travels with the capability, sized to sustain operations for roughly thirty days without resupply. Contracting deploys people rather than equipment packages, so this element is mostly somebody else's work. Knowing it exists is enough for most contracting squadron UDMs.</p>
+        </div>
+      </div>
+
+      <p>The manpower element is where a UDM spends real time. A tasking that calls for a five level is asking for someone who performs five level work, and the squadron's answer to that is a name. Module 03 picks up what that name is actually promising.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 03 -->
+    <section class="udm-section" id="ownership">
+      <h2><span class="num">03</span>Standard, non-standard, and who owns the code</h2>
+
+      <h3>Standard and non-standard</h3>
+      <p>Standard unit type codes define full mission capabilities and are the ones that actually move forces. Non-standard codes exist for a different reason: they let readiness reporting systems categorize units by type without implying any transportation requirement. A non-standard code is an administrative label rather than a deployable package, which is worth knowing before assuming every code on a roster represents something that deploys.</p>
+
+      <h3>Pilot units and everyone else</h3>
+      <p>Each unit type code has a pilot unit, appointed to develop and maintain it. The pilot unit writes the capability statement, builds the manpower and logistics detail, and reviews the whole thing at least every two years. Most squadrons are not pilot units for the codes they fill.</p>
+      <p>A non-pilot unit still has a voice. When the pilot unit proposes a change, other units are given the chance to comment, with a response window measured in weeks. That is the moment when a squadron can say that a code no longer reflects what the capability actually needs, and it passes quietly if nobody is paying attention.</p>
+
+      <div class="utc-table-wrap">
+        <table class="utc-table">
+          <caption>Who does what with a unit type code</caption>
+          <thead>
+            <tr><th scope="col">Role</th><th scope="col">Responsibility</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pilot unit</td><td>Develops and maintains the code. Writes the capability statement, builds the manpower and equipment detail, reviews everything at least biennially.</td></tr>
+            <tr><td>Non-pilot unit</td><td>Fills the capability when tasked. Provides input on proposed changes within the response window, and maintains any equipment the logistics detail calls for.</td></tr>
+            <tr><td>Functional Area Manager</td><td>Appoints the pilot unit and coordinates code actions across the career field. Holds the contracting codes, and is a direct contact for a contracting squadron UDM.</td></tr>
+            <tr><td>Major command</td><td>Acts as the single point of contact for code actions within the command and coordinates with other commands.</td></tr>
+            <tr><td>Air Force level</td><td>Approves codes and publishes them, after which they become available for planners to task against.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Once approved and published, a code becomes available in the systems planners build requirements from, and units get assigned to provide and maintain that capability. A squadron finding itself tasked against a code it does not recognize is a reasonable thing to raise with the readiness cell and the Functional Area Manager.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 04 -->
+    <section class="udm-section" id="contracting">
+      <h2><span class="num">04</span>Where contracting fits</h2>
+      <p>Contracting is a small career field that supports operations run by much larger ones. That shapes how contracting forces move in ways worth understanding early.</p>
+
+      <h3>Small packages and individuals</h3>
+      <p>Where a larger career field may deploy a formed team that trains together, contracting frequently sources individuals and small teams against requirements at scattered locations. The practical effect on a UDM is that taskings tend to arrive naming small numbers of specific skill levels rather than whole capability packages, and the sourcing conversation with the Functional Area Manager gets specific about people faster.</p>
+
+      <h3>Ways contracting support gets employed</h3>
+      <ul>
+        <li><strong>Demand force teams.</strong> Capability sourced against emerging demand rather than a standing rotation. Contracting shows up in this category more than most career fields, because contracting support is often needed early and in small amounts.</li>
+        <li><strong>Employed in place.</strong> Capability delivered without the member physically deploying. Contracting can support a forward operation from a home station, which means readiness obligations exist even where a member never leaves.</li>
+        <li><strong>Reserve component.</strong> Guard and Reserve contracting units fill taskings alongside active duty. A UDM at a unit that works with reserve component members has an extra set of readiness rules to coordinate through the readiness cell.</li>
+        <li><strong>Civilian deployments and extended taskings.</strong> Contracting deploys civilians and takes long duration individual taskings more often than many career fields. Module 04 covers how those arrive.</li>
+      </ul>
+
+      <h3>The contracting family of codes</h3>
+      <p>Contingency contracting capability is packaged under a family of unit type codes that share a common prefix. These show up on tasking lines and on the list of codes a squadron is postured against, and members are usually aligned to one when they arrive at a duty station.</p>
+
+      <div class="chip-row">
+        <div class="chip code">XFFK2</div>
+        <div class="chip code">XFFK5</div>
+        <div class="chip code common">XFFK7</div>
+        <div class="chip code common">XFFK8</div>
+        <div class="chip code common">XFFK9</div>
+        <div class="chip code">XFFKT</div>
+      </div>
+      <p class="chip-note">Highlighted codes are the ones contracting squadrons are asked for most often.</p>
+
+      <p>Recognizing them by sight is the point of listing them. A tasking line reading XFFK7 should register as a contracting requirement rather than an unfamiliar string, and knowing which code a member is aligned to makes the rest of the readiness conversation concrete. Codes get added, revised, and retired over time, so treat this as orientation and confirm the current set against the squadron's own record.</p>
+
+      <h3>What a code calls for, and where that lives</h3>
+      <p>Each code carries its own requirements for skill level, grade, and certification. Those are worth reading from the current record rather than carrying in your head, because they change and because the consequences of guessing land on a member at the worst possible moment. Three places hold different pieces of the answer.</p>
+      <ul>
+        <li><strong>The mission capability statement</strong> describes what the capability does and where it operates. This is the narrative, not the roster.</li>
+        <li><strong>The manpower force element</strong> is the authoritative list of positions: Air Force specialty code, grade, and quantity. This is the part that answers whether a slot calls for a five level or a seven level.</li>
+        <li><strong>Line remarks on the tasking itself</strong> carry requirements attached to a specific tasking rather than to the code in general, which is where added training, certification, or equipment requirements usually appear. Module 04 covers reading those.</li>
+      </ul>
+      <p>The capability statement and manpower element are both published as part of the force packaging record for the code, and the planning and execution system the Air Force uses for deliberate and crisis action planning is where that packaging data and the readiness reporting against it live. The Installation Deployment Readiness Cell (IDRC) gets a UDM access to that system and to the local process around it.</p>
+      <p>For the codes themselves, the contracting Functional Area Manager is the better call. That office belongs to the career field, holds contracting's unit type codes, and knows why a code says what it says. A UDM does not need the readiness cell to make that introduction, and building the relationship before a tasking arrives is worth more than building it during one.</p>
+
+      <div class="udm-callout">
+        <div class="callout-label">Why this page stops at the codes</div>
+        <p>Compositions and current posturing guidance for contracting capability are not published openly, and a capability statement can carry a classification. Listing what each code requires here would put a number in front of a reader that may already be wrong, in a place where nobody would think to check it. The codes are stable enough to learn. What sits behind them belongs to the record.</p>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 05 -->
+    <section class="udm-section wide" id="packages">
+      <h2><span class="num">05</span>Force packages</h2>
+      <p>Capabilities do not deploy alone. They get assembled into larger packages, and contracting support usually plugs into one rather than standing up on its own. These are the constructs worth recognizing by name.</p>
+
+      <div class="role-grid">
+        <div class="role-card">
+          <div class="role-name">Air Task Force</div>
+          <div class="role-abbr">ATF</div>
+          <p>A grouping built to present a package of capability to a commander as a coherent whole rather than as separate pieces arriving from separate places. Contracting support attaches to the package rather than forming one.</p>
+        </div>
+        <div class="role-card">
+          <div class="role-name">Combat Airbase Squadron</div>
+          <div class="role-abbr">CABS</div>
+          <p>A squadron sized element built around operating an airbase. Support functions, contracting among them, sit inside this kind of element rather than alongside it.</p>
+        </div>
+        <div class="role-card">
+          <div class="role-name">Deployable Combat Wing</div>
+          <div class="role-abbr">DCW</div>
+          <p>A wing sized package that deploys as a unit with its command structure intact, rather than being assembled from individuals sourced across the Air Force.</p>
+        </div>
+        <div class="role-card">
+          <div class="role-name">Expeditionary Air Base</div>
+          <div class="role-abbr">XAB</div>
+          <p>The organizational construct for a base established in an operational location. Where contracting support most visibly earns its keep, since a base being stood up needs things bought locally almost immediately.</p>
+        </div>
+      </div>
+
+      <h3>Force elements</h3>
+      <p>Underneath the packages sits a set of functional groupings describing what a force is doing at a given stage of an operation. These come up in briefings and planning documents, and name recognition is enough for a contracting squadron UDM.</p>
+      <div class="chip-row">
+        <div class="chip"><span>OTB</span> Open the Airbase</div>
+        <div class="chip"><span>C2</span> Command and Control</div>
+        <div class="chip"><span>EAB</span> Establish the Airbase</div>
+        <div class="chip"><span>MG</span> Mission Generation</div>
+        <div class="chip"><span>OAB</span> Operate the Airbase</div>
+        <div class="chip"><span>RAB</span> Robust the Airbase</div>
+      </div>
+      <p>Contracting support tends to show up early, because opening and establishing a location involves buying things before the supply chain has caught up.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 06 -->
+    <section class="udm-section" id="afforgen">
+      <h2><span class="num">06</span>AFFORGEN in one page</h2>
+      <p>Air Force Force Generation is the model that decides when a unit is preparing, when it is available to be tasked, and when it is resetting. Units cycle through phases, and where a squadron sits in that cycle drives what a UDM is focused on at any given moment: rebuilding readiness during a preparation phase, watching the tasking flow during an available phase, and closing out records and recovering people during reset.</p>
+
+      <div class="udm-callout">
+        <div class="callout-label">Deliberately shallow</div>
+        <p>Phase names, durations, and the mechanics underneath them have changed more than once and will change again. Anything written here about the specifics would be stale before it was useful, so this page stops at the shape of the idea. For where the squadron currently sits in the cycle and what that means for the next few months, the Installation Deployment Readiness Cell has the current answer.</p>
+      </div>
+
+      <p>The part that stays true regardless of what the phases are called: readiness is built during the quiet part of the cycle, and a squadron that treats the preparation phase as downtime discovers the gap during the part where there is no time left to fix it.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 07 -->
+    <section class="udm-section" id="handoff">
+      <h2><span class="num">07</span>Working with the IDRC</h2>
+      <p>Unit type codes are one of the areas where a UDM genuinely cannot self serve. The current codes, the current posturing guidance, and the current phase of the cycle all live with people whose job is to know them. Two of those people sit in different places, and a UDM works with both.</p>
+
+      <div class="handoff three">
+        <div class="handoff-col">
+          <div class="handoff-label">What you bring</div>
+          <ul>
+            <li>An honest read on whether the squadron can actually fill the positions its codes call for, by skill level rather than by headcount.</li>
+            <li>Notice when the manpower reality drifts from what a code assumes, well before a tasking arrives against it.</li>
+            <li>Squadron input when a pilot unit proposes a change to a code the squadron fills, inside the response window rather than after it closes.</li>
+            <li>Questions about codes the squadron does not recognize, raised early rather than absorbed quietly.</li>
+          </ul>
+        </div>
+        <div class="handoff-col">
+          <div class="handoff-label">What the IDRC owns</div>
+          <ul>
+            <li>What the squadron is currently postured against at this installation, and how that shows up in local reporting.</li>
+            <li>Where the installation and the squadron sit in the force generation cycle right now.</li>
+            <li>Interpretation when published guidance and local practice appear to disagree.</li>
+            <li>Access to the planning systems and the local process wrapped around them.</li>
+          </ul>
+        </div>
+        <div class="handoff-col">
+          <div class="handoff-label">What the FAM owns</div>
+          <ul>
+            <li>Contracting's unit type codes, including why a code is written the way it is.</li>
+            <li>Sourcing decisions that match contracting requirements to contracting people across the enterprise.</li>
+            <li>Career field specific answers the installation cannot give, since the readiness cell supports every squadron on base rather than this one.</li>
+            <li>Visibility on what is coming for contracting specifically, which is often earlier than what reaches a squadron through the installation.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <nav class="module-nav" aria-label="Module navigation">
+      <a href="udm-team.html">&larr; Module 01: The Team and the Orders</a>
+      <a href="unit-deployment-manager.html">All modules &rarr;</a>
+    </nav>
+
+  </div>
+</div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+<script src="main.js"></script>
+<script src="player.js"></script>
+</body>
+</html>

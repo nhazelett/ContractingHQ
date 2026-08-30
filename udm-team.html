@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Unit Deployment Manager Module 01: who owns what across the installation, the deployment workcenters a member walks through on execution day, where the governing instructions live, and the military order types in plain language." />
+  <title>UDM Module 01: The Team and the Orders - ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>
+    .udm-page-bg {
+      --udm-cyan: #22d3ee;
+      background:
+        radial-gradient(ellipse 110% 35% at 50% 0%,   rgba(34,211,238,0.09) 0%, transparent 65%),
+        radial-gradient(ellipse 80%  25% at 0%   50%, rgba(34,211,238,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 80%  25% at 100% 50%, rgba(34,211,238,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 110% 30% at 50% 100%, rgba(34,211,238,0.07) 0%, transparent 65%),
+        #040d1f;
+      padding: 0 0 6rem;
+      min-height: 100vh;
+    }
+
+    /* ── Hero ── */
+    .udm-intro { text-align: center; margin: 0 auto; max-width: 820px; padding: 4rem 1.5rem 1.5rem; }
+    .udm-intro-tag {
+      display: inline-block;
+      background: rgba(34,211,238,0.1);
+      border: 1px solid rgba(34,211,238,0.3);
+      color: var(--udm-cyan);
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 0.28rem 0.95rem; border-radius: 100px;
+      margin-bottom: 0.85rem;
+    }
+    .udm-intro h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(1.7rem, 3.8vw, 2.4rem);
+      font-weight: 700; color: var(--white);
+      margin-bottom: 0.35rem; line-height: 1.15;
+    }
+    .udm-intro .subtitle {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.9rem; font-weight: 600;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--udm-cyan); margin-bottom: 1.1rem;
+    }
+    .udm-intro .lead { color: var(--silver); font-size: 0.95rem; max-width: 700px; margin: 0 auto; line-height: 1.7; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      color: var(--silver); font-size: 0.82rem; text-decoration: none;
+      margin-top: 1.35rem; transition: color 0.15s;
+    }
+    .back-link:hover, .back-link:focus-visible { color: var(--udm-cyan); }
+
+    /* ── Sticky table of contents ── */
+    .toc-bar {
+      position: sticky; top: 0; z-index: 90;
+      background: rgba(4,13,31,0.95);
+      border-top: 1px solid rgba(34,211,238,0.15);
+      border-bottom: 1px solid rgba(34,211,238,0.25);
+      backdrop-filter: blur(10px);
+      margin: 1.75rem 0 3rem;
+      box-shadow: 0 2px 12px rgba(34,211,238,0.06);
+    }
+    .toc-inner {
+      max-width: 1000px; margin: 0 auto;
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.7rem 1.5rem; flex-wrap: wrap;
+    }
+    .toc-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 1.6px; text-transform: uppercase;
+      color: #7c8ca3; flex-shrink: 0;
+    }
+    .toc-list { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+    .toc-list a {
+      color: var(--silver); font-size: 0.8rem; text-decoration: none;
+      padding: 0.3rem 0.7rem; border-radius: 6px;
+      border: 1px solid transparent; transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .toc-list a:hover, .toc-list a:focus-visible {
+      color: var(--udm-cyan); background: rgba(34,211,238,0.07);
+      border-color: rgba(34,211,238,0.25);
+    }
+
+    /* ── Sections ── */
+    .udm-wrap { max-width: 1000px; margin: 0 auto; padding: 0 1.5rem; }
+    .udm-section { max-width: 820px; margin: 0 auto 3.25rem; scroll-margin-top: 90px; }
+    .udm-section.wide { max-width: 1000px; }
+    .udm-section h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.5rem; font-weight: 700; color: var(--white);
+      margin-bottom: 0.9rem; display: flex; align-items: baseline; gap: 0.75rem;
+    }
+    .udm-section h2 .num {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.85rem; font-weight: 700;
+      letter-spacing: 1.5px; color: var(--udm-cyan);
+      border: 1px solid rgba(34,211,238,0.35);
+      border-radius: 5px; padding: 0.12rem 0.45rem; flex-shrink: 0;
+    }
+    .udm-section h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem; font-weight: 700; color: #dbe6f3;
+      margin: 1.75rem 0 0.6rem;
+    }
+    .udm-section p { color: var(--silver); font-size: 0.92rem; line-height: 1.75; margin-bottom: 1rem; }
+    .udm-section.wide > p { max-width: 820px; }
+    .udm-section ul { color: var(--silver); font-size: 0.92rem; line-height: 1.75; padding-left: 1.15rem; margin-bottom: 1rem; }
+    .udm-section li { margin-bottom: 0.5rem; }
+    .udm-section strong { color: #dbe6f3; }
+
+    /* ── Callout ── */
+    .udm-callout {
+      background: rgba(34,211,238,0.06);
+      border: 1px solid rgba(34,211,238,0.22);
+      border-left: 3px solid var(--udm-cyan);
+      border-radius: 8px; padding: 1.05rem 1.25rem; margin: 1.5rem 0;
+    }
+    .udm-callout .callout-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 1.8px; text-transform: uppercase;
+      color: var(--udm-cyan); margin-bottom: 0.4rem;
+    }
+    .udm-callout p { margin: 0; color: #c9d6e5; font-size: 0.9rem; line-height: 1.7; }
+    .udm-callout p + p { margin-top: 0.7rem; }
+
+    /* ── Role cards ── */
+    .role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 0.9rem; margin: 1.5rem 0; }
+    .role-card {
+      background: rgba(10,22,50,0.7);
+      border: 1px solid rgba(34,211,238,0.13);
+      border-radius: 10px; padding: 1.05rem 1.15rem;
+    }
+    .role-card.key { border-color: rgba(34,211,238,0.42); background: rgba(34,211,238,0.05); }
+    .role-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.05rem; font-weight: 700; color: var(--white);
+      line-height: 1.25; margin-bottom: 0.15rem;
+    }
+    .role-abbr {
+      font-family: 'IBM Plex Mono', 'Courier New', monospace;
+      font-size: 0.68rem; letter-spacing: 1.2px;
+      color: var(--udm-cyan); text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .role-card p { font-size: 0.86rem; line-height: 1.65; margin: 0; color: var(--silver); }
+    .role-card p + p { margin-top: 0.6rem; }
+
+    /* ── Station flow ── */
+    .flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin: 1.5rem 0; }
+    .flow-step {
+      background: rgba(10,22,50,0.7);
+      border: 1px solid rgba(34,211,238,0.13);
+      border-radius: 10px; padding: 0.95rem 1rem;
+      position: relative;
+    }
+    .flow-num {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 1.4px;
+      color: var(--udm-cyan); margin-bottom: 0.3rem;
+    }
+    .flow-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.98rem; font-weight: 700; color: var(--white);
+      line-height: 1.25; margin-bottom: 0.35rem;
+    }
+    .flow-step p { font-size: 0.82rem; line-height: 1.6; margin: 0; color: var(--silver); }
+    .flow-step.muted { opacity: 0.72; }
+
+    /* ── Order cards ── */
+    .order-list { display: flex; flex-direction: column; gap: 0.75rem; margin: 1.5rem 0; }
+    .order-card {
+      background: rgba(10,22,50,0.7);
+      border: 1px solid rgba(34,211,238,0.13);
+      border-left: 3px solid rgba(34,211,238,0.5);
+      border-radius: 10px; padding: 1rem 1.2rem;
+      display: grid; grid-template-columns: 200px 1fr; gap: 1.2rem; align-items: start;
+    }
+    .order-head { min-width: 0; }
+    .order-abbr {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.15rem; font-weight: 700; color: var(--udm-cyan);
+      line-height: 1.2;
+    }
+    .order-full { font-size: 0.78rem; color: #8a9bb0; line-height: 1.4; margin-top: 0.15rem; }
+    .order-body p { margin: 0; font-size: 0.88rem; line-height: 1.7; color: var(--silver); }
+    .order-body p + p { margin-top: 0.5rem; }
+    .order-body .says { color: #dbe6f3; }
+
+    /* ── IDRC handoff ── */
+    .handoff {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+      border: 1px solid rgba(34,211,238,0.28);
+      border-radius: 12px; overflow: hidden; margin: 1.5rem 0 0;
+      background: rgba(10,22,50,0.6);
+    }
+    .handoff-col { padding: 1.25rem 1.4rem; }
+    .handoff-col + .handoff-col { border-left: 1px solid rgba(34,211,238,0.2); }
+    .handoff-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 1.8px; text-transform: uppercase;
+      color: var(--udm-cyan); margin-bottom: 0.7rem;
+    }
+    .handoff-col ul { margin: 0; padding-left: 1.1rem; }
+    .handoff-col li { font-size: 0.86rem; line-height: 1.6; color: var(--silver); margin-bottom: 0.45rem; }
+    .handoff-col li:last-child { margin-bottom: 0; }
+
+    /* ── Next / prev ── */
+    .module-nav {
+      max-width: 820px; margin: 3.5rem auto 0;
+      display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    }
+    .module-nav a {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: rgba(10,22,50,0.8);
+      border: 1px solid rgba(34,211,238,0.2);
+      border-radius: 8px; padding: 0.7rem 1.1rem;
+      color: #c9d6e5; font-size: 0.85rem; text-decoration: none;
+      transition: border-color 0.18s, color 0.18s, background 0.18s;
+    }
+    .module-nav a:hover, .module-nav a:focus-visible {
+      border-color: rgba(34,211,238,0.5); color: var(--udm-cyan); background: rgba(34,211,238,0.06);
+    }
+
+    .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(34,211,238,0.22), transparent); margin: 0 auto 3.25rem; max-width: 900px; }
+
+    @media (max-width: 700px) {
+      .order-card { grid-template-columns: 1fr; gap: 0.5rem; }
+      .handoff { grid-template-columns: 1fr; }
+      .handoff-col + .handoff-col { border-left: none; border-top: 1px solid rgba(34,211,238,0.2); }
+    }
+  </style>
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:type"        content="article" />
+  <meta property="og:site_name"   content="ContractingHQ" />
+  <meta property="og:title"       content="UDM Module 01: The Team and the Orders - ContractingHQ" />
+  <meta property="og:description" content="Who owns what across the installation, the workcenters a member walks through on execution day, where the governing instructions live, and the military order types in plain language." />
+  <meta property="og:url"         content="https://kthq.org/udm-team.html" />
+  <meta property="og:image"       content="https://kthq.org/og-image.png" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@ContractingHQ" />
+  <meta name="twitter:title"       content="UDM Module 01: The Team and the Orders - ContractingHQ" />
+  <meta name="twitter:description" content="Who owns what across the installation, the workcenters a member walks through on execution day, where the governing instructions live, and the military order types in plain language." />
+  <meta name="twitter:image"       content="https://kthq.org/og-image.png" />
+  <link rel="canonical"            href="https://kthq.org/udm-team.html" />
+</head>
+<body>
+<!-- NAV -->
+<nav class="navbar" id="navbar" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main id="main">
+<div class="udm-page-bg">
+
+  <!-- HERO -->
+  <div class="udm-intro">
+    <div class="udm-intro-tag">Module 01</div>
+    <h1>The Team and the Orders</h1>
+    <div class="subtitle">Unit Deployment Manager</div>
+    <p class="lead">Almost nothing a Unit Deployment Manager does happens alone. Taskings arrive from one direction, readiness data flows back the other way, and a dozen offices each hold one piece of whether a member can actually get on an aircraft. Knowing who holds which piece turns most of this job into a phone call to the right person.</p>
+    <div><a href="unit-deployment-manager.html" class="back-link">&larr; Back to the UDM hub</a></div>
+  </div>
+
+  <!-- TOC -->
+  <nav class="toc-bar" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-label">On this page</div>
+      <div class="toc-list">
+        <a href="#players">The players</a>
+        <a href="#workcenters">Execution day workcenters</a>
+        <a href="#rules">Where the rules live</a>
+        <a href="#orders">Types of orders</a>
+        <a href="#handoff">Working with the IDRC</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="udm-wrap">
+
+    <!-- 01 PLAYERS -->
+    <section class="udm-section wide" id="players">
+      <h2><span class="num">01</span>The players</h2>
+      <p>Deployment work is a chain. It starts with a commander somewhere who needs a capability and ends with a specific person carrying a specific skill set onto a specific aircraft. A Unit Deployment Manager (UDM) sits near the end of that chain and talks to most of it.</p>
+      <p>These are the roles worth knowing by function rather than by name, since the people rotate and the functions do not.</p>
+
+      <div class="role-grid">
+
+        <div class="role-card">
+          <div class="role-name">Combatant Commander</div>
+          <div class="role-abbr">CCDR</div>
+          <p>The commander of a geographic or functional combatant command, who owns a mission and identifies the capabilities needed to do it. Demand starts here. A UDM will likely never speak to one, but every tasking that lands in the squadron traces back to a requirement somebody at this level validated.</p>
+        </div>
+
+        <div class="role-card">
+          <div class="role-name">Major Command</div>
+          <div class="role-abbr">MAJCOM</div>
+          <p>Sits between Air Force headquarters and the wing, and translates broad requirements into sourcing decisions for the units underneath. Supplements to Air Force instructions often come from this level, which is why the local version of a rule can differ from the one published service wide.</p>
+        </div>
+
+        <div class="role-card key">
+          <div class="role-name">Functional Area Manager</div>
+          <div class="role-abbr">FAM</div>
+          <p>Contracting's own manager for deployment purposes, responsible for matching contracting requirements to contracting people across the enterprise, and the office that holds the career field's unit type codes. Contracting is small and frequently deploys individuals and small teams rather than large formed units, so this office works at the level of specific names and skill levels more often than it would in a bigger career field.</p>
+          <p>A UDM talks to this office directly. The readiness cell handles the installation, and the Functional Area Manager handles the career field, and neither one substitutes for the other.</p>
+        </div>
+
+        <div class="role-card">
+          <div class="role-name">Unit Commander</div>
+          <div class="role-abbr">CC</div>
+          <p>Owns the squadron's readiness and signs what goes out the door. The commander answers for the accuracy of what the squadron reports and for decisions about who fills a tasking. A UDM builds the picture the commander signs, which is a good reason to keep that picture honest.</p>
+        </div>
+
+        <div class="role-card key">
+          <div class="role-name">Installation Deployment Readiness Cell</div>
+          <div class="role-abbr">IDRC</div>
+          <p>The installation's deployment engine and the single most useful phone number a UDM has. The cell sets the local standard, runs the timeline, trains the unit deployment managers across the base, and is accountable for getting members out the door. Most questions in this section end with "ask the IDRC," and that is the intended answer rather than a dodge.</p>
+        </div>
+
+        <div class="role-card">
+          <div class="role-name">Installation Deployment Officer</div>
+          <div class="role-abbr">IDO</div>
+          <p>The officer accountable for the installation's deployment process end to end, including the installation deployment plan and the execution day machinery. Where the readiness cell is the working level, this is the level that owns the process itself.</p>
+        </div>
+
+        <div class="role-card">
+          <div class="role-name">Installation Personnel Readiness</div>
+          <div class="role-abbr">IPR</div>
+          <p>Owns the personnel side of deployment eligibility: records, availability coding, and the accuracy of what the personnel systems say about a member. When a member's status on paper disagrees with reality, this office is usually part of the fix.</p>
+        </div>
+
+        <div class="role-card key">
+          <div class="role-name">Unit Deployment Manager</div>
+          <div class="role-abbr">UDM</div>
+          <p>The squadron's translator and tracker. The UDM turns installation level requirements into squadron level action, keeps the readiness picture current, and surfaces problems while they are still small enough to fix. In a contracting squadron this is an additional duty carried alongside a full contracting workload.</p>
+        </div>
+
+        <div class="role-card">
+          <div class="role-name">Deploying member</div>
+          <div class="role-abbr">The person going</div>
+          <p>Owns their own readiness. Appointments, currencies, family care arrangements, and personal affairs belong to the member. A UDM tracks, reminds, and clears obstacles, and cannot substitute for a member who does not engage.</p>
+        </div>
+
+        <div class="role-card">
+          <div class="role-name">Outside agencies</div>
+          <div class="role-abbr">Everyone else</div>
+          <p>Medical, dental, finance, legal, security, the chaplain, and logistics readiness each own a piece of whether a member is deployable. A UDM tracks the status of those pieces without owning the content of any of them. Knowing which office to call is most of the skill.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 02 WORKCENTERS -->
+    <section class="udm-section wide" id="workcenters">
+      <h2><span class="num">02</span>Execution day workcenters</h2>
+      <p>When a deployment actually executes, the installation stands up a set of workcenters. These are the stations a member physically moves through, and each one checks something different. Knowing what happens at each stop is how a UDM prepares people for a day that otherwise feels like being processed by strangers.</p>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-num">STOP 01</div>
+          <div class="flow-name">Deployment Control Center</div>
+          <p>The installation's command node for the operation. Tracks the overall timeline, resolves problems that cross unit lines, and reports status upward.</p>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">STOP 02</div>
+          <div class="flow-name">Unit Deployment Control Center</div>
+          <p>The squadron's own cell during execution. This is where a UDM usually lives on a deployment day, feeding status to the installation and chasing down the squadron's own loose ends.</p>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">STOP 03</div>
+          <div class="flow-name">Personnel Deployment Function</div>
+          <p>Where people get processed. Identity and records verification, remaining briefings, final eligibility checks, and manifesting. For a contracting squadron this is the station that matters most.</p>
+        </div>
+        <div class="flow-step muted">
+          <div class="flow-num">STOP 04</div>
+          <div class="flow-name">Cargo Deployment Function</div>
+          <p>Where unit equipment is received, inspected, and prepared for movement. Contracting squadrons deploy people rather than equipment packages, so this station is usually somebody else's concern.</p>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">STOP 05</div>
+          <div class="flow-name">Air Passenger Terminal</div>
+          <p>The last stop. Baggage, weigh in, show times, and the aircraft. Once a member is here, anything unresolved is a much bigger problem than it was a week earlier.</p>
+        </div>
+      </div>
+
+      <div class="udm-callout">
+        <div class="callout-label">The practical version</div>
+        <p>A member who arrives at the personnel processing station missing a currency, a document, or a signature does not usually get waved through. They get pulled aside, and somebody spends the next several hours fixing on the day what could have been fixed in a ten minute conversation two months earlier. The value a UDM adds sits almost entirely in those two months, not on execution day.</p>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 03 RULES -->
+    <section class="udm-section" id="rules">
+      <h2><span class="num">03</span>Where the rules live</h2>
+      <p>Deployment guidance stacks in layers, and the layer that answers a given question is usually the most local one.</p>
+
+      <h3>The service level</h3>
+      <p>Air Force instructions cover deployment planning and execution, personnel readiness, and the training programs that feed both. The job qualification standard for unit deployment managers points at a stack of them, including Air Force Instruction 10-403 on deployment planning and execution, which is the closest thing to a parent document for this work. These are worth knowing exist. Reading them cover to cover is a poor use of a first month.</p>
+
+      <h3>The supplement</h3>
+      <p>Major commands and wings publish supplements that tighten or localize the service level rule. When published guidance and local practice disagree, a supplement is often the reason, and it is a fair question to put to the readiness cell.</p>
+
+      <h3>The installation deployment plan</h3>
+      <p>The local plan is where the answers a UDM actually needs tend to live: how this installation runs its deployment process, what the local standard looks like, and who does what during execution. Getting a current copy from the Installation Deployment Readiness Cell (IDRC) early is one of the higher value things a new UDM can do, because it converts a lot of guesswork into reading.</p>
+
+      <h3>When guidance is wrong</h3>
+      <p>Air Force Form 847 is the mechanism for recommending a change to a publication. It comes up rarely, and it is worth knowing about for the case where a published procedure genuinely does not work at the installation level.</p>
+
+      <div class="udm-callout">
+        <div class="callout-label">A note on currency</div>
+        <p>Deployment guidance changes often, and force generation guidance changes faster than most. Anything read here, or anywhere else that is not the current publication and the current installation deployment plan, is orientation rather than authority. Confirm specifics with the IDRC before acting on them.</p>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 04 ORDERS -->
+    <section class="udm-section wide" id="orders">
+      <h2><span class="num">04</span>Types of orders</h2>
+      <p>Military orders have names that sound interchangeable and are not. A UDM rarely reads these documents directly, since what reaches a squadron is usually the effect of an order passed down through the readiness cell and the Functional Area Manager. Recognizing the names still matters, because it tells a UDM how firm a thing is and how much time is left.</p>
+
+      <div class="order-list">
+
+        <div class="order-card">
+          <div class="order-head">
+            <div class="order-abbr">WARNORD</div>
+            <div class="order-full">Warning Order</div>
+          </div>
+          <div class="order-body">
+            <p class="says">Something may be coming. Start thinking about it.</p>
+            <p>The earliest formal heads up. Nothing is committed and details will change. For a UDM this is the moment to look at the readiness picture with fresh eyes rather than to alarm the squadron.</p>
+          </div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-head">
+            <div class="order-abbr">PTDO</div>
+            <div class="order-full">Prepare to Deploy Order</div>
+          </div>
+          <div class="order-body">
+            <p class="says">Be ready to move within a set window.</p>
+            <p>This one has teeth. It puts named forces on a readiness posture with a clock attached. Currencies that were merely expiring become urgent, and gaps that could be worked slowly cannot be.</p>
+          </div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-head">
+            <div class="order-abbr">DEPORD</div>
+            <div class="order-full">Deployment Order</div>
+          </div>
+          <div class="order-body">
+            <p class="says">These forces are moving.</p>
+            <p>Directs the actual movement of specified forces to a location. By the time this reaches a squadron, the question has shifted from whether someone goes to whether everything is in place for the person who is going.</p>
+          </div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-head">
+            <div class="order-abbr">EXORD</div>
+            <div class="order-full">Execute Order</div>
+          </div>
+          <div class="order-body">
+            <p class="says">Begin the operation.</p>
+            <p>Directs execution of an operation, typically carrying the authority and timing behind it. Deployment and execute orders often travel close together, which is why the two names get used loosely in conversation.</p>
+          </div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-head">
+            <div class="order-abbr">OPORD</div>
+            <div class="order-full">Operation Order</div>
+          </div>
+          <div class="order-body">
+            <p class="says">Here is the detailed plan.</p>
+            <p>The full order for an operation: mission, tasks, coordinating instructions, and the supporting detail. Large, mostly aimed at planners and operators rather than at unit deployment managers, though the requirements that flow down to a squadron often originate in one.</p>
+          </div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-head">
+            <div class="order-abbr">FRAGO</div>
+            <div class="order-full">Fragmentary Order</div>
+          </div>
+          <div class="order-body">
+            <p class="says">Part of the previous order just changed.</p>
+            <p>A change to an order already issued, sent instead of rewriting the whole thing. Practically, this is the mechanism by which dates slip, numbers change, and requirements get added. A tasking that looked settled last week can move because of one of these.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="udm-callout">
+        <div class="callout-label">The short version</div>
+        <p>Warning order means something may happen. Prepare to deploy order means get ready now. Deployment and execute orders mean it is happening. Operation orders carry the detail, and fragmentary orders change what was already sent.</p>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 05 HANDOFF -->
+    <section class="udm-section" id="handoff">
+      <h2><span class="num">05</span>Working with the IDRC</h2>
+      <p>The Installation Deployment Readiness Cell is accountable for getting members out the door, which puts them in the driver's seat and makes a UDM their reach into the squadron. That relationship works best when the traffic runs both directions early and often. Being new is a reason to call them more, not less.</p>
+
+      <div class="handoff">
+        <div class="handoff-col">
+          <div class="handoff-label">What you bring</div>
+          <ul>
+            <li>An accurate picture of who is in the squadron and what condition each person is in.</li>
+            <li>Early warning when something is drifting, while it is still a scheduling problem rather than a shortfall.</li>
+            <li>The squadron's questions consolidated into one voice instead of ten people calling separately.</li>
+            <li>Context the readiness cell does not have: who is about to go on leave, who is mid permanent change of station, which member is already carrying three other additional duties.</li>
+          </ul>
+        </div>
+        <div class="handoff-col">
+          <div class="handoff-label">What the IDRC owns</div>
+          <ul>
+            <li>The installation deployment plan and the local standard for what ready means here.</li>
+            <li>The tasking flow coming down from above and the timeline attached to it.</li>
+            <li>The execution day schedule and the workcenters that run it.</li>
+            <li>Training and guidance for the unit deployment managers across the installation, including this one.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <nav class="module-nav" aria-label="Module navigation">
+      <a href="unit-deployment-manager.html">&larr; UDM hub</a>
+      <a href="unit-deployment-manager.html">All modules &rarr;</a>
+    </nav>
+
+  </div>
+</div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+<script src="main.js"></script>
+<script src="player.js"></script>
+</body>
+</html>
