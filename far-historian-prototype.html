@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Compare a historical Federal Acquisition Regulation edition with the newest available FAR.">
+  <title>FAR Historian Prototype · KTHQ</title>
+  <link rel="stylesheet" href="far-historian-prototype.css?v=20260830-1">
+</head>
+<body>
+  <a class="skip-link" href="#comparison">Skip to comparison</a>
+
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="KTHQ home">
+      <span class="brand-mark">KTHQ</span>
+      <span class="brand-name">ContractingHQ</span>
+    </a>
+    <div class="archive-stamp" aria-hidden="true">
+      <span>48 CFR</span>
+      <b>POINT-IN-TIME ARCHIVE</b>
+    </div>
+    <a class="exit-link" href="tools.html">All tools <span aria-hidden="true">→</span></a>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div class="eyebrow"><span class="live-dot"></span> Official source comparison</div>
+      <h1 id="page-title">FAR <span>Historian</span></h1>
+      <p>Choose a FAR part and an older edition. We’ll compare it directly with the newest available text and surface what changed.</p>
+      <div class="source-line">
+        <span>Modern record: eCFR point-in-time data</span>
+        <span>Coverage begins January 2017</span>
+      </div>
+    </section>
+
+    <section class="compare-deck" aria-labelledby="compare-heading">
+      <div class="deck-heading">
+        <div>
+          <span class="step-number">01</span>
+          <h2 id="compare-heading">Build your comparison</h2>
+        </div>
+        <p id="ledger-summary">Select a FAR part to load its amendment history.</p>
+      </div>
+
+      <div class="comparison-builder">
+        <div class="edition-card historical-card">
+          <div class="edition-label">Historical edition</div>
+          <label for="part-select">FAR part</label>
+          <select id="part-select" aria-describedby="part-help"></select>
+          <span class="field-help" id="part-help">Federal Acquisition Regulation, 48 CFR Chapter 1</span>
+
+          <div id="subpart-wrap" hidden>
+            <label for="subpart-select">Part 52 division</label>
+            <select id="subpart-select">
+              <option value="52.1">Subpart 52.1 — Instructions for provisions and clauses</option>
+              <option value="52.2" selected>Subpart 52.2 — Text of provisions and clauses</option>
+              <option value="52.3">Subpart 52.3 — Provision and clause matrix</option>
+            </select>
+          </div>
+
+          <label for="historical-date">As it appeared on</label>
+          <select id="historical-date" disabled>
+            <option>Loading amendment dates…</option>
+          </select>
+          <span class="field-help" id="historical-help">Pick the older version you want to examine.</span>
+        </div>
+
+        <div class="compare-rail" aria-hidden="true">
+          <span></span>
+          <b>VS</b>
+          <span></span>
+        </div>
+
+        <div class="edition-card current-card">
+          <div class="edition-label">Comparison edition</div>
+          <div class="current-lock">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 10V7a4 4 0 0 1 8 0v3m-9 0h10a2 2 0 0 1 2 2v7H5v-7a2 2 0 0 1 2-2Z"/></svg>
+            <div>
+              <span>Newest available FAR</span>
+              <strong id="current-date">Checking latest edition…</strong>
+            </div>
+          </div>
+          <p>The newest amendment date for the selected FAR part stays fixed, so every result answers the same question: what changed between then and now?</p>
+          <div class="current-badge"><span></span> Current comparison target</div>
+        </div>
+      </div>
+
+      <div class="builder-actions">
+        <div class="data-health" id="data-health" role="status" aria-live="polite">
+          <span class="health-light"></span>
+          <span>Connecting to the FAR archive…</span>
+        </div>
+        <button class="primary-action" id="compare-button" disabled>
+          <span>Compare editions</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <section class="loading-panel" id="loading-panel" hidden aria-live="polite">
+      <div class="loader-ring"><span></span><span></span></div>
+      <div>
+        <strong id="loading-title">Retrieving both editions</strong>
+        <p id="loading-detail">Historical snapshots can take a few seconds on their first load.</p>
+      </div>
+    </section>
+
+    <section class="error-panel" id="error-panel" hidden role="alert">
+      <div class="error-code">ARCHIVE CONNECTION</div>
+      <div>
+        <h2>We couldn’t finish that comparison.</h2>
+        <p id="error-message"></p>
+      </div>
+      <button id="retry-button">Try again</button>
+    </section>
+
+    <section class="results" id="comparison" hidden aria-labelledby="results-title">
+      <div class="results-header">
+        <div>
+          <span class="step-number">02</span>
+          <div>
+            <div class="results-kicker" id="results-kicker">Comparison complete</div>
+            <h2 id="results-title">What changed</h2>
+          </div>
+        </div>
+        <button class="new-comparison" id="new-comparison">New comparison</button>
+      </div>
+
+      <div class="summary-grid" id="summary-grid">
+        <div class="summary-card primary-summary">
+          <span>Comparison</span>
+          <strong id="summary-range">—</strong>
+          <small id="summary-part">—</small>
+        </div>
+        <div class="summary-card changed-summary">
+          <span>Changed</span>
+          <strong id="changed-count">0</strong>
+          <small>sections revised</small>
+        </div>
+        <div class="summary-card added-summary">
+          <span>Added</span>
+          <strong id="added-count">0</strong>
+          <small>new sections</small>
+        </div>
+        <div class="summary-card removed-summary">
+          <span>Removed</span>
+          <strong id="removed-count">0</strong>
+          <small>retired sections</small>
+        </div>
+      </div>
+
+      <div class="results-toolbar">
+        <div class="view-switch" role="group" aria-label="Comparison layout">
+          <button class="active" data-view="redline" aria-pressed="true">Inline redline</button>
+          <button data-view="split" aria-pressed="false">Side by side</button>
+        </div>
+        <label class="change-filter">
+          <input type="checkbox" id="changed-only" checked>
+          <span class="filter-track"><span></span></span>
+          Show changed sections only
+        </label>
+      </div>
+
+      <div class="record-layout">
+        <aside class="section-index" aria-labelledby="section-index-title">
+          <div class="index-heading">
+            <span>Navigation</span>
+            <h3 id="section-index-title">Sections</h3>
+          </div>
+          <nav id="section-list" aria-label="Sections in this comparison"></nav>
+        </aside>
+
+        <article class="record" id="record">
+          <div class="record-empty" id="record-empty" hidden>
+            <div>NO MATERIAL CHANGE</div>
+            <h3>These editions match.</h3>
+            <p>No section-level text changes were found between the selected dates.</p>
+          </div>
+          <div id="record-body"></div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>FAR Historian prototype</span>
+    <span>Source material remains authoritative at eCFR.gov.</span>
+  </footer>
+
+  <script src="far-historian-prototype.js?v=20260830-1"></script>
+</body>
+</html>

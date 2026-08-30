@@ -15,7 +15,7 @@
 const ECFR = "https://www.ecfr.gov/api/versioner/v1";
 
 export default {
-  async fetch(req, env) {
+  async fetch(req, env, ctx) {
     const url = new URL(req.url);
     const p = url.pathname;
 
@@ -26,10 +26,15 @@ export default {
       if (p === "/api/annual/years")  return cors(await annualYears(url, env));
       if (p === "/api/annual/part")   return cors(await annualPart(url, env));
       if (p === "/api/annual")        return cors(await annualSection(url, env));
-      if (p.startsWith("/api/ecfr/")) return cors(await proxyEcfr(p, url));
+      if (p.startsWith("/api/ecfr/")) return cors(await proxyEcfr(p, url, ctx));
       if (p === "/api/ingest")        return cors(await ingestGuard(url, env)); // see ingest.mjs
       return cors(json({ error: "not found" }, 404));
     } catch (e) {
+      console.error(JSON.stringify({
+        message: "FAR Historian request failed",
+        path: p,
+        error: String(e && e.message || e),
+      }));
       return cors(json({ error: String(e && e.message || e) }, 500));
     }
   },
@@ -113,18 +118,60 @@ async function annualPart(url, env) {
 
 /* ----------------------- eCFR proxy (CORS + edge cache) ------------ */
 
-async function proxyEcfr(pathname, url) {
+async function proxyEcfr(pathname, url, ctx) {
   const target = `${ECFR}/${pathname.slice("/api/ecfr/".length)}${url.search}`;
   const cache = caches.default;
   const cacheKey = new Request(target);
-  let res = await cache.get(cacheKey);
-  if (res) return res;
-  const upstream = await fetch(target);
-  res = new Response(upstream.body, upstream);
-  res.headers.set("Cache-Control", "public, max-age=86400");
-  // point-in-time and annual data are immutable; the daily feed is handled separately.
-  await caches.default.put(cacheKey, res.clone());
-  return res;
+  const hit = await cache.match(cacheKey);
+  if (hit) {
+    const headers = new Headers(hit.headers);
+    headers.set("x-kthq-cache", "hit");
+    return new Response(hit.body, { status: hit.status, headers });
+  }
+
+  const upstream = await fetchEcfrWithRetry(target);
+  const headers = new Headers(upstream.headers);
+  headers.delete("set-cookie");
+  headers.set("Cache-Control", "public, max-age=86400");
+  headers.set("x-kthq-cache", "miss");
+  const response = new Response(upstream.body, {
+    status: upstream.status,
+    statusText: upstream.statusText,
+    headers,
+  });
+
+  // Point-in-time snapshots are immutable. Cache successful responses after
+  // returning the streaming body so users do not wait on the cache write.
+  if (response.ok) {
+    ctx.waitUntil(cache.put(cacheKey, response.clone()).catch((error) => {
+      console.error(JSON.stringify({
+        message: "FAR Historian cache write failed",
+        target,
+        error: String(error && error.message || error),
+      }));
+    }));
+  }
+  return response;
+}
+
+async function fetchEcfrWithRetry(target) {
+  let lastStatus;
+  let lastError;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const response = await fetch(target, {
+        headers: { accept: "application/json, application/xml, text/xml;q=0.9, */*;q=0.8" },
+        signal: AbortSignal.timeout(8000),
+      });
+      if (response.ok || ![429, 502, 503, 504].includes(response.status)) return response;
+      lastStatus = response.status;
+      await response.body?.cancel();
+    } catch (error) {
+      lastError = error;
+    }
+    if (attempt < 2) await new Promise((resolve) => setTimeout(resolve, 350 * (attempt + 1)));
+  }
+  throw lastError || new Error(`eCFR returned HTTP ${lastStatus || 503}`);
 }
 
 /* ----------------------- ingest route guard ------------------------ */
