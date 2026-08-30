@@ -2215,7 +2215,6 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'contract-action-reports.html',
     'contract-closeout.html',
     'contract-specific-cor-training.html',
-    'contingency-contracting.html',
     'acsas.html',
     'afcap.html',
     'afcap-volume-ii.html',
