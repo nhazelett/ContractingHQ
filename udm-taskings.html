@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Unit Deployment Manager Module 04: how taskings reach a contracting squadron, how to read a tasking line in the TPFDD field by field, deployment eligibility, line remarks, and what to do when the squadron cannot fill a tasking." />
+  <title>UDM Module 04: Taskings, the TPFDD, and Shortfalls - ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>
+    .udm-page-bg {
+      --udm-cyan: #22d3ee;
+      background:
+        radial-gradient(ellipse 110% 35% at 50% 0%,   rgba(34,211,238,0.09) 0%, transparent 65%),
+        radial-gradient(ellipse 80%  25% at 0%   50%, rgba(34,211,238,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 80%  25% at 100% 50%, rgba(34,211,238,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 110% 30% at 50% 100%, rgba(34,211,238,0.07) 0%, transparent 65%),
+        #040d1f;
+      padding: 0 0 6rem;
+      min-height: 100vh;
+    }
+
+    /* ── Hero ── */
+    .udm-intro { text-align: center; margin: 0 auto; max-width: 820px; padding: 4rem 1.5rem 1.5rem; }
+    .udm-intro-tag {
+      display: inline-block;
+      background: rgba(34,211,238,0.1);
+      border: 1px solid rgba(34,211,238,0.3);
+      color: var(--udm-cyan);
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 0.28rem 0.95rem; border-radius: 100px;
+      margin-bottom: 0.85rem;
+    }
+    .udm-intro h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(1.7rem, 3.8vw, 2.4rem);
+      font-weight: 700; color: var(--white);
+      margin-bottom: 0.35rem; line-height: 1.15;
+    }
+    .udm-intro .subtitle {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.9rem; font-weight: 600;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--udm-cyan); margin-bottom: 1.1rem;
+    }
+    .udm-intro .lead { color: var(--silver); font-size: 0.95rem; max-width: 700px; margin: 0 auto; line-height: 1.7; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      color: var(--silver); font-size: 0.82rem; text-decoration: none;
+      margin-top: 1.35rem; transition: color 0.15s;
+    }
+    .back-link:hover, .back-link:focus-visible { color: var(--udm-cyan); }
+
+    /* ── Sticky table of contents ── */
+    .toc-bar {
+      position: sticky; top: 0; z-index: 90;
+      background: rgba(4,13,31,0.95);
+      border-top: 1px solid rgba(34,211,238,0.15);
+      border-bottom: 1px solid rgba(34,211,238,0.25);
+      backdrop-filter: blur(10px);
+      margin: 1.75rem 0 3rem;
+      box-shadow: 0 2px 12px rgba(34,211,238,0.06);
+    }
+    .toc-inner {
+      max-width: 1000px; margin: 0 auto;
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.7rem 1.5rem; flex-wrap: wrap;
+    }
+    .toc-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 1.6px; text-transform: uppercase;
+      color: #7c8ca3; flex-shrink: 0;
+    }
+    .toc-list { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+    .toc-list a {
+      color: var(--silver); font-size: 0.8rem; text-decoration: none;
+      padding: 0.3rem 0.7rem; border-radius: 6px;
+      border: 1px solid transparent; transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .toc-list a:hover, .toc-list a:focus-visible {
+      color: var(--udm-cyan); background: rgba(34,211,238,0.07);
+      border-color: rgba(34,211,238,0.25);
+    }
+
+    /* ── Sections ── */
+    .udm-wrap { max-width: 1000px; margin: 0 auto; padding: 0 1.5rem; }
+    .udm-section { max-width: 820px; margin: 0 auto 3.25rem; scroll-margin-top: 90px; }
+    .udm-section.wide { max-width: 1000px; }
+    .udm-section h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.5rem; font-weight: 700; color: var(--white);
+      margin-bottom: 0.9rem; display: flex; align-items: baseline; gap: 0.75rem;
+    }
+    .udm-section h2 .num {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.85rem; font-weight: 700;
+      letter-spacing: 1.5px; color: var(--udm-cyan);
+      border: 1px solid rgba(34,211,238,0.35);
+      border-radius: 5px; padding: 0.12rem 0.45rem; flex-shrink: 0;
+    }
+    .udm-section h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem; font-weight: 700; color: #dbe6f3;
+      margin: 1.75rem 0 0.6rem;
+    }
+    .udm-section p { color: var(--silver); font-size: 0.92rem; line-height: 1.75; margin-bottom: 1rem; }
+    .udm-section.wide > p { max-width: 820px; }
+    .udm-section ul { color: var(--silver); font-size: 0.92rem; line-height: 1.75; padding-left: 1.15rem; margin-bottom: 1rem; }
+    .udm-section li { margin-bottom: 0.5rem; }
+    .udm-section strong { color: #dbe6f3; }
+
+    /* ── Callout ── */
+    .udm-callout {
+      background: rgba(34,211,238,0.06);
+      border: 1px solid rgba(34,211,238,0.22);
+      border-left: 3px solid var(--udm-cyan);
+      border-radius: 8px; padding: 1.05rem 1.25rem; margin: 1.5rem 0;
+    }
+    .udm-callout .callout-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 1.8px; text-transform: uppercase;
+      color: var(--udm-cyan); margin-bottom: 0.4rem;
+    }
+    .udm-callout p { margin: 0; color: #c9d6e5; font-size: 0.9rem; line-height: 1.7; }
+    .udm-callout p + p { margin-top: 0.7rem; }
+
+    /* ── Role cards ── */
+    .role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 0.9rem; margin: 1.5rem 0; }
+    .role-card {
+      background: rgba(10,22,50,0.7);
+      border: 1px solid rgba(34,211,238,0.13);
+      border-radius: 10px; padding: 1.05rem 1.15rem;
+    }
+    .role-card.key { border-color: rgba(34,211,238,0.42); background: rgba(34,211,238,0.05); }
+    .role-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.05rem; font-weight: 700; color: var(--white);
+      line-height: 1.25; margin-bottom: 0.15rem;
+    }
+    .role-abbr {
+      font-family: 'IBM Plex Mono', 'Courier New', monospace;
+      font-size: 0.68rem; letter-spacing: 1.2px;
+      color: var(--udm-cyan); text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .role-card p { font-size: 0.86rem; line-height: 1.65; margin: 0; color: var(--silver); }
+
+    /* ── Station flow ── */
+    .flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin: 1.5rem 0; }
+    .flow-step {
+      background: rgba(10,22,50,0.7);
+      border: 1px solid rgba(34,211,238,0.13);
+      border-radius: 10px; padding: 0.95rem 1rem;
+      position: relative;
+    }
+    .flow-num {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 1.4px;
+      color: var(--udm-cyan); margin-bottom: 0.3rem;
+    }
+    .flow-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.98rem; font-weight: 700; color: var(--white);
+      line-height: 1.25; margin-bottom: 0.35rem;
+    }
+    .flow-step p { font-size: 0.82rem; line-height: 1.6; margin: 0; color: var(--silver); }
+    .flow-step.muted { opacity: 0.72; }
+
+    /* ── Order cards ── */
+    .order-list { display: flex; flex-direction: column; gap: 0.75rem; margin: 1.5rem 0; }
+    .order-card {
+      background: rgba(10,22,50,0.7);
+      border: 1px solid rgba(34,211,238,0.13);
+      border-left: 3px solid rgba(34,211,238,0.5);
+      border-radius: 10px; padding: 1rem 1.2rem;
+      display: grid; grid-template-columns: 200px 1fr; gap: 1.2rem; align-items: start;
+    }
+    .order-head { min-width: 0; }
+    .order-abbr {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.15rem; font-weight: 700; color: var(--udm-cyan);
+      line-height: 1.2;
+    }
+    .order-full { font-size: 0.78rem; color: #8a9bb0; line-height: 1.4; margin-top: 0.15rem; }
+    .order-body p { margin: 0; font-size: 0.88rem; line-height: 1.7; color: var(--silver); }
+    .order-body p + p { margin-top: 0.5rem; }
+    .order-body .says { color: #dbe6f3; }
+
+    /* ── IDRC handoff ── */
+    .handoff {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+      border: 1px solid rgba(34,211,238,0.28);
+      border-radius: 12px; overflow: hidden; margin: 1.5rem 0 0;
+      background: rgba(10,22,50,0.6);
+    }
+    .handoff-col { padding: 1.25rem 1.4rem; }
+    .handoff-col + .handoff-col { border-left: 1px solid rgba(34,211,238,0.2); }
+    .handoff.three { grid-template-columns: repeat(3, 1fr); }
+    @media (max-width: 900px) {
+      .handoff.three { grid-template-columns: 1fr; }
+      .handoff.three .handoff-col + .handoff-col { border-left: none; border-top: 1px solid rgba(34,211,238,0.2); }
+    }
+    .handoff-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 1.8px; text-transform: uppercase;
+      color: var(--udm-cyan); margin-bottom: 0.7rem;
+    }
+    .handoff-col ul { margin: 0; padding-left: 1.1rem; }
+    .handoff-col li { font-size: 0.86rem; line-height: 1.6; color: var(--silver); margin-bottom: 0.45rem; }
+    .handoff-col li:last-child { margin-bottom: 0; }
+
+    /* ── Next / prev ── */
+    .module-nav {
+      max-width: 820px; margin: 3.5rem auto 0;
+      display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    }
+    .module-nav a {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: rgba(10,22,50,0.8);
+      border: 1px solid rgba(34,211,238,0.2);
+      border-radius: 8px; padding: 0.7rem 1.1rem;
+      color: #c9d6e5; font-size: 0.85rem; text-decoration: none;
+      transition: border-color 0.18s, color 0.18s, background 0.18s;
+    }
+    .module-nav a:hover, .module-nav a:focus-visible {
+      border-color: rgba(34,211,238,0.5); color: var(--udm-cyan); background: rgba(34,211,238,0.06);
+    }
+
+    .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(34,211,238,0.22), transparent); margin: 0 auto 3.25rem; max-width: 900px; }
+
+    @media (max-width: 700px) {
+      .order-card { grid-template-columns: 1fr; gap: 0.5rem; }
+      .handoff { grid-template-columns: 1fr; }
+      .handoff-col + .handoff-col { border-left: none; border-top: 1px solid rgba(34,211,238,0.2); }
+    }
+
+    /* ── Data table ── */
+    .utc-table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+    .utc-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; min-width: 520px; }
+    .utc-table caption { text-align: left; font-size: 0.8rem; color: #7c8ca3; padding-bottom: 0.6rem; }
+    .utc-table th {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 1.3px; text-transform: uppercase;
+      color: var(--udm-cyan); text-align: left;
+      padding: 0.6rem 0.85rem;
+      border-bottom: 1px solid rgba(34,211,238,0.3);
+    }
+    .utc-table td {
+      padding: 0.7rem 0.85rem; color: var(--silver);
+      line-height: 1.6; border-bottom: 1px solid rgba(74,158,255,0.08);
+      vertical-align: top;
+    }
+    .utc-table tr:last-child td { border-bottom: none; }
+    .utc-table td:first-child { color: #dbe6f3; font-weight: 600; white-space: nowrap; }
+
+    /* ── Chip row ── */
+    .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.25rem 0; }
+    .chip {
+      background: rgba(10,22,50,0.8);
+      border: 1px solid rgba(34,211,238,0.2);
+      border-radius: 100px; padding: 0.4rem 0.9rem;
+      font-size: 0.82rem; color: #c9d6e5;
+    }
+    .chip span { color: var(--udm-cyan); font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: 0.8px; }
+    .chip.code {
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: 0.95rem; letter-spacing: 1.4px; color: #dbe6f3;
+      padding: 0.45rem 1.05rem;
+    }
+    .chip.code.common { border-color: rgba(34,211,238,0.55); background: rgba(34,211,238,0.08); color: var(--udm-cyan); }
+    .chip-note { font-size: 0.8rem; color: #7c8ca3; margin: 0.3rem 0 1.25rem; }
+
+    /* ── Emphasis panel ── */
+    .stakes {
+      background: linear-gradient(135deg, rgba(34,211,238,0.07), rgba(10,22,50,0.7));
+      border: 1px solid rgba(34,211,238,0.3);
+      border-radius: 12px; padding: 1.4rem 1.5rem; margin: 1.75rem 0;
+    }
+    .stakes h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.15rem; font-weight: 700; color: var(--white);
+      margin: 0 0 0.6rem;
+    }
+    .stakes p { font-size: 0.9rem; line-height: 1.75; margin: 0 0 0.8rem; color: #c9d6e5; }
+    .stakes p:last-child { margin-bottom: 0; }
+
+    /* ── Grouped table rows ── */
+    .utc-table tr.group-head td {
+      background: rgba(34,211,238,0.06);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 1.6px; text-transform: uppercase;
+      color: var(--udm-cyan); padding: 0.5rem 0.85rem;
+    }
+    .utc-table td.field {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700; color: var(--udm-cyan);
+      letter-spacing: 0.6px; white-space: nowrap;
+    }
+    .utc-table td.field small { display: block; font-family: 'Inter', sans-serif; font-weight: 400; color: #7c8ca3; letter-spacing: 0; font-size: 0.72rem; margin-top: 0.15rem; white-space: normal; }
+  </style>
+      <!-- Open Graph & Twitter Card -->
+  <meta property="og:type"        content="article" />
+  <meta property="og:site_name"   content="ContractingHQ" />
+  <meta property="og:title"       content="UDM Module 04: Taskings, the TPFDD, and Shortfalls - ContractingHQ" />
+  <meta property="og:description" content="How taskings reach a contracting squadron, reading a tasking line field by field, deployment eligibility, line remarks, and what to do when the squadron cannot fill one." />
+  <meta property="og:url"         content="https://kthq.org/udm-taskings.html" />
+  <meta property="og:image"       content="https://kthq.org/og-image.png" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@ContractingHQ" />
+  <meta name="twitter:title"       content="UDM Module 04: Taskings, the TPFDD, and Shortfalls - ContractingHQ" />
+  <meta name="twitter:description" content="How taskings reach a contracting squadron, reading a tasking line field by field, deployment eligibility, line remarks, and what to do when the squadron cannot fill one." />
+  <meta name="twitter:image"       content="https://kthq.org/og-image.png" />
+  <link rel="canonical"            href="https://kthq.org/udm-taskings.html" />
+</head>
+<body>
+<!-- NAV -->
+<nav class="navbar" id="navbar" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main id="main">
+<div class="udm-page-bg">
+
+  <!-- HERO -->
+  <div class="udm-intro">
+    <div class="udm-intro-tag">Module 04</div>
+    <h1>Taskings, the TPFDD, and Shortfalls</h1>
+    <div class="subtitle">Unit Deployment Manager</div>
+    <p class="lead">A tasking arrives as a line of structured data that says who is needed, where, and by when. Reading that line correctly is most of the work, and knowing what to do when the squadron cannot fill it is the rest.</p>
+    <div><a href="unit-deployment-manager.html" class="back-link">&larr; Back to the UDM hub</a></div>
+  </div>
+
+  <!-- TOC -->
+  <nav class="toc-bar" aria-label="On this page">
+    <div class="toc-inner">
+      <div class="toc-label">On this page</div>
+      <div class="toc-list">
+        <a href="#arrive">How taskings arrive</a>
+        <a href="#tpfdd">Reading a tasking line</a>
+        <a href="#eligibility">Deployment eligibility</a>
+        <a href="#remarks">Line remarks</a>
+        <a href="#shortfall">When you cannot fill it</a>
+        <a href="#handoff">Working the problem</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="udm-wrap">
+
+    <!-- 01 -->
+    <section class="udm-section" id="arrive">
+      <h2><span class="num">01</span>How taskings arrive</h2>
+      <p>Requirements start with a commander who needs a capability, get built into a plan, and eventually reach a squadron as a request for specific people. How much warning comes with that depends on which path the requirement took.</p>
+
+      <h3>Planned and unplanned</h3>
+      <p>Contingency planning happens in advance. Commands define the situations they consider most likely, identify what forces those situations would need, and build the requirements ahead of time so a response can move quickly. Crisis action planning happens when something actually occurs, and it compresses the same work into far less time.</p>
+      <p>A UDM feels the difference as lead time. A requirement that came out of deliberate planning may arrive with months of visibility. One that came out of a crisis can arrive with weeks or less, against a squadron whose readiness picture is whatever it happened to be that morning. The tracking work in Module 03 exists mostly to make the second case survivable.</p>
+
+      <h3>Rotational and everything else</h3>
+      <p>Rotational taskings follow the force generation cycle and are the most predictable thing a squadron sees. They align to the phases, they come with reasonable notice, and they are the taskings a squadron can genuinely plan around.</p>
+      <p>Outside that, requirements can arrive off cycle. Sourcing an off cycle requirement usually means a waiver of some kind, because it is asking a unit to provide capability during a phase where it was not expected to. Those come with their own approval path, and the Installation Deployment Readiness Cell (IDRC) knows the current one.</p>
+
+      <h3>Shapes contracting sees more than most</h3>
+      <ul>
+        <li><strong>Individual taskings.</strong> Contracting frequently sources one or two people against a requirement rather than a formed team. The sourcing conversation gets specific about names quickly, which is why the Functional Area Manager stays close to it.</li>
+        <li><strong>Civilian deployments.</strong> Air Force civilians deploy, and contracting uses that more than many career fields. The requirements around a civilian deployment differ from a military one in enough places that it is worth asking the readiness cell early rather than assuming the process matches.</li>
+        <li><strong>Extended individual taskings.</strong> Year long individual assignments to a deployed location exist and land on contracting periodically. They carry different reporting, different preparation, and a much larger effect on a small squadron than a standard rotation does.</li>
+      </ul>
+
+      <div class="udm-callout">
+        <div class="callout-label">Who is sourcing what</div>
+        <p>Force sourcing means matching real people to a requirement, and for contracting that runs through the Functional Area Manager. The requirement is visible to force providers well before a name is attached to it. A UDM with a working relationship at that level often hears what is coming before it formally arrives, which is worth more than any amount of preparation after the fact.</p>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 02 -->
+    <section class="udm-section wide" id="tpfdd">
+      <h2><span class="num">02</span>Reading a tasking line</h2>
+      <p>Time phased force and deployment data, universally called the TPFDD, is the structured record of what moves, when, and in what order. A combatant commander builds the movement requirements, and the result is a set of lines that force providers source against.</p>
+      <p>Contracting squadrons deploy people, so the fields below are the personnel relevant ones. A TPFDD carries a great deal of cargo and equipment detail that belongs to units that move equipment.</p>
+
+      <div class="utc-table-wrap">
+        <table class="utc-table">
+          <caption>Fields on a tasking line, and what a UDM does with each</caption>
+          <thead>
+            <tr><th scope="col">Field</th><th scope="col">What it means</th><th scope="col">What you do with it</th></tr>
+          </thead>
+          <tbody>
+            <tr class="group-head"><td colspan="3">Identifying the requirement</td></tr>
+            <tr>
+              <td class="field">ULN<small>Unit line number</small></td>
+              <td>A code identifying a unique increment of a requirement. Once a person is sourced against it, this is the thread tying that person to that tasking.</td>
+              <td>Use it as the reference in every conversation about the tasking. Ambiguity about which line is being discussed causes real problems.</td>
+            </tr>
+            <tr>
+              <td class="field">FRN<small>Force requirement number</small></td>
+              <td>Identifies the capability requirement and connects it to a mission and a phase of an operation.</td>
+              <td>Tells you what larger effort the tasking belongs to, which is useful context when explaining it to a member or a commander.</td>
+            </tr>
+            <tr>
+              <td class="field">UTC<small>Unit type code</small></td>
+              <td>The capability being requested.</td>
+              <td>Tells you which skill levels and grades the line expects. Module 02 covers where to look up what a code calls for.</td>
+            </tr>
+            <tr class="group-head"><td colspan="3">Places</td></tr>
+            <tr>
+              <td class="field">Origin</td>
+              <td>Where the movement begins.</td>
+              <td>Usually home station for a contracting squadron, but confirm rather than assume.</td>
+            </tr>
+            <tr>
+              <td class="field">POE<small>Port of embarkation</small></td>
+              <td>Where the member loads for strategic movement.</td>
+              <td>Frequently not home station, which means travel before the travel. That leg needs its own arrangements and its own time.</td>
+            </tr>
+            <tr>
+              <td class="field">POD<small>Port of debarkation</small></td>
+              <td>Where the member arrives in theater.</td>
+              <td>Rarely the final stop. Onward movement is a separate matter with its own timeline.</td>
+            </tr>
+            <tr>
+              <td class="field">Destination</td>
+              <td>Where the member is actually going.</td>
+              <td>Check this against the port of debarkation. The distance between the two surprises people who assumed arrival meant arrival.</td>
+            </tr>
+            <tr>
+              <td class="field">GEOLOC<small>Geographic location code</small></td>
+              <td>Standardized codes identifying locations rather than spelling them out.</td>
+              <td>Learn to look them up rather than memorize them. Reading a location code wrong sends preparation in the wrong direction.</td>
+            </tr>
+            <tr class="group-head"><td colspan="3">Dates, in the order they happen</td></tr>
+            <tr>
+              <td class="field">RLD<small>Ready to load date</small></td>
+              <td>The date the member must be prepared to depart origin.</td>
+              <td>Treat this as the real deadline and work backwards from it. Every currency, appointment, and document has to be finished before this date, not before the arrival date.</td>
+            </tr>
+            <tr>
+              <td class="field">ALD<small>Available to load date</small></td>
+              <td>The date the member must be ready to load at the port of embarkation.</td>
+              <td>Confirms the travel window between origin and the port. A tight gap here means the earlier leg has no slack.</td>
+            </tr>
+            <tr>
+              <td class="field">EAD<small>Earliest arrival date</small></td>
+              <td>The earliest the member can be accepted at the port of debarkation.</td>
+              <td>Arriving before this is not helpful. It usually means somebody waits somewhere unpleasant.</td>
+            </tr>
+            <tr>
+              <td class="field">LAD<small>Latest arrival date</small></td>
+              <td>The latest the member can be accepted and still support the concept of operations.</td>
+              <td>The date with consequences attached. Missing it means the capability is late to an operation that planned around having it.</td>
+            </tr>
+            <tr>
+              <td class="field">RDD<small>Required delivery date</small></td>
+              <td>The date the member must arrive and complete off-loading.</td>
+              <td>Read alongside the latest arrival date. When they differ, understand why before assuming either one is the deadline.</td>
+            </tr>
+            <tr class="group-head"><td colspan="3">How and who</td></tr>
+            <tr>
+              <td class="field">Mode and source</td>
+              <td>How the member travels and who provides the transportation.</td>
+              <td>Drives what travel arrangements are needed and who arranges them. Answers come from the readiness cell rather than from the line itself.</td>
+            </tr>
+            <tr>
+              <td class="field">Sourcing</td>
+              <td>Which organization is providing the capability against the requirement.</td>
+              <td>Confirms whether the line is actually the squadron's to fill before work starts on it.</td>
+            </tr>
+            <tr>
+              <td class="field">Line remarks</td>
+              <td>Requirements attached to this specific tasking rather than to the capability in general.</td>
+              <td>Read these first. Section 04 covers why.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="udm-callout">
+        <div class="callout-label">Where the real thing lives</div>
+        <p>Actual tasking data commonly sits on the classified network, and the detail attached to a real operation can carry a classification well above anything discussed here. This table explains what the fields mean, not what any particular line says.</p>
+        <p>There is a personnel search capability on the classified side that is worth knowing about, and the readiness cell can point to what a UDM should have access to and how to get it. Sorting out clearance and classified network access at appointment rather than when a tasking lands is the practical version of this advice.</p>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 03 -->
+    <section class="udm-section" id="eligibility">
+      <h2><span class="num">03</span>Deployment eligibility</h2>
+      <p>A name on the roster and a person who can actually deploy are two different things, and the gap between them is where most tasking work happens.</p>
+      <p>Module 03 covers deployment availability codes as something a UDM tracks on a rhythm. Against a live tasking they do something more specific: they determine whether a member can be offered at all. A code that is current and correct removes a member from consideration cleanly. A code that is stale creates either a false gap or a false offer, and both cost time at the point where there is least of it.</p>
+
+      <h3>Waivers</h3>
+      <p>Some conditions that block deployment can be waived, and the authority to grant a waiver sits at different levels depending on what is being waived. Medical waivers, availability waivers, and requirement waivers all follow different paths.</p>
+      <p>What matters at squadron level is recognizing when a waiver is the right question to ask, and asking it early. A waiver request that starts three weeks before a ready to load date is a different conversation than one that starts the day the tasking arrives.</p>
+
+      <div class="udm-callout">
+        <div class="callout-label">The check worth running</div>
+        <p>When a tasking arrives, the useful first pass is not who is available on paper but who is available and would still be available on the ready to load date. Currencies that expire in the window, appointments already scheduled, and members mid permanent change of station all look fine today and do not survive contact with the actual date.</p>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 04 -->
+    <section class="udm-section" id="remarks">
+      <h2><span class="num">04</span>Line remarks</h2>
+      <p>A unit type code describes a capability in general. A specific tasking often needs something beyond that, and those additions travel with the line rather than with the code. Component requirement codes and line remarks are where they appear.</p>
+      <p>What shows up there varies: additional training, a specific certification, a clearance level, theater specific requirements, equipment the member has to bring, or a qualification the baseline capability never assumed. A member who is a clean match against the code can still fail against the remarks.</p>
+
+      <div class="stakes">
+        <h3>Read the remarks before picking a name</h3>
+        <p>Line remarks drive lead time more than any other part of a tasking. A requirement for training the squadron cannot deliver locally, or a certification with a scheduling queue in front of it, can turn a comfortable timeline into an impossible one.</p>
+        <p>Finding that on day one leaves room to request a seat, ask for a waiver, or raise a shortfall while all three are still options. Finding it three weeks out usually leaves one option, and it is the least pleasant of them.</p>
+      </div>
+
+      <p>Remarks can also be ambiguous, abbreviated, or written for a reader who already knows the context. Asking the readiness cell what a remark means is a normal question rather than a sign of inexperience, and it is considerably better than guessing and preparing the wrong thing.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 05 -->
+    <section class="udm-section" id="shortfall">
+      <h2><span class="num">05</span>When you cannot fill it</h2>
+      <p>Sometimes the squadron cannot fill a tasking. The people who match the requirement are not available, not qualified, not eligible, or not there. This is a normal outcome of a real force management system, and there is a process for it.</p>
+
+      <h3>Shortfalls and reclamas</h3>
+      <p>A shortfall is a formal statement that a sourced requirement cannot be met. A reclama is a formal challenge to a sourcing decision, used when a unit believes the tasking was misassigned or the unit was inadequately resourced to meet it. Both move through command channels rather than being settled locally, and both are legitimate tools rather than admissions of failure.</p>
+
+      <h3>Operational impact statements</h3>
+      <p>An unfilled requirement raises an obvious question: what happens to the mission as a result. An operational impact statement answers it. The value of writing one honestly is that it converts a squadron level manning problem into information a planner can act on, whether by sourcing elsewhere, adjusting the timeline, or accepting the risk with open eyes.</p>
+
+      <div class="stakes">
+        <h3>Speed matters more than polish</h3>
+        <p>A shortfall raised early gives the sourcing process room to work. Another unit can be found, a date can move, a requirement can be adjusted. A shortfall raised late removes all of those options and leaves the operation absorbing the gap.</p>
+        <p>The worst version is the shortfall that never gets raised, where a squadron sends somebody who does not meet the requirement and hopes it works out. The gap does not disappear. It relocates to a deployed location where the member carries it alone and nobody expected it.</p>
+      </div>
+
+      <p>This is where the honesty argument from Module 03 stops being abstract. A squadron that has been reporting its readiness accurately can raise a shortfall and be believed. A squadron that has been reporting green and suddenly cannot fill a tasking has a harder conversation, because the shortfall contradicts the record.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 06 -->
+    <section class="udm-section" id="handoff">
+      <h2><span class="num">06</span>Working the problem</h2>
+      <p>Taskings are the area where both external relationships matter at once. The installation runs the process. The career field owns the sourcing. A UDM works both, and neither one covers the other's ground.</p>
+
+      <div class="handoff three">
+        <div class="handoff-col">
+          <div class="handoff-label">What you bring</div>
+          <ul>
+            <li>A fast, accurate answer on who can fill a line, checked against the ready to load date rather than against today.</li>
+            <li>Line remarks read on day one, with any long lead requirement flagged immediately.</li>
+            <li>A shortfall raised as soon as it is real, with an honest account of the operational impact.</li>
+            <li>Squadron context nobody else has: who is already committed, who is mid transition, what the squadron is carrying that does not show in a system.</li>
+          </ul>
+        </div>
+        <div class="handoff-col">
+          <div class="handoff-label">What the IDRC owns</div>
+          <ul>
+            <li>The tasking flow into the installation and the timeline attached to it.</li>
+            <li>Access to tasking data and interpretation of fields and remarks.</li>
+            <li>The current shortfall and waiver processes, including which authority approves what.</li>
+            <li>Travel, movement, and processing arrangements once a name is committed.</li>
+          </ul>
+        </div>
+        <div class="handoff-col">
+          <div class="handoff-label">What the FAM owns</div>
+          <ul>
+            <li>Sourcing contracting requirements across the enterprise, including whether a line should have come to this squadron.</li>
+            <li>Early visibility on what is coming for contracting, often before it reaches an installation.</li>
+            <li>Career field judgment on whether a shortfall is a squadron problem or an enterprise one.</li>
+            <li>The path for reclamas that turn on career field manning rather than local circumstances.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <nav class="module-nav" aria-label="Module navigation">
+      <a href="udm-readiness.html">&larr; Module 03: Readiness, Reporting, and Training</a>
+      <a href="unit-deployment-manager.html">All modules &rarr;</a>
+    </nav>
+
+  </div>
+</div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+<script src="main.js"></script>
+<script src="player.js"></script>
+</body>
+</html>
