@@ -1,1220 +1,192 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FAR Historian · KTHQ</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --ink:#15182b;
-    --ink-2:#1d2138;
-    --ink-3:#272c47;
-    --paper:#f4f1e9;
-    --paper-edge:#e7e2d4;
-    --record:#fbfaf6;
-    --text:#23262e;
-    --muted:#6c6f7e;
-    --muted-2:#9a8f74;
-    --line:#d9d3c4;
-    --line-ink:#33385a;
-    --del:#a83a2a;
-    --del-bg:#f3dcd6;
-    --ins:#2f6249;
-    --ins-bg:#d9e9df;
-    --brass:#b8893b;
-    --brass-soft:#cdb07a;
-    --chip:#ece4d2;
-    --focus:#e7b65a;
-    --serif:"IBM Plex Serif",Georgia,"Times New Roman",serif;
-    --sans:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
-    --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;height:100%}
-  body{
-    background:var(--ink);
-    color:var(--text);
-    font-family:var(--sans);
-    -webkit-font-smoothing:antialiased;
-    display:flex;flex-direction:column;height:100vh;height:100dvh;
-    overflow:hidden;
-  }
-
-  /* ---------- masthead ---------- */
-  .masthead{
-    background:linear-gradient(180deg,var(--ink-2),var(--ink));
-    color:var(--paper);
-    border-bottom:1px solid var(--line-ink);
-    padding:14px 22px 0;
-    flex:none;
-  }
-  .brandrow{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
-  .seal{
-    font-family:var(--mono);font-size:11px;letter-spacing:.18em;
-    color:var(--ink);background:var(--brass-soft);
-    padding:3px 7px;border-radius:2px;font-weight:600;
-    align-self:center;
-  }
-  .wordmark{
-    font-family:var(--sans);font-weight:700;
-    font-size:clamp(20px,3.2vw,28px);letter-spacing:-.01em;line-height:1;
-  }
-  .wordmark b{color:var(--brass-soft);font-weight:700}
-  .tag{
-    font-family:var(--mono);font-size:11px;letter-spacing:.04em;
-    color:#a7abc4;margin-left:auto;text-align:right;line-height:1.5;
-  }
-  .tag span{color:var(--brass-soft)}
-  .backlink{font-family:var(--mono);font-size:11px;color:var(--brass-soft);text-decoration:none;border:1px solid var(--line-ink);padding:4px 8px;border-radius:3px;white-space:nowrap;display:inline-block;margin-bottom:6px}
-  .backlink:hover{border-color:var(--brass-soft);color:#fff}
-
-  /* ---------- controls ---------- */
-  .controls{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-top:12px}
-  .field{display:flex;flex-direction:column;gap:5px;min-width:0}
-  .field label{
-    font-family:var(--mono);font-size:10px;letter-spacing:.16em;
-    text-transform:uppercase;color:#8c90ab;
-  }
-  select{
-    font-family:var(--mono);font-size:13px;
-    background:var(--ink-3);color:var(--paper);
-    border:1px solid var(--line-ink);border-radius:3px;
-    padding:9px 11px;min-height:38px;max-width:100%;
-  }
-  #part{min-width:min(300px,78vw);max-width:min(420px,86vw)}
-  #subwrap{display:none}
-  #subwrap.show{display:flex}
-  select:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
-  .hdr-status{
-    font-family:var(--mono);font-size:11px;color:#8c90ab;
-    align-self:center;padding-bottom:10px;min-width:0;
-  }
-  .hdr-status b{color:var(--brass-soft);font-weight:600}
-
-  /* ---------- recently-amended ticker ---------- */
-  .ticker{
-    display:flex;align-items:center;gap:8px;margin-top:12px;
-    padding-top:10px;border-top:1px solid var(--line-ink);
-    overflow-x:auto;scrollbar-width:thin;
-  }
-  .tk-label{
-    font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
-    color:var(--brass-soft);white-space:nowrap;padding-right:4px;flex:none;
-  }
-  .tk-item{
-    flex:none;cursor:pointer;font-family:var(--mono);font-size:11px;
-    color:#c7cae0;background:var(--ink-3);border:1px solid var(--line-ink);
-    border-radius:3px;padding:5px 9px;white-space:nowrap;
-  }
-  .tk-item b{color:var(--brass-soft);font-weight:600}
-  .tk-item:hover{border-color:var(--brass-soft);color:#fff}
-  .tk-item:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
-
-  /* ---------- date scrubber ---------- */
-  .scrubber{padding:12px 0 14px}
-  .scrub-meta{
-    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-    font-family:var(--mono);font-size:10.5px;color:#8c90ab;margin-bottom:8px;
-  }
-  .scrub-meta .sm-label{letter-spacing:.16em;text-transform:uppercase;color:var(--brass-soft)}
-  .scrub-meta .sm-count b{color:var(--paper)}
-  .pinbtn,.unpin{
-    font-family:var(--mono);font-size:10.5px;cursor:pointer;
-    background:transparent;color:#c7cae0;border:1px solid var(--line-ink);
-    border-radius:3px;padding:4px 9px;letter-spacing:.04em;
-  }
-  .pinbtn:hover,.unpin:hover{border-color:var(--brass-soft);color:#fff}
-  .pinbtn:focus-visible,.unpin:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
-  .unpin{border-color:var(--brass);color:var(--brass-soft)}
-  .sm-hint{color:#5d6180;margin-left:auto}
-  .strip{
-    display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin;
-    scroll-snap-type:x proximity;padding:2px 2px 8px;
-    touch-action:pan-x;
-  }
-  .strip:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-  .dchip{
-    flex:none;scroll-snap-align:center;cursor:pointer;
-    font-family:var(--mono);text-align:center;
-    background:var(--ink-3);color:#c7cae0;border:1px solid var(--line-ink);
-    border-radius:4px;padding:6px 10px;line-height:1.25;position:relative;
-    -webkit-user-select:none;user-select:none;
-  }
-  .dchip .d1{font-size:12px;font-weight:600;white-space:nowrap}
-  .dchip .d2{font-size:9.5px;color:#8c90ab}
-  .dchip:hover{border-color:var(--brass-soft);color:#fff}
-  .dchip:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
-  .dchip.sel{background:var(--brass);border-color:var(--brass);color:#231a06}
-  .dchip.sel .d2{color:#4d3a10}
-  .dchip.pinned{border-color:var(--del);box-shadow:0 0 0 1px var(--del)}
-  .dchip.pinned::after{
-    content:"PIN";position:absolute;top:-7px;right:-4px;
-    font-size:8px;letter-spacing:.08em;font-weight:600;
-    background:var(--del);color:#fff;border-radius:2px;padding:0 3px;
-  }
-  .dchip .dot{
-    display:inline-block;width:5px;height:5px;border-radius:50%;
-    background:var(--del);margin-left:4px;vertical-align:2px;
-  }
-  .strip .skc{flex:none;width:74px;height:42px;border-radius:4px;
-    background:linear-gradient(90deg,var(--ink-3),#2f3455,var(--ink-3));
-    background-size:200% 100%;animation:sh 1.3s linear infinite}
-
-  /* ---------- stage ---------- */
-  .stage{
-    flex:1;display:grid;grid-template-columns:250px 1fr;
-    background:var(--paper);min-height:0;
-  }
-
-  /* ---------- TOC ---------- */
-  .toc{
-    background:var(--paper);border-right:1px solid var(--paper-edge);
-    overflow:auto;min-height:0;padding-bottom:30px;
-  }
-  .toc-head{
-    position:sticky;top:0;z-index:2;background:var(--paper);
-    border-bottom:1px solid var(--line);padding:12px 16px 10px;
-  }
-  .toc-head h2{
-    margin:0;font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;
-    text-transform:uppercase;color:var(--muted-2);font-weight:600;
-  }
-  .toc-count{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:3px}
-  .toc-list{padding:6px 8px}
-  .toc-link{
-    display:block;width:100%;text-align:left;background:transparent;border:0;
-    cursor:pointer;border-radius:4px;padding:6px 9px;color:var(--text);
-    font-family:var(--mono);font-size:11.5px;line-height:1.4;
-  }
-  .toc-link .tt{color:var(--muted);font-family:var(--sans);font-size:11px;display:block}
-  .toc-link:hover{background:#ece7d7}
-  .toc-link:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
-  .toc-link.chg{border-left:3px solid var(--brass);padding-left:6px}
-  .toc-link.chg b{color:var(--del)}
-  .toc-link b{font-weight:600}
-  .toc-close{display:none}
-  .toc-backdrop{display:none}
-
-  /* ---------- record ---------- */
-  .record{
-    background:var(--record);overflow:auto;min-height:0;
-    overscroll-behavior:contain;
-  }
-  .rec-tools{
-    position:sticky;top:0;z-index:3;background:var(--record);
-    border-bottom:1px solid var(--line);
-    padding:10px 22px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;
-  }
-  .viewtoggle{display:inline-flex;border:1px solid var(--line);border-radius:3px;overflow:hidden;flex:none}
-  .viewtoggle button{
-    font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
-    padding:7px 12px;background:transparent;border:0;cursor:pointer;color:var(--muted);white-space:nowrap;
-  }
-  .viewtoggle button.on{background:var(--ink);color:var(--paper)}
-  .viewtoggle button:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
-  .onlychg{
-    display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);
-    font-size:11px;color:var(--muted);cursor:pointer;-webkit-user-select:none;user-select:none;
-  }
-  .onlychg input{accent-color:var(--brass);width:14px;height:14px;margin:0}
-  body:not(.diffing) .onlychg{display:none}
-  .tocbtn{
-    display:none;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
-    text-transform:uppercase;cursor:pointer;background:var(--chip);
-    border:1px solid var(--line);border-radius:3px;padding:7px 11px;color:var(--text);
-  }
-  .tocbtn:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
-  .stampline{
-    font-family:var(--mono);font-size:11px;color:var(--muted);
-    display:flex;gap:10px;flex-wrap:wrap;align-items:center;min-width:0;
-  }
-  .stampline b{color:var(--text);font-weight:600}
-  .stampline .vs{color:var(--del);font-weight:600}
-  .legend{
-    display:inline-flex;gap:12px;align-items:center;
-    font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-left:auto;
-  }
-  .legend span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
-  .swatch{width:18px;height:0;border-top-width:2px;border-top-style:solid;display:inline-block}
-
-  .doc-wrap{padding:22px 26px 90px;max-width:820px}
-  .part-head .cite{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--brass);font-weight:600}
-  .part-head h1{
-    font-family:var(--serif);font-size:clamp(19px,2.4vw,25px);
-    margin:6px 0 0;font-weight:500;line-height:1.25;
-  }
-  .part-note{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:8px}
-
-  .sec{
-    margin-top:30px;padding-top:18px;border-top:1px solid var(--paper-edge);
-    scroll-margin-top:64px;
-  }
-  .sec:first-of-type{border-top:0}
-  .sec-cite{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--brass);font-weight:600}
-  .sec-cite .flag{
-    font-size:9px;letter-spacing:.1em;text-transform:uppercase;border-radius:2px;
-    padding:1px 5px;margin-left:8px;vertical-align:1px;
-  }
-  .flag.f-chg{background:var(--del-bg);color:var(--del)}
-  .flag.f-add{background:var(--ins-bg);color:var(--ins)}
-  .flag.f-del{background:var(--del);color:#fff}
-  .sec h3{
-    font-family:var(--serif);font-size:19px;margin:5px 0 12px;
-    font-weight:500;line-height:1.3;
-  }
-  .sec .body{
-    font-family:var(--serif);font-size:16.5px;line-height:1.72;color:var(--text);
-    overflow-wrap:break-word;
-  }
-  .sec .body p{margin:0 0 13px}
-  .sec .body del{
-    color:var(--del);background:var(--del-bg);text-decoration:line-through;
-    text-decoration-thickness:1.5px;border-radius:2px;padding:0 1px;
-  }
-  .sec .body ins{
-    color:var(--ins);background:var(--ins-bg);text-decoration:underline;
-    text-decoration-thickness:1.5px;border-radius:2px;padding:0 1px;
-  }
-  .cita{
-    font-family:var(--mono);font-size:10.5px;line-height:1.6;color:#6a5a35;
-    margin-top:10px;padding-left:10px;border-left:2px solid var(--brass-soft);
-  }
-  .cita a{color:var(--brass);font-weight:600;text-decoration:none}
-  .cita a:hover{text-decoration:underline}
-  body.diffing .sec.unchanged{opacity:.42}
-  body.diffing.only-changed .sec.unchanged{display:none}
-  body.diffing.only-changed .sec{border-top:1px solid var(--paper-edge)}
-  .nochanges{
-    margin:26px 0;padding:14px 16px;border:1px dashed var(--line);border-radius:6px;
-    background:#efe9da;font-family:var(--mono);font-size:12px;color:var(--muted);
-  }
-
-  /* ---------- deep history (1996-2016) ---------- */
-  .deep{
-    margin-top:44px;border:1px dashed var(--line);border-radius:6px;
-    background:#efe9da;
-  }
-  .deep summary{
-    cursor:pointer;padding:13px 16px;font-family:var(--mono);font-size:11px;
-    letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);font-weight:600;
-  }
-  .deep summary:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
-  .deep-in{padding:0 16px 16px}
-  .deep-in p.note{font-size:12px;line-height:1.55;color:var(--muted);margin:0 0 12px;font-family:var(--sans)}
-  .deep-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .deep-row select{
-    background:#fff;color:var(--text);border:1px solid var(--line);
-    min-width:min(280px,70vw);
-  }
-  .deep-btn{
-    font-family:var(--mono);font-size:11px;cursor:pointer;font-weight:600;
-    background:var(--brass);color:#231a06;border:1px solid var(--brass);
-    border-radius:3px;padding:9px 14px;letter-spacing:.03em;
-  }
-  .deep-btn:hover{background:var(--brass-soft)}
-  .deep-btn:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
-  .deep-years{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
-  .ychip{
-    font-family:var(--mono);font-size:11px;cursor:pointer;
-    background:#fff;border:1px solid var(--line);border-radius:3px;
-    padding:5px 9px;color:var(--text);
-  }
-  .ychip:hover{border-color:var(--brass)}
-  .ychip.sel{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-  .ychip:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
-  .deep-doc{
-    margin-top:14px;background:var(--record);border:1px solid var(--line);
-    border-radius:4px;padding:16px 18px;
-    font-family:var(--serif);font-size:15.5px;line-height:1.7;
-  }
-  .deep-doc p{margin:0 0 12px}
-  .deep-doc del{color:var(--del);background:var(--del-bg);text-decoration:line-through;border-radius:2px;padding:0 1px}
-  .deep-doc ins{color:var(--ins);background:var(--ins-bg);text-decoration:underline;border-radius:2px;padding:0 1px}
-  .deep-stamp{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:10px}
-  .deep-stamp b{color:var(--text)}
-
-  /* ---------- states ---------- */
-  .placeholder,.errbox{
-    margin:60px auto;max-width:460px;text-align:center;padding:30px;color:var(--muted);
-  }
-  .placeholder .mark{
-    font-family:var(--serif);font-size:54px;color:var(--brass-soft);line-height:1;
-    margin-bottom:14px;font-style:italic;
-  }
-  .placeholder h3{font-family:var(--sans);font-weight:600;font-size:18px;color:var(--text);margin:0 0 8px}
-  .placeholder p{font-size:14px;line-height:1.6;margin:0}
-  .errbox{color:var(--del)}
-  .errbox h3{color:var(--del);font-family:var(--sans);margin:0 0 8px}
-  .errbox p{font-size:13.5px;line-height:1.6;color:var(--muted)}
-  .errbox code{font-family:var(--mono);font-size:12px;background:#f3dcd6;padding:1px 5px;border-radius:3px;color:var(--del)}
-  .retry{
-    margin-top:14px;font-family:var(--mono);font-size:12px;cursor:pointer;font-weight:600;
-    background:var(--brass);color:#231a06;border:1px solid var(--brass);
-    border-radius:3px;padding:9px 16px;
-  }
-  .retry:hover{background:var(--brass-soft)}
-  .spinner{
-    width:26px;height:26px;border:3px solid var(--line);border-top-color:var(--brass);
-    border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;
-  }
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .skel-doc{padding:26px 26px 60px;max-width:820px}
-  .skel-doc div{
-    height:15px;border-radius:3px;margin:11px 0;
-    background:linear-gradient(90deg,#ece7d7,#f1ece0,#ece7d7);
-    background-size:200% 100%;animation:sh 1.3s linear infinite;
-  }
-  .skel-doc div:nth-child(4n){width:62%}
-  .skel-doc div:nth-child(4n+1){width:88%}
-  .skel-doc .skh{height:24px;width:45%;margin:30px 0 16px}
-  @keyframes sh{to{background-position:-200% 0}}
-
-  /* ---------- mobile ---------- */
-  @media (max-width:880px){
-    .masthead{padding:12px 14px 0}
-    .tagline{display:none}
-    .ticker{margin-top:10px;padding-top:8px}
-    .scrubber{padding:10px 0 10px}
-    .controls{margin-top:10px}
-    .stage{grid-template-columns:1fr}
-    .toc{
-      display:none;position:fixed;left:0;right:0;bottom:0;z-index:20;
-      max-height:62vh;border-right:0;border-top:2px solid var(--brass);
-      border-radius:10px 10px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.35);
-    }
-    body.toc-open .toc{display:block}
-    .toc-backdrop{
-      display:none;position:fixed;inset:0;z-index:19;background:rgba(21,24,43,.45);
-      border:0;padding:0;cursor:pointer;
-    }
-    body.toc-open .toc-backdrop{display:block}
-    .toc-close{
-      display:inline-block;float:right;font-family:var(--mono);font-size:11px;
-      background:transparent;border:1px solid var(--line);border-radius:3px;
-      cursor:pointer;color:var(--muted);padding:3px 9px;
-    }
-    .tocbtn{display:inline-block}
-    .rec-tools{padding:8px 14px;gap:8px}
-    .legend{margin-left:0;width:100%}
-    .doc-wrap{padding:18px 14px 80px}
-    .sm-hint{display:none}
-  }
-  @media (prefers-reduced-motion:reduce){
-    *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-  }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Compare a historical Federal Acquisition Regulation edition with the newest available FAR.">
+  <title>FAR Historian · KTHQ</title>
+  <link rel="stylesheet" href="far-historian-prototype.css?v=20260830-2">
 </head>
 <body>
-  <header class="masthead">
-    <div class="brandrow">
-      <span class="seal">48 CFR</span>
-      <div class="wordmark">FAR <b>HISTORIAN</b></div>
-      <div class="tag">
-        <a class="backlink" href="index.html">&larr; KTHQ</a><span class="tagline"><br>
-        Point-in-time record of the Federal Acquisition Regulation<br>
-        Source: <span>eCFR</span> versioner API · live since 2017-01-01</span>
-      </div>
+  <a class="skip-link" href="#comparison">Skip to comparison</a>
+
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="KTHQ home">
+      <span class="brand-mark">KTHQ</span>
+      <span class="brand-name">ContractingHQ</span>
+    </a>
+    <div class="archive-stamp" aria-hidden="true">
+      <span>48 CFR</span>
+      <b>POINT-IN-TIME ARCHIVE</b>
     </div>
-    <div class="controls">
-      <div class="field">
-        <label for="part">FAR Part</label>
-        <select id="part" aria-label="Select FAR part"></select>
-      </div>
-      <div class="field" id="subwrap">
-        <label for="subpart">Subpart</label>
-        <select id="subpart" aria-label="Select subpart of Part 52">
-          <option value="52.1">52.1 — Instructions for Using Provisions and Clauses</option>
-          <option value="52.2" selected>52.2 — Texts of Provisions and Clauses</option>
-          <option value="52.3">52.3 — Provision and Clause Matrix</option>
-        </select>
-      </div>
-      <div class="hdr-status" id="hdr-status"></div>
-    </div>
-    <div id="ticker" class="ticker" hidden></div>
-    <div class="scrubber">
-      <div class="scrub-meta">
-        <span class="sm-label">Amendment dates</span>
-        <span class="sm-count" id="sm-count"></span>
-        <button class="pinbtn" id="pinbtn" title="Pin the selected date as the comparison base">Pin for compare</button>
-        <button class="unpin" id="unpin" hidden>vs <span id="unpin-date"></span> ✕</button>
-        <span class="sm-hint">tap a date · arrow keys step · long-press to pin</span>
-      </div>
-      <div class="strip" id="strip" tabindex="0" role="listbox" aria-label="Amendment dates — arrow keys to step, long-press to pin for compare"></div>
-    </div>
+    <a class="exit-link" href="tools.html">All tools <span aria-hidden="true">→</span></a>
   </header>
 
-  <main class="stage">
-    <aside class="toc" id="toc" aria-label="Sections in this part">
-      <div class="toc-head">
-        <button class="toc-close" id="toc-close">Close</button>
-        <h2>Sections</h2>
-        <div class="toc-count" id="toc-count"></div>
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div class="eyebrow"><span class="live-dot"></span> Official source comparison</div>
+      <h1 id="page-title">FAR <span>Historian</span></h1>
+      <p>Choose a FAR part and an older edition. We’ll compare it directly with the newest available text and surface what changed.</p>
+      <div class="source-line">
+        <span>Modern record: eCFR point-in-time data</span>
+        <span>Coverage begins January 2017</span>
       </div>
-      <nav class="toc-list" id="toc-list"></nav>
-    </aside>
-    <button class="toc-backdrop" id="toc-backdrop" aria-label="Close section list" tabindex="-1"></button>
+    </section>
 
-    <section class="record" id="record">
-      <div class="rec-tools" id="rec-tools">
-        <button class="tocbtn" id="tocbtn" aria-expanded="false">Sections ▾</button>
-        <div class="viewtoggle" role="group" aria-label="View mode">
-          <button data-v="clean">Clean</button>
-          <button data-v="redline" class="on">Redline vs prior</button>
-          <button data-v="compare">Compare</button>
+    <section class="compare-deck" aria-labelledby="compare-heading">
+      <div class="deck-heading">
+        <div>
+          <span class="step-number">01</span>
+          <h2 id="compare-heading">Build your comparison</h2>
         </div>
-        <label class="onlychg" id="onlychg-wrap"><input type="checkbox" id="onlychg">changed only</label>
-        <div class="stampline" id="stampline"></div>
-        <div class="legend" id="legend" hidden>
-          <span><i class="swatch" style="border-color:var(--del)"></i>removed</span>
-          <span><i class="swatch" style="border-color:var(--ins)"></i>added</span>
+        <p id="ledger-summary">Select a FAR part to load its amendment history.</p>
+      </div>
+
+      <div class="comparison-builder">
+        <div class="edition-card historical-card">
+          <div class="edition-label">Historical edition</div>
+          <label for="part-select">FAR part</label>
+          <select id="part-select" aria-describedby="part-help"></select>
+          <span class="field-help" id="part-help">Federal Acquisition Regulation, 48 CFR Chapter 1</span>
+
+          <div id="subpart-wrap" hidden>
+            <label for="subpart-select">Part 52 division</label>
+            <select id="subpart-select">
+              <option value="52.1">Subpart 52.1 — Instructions for provisions and clauses</option>
+              <option value="52.2" selected>Subpart 52.2 — Text of provisions and clauses</option>
+              <option value="52.3">Subpart 52.3 — Provision and clause matrix</option>
+            </select>
+          </div>
+
+          <label for="historical-date">As it appeared on</label>
+          <select id="historical-date" disabled>
+            <option>Loading amendment dates…</option>
+          </select>
+          <span class="field-help" id="historical-help">Pick the older version you want to examine.</span>
+        </div>
+
+        <div class="compare-rail" aria-hidden="true">
+          <span></span>
+          <b>VS</b>
+          <span></span>
+        </div>
+
+        <div class="edition-card current-card">
+          <div class="edition-label">Comparison edition</div>
+          <div class="current-lock">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 10V7a4 4 0 0 1 8 0v3m-9 0h10a2 2 0 0 1 2 2v7H5v-7a2 2 0 0 1 2-2Z"/></svg>
+            <div>
+              <span>Newest available FAR</span>
+              <strong id="current-date">Checking latest edition…</strong>
+            </div>
+          </div>
+          <p>The newest amendment date for the selected FAR part stays fixed, so every result answers the same question: what changed between then and now?</p>
+          <div class="current-badge"><span></span> Current comparison target</div>
         </div>
       </div>
-      <div id="rec-body">
-        <div class="placeholder">
-          <div class="mark">§</div>
-          <h3>Read the regulation as it stood, on any date</h3>
-          <p>Pick a part, then walk its amendment dates. Each date loads the whole
-          part as it stood that day; redlines strike deletions in rust and underline
-          insertions in green. Pin a second date to compare any two versions.</p>
+
+      <div class="builder-actions">
+        <div class="data-health" id="data-health" role="status" aria-live="polite">
+          <span class="health-light"></span>
+          <span>Connecting to the FAR archive…</span>
         </div>
+        <button class="primary-action" id="compare-button" disabled>
+          <span>Compare editions</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <section class="loading-panel" id="loading-panel" hidden aria-live="polite">
+      <div class="loader-ring"><span></span><span></span></div>
+      <div>
+        <strong id="loading-title">Retrieving both editions</strong>
+        <p id="loading-detail">Historical snapshots can take a few seconds on their first load.</p>
+      </div>
+    </section>
+
+    <section class="error-panel" id="error-panel" hidden role="alert">
+      <div class="error-code">ARCHIVE CONNECTION</div>
+      <div>
+        <h2>We couldn’t finish that comparison.</h2>
+        <p id="error-message"></p>
+      </div>
+      <button id="retry-button">Try again</button>
+    </section>
+
+    <section class="results" id="comparison" hidden aria-labelledby="results-title">
+      <div class="results-header">
+        <div>
+          <span class="step-number">02</span>
+          <div>
+            <div class="results-kicker" id="results-kicker">Comparison complete</div>
+            <h2 id="results-title">What changed</h2>
+          </div>
+        </div>
+        <button class="new-comparison" id="new-comparison">New comparison</button>
+      </div>
+
+      <div class="summary-grid" id="summary-grid">
+        <div class="summary-card primary-summary">
+          <span>Comparison</span>
+          <strong id="summary-range">—</strong>
+          <small id="summary-part">—</small>
+        </div>
+        <div class="summary-card changed-summary">
+          <span>Changed</span>
+          <strong id="changed-count">0</strong>
+          <small>sections revised</small>
+        </div>
+        <div class="summary-card added-summary">
+          <span>Added</span>
+          <strong id="added-count">0</strong>
+          <small>new sections</small>
+        </div>
+        <div class="summary-card removed-summary">
+          <span>Removed</span>
+          <strong id="removed-count">0</strong>
+          <small>retired sections</small>
+        </div>
+      </div>
+
+      <div class="results-toolbar">
+        <div class="view-switch" role="group" aria-label="Comparison layout">
+          <button class="active" data-view="redline" aria-pressed="true">Inline redline</button>
+          <button data-view="split" aria-pressed="false">Side by side</button>
+        </div>
+        <label class="change-filter">
+          <input type="checkbox" id="changed-only" checked>
+          <span class="filter-track"><span></span></span>
+          Show changed sections only
+        </label>
+      </div>
+
+      <div class="record-layout">
+        <aside class="section-index" aria-labelledby="section-index-title">
+          <div class="index-heading">
+            <span>Navigation</span>
+            <h3 id="section-index-title">Sections</h3>
+          </div>
+          <nav id="section-list" aria-label="Sections in this comparison"></nav>
+        </aside>
+
+        <article class="record" id="record">
+          <div class="record-empty" id="record-empty" hidden>
+            <div>NO MATERIAL CHANGE</div>
+            <h3>These editions match.</h3>
+            <p>No section-level text changes were found between the selected dates.</p>
+          </div>
+          <div id="record-body"></div>
+        </article>
       </div>
     </section>
   </main>
 
-<script>
-const BASE='https://www.ecfr.gov/api/versioner/v1';
-/* Set to your deployed Worker URL (no trailing slash) to light up the
-   1996-2016 annual tier and the live "recently amended" feed.
-   Leave "" to run the modern tier only. e.g. "https://far-historian.kthq.workers.dev" */
-const KTHQ_BACKEND="https://far-historian.nickhazelett.workers.dev";
+  <footer>
+    <span>FAR Historian</span>
+    <span>Source material remains authoritative at eCFR.gov.</span>
+  </footer>
 
-/* FAR (48 CFR Chapter 1) part titles. Labels reflect current names. */
-const PARTS=[
- [1,"Federal Acquisition Regulations System"],[2,"Definitions of Words and Terms"],
- [3,"Improper Business Practices and Personal Conflicts of Interest"],
- [4,"Administrative and Information Matters"],[5,"Publicizing Contract Actions"],
- [6,"Competition Requirements"],[7,"Acquisition Planning"],
- [8,"Required Sources of Supplies and Services"],[9,"Contractor Qualifications"],
- [10,"Market Research"],[11,"Describing Agency Needs"],
- [12,"Acquisition of Commercial Products and Commercial Services"],
- [13,"Simplified Acquisition Procedures"],[14,"Sealed Bidding"],
- [15,"Contracting by Negotiation"],[16,"Types of Contracts"],
- [17,"Special Contracting Methods"],[18,"Emergency Acquisitions"],
- [19,"Small Business Programs"],[22,"Application of Labor Laws to Government Acquisitions"],
- [23,"Environment, Energy, Water Efficiency, Safety, and Drug-Free Workplace"],
- [24,"Protection of Privacy and Freedom of Information"],[25,"Foreign Acquisition"],
- [26,"Other Socioeconomic Programs"],[27,"Patents, Data, and Copyrights"],
- [28,"Bonds and Insurance"],[29,"Taxes"],[30,"Cost Accounting Standards Administration"],
- [31,"Contract Cost Principles and Procedures"],[32,"Contract Financing"],
- [33,"Protests, Disputes, and Appeals"],[34,"Major System Acquisition"],
- [35,"Research and Development Contracting"],[36,"Construction and Architect-Engineer Contracts"],
- [37,"Service Contracting"],[38,"Federal Supply Schedule Contracting"],
- [39,"Acquisition of Information Technology"],[40,"Information Security and Supply Chain Security"],
- [41,"Acquisition of Utility Services"],[42,"Contract Administration and Audit Services"],
- [43,"Contract Modifications"],[44,"Subcontracting Policies and Procedures"],
- [45,"Government Property"],[46,"Quality Assurance"],[47,"Transportation"],
- [48,"Value Engineering"],[49,"Termination of Contracts"],
- [50,"Extraordinary Contractual Actions and the Safety Act"],
- [51,"Use of Government Sources by Contractors"],
- [52,"Solicitation Provisions and Contract Clauses"],[53,"Forms"]
-];
-
-const $=s=>document.querySelector(s);
-const partSel=$('#part'), subSel=$('#subpart'), subWrap=$('#subwrap'),
-      strip=$('#strip'), smCount=$('#sm-count'), pinBtn=$('#pinbtn'),
-      unpinBtn=$('#unpin'), unpinDate=$('#unpin-date'),
-      recBody=$('#rec-body'), stampline=$('#stampline'), legend=$('#legend'),
-      tocEl=$('#toc'), tocList=$('#toc-list'), tocCount=$('#toc-count'),
-      tocBtn=$('#tocbtn'), hdrStatus=$('#hdr-status'),
-      onlyChg=$('#onlychg'), viewToggle=document.querySelector('.viewtoggle');
-
-/* ---------------- state ---------------- */
-const S={
-  part:'15',
-  subpart:null,        // only meaningful for part 52
-  date:null,           // selected amendment date (the "as of" date)
-  vs:null,             // pinned comparison base date (compare view)
-  view:'redline',      // clean | redline | compare
-};
-let versionRecs=[];    // all type==="section" version records for current part
-let dates=[];          // sorted distinct amendment dates in current scope
-let changedByDate=new Map();  // date -> [{identifier,name,substantive,removed}]
-const snapCache=new Map();    // `${part}|${subpart||''}|${date}` -> snapshot | Promise
-let renderSeq=0;              // guards stale async renders
-let scrubTimer=null;
-
-/* ---------------- boot ---------------- */
-PARTS.forEach(([n,t])=>{
-  const o=document.createElement('option');
-  o.value=n;o.textContent=`Part ${n} — ${t}`;partSel.appendChild(o);
-});
-
-(function readURL(){
-  const q=new URLSearchParams(location.search);
-  const p=q.get('part');
-  if(p && PARTS.some(([n])=>String(n)===String(p))) S.part=String(p);
-  // legacy deep link: ?part=12&section=12.301 → same part, jump to section
-  S.jumpTo=q.get('section')||null;
-  const sp=q.get('subpart');
-  if(sp && /^52\.[123]$/.test(sp)) S.subpart=sp;
-  const v=q.get('view');
-  if(['clean','redline','compare'].includes(v)) S.view=v;
-  S.wantDate=q.get('date')||null;
-  S.wantVs=q.get('vs')||null;
-})();
-partSel.value=S.part;
-if(S.part==='52'){subWrap.classList.add('show');subSel.value=S.subpart||'52.2';S.subpart=subSel.value;}
-
-partSel.addEventListener('change',()=>{
-  S.part=partSel.value;
-  S.subpart=S.part==='52'?subSel.value:null;
-  subWrap.classList.toggle('show',S.part==='52');
-  S.date=S.vs=null;S.jumpTo=null;S.wantDate=S.wantVs=null;
-  if(S.view==='compare')S.view='redline';
-  loadPart();
-});
-subSel.addEventListener('change',()=>{
-  S.subpart=subSel.value;
-  S.date=S.vs=null;
-  if(S.view==='compare')S.view='redline';
-  loadPart();
-});
-
-loadPart();
-initRecent();
-
-/* ---------------- versions / scrubber ---------------- */
-async function fetchOK(url,tries){
-  tries=tries||3;
-  let lastErr;
-  for(let i=0;i<tries;i++){
-    try{
-      const r=await fetch(url);
-      if(r.ok) return r;
-      lastErr=new Error('HTTP '+r.status);
-      if(r.status!==503 && r.status!==429 && r.status!==502) throw lastErr;
-    }catch(e){lastErr=e;}
-    await new Promise(res=>setTimeout(res,700*(i+1)));
-  }
-  throw lastErr;
-}
-
-async function fetchVersions(part){
-  const recs=[];let page=1,total=1;
-  do{
-    const r=await fetchOK(`${BASE}/versions/title-48.json?part=${part}&page=${page}`);
-    const j=await r.json();
-    recs.push(...j.content_versions.filter(v=>v.type==='section'));
-    total=parseInt((j.meta&&j.meta.total_pages)||'1',10)||1;
-    page++;
-  }while(page<=total);
-  return recs;
-}
-
-function inScope(v){
-  if(S.part!=='52')return true;
-  return v.subpart===S.subpart;
-}
-
-function rebuildDates(){
-  changedByDate=new Map();
-  versionRecs.filter(inScope).forEach(v=>{
-    const a=changedByDate.get(v.date)||[];
-    a.push(v);changedByDate.set(v.date,a);
-  });
-  dates=[...changedByDate.keys()].sort();
-}
-
-async function loadPart(){
-  const seq=++renderSeq;
-  hdrStatus.textContent='';
-  strip.innerHTML='<div class="skc"></div>'.repeat(8);
-  smCount.textContent='';
-  showSkeleton();
-  try{
-    versionRecs=await fetchVersions(S.part);
-  }catch(e){
-    if(seq!==renderSeq)return;
-    strip.innerHTML='';
-    showError('Could not load the amendment ledger',e,()=>loadPart());
-    return;
-  }
-  if(seq!==renderSeq)return;
-  rebuildDates();
-  if(!dates.length){
-    strip.innerHTML='';
-    showError('No amendment record','no section versions found for this scope',()=>loadPart());
-    return;
-  }
-  // resolve requested dates from URL, else default to latest
-  S.date=pickDate(S.wantDate)||dates[dates.length-1];
-  S.vs=S.wantVs&&dates.includes(S.wantVs)&&S.wantVs!==S.date?S.wantVs:null;
-  S.wantDate=S.wantVs=null;
-  if(S.view==='compare'&&!S.vs)S.view=dates.length>1?'redline':'clean';
-  if(dates.length<2&&S.view==='redline')S.view='clean';
-  hdrStatus.innerHTML=`<b>${dates.length}</b> amendment dates · ${fmt(dates[0])} → ${fmt(dates[dates.length-1])}`;
-  renderStrip();
-  syncToggle();
-  render();
-}
-function pickDate(want){
-  if(!want)return null;
-  if(dates.includes(want))return want;
-  const older=dates.filter(d=>d<=want);
-  return older.length?older[older.length-1]:null;
-}
-
-function renderStrip(){
-  strip.innerHTML='';
-  const frag=document.createDocumentFragment();
-  dates.forEach(d=>{
-    const changed=changedByDate.get(d)||[];
-    const sub=changed.some(v=>v.substantive);
-    const b=document.createElement('button');
-    b.className='dchip';b.dataset.date=d;
-    b.setAttribute('role','option');
-    b.title=`${fmt(d)} — ${changed.length} section${changed.length===1?'':'s'} amended`;
-    b.innerHTML=`<span class="d1">${fmtShort(d)}${sub?'<span class="dot"></span>':''}</span>
-      <span class="d2">${d.slice(0,4)}</span>`;
-    frag.appendChild(b);
-  });
-  strip.appendChild(frag);
-  paintStrip();
-}
-function paintStrip(){
-  [...strip.children].forEach(c=>{
-    c.classList.toggle('sel',c.dataset.date===S.date);
-    c.classList.toggle('pinned',c.dataset.date===S.vs);
-    c.setAttribute('aria-selected',c.dataset.date===S.date?'true':'false');
-  });
-  const n=(changedByDate.get(S.date)||[]).length;
-  smCount.innerHTML=`<b>${fmt(S.date)}</b> · changed sections: <b>${n}</b>`;
-  unpinBtn.hidden=!S.vs;
-  if(S.vs)unpinDate.textContent=fmt(S.vs);
-  const sel=strip.querySelector('.dchip.sel');
-  if(sel)sel.scrollIntoView({block:'nearest',inline:'center',behavior:'auto'});
-}
-
-function selectDate(d,immediate){
-  if(!d||d===S.date)return;
-  S.date=d;
-  if(S.vs===d)S.vs=null;               // selecting the pinned date unpins it
-  paintStrip();
-  clearTimeout(scrubTimer);
-  const go=()=>{
-    if(S.vs&&S.vs!==S.date)S.view='compare';   // pinned base + new date = compare
-    else if(S.view==='compare')S.view='redline';
-    syncToggle();render();
-  };
-  immediate?go():scrubTimer=setTimeout(go,180);
-}
-function pinDate(d){
-  if(!d)return;
-  if(S.vs===d){S.vs=null;if(S.view==='compare')S.view='redline';}
-  else{S.vs=d;if(S.vs!==S.date)S.view='compare';}
-  paintStrip();syncToggle();render();
-}
-
-strip.addEventListener('click',e=>{
-  const c=e.target.closest('.dchip');
-  if(c&&!c._longpressed)selectDate(c.dataset.date,true);
-  if(c)c._longpressed=false;
-});
-strip.addEventListener('keydown',e=>{
-  const i=dates.indexOf(S.date);
-  if(e.key==='ArrowRight'&&i<dates.length-1){e.preventDefault();selectDate(dates[i+1]);}
-  else if(e.key==='ArrowLeft'&&i>0){e.preventDefault();selectDate(dates[i-1]);}
-  else if(e.key==='Home'){e.preventDefault();selectDate(dates[0]);}
-  else if(e.key==='End'){e.preventDefault();selectDate(dates[dates.length-1]);}
-  else if(e.key==='Enter'&&e.shiftKey){e.preventDefault();pinDate(S.date);}
-});
-/* long-press to pin (touch + mouse) */
-let lpTimer=null,lpChip=null,lpStart=null;
-strip.addEventListener('pointerdown',e=>{
-  const c=e.target.closest('.dchip');if(!c)return;
-  lpChip=c;lpStart=[e.clientX,e.clientY];
-  lpTimer=setTimeout(()=>{c._longpressed=true;pinDate(c.dataset.date);lpTimer=null;},550);
-});
-['pointermove','pointerup','pointercancel','pointerleave'].forEach(ev=>
-  strip.addEventListener(ev,e=>{
-    if(!lpTimer)return;
-    if(ev==='pointermove'&&lpStart&&
-       Math.hypot(e.clientX-lpStart[0],e.clientY-lpStart[1])<8)return;
-    clearTimeout(lpTimer);lpTimer=null;
-  }));
-/* mouse drag across the strip scrubs the selection */
-let dragOn=false;
-strip.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')dragOn=true;});
-window.addEventListener('pointerup',()=>{dragOn=false;});
-strip.addEventListener('pointermove',e=>{
-  if(!dragOn||e.pointerType!=='mouse')return;
-  const el=document.elementFromPoint(e.clientX,e.clientY);
-  const c=el&&el.closest?el.closest('.dchip'):null;
-  if(c&&c.dataset.date!==S.date)selectDate(c.dataset.date);
-});
-
-pinBtn.addEventListener('click',()=>{
-  if(S.vs){S.vs=null;if(S.view==='compare')S.view='redline';paintStrip();syncToggle();render();return;}
-  // pin the selected date as the comparison base; the user then taps any other date
-  S.vs=S.date;
-  paintStrip();
-  smCount.innerHTML=`<b>${fmt(S.vs)}</b> pinned — tap another date to compare`;
-});
-unpinBtn.addEventListener('click',()=>{
-  S.vs=null;if(S.view==='compare')S.view='redline';
-  paintStrip();syncToggle();render();
-});
-
-/* ---------------- view toggle / options ---------------- */
-viewToggle.addEventListener('click',e=>{
-  const b=e.target.closest('button');if(!b)return;
-  const v=b.dataset.v;
-  if(v==='compare'&&!S.vs){
-    // auto-pin the previous amendment date as the base
-    const i=dates.indexOf(S.date);
-    if(i>0)S.vs=dates[i-1];else return;
-  }
-  S.view=v;
-  paintStrip();syncToggle();render();
-});
-function syncToggle(){
-  [...viewToggle.children].forEach(b=>b.classList.toggle('on',b.dataset.v===S.view));
-  const i=dates.indexOf(S.date);
-  viewToggle.querySelector('[data-v=redline]').disabled=i<=0;
-  viewToggle.querySelector('[data-v=compare]').disabled=dates.length<2;
-}
-onlyChg.addEventListener('change',()=>{
-  document.body.classList.toggle('only-changed',onlyChg.checked);
-});
-
-/* mobile TOC drawer */
-function tocOpen(open){
-  document.body.classList.toggle('toc-open',open);
-  tocBtn.setAttribute('aria-expanded',open?'true':'false');
-}
-tocBtn.addEventListener('click',()=>tocOpen(!document.body.classList.contains('toc-open')));
-$('#toc-close').addEventListener('click',()=>tocOpen(false));
-$('#toc-backdrop').addEventListener('click',()=>tocOpen(false));
-
-/* ---------------- snapshots ---------------- */
-function snapKey(date){return `${S.part}|${S.subpart||''}|${date}`;}
-function getSnapshot(date){
-  const key=snapKey(date);
-  if(snapCache.has(key))return Promise.resolve(snapCache.get(key));
-  const sub=S.part==='52'?`&subpart=${encodeURIComponent(S.subpart)}`:'';
-  const url=`${BASE}/full/${date}/title-48.xml?part=${S.part}${sub}`;
-  const p=fetchOK(url).then(r=>r.text()).then(xml=>{
-    const snap=parsePart(xml);
-    snapCache.set(key,snap);
-    return snap;
-  }).catch(e=>{snapCache.delete(key);throw e;});
-  snapCache.set(key,p);
-  return p;
-}
-
-/* Parse a whole part (or subpart) into an ordered list of sections,
-   each an ordered list of paragraphs. */
-function parsePart(xml){
-  const doc=new DOMParser().parseFromString(xml,'application/xml');
-  if(doc.querySelector('parsererror'))throw new Error('XML parse error');
-  const root=doc.querySelector('DIV5,DIV6');
-  const headEl=root&&root.querySelector(':scope > HEAD');
-  const heading=headEl?collapse(headEl.textContent):'';
-  const nodes=[...doc.querySelectorAll('DIV8,[TYPE="SECTION"]')];
-  const order=[],map=new Map();
-  nodes.forEach(node=>{
-    const id=node.getAttribute('N');
-    if(!id||map.has(id))return;
-    const head=node.querySelector('HEAD');
-    const title=head?collapse(head.textContent):id;
-    const paras=[];
-    node.querySelectorAll('P,FP').forEach(p=>{
-      const t=collapse(p.textContent);
-      if(t)paras.push(t);
-    });
-    let authority='';
-    const cita=node.querySelector('CITA');
-    if(cita)authority=collapse(cita.textContent);
-    order.push(id);
-    map.set(id,{id,title,paras,authority,text:paras.join('\n\n')});
-  });
-  return {heading,order,map};
-}
-
-/* ---------------- rendering ---------------- */
-function showSkeleton(){
-  legend.hidden=true;stampline.textContent='';
-  tocList.innerHTML='';tocCount.textContent='';
-  recBody.innerHTML=`<div class="skel-doc" aria-hidden="true">
-    <div class="skh"></div><div></div><div></div><div></div><div></div>
-    <div class="skh"></div><div></div><div></div><div></div><div></div><div></div>
-  </div>`;
-}
-function showError(title,e,retryFn){
-  legend.hidden=true;stampline.textContent='';
-  recBody.innerHTML=`<div class="errbox">
-    <h3>${esc(title)}</h3>
-    <p>The eCFR versioner API request failed
-    (<code>${esc(String((e&&e.message)||e))}</code>). The eCFR occasionally
-    returns brief 503s under load — a retry usually clears it.</p>
-    <button class="retry" id="retrybtn">Retry</button></div>`;
-  const b=$('#retrybtn');
-  if(b&&retryFn)b.addEventListener('click',retryFn);
-}
-
-async function render(){
-  const seq=++renderSeq;
-  writeURL();
-  const view=S.view;
-  const iSel=dates.indexOf(S.date);
-  const needPrior=view==='redline'&&iSel>0;
-  const isCompare=view==='compare'&&S.vs&&S.vs!==S.date;
-  showSkeleton();
-  // compare always runs older -> newer, whichever order was pinned
-  const older=isCompare?(S.vs<S.date?S.vs:S.date):null;
-  const newer=isCompare?(S.vs<S.date?S.date:S.vs):null;
-  try{
-    let a=null,b=null;
-    if(isCompare){
-      [a,b]=await Promise.all([getSnapshot(older),getSnapshot(newer)]);
-    }else if(needPrior){
-      [a,b]=await Promise.all([getSnapshot(dates[iSel-1]),getSnapshot(S.date)]);
-    }else{
-      b=await getSnapshot(S.date);
-    }
-    if(seq!==renderSeq)return;
-    if(a&&b)renderDiffView(a,b,isCompare?older:dates[iSel-1],isCompare?newer:S.date,isCompare);
-    else renderCleanView(b,view==='redline'&&iSel<=0);
-  }catch(e){
-    if(seq!==renderSeq)return;
-    showError('Could not fetch the part text',e,()=>render());
-  }
-}
-
-function partLabel(){
-  const t=(PARTS.find(([n])=>String(n)===S.part)||[])[1]||'';
-  return S.part==='52'?`Part 52, Subpart ${S.subpart}`:`Part ${S.part} — ${t}`;
-}
-
-function renderCleanView(snap,earliestNote){
-  document.body.classList.remove('diffing');
-  legend.hidden=true;
-  stampline.innerHTML=`<span>as of <b>${fmt(S.date)}</b></span>`+
-    (earliestNote?`<span style="color:var(--muted-2)">earliest captured — no prior version to redline</span>`:'');
-  const secs=snap.order.map(id=>snap.map.get(id));
-  buildTOC(secs.map(s=>({id:s.id,title:s.title,changed:false})));
-  let html=docHead(snap);
-  secs.forEach(s=>{
-    html+=`<section class="sec" id="sec-${cssId(s.id)}">
-      <div class="sec-cite">FAR ${esc(s.id)}</div>
-      <h3>${esc(s.title)}</h3>
-      <div class="body">${s.paras.map(p=>`<p>${esc(p)}</p>`).join('')||'<p>(Reserved)</p>'}</div>
-      ${citaHTML(s.authority)}</section>`;
-  });
-  finishDoc(html,secs.length,0);
-}
-
-function renderDiffView(a,b,dOld,dNew,isCompare){
-  document.body.classList.add('diffing');
-  legend.hidden=false;
-  stampline.innerHTML=`<span><b>${fmt(dOld)}</b></span><span class="vs">→</span>
-    <span><b>${fmt(dNew)}</b></span>`+
-    (isCompare?`<span style="color:var(--muted-2)">pinned compare</span>`:'');
-  const ids=mergeOrders(a.order,b.order);
-  const tocItems=[];let changed=0,secHtml='';
-  ids.forEach(id=>{
-    const sa=a.map.get(id),sb=b.map.get(id);
-    let cls='unchanged',flag='',body;
-    if(sa&&sb){
-      if(sa.text===sb.text){
-        body=sb.paras.map(p=>`<p>${esc(p)}</p>`).join('')||'<p>(Reserved)</p>';
-      }else{
-        cls='changed';changed++;
-        flag='<span class="flag f-chg">amended</span>';
-        body=renderDiff(sa.text,sb.text);
-      }
-    }else if(!sa&&sb){
-      cls='changed';changed++;
-      flag='<span class="flag f-add">added</span>';
-      body=sb.paras.map(p=>`<p><ins>${esc(p)}</ins></p>`).join('')||'<p><ins>(added)</ins></p>';
-    }else{
-      cls='changed';changed++;
-      flag='<span class="flag f-del">removed</span>';
-      body=(sa.paras.length?sa.paras:['(text removed)']).map(p=>`<p><del>${esc(p)}</del></p>`).join('');
-    }
-    const s=sb||sa;
-    tocItems.push({id,title:s.title,changed:cls==='changed'});
-    secHtml+=`<section class="sec ${cls}" id="sec-${cssId(id)}">
-      <div class="sec-cite">FAR ${esc(id)}${flag}</div>
-      <h3>${esc(s.title)}</h3>
-      <div class="body">${body}</div>
-      ${citaHTML(s.authority)}</section>`;
-  });
-  buildTOC(tocItems);
-  const note=changed?'':`<div class="nochanges">No text differences between ${fmt(dOld)}
-      and ${fmt(dNew)} in this ${S.part==='52'?'subpart':'part'}. The ledger may record
-      an administrative action (redesignation, cross-reference fix) with no wording change.</div>`;
-  finishDoc(docHead(b.heading?b:a)+note+secHtml,ids.length,changed);
-}
-
-function docHead(snap){
-  return `<div class="doc-wrap"><div class="part-head">
-    <div class="cite">48 CFR · ${esc(partLabel())}</div>
-    <h1>${esc(snap.heading||partLabel())}</h1>
-    <div class="part-note" id="part-note"></div>
-  </div>`;
-}
-function finishDoc(html,total,changed){
-  recBody.innerHTML=html+deepHTML()+'</div>';
-  const note=$('#part-note');
-  if(note){
-    note.textContent=document.body.classList.contains('diffing')
-      ? `${total} sections · ${changed} with text changes in this comparison`
-      : `${total} sections`;
-  }
-  wireDeep();
-  // deep link jump (?section= legacy)
-  if(S.jumpTo){
-    const el=document.getElementById('sec-'+cssId(S.jumpTo));
-    if(el)requestAnimationFrame(()=>el.scrollIntoView({block:'start'}));
-    S.jumpTo=null;
-  }
-}
-function buildTOC(items){
-  tocCount.textContent=`${items.length} sections`;
-  tocList.innerHTML=items.map(it=>
-    `<button class="toc-link${it.changed?' chg':''}" data-target="sec-${cssId(it.id)}">
-      <b>${esc(it.id)}</b><span class="tt">${esc(stripNum(it.title,it.id))}</span>
-    </button>`).join('');
-}
-tocList.addEventListener('click',e=>{
-  const b=e.target.closest('.toc-link');if(!b)return;
-  const el=document.getElementById(b.dataset.target);
-  if(el)el.scrollIntoView({block:'start',behavior:'smooth'});
-  tocOpen(false);
-});
-
-function writeURL(){
-  try{
-    const q=new URLSearchParams();
-    q.set('part',S.part);
-    if(S.part==='52')q.set('subpart',S.subpart);
-    if(S.date)q.set('date',S.date);
-    if(S.view==='compare'&&S.vs)q.set('vs',S.vs);
-    q.set('view',S.view);
-    history.replaceState(null,'','?'+q.toString());
-  }catch(e){}
-}
-
-/* ---------------- diff engine (word-level LCS, unchanged core) ---------------- */
-function tokenize(s){return s.match(/\S+|\s+/g)||[];}
-/* Long Part 52 clauses can blow up an O(n*m) word diff and freeze the tab.
-   Above a cell budget, fall back to a paragraph-level redline. */
-function paragraphDiff(aStr,bStr){
-  const a=aStr.split(/\n{2,}/), b=bStr.split(/\n{2,}/), n=a.length, m=b.length;
-  const dp=Array.from({length:n+1},()=>new Uint16Array(m+1));
-  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)
-    dp[i][j]=a[i]===b[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
-  let i=0,j=0,out='<p style="font-family:var(--mono);font-size:11px;color:var(--muted-2)">Long section &mdash; redline shown paragraph-by-paragraph.</p>';
-  const P=(t,v)=>t==='eq'?`<p>${esc(v)}</p>`:t==='del'?`<p><del>${esc(v)}</del></p>`:`<p><ins>${esc(v)}</ins></p>`;
-  while(i<n&&j<m){
-    if(a[i]===b[j]){out+=P('eq',a[i]);i++;j++;}
-    else if(dp[i+1][j]>=dp[i][j+1]){out+=P('del',a[i]);i++;}
-    else{out+=P('ins',b[j]);j++;}
-  }
-  while(i<n)out+=P('del',a[i++]);
-  while(j<m)out+=P('ins',b[j++]);
-  return out;
-}
-function renderDiff(aStr,bStr){
-  let a=tokenize(aStr), b=tokenize(bStr);
-  // trim common head/tail so the LCS only sees the changed core
-  let pre=0;
-  while(pre<a.length&&pre<b.length&&a[pre]===b[pre])pre++;
-  let sufA=a.length,sufB=b.length;
-  while(sufA>pre&&sufB>pre&&a[sufA-1]===b[sufB-1]){sufA--;sufB--;}
-  const head=a.slice(0,pre).join(''), tailArr=a.slice(sufA);
-  const coreA=a.slice(pre,sufA), coreB=b.slice(pre,sufB);
-  const n=coreA.length, m=coreB.length;
-  if(n*m>4000000) return paragraphDiff(aStr,bStr);
-  const dp=Array.from({length:n+1},()=>new Uint16Array(m+1));
-  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)
-    dp[i][j]=coreA[i]===coreB[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
-  let i=0,j=0,out='';
-  const push=(type,val)=>{
-    if(type==='eq') out+=esc(val);
-    else if(type==='del') out+=`<del>${esc(val)}</del>`;
-    else out+=`<ins>${esc(val)}</ins>`;
-  };
-  const seq=[];
-  if(head)seq.push(['eq',head]);
-  while(i<n&&j<m){
-    if(coreA[i]===coreB[j]){seq.push(['eq',coreA[i]]);i++;j++;}
-    else if(dp[i+1][j]>=dp[i][j+1]){seq.push(['del',coreA[i]]);i++;}
-    else {seq.push(['ins',coreB[j]]);j++;}
-  }
-  while(i<n)seq.push(['del',coreA[i++]]);
-  while(j<m)seq.push(['ins',coreB[j++]]);
-  tailArr.forEach(t=>seq.push(['eq',t]));
-  let buf='',cur=null;
-  const emit=()=>{if(cur!==null)push(cur,buf);buf='';};
-  seq.forEach(([t,v])=>{if(t!==cur){emit();cur=t;}buf+=v;});
-  emit();
-  return '<p>'+out.replace(/\n{2,}/g,'</p><p>').replace(/\n/g,' ')+'</p>';
-}
-
-/* Merge two ordered id lists, preserving relative order; ids only in the
-   old snapshot slot in after their surviving predecessor. */
-function mergeOrders(aOrder,bOrder){
-  const bSet=new Set(bOrder);
-  const out=[...bOrder];
-  let anchor=-1;
-  aOrder.forEach(id=>{
-    if(bSet.has(id)){anchor=out.indexOf(id);return;}
-    out.splice(anchor+1,0,id);anchor++;
-  });
-  return out;
-}
-
-/* ---------------- Federal Register citation links ---------------- */
-function citaHTML(authority){
-  if(!authority)return '';
-  const linked=esc(authority).replace(/(\d{1,3})\s*FR\s*(\d{1,6})/g,
-    (mm,v,p)=>`<a href="https://www.federalregister.gov/citation/${v}-FR-${p}" target="_blank" rel="noopener">${mm}</a>`);
-  return `<div class="cita">${linked}</div>`;
-}
-
-/* ---------------- deep history (1996-2016 annual tier) ---------------- */
-/* The Worker endpoints are per-section, so this stays a per-section panel. */
-function deepHTML(){
-  if(!KTHQ_BACKEND)return `<details class="deep"><summary>Older editions · 1996–2016</summary>
-    <div class="deep-in"><p class="note">The eCFR record begins in 2017. GovInfo annual
-    editions back to Oct 1, 1996 activate when the KTHQ backend is connected.</p></div></details>`;
-  return `<details class="deep" id="deep"><summary>Older editions · 1996–2016 (per-section)</summary>
-    <div class="deep-in">
-      <p class="note">Annual-edition snapshots from GovInfo, revised each Oct 1.
-      These load one section at a time. Numbering can diverge from the modern FAR
-      after the 1997 Part 15 rewrite, so an old number may cover a different subject.</p>
-      <div class="deep-row">
-        <select id="deep-sec" aria-label="Section for older editions"></select>
-        <button class="deep-btn" id="deep-load">Load editions</button>
-      </div>
-      <div class="deep-years" id="deep-years"></div>
-      <div id="deep-out"></div>
-    </div></details>`;
-}
-function wireDeep(){
-  const sel=$('#deep-sec');if(!sel)return;
-  const ids=[...new Set(versionRecs.filter(inScope).map(v=>v.identifier))].sort(natCompare);
-  sel.innerHTML=ids.map(id=>{
-    const name=cleanName((versionRecs.find(v=>v.identifier===id)||{}).name||id);
-    return `<option value="${esc(id)}">${esc(name)}</option>`;
-  }).join('');
-  $('#deep-load').addEventListener('click',()=>loadDeepYears(sel.value));
-}
-async function loadDeepYears(id){
-  const ywrap=$('#deep-years'),out=$('#deep-out');
-  ywrap.innerHTML='<span class="ychip">Loading…</span>';out.innerHTML='';
-  let years=[];
-  try{
-    const r=await fetch(`${KTHQ_BACKEND}/api/annual/years?section=${encodeURIComponent(id)}`);
-    if(r.ok)years=(await r.json()).years||[];
-  }catch(e){}
-  if(!years.length){
-    ywrap.innerHTML=`<span style="font-family:var(--mono);font-size:11px;color:var(--muted)">
-      No 1996–2016 annual entry for ${esc(id)} — the 1997 rewrite renumbered many sections.</span>`;
-    return;
-  }
-  ywrap.innerHTML=years.map(y=>`<button class="ychip" data-y="${y}">${y}</button>`).join('');
-  [...ywrap.children].forEach(b=>b.addEventListener('click',()=>{
-    [...ywrap.children].forEach(c=>c.classList.toggle('sel',c===b));
-    const y=+b.dataset.y,k=years.indexOf(y);
-    showAnnual(id,y,k>0?years[k-1]:null);
-  }));
-}
-function showAnnual(id,year,prevYear){
-  const out=$('#deep-out');
-  out.innerHTML='<div class="deep-doc"><div class="spinner"></div></div>';
-  const get=y=>fetch(`${KTHQ_BACKEND}/api/annual?section=${encodeURIComponent(id)}&year=${y}`)
-    .then(r=>r.ok?r.json():null).catch(()=>null);
-  Promise.all([prevYear?get(prevYear):Promise.resolve(null),get(year)])
-  .then(([a,b])=>{
-    if(!b||b.found===false){
-      out.innerHTML=`<div class="deep-doc"><div class="deep-stamp" style="color:var(--del)">
-        The ${year} annual edition has no record for ${esc(id)}.</div></div>`;
-      return;
-    }
-    const haveDiff=a&&a.found!==false;
-    const body=haveDiff
-      ? renderDiff(a.text,b.text)
-      : b.text.split(/\n{2,}/).map(p=>`<p>${esc(p)}</p>`).join('');
-    const stamp=haveDiff
-      ? `<b>${prevYear} edition</b> → <b>${year} edition</b> · revised Oct 1 · ${esc(b.subj||id)}`
-      : `Annual edition <b>${year}</b> · revised Oct 1 · GovInfo CFR · ${esc(b.subj||id)}`;
-    out.innerHTML=`<div class="deep-doc"><div class="deep-stamp">${stamp}</div>${body}
-      ${b.cita?`<div class="cita">${esc(b.cita)}</div>`:''}</div>`;
-  });
-}
-
-/* ---------------- recently amended ticker ---------------- */
-async function initRecent(){
-  if(!KTHQ_BACKEND) return;
-  let feed;
-  try{
-    const r=await fetch(`${KTHQ_BACKEND}/api/recent`);
-    if(!r.ok) return; feed=await r.json();
-  }catch(e){ return; }
-  if(!feed||!feed.items||!feed.items.length) return;
-  const t=$('#ticker'); t.hidden=false;
-  t.innerHTML=`<span class="tk-label">Latest FAR changes</span>`+
-    feed.items.slice(0,40).map(it=>
-      `<button class="tk-item" data-part="${parseInt(it.part,10)}" data-date="${esc(it.date)}" data-sec="${esc(it.section)}">
-        <b>${esc(it.section)}</b> ${fmt(it.date)}${it.removed?' · removed':it.substantive?'':' · admin'}
-      </button>`).join('');
-  t.querySelectorAll('.tk-item').forEach(b=>{
-    b.addEventListener('click',async()=>{
-      const p=String(parseInt(b.dataset.part,10));
-      const sec=b.dataset.sec;
-      S.part=p;partSel.value=p;
-      subWrap.classList.toggle('show',p==='52');
-      if(p==='52'){
-        // route the section into its subpart by the first digit after "52."
-        const m=sec.match(/^52\.(\d)/);
-        S.subpart=m&&['1','2','3'].includes(m[1])?`52.${m[1]}`:'52.2';
-        subSel.value=S.subpart;
-      } else S.subpart=null;
-      S.view='redline';S.vs=null;S.date=null;
-      S.wantDate=b.dataset.date;S.jumpTo=sec;
-      loadPart();
-      document.querySelector('.record').scrollTop=0;
-    });
-  });
-}
-
-/* ---------------- helpers ---------------- */
-function natCompare(a,b){
-  return a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'});
-}
-function cleanName(s){return collapse(s).replace(/\s{2,}/g,' ');}
-function collapse(s){return (s||'').replace(/\s+/g,' ').trim();}
-const MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-function fmt(d){
-  const [y,m,da]=d.split('-');
-  return `${MO[+m-1]} ${+da}, ${y}`;
-}
-function fmtShort(d){
-  const [,m,da]=d.split('-');
-  return `${MO[+m-1]} ${+da}`;
-}
-function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-function cssId(s){return s.replace(/[^a-zA-Z0-9_.-]/g,'_');}
-function stripNum(title,id){
-  const t=title||'';
-  return t.startsWith(id)?t.slice(id.length).replace(/^\s+/,''):t;
-}
-</script>
+  <script src="far-historian-prototype.js?v=20260830-2"></script>
 </body>
 </html>
