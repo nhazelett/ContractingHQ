@@ -2303,7 +2303,6 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'training-advanced.html',
     'training-specializations.html',
     // Contingency contracting hub and the UDM module pages
-    'cco.html',
     'udm-team.html',
     'udm-force.html',
     'udm-readiness.html',
