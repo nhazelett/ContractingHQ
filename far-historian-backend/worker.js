@@ -13,6 +13,7 @@
  */
 
 const ECFR = "https://www.ecfr.gov/api/versioner/v1";
+const ECFR_RENDERER = "https://www.ecfr.gov/api/renderer/v1/content/enhanced";
 
 export default {
   async fetch(req, env, ctx) {
@@ -26,7 +27,8 @@ export default {
       if (p === "/api/annual/years")  return cors(await annualYears(url, env));
       if (p === "/api/annual/part")   return cors(await annualPart(url, env));
       if (p === "/api/annual")        return cors(await annualSection(url, env));
-      if (p.startsWith("/api/ecfr/")) return cors(await proxyEcfr(p, url, ctx));
+      if (p.startsWith("/api/ecfr-renderer/")) return cors(await proxyEcfr(p, url, ctx, ECFR_RENDERER, "/api/ecfr-renderer/"));
+      if (p.startsWith("/api/ecfr/")) return cors(await proxyEcfr(p, url, ctx, ECFR, "/api/ecfr/"));
       if (p === "/api/ingest")        return cors(await ingestGuard(url, env)); // see ingest.mjs
       return cors(json({ error: "not found" }, 404));
     } catch (e) {
@@ -118,8 +120,8 @@ async function annualPart(url, env) {
 
 /* ----------------------- eCFR proxy (CORS + edge cache) ------------ */
 
-async function proxyEcfr(pathname, url, ctx) {
-  const target = `${ECFR}/${pathname.slice("/api/ecfr/".length)}${url.search}`;
+async function proxyEcfr(pathname, url, ctx, upstreamBase, routePrefix) {
+  const target = `${upstreamBase}/${pathname.slice(routePrefix.length)}${url.search}`;
   const cache = caches.default;
   const cacheKey = new Request(target);
   const hit = await cache.match(cacheKey);

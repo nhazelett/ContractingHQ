@@ -2,9 +2,11 @@
   'use strict';
 
   const DIRECT_BASE = 'https://www.ecfr.gov/api/versioner/v1';
+  const DIRECT_RENDERER = 'https://www.ecfr.gov/api/renderer/v1/content/enhanced';
   const DEFAULT_PROXY = 'https://far-historian.nickhazelett.workers.dev/api/ecfr';
   const params = new URLSearchParams(location.search);
   const PROXY_BASE = (params.get('worker') || DEFAULT_PROXY).replace(/\/$/, '');
+  const PROXY_RENDERER = PROXY_BASE.replace(/\/api\/ecfr$/, '/api/ecfr-renderer');
 
   const PARTS = [
     [1, 'Federal Acquisition Regulations System'],
@@ -248,8 +250,8 @@
     const scope = state.part === '52' ? `&subpart=${encodeURIComponent(state.subpart)}` : '';
     const key = `${state.part}|${scope}|${date}`;
     if (snapshotCache.has(key)) return snapshotCache.get(key);
-    const xml = await requestArchive(`/full/${date}/title-48.xml?part=${encodeURIComponent(state.part)}${scope}`, signal, `${formatDate(date)} edition`);
-    const snapshot = parsePart(xml);
+    const html = await requestRendered(`/${date}/title-48?part=${encodeURIComponent(state.part)}${scope}`, signal, `${formatDate(date)} edition`);
+    const snapshot = parsePartHtml(html);
     if (!snapshot.order.length) throw new Error(`The ${formatDate(date)} edition returned no readable sections.`);
     snapshotCache.set(key, snapshot);
     return snapshot;
@@ -259,6 +261,27 @@
     const sources = [
       { name: 'KTHQ archive cache', base: PROXY_BASE, timeout: 30000 },
       { name: 'eCFR direct', base: DIRECT_BASE, timeout: 15000 }
+    ];
+    const errors = [];
+
+    for (const source of sources) {
+      if (signal.aborted) throw abortError();
+      try {
+        const response = await fetchWithTimeout(source.base + path, source.timeout, signal);
+        if (!response.ok) throw new Error(`${source.name} returned HTTP ${response.status}`);
+        return await response.text();
+      } catch (error) {
+        if (isAbort(error) && signal.aborted) throw error;
+        errors.push(error instanceof Error ? error.message : String(error));
+      }
+    }
+    throw new Error(`${label} failed through both archive routes. ${errors.join(' · ')}`);
+  }
+
+  async function requestRendered(path, signal, label) {
+    const sources = [
+      { name: 'KTHQ archive cache', base: PROXY_RENDERER, timeout: 30000 },
+      { name: 'eCFR direct', base: DIRECT_RENDERER, timeout: 20000 }
     ];
     const errors = [];
 
@@ -307,6 +330,34 @@
       if (!id || map.has(id)) return;
       const head = node.querySelector('HEAD');
       const paragraphs = Array.from(node.querySelectorAll('P,FP'))
+        .map((paragraph) => collapse(paragraph.textContent))
+        .filter(Boolean);
+      const record = {
+        id,
+        title: head ? collapse(head.textContent) : `FAR ${id}`,
+        paragraphs,
+        text: paragraphs.join('\n\n')
+      };
+      order.push(id);
+      map.set(id, record);
+    });
+
+    return { heading: headingNode ? collapse(headingNode.textContent) : partLabel(), order, map };
+  }
+
+  function parsePartHtml(html) {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const part = doc.querySelector('.part');
+    const headingNode = part && part.querySelector(':scope > h1');
+    const nodes = Array.from(doc.querySelectorAll('.section[id]'));
+    const order = [];
+    const map = new Map();
+
+    nodes.forEach((node) => {
+      const id = node.id;
+      if (!id || map.has(id)) return;
+      const head = node.querySelector(':scope > h4');
+      const paragraphs = Array.from(node.querySelectorAll('p'))
         .map((paragraph) => collapse(paragraph.textContent))
         .filter(Boolean);
       const record = {
