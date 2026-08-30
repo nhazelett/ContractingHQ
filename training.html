@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
   <style>/* Training page styles */
-    .training-page{ background: #040d1f; min-height: 100vh; }.training-hero{ padding: 6rem 1.5rem 3rem; text-align: center; }/* ─── Training icon (hero size, 190px) ─── */
+    .training-page{ background: #000; min-height: 100vh; }.training-hero{ padding: 6rem 1.5rem 3rem; text-align: center; }/* ─── Training icon (hero size, 190px) ─── */
     .training-icon{
       --icon-size: 190px;
       --card-top: rgba(43, 79, 146, 0.92);
@@ -301,6 +301,122 @@
     .l-spec         { --lane: #a78bfa; }
 
     @media (max-width: 640px) { .lane-grid { grid-template-columns: 1fr; } }
+
+    /* ══════════════ STORM SCOPE ══════════════ */
+    .storm-scope{ position: relative; isolation: isolate; overflow: hidden; background:#000; }
+    .storm-open{ height: clamp(70px, 11vh, 150px); }
+    .sr-only{
+      position:absolute!important; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; border:0;
+    }
+    /* Clouds sit almost invisible in the dark and are revealed by each strike. */
+    .storm-layers{
+      position:absolute; inset:-10% -5%; z-index:0; pointer-events:none;
+      opacity:.16; filter:brightness(.78);
+      transition: opacity .55s ease-out, filter .55s ease-out;
+    }
+    .storm-scope.is-lit .storm-layers{
+      opacity:.95; filter:brightness(1.9) contrast(1.18);
+      transition-duration:.05s;
+    }
+    .cloud{
+      position:absolute; border-radius:50%;
+      background: radial-gradient(circle, var(--cl) 0%, transparent 68%);
+      opacity: var(--co, .5);
+      will-change: transform;
+    }
+    .c1{ --cl:#3d4550; --co:0.88; width:72vw; height:48vw; left:-18vw;  top:-10vh; filter:blur(96px); animation:drift1 88s ease-in-out -12s infinite; }
+    .c2{ --cl:#2b333d; --co:0.84; width:64vw; height:44vw; right:-16vw; top:-4vh; filter:blur(96px); animation:drift2 96s ease-in-out -40s infinite; }
+    .c3{ --cl:#343c47; --co:0.82; width:76vw; height:46vw; left:8vw;    bottom:-20vh; filter:blur(96px); animation:drift3 104s ease-in-out -66s infinite; }
+    .c4{ --cl:#262d36; --co:0.78; width:58vw; height:40vw; left:30vw;   top:6vh; filter:blur(96px); animation:drift4 82s ease-in-out -25s infinite; }
+    .c5{ --cl:#2f3843; --co:0.86; width:60vw; height:42vw; right:2vw;   bottom:-12vh; filter:blur(96px); animation:drift5 92s ease-in-out -55s infinite; }
+    .c6{ --cl:#454e5b; --co:0.72; width:42vw; height:30vw; left:2vw;    top:22vh; filter:blur(60px); animation:drift2 64s ease-in-out -8s infinite; }
+    .c7{ --cl:#39424e; --co:0.68; width:38vw; height:28vw; right:12vw;  top:16vh; filter:blur(60px); animation:drift3 71s ease-in-out -33s infinite; }
+    .c8{ --cl:#2a323b; --co:0.70; width:44vw; height:32vw; left:24vw;   bottom:-4vh; filter:blur(60px); animation:drift1 58s ease-in-out -47s infinite; }
+    .c9{ --cl:#4a5462; --co:0.62; width:34vw; height:24vw; right:26vw;  bottom:4vh; filter:blur(60px); animation:drift5 67s ease-in-out -19s infinite; }
+    .c10{ --cl:#313a45; --co:0.66; width:40vw; height:26vw; left:44vw;   top:34vh; filter:blur(60px); animation:drift4 76s ease-in-out -61s infinite; }
+    .c11{ --cl:#3b444f; --co:0.64; width:36vw; height:26vw; left:-4vw;   bottom:8vh; filter:blur(60px); animation:drift2 62s ease-in-out -29s infinite; }
+    .c12{ --cl:#525c6b; --co:0.55; width:26vw; height:17vw; left:16vw;   top:12vh; filter:blur(34px); animation:drift3 46s ease-in-out -14s infinite; }
+    .c13{ --cl:#464f5c; --co:0.50; width:22vw; height:15vw; right:20vw;  top:38vh; filter:blur(34px); animation:drift1 52s ease-in-out -37s infinite; }
+    .c14{ --cl:#3f4854; --co:0.52; width:28vw; height:18vw; left:56vw;   bottom:12vh; filter:blur(34px); animation:drift5 41s ease-in-out -22s infinite; }
+    .c15{ --cl:#596372; --co:0.46; width:20vw; height:14vw; left:36vw;  top:2vh; filter:blur(34px); animation:drift4 49s ease-in-out -5s infinite; }
+    .c16{ --cl:#4d5765; --co:0.48; width:24vw; height:16vw; right:4vw;   top:30vh; filter:blur(34px); animation:drift2 44s ease-in-out -50s infinite; }
+    @keyframes drift1{ 0%,100%{ transform:translate3d(0,0,0) scale(1) }   50%{ transform:translate3d(5vw,3vh,0) scale(1.10) } }
+    @keyframes drift2{ 0%,100%{ transform:translate3d(0,0,0) scale(1.06) } 50%{ transform:translate3d(-6vw,-2vh,0) scale(1) } }
+    @keyframes drift3{ 0%,100%{ transform:translate3d(0,0,0) scale(1) }   50%{ transform:translate3d(3vw,-4vh,0) scale(1.12) } }
+    @keyframes drift4{ 0%,100%{ transform:translate3d(0,0,0) scale(1.04) rotate(0deg) } 50%{ transform:translate3d(-4vw,3vh,0) scale(1.14) rotate(3deg) } }
+    @keyframes drift5{ 0%,100%{ transform:translate3d(0,0,0) scale(1) rotate(0deg) }    50%{ transform:translate3d(6vw,-3vh,0) scale(1.09) rotate(-4deg) } }
+
+    /* film grain over the storm */
+    .storm-grain{
+      position:absolute; inset:0; z-index:1; pointer-events:none; opacity:.22; mix-blend-mode:overlay;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+    }
+    /* lightning wash: brightened briefly by JS on a strike */
+    .storm-flash{
+      position:absolute; inset:0; z-index:2; pointer-events:none; opacity:0;
+      background: radial-gradient(115% 65% at var(--fx,50%) var(--fy,22%), rgba(198,219,247,.34), rgba(120,158,205,.13) 34%, transparent 66%);
+      transition: opacity .42s ease-out;
+    }
+    .storm-scope.is-lit .storm-flash{ opacity:1; transition-duration:.06s; }
+    #storm-canvas{ position:absolute; inset:0; z-index:3; width:100%; height:100%; pointer-events:none; }
+    .storm-scope > .storm-open,
+    .storm-scope > .row-label,
+    .storm-scope > .lane { position:relative; z-index:4; }
+
+    /* ══════════════ GLASS LANE CARDS ══════════════ */
+    .lane-card{
+      position:relative; display:flex; flex-direction:column; gap:.5rem;
+      border-radius:20px; padding:1.5rem 1.6rem 1.35rem; overflow:hidden; text-decoration:none;
+      background:linear-gradient(150deg, rgba(255,255,255,.085), rgba(255,255,255,.018) 60%);
+      -webkit-backdrop-filter:blur(26px) saturate(150%); backdrop-filter:blur(26px) saturate(150%);
+      border:1px solid rgba(255,255,255,.13);
+      box-shadow:0 20px 50px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.16);
+      transform: translate3d(var(--jx,0px), var(--jy,0px), 0) rotate(var(--jr,0deg));
+      transition: box-shadow .3s, border-color .3s;
+      will-change: transform;
+    }
+    .lane-card::after{
+      content:''; position:absolute; width:230px; height:230px; right:-92px; top:-112px; border-radius:50%;
+      background:radial-gradient(circle, var(--lane), transparent 66%);
+      opacity:.30; filter:blur(26px); transition:opacity .35s, transform .5s; pointer-events:none;
+    }
+    .lane-card::before{
+      content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none; opacity:0; transition:opacity .3s;
+      background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,.14), transparent 42%);
+    }
+    .lane-card:hover::before, .lane-card:focus-visible::before{ opacity:1; }
+    .lane-card:hover::after{ opacity:.5; transform:scale(1.12); }
+    .lane-card:hover, .lane-card:focus-visible{
+      border-color:rgba(255,255,255,.26);
+      box-shadow:0 26px 62px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.24);
+      outline:none;
+    }
+    .lane-card > *{ position:relative; z-index:1; }
+    .lane-index{
+      position:absolute; right:1.3rem; bottom:.6rem; z-index:0;
+      font-family:'Rajdhani',sans-serif; font-size:3.6rem; font-weight:700; line-height:1;
+      color:rgba(255,255,255,.055); letter-spacing:-.03em;
+    }
+    .lane-eyebrow{ font-family:'Inter',sans-serif; font-size:.7rem; font-weight:600; letter-spacing:.02em; text-transform:none; color:var(--lane); opacity:.95; }
+    .lane-title{ font-family:'Rajdhani',sans-serif; font-size:1.62rem; font-weight:700; color:#fff; line-height:1.1; letter-spacing:-.01em; }
+    .lane-desc{ color:rgba(201,214,229,.78); font-size:.845rem; line-height:1.55; flex:1; }
+    .lane-foot{ display:flex; align-items:center; gap:.6rem; margin-top:.2rem; padding-top:0; border-top:none; }
+    .lane-count{ font-family:'Inter',sans-serif; font-size:.76rem; font-weight:400; letter-spacing:0; text-transform:none; color:rgba(201,214,229,.5); }
+    .lane-go{ display:none; }
+    .lane-grid{ gap:1.15rem; }
+
+    /* intro animation state */
+    .lane-card.is-flying{ transition:none; }
+    body.storm-intro .row-label{ opacity:0; transition:opacity .6s ease-out .1s; }
+    body.storm-intro.intro-done .row-label{ opacity:1; }
+
+    @media (prefers-reduced-motion: reduce){
+      .cloud{ animation:none !important; }
+      .lane-card{ transition:none !important; }
+      .storm-flash{ display:none; }
+    }
+
   </style>
   <!-- Open Graph & Twitter Card -->
   <meta property="og:type"        content="website" />
@@ -350,30 +466,20 @@
 
 <main id="main">
 
-<!-- HERO -->
-<div class="training-hero">
-  <div class="container">
-    <a class="training-icon" id="trainingIconHero" href="#tracks" aria-label="Training tracks">
-      <span class="halo"></span>
-      <span class="orbit orbit-a"><span class="spark spark-a"></span></span>
-      <span class="orbit orbit-b"><span class="spark spark-b"></span></span>
-      <span class="card card-back"><span class="card-topline"></span><span class="card-line short"></span><span class="card-line"></span><span class="card-line tiny"></span></span>
-      <span class="card card-mid"><span class="card-topline"></span><span class="card-line short"></span><span class="card-line"></span><span class="card-line tiny"></span></span>
-      <span class="card card-front">
-        <span class="badge">TRAIN</span>
-        <span class="play-chip"><span class="play-triangle"></span></span>
-        <span class="card-line short bright"></span>
-        <span class="card-line bright"></span>
-        <span class="card-line tiny bright"></span>
-        <span class="progress"><span class="progress-fill"></span></span>
-      </span>
-    </a>
-    <span class="training-hero-tag">Training</span>
-    <h1>Training</h1>
-    <p>Structured learning for contracting officers, from your first day on the job to the hardest problems in the field. Pick a lane and start building.</p>
-    <p style="margin-top:1.25rem; font-family: Georgia, 'Cormorant Garamond', serif; font-style: italic; font-size: 0.95rem; color: rgba(200,212,224,0.75);"><a href="first-light.html" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(200,212,224,0.25); padding-bottom: 1px;">or be still for a moment &middot; First Light</a></p>
+<div class="storm-scope" id="stormScope">
+  <div class="storm-layers" aria-hidden="true">
+    <span class="cloud c1"></span><span class="cloud c2"></span><span class="cloud c3"></span><span class="cloud c4"></span>
+    <span class="cloud c5"></span><span class="cloud c6"></span><span class="cloud c7"></span><span class="cloud c8"></span>
+    <span class="cloud c9"></span><span class="cloud c10"></span><span class="cloud c11"></span><span class="cloud c12"></span>
+    <span class="cloud c13"></span><span class="cloud c14"></span><span class="cloud c15"></span><span class="cloud c16"></span>
   </div>
-</div>
+  <div class="storm-grain" aria-hidden="true"></div>
+  <div class="storm-flash" id="stormFlash" aria-hidden="true"></div>
+  <canvas id="storm-canvas" aria-hidden="true"></canvas>
+
+<!-- HERO (visual hero removed; the card animation is the opening) -->
+<h1 class="sr-only">Training</h1>
+<div class="storm-open" aria-hidden="true"></div>
 
 <div id="tracks"></div>
 
@@ -384,18 +490,21 @@
 <div class="lane">
   <div class="lane-grid">
       <a href="training-beginner.html" class="lane-card l-beginner">
+        <span class="lane-index" aria-hidden="true">01</span>
         <span class="lane-eyebrow">Track 01</span>
         <span class="lane-title">Beginner</span>
         <span class="lane-desc">Foundational skills for new contracting officers. Market research, funding, requirements, competition, simplified acquisition, orders and vehicles, administration, and compliance.</span>
         <span class="lane-foot"><span class="lane-count">41 topics</span><span class="lane-go">Open &#10132;</span></span>
       </a>
       <a href="training-intermediate.html" class="lane-card l-intermediate">
+        <span class="lane-index" aria-hidden="true">02</span>
         <span class="lane-eyebrow">Track 02</span>
         <span class="lane-title">Intermediate</span>
         <span class="lane-desc">Negotiated acquisitions, construction, oversight, labor standards, and remedies. The work that shows up once the simple buys stop being the whole job.</span>
         <span class="lane-foot"><span class="lane-count">24 topics</span><span class="lane-go">Open &#10132;</span></span>
       </a>
       <a href="training-advanced.html" class="lane-card l-advanced">
+        <span class="lane-index" aria-hidden="true">03</span>
         <span class="lane-eyebrow">Track 03</span>
         <span class="lane-title">Advanced</span>
         <span class="lane-desc">Major source selections and warrant board preparation, for when the dollar values and the consequences both get larger.</span>
@@ -411,18 +520,21 @@
 <div class="lane">
   <div class="lane-grid">
       <a href="cco.html" class="lane-card l-cco">
+        <span class="lane-index" aria-hidden="true">04</span>
         <span class="lane-eyebrow">Field &amp; Deployed</span>
         <span class="lane-title">Contingency Contracting</span>
         <span class="lane-desc">Buying under pressure in an austere location. The field desk, operational contract support, manual contracts, MIPRs downrange, and the capstone exercise builders.</span>
         <span class="lane-foot"><span class="lane-count">CCO</span><span class="lane-go">Open &#10132;</span></span>
       </a>
       <a href="unit-deployment-manager.html" class="lane-card l-udm">
+        <span class="lane-index" aria-hidden="true">05</span>
         <span class="lane-eyebrow">Additional Duty</span>
         <span class="lane-title">Unit Deployment Manager</span>
         <span class="lane-desc">The additional duty that keeps a contracting squadron deployable. Six modules built from the Air Force job qualification standard, for the people who never got a pipeline.</span>
         <span class="lane-foot"><span class="lane-count">6 modules</span><span class="lane-go">Open &#10132;</span></span>
       </a>
       <a href="training-specializations.html" class="lane-card l-spec">
+        <span class="lane-index" aria-hidden="true">06</span>
         <span class="lane-eyebrow">By subject</span>
         <span class="lane-title">Specializations</span>
         <span class="lane-desc">Alternative authorities and vehicles for non-routine acquisitions, plus the shop roles contracting officers pick up as additional duties.</span>
@@ -430,6 +542,7 @@
       </a>
   </div>
 </div>
+</div><!-- /storm-scope -->
 
 <!-- ============================================================ -->
 <div class="track-section track-resources" id="resources">
@@ -481,26 +594,328 @@
   </div>
 </footer>
 
+
+<script>
+/* ── Training storm: fractal lightning, cursor plasma, cloud reveal ──
+   All scheduling is driven by the animation frame loop, never by setTimeout
+   chains. requestAnimationFrame is suspended while the tab is hidden, so a
+   backgrounded page queues nothing and cannot burst on return.
+   Re-runs safely after soft navigation; tears down any previous instance. */
+(function () {
+  if (window.__kthqStorm && window.__kthqStorm.destroy) window.__kthqStorm.destroy();
+
+  var scope  = document.getElementById('stormScope');
+  var canvas = document.getElementById('storm-canvas');
+  var flash  = document.getElementById('stormFlash');
+  var cards  = Array.prototype.slice.call(document.querySelectorAll('.lane-card'));
+  if (!scope || !canvas || !cards.length) return;
+
+  var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ctx = canvas.getContext('2d');
+  var raf = null, killed = false, sizeTimer = null;
+  var strikes = [], sparks = [], mouse = null, tick = 0, charge = 0;
+  var nextStrikeAt = 0, litUntil = 0, isLit = false, loopRunning = false;
+
+  var MAX_STRIKES = 4, MAX_SPARKS = 26;
+
+  /* ── deterministic jitter so the resting layout is imperfect but stable ── */
+  function rnd(seed) { var x = Math.sin(seed * 9301 + 49297) * 233280; return x - Math.floor(x); }
+  cards.forEach(function (c, i) {
+    c.style.setProperty('--jx', ((rnd(i + 1) - 0.5) * 26).toFixed(1) + 'px');
+    c.style.setProperty('--jy', ((rnd(i + 7) - 0.5) * 30).toFixed(1) + 'px');
+    c.style.setProperty('--jr', ((rnd(i + 13) - 0.5) * 2.6).toFixed(2) + 'deg');
+  });
+
+  function onCardMove(e) {
+    var r = this.getBoundingClientRect();
+    this.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+    this.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+  }
+  cards.forEach(function (c) { c.addEventListener('mousemove', onCardMove); });
+
+  /* ══════════ LIGHTNING GEOMETRY ══════════
+     Real bolts are fractal, so the channel is built by midpoint displacement:
+     repeatedly split each segment and push the midpoint sideways, halving the
+     displacement each pass. Branches fork off the main channel and die early. */
+  function fractal(x1, y1, x2, y2, disp, detail) {
+    var pts = [[x1, y1], [x2, y2]];
+    for (var d = 0; d < detail; d++) {
+      var np = [];
+      for (var i = 0; i < pts.length - 1; i++) {
+        var a = pts[i], b = pts[i + 1];
+        var mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+        var dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1;
+        var off = (Math.random() - 0.5) * disp;
+        np.push(a, [mx - dy / L * off, my + dx / L * off]);
+      }
+      np.push(pts[pts.length - 1]);
+      pts = np; disp *= 0.55;
+    }
+    return pts;
+  }
+
+  function makeStrike(x1, y1, x2, y2, o) {
+    var main = fractal(x1, y1, x2, y2, o.disp, o.detail);
+    var chans = [{ pts: main, w: 1 }];
+    for (var i = 0; i < o.branches; i++) {
+      var lo = Math.floor(main.length * 0.12), hi = Math.floor(main.length * 0.88);
+      var idx = lo + Math.floor(Math.random() * Math.max(1, hi - lo));
+      var p = main[idx], q = main[Math.min(main.length - 1, idx + 1)];
+      var ang = Math.atan2(q[1] - p[1], q[0] - p[0]) + (Math.random() - 0.5) * 1.7;
+      var len = o.branchLen * (0.35 + Math.random() * 0.65);
+      chans.push({
+        pts: fractal(p[0], p[1], p[0] + Math.cos(ang) * len, p[1] + Math.sin(ang) * len,
+                     o.disp * 0.35, Math.max(1, o.detail - 2)),
+        w: 0.42 + Math.random() * 0.2
+      });
+    }
+    return chans;
+  }
+
+  /* Additive multi-pass: a wide dim corona, a mid glow, then a hot near-white
+     core. Layering light beats one stroke with a blur, and costs less. */
+  var PASSES = [
+    [11, 0.045, '#12386f'],
+    [5.5, 0.10, '#2f6fd0'],
+    [2.4, 0.28, '#8fc4ff'],
+    [1.0, 0.70, '#eef6ff']
+  ];
+  function drawChannels(chans, alpha, scale) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    for (var c = 0; c < chans.length; c++) {
+      var ch = chans[c], pts = ch.pts;
+      for (var p = 0; p < PASSES.length; p++) {
+        ctx.lineWidth = PASSES[p][0] * ch.w * scale;
+        ctx.globalAlpha = Math.min(1, PASSES[p][1] * alpha);
+        ctx.strokeStyle = PASSES[p][2];
+        ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+        for (var i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  /* ══════════ BACKGROUND STRIKES ══════════ */
+  function fireStrike(now) {
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h) return;
+    var x = w * (0.10 + Math.random() * 0.80);
+    var endX = x + (Math.random() - 0.5) * w * 0.30;
+    var endY = h * (0.32 + Math.random() * 0.42);
+
+    flash.style.setProperty('--fx', (x / w * 100) + '%');
+    flash.style.setProperty('--fy', '14%');
+
+    /* return strokes: real lightning re-fires down the same channel */
+    var rs = [], n = 1 + Math.floor(Math.random() * 3);
+    for (var i = 0; i < n; i++) rs.push(4 + Math.floor(Math.random() * 26));
+
+    strikes.push({
+      chans: makeStrike(x, -30, endX, endY, {
+        disp: w * 0.16, detail: 6, branches: 3 + Math.floor(Math.random() * 4),
+        branchLen: h * 0.22
+      }),
+      age: 0, dur: 34 + Math.random() * 18, rs: rs, seed: Math.random() * 6
+    });
+    if (strikes.length > MAX_STRIKES) strikes.splice(0, strikes.length - MAX_STRIKES);
+
+    litUntil = Math.max(litUntil, now + 90 + Math.random() * 60);
+  }
+
+  /* ══════════ CURSOR PLASMA ══════════ */
+  function spark() {
+    var a = Math.random() * Math.PI * 2;
+    var a2 = a + (Math.random() - 0.5) * 2.4;
+    var d1 = 14 + Math.random() * 34, d2 = 30 + Math.random() * 74;
+    return {
+      chans: makeStrike(mouse.x + Math.cos(a) * d1, mouse.y + Math.sin(a) * d1,
+                        mouse.x + Math.cos(a2) * d2, mouse.y + Math.sin(a2) * d2,
+                        { disp: 20, detail: 4, branches: Math.random() < 0.55 ? 1 : 0, branchLen: 26 }),
+      age: 0, dur: 8 + Math.random() * 9, seed: Math.random() * 6
+    };
+  }
+
+  /* ══════════ CANVAS ══════════ */
+  function size() {
+    var r = canvas.getBoundingClientRect(), d = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.max(1, r.width * d); canvas.height = Math.max(1, r.height * d);
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+  }
+  function onMove(e) {
+    var r = canvas.getBoundingClientRect();
+    mouse = { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+  function onLeave() { mouse = null; }
+
+  function scheduleNext(now) { nextStrikeAt = now + 1800 + Math.random() * 4000; }
+
+  function loop(now) {
+    if (killed) { loopRunning = false; return; }
+    loopRunning = true;
+    now = now || performance.now();
+    ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+
+    /* strike scheduling lives here, so a hidden tab schedules nothing */
+    if (!reduced) {
+      if (!nextStrikeAt) scheduleNext(now);
+      else if (now >= nextStrikeAt) { fireStrike(now); scheduleNext(now); }
+    }
+
+    /* flash state, toggled only on change rather than every frame */
+    var wantLit = now < litUntil;
+    if (wantLit !== isLit) { isLit = wantLit; scope.classList.toggle('is-lit', wantLit); }
+
+    if (mouse && !reduced) {
+      tick++;
+      charge = Math.min(1, charge + 0.08);
+      if (tick % 3 === 0) sparks.push(spark());
+      if (tick % 11 === 0) sparks.push(spark());
+      if (sparks.length > MAX_SPARKS) sparks.splice(0, sparks.length - MAX_SPARKS);
+
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      var g = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 66);
+      g.addColorStop(0, 'rgba(150,205,255,' + (0.16 * charge).toFixed(3) + ')');
+      g.addColorStop(1, 'rgba(70,140,255,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(mouse.x, mouse.y, 66, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    } else {
+      charge = Math.max(0, charge - 0.06);
+    }
+
+    for (var i = sparks.length - 1; i >= 0; i--) {
+      var s = sparks[i]; s.age++;
+      if (s.age > s.dur) { sparks.splice(i, 1); continue; }
+      var sa = Math.pow(1 - s.age / s.dur, 0.7) * (0.45 + Math.random() * 0.55);
+      drawChannels(s.chans, sa * 0.9, 0.85);
+    }
+
+    for (var k = strikes.length - 1; k >= 0; k--) {
+      var b = strikes[k]; b.age++;
+      if (b.age > b.dur) { strikes.splice(k, 1); continue; }
+      var env = Math.pow(1 - b.age / b.dur, 0.55);
+      var restrike = b.rs.indexOf(b.age) > -1;
+      if (restrike) litUntil = Math.max(litUntil, now + 50);
+      var strobe = 0.55 + 0.45 * Math.abs(Math.sin(b.age * 1.3 + b.seed));
+      drawChannels(b.chans, env * strobe * (restrike ? 2.2 : 1), 1);
+    }
+
+    raf = requestAnimationFrame(loop);
+  }
+
+  /* Returning to the tab: drop anything stale and restart the clock so the
+     page resumes calmly instead of firing everything it "missed". */
+  function onVisibility() {
+    if (document.visibilityState === 'hidden') {
+      strikes.length = 0; sparks.length = 0; charge = 0;
+      if (isLit) { isLit = false; scope.classList.remove('is-lit'); }
+      litUntil = 0;
+    } else {
+      var now = performance.now();
+      litUntil = 0;
+      scheduleNext(now);
+      if (!loopRunning && !killed) raf = requestAnimationFrame(loop);
+    }
+  }
+
+  /* ══════════ RING INTRO ══════════ */
+  var played = false;
+  try { played = sessionStorage.getItem('kthq_training_intro') === '1'; } catch (e) {}
+
+  function runIntro() {
+    document.body.classList.add('storm-intro');
+    var box = scope.getBoundingClientRect();
+    var start = cards.map(function (c) {
+      var r = c.getBoundingClientRect();
+      return { cx: r.left + r.width / 2, cy: r.top + r.height / 2 };
+    });
+    var hubX = box.left + box.width / 2;
+    var hubY = start.reduce(function (a, p) { return a + p.cy; }, 0) / start.length;
+    var R = Math.min(box.width * 0.30, 330);
+    var N = cards.length, T0 = performance.now(), SPIN = 1700, FLY = 950;
+    var END = SPIN + FLY + N * 70 + 120;
+    cards.forEach(function (c) { c.classList.add('is-flying'); });
+
+    function finish() {
+      cards.forEach(function (c) { c.classList.remove('is-flying'); c.style.transform = ''; });
+      document.body.classList.add('intro-done');
+      try { sessionStorage.setItem('kthq_training_intro', '1'); } catch (e) {}
+      nextStrikeAt = performance.now() + 300;
+      loop();
+    }
+
+    function step(now) {
+      if (killed) return;
+      var t = now - T0;
+      /* if the tab was hidden mid-intro the clock jumps; just land the cards */
+      if (t > END + 4000) { finish(); return; }
+      cards.forEach(function (c, i) {
+        var base = (i / N) * Math.PI * 2;
+        var jx = parseFloat(c.style.getPropertyValue('--jx')) || 0;
+        var jy = parseFloat(c.style.getPropertyValue('--jy')) || 0;
+        var jr = parseFloat(c.style.getPropertyValue('--jr')) || 0;
+        if (t < SPIN) {
+          var p = t / SPIN, ease = 1 - Math.pow(1 - p, 3);
+          var ang = base + ease * Math.PI * 2, rad = R * Math.min(1, p * 3);
+          c.style.transform = 'translate3d(' + (hubX + Math.cos(ang) * rad - start[i].cx) + 'px,' +
+            (hubY + Math.sin(ang) * rad * 0.52 - start[i].cy) + 'px,0) rotate(' + (Math.sin(ang) * 4) + 'deg)';
+        } else {
+          var d = Math.min(1, (t - SPIN - i * 70) / FLY);
+          if (d < 0) return;
+          var e2 = 1 - Math.pow(1 - d, 4), ang2 = base + Math.PI * 2;
+          var fx = hubX + Math.cos(ang2) * R - start[i].cx;
+          var fy = hubY + Math.sin(ang2) * R * 0.52 - start[i].cy;
+          c.style.transform = 'translate3d(' + (fx + (jx - fx) * e2) + 'px,' +
+            (fy + (jy - fy) * e2) + 'px,0) rotate(' + (jr * e2) + 'deg)';
+        }
+      });
+      if (t < END) raf = requestAnimationFrame(step);
+      else finish();
+    }
+    raf = requestAnimationFrame(step);
+    nextStrikeAt = performance.now() + 380;
+  }
+
+  function onResize() { size(); }
+  window.addEventListener('resize', onResize);
+  document.addEventListener('visibilitychange', onVisibility);
+  scope.addEventListener('mousemove', onMove);
+  scope.addEventListener('mouseleave', onLeave);
+  size();
+  sizeTimer = setTimeout(size, 400);
+
+  if (reduced) {
+    document.body.classList.add('intro-done');
+  } else if (played) {
+    document.body.classList.add('intro-done');
+    nextStrikeAt = performance.now() + 700 + Math.random() * 1600;
+    loop();
+  } else {
+    runIntro();
+  }
+
+  window.__kthqStorm = {
+    destroy: function () {
+      killed = true; loopRunning = false;
+      if (raf) cancelAnimationFrame(raf);
+      if (sizeTimer) clearTimeout(sizeTimer);
+      window.removeEventListener('resize', onResize);
+      document.removeEventListener('visibilitychange', onVisibility);
+      scope.removeEventListener('mousemove', onMove);
+      scope.removeEventListener('mouseleave', onLeave);
+      cards.forEach(function (c) { c.removeEventListener('mousemove', onCardMove); });
+      scope.classList.remove('is-lit');
+      document.body.classList.remove('storm-intro', 'intro-done');
+      strikes.length = 0; sparks.length = 0;
+    }
+  };
+})();
+</script>
 <script src="main.js"></script>
 <script src="player.js"></script>
-<script>
-  (function () {
-    document.querySelectorAll(".training-icon").forEach(function (icon) {
-      var activeTimer;
-      var setActive = function () {
-        window.clearTimeout(activeTimer);
-        icon.classList.add("is-active");
-      };
-      var clearActive = function () {
-        window.clearTimeout(activeTimer);
-        icon.classList.remove("is-active");
-      };
-      icon.addEventListener("mouseenter", setActive);
-      icon.addEventListener("mouseleave", clearActive);
-      icon.addEventListener("focus", setActive);
-      icon.addEventListener("blur", clearActive);
-    });
-  })();
-</script>
 </body>
 </html>
