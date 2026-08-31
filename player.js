@@ -2302,6 +2302,10 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'training-intermediate.html',
     'training-advanced.html',
     'training-specializations.html',
+    // Recently modernized training and research experiences
+    'contingency-contracting.html',
+    'far-historian.html',
+    'country-contracting-dossier.html',
     // Contingency contracting hub and the UDM module pages
     'udm-team.html',
     'udm-force.html',
