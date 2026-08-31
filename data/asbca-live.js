@@ -1,5 +1,5 @@
 window.KTHQ_ASBCA_DATA = {
-  "generatedAt": "2026-08-30T13:21:29.015662+00:00",
+  "generatedAt": "2026-08-31T15:35:00.336507+00:00",
   "source": {
     "name": "Armed Services Board of Contract Appeals",
     "decisionsUrl": "https://www.asbca.mil/Decisions/2026/"
@@ -8,8 +8,8 @@ window.KTHQ_ASBCA_DATA = {
   "stats": {
     "total": 18,
     "latestDecisionDate": "2026-08-07",
-    "downloadedPdfs": 18,
-    "metadataOnly": 0,
+    "downloadedPdfs": 17,
+    "metadataOnly": 1,
     "outcomes": {
       "denied": 2,
       "dismissed": 10,
@@ -124,15 +124,13 @@ window.KTHQ_ASBCA_DATA = {
       "outcome": "dismissed",
       "outcomeLabel": "Dismissed",
       "judge": "%208.4.2026.pdf?ver=8RVM_RzbPz9ngss8CrhOlw%3d%3d)McIlmail",
-      "officialExcerpt": "An official website of the United States government Here's how you know **Official websites use .mil** A **.mil** website belongs to an official U.S. **Secure .mil websites use HTTPS** A **lock ()** or **https://** means you've safely connected to the .mil website.",
-      "tags": [
-        "ADR"
-      ],
+      "officialExcerpt": "Metadata from the ASBCA decisions index. Open the PDF for the Board's full reasoning.",
+      "tags": [],
       "practitionerPrompt": "Dismissals often turn on threshold mistakes. New specialists should read these for what must happen before the Board can reach the merits.",
       "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64199%20Relyant%20Global%20LLC%20(Dismissal",
       "filename": "64199 Relyant Global LLC (Dismissal",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceStatus": "metadata-only",
+      "sourceStatusLabel": "ASBCA index metadata",
       "sourceError": ""
     },
     {
