@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-09-01T12:41:54.041Z",
+  "generatedAt": "2026-09-02T12:14:57.623Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,11 +7,11 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 15,
-    "latestDecisionDate": "2026-08-26",
+    "total": 16,
+    "latestDecisionDate": "2026-08-31",
     "sustained": 2,
     "denied": 9,
-    "dismissed": 2,
+    "dismissed": 3,
     "mixed": 2,
     "unclassified": 0,
     "sourceStatus": {
@@ -23,11 +23,11 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 17
+        "parsedOutcomes": 19
       },
       "productPages": {
-        "attempted": 15,
-        "enriched": 15,
+        "attempted": 16,
+        "enriched": 16,
         "blocked": 0
       },
       "legacyCache": {
@@ -36,6 +36,61 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424433.23",
+      "caseName": "Aim for AdVantage, LLC",
+      "title": "Aim for AdVantage, LLC",
+      "bNumbers": [
+        "B-424433.23"
+      ],
+      "bNumberText": "B-424433.23",
+      "link": "https://www.gao.gov/products/b-424433.23",
+      "publicationDate": "2026-09-01",
+      "decisionDate": "2026-08-31",
+      "displayDate": "Aug 31, 2026",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We dismiss the protest.",
+      "officialSynopsis": "Aim for AdVantage, LLC (AFA), a minority woman-owned small business of Bel Air, Maryland, protests \"undisclosed material submission requirement[s]\"...",
+      "highlights": "",
+      "digest": "Protest challenging rejection of proposal due to purportedly undisclosed submission requirements is dismissed as an abuse of GAO's bid protest process where the protester materially misrepresented facts in its protest to our Office.",
+      "tags": [
+        "Solicitation terms",
+        "Small business"
+      ],
+      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424511.3,B-424511.4",
+      "caseName": "GSI Pacific, Inc.",
+      "title": "GSI Pacific, Inc.",
+      "bNumbers": [
+        "B-424511.3",
+        "B-424511.4"
+      ],
+      "bNumberText": "B-424511.3, B-424511.4",
+      "link": "https://www.gao.gov/products/b-424511.3%2Cb-424511.4",
+      "publicationDate": "2026-09-01",
+      "decisionDate": "2026-08-27",
+      "displayDate": "Aug 27, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "GSI Pacific, Inc., of Honolulu, Hawaii, protests the decision of the Department of the Navy, Navy Facilities Engineering Command, to eliminate GSI...",
+      "highlights": "",
+      "digest": "1. Protest that agency unreasonably evaluated proposal under experience factor is denied where protester failed to provide required dates for several submitted projects. 2. Protest that agency treated offerors disparately in evaluating proposals is denied where agency evaluated each proposal in accordance with the solicitation requirements and evaluation results were based on the differences in the proposals.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424563",
       "caseName": "Hair By Allure, LLC d/b/a Allure Rejuvenation Center",
@@ -400,33 +455,6 @@ window.KTHQ_GAO_DATA = {
         "Orders / IDIQ"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424429",
-      "caseName": "Wilson 5 Service Company, Inc.",
-      "title": "Wilson 5 Service Company, Inc.",
-      "bNumbers": [
-        "B-424429"
-      ],
-      "bNumberText": "B-424429",
-      "link": "https://www.gao.gov/products/b-424429",
-      "publicationDate": "2026-08-13",
-      "decisionDate": "2026-07-17",
-      "displayDate": "Jul 17, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Wilson 5 Service Company, Inc., a small business of Kittery, Maine, protests the agency's actions in connection with request for quotations (RFQ) No...",
-      "highlights": "",
-      "digest": "Protest challenging the agency's decision not to solicit the protester is denied where the solicitation was issued in accordance with the applicable procedures of the Revolutionary Federal Acquisition Regulation Overhaul.",
-      "tags": [
-        "Solicitation terms",
-        "Small business"
-      ],
-      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
