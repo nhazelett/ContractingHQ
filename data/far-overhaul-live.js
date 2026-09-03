@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-09-02T12:46:07.059447+00:00",
+  "generatedAt": "2026-09-03T12:49:12.104550+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -16,7 +16,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "uniqueAgencyCount": 42,
     "latestPartDate": "2026-07-01",
     "latestPartDateLabel": "Jul 1, 2026",
-    "announcementCount": 10,
+    "announcementCount": 9,
     "federalRegisterCount": 3
   },
   "changes": {
@@ -8632,16 +8632,6 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "source": "Acquisition.gov",
       "type": "Official announcement",
       "summary": "RFO in PDF & New RFO Course Now Available Anonymous (not verified) Thu, 12/18/2025 - 10:00 The Federal Acquisition Regulatory Council has released a full PDF of all updated model deviations as part of the ongoing Revolutionary FAR Overhaul (RFO) Initiative, in accordance with..."
-    },
-    {
-      "id": "9442a85f881a1a1b",
-      "title": "FAR Overhaul Community Crowdsourcing Campaign",
-      "url": "https://www.acquisition.gov/content/far-overhaul-community-crowdsourcing-campaign",
-      "date": "2025-12-15",
-      "dateLabel": "Dec 15, 2025",
-      "source": "Acquisition.gov",
-      "type": "Official announcement",
-      "summary": "FAR Overhaul Community Crowdsourcing Campaign Anonymous (not verified) Mon, 12/15/2025 - 16:00 The Office of Federal Procurement Policy (OFPP) invites the acquisition workforce, businesses, and other stakeholders to share feedback to inform the next phase of the Revolutionary..."
     }
   ],
   "federalRegister": [
