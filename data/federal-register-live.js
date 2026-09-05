@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-09-04T12:06:20.303Z",
-  "since": "2025-03-13",
+  "generatedAt": "2026-09-05T11:15:00.879Z",
+  "since": "2025-03-14",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,13 +14,13 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 138,
+    "total": 133,
     "latestPublicationDate": "2026-09-01",
     "openCommentWindows": 8,
     "rules": 47,
     "byTone": {
       "action": 30,
-      "monitor": 88,
+      "monitor": 83,
       "watch": 20
     }
   },
@@ -4791,181 +4791,6 @@ window.KTHQ_FEDREG_DATA = {
       "htmlUrl": "https://www.federalregister.gov/documents/2025/03/19/2025-04494/conclusion-of-the-renewal-of-a-reciprocal-defense-procurement-agreement-with-the-government-of-the",
       "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-03-19/pdf/2025-04494.pdf",
       "sourceQuery": "DFARS / DARS agency feed"
-    },
-    {
-      "id": "2025-04019",
-      "documentNumber": "2025-04019",
-      "title": "Information Collection; Certain Federal Acquisition Regulation Part 32 Requirements",
-      "shortTitle": "Information Collection; Certain Federal Acquisition Regulation Part 32 Requirements",
-      "system": "FAR",
-      "stage": "Information collection",
-      "topic": "Acquisition policy",
-      "actionLevel": "Monitor",
-      "actionTone": "monitor",
-      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
-      "nextSteps": [
-        "Identify the cited provision, clause, form, or system",
-        "Comment only if your office has burden data or a process concern",
-        "No template change unless a later rule follows"
-      ],
-      "type": "Notice",
-      "publicationDate": "2025-03-13",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-05-12",
-      "datesText": "DoD, GSA, and NASA will consider all comments received by May 12, 2025.",
-      "actionText": "Notice and request for comments.",
-      "summary": "In accordance with the Paperwork Reduction Act of 1995, and the Office of Management and Budget (OMB) regulations, DoD, GSA, and NASA invite the public to comment on an extension concerning certain Federal Acquisition Regulation part 32 requirements. DoD, GSA, and NASA invite comments on: whether the proposed collection of information is necessary for the proper performance of the functions of Federal Government acquisitions, including whether the information will have practical utility; the accuracy of the estima...",
-      "citation": "90 FR 11979",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/03/13/2025-04019/information-collection-certain-federal-acquisition-regulation-part-32-requirements",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-03-13/pdf/2025-04019.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2025-03997",
-      "documentNumber": "2025-03997",
-      "title": "Submission for OMB Review; Certain Federal Acquisition Regulation Part 15 Requirements",
-      "shortTitle": "Submission for OMB Review; Certain Federal Acquisition Regulation Part 15 Requirements",
-      "system": "FAR",
-      "stage": "Notice",
-      "topic": "Clauses / reps",
-      "actionLevel": "Awareness",
-      "actionTone": "monitor",
-      "practitionerNote": "This is a clauses / reps item. Read enough to know whether it touches your current workload, then monitor for follow-on implementation.",
-      "nextSteps": [
-        "Skim the abstract",
-        "Check whether the affected topic matches your portfolio",
-        "Save the source link if it may affect an active file"
-      ],
-      "type": "Notice",
-      "publicationDate": "2025-03-13",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-04-14",
-      "datesText": "Submit comments on or before April 14, 2025.",
-      "actionText": "Notice.",
-      "summary": "Under the provisions of the Paperwork Reduction Act, the Regulatory Secretariat Division has submitted to the Office of Management and Budget (OMB) a request to review and approve an extension of a previously approved information collection requirement regarding certain Federal Acquisition Regulation (FAR) part 15 requirements.",
-      "citation": "90 FR 11976",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/03/13/2025-03997/submission-for-omb-review-certain-federal-acquisition-regulation-part-15-requirements",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-03-13/pdf/2025-03997.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2025-03999",
-      "documentNumber": "2025-03999",
-      "title": "Submission for OMB Review; Certain Federal Acquisition Regulation Part 16 Contract Pricing Requirements",
-      "shortTitle": "Submission for OMB Review; Certain Federal Acquisition Regulation Part 16 Contract Pricing Requirements",
-      "system": "FAR",
-      "stage": "Notice",
-      "topic": "Clauses / reps",
-      "actionLevel": "Awareness",
-      "actionTone": "monitor",
-      "practitionerNote": "This is a clauses / reps item. Read enough to know whether it touches your current workload, then monitor for follow-on implementation.",
-      "nextSteps": [
-        "Skim the abstract",
-        "Check whether the affected topic matches your portfolio",
-        "Save the source link if it may affect an active file"
-      ],
-      "type": "Notice",
-      "publicationDate": "2025-03-13",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-04-14",
-      "datesText": "Submit comments on or before April 14, 2025.",
-      "actionText": "Notice.",
-      "summary": "Under the provisions of the Paperwork Reduction Act, the Regulatory Secretariat Division has submitted to the Office of Management and Budget (OMB) a request to review and approve an extension of a previously approved information collection requirement regarding certain Federal Acquisition Regulation (FAR) part 16 contract pricing requirements.",
-      "citation": "90 FR 11969",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/03/13/2025-03999/submission-for-omb-review-certain-federal-acquisition-regulation-part-16-contract-pricing",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-03-13/pdf/2025-03999.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2025-04003",
-      "documentNumber": "2025-04003",
-      "title": "Submission for OMB Review; Certain Federal Acquisition Regulation Part 4 Requirements",
-      "shortTitle": "Submission for OMB Review; Certain Federal Acquisition Regulation Part 4 Requirements",
-      "system": "FAR",
-      "stage": "Notice",
-      "topic": "Clauses / reps",
-      "actionLevel": "Awareness",
-      "actionTone": "monitor",
-      "practitionerNote": "This is a clauses / reps item. Read enough to know whether it touches your current workload, then monitor for follow-on implementation.",
-      "nextSteps": [
-        "Skim the abstract",
-        "Check whether the affected topic matches your portfolio",
-        "Save the source link if it may affect an active file"
-      ],
-      "type": "Notice",
-      "publicationDate": "2025-03-13",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-04-14",
-      "datesText": "Submit comments on or before April 14, 2025.",
-      "actionText": "Notice.",
-      "summary": "Under the provisions of the Paperwork Reduction Act, the Regulatory Secretariat Division has submitted to the Office of Management and Budget (OMB) a request to review and approve an extension of a previously approved information collection requirement regarding certain Federal Acquisition Regulation (FAR) part 4 requirements and a revision to address existing Commercial and Government Entity code requirements.",
-      "citation": "90 FR 11973",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/03/13/2025-04003/submission-for-omb-review-certain-federal-acquisition-regulation-part-4-requirements",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-03-13/pdf/2025-04003.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2025-04004",
-      "documentNumber": "2025-04004",
-      "title": "Submission for OMB Review; Certain Federal Acquisition Regulation Part 9 Requirements",
-      "shortTitle": "Submission for OMB Review; Certain Federal Acquisition Regulation Part 9 Requirements",
-      "system": "FAR",
-      "stage": "Notice",
-      "topic": "Clauses / reps",
-      "actionLevel": "Awareness",
-      "actionTone": "monitor",
-      "practitionerNote": "This is a clauses / reps item. Read enough to know whether it touches your current workload, then monitor for follow-on implementation.",
-      "nextSteps": [
-        "Skim the abstract",
-        "Check whether the affected topic matches your portfolio",
-        "Save the source link if it may affect an active file"
-      ],
-      "type": "Notice",
-      "publicationDate": "2025-03-13",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-04-14",
-      "datesText": "Submit comments on or before April 14, 2025.",
-      "actionText": "Notice.",
-      "summary": "Under the provisions of the Paperwork Reduction Act, the Regulatory Secretariat Division has submitted to the Office of Management and Budget (OMB) a request to review and approve an extension of a previously approved information collection requirement regarding certain Federal Acquisition Regulation (FAR) part 9 requirements.",
-      "citation": "90 FR 11982",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/03/13/2025-04004/submission-for-omb-review-certain-federal-acquisition-regulation-part-9-requirements",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-03-13/pdf/2025-04004.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
     }
   ]
 };
