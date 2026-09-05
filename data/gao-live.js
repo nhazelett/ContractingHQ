@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-09-04T12:13:56.988Z",
+  "generatedAt": "2026-09-05T11:21:40.397Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,13 +7,13 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 17,
+    "total": 19,
     "latestDecisionDate": "2026-08-31",
-    "sustained": 2,
-    "denied": 9,
+    "sustained": 1,
+    "denied": 11,
     "dismissed": 3,
     "mixed": 3,
-    "unclassified": 0,
+    "unclassified": 1,
     "sourceStatus": {
       "rss": {
         "ok": true,
@@ -23,11 +23,11 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 20
+        "parsedOutcomes": 16
       },
       "productPages": {
-        "attempted": 17,
-        "enriched": 17,
+        "attempted": 18,
+        "enriched": 18,
         "blocked": 0
       },
       "legacyCache": {
@@ -92,6 +92,34 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-424524",
+      "caseName": "Hardwire LLC",
+      "title": "Hardwire LLC",
+      "bNumbers": [
+        "B-424524"
+      ],
+      "bNumberText": "B-424524",
+      "link": "https://www.gao.gov/products/b-424524",
+      "publicationDate": "2026-09-04",
+      "decisionDate": "2026-08-27",
+      "displayDate": "Aug 27, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Hardwire LLC, a historically underutilized business zone (HUBZone) small business of Pocomoke City, Maryland, protests the award of a contract to...",
+      "highlights": "",
+      "digest": "1. Protest challenging agency's evaluation of past performance is denied where the evaluation was reasonable and consistent with the solicitation's evaluation criteria. 2. Protest challenging agency's best-value tradeoff analysis is denied where the agency's tradeoff was reasonable, adequately documented, and consistent with the terms of the solicitation and the applicable laws and regulations.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms",
+        "Small business"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
       "id": "B-424563",
       "caseName": "Hair By Allure, LLC d/b/a Allure Rejuvenation Center",
       "title": "Hair By Allure, LLC d/b/a Allure Rejuvenation Center",
@@ -115,6 +143,118 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424511.2",
+      "caseName": "Dawson Technical, Inc.",
+      "title": "Dawson Technical, Inc.",
+      "bNumbers": [
+        "B-424511.2"
+      ],
+      "bNumberText": "B-424511.2",
+      "link": "https://www.gao.gov/products/b-424511.2",
+      "publicationDate": "2026-09-04",
+      "decisionDate": "2026-08-24",
+      "displayDate": "Aug 24, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Dawson Technical, Inc., of Honolulu, Hawaii, protests the decision of the Department of the Navy, Navy Facilities Engineering Command, to eliminate...",
+      "highlights": "",
+      "digest": "Protest that agency unreasonably evaluated protester's proposal is denied where agency reasonably found that protester failed to provide information required by the solicitation.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424487",
+      "caseName": "LJR Solutions, LLC",
+      "title": "LJR Solutions, LLC",
+      "bNumbers": [
+        "B-424487"
+      ],
+      "bNumberText": "B-424487",
+      "link": "https://www.gao.gov/products/b-424487",
+      "publicationDate": "2026-08-24",
+      "decisionDate": "2026-08-24",
+      "displayDate": "Aug 24, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "LJR Solutions, LLC, a small business of Myrtle Beach, South Carolina, protests the terms of request for proposals (RFP) No. 75N98026R00042, issued by...",
+      "highlights": "",
+      "digest": "",
+      "tags": [
+        "Small business"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
+    },
+    {
+      "id": "B-424554,B-424554.2",
+      "caseName": "MirrorWeb Limited",
+      "title": "MirrorWeb Limited",
+      "bNumbers": [
+        "B-424554",
+        "B-424554.2"
+      ],
+      "bNumberText": "B-424554, B-424554.2",
+      "link": "https://www.gao.gov/products/b-424554%2Cb-424554.2",
+      "publicationDate": "2026-09-04",
+      "decisionDate": "2026-08-24",
+      "displayDate": "Aug 24, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "MirrorWeb Limited, of Manchester, United Kingdom, protests the award of a contract to Internet Archive, of San Francisco, California, under request...",
+      "highlights": "",
+      "digest": "1. Protest challenging the agency's evaluation of the protester's technical proposal and the awardee's price is denied where the evaluation was reasonable and in accordance with the terms of the solicitation. 2. Protest challenging the adequacy and fairness of discussions is denied where the record shows that the agency met its obligation to conduct adequate and equal discussions.",
+      "tags": [
+        "Evaluation",
+        "Discussions / FPR",
+        "Solicitation terms",
+        "Price / cost"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424110.4,B-424110.5",
+      "caseName": "QinetiQ Inc.",
+      "title": "QinetiQ Inc.",
+      "bNumbers": [
+        "B-424110.4",
+        "B-424110.5"
+      ],
+      "bNumberText": "B-424110.4, B-424110.5",
+      "link": "https://www.gao.gov/products/b-424110.4%2Cb-424110.5",
+      "publicationDate": "2026-09-04",
+      "decisionDate": "2026-08-24",
+      "displayDate": "Aug 24, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest in part and dismiss it in part.",
+      "officialSynopsis": "QinetiQ, Inc., of Lorton, Virginia, protests the Department of the Army's issuance of a task order to TCOM LP, of Columbia, Maryland, pursuant to...",
+      "highlights": "",
+      "digest": "1. Agency reasonably identified multiple weaknesses in protester's proposal, including its failure to propose live target testing and its deferral of integrated system testing until after delivery of the system. 2. Protester's allegations regarding various aspects of awardee's evaluation are dismissed, including allegations that the agency failed to consider offerors' past performance where the solicitation did not include a past performance factor, and allegations regarding awardee's purported misrepresentation in its proposal that fail to present a sufficient factual or legal basis for protest. 3. Agency reasonably evaluated other aspects of awardee's proposal, including the awardee's compliance with the solicitation's limitation regarding the number of slides to be used during oral presentations, and the awardee's compliance with the solicitation requirements regarding exportability of its proposed solution. 4. Agency's erroneous risk assessment regarding protester's export license was not prejudicial to the protester in the tradeoff determination. 5. Protester's complaints based on the agency's alleged failure to comply with internal agency regulations implementing the Arms Export Control Act do not state a basis for protest.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms",
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -224,61 +364,6 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424592",
-      "caseName": "Davos Francois",
-      "title": "Davos Francois",
-      "bNumbers": [
-        "B-424592"
-      ],
-      "bNumberText": "B-424592",
-      "link": "https://www.gao.gov/products/b-424592",
-      "publicationDate": "2026-08-18",
-      "decisionDate": "2026-08-17",
-      "displayDate": "Aug 17, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Davos Francois, of Miramar, Florida, protests the terms of solicitation No. PSC-26-034-INL, issued by the Department of State for a senior police...",
-      "highlights": "",
-      "digest": "1. Allegation that the agency should incorporate more restrictive qualifications is denied because GAO's statutory purpose is to ensure full and open competition, and our Office will not sustain a protest that would run counter to this purpose. 2. Allegation that the agency unreasonably failed to incorporate a preference for Haitian Creole language proficiency skills into the evaluation criteria is denied where the agency demonstrated that it did not require such skill for the position advertised. 3. Protest alleging that agency officials have conspired to rig the procurement to make award to a particular individual is denied where the protester failed to provide clear and convincing evidence in support of its allegations of agency bias and bad faith. 4. Allegation that the scope of corrective action was unreasonable is denied where the record shows the corrective action was reasonably related to the flaw which the agency believes exists in the procurement.",
-      "tags": [
-        "Evaluation",
-        "Corrective action",
-        "Solicitation terms"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424487",
-      "caseName": "LJR Solutions, LLC",
-      "title": "LJR Solutions, LLC",
-      "bNumbers": [
-        "B-424487"
-      ],
-      "bNumberText": "B-424487",
-      "link": "https://www.gao.gov/products/b-424487",
-      "publicationDate": "2026-08-24",
-      "decisionDate": "2026-08-14",
-      "displayDate": "Aug 14, 2026",
-      "outcome": "sustained",
-      "outcomeLabel": "Sustained",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We sustain the protest.",
-      "officialSynopsis": "LJR Solutions, LLC, a small business of Myrtle Beach, South Carolina, protests the terms of request for proposals (RFP) No. 75N98026R00042, issued by...",
-      "highlights": "",
-      "digest": "Protest challenging agency's decision not to set aside a multiple‑award indefinite‑delivery, indefinite‑quantity contract for small business concerns is sustained where the record shows that the agency's consideration of whether it had a reasonable expectation of receiving competitive offers in terms of fair market prices, quality, and delivery from two or more responsible small business concerns was unreasonable or otherwise inadequately documented.",
-      "tags": [
-        "Price / cost",
-        "Small business"
-      ],
-      "practitionerNote": "Read sustained decisions closely. They usually point to a file habit that can be fixed before the next protest.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -450,35 +535,6 @@ window.KTHQ_GAO_DATA = {
       "officialSynopsis": "Jazz Solutions, Inc., a small business of Ashburn, Virginia, protests the issuance of a task order to Clear Vantage Point Solutions II, LLC (CVPS), a...",
       "highlights": "",
       "digest": "1. Protest challenging agency's evaluation under solicitation's past performance factor is denied where the protester fails to demonstrate that the agency's evaluation was unreasonable. 2. Protester's challenges to other aspects of the evaluation are dismissed where the protester is not an interested party to challenge the evaluation of the successful vendor's quotation because another acceptable vendor is next in line for award.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Small business",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-423954.2",
-      "caseName": "Ideal Innovations, Inc.",
-      "title": "Ideal Innovations, Inc.",
-      "bNumbers": [
-        "B-423954.2"
-      ],
-      "bNumberText": "B-423954.2",
-      "link": "https://www.gao.gov/products/b-423954.2",
-      "publicationDate": "2026-08-20",
-      "decisionDate": "2026-07-02",
-      "displayDate": "Jul 2, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Ideal Innovations, Inc. (I-3), a small business of Arlington, Virginia, protests the issuance of a task order to Allegheny Science & Technology...",
-      "highlights": "",
-      "digest": "1. Protest that award was tainted by conflicts of interest is denied where the record shows that the agency meaningfully considered the alleged conflicts and reasonably concluded that the award should not be disturbed based on the alleged conflicts. 2. Protest challenging the agency's evaluation of proposals under the technical factor is denied where the record shows that the agency's evaluation was reasonable, consistent with the terms of the solicitation, and sufficiently documented.",
       "tags": [
         "Evaluation",
         "Solicitation terms",
