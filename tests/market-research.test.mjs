@@ -14,6 +14,8 @@ import {
   evidenceCSV,
   suppliers,
   sourceRequest,
+  awardDescriptionMatch,
+  orderAwardDescriptionMatches,
 } from "../market-research/core.mjs";
 import worker, { boundedJSON } from "../market-research-backend/worker.mjs";
 const search = () => ({
@@ -21,6 +23,37 @@ const search = () => ({
   q: "diesel generator",
   from: "2023-09-09",
   to: "2026-09-09",
+});
+test("bottled-water codes do not imply a description match", () => {
+  const s = { ...search(), q: "bottled water", naics: "312112" };
+  const skillet = { source: "awards", description: "FY-2026 A1 - TILT SKILLET", facts: { NAICS: "312112", PSC: "7310" } };
+  const spoon = { ...skillet, description: "SPOON, TEA (STAINLESS STEEL)" };
+  assert.equal(awardDescriptionMatch(skillet, s), false);
+  assert.equal(awardDescriptionMatch(spoon, s), false);
+  assert.equal(awardDescriptionMatch({ ...skillet, description: "Supply BOTTLED-\n WATER, 24 bottles/case" }, s), true);
+  assert.equal(awardDescriptionMatch({ ...skillet, description: "bottled watermelon juice" }, s), false);
+  assert.equal(awardDescriptionMatch({ ...skillet, description: "" }, s), false);
+  assert.equal(awardDescriptionMatch({ ...skillet, description: "X".repeat(500) + " bottled water" }, s), true);
+  assert.equal(skillet.description, "FY-2026 A1 - TILT SKILLET");
+});
+test("description ordering retains broader leads and other sources without changing saved records", () => {
+  const s = { ...search(), q: "bottled water" };
+  const rows = [
+    { id: "skillet", source: "awards", description: "TILT SKILLET" },
+    { id: "rate", source: "calc", description: "Ceiling rate" },
+    { id: "water-new", source: "awards", description: "Bottled water delivery" },
+    { id: "spoon", source: "small-business", description: "TEA SPOON" },
+    { id: "water-old", source: "vehicles", description: "Bottled water supply" },
+  ];
+  const before = structuredClone(rows);
+  assert.deepEqual(orderAwardDescriptionMatches(rows, s).map(r => r.id),
+    ["water-new", "rate", "water-old", "skillet", "spoon"]);
+  assert.deepEqual(rows, before);
+  for (const scope of [{ ...s, q: "" }, { ...s, q: "---" }, { ...s, mode: "supplier" }]) {
+    assert.equal(awardDescriptionMatch(rows[0], scope), null);
+    assert.deepEqual(orderAwardDescriptionMatches(rows, scope), rows);
+  }
+  assert.equal(awardDescriptionMatch(rows[1], s), null);
 });
 test("award searches retain scope; supplier searches target recipients, not requirement keywords", () => {
   const s = { ...search(), naics: "335312", psc: "6115", state: "OH" };

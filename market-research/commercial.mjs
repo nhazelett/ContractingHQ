@@ -4,7 +4,7 @@ import {
   validDate,
   today,
   record,
-} from "./core.mjs?v=20260909-3";
+} from "./core.mjs?v=20260909-4";
 
 export const CATEGORIES = [
   {
