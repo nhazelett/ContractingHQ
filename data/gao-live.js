@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-09-08T12:15:21.093Z",
+  "generatedAt": "2026-09-09T12:26:41.947Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,13 +7,13 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 19,
+    "total": 20,
     "latestDecisionDate": "2026-08-31",
     "sustained": 1,
     "denied": 11,
     "dismissed": 3,
     "mixed": 3,
-    "unclassified": 1,
+    "unclassified": 2,
     "sourceStatus": {
       "rss": {
         "ok": true,
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 16
+        "parsedOutcomes": 19
       },
       "productPages": {
         "attempted": 18,
@@ -60,6 +60,34 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424528,B-424528.2,B-424528.3",
+      "caseName": "DLH, LLC",
+      "title": "DLH, LLC",
+      "bNumbers": [
+        "B-424528",
+        "B-424528.2",
+        "B-424528.3"
+      ],
+      "bNumberText": "B-424528, B-424528.2, B-424528.3",
+      "link": "https://www.gao.gov/products/b-424528%2Cb-424528.2%2Cb-424528.3",
+      "publicationDate": "2026-09-08",
+      "decisionDate": "2026-08-31",
+      "displayDate": "Aug 31, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "DLH, LLC, of Bethesda, Maryland, protests the Department of Health and Human Services (HHS), National Institutes of Health's (NIH) issuance of a 3-...",
+      "highlights": "",
+      "digest": "Protest of a sole‑source bridge task order for critical information technology services, placed against a federal supply schedule contract, is denied where the need for the services was of such unusual urgency that following the federal supply schedule's competitive ordering procedures would result in unacceptable delay.",
+      "tags": [
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -230,6 +258,32 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-424348.2",
+      "caseName": "Phoenix International Holdings, Inc.",
+      "title": "Phoenix International Holdings, Inc.",
+      "bNumbers": [
+        "B-424348.2"
+      ],
+      "bNumberText": "B-424348.2",
+      "link": "https://www.gao.gov/products/b-424348.2",
+      "publicationDate": "2026-08-24",
+      "decisionDate": "2026-08-24",
+      "displayDate": "Aug 24, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "Phoenix International Holdings, Inc., a small business of Largo, Maryland, protests the issuance of a contract modification to Oceaneering...",
+      "highlights": "",
+      "digest": "",
+      "tags": [
+        "Small business"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
+    },
+    {
       "id": "B-424110.4,B-424110.5",
       "caseName": "QinetiQ Inc.",
       "title": "QinetiQ Inc.",
@@ -306,32 +360,6 @@ window.KTHQ_GAO_DATA = {
       "officialSynopsis": "FCN Inc., a woman-owned small business of Rockville, Maryland, protests the exclusion of FCN from consideration for award of a subcontract by...",
       "highlights": "",
       "digest": "1. Protester challenging the firm's exclusion from consideration for award of a subcontract does not qualify as an interested party where the protester does not have a direct economic interest in the award of a contract in a federal procurement. 2. GAO will not consider a protest involving the award of a subcontract where the prime contractor retained responsibility for handling substantially all of the substantive aspects of the procurement.",
-      "tags": [
-        "Small business"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424348.2",
-      "caseName": "Phoenix International Holdings, Inc.",
-      "title": "Phoenix International Holdings, Inc.",
-      "bNumbers": [
-        "B-424348.2"
-      ],
-      "bNumberText": "B-424348.2",
-      "link": "https://www.gao.gov/products/b-424348.2",
-      "publicationDate": "2026-08-24",
-      "decisionDate": "2026-08-21",
-      "displayDate": "Aug 21, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Phoenix International Holdings, Inc., a small business of Largo, Maryland, protests the issuance of a contract modification to Oceaneering...",
-      "highlights": "",
-      "digest": "Protest that agency improperly extended a previously awarded contract for submarine operations and maintenance services to bridge the period until the agency can conduct a competitive procurement for follow-on services is denied where the record shows that the agency reasonably concluded that the incumbent contractor was the only firm capable of meeting the agency's interim need for the services.",
       "tags": [
         "Small business"
       ],
