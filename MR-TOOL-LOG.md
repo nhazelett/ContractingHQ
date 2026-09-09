@@ -1,5 +1,9 @@
 # Market Research Tool — Improvement Log
 
+## September 9 2026 commercial worksheet
+
+Added commercial search links and category guidance without a new paid connection. Product comparisons store source URLs, model/specification details, explicit price basis, package quantities and calculated unit prices, with editing, CSV export, and shared evidence/report citations. Retired SAM from automatic search choices while preserving old evidence attribution and the official library link. See `market-research/README.md` for details.
+
 ## September 9 2026 overhaul
 
 The Market Research Desk replaces the implementation described in the historical log below. Automatic rule-of-two verdicts, exclusion clearances, and commerciality determinations were removed. Research now retains source-specific coverage, failure states, saved citations, researcher assessments, and portable project files. See `market-research/README.md` for current coverage and validation. Earlier verification claims and proposed endpoints below are historical and are not the current connection status.

@@ -1,4 +1,4 @@
-import { SOURCE_MAP } from "./sources.mjs";
+import { SOURCE_MAP } from "./sources.mjs?v=20260909-3";
 export const VERSION = 2;
 export const today = () => new Date().toISOString().slice(0, 10);
 export const clean = (value, max = 4000) =>
@@ -608,6 +608,7 @@ export function newProject() {
     },
     search: defaultSearch(),
     evidence: [],
+    citationSequence: 0,
     assessments: {},
     engagements: [],
     conclusions: {
@@ -668,6 +669,15 @@ export function importProject(raw) {
       verification: clean(r.verification, 80) || "Needs verification",
     };
   });
+  const savedSequence = Number(raw.citationSequence);
+  base.citationSequence = Math.max(
+    Number.isSafeInteger(savedSequence) &&
+      savedSequence >= 0 &&
+      savedSequence < 999999
+      ? savedSequence
+      : 0,
+    ...base.evidence.map((e) => Number(e.citation.slice(1))),
+  );
   base.engagements = (Array.isArray(raw.engagements) ? raw.engagements : [])
     .slice(0, 100)
     .map((r) => ({
@@ -789,6 +799,22 @@ export function reportSections(p) {
       title: "6. Pricing and cost drivers",
       lines: [
         p.conclusions.pricing || pending,
+        ...p.evidence
+          .filter(
+            (e) =>
+              e.kind === "product" && e.facts?.["Worksheet version"] === "1",
+          )
+          .map(
+            (e) =>
+              `[${e.citation}] ${e.title} | ${e.company}\n${Object.entries(
+                e.facts,
+              )
+                .filter(([key]) => key !== "Worksheet version")
+                .map(([key, value]) => `${key}: ${value}`)
+                .join(
+                  "\n",
+                )}\nSpecifications: ${e.description || "Not recorded"}\nRequirement fit: ${e.note || "Not assessed"}\nPrice checked: ${e.date || "Not recorded"} | Source: ${e.url}`,
+          ),
         "Distinguish award amounts, ceiling rates, actual prices paid, wage rates, and vendor quotations. Account for units, quantity, dates, terms, delivery, geography, and scope before making comparisons.",
       ],
     },
@@ -817,6 +843,7 @@ export function reportSections(p) {
               `[${e.citation}] ${e.title}\nSource: ${SOURCE_MAP[e.source]?.provider || "Researcher-entered"} | ${e.url || "No source URL recorded"}\nRecord date: ${e.date || "Not reported"} | Retrieved: ${e.retrievedAt || "Not recorded"}\nQuery: ${e.query || "Manual entry"}\nScope: ${e.scope || "Researcher-entered evidence"}\n${Object.entries(
                 e.facts || {},
               )
+                .filter(([key]) => key !== "Worksheet version")
                 .map(([k, v]) => `${k}: ${v}`)
                 .join(
                   "\n",
@@ -876,6 +903,7 @@ export function evidenceCSV(evidence) {
       e.query,
       e.scope,
       Object.entries(e.facts || {})
+        .filter(([key]) => key !== "Worksheet version")
         .map(([k, v]) => `${k}: ${v}`)
         .join("; "),
       e.description,
@@ -885,4 +913,19 @@ export function evidenceCSV(evidence) {
   ]
     .map((row) => row.map(cell).join(","))
     .join("\r\n");
+}
+
+export function allocateCitation(project) {
+  const next =
+    Math.max(
+      project.citationSequence || 0,
+      0,
+      ...project.evidence.map((e) => Number(e.citation.slice(1)) || 0),
+    ) + 1;
+  if (next > 999999)
+    throw new Error(
+      "This file has exhausted its citation numbers. Start a new research file.",
+    );
+  project.citationSequence = next;
+  return "E" + String(next).padStart(3, "0");
 }

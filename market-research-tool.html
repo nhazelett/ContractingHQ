@@ -15,7 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="market-research/desk.css?v=20260909-2" />
+    <link rel="stylesheet" href="market-research/desk.css?v=20260909-3" />
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"
@@ -54,6 +54,9 @@
         <nav class="desk-nav" aria-label="Research workflow">
           <button type="button" data-view="discover" aria-current="page">
             <span>01</span> Search the market <b>↗</b>
+          </button>
+          <button type="button" data-view="commercial">
+            <span>+</span> Commercial products
           </button>
           <button type="button" data-view="brief">
             <span>02</span> Requirement brief
@@ -234,12 +237,24 @@
             <div id="result-list" class="result-list"></div>
             <div id="pagination" class="pagination"></div>
           </div>
+          <div class="commercial-invite">
+            <div>
+              <strong>Looking for commercial products and unit prices?</strong>
+              <p>
+                Open catalogs, compare products, and save what you find with
+                your research.
+              </p>
+            </div>
+            <button type="button" data-view="commercial" data-use-market-query>
+              Explore commercial sources ↗
+            </button>
+          </div>
           <div id="start-cards" class="start-cards">
             <article>
               <span>01 / DISCOVER</span>
               <h3>Follow the buying history.</h3>
               <p>
-                Find federal awards, suppliers, opportunities, and contract
+                Find federal awards, suppliers, and contract
                 vehicles with source-specific search coverage.
               </p>
             </article>
@@ -259,6 +274,205 @@
                 a draft that separates evidence from judgment.
               </p>
             </article>
+          </div>
+        </section>
+        <section data-panel="commercial" hidden>
+          <div class="page-heading">
+            <div class="eyebrow">COMMERCIAL RESEARCH</div>
+            <h1>Find products. Compare the details.</h1>
+            <p>
+              Explore commercial sources, then record products and prices you
+              find. Saved entries become cited evidence in your research file
+              and report.
+            </p>
+          </div>
+          <div class="commercial-steps">
+            <span>01 / OPEN SOURCES</span><span>02 / RECORD PRODUCTS</span
+            ><span>03 / COMPARE & DOCUMENT</span>
+          </div>
+          <form id="commercial-search-form" class="form-card">
+            <div class="form-grid">
+              <label
+                >Commercial search phrase<input
+                  id="commercial-query"
+                  maxlength="180"
+                  placeholder="e.g. portable generators"
+                  required /></label
+              ><label
+                >Research category<select id="commercial-category"></select
+              ></label>
+            </div>
+            <button class="primary" type="submit">
+              Prepare search links ↗
+            </button>
+            <p class="field-note">
+              Links open searches in a new tab. KTHQ does not retrieve product
+              listings or current prices from these sites.
+            </p>
+          </form>
+          <div id="commercial-guidance" class="commercial-guidance"></div>
+          <div id="commercial-links" class="library-grid"></div>
+          <div class="results-heading">
+            <div>
+              <div class="eyebrow">YOUR COMMERCIAL EVIDENCE</div>
+              <h2>Product comparison worksheet</h2>
+              <p>
+                Record the exact model and price basis. Check specifications and
+                terms before comparing offers.
+              </p>
+            </div>
+            <button id="new-product" type="button" class="primary">
+              Add a product +
+            </button>
+          </div>
+          <details id="product-editor" class="product-editor">
+            <summary id="product-editor-title">Record a product</summary>
+            <form id="product-form" class="form-card">
+              <div class="form-grid">
+                <label
+                  >Product name<input
+                    name="title"
+                    required
+                    maxlength="300" /></label
+                ><label
+                  >Seller / supplier<input
+                    name="company"
+                    required
+                    maxlength="250"
+                /></label>
+                <label
+                  >Brand and exact model<input
+                    name="model"
+                    maxlength="250"
+                    placeholder="Include variant / part number" /></label
+                ><label
+                  >Source URL<input
+                    name="url"
+                    type="url"
+                    required
+                    maxlength="2000"
+                    placeholder="https://…"
+                /></label>
+                <label
+                  >Date price / source checked<input
+                    name="date"
+                    type="date"
+                    required /></label
+                ><label
+                  >Condition<select name="condition">
+                    <option>New</option>
+                    <option>Used</option>
+                    <option>Refurbished</option>
+                    <option>Not reported</option>
+                  </select></label
+                >
+                <label
+                  >Price basis<select name="basis">
+                    <option>Advertised price</option>
+                    <option>MSRP</option>
+                    <option>Public quotation</option>
+                    <option>Quote required</option>
+                  </select></label
+                ><label
+                  >Currency<select name="currency">
+                    <option>USD</option>
+                    <option>CAD</option>
+                    <option>EUR</option>
+                    <option>GBP</option>
+                    <option>JPY</option>
+                    <option>AUD</option>
+                  </select></label
+                >
+                <label
+                  >Price for one package / offer<input
+                    name="price"
+                    type="number"
+                    min="0"
+                    step="any"
+                    placeholder="Leave blank if not published" /></label
+                ><label
+                  >Units in that package<input
+                    name="units"
+                    type="number"
+                    min="0.000001"
+                    step="any"
+                    value="1"
+                    placeholder="e.g. 12"
+                /></label>
+                <label
+                  >Unit of measure<input
+                    name="unit"
+                    maxlength="60"
+                    value="each"
+                    placeholder="each, gallon, meter…" /></label
+                ><label
+                  >Unit price<output id="product-unit-price"
+                    >Not recorded</output
+                  ><small
+                    >Package price divided by units; excludes unrecorded
+                    costs.</small
+                  ></label
+                >
+                <label
+                  >Shipping / delivery<input
+                    name="shipping"
+                    maxlength="600"
+                    placeholder="Cost, destination, lead time, or not reported" /></label
+                ><label
+                  >Installation / other costs<input
+                    name="installation"
+                    maxlength="600"
+                    placeholder="Separate from the product price"
+                /></label>
+                <label class="wide"
+                  >Important specifications<textarea
+                    name="specs"
+                    rows="3"
+                    maxlength="4000"
+                    placeholder="Capacity, dimensions, materials, power requirements, compatibility…"
+                  ></textarea>
+                </label>
+                <label
+                  >Terms and assumptions<textarea
+                    name="terms"
+                    rows="3"
+                    maxlength="600"
+                    placeholder="Taxes, minimum quantity, warranty, price validity, exclusions…"
+                  ></textarea></label
+                ><label
+                  >Fit to the requirement / questions<textarea
+                    name="note"
+                    rows="3"
+                    maxlength="8000"
+                    placeholder="Which needs does this meet? What remains to verify?"
+                  ></textarea>
+                </label>
+              </div>
+              <div class="action-bar">
+                <button type="submit" id="save-product" class="primary">
+                  Save product to evidence</button
+                ><button type="button" id="cancel-product">Cancel</button>
+              </div>
+              <p
+                id="product-form-error"
+                class="notice error"
+                role="alert"
+                hidden
+              ></p>
+            </form>
+          </details>
+          <p class="field-note">
+            Prices are entered by you and are not refreshed automatically.
+            Different currencies, units, conditions, and specifications require
+            separate review; no lowest-price recommendation is made.
+          </p>
+          <div id="product-comparison"></div>
+          <div class="action-bar">
+            <button id="export-products" type="button">
+              Export comparison CSV</button
+            ><button type="button" data-view="report">
+              Use in findings & report →
+            </button>
           </div>
         </section>
         <section data-panel="brief" hidden>
@@ -500,7 +714,7 @@
         <a href="market-research.html">market research guide</a>.
       </p></noscript
     >
-    <script type="module" src="market-research/desk.mjs?v=20260909-1"></script>
+    <script type="module" src="market-research/desk.mjs?v=20260909-3"></script>
     <script src="player.js?v=20260909-1"></script>
   </body>
 </html>

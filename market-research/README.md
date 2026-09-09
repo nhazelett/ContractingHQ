@@ -11,7 +11,7 @@ A static research workspace for products, services, and named suppliers, with a 
 - Record industry engagement and write researcher conclusions about commercial alternatives, competition, vehicles, pricing, risks, and next steps.
 - Export/import a project JSON file, export evidence CSV, and create Word, text, or print-preview reports. The AI prompt contains saved evidence and notes only; KTHQ does not call a generative model.
 
-There are 15 search adapters and 42 additional library entries (57 research routes, not 57 independently connected data feeds). Library entries include commercial catalogs, manufacturer discovery, required sources, small-business research, wage/rate tools, vehicles, innovation, industrial-base resources, and authorized-access systems. Access labels are distinct from search availability.
+There are 12 selectable search adapters and 42 additional library entries (54 research routes, not 54 independently connected data feeds). The three retired SAM adapters remain in source metadata solely for historical evidence compatibility; they are not shown in search choices. Library entries include commercial catalogs, manufacturer discovery, required sources, small-business research, wage/rate tools, vehicles, innovation, industrial-base resources, and authorized-access systems. Access labels are distinct from search availability.
 
 The selected date window is source-specific. USAspending applies its award search filter; returned performance or ordering dates may extend outside that window. SAM notices are limited to 360 days. CALC+ does not inherit award dates or location filters. NIH projects and CPI observations use their own coverage, stated beside results.
 
@@ -24,7 +24,7 @@ Award amounts are not unit prices, CALC+ ceilings are not prices paid, and histo
 - GLEIF: live legal-entity records verified; full-text results can include related names and financial funds, so identity review is necessary.
 - NIH RePORTER: live project records, organization, UEI, abstract, funding, and dates verified.
 - BLS: live browser CPI-U observations verified. Missing observations remain missing, not zero.
-- SAM opportunities, entity registration, and exclusions: the existing legacy SAM credential returns API_KEY_INVALID. Results explicitly show unavailable, with official-search links. Renew SAM_KEY on the existing kthq-market-research Worker; never put the key in site files.
+- SAM opportunities, entity registration, and exclusions: removed from automatic searches at the owner’s request. The library retains the official SAM.gov link. Existing saved SAM evidence retains its original source attribution; no key renewal is required for the current UI.
 - NewsAPI: existing connection returned live news; optional because relevance varies.
 - Brave commercial web search, PatentsView, and OpenCorporates: optional connections, not assumed available. The library and manual evidence capture work without them. No subscription was purchased.
 
@@ -32,7 +32,7 @@ Award amounts are not unit prices, CALC+ ceilings are not prices paid, and histo
 
 From the repository root, serve the static site with `python -m http.server 8766 --bind 127.0.0.1`, then open `/market-research-tool.html`. Run `node --test tests/market-research.test.mjs`.
 
-The shared source definitions and normalizers are in `sources.mjs` and `core.mjs`. The UI is `desk.mjs` / `desk.css`; `report.mjs` builds Word documents. The local docx 8.5.0 bundle retains its upstream MIT license.
+The shared source definitions and normalizers are in `sources.mjs` and `core.mjs`. The UI is `desk.mjs` / `desk.css`; the commercial worksheet is `commercial.mjs` / `commercial-ui.mjs`; `report.mjs` builds Word documents. The local docx 8.5.0 bundle retains its upstream MIT license.
 
 For the gateway, run `npm ci` in `market-research-backend`, then `npm run check` or `npm run deploy`. The configured Worker is `kthq-research-desk`; it uses a service binding to the existing `kthq-market-research` Worker without replacing its code or secrets. Optional commercial search can be connected with `wrangler secret put BRAVE_API_KEY` in the backend directory after obtaining an appropriately licensed account. Generated types can be refreshed with `wrangler types` and are not committed.
 
@@ -51,3 +51,13 @@ The shared Word builder produced a valid DOCX package whose XML, citations, sour
 Research files are local to a browser/device and are not cloud-synced. Use Export project for backups and Open project to restore them. A project supports 300 evidence records, 100 engagement entries, and the latest 100 search runs. Search result pages are limited to five per source; refine the query for targeted coverage. Previously saved evidence retains its original retrieval context when a later search runs.
 
 To roll back the frontend, revert the overhaul commit through Git. The new Worker is separate from the legacy service; the old gateway and credentials remain available. Never deploy the historical local Worker snapshot over the live legacy Worker without reviewing its current code and bindings.
+
+## Commercial research addition September 9 2026
+
+The Commercial products view prepares external Google Shopping, manufacturer-discovery, and domain-specific Google searches for selected commercial sources. Category guides cover general products, generators, IT, facilities, office, and cleaning supplies. These are user-opened research links, not scraped listings or connected price feeds. No new API, subscription, scheduled refresh, or backend service was added.
+
+Users record products in a comparison worksheet: name, seller, exact model, source URL, check date, condition, price basis, currency, package price, package quantity, unit of measure, specifications, shipping, installation, terms, and requirement fit. Unit price is package price divided by quantity; blank values stay missing and quote-required entries do not retain stale price values. Different currencies and units are not converted or ranked. Currency, date, source URL, and numeric inputs are validated.
+
+Each product is one evidence record, shared between the worksheet, evidence register, supplier assessment, JSON project file, CSV comparison export, and report pricing section. Editing retains its citation and resets verification. Removal supports undo. A persisted citation sequence prevents deleted IDs being reused after reopening a file. Old version-2 project files remain supported.
+
+Validation: 33 automated tests pass, including unit-price edge cases, quote-required handling, stable edited/deleted citations, project import, CSV column/formula escaping, external query encoding, and retired SAM attribution. Browser checks cover product creation/editing, quote-required products, reload, removal/undo, report pricing, mobile overflow, and the shared music player. No commercial data is fetched by these worksheet operations.
