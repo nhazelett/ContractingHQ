@@ -332,3 +332,151 @@ test("Worker rejects prototype property names as sources", async () => {
     assert.equal(r.status, 400);
   }
 });
+
+import {
+  commercialLinks,
+  packageUnitPrice,
+  productEvidence,
+  worksheetProducts,
+  comparisonCSV,
+} from "../market-research/commercial.mjs";
+import { SEARCH_SOURCES, SOURCE_MAP } from "../market-research/sources.mjs";
+const offer = () => ({
+  title: "QA generator",
+  company: "QA supplier",
+  model: "QA-1",
+  url: "https://example.com/product",
+  date: "2026-09-09",
+  condition: "New",
+  basis: "Advertised price",
+  currency: "USD",
+  price: "1200",
+  units: "2",
+  unit: "each",
+  specs: "Compare continuous output",
+  note: "Verify delivery",
+  terms: "Tax not included",
+});
+test("commercial searches are encoded external links with explicit source domains", () => {
+  const links = commercialLinks("generators & fuel #1", "power");
+  assert.ok(links.length >= 5);
+  for (const link of links) {
+    const u = new URL(link.url);
+    assert.equal(u.hostname, "www.google.com");
+    assert.ok(u.searchParams.get("q").includes("generators & fuel #1"));
+    assert.equal(u.hash, "");
+  }
+  assert.deepEqual(commercialLinks("  "), []);
+  assert.ok(
+    links.some((l) =>
+      new URL(l.url).searchParams.get("q").startsWith("site:generac.com "),
+    ),
+  );
+});
+test("SAM is removed from search choices while historical source metadata survives", () => {
+  for (const id of ["opportunities", "entities", "exclusions"]) {
+    assert.ok(!SEARCH_SOURCES.some((s) => s.id === id));
+    assert.equal(SOURCE_MAP[id].provider, "SAM.gov");
+  }
+  const p = newProject();
+  p.evidence = [
+    {
+      ...record("entities", {
+        title: "Past SAM record",
+        company: "Example",
+        uei: "UEI1",
+      }),
+      citation: "E005",
+    },
+  ];
+  assert.equal(importProject(p).evidence[0].source, "entities");
+});
+test("per-unit calculation preserves missing values and zero while rejecting invalid quantities", () => {
+  assert.equal(packageUnitPrice("1200", "2"), 600);
+  assert.equal(packageUnitPrice("0", "2"), 0);
+  for (const [p, q] of [
+    ["", "2"],
+    ["100", ""],
+    ["100", "0"],
+    ["-1", "2"],
+    ["100", "-2"],
+    ["NaN", "2"],
+  ])
+    assert.equal(packageUnitPrice(p, q), null);
+});
+test("worksheet products carry explicit price basis and do not become paid-price claims", () => {
+  const e = productEvidence(offer());
+  assert.equal(e.facts["Unit price"], "$600.00 USD per each");
+  assert.equal(e.amount, null);
+  assert.equal(e.facts["Price basis"], "Advertised price");
+  assert.equal(e.verification, "Needs verification");
+});
+test("quote-required products clear stale price values instead of calculating a unit price", () => {
+  const e = productEvidence({ ...offer(), basis: "Quote required" });
+  assert.equal(e.facts["Package price"], undefined);
+  assert.equal(e.facts["Unit price"], "Quote required");
+});
+test("product edits keep citation and identity and reset verification", () => {
+  const e = {
+    ...productEvidence(offer()),
+    citation: "E007",
+    verification: "Source reviewed",
+  };
+  const edited = productEvidence({ ...offer(), price: "1500" }, e);
+  assert.equal(edited.id, e.id);
+  assert.equal(edited.citation, "E007");
+  assert.equal(edited.facts["Unit price"], "$750.00 USD per each");
+  assert.equal(edited.verification, "Needs verification");
+});
+test("product validation rejects invalid sources, amounts, units, currency, and dates", () => {
+  for (const update of [
+    { url: "javascript:alert(1)" },
+    { price: "-20" },
+    { units: "0" },
+    { unit: "" },
+    { currency: "invalid" },
+    { date: "2026-02-30" },
+    { date: "2100-01-01" },
+  ])
+    assert.throws(() => productEvidence({ ...offer(), ...update }));
+});
+test("worksheet evidence survives project import and is included in report pricing", () => {
+  const p = newProject();
+  p.evidence = [{ ...productEvidence(offer()), citation: "E007" }];
+  const restored = importProject(JSON.parse(JSON.stringify(p)));
+  assert.equal(worksheetProducts(restored.evidence).length, 1);
+  const report = reportText(restored);
+  assert.match(report, /\[E007\] QA generator/);
+  assert.match(report, /Unit price: \$600.00 USD per each/);
+  assert.match(report, /Tax not included/);
+});
+test("comparison CSV exports numeric comparison columns and escapes formula-like product names", () => {
+  const e = {
+    ...productEvidence({ ...offer(), title: "=BAD()" }),
+    citation: "E007",
+  };
+  const csv = comparisonCSV([e]);
+  assert.match(csv, /"Calculated unit price"/);
+  assert.match(csv, /"600"/);
+  assert.match(csv, /"'=BAD\(\)"/);
+  assert.doesNotMatch(csv, /Worksheet version/);
+});
+
+import { allocateCitation } from "../market-research/core.mjs";
+test("removed citation numbers are not reused after saving and reopening", () => {
+  const p = newProject();
+  p.evidence = [{ ...productEvidence(offer()), citation: allocateCitation(p) }];
+  assert.equal(p.evidence[0].citation, "E001");
+  p.evidence = [];
+  const restored = importProject(JSON.parse(JSON.stringify(p)));
+  assert.equal(allocateCitation(restored), "E002");
+});
+
+import { formatPrice } from "../market-research/commercial.mjs";
+test("display formatting does not turn missing or tiny positive unit prices into zero", () => {
+  assert.equal(formatPrice(null), "Not recorded");
+  assert.equal(formatPrice(NaN), "Not recorded");
+  assert.equal(formatPrice(0), "$0.00 USD");
+  assert.equal(formatPrice(0.000001), "< $0.0001 USD");
+  assert.match(formatPrice(10, "bad"), /currency not recorded/);
+});

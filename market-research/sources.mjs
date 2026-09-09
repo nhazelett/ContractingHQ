@@ -35,6 +35,7 @@ export const SOURCES = [
   },
   {
     id: "opportunities",
+    manualOnly: true,
     name: "Opportunities & sources sought",
     provider: "SAM.gov",
     group: "Buying history",
@@ -56,6 +57,7 @@ export const SOURCES = [
   },
   {
     id: "entities",
+    manualOnly: true,
     name: "Registered supplier lookup",
     provider: "SAM.gov",
     group: "Suppliers",
@@ -66,6 +68,7 @@ export const SOURCES = [
   },
   {
     id: "exclusions",
+    manualOnly: true,
     name: "Federal exclusion lookup",
     provider: "SAM.gov",
     group: "Suppliers",
@@ -523,3 +526,6 @@ export const LEGACY_ROUTES = {
   patents: "/search/patents",
   corporations: "/entity/oc",
 };
+
+// Retain retired source metadata so older saved evidence keeps its provenance.
+export const SEARCH_SOURCES = SOURCES.filter((source) => !source.manualOnly);

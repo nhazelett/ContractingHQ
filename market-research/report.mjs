@@ -1,4 +1,4 @@
-import { today, safeURL, reportSections } from "./core.mjs";
+import { today, safeURL, reportSections } from "./core.mjs?v=20260909-3";
 export function buildWordDocument(project, d) {
   const { Document, Paragraph, TextRun, HeadingLevel, ExternalHyperlink } = d;
   const sections = reportSections(project);

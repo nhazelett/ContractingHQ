@@ -1,5 +1,10 @@
-import { buildWordDocument } from "./report.mjs";
-import { SOURCES, SOURCE_MAP, LIBRARY } from "./sources.mjs";
+import { initCommercial } from "./commercial-ui.mjs?v=20260909-3";
+import { buildWordDocument } from "./report.mjs?v=20260909-3";
+import {
+  SEARCH_SOURCES,
+  SOURCE_MAP,
+  LIBRARY,
+} from "./sources.mjs?v=20260909-3";
 import {
   clean,
   escapeHTML as esc,
@@ -13,17 +18,19 @@ import {
   samWindow,
   record,
   newProject,
+  allocateCitation,
   importProject,
   suppliers,
   queryLabel,
   reportSections,
   reportText,
   evidenceCSV,
-} from "./core.mjs";
+} from "./core.mjs?v=20260909-3";
 const API = "https://kthq-research-desk.nickhazelett.workers.dev";
 const STORAGE = "kthq-market-research-desk-v2";
 const $ = (s) => document.querySelector(s),
   $$ = (s) => Array.from(document.querySelectorAll(s));
+let commercial;
 let project = newProject(),
   results = {},
   active = null,
@@ -164,6 +171,7 @@ function saveSoon() {
   saveTimer = setTimeout(persist, 350);
 }
 function fillForms() {
+  commercial?.reset();
   for (const el of $$("[data-brief]"))
     el.value = project.brief[el.dataset.brief] || "";
   for (const el of $$("[data-conclusion]"))
@@ -190,6 +198,7 @@ function setView(next) {
   if (next === "engagement") renderEngagements();
   if (next === "report") renderReadiness();
   if (next === "library") renderLibrary();
+  if (next === "commercial") commercial.render();
   $("#main").focus({ preventScroll: true });
   window.scrollTo({ top: 0, behavior: "instant" });
 }
@@ -198,15 +207,16 @@ function renderChoices() {
     kind = $("#search-kind").value;
   const defaults =
     mode === "supplier"
-      ? ["awards", "entities", "exclusions", "gleif"]
+      ? ["awards", "gleif"]
       : [
           "awards",
           "small-business",
           "vehicles",
-          "opportunities",
           ...(kind === "products" ? [] : ["calc"]),
         ];
-  $("#source-choices").innerHTML = SOURCES.filter((s) => s.modes.includes(mode))
+  $("#source-choices").innerHTML = SEARCH_SOURCES.filter((s) =>
+    s.modes.includes(mode),
+  )
     .map(
       (s) =>
         `<div class="source-option"><label><input type="checkbox" name="source" value="${s.id}" ${defaults.includes(s.id) ? "checked" : ""}><span>${esc(s.name)}<small>${esc(s.provider)}${s.optional ? " · optional connection" : ""}</small></span></label><details><summary>Coverage</summary>${esc(s.scope)}</details></div>`,
@@ -240,6 +250,7 @@ function renderStatuses() {
 }
 function factsHTML(facts) {
   return `<dl class="facts">${Object.entries(facts || {})
+    .filter(([key]) => key !== "Worksheet version")
     .map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`)
     .join("")}</dl>`;
 }
@@ -510,15 +521,7 @@ async function runSearch(onlyId = null, more = false) {
   }
 }
 function nextCitation() {
-  return (
-    "E" +
-    String(
-      Math.max(
-        0,
-        ...project.evidence.map((e) => Number(e.citation.slice(1)) || 0),
-      ) + 1,
-    ).padStart(3, "0")
-  );
+  return allocateCitation(project);
 }
 function keepRecord(id) {
   const r = allRecords().find((x) => x.id === id);
@@ -545,7 +548,7 @@ function renderEvidence() {
     ? project.evidence
         .map(
           (e) =>
-            `<article class="evidence-card"><div class="result-top"><div><span class="badge">${esc(e.citation)} · ${esc(SOURCE_MAP[e.source]?.provider || "Researcher-entered")}</span><h3>${esc(e.title)}</h3>${e.company ? `<div class="company">${esc(e.company)}</div>` : ""}</div><button type="button" class="danger-link" data-remove-evidence="${esc(e.id)}">Remove</button></div>${factsHTML(e.facts)}<div class="result-bottom">${safeURL(e.url) ? `<a href="${esc(safeURL(e.url))}" target="_blank" rel="noopener noreferrer">Open original source ↗</a>` : "No source URL recorded"}<span>Retrieved ${esc(e.retrievedAt || "Not recorded")}</span></div><details><summary>Source excerpt & search coverage</summary><p>${esc(e.description)}</p><p>${esc(e.query)}<br>${esc(e.scope)}</p></details><div class="form-grid"><label>Research note / relevance<textarea data-evidence="${esc(e.id)}" data-field="note" rows="2" maxlength="8000">${esc(e.note)}</textarea></label><label>Verification status<select data-evidence="${esc(e.id)}" data-field="verification">${["Needs verification", "Source reviewed", "Confirmed with source", "Not applicable / excluded"].map((v) => `<option ${e.verification === v ? "selected" : ""}>${v}</option>`).join("")}</select></label></div></article>`,
+            `<article class="evidence-card"><div class="result-top"><div><span class="badge">${esc(e.citation)} · ${esc(SOURCE_MAP[e.source]?.provider || "Researcher-entered")}</span><h3>${esc(e.title)}</h3>${e.company ? `<div class="company">${esc(e.company)}</div>` : ""}</div><button type="button" class="danger-link" data-remove-evidence="${esc(e.id)}">Remove</button></div>${e.kind === "product" && e.facts?.["Worksheet version"] === "1" ? `<button type="button" data-edit-product="${esc(e.id)}">Edit product details</button>` : ""}${factsHTML(e.facts)}<div class="result-bottom">${safeURL(e.url) ? `<a href="${esc(safeURL(e.url))}" target="_blank" rel="noopener noreferrer">Open original source ↗</a>` : "No source URL recorded"}<span>Retrieved ${esc(e.retrievedAt || "Not recorded")}</span></div><details><summary>Source excerpt & search coverage</summary><p>${esc(e.description)}</p><p>${esc(e.query)}<br>${esc(e.scope)}</p></details><div class="form-grid"><label>Research note / relevance<textarea data-evidence="${esc(e.id)}" data-field="note" rows="2" maxlength="8000">${esc(e.note)}</textarea></label><label>Verification status<select data-evidence="${esc(e.id)}" data-field="verification">${["Needs verification", "Source reviewed", "Confirmed with source", "Not applicable / excluded"].map((v) => `<option ${e.verification === v ? "selected" : ""}>${v}</option>`).join("")}</select></label></div></article>`,
         )
         .join("")
     : empty(
@@ -599,7 +602,7 @@ function renderReadiness() {
     `<strong>${gaps.length ? "Open items before review" : "Sections populated — review the supporting evidence"}</strong>${gaps.length ? "<ul>" + gaps.map((g) => `<li>${esc(g)}</li>`).join("") + "</ul>" : "Completeness does not establish the sufficiency or accuracy of the research."}`;
 }
 const libraryAll = [
-  ...SOURCES.map((s) => ({
+  ...SEARCH_SOURCES.map((s) => ({
     id: "live-" + s.id,
     name: s.name,
     group: s.group,
@@ -992,3 +995,11 @@ fillForms();
 renderChoices();
 renderLibrary();
 if (storageWarning) notice(storageWarning, true);
+
+commercial = initCommercial({
+  getProject: () => project,
+  persist,
+  notice,
+  setView,
+  nextCitation,
+});
