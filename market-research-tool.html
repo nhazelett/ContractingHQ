@@ -1,1461 +1,506 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Market research tool for federal contracting officers. One keyword pulls live data from USAspending, SAM.gov, GLEIF, OpenCorporates, OpenSanctions, USPTO, Federal Register, and NewsAPI in parallel. Generates a Word memo." />
-  <title>Market Research Tool | ContractingHQ</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
-  <style>
-    .mr-bg { background: #040d1f; padding: 2.5rem 1.5rem 6rem; min-height: 80vh; }
-    .mr-wrap { max-width: 1180px; margin: 0 auto; }
-
-    .breadcrumb { font-size: .78rem; color: var(--text-muted); margin-bottom: 1.4rem; letter-spacing: .3px; }
-    .breadcrumb a { color: var(--accent); text-decoration: none; font-weight: 600; }
-    .breadcrumb a:hover { text-decoration: underline; }
-    .breadcrumb-sep { margin: 0 .45rem; color: #475569; }
-    .breadcrumb-current { color: var(--silver); }
-
-    /* === Search panel === */
-    .search-panel {
-      background: rgba(10,22,50,0.55);
-      border: 1px solid rgba(74,158,255,0.2);
-      border-radius: 12px;
-      padding: 1.6rem 1.5rem 1.4rem;
-      margin-bottom: 2rem;
-    }
-    .search-row { display: flex; gap: .8rem; align-items: stretch; flex-wrap: wrap; }
-    .search-input {
-      flex: 1 1 320px;
-      background: rgba(4, 13, 31, 0.7);
-      border: 1px solid rgba(74,158,255,0.3);
-      color: var(--white);
-      font-family: 'Inter', sans-serif;
-      font-size: 1rem;
-      padding: .85rem 1rem;
-      border-radius: 8px;
-      outline: none;
-      transition: border-color .15s;
-    }
-    .search-input:focus { border-color: var(--accent); }
-    .search-input::placeholder { color: #5b6f8a; }
-
-    .search-btn {
-      background: var(--accent); color: #04102a;
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 700; font-size: .98rem;
-      letter-spacing: 1.2px; text-transform: uppercase;
-      padding: 0 1.6rem; border-radius: 8px; border: none;
-      cursor: pointer; transition: opacity .15s, transform .15s;
-      min-width: 140px;
-    }
-    .search-btn:hover:not(:disabled) { opacity: .9; transform: translateY(-1px); }
-    .search-btn:disabled { opacity: .5; cursor: not-allowed; }
-
-    .memo-btn {
-      background: transparent; color: var(--accent);
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 700; font-size: .92rem;
-      letter-spacing: 1.2px; text-transform: uppercase;
-      padding: 0 1.2rem; border-radius: 8px;
-      border: 1px solid rgba(74,158,255,0.5);
-      cursor: pointer; transition: background .15s;
-    }
-    .memo-btn:hover:not(:disabled) { background: rgba(74,158,255,0.08); }
-    .memo-btn:disabled { opacity: .35; cursor: not-allowed; border-color: rgba(74,158,255,0.2); }
-
-    .advanced-toggle {
-      margin-top: 1rem;
-      display: inline-flex; align-items: center; gap: .35rem;
-      background: none; border: none;
-      color: var(--accent); font-family: 'Inter', sans-serif;
-      font-size: .82rem; font-weight: 600; cursor: pointer;
-      padding: 0;
-    }
-    .advanced-toggle:hover { text-decoration: underline; }
-    .advanced-toggle .chev { transition: transform .15s; display: inline-block; }
-    .advanced-toggle.open .chev { transform: rotate(180deg); }
-
-    .advanced-grid {
-      display: none;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: .9rem;
-      margin-top: 1rem;
-      padding-top: 1.1rem;
-      border-top: 1px solid rgba(74,158,255,0.12);
-    }
-    .advanced-grid.open { display: grid; }
-    .field-label {
-      display: block;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: .68rem; font-weight: 700;
-      letter-spacing: 1.4px; text-transform: uppercase;
-      color: #8a9bb0; margin-bottom: .35rem;
-    }
-    .field-input {
-      width: 100%;
-      background: rgba(4,13,31,0.7);
-      border: 1px solid rgba(74,158,255,0.22);
-      color: var(--silver);
-      font-family: 'Inter', sans-serif;
-      font-size: .88rem;
-      padding: .55rem .7rem;
-      border-radius: 6px;
-      outline: none;
-      box-sizing: border-box;
-    }
-    .field-input:focus { border-color: var(--accent); }
-
-    /* === Result sections === */
-    .results-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.2rem;
-    }
-    @media (max-width: 900px) { .results-grid { grid-template-columns: 1fr; } }
-
-    .result-section {
-      background: rgba(10,22,50,0.55);
-      border: 1px solid rgba(74,158,255,0.15);
-      border-radius: 10px;
-      padding: 1.2rem 1.3rem 1rem;
-      min-height: 140px;
-    }
-    .result-section.full-width { grid-column: 1 / -1; }
-
-    .section-head {
-      display: flex; justify-content: space-between; align-items: baseline;
-      margin-bottom: .8rem;
-      padding-bottom: .55rem;
-      border-bottom: 1px solid rgba(74,158,255,0.1);
-    }
-    .section-title {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1.1rem; font-weight: 700;
-      color: var(--white);
-      margin: 0; letter-spacing: .3px;
-    }
-    .section-source {
-      font-size: .72rem; color: var(--text-muted);
-      font-family: 'Rajdhani', sans-serif;
-      letter-spacing: 1px; text-transform: uppercase;
-    }
-    .section-count { color: var(--accent); font-weight: 700; }
-
-    .result-list { list-style: none; padding: 0; margin: 0; }
-    .result-item {
-      padding: .65rem 0;
-      border-bottom: 1px solid rgba(74,158,255,0.06);
-      font-size: .88rem;
-      color: var(--silver);
-    }
-    .result-item:last-child { border-bottom: none; }
-    .result-item .ri-title {
-      color: var(--white);
-      font-weight: 600;
-      display: block;
-      margin-bottom: .2rem;
-    }
-    .result-item .ri-title a {
-      color: var(--white); text-decoration: none;
-      border-bottom: 1px dotted rgba(74,158,255,0.3);
-    }
-    .result-item .ri-title a:hover {
-      color: var(--accent); border-bottom-color: var(--accent);
-    }
-    .result-item .ri-meta {
-      font-size: .76rem;
-      color: var(--text-muted);
-      margin-top: .2rem;
-    }
-    .result-item .ri-meta strong { color: var(--silver); font-weight: 600; }
-    .result-item .ri-amount {
-      color: #86efac;
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 700;
-      font-size: .92rem;
-    }
-    .result-item .ri-snippet {
-      color: var(--text-muted);
-      font-size: .8rem;
-      margin-top: .25rem;
-      line-height: 1.5;
-    }
-
-    .section-status {
-      font-size: .82rem;
-      color: var(--text-muted);
-      padding: .8rem 0;
-      text-align: center;
-    }
-    .section-status.error { color: #fca5a5; }
-    .section-status.warn { color: #fbbf24; }
-    .section-status.muted { color: #5b6f8a; font-style: italic; }
-
-    .section-retry {
-      display: inline-block;
-      margin-top: .65rem;
-      background: rgba(248,113,113,0.08);
-      border: 1px solid rgba(248,113,113,0.35);
-      color: #fca5a5;
-      cursor: pointer;
-      font-size: .76rem;
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      padding: .35rem .9rem;
-      border-radius: 6px;
-      transition: background .15s;
-    }
-    .section-retry:hover { background: rgba(248,113,113,0.18); color: #fee2e2; }
-
-    .result-section.has-flag { border-color: rgba(248,113,113,0.45); }
-    .result-section.has-flag .section-title { color: #fca5a5; }
-
-    .spinner {
-      display: inline-block;
-      width: 14px; height: 14px;
-      border: 2px solid rgba(74,158,255,0.3);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: mr-spin 0.7s linear infinite;
-      vertical-align: middle;
-      margin-right: .5rem;
-    }
-    @keyframes mr-spin { to { transform: rotate(360deg); } }
-
-    .empty-state {
-      text-align: center;
-      padding: 4rem 1rem;
-      color: var(--text-muted);
-      font-size: .92rem;
-    }
-    .empty-state svg { opacity: .4; margin-bottom: 1rem; }
-    .empty-state strong { color: var(--silver); display: block; margin-bottom: .35rem; font-size: 1rem; }
-
-    .config-warn {
-      background: rgba(251,191,36,0.06);
-      border: 1px solid rgba(251,191,36,0.25);
-      border-left: 3px solid #fbbf24;
-      border-radius: 0 8px 8px 0;
-      padding: .9rem 1.1rem;
-      font-size: .85rem;
-      color: #fbe28b;
-      margin-bottom: 1.5rem;
-    }
-    .config-warn strong { color: #fbbf24; }
-    .config-warn code {
-      background: rgba(0,0,0,0.4);
-      padding: 1px 6px; border-radius: 3px;
-      font-size: .82rem;
-    }
-
-    .build-note {
-      margin-top: 3rem;
-      padding: 1.1rem 1.3rem;
-      background: rgba(74,222,128,0.05);
-      border: 1px solid rgba(74,222,128,0.22);
-      border-left: 3px solid #4ade80;
-      border-radius: 0 8px 8px 0;
-      font-size: .88rem;
-      color: var(--silver);
-    }
-    .build-note strong { color: #bbf7d0; font-weight: 700; }
-    .build-note a { color: var(--accent); }
-  </style>
-
-  <meta property="og:type"        content="website" />
-  <meta property="og:site_name"   content="ContractingHQ" />
-  <meta property="og:title"       content="Market Research Tool" />
-  <meta property="og:description" content="One keyword, nine federal/identity sources. USAspending, SAM, GLEIF, OpenCorporates, OpenSanctions, USPTO, Federal Register, NewsAPI." />
-  <meta property="og:url"         content="https://kthq.org/market-research-tool.html" />
-  <meta name="twitter:card"        content="summary" />
-  <meta name="twitter:site"        content="@ContractingHQ" />
-  <meta name="twitter:title"       content="Market Research Tool" />
-  <meta name="twitter:description" content="One keyword, nine federal/identity sources." />
-  <link rel="canonical"            href="https://kthq.org/market-research-tool.html" />
-
-  <!-- docx.js for memo generation -->
-  <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
-  <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-</head>
-<body>
-<nav class="navbar" id="navbar" aria-label="Primary">
-  <div class="nav-inner">
-    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="tools.html">Tools</a></li>
-      <li><a href="customer-education.html">Customer Education</a></li>
-      <li><a href="gao-decisions.html">GAO Decisions</a></li>
-      <li><a href="federal-register.html">FAR Updates</a></li>
-      <li><a href="training.html">Training</a></li>
-      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
-        <ul class="nav-more-menu">
-          <li><a href="links.html">Links</a></li>
-          <li><a href="asbca.html">ASBCA</a></li>
-          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </li>
-    </ul>
-  </div>
-</nav>
-
-<main id="main">
-
-<div class="page-hero">
-  <div class="container">
-    <span class="hero-badge">Live Data</span>
-    <h1 class="page-hero-title">Market Research Tool</h1>
-    <p class="page-hero-sub">One keyword, nine federal and identity sources, all at once. Type a vendor, product, or capability term and get spend history, active opportunities, entity registrations, sanctions, patents, regulations, and news in parallel. Generate a market research memo when you are done.</p>
-  </div>
-</div>
-
-<div class="mr-bg">
-  <div class="mr-wrap">
-
-    <div class="breadcrumb">
-      <a href="index.html">Home</a>
-      <span class="breadcrumb-sep">/</span>
-      <a href="tools.html">Tools</a>
-      <span class="breadcrumb-sep">/</span>
-      <span class="breadcrumb-current">Market Research Tool</span>
-    </div>
-
-    <div id="configWarn" class="config-warn" style="display:none;">
-      <strong>Proxy not configured.</strong> Set <code>PROXY_BASE</code> at the top of the script block in this page to your Cloudflare Worker URL. See <code>market-research-worker/README.md</code> for setup.
-    </div>
-
-    <div class="search-panel">
-      <div class="search-row">
-        <input id="keywordInput" type="text" class="search-input"
-               placeholder="Vendor name, product, capability, or term — e.g., Palantir, AN/PRC-163, Hesco barriers"
-               autofocus />
-        <button id="searchBtn" class="search-btn">Search</button>
-        <button id="memoBtn" class="memo-btn" disabled title="Run a search first, then generate the memo">Memo</button>
-      </div>
-
-      <button id="advancedToggle" class="advanced-toggle" type="button">
-        <span class="chev">&#9660;</span> Advanced filters (NAICS, PSC, agency, dollar range)
-      </button>
-
-      <div id="advancedGrid" class="advanced-grid">
-        <div>
-          <label class="field-label" for="naicsInput">NAICS Code</label>
-          <input id="naicsInput" type="text" class="field-input" placeholder="e.g., 541511" />
-        </div>
-        <div>
-          <label class="field-label" for="pscInput">PSC / Class Code</label>
-          <input id="pscInput" type="text" class="field-input" placeholder="e.g., D302" />
-        </div>
-        <div>
-          <label class="field-label" for="agencyInput">Awarding Agency</label>
-          <input id="agencyInput" type="text" class="field-input" placeholder="e.g., Department of Defense" />
-        </div>
-        <div>
-          <label class="field-label" for="minInput">Min Award ($)</label>
-          <input id="minInput" type="number" class="field-input" placeholder="0" />
-        </div>
-        <div>
-          <label class="field-label" for="maxInput">Max Award ($)</label>
-          <input id="maxInput" type="number" class="field-input" placeholder="No limit" />
-        </div>
-      </div>
-      <p style="margin: .8rem 0 0; font-size: .76rem; color: var(--text-muted);">
-        Spend &amp; opportunity searches default to the last year. SAM.gov caps date ranges at 1 year, so we keep both sources aligned to that window.
-      </p>
-    </div>
-
-    <div id="resultsContainer">
-      <div class="empty-state">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
-          <circle cx="11" cy="11" r="7"/>
-          <line x1="21" y1="21" x2="16.5" y2="16.5"/>
-        </svg>
-        <strong>Type a term and hit Search.</strong>
-        Pull as much or as little as you have. The tool fans out in parallel.
-      </div>
-    </div>
-
-    <div class="build-note">
-      <p><strong>How this works.</strong> The page calls a small Cloudflare Worker proxy that holds the API keys for SAM.gov, NewsAPI, and OpenCorporates. The proxy hits all nine sources in parallel and normalizes them to one shape. Results stream back as each source responds. The memo button assembles whatever loaded into a Word doc you can drop in the contract file. Source code on <a href="https://github.com/nhazelett/ContractingHQ" target="_blank" rel="noopener">GitHub</a>.</p>
-    </div>
-
-  </div>
-</div>
-
-</main>
-
-<footer class="footer">
-  <div class="container footer-inner">
-    <div class="footer-brand">
-      <span class="logo-kthq">KTHQ</span>
-      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
-    </div>
-    <nav class="footer-nav" aria-label="Footer">
-      <a href="index.html">Home</a>
-      <a href="training.html">Training</a>
-      <a href="customer-education.html">Customer Education</a>
-      <a href="gao-decisions.html">GAO Decisions</a>
-      <a href="tools.html">Tools</a>
-      <a href="federal-register.html">FAR Updates</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-    </nav>
-    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
-    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
-  </div>
-</footer>
-
-<script src="main.js"></script>
-<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-<script src="player.js"></script>
-
-<script>
-// ============================================================
-// Market Research Tool — front-end orchestration
-// ============================================================
-
-// CONFIGURE: replace with your deployed Cloudflare Worker URL.
-// e.g., 'https://kthq-market-research.YOURSUB.workers.dev'
-// Once you bind a custom domain it becomes 'https://mr.kthq.org'.
-const PROXY_BASE = 'https://kthq-market-research.nickhazelett.workers.dev';
-
-// Source registry. Each entry maps to one Worker route + UI section.
-// `paramKeys` says which form fields get forwarded.
-const SOURCES = [
-  { key: 'sam-entity', route: '/entity/sam', title: 'Vendor Identity (SAM.gov)', sourceLabel: 'SAM.gov', paramKeys: ['q'], render: renderSamEntity },
-  { key: 'gleif', route: '/entity/lei', title: 'Legal Entity (GLEIF)', sourceLabel: 'GLEIF', paramKeys: ['q'], render: renderGleif },
-  { key: 'opencorporates', route: '/entity/oc', title: 'Corporate Registry', sourceLabel: 'OpenCorporates', paramKeys: ['q'], render: renderOpenCorporates },
-  { key: 'sam-exclusions', route: '/entity/sanctions', title: 'Federal Exclusions / Debarment', sourceLabel: 'SAM.gov', paramKeys: ['q'], render: renderSanctions, flagWhenResults: true, note: 'Public information per FAR 9.404 \u2014 same data as <a href="https:\/\/sam.gov\/exclusions-new\/" target="_blank" rel="noopener" style="color:var(--accent);">sam.gov\/exclusions-new<\/a>.' },
-  { key: 'usaspending', route: '/search/spend', title: 'Federal Spend History', sourceLabel: 'USAspending.gov', paramKeys: ['q', 'naics', 'psc', 'agency', 'min', 'max'], render: renderSpend, fullWidth: true, direct: fetchSpendDirect },
-  { key: 'small-biz', route: null, title: 'Small Business Landscape — Rule of Two', sourceLabel: 'USAspending.gov (FPDS)', paramKeys: [], render: renderSmallBiz, fullWidth: true, direct: fetchSmallBizDirect, alwaysRender: true },
-  { key: 'sole-source', route: null, title: 'Sole Source Candidates (8(a) / WOSB)', sourceLabel: 'SAM.gov', paramKeys: [], render: renderSoleSource, fullWidth: true, direct: fetchSoleSourceDirect, alwaysRender: true, deferred: true },
-  { key: 'sam-opps', route: '/search/opps', title: 'Active Opportunities', sourceLabel: 'SAM.gov', paramKeys: ['q', 'naics', 'psc', 'agency'], render: renderOpps, fullWidth: true },
-  { key: 'vehicles', route: null, title: 'Existing Vehicles (IDIQs / GWACs / BPAs)', sourceLabel: 'USAspending.gov', paramKeys: [], render: renderVehicles, fullWidth: true, direct: fetchVehiclesDirect },
-  { key: 'federal-register', route: '/search/regulations', title: 'Regulations & Notices', sourceLabel: 'Federal Register', paramKeys: ['q'], render: renderRegulations, direct: fetchRegulationsDirect },
-  { key: 'uspto', route: '/search/patents', title: 'Patents', sourceLabel: 'USPTO', paramKeys: ['q'], render: renderPatents },
-  { key: 'newsapi', route: '/search/news', title: 'Recent News', sourceLabel: 'NewsAPI', paramKeys: ['q'], render: renderNews, fullWidth: true },
-];
-
-const state = { query: null, filters: null, bySource: {}, searchedAt: null };
-
-const els = {
-  configWarn: document.getElementById('configWarn'),
-  keyword: document.getElementById('keywordInput'),
-  searchBtn: document.getElementById('searchBtn'),
-  memoBtn: document.getElementById('memoBtn'),
-  advancedToggle: document.getElementById('advancedToggle'),
-  advancedGrid: document.getElementById('advancedGrid'),
-  results: document.getElementById('resultsContainer'),
-  naics: document.getElementById('naicsInput'),
-  psc: document.getElementById('pscInput'),
-  agency: document.getElementById('agencyInput'),
-  min: document.getElementById('minInput'),
-  max: document.getElementById('maxInput'),
-};
-
-if (!PROXY_BASE) els.configWarn.style.display = 'block';
-
-els.searchBtn.addEventListener('click', runSearch);
-els.keyword.addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
-els.advancedToggle.addEventListener('click', () => {
-  const open = els.advancedGrid.classList.toggle('open');
-  els.advancedToggle.classList.toggle('open', open);
-});
-els.memoBtn.addEventListener('click', generateMemo);
-
-async function runSearch() {
-  const q = els.keyword.value.trim();
-  if (!q) { els.keyword.focus(); return; }
-  if (!PROXY_BASE) {
-    alert('Proxy not configured. Set PROXY_BASE in market-research-tool.html.');
-    return;
-  }
-  const filters = collectFilters();
-  state.query = q;
-  state.filters = filters;
-  state.bySource = {};
-  state.searchedAt = new Date();
-
-  els.searchBtn.disabled = true;
-  els.searchBtn.textContent = 'Searching…';
-  els.memoBtn.disabled = true;
-
-  renderSectionSkeletons();
-
-  // First pass: everything that can run on the raw keyword/filters.
-  const promises = SOURCES.filter(s => !s.deferred).map(s => fetchSource(s, q, filters));
-  await Promise.allSettled(promises);
-
-  // Second pass: sources that need the resolved NAICS (user filter, or the
-  // dominant code across the spend results that just arrived).
-  const spendData = state.bySource['usaspending'];
-  state.resolvedNaics = filters.naics ||
-    dominantCode((spendData && spendData.ok && spendData.results) || [], 'naics');
-  await Promise.allSettled(SOURCES.filter(s => s.deferred).map(s => fetchSource(s, q, filters)));
-
-  await buildSummary();
-
-  els.searchBtn.disabled = false;
-  els.searchBtn.textContent = 'Search';
-  const anyResults = Object.values(state.bySource).some(r => r.ok && r.results && r.results.length);
-  els.memoBtn.disabled = !anyResults;
-}
-
-function collectFilters() {
-  return {
-    naics: els.naics.value.trim(),
-    psc: els.psc.value.trim(),
-    agency: els.agency.value.trim(),
-    min: els.min.value.trim(),
-    max: els.max.value.trim(),
-  };
-}
-
-function buildUrl(source, q, filters) {
-  const url = new URL(PROXY_BASE.replace(/\/$/, '') + source.route);
-  for (const key of source.paramKeys) {
-    let val;
-    if (key === 'q') val = q;
-    else val = filters[key];
-    if (val) url.searchParams.set(key, val);
-  }
-  return url.toString();
-}
-
-async function fetchSource(source, q, filters) {
-  // Sources with a `direct` fetcher call the upstream API straight from the
-  // browser (public, keyless, CORS-open). The Worker proxy stays as fallback —
-  // e.g. api.usaspending.gov intermittently 525s when called FROM a Cloudflare
-  // Worker, but browser calls work fine.
-  if (source.direct) {
-    try {
-      const data = await source.direct(q, filters);
-      state.bySource[source.key] = data;
-      renderSection(source, data);
-      return;
-    } catch (e) {
-      if (!source.route) {
-        // Direct-only source (no worker route) — report the error.
-        state.bySource[source.key] = { ok: false, source: source.key, error: e.message };
-        renderSection(source, state.bySource[source.key]);
-        return;
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Market Research Desk | KTHQ</title>
+    <meta
+      name="description"
+      content="Research products, services, suppliers, buying history, and pricing. Keep source evidence, compare capabilities, and draft a market research report in KTHQ."
+    />
+    <link rel="canonical" href="https://kthq.org/market-research-tool.html" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="market-research/desk.css?v=20260909-1" />
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
       }
-      /* fall through to worker proxy */
-    }
-  }
-  const url = buildUrl(source, q, filters);
-  try {
-    const r = await fetch(url);
-    const data = await r.json();
-    state.bySource[source.key] = data;
-    renderSection(source, data);
-  } catch (e) {
-    state.bySource[source.key] = { ok: false, source: source.key, error: e.message };
-    renderSection(source, state.bySource[source.key]);
-  }
-}
-
-// ===== Direct upstream fetchers (keyless, CORS-open APIs) =====
-function isoToday() { return new Date().toISOString().slice(0, 10); }
-function isoYearAgo() {
-  const d = new Date();
-  d.setFullYear(d.getFullYear() - 1);
-  return d.toISOString().slice(0, 10);
-}
-
-function buildSpendFilters(q, filters, awardTypes) {
-  const f = {
-    time_period: [{ start_date: isoYearAgo(), end_date: isoToday() }],
-    award_type_codes: awardTypes || ['A', 'B', 'C', 'D'],
-  };
-  if (q) f.keywords = [q];
-  if (filters.naics) f.naics_codes = [filters.naics];
-  if (filters.psc) f.psc_codes = [filters.psc];
-  if (filters.agency) f.agencies = [{ type: 'awarding', tier: 'toptier', name: filters.agency }];
-  const min = parseFloat(filters.min || '0'), max = parseFloat(filters.max || '0');
-  if (min || max) {
-    f.award_amounts = [{
-      ...(min ? { lower_bound: min } : {}),
-      ...(max ? { upper_bound: max } : {}),
-    }];
-  }
-  return f;
-}
-
-async function postSpendQuery(body) {
-  const r = await fetch('https://api.usaspending.gov/api/v2/search/spending_by_award/', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  if (!r.ok) throw new Error('USAspending upstream ' + r.status);
-  return r.json();
-}
-
-async function fetchSpendDirect(q, filters) {
-  const from = isoYearAgo(), to = isoToday();
-  const f = buildSpendFilters(q, filters);
-  // Field names per the current API contract (contracts/v2/search/spending_by_award.md):
-  // contract-type awards use 'Start Date'/'End Date'/'NAICS'/'PSC'.
-  const body = {
-    filters: f,
-    fields: [
-      'Award ID', 'Recipient Name', 'Recipient UEI', 'Award Amount',
-      'Awarding Agency', 'Awarding Sub Agency', 'Start Date', 'End Date',
-      'Description', 'NAICS', 'PSC', 'generated_internal_id',
-    ],
-    page: 1,
-    limit: 25,
-    order: 'desc',
-    sort: 'Award Amount',
-  };
-  const data = await postSpendQuery(body);
-  const results = (data.results || []).map(normalizeSpendRow);
-  return { ok: true, source: 'usaspending', count: results.length, results, meta: { from, to } };
-}
-
-// Federal Register — keyless, CORS-open. Relevance-ranked (the worker's
-// 'newest' ordering buried keyword matches under the day's unrelated docs).
-async function fetchRegulationsDirect(q) {
-  const params = new URLSearchParams({
-    'conditions[term]': q,
-    'per_page': '20',
-    'order': 'relevance',
-  });
-  const r = await fetch(`https://www.federalregister.gov/api/v1/documents.json?${params}`);
-  if (!r.ok) throw new Error('Federal Register upstream ' + r.status);
-  const data = await r.json();
-  const results = (data.results || []).map(d => ({
-    id: d.document_number,
-    title: d.title,
-    type: d.type,
-    agency: (d.agencies || []).map(a => a.name).join(', '),
-    publishedDate: d.publication_date,
-    abstract: d.abstract,
-    url: d.html_url,
-  }));
-  return { ok: true, source: 'federal-register', count: results.length, results, meta: { count: data.count } };
-}
-
-const IDV_TYPE_CODES = ['IDV_A', 'IDV_B', 'IDV_B_A', 'IDV_B_B', 'IDV_B_C', 'IDV_C', 'IDV_D', 'IDV_E'];
-
-async function fetchVehiclesDirect(q, filters) {
-  const from = isoYearAgo(), to = isoToday();
-  const body = {
-    filters: buildSpendFilters(q, filters, IDV_TYPE_CODES),
-    fields: [
-      'Award ID', 'Recipient Name', 'Award Amount', 'Awarding Agency',
-      'Awarding Sub Agency', 'Start Date', 'Last Date to Order',
-      'Contract Award Type', 'Description', 'NAICS', 'PSC', 'generated_internal_id',
-    ],
-    page: 1,
-    limit: 15,
-    order: 'desc',
-    sort: 'Award Amount',
-  };
-  const data = await postSpendQuery(body);
-  const results = (data.results || []).map(row => ({
-    id: row['Award ID'] || row.generated_internal_id,
-    title: row['Recipient Name'] || '(unknown holder)',
-    vehicleId: row['Award ID'],
-    amount: row['Award Amount'],
-    type: row['Contract Award Type'],
-    agency: [row['Awarding Agency'], row['Awarding Sub Agency']].filter(Boolean).join(' / '),
-    naics: codeOf(row['NAICS']),
-    psc: codeOf(row['PSC']),
-    start: row['Start Date'],
-    lastOrder: row['Last Date to Order'],
-    description: row['Description'],
-    url: row.generated_internal_id
-      ? `https://www.usaspending.gov/award/${encodeURIComponent(row.generated_internal_id)}`
-      : null,
-  }));
-  return { ok: true, source: 'vehicles', count: results.length, results, meta: { from, to } };
-}
-
-// Sole source candidate scouting — currently certified 8(a) and WOSB firms
-// registered in SAM with the requirement's NAICS as their primary NAICS.
-// Runs in the second pass (needs state.resolvedNaics). Worker-only (SAM key).
-const SOLE_SOURCE_TYPES = ['8a', 'wosb'];
-
-async function fetchSoleSourceDirect() {
-  const naics = state.resolvedNaics;
-  if (!naics) {
-    return { ok: true, source: 'sole-source', count: 0, results: [], meta: { noNaics: true } };
-  }
-  const base = PROXY_BASE.replace(/\/$/, '') + '/entity/certified';
-  const settled = await Promise.all(SOLE_SOURCE_TYPES.map(async type => {
-    try {
-      const r = await fetch(`${base}?type=${type}&naics=${encodeURIComponent(naics)}`);
-      return await r.json();
-    } catch (e) {
-      return { ok: false, error: e.message };
-    }
-  }));
-  const results = [];
-  const totals = {};
-  let anyOk = false, disabledMsg = null, errMsg = null;
-  settled.forEach((d, i) => {
-    const label = i === 0 ? '8(a)' : 'WOSB';
-    if (d && d.ok) {
-      anyOk = true;
-      totals[label] = d.meta && d.meta.totalRecords != null ? d.meta.totalRecords : (d.results || []).length;
-      for (const r of (d.results || [])) results.push(r);
-    } else if (d && d.disabled) {
-      disabledMsg = d.error;
-      totals[label] = null;
-    } else {
-      errMsg = (d && d.error) || 'unavailable';
-      totals[label] = null;
-    }
-  });
-  if (!anyOk && disabledMsg) return { ok: false, disabled: true, source: 'sole-source', error: disabledMsg };
-  if (!anyOk) {
-    throw new Error(/Unknown route/i.test(errMsg || '')
-      ? 'Worker update not deployed yet — redeploy market-research-worker (see its README)'
-      : errMsg);
-  }
-  return { ok: true, source: 'sole-source', count: results.length, results, meta: { naics, totals } };
-}
-
-// Socioeconomic categories checked for the set-aside picture. Category names
-// are USAspending/FPDS business_categories values; small_business maps to the
-// contracting officer's size determination (FPDS) on each award.
-const SB_CATEGORIES = [
-  { key: '8a_program_participant', label: '8(a)' },
-  { key: 'historically_underutilized_business_firm', label: 'HUBZone' },
-  { key: 'women_owned_small_business', label: 'WOSB' },
-  { key: 'service_disabled_veteran_owned_business', label: 'SDVOSB' },
-];
-
-async function fetchSmallBizDirect(q, filters) {
-  const from = isoYearAgo(), to = isoToday();
-  const mkBody = (types) => ({
-    filters: { ...buildSpendFilters(q, filters), recipient_type_names: types },
-    fields: ['Award ID', 'Recipient Name', 'Recipient UEI', 'Award Amount', 'NAICS'],
-    page: 1,
-    limit: 100,
-    order: 'desc',
-    sort: 'Award Amount',
-  });
-
-  const [smallData, ...catData] = await Promise.all([
-    postSpendQuery(mkBody(['small_business'])),
-    ...SB_CATEGORIES.map(c => postSpendQuery(mkBody([c.key])).catch(() => null)),
-  ]);
-
-  // Distinct small-business vendors, aggregated across their awards.
-  const byVendor = new Map();
-  for (const row of (smallData.results || [])) {
-    const key = row['Recipient UEI'] || (row['Recipient Name'] || '').toUpperCase();
-    if (!key) continue;
-    const v = byVendor.get(key) || { name: row['Recipient Name'], uei: row['Recipient UEI'], total: 0, awards: 0, naics: new Set() };
-    v.total += Number(row['Award Amount']) || 0;
-    v.awards += 1;
-    const n = codeOf(row['NAICS']);
-    if (n) v.naics.add(n);
-    byVendor.set(key, v);
-  }
-  const vendors = [...byVendor.values()]
-    .sort((a, b) => b.total - a.total)
-    .map(v => ({ name: v.name, uei: v.uei, total: v.total, awards: v.awards, naics: [...v.naics].join(', ') }));
-
-  const catCounts = {};
-  SB_CATEGORIES.forEach((c, i) => {
-    const d = catData[i];
-    if (!d) { catCounts[c.label] = null; return; }
-    const names = new Set((d.results || []).map(r => r['Recipient UEI'] || (r['Recipient Name'] || '').toUpperCase()).filter(Boolean));
-    catCounts[c.label] = names.size;
-  });
-
-  return {
-    ok: true,
-    source: 'small-biz',
-    count: vendors.length,
-    results: vendors,
-    meta: { from, to, distinctSmall: vendors.length, catCounts, ruleOfTwo: vendors.length >= 2 },
-  };
-}
-
-// NAICS/PSC come back as strings on some deployments and {code, description}
-// objects on others; take the code either way.
-function codeOf(v) {
-  if (v == null) return null;
-  if (typeof v === 'object') return v.code || v.toString();
-  return v;
-}
-
-function normalizeSpendRow(row) {
-  return {
-    id: row['Award ID'] || row.generated_internal_id,
-    gid: row.generated_internal_id,
-    title: row['Recipient Name'] || '(unknown recipient)',
-    uei: row['Recipient UEI'],
-    amount: row['Award Amount'],
-    agency: [row['Awarding Agency'], row['Awarding Sub Agency']].filter(Boolean).join(' / '),
-    naics: codeOf(row['NAICS']) || codeOf(row['NAICS Code']),
-    psc: codeOf(row['PSC']) || codeOf(row['PSC Code']),
-    start: row['Start Date'] || row['Period of Performance Start Date'],
-    end: row['End Date'] || row['Period of Performance Current End Date'],
-    description: row['Description'],
-    url: row.generated_internal_id
-      ? `https://www.usaspending.gov/award/${encodeURIComponent(row.generated_internal_id)}`
-      : null,
-  };
-}
-
-// ===== NAICS / SBA size standard enrichment =====
-let sizeStandardsPromise = null;
-function getSizeStandards() {
-  if (!sizeStandardsPromise) {
-    sizeStandardsPromise = (async () => {
-      // Try the SBA API directly from the browser first, then the worker proxy.
-      try {
-        const r = await fetch('https://api.sba.gov/naics/naics.json');
-        if (r.ok) {
-          const raw = await r.json();
-          const map = normalizeSbaMap(raw);
-          if (map) return map;
-        }
-      } catch (e) { /* CORS or network — fall through */ }
-      try {
-        const r = await fetch(PROXY_BASE.replace(/\/$/, '') + '/reference/size-standards');
-        const data = await r.json();
-        if (data.ok && data.map) return data.map;
-      } catch (e) { /* unavailable */ }
-      return null;
-    })();
-  }
-  return sizeStandardsPromise;
-}
-
-function normalizeSbaMap(raw) {
-  const list = Array.isArray(raw) ? raw : (raw.naics || raw.data || raw.results || raw.items || []);
-  const map = {};
-  for (const e of list) {
-    const code = String(e.code ?? e.naicsCode ?? e.naics_code ?? e.id ?? '').trim();
-    if (!/^\d{6}$/.test(code)) continue;
-    map[code] = {
-      title: e.title ?? e.description ?? e.industryTitle ?? e.industry_title ?? null,
-      receiptsMillions: e.revenueLimit ?? e.revenue_limit ?? e.receiptsLimit ?? e.receipts_limit ?? null,
-      employees: e.employeeCountLimit ?? e.employee_count_limit ?? e.employeeLimit ?? e.employees ?? null,
-    };
-  }
-  return Object.keys(map).length ? map : null;
-}
-
-function sizeStandardText(std) {
-  if (!std) return null;
-  if (std.receiptsMillions) return `$${std.receiptsMillions} million average annual receipts`;
-  if (std.employees) return `${std.employees} employees`;
-  return null;
-}
-
-// Most frequent code (ties broken by dollars) across spend results.
-function dominantCode(rows, field) {
-  const tally = new Map();
-  for (const r of rows || []) {
-    const c = r[field];
-    if (!c) continue;
-    const t = tally.get(c) || { n: 0, amt: 0 };
-    t.n += 1;
-    t.amt += Number(r.amount) || 0;
-    tally.set(c, t);
-  }
-  let best = null;
-  for (const [code, t] of tally) {
-    if (!best || t.n > best.n || (t.n === best.n && t.amt > best.amt)) best = { code, ...t };
-  }
-  return best ? best.code : null;
-}
-
-// FPDS commercial item acquisition procedures codes: A = commercial item,
-// B/C = supplies or services acquired under FAR 12.102(f)/(g); D = not used.
-function isCommercialCode(code, desc) {
-  if (code && ['A', 'B', 'C'].includes(String(code).toUpperCase())) return true;
-  if (desc && /COMMERCIAL/i.test(desc) && !/NOT USED/i.test(desc)) return true;
-  return false;
-}
-
-async function fetchCommercialSignal(spendRows) {
-  const gids = spendRows.map(r => r.gid).filter(Boolean).slice(0, 8);
-  if (!gids.length) return null;
-  const details = (await Promise.all(gids.map(async gid => {
-    try {
-      const r = await fetch('https://api.usaspending.gov/api/v2/awards/' + encodeURIComponent(gid) + '/');
-      if (!r.ok) return null;
-      return await r.json();
-    } catch (e) { return null; }
-  }))).filter(Boolean);
-  if (!details.length) return null;
-  let commercial = 0, offersSum = 0, offersN = 0, setAside = 0;
-  for (const d of details) {
-    const t = d.latest_transaction_contract_data || {};
-    if (isCommercialCode(t.commercial_item_acquisition, t.commercial_item_acquisition_description)) commercial++;
-    const offers = parseInt(t.number_of_offers_received, 10);
-    if (isFinite(offers)) { offersSum += offers; offersN++; }
-    if (t.type_set_aside && !/^(NONE|NO SET ASIDE)/i.test(t.type_set_aside_description || t.type_set_aside)) setAside++;
-  }
-  return {
-    sampled: details.length,
-    commercial,
-    pct: Math.round((commercial / details.length) * 100),
-    avgOffers: offersN ? (offersSum / offersN).toFixed(1) : null,
-    setAside,
-  };
-}
-
-function commercialStatement(cs) {
-  if (!cs) return 'Commercial availability: could not be determined from award-level FPDS data during this search; assess directly (product literature, GSA Advantage, sources sought).';
-  let read;
-  if (cs.pct >= 60) read = 'a strong commercial availability signal';
-  else if (cs.pct >= 25) read = 'a mixed commercial availability signal';
-  else read = 'a weak commercial availability signal; the requirement may not be routinely bought commercially';
-  return `Commercial availability: ${cs.commercial} of ${cs.sampled} sampled recent awards (${cs.pct}%) were acquired using commercial item procedures per FPDS, ${read}.`
-    + (cs.avgOffers ? ` Sampled awards averaged ${cs.avgOffers} offers received.` : '')
-    + (cs.setAside ? ` ${cs.setAside} of ${cs.sampled} sampled awards used a small business set-aside.` : '');
-}
-
-async function buildSummary() {
-  const box = document.getElementById('mrSummary');
-  if (!box) return;
-  const spend = state.bySource['usaspending'];
-  const spendRows = (spend && spend.ok && spend.results) || [];
-  const naics = state.filters.naics || dominantCode(spendRows, 'naics');
-  const psc = state.filters.psc || dominantCode(spendRows, 'psc');
-
-  let sizeLine = null, naicsTitle = null, commercial = null;
-  const [mapResult, csResult] = await Promise.allSettled([
-    naics ? getSizeStandards() : Promise.resolve(null),
-    spendRows.length ? fetchCommercialSignal(spendRows) : Promise.resolve(null),
-  ]);
-  if (naics && mapResult.status === 'fulfilled' && mapResult.value) {
-    const std = mapResult.value[naics];
-    naicsTitle = std && std.title;
-    sizeLine = sizeStandardText(std);
-  }
-  if (csResult.status === 'fulfilled') commercial = csResult.value;
-  state.enrichment = { naics, psc, naicsTitle, sizeStandard: sizeLine, commercial };
-
-  const bits = [];
-  if (naics) {
-    bits.push(`Applicable NAICS: <strong>${escapeHtml(naics)}</strong>${naicsTitle ? ' — ' + escapeHtml(naicsTitle) : ''}${state.filters.naics ? '' : ' (most frequent across matching awards)'}`);
-    bits.push(sizeLine
-      ? `SBA size standard: <strong>${escapeHtml(sizeLine)}</strong> (13 CFR 121.201; FAR 19.102)`
-      : `SBA size standard: lookup unavailable — check <a href="https://www.sba.gov/size-standards/" target="_blank" rel="noopener" style="color:var(--accent);">sba.gov/size-standards</a>`);
-  } else {
-    bits.push(`Applicable NAICS: none identified from awards — set one in Advanced filters to pull the SBA size standard`);
-  }
-  if (psc) bits.push(`Dominant PSC: <strong>${escapeHtml(psc)}</strong>${state.filters.psc ? '' : ' (most frequent across matching awards)'}`);
-  if (spendRows.length) bits.push(escapeHtml(commercialStatement(commercial)));
-
-  box.innerHTML = `
-    <div style="background:rgba(10,22,50,0.55);border:1px solid rgba(74,158,255,0.25);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:1rem 1.2rem;margin-bottom:1.2rem;">
-      <div style="font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;font-size:.78rem;color:var(--accent);margin-bottom:.5rem;">Codes, Size Standard &amp; Commercial Signal</div>
-      ${bits.map(b => `<div class="ri-meta" style="font-size:.85rem;padding:.15rem 0;">${b}</div>`).join('')}
-    </div>`;
-}
-
-// ===== Rendering =====
-function renderSectionSkeletons() {
-  els.results.innerHTML = '<div id="mrSummary"></div><div class="results-grid" id="resultsGrid"></div>';
-  const grid = document.getElementById('resultsGrid');
-  for (const source of SOURCES) {
-    const sec = document.createElement('div');
-    sec.className = 'result-section' + (source.fullWidth ? ' full-width' : '');
-    sec.id = `sec-${source.key}`;
-    sec.innerHTML = `
-      <div class="section-head">
-        <h3 class="section-title">${escapeHtml(source.title)}</h3>
-        <span class="section-source">${escapeHtml(source.sourceLabel)}</span>
-      </div>
-      <div class="section-status"><span class="spinner"></span>Searching…</div>
-    `;
-    grid.appendChild(sec);
-  }
-}
-
-function renderSection(source, data) {
-  const sec = document.getElementById(`sec-${source.key}`);
-  if (!sec) return;
-  const noteHtml = source.note
-    ? `<div class="ri-meta" style="margin:-.4rem 0 .6rem;font-size:.74rem;">${source.note}</div>`
-    : '';
-  const head = `
-    <div class="section-head">
-      <h3 class="section-title">${escapeHtml(source.title)}</h3>
-      <span class="section-source">${escapeHtml(source.sourceLabel)}${data.ok && data.count != null ? `<span class="section-count"> · ${data.count}</span>` : ''}</span>
-    </div>
-    ${noteHtml}
-  `;
-  if (!data.ok) {
-    const cls = data.disabled ? 'muted' : 'error';
-    const label = data.disabled
-      ? `Not configured · ${data.error || 'API key missing'}`
-      : (data.error || 'Source unavailable');
-    // No retry on `disabled` (API key missing) — that won't change on retry.
-    const retryBtn = data.disabled
-      ? ''
-      : `<div style="text-align:center;"><button class="section-retry" data-key="${escapeAttr(source.key)}">Retry</button></div>`;
-    sec.innerHTML = head + `<div class="section-status ${cls}">${escapeHtml(label)}</div>${retryBtn}`;
-    if (!data.disabled) {
-      const btn = sec.querySelector('.section-retry');
-      if (btn) {
-        btn.addEventListener('click', () => {
-          // Show the spinner state and re-fetch only this source
-          sec.innerHTML = `
-            <div class="section-head">
-              <h3 class="section-title">${escapeHtml(source.title)}</h3>
-              <span class="section-source">${escapeHtml(source.sourceLabel)}</span>
+      gtag("js", new Date());
+      gtag("config", "G-X2RXS78N7K");
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to research workspace</a>
+    <header class="topbar">
+      <a class="brand" href="index.html"
+        ><b>KTHQ</b><span>ContractingHQ</span></a
+      ><span class="topbar-label">THE ACQUISITION WORKBENCH</span>
+      <nav aria-label="KTHQ">
+        <a href="tools.html">All tools ↗</a
+        ><a href="market-research.html">Research guide ↗</a>
+      </nav>
+    </header>
+    <div class="desk-layout">
+      <aside class="sidebar">
+        <div class="desk-mark">
+          <span class="mark-grid" aria-hidden="true">▦</span>
+          <div>Market Research<span>DESK / 02</span></div>
+        </div>
+        <div class="project-label">YOUR RESEARCH FILE</div>
+        <div id="project-title" class="project-title">Untitled requirement</div>
+        <div id="save-status" class="save-status" role="status">
+          Saved on this device
+        </div>
+        <nav class="desk-nav" aria-label="Research workflow">
+          <button type="button" data-view="discover" aria-current="page">
+            <span>01</span> Search the market <b>↗</b>
+          </button>
+          <button type="button" data-view="brief">
+            <span>02</span> Requirement brief
+          </button>
+          <button type="button" data-view="evidence">
+            <span>03</span> Evidence file <b id="evidence-count">0</b>
+          </button>
+          <button type="button" data-view="compare">
+            <span>04</span> Supplier assessment
+          </button>
+          <button type="button" data-view="engagement">
+            <span>05</span> Industry engagement
+          </button>
+          <button type="button" data-view="report">
+            <span>06</span> Findings & report
+          </button>
+          <button type="button" data-view="library">
+            <span>◎</span> Source library <b id="library-count"></b>
+          </button>
+        </nav>
+        <div class="sidebar-bottom">
+          <p>Good research is a trail of evidence, not a list of names.</p>
+          <button type="button" id="save-project">Export project</button
+          ><button type="button" id="import-project">Open project</button
+          ><button type="button" id="new-project">New research file</button
+          ><input
+            type="file"
+            id="project-file"
+            accept=".json,application/json"
+            hidden
+          />
+        </div>
+      </aside>
+      <main id="main" tabindex="-1">
+        <div class="workspace-top">
+          <span><i class="status-dot"></i> PUBLIC-SOURCE RESEARCH</span
+          ><span id="today-label"></span>
+        </div>
+        <div id="notice" class="notice" role="status" hidden></div>
+        <section data-panel="discover">
+          <div class="hero">
+            <div class="eyebrow">MARKET INTELLIGENCE, BUILT FOR THE BUY</div>
+            <h1>Know the market.<br /><span>Build the case.</span></h1>
+            <p>
+              Explore what exists, who provides it, and how government buys
+              it.<br class="desktop-break" />
+              Keep the evidence that matters. Turn it into a research file.
+            </p>
+            <div class="hero-stamp" aria-hidden="true">
+              <span>MR</span><small>SEARCH → VERIFY → DOCUMENT</small>
             </div>
-            <div class="section-status"><span class="spinner"></span>Retrying\u2026</div>
-          `;
-          fetchSource(source, state.query, state.filters);
-        });
-      }
-    }
-    return;
-  }
-  if ((!data.results || data.results.length === 0) && !source.alwaysRender) {
-    sec.innerHTML = head + `<div class="section-status muted">No matches.</div>`;
-    return;
-  }
-  if (source.flagWhenResults) sec.classList.add('has-flag');
-  sec.innerHTML = head + source.render(data.results, data.meta || {});
-}
-
-function renderSamEntity(rows) {
-  return ulOf(rows.slice(0, 5).map(r => `
-    <li class="result-item">
-      <span class="ri-title">${linkOrText(r.url, r.name || '(no legal name)')}</span>
-      <div class="ri-meta">
-        UEI <strong>${escapeHtml(r.uei || '—')}</strong> ·
-        CAGE <strong>${escapeHtml(r.cage || '—')}</strong> ·
-        ${escapeHtml(r.registrationStatus || 'status unknown')}
-      </div>
-      ${r.address ? `<div class="ri-snippet">${escapeHtml(r.address)}</div>` : ''}
-    </li>`));
-}
-function renderGleif(rows) {
-  return ulOf(rows.slice(0, 6).map(r => `
-    <li class="result-item">
-      <span class="ri-title">${linkOrText(r.url, r.name || '(unnamed entity)')}</span>
-      <div class="ri-meta">
-        LEI <strong>${escapeHtml(r.lei || '—')}</strong> ·
-        ${escapeHtml(r.jurisdiction || '—')} · ${escapeHtml(r.status || '—')}
-      </div>
-      ${r.address ? `<div class="ri-snippet">${escapeHtml(r.address)}</div>` : ''}
-    </li>`));
-}
-function renderOpenCorporates(rows) {
-  return ulOf(rows.slice(0, 8).map(r => `
-    <li class="result-item">
-      <span class="ri-title">${linkOrText(r.url, r.name || '(unnamed)')}</span>
-      <div class="ri-meta">
-        ${escapeHtml(r.jurisdiction || '—')} · #${escapeHtml(r.number || '—')} · ${escapeHtml(r.status || '—')}
-        ${r.incorporated ? ` · inc. ${escapeHtml(r.incorporated)}` : ''}
-      </div>
-    </li>`));
-}
-function renderSanctions(rows) {
-  return ulOf(rows.slice(0, 8).map(r => `
-    <li class="result-item">
-      <span class="ri-title">${linkOrText(r.url, r.name || '(unnamed)')}</span>
-      <div class="ri-meta">
-        ${escapeHtml(r.exclusionType || r.classificationType || 'Excluded')}
-        ${r.excludingAgency ? ` · ${escapeHtml(r.excludingAgency)}` : ''}
-        ${r.activationDate ? ` · active ${escapeHtml(r.activationDate)}` : ''}
-        ${r.terminationDate ? ` → ${escapeHtml(r.terminationDate)}` : ''}
-      </div>
-      ${r.address ? `<div class="ri-snippet">${escapeHtml(r.address)}</div>` : ''}
-    </li>`));
-}
-function renderSpend(rows, meta) {
-  const top = rows.slice(0, 10);
-  const total = top.reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
-  const totalLine = `<div class="ri-meta" style="padding:.5rem 0 1rem;">
-    Top ${top.length} awards shown.
-    Combined value <span class="ri-amount">${fmtCurrency(total)}</span>
-    ${meta.from ? `from ${escapeHtml(meta.from)} to ${escapeHtml(meta.to)}` : ''}.
-  </div>`;
-  return totalLine + ulOf(top.map(r => `
-    <li class="result-item">
-      <span class="ri-title">${linkOrText(r.url, r.title || '(unknown recipient)')}</span>
-      <div class="ri-meta">
-        <span class="ri-amount">${fmtCurrency(r.amount)}</span> ·
-        ${escapeHtml(r.agency || '—')}
-        ${r.naics ? ` · NAICS ${escapeHtml(r.naics)}` : ''}
-        ${r.psc ? ` · PSC ${escapeHtml(r.psc)}` : ''}
-        ${r.start ? ` · ${escapeHtml(r.start)} → ${escapeHtml(r.end || '—')}` : ''}
-      </div>
-      ${r.description ? `<div class="ri-snippet">${escapeHtml(truncate(r.description, 220))}</div>` : ''}
-    </li>`));
-}
-function renderSmallBiz(rows, meta) {
-  const cats = Object.entries(meta.catCounts || {})
-    .map(([label, n]) => `${escapeHtml(label)}: <strong>${n == null ? '?' : n}</strong>`)
-    .join(' · ');
-  let verdict, color;
-  if (meta.distinctSmall >= 2) {
-    verdict = `RULE OF TWO SIGNAL: POSITIVE. ${meta.distinctSmall} distinct small business concerns received contract awards matching this search in the last 12 months (size per the contracting officer's determination reported in FPDS). This supports a reasonable expectation of offers from two or more responsible small businesses under FAR 19.104-1. Verify current size status and capability before relying on it.`;
-    color = '#86efac';
-  } else if (meta.distinctSmall === 1) {
-    verdict = `RULE OF TWO SIGNAL: WEAK. Only 1 small business received a matching award in the last 12 months. A total small business set-aside under FAR 19.104-1 needs a reasonable expectation of two or more responsible small business offerors; look at sources-sought responses or broaden the search before concluding either way.`;
-    color = '#fbbf24';
-  } else {
-    verdict = `RULE OF TWO SIGNAL: NO RECENT SMALL BUSINESS AWARDS FOUND. Zero small businesses received matching awards in the last 12 months. That is evidence, not proof; supplement with a sources-sought notice or SBA Dynamic Small Business Search before ruling out a set-aside.`;
-    color = '#fca5a5';
-  }
-  const head = `
-    <div class="ri-meta" style="padding:.4rem .6rem;margin-bottom:.8rem;border-left:3px solid ${color};background:rgba(255,255,255,0.02);">
-      <span style="color:${color};font-weight:700;">${escapeHtml(verdict)}</span>
+          </div>
+          <form id="search-form" class="search-card">
+            <div class="card-heading">
+              <h2>Start with the need</h2>
+              <span class="small-label">PRODUCTS · SERVICES · SUPPLIERS</span>
+            </div>
+            <div class="search-primary">
+              <label for="query"
+                >Search phrase or supplier name<input
+                  id="query"
+                  name="q"
+                  maxlength="180"
+                  placeholder="e.g. portable power generators"
+                  autocomplete="off" /></label
+              ><button type="submit" class="primary" id="search-button">
+                Search the market <span>↗</span></button
+              ><button type="button" id="cancel-search" hidden>Stop</button>
+            </div>
+            <div class="search-options">
+              <label
+                >Research mode<select id="search-mode" name="mode">
+                  <option value="requirement">Find products & services</option>
+                  <option value="supplier">Research a named supplier</option>
+                </select></label
+              ><label
+                >Requirement type<select id="search-kind" name="kind">
+                  <option value="mixed">Products & services</option>
+                  <option value="products">Products / equipment</option>
+                  <option value="services">Services / labor</option>
+                </select></label
+              ><label
+                >NAICS <span class="optional">optional</span
+                ><input
+                  name="naics"
+                  id="search-naics"
+                  inputmode="numeric"
+                  maxlength="6"
+                  placeholder="6 digits" /></label
+              ><label
+                >PSC <span class="optional">optional</span
+                ><input
+                  name="psc"
+                  id="search-psc"
+                  maxlength="4"
+                  placeholder="4 characters"
+              /></label>
+            </div>
+            <details class="filters">
+              <summary>
+                Dates, location & source selection <span>+</span>
+              </summary>
+              <div class="filter-grid">
+                <label
+                  >Award / publication start<input
+                    name="from"
+                    id="search-from"
+                    type="date"
+                    required /></label
+                ><label
+                  >Through<input
+                    name="to"
+                    id="search-to"
+                    type="date"
+                    required /></label
+                ><label
+                  >U.S. performance state<input
+                    name="state"
+                    id="search-state"
+                    maxlength="2"
+                    placeholder="e.g. OH"
+                /></label>
+              </div>
+              <p class="field-note">
+                Filters vary by source. Review each coverage note. For labor
+                pricing, search a labor category such as “electrician” or “help
+                desk.”
+              </p>
+              <div id="source-choices" class="source-choices"></div>
+            </details>
+            <div class="search-foot">
+              <span>Try a starting point</span
+              ><button type="button" data-example="generators">
+                Power generators</button
+              ><button type="button" data-example="custodial">
+                Custodial services</button
+              ><button type="button" data-example="helpdesk">
+                IT help desk</button
+              ><button type="button" data-example="supplier">
+                Supplier lookup
+              </button>
+            </div>
+          </form>
+          <p class="privacy-note">
+            Public information only. Search terms and filters go to selected
+            sources. Briefs, notes, and assessments stay in this browser unless
+            you export them. Do not enter CUI or proprietary information.
+          </p>
+          <div
+            id="search-progress"
+            class="search-progress"
+            role="status"
+            aria-live="polite"
+          ></div>
+          <div id="results-area" hidden>
+            <div class="results-heading">
+              <div>
+                <div class="eyebrow">THE RESEARCH RETURN</div>
+                <h2>Review before you rely.</h2>
+                <p id="search-scope" class="muted"></p>
+              </div>
+              <button type="button" data-view="evidence" class="outline">
+                Open evidence file →
+              </button>
+            </div>
+            <div id="source-statuses" class="source-statuses"></div>
+            <div class="results-toolbar">
+              <label
+                >Show source<select id="result-source">
+                  <option value="all">All sources</option>
+                </select></label
+              ><label
+                >Filter these results<input
+                  id="result-filter"
+                  placeholder="Supplier, description, code…" /></label
+              ><span id="result-count"></span>
+            </div>
+            <div id="result-list" class="result-list"></div>
+            <div id="pagination" class="pagination"></div>
+          </div>
+          <div id="start-cards" class="start-cards">
+            <article>
+              <span>01 / DISCOVER</span>
+              <h3>Follow the buying history.</h3>
+              <p>
+                Find federal awards, suppliers, opportunities, and contract
+                vehicles with source-specific search coverage.
+              </p>
+            </article>
+            <article>
+              <span>02 / VALIDATE</span>
+              <h3>Go beyond award dollars.</h3>
+              <p>
+                Research commercial offerings, labor rates, required sources,
+                capability gaps, and direct industry feedback.
+              </p>
+            </article>
+            <article>
+              <span>03 / DOCUMENT</span>
+              <h3>Keep a defensible record.</h3>
+              <p>
+                Save findings with citations, enter your assessments, and export
+                a draft that separates evidence from judgment.
+              </p>
+            </article>
+          </div>
+        </section>
+        <section data-panel="brief" hidden>
+          <div class="page-heading">
+            <div class="eyebrow">DEFINE THE PROBLEM</div>
+            <h1>Requirement brief</h1>
+            <p>
+              Describe the outcome before prescribing a solution. This context
+              stays with your research file.
+            </p>
+          </div>
+          <form id="brief-form" class="form-card">
+            <div id="brief-fields" class="form-grid"></div>
+          </form>
+          <button type="button" data-view="discover" class="primary">
+            Search the market ↗
+          </button>
+        </section>
+        <section data-panel="evidence" hidden>
+          <div class="page-heading">
+            <div class="eyebrow">THE RECORD BEHIND THE FINDING</div>
+            <h1>Evidence file</h1>
+            <p>
+              Keep relevant records, document why they matter, and track what
+              still needs verification.
+            </p>
+          </div>
+          <div class="action-bar">
+            <button type="button" id="add-evidence" class="primary">
+              Add a source or research note +</button
+            ><button type="button" id="export-csv">Export evidence CSV</button>
+          </div>
+          <div id="evidence-list"></div>
+        </section>
+        <section data-panel="compare" hidden>
+          <div class="page-heading">
+            <div class="eyebrow">CAPABILITY, NOT JUST A COMPANY NAME</div>
+            <h1>Supplier assessment</h1>
+            <p>
+              Suppliers appear when you save records that identify them.
+              Document capability fit, evidence gaps, and validation without
+              automatically ranking vendors.
+            </p>
+          </div>
+          <div id="supplier-list"></div>
+        </section>
+        <section data-panel="engagement" hidden>
+          <div class="page-heading">
+            <div class="eyebrow">ASK THE MARKET</div>
+            <h1>Industry engagement</h1>
+            <p>
+              Record public research takeaways from RFIs, industry days,
+              demonstrations, and vendor discussions.
+            </p>
+          </div>
+          <details class="prompt-guide">
+            <summary>Questions worth asking industry</summary>
+            <ul>
+              <li>
+                Which existing products or services meet the outcome? What would
+                require modification?
+              </li>
+              <li>
+                What limits competition unnecessarily in the draft requirement?
+              </li>
+              <li>
+                What are normal lead times, commercial terms, minimum order
+                quantities, and cost drivers?
+              </li>
+              <li>
+                What integration, licensing, data-rights, cybersecurity, and
+                sustainment issues should we plan for?
+              </li>
+              <li>
+                What capability evidence, demonstrations, and references can be
+                verified?
+              </li>
+              <li>
+                What can small businesses perform directly, and where would
+                teaming be needed?
+              </li>
+            </ul>
+          </details>
+          <form id="engagement-form" class="form-card">
+            <div class="form-grid">
+              <label>Date<input name="date" type="date" required /></label
+              ><label
+                >Organization / event<input
+                  name="organization"
+                  required
+                  maxlength="250" /></label
+              ><label
+                >Method<select name="method">
+                  <option>RFI / sources-sought response</option>
+                  <option>Industry day</option>
+                  <option>Vendor discussion</option>
+                  <option>Demonstration</option>
+                  <option>Other research</option>
+                </select></label
+              ><label
+                >Follow-up action<input name="next" maxlength="3000" /></label
+              ><label class="wide"
+                >Public findings / requirement feedback<textarea
+                  name="summary"
+                  rows="3"
+                  required
+                  maxlength="8000"
+                ></textarea>
+              </label>
+            </div>
+            <button class="primary" type="submit">Add engagement</button>
+          </form>
+          <div id="engagement-list"></div>
+        </section>
+        <section data-panel="report" hidden>
+          <div class="page-heading">
+            <div class="eyebrow">TURN RESEARCH INTO ACQUISITION INPUTS</div>
+            <h1>Findings & report</h1>
+            <p>
+              Write conclusions supported by your saved citations. Empty
+              sections remain clearly marked for review.
+            </p>
+          </div>
+          <div id="report-readiness" class="readiness"></div>
+          <form id="conclusion-form" class="form-card">
+            <div id="conclusion-fields" class="form-grid"></div>
+          </form>
+          <div class="action-bar">
+            <button type="button" id="export-word" class="primary">
+              Download Word draft ↓</button
+            ><button type="button" id="preview-report">
+              Preview / print report</button
+            ><button type="button" id="export-text">Download text</button
+            ><button type="button" id="ai-prompt">
+              Copy sourced AI prompt
+            </button>
+          </div>
+          <p class="field-note">
+            The draft includes your brief, research history, saved evidence,
+            supplier assessments, engagement, and conclusions. KTHQ does not
+            make acquisition determinations.
+          </p>
+          <article id="report-preview" hidden></article>
+        </section>
+        <section data-panel="library" hidden>
+          <div class="page-heading">
+            <div class="eyebrow">A WIDER VIEW OF THE MARKET</div>
+            <h1>Source library</h1>
+            <p>
+              Use connected searches and specialist systems together. An
+              official-search link is a research route, not a claim that KTHQ
+              searched it.
+            </p>
+          </div>
+          <div class="results-toolbar">
+            <label
+              >Find a source<input
+                id="library-search"
+                placeholder="Products, pricing, small business, FedMall…" /></label
+            ><label
+              >Research area<select id="library-group">
+                <option value="all">All research areas</option>
+              </select></label
+            ><span id="library-shown"></span>
+          </div>
+          <div class="library-tip">
+            Open a source, perform the research there, then use
+            <button type="button" id="library-add-evidence">
+              Add evidence
+            </button>
+            to capture its link and findings.
+          </div>
+          <div id="library-list" class="library-grid"></div>
+        </section>
+        <footer class="desk-footer">
+          <span>KTHQ / Built by practitioners, for practitioners.</span
+          ><span
+            >Independent educational resource. Not an official government
+            system.</span
+          >
+        </footer>
+      </main>
     </div>
-    <div class="ri-meta" style="padding-bottom:.8rem;">Distinct firms with matching awards by socioeconomic category (last 12 months): ${cats}</div>`;
-  if (!rows.length) return head;
-  return head + ulOf(rows.slice(0, 10).map(r => `
-    <li class="result-item">
-      <span class="ri-title">${escapeHtml(r.name || '(unnamed)')}</span>
-      <div class="ri-meta">
-        <span class="ri-amount">${fmtCurrency(r.total)}</span> across ${r.awards} award${r.awards === 1 ? '' : 's'}
-        ${r.uei ? ` · UEI <strong>${escapeHtml(r.uei)}</strong>` : ''}
-        ${r.naics ? ` · NAICS ${escapeHtml(r.naics)}` : ''}
-      </div>
-    </li>`));
-}
-
-function renderSoleSource(rows, meta) {
-  if (meta.noNaics) {
-    return `<div class="section-status muted">No NAICS resolved from this search. Set a NAICS in Advanced filters (or search a term with award history) to scout certified 8(a) and WOSB firms for potential sole source.</div>`;
-  }
-  const totals = Object.entries(meta.totals || {})
-    .map(([label, n]) => `${escapeHtml(label)}: <strong>${n == null ? '?' : n}</strong>`)
-    .join(' · ');
-  const intro = `
-    <div class="ri-meta" style="padding:.3rem 0 .5rem;">
-      Firms registered in SAM with primary NAICS <strong>${escapeHtml(meta.naics)}</strong> holding the certification — ${totals}.
-      8(a) status is SBA-fed with program entry/exit dates; a sole source still requires current eligibility, program dollar limits, and (for 8(a)) an SBA offering letter (13 CFR 124; 13 CFR 127).
-    </div>`;
-  if (!rows.length) return intro + `<div class="section-status muted">No certified firms found under this NAICS. Try a related NAICS, or check SBA Dynamic Small Business Search.</div>`;
-  return intro + ulOf(rows.slice(0, 12).map(r => `
-    <li class="result-item">
-      <span class="ri-title">${escapeHtml(r.name || '(unnamed)')} <span style="color:var(--accent);font-size:.78rem;font-weight:700;">[${escapeHtml(r.certType)}]</span></span>
-      <div class="ri-meta">
-        UEI <strong>${escapeHtml(r.uei || '—')}</strong>
-        ${r.cage ? ` · CAGE <strong>${escapeHtml(r.cage)}</strong>` : ''}
-        ${r.address ? ` · ${escapeHtml(r.address)}` : ''}
-        ${r.certEntry ? ` · certified ${escapeHtml(r.certEntry)}` : ''}
-        ${r.certExit ? ` → exits ${escapeHtml(r.certExit)}` : ''}
-      </div>
-    </li>`));
-}
-
-function renderOpps(rows) {
-  return ulOf(rows.slice(0, 12).map(r => `
-    <li class="result-item">
-      <span class="ri-title">${linkOrText(r.url, r.title || '(untitled notice)')}</span>
-      <div class="ri-meta">
-        ${escapeHtml(r.type || '—')} ·
-        Sol# <strong>${escapeHtml(r.solicitationNumber || '—')}</strong> ·
-        ${escapeHtml([r.department, r.office].filter(Boolean).join(' / ') || '—')}
-        ${r.naics ? ` · NAICS ${escapeHtml(r.naics)}` : ''}
-        ${r.setAside ? ` · ${escapeHtml(r.setAside)}` : ''}
-      </div>
-      <div class="ri-meta">
-        Posted ${escapeHtml(r.postedDate || '—')}
-        ${r.responseDeadline ? ` · response by ${escapeHtml(r.responseDeadline)}` : ''}
-      </div>
-    </li>`));
-}
-function renderVehicles(rows) {
-  const intro = `<div class="ri-meta" style="padding:.3rem 0 .8rem;">Indefinite-delivery vehicles awarded in the last 12 months that match this search. An existing vehicle in scope may mean a task/delivery order beats a new contract.</div>`;
-  return intro + ulOf(rows.slice(0, 10).map(r => `
-    <li class="result-item">
-      <span class="ri-title">${linkOrText(r.url, (r.vehicleId ? r.vehicleId + ' — ' : '') + (r.title || '(unknown holder)'))}</span>
-      <div class="ri-meta">
-        ${escapeHtml(r.type || 'IDV')} ·
-        <span class="ri-amount">${fmtCurrency(r.amount)}</span> ·
-        ${escapeHtml(r.agency || '—')}
-        ${r.naics ? ` · NAICS ${escapeHtml(r.naics)}` : ''}
-        ${r.lastOrder ? ` · last date to order ${escapeHtml(r.lastOrder)}` : ''}
-      </div>
-      ${r.description ? `<div class="ri-snippet">${escapeHtml(truncate(r.description, 180))}</div>` : ''}
-    </li>`));
-}
-
-function renderRegulations(rows) {
-  return ulOf(rows.slice(0, 6).map(r => `
-    <li class="result-item">
-      <span class="ri-title">${linkOrText(r.url, r.title || '(untitled)')}</span>
-      <div class="ri-meta">
-        ${escapeHtml(r.type || '—')} · ${escapeHtml(r.agency || '—')}
-        ${r.publishedDate ? ` · ${escapeHtml(r.publishedDate)}` : ''}
-      </div>
-      ${r.abstract ? `<div class="ri-snippet">${escapeHtml(truncate(r.abstract, 180))}</div>` : ''}
-    </li>`));
-}
-function renderPatents(rows) {
-  return ulOf(rows.slice(0, 6).map(r => `
-    <li class="result-item">
-      <span class="ri-title">${linkOrText(r.url, r.title || '(untitled)')}</span>
-      <div class="ri-meta">
-        ${r.id ? `Patent <strong>${escapeHtml(r.id)}</strong>` : ''}
-        ${r.date ? ` · ${escapeHtml(r.date)}` : ''}
-        ${r.assignees && r.assignees.length ? ` · ${escapeHtml(r.assignees.join(', '))}` : ''}
-      </div>
-      ${r.abstract ? `<div class="ri-snippet">${escapeHtml(truncate(r.abstract, 180))}</div>` : ''}
-    </li>`));
-}
-function renderNews(rows) {
-  return ulOf(rows.slice(0, 8).map(r => `
-    <li class="result-item">
-      <span class="ri-title">${linkOrText(r.url, r.title || '(untitled)')}</span>
-      <div class="ri-meta">
-        ${escapeHtml(r.source || '—')}
-        ${r.author ? ` · ${escapeHtml(r.author)}` : ''}
-        ${r.publishedAt ? ` · ${escapeHtml(r.publishedAt.slice(0, 10))}` : ''}
-      </div>
-      ${r.description ? `<div class="ri-snippet">${escapeHtml(truncate(r.description, 200))}</div>` : ''}
-    </li>`));
-}
-
-// ===== Memo (DOCX) =====
-async function generateMemo() {
-  if (!state.query || !window.docx) return;
-  const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } = window.docx;
-
-  const heading = (text, level = HeadingLevel.HEADING_1) =>
-    new Paragraph({ heading: level, children: [new TextRun({ text, bold: true })] });
-  const body = (text) => new Paragraph({ children: [new TextRun({ text })] });
-  const blank = () => new Paragraph({ children: [new TextRun({ text: '' })] });
-
-  const children = [];
-  children.push(new Paragraph({
-    alignment: AlignmentType.CENTER,
-    children: [new TextRun({ text: 'MARKET RESEARCH MEMORANDUM', bold: true, size: 28 })],
-  }));
-  children.push(blank());
-  children.push(body(`Subject: Market research — ${state.query}`));
-  children.push(body(`Date: ${state.searchedAt.toLocaleDateString()}`));
-  children.push(body(`Prepared using ContractingHQ Market Research Tool (kthq.org)`));
-  children.push(blank());
-
-  const filterLines = filterSummaryLines(state.filters);
-  let sectionNum = 1;
-  if (filterLines.length) {
-    children.push(heading(`${sectionNum}. Search Parameters`, HeadingLevel.HEADING_2));
-    children.push(body(`Keyword: ${state.query}`));
-    for (const line of filterLines) children.push(body(line));
-    children.push(blank());
-    sectionNum++;
-  }
-
-  const enr = state.enrichment || {};
-  if (enr.naics || enr.psc) {
-    children.push(heading(`${sectionNum}. Applicable Codes and SBA Size Standard`, HeadingLevel.HEADING_2));
-    if (enr.naics) {
-      children.push(body(`NAICS: ${enr.naics}${enr.naicsTitle ? ' — ' + enr.naicsTitle : ''}${state.filters.naics ? ' (specified by requester)' : ' (most frequent code across matching awards)'}`));
-      children.push(body(enr.sizeStandard
-        ? `SBA size standard for NAICS ${enr.naics}: ${enr.sizeStandard} (13 CFR 121.201; FAR 19.102).`
-        : `SBA size standard: not retrieved during this search; verify at sba.gov/size-standards before finalizing.`));
-    }
-    if (enr.psc) children.push(body(`PSC: ${enr.psc}${state.filters.psc ? ' (specified by requester)' : ' (most frequent code across matching awards)'}`));
-    children.push(blank());
-    sectionNum++;
-  }
-
-  for (const source of SOURCES) {
-    const data = state.bySource[source.key];
-    if (!data || !data.ok) continue;
-    if ((!data.results || !data.results.length) && !source.alwaysRender) continue;
-    children.push(heading(`${sectionNum}. ${source.title} (${source.sourceLabel})`, HeadingLevel.HEADING_2));
-    for (const item of memoLinesFor(source, data.results, data.meta || {})) children.push(body(item));
-    children.push(blank());
-    sectionNum++;
-  }
-
-  children.push(heading(`${sectionNum}. Determination`, HeadingLevel.HEADING_2));
-  for (const para of determinationParagraphs()) children.push(body(para));
-  children.push(blank());
-  children.push(body('[Contracting Officer: the paragraphs above are drafted from the data returned by this search. Review each statement, adjust for requirement-specific knowledge, and delete anything the record does not support before signing.]'));
-  children.push(blank());
-
-  children.push(heading(`${sectionNum + 1}. Sources Consulted`, HeadingLevel.HEADING_2));
-  for (const source of SOURCES) {
-    const data = state.bySource[source.key];
-    if (!data) continue;
-    const status = data.ok
-      ? `${data.count} record${data.count === 1 ? '' : 's'}`
-      : (data.disabled ? 'not configured' : `unavailable (${data.error || 'error'})`);
-    children.push(body(`• ${source.sourceLabel} (${source.title}) — ${status}`));
-  }
-  children.push(blank());
-  children.push(body(`Market research conducted per FAR Part 10 on ${state.searchedAt.toLocaleDateString()}.`));
-  children.push(blank());
-  children.push(body('Prepared by: ____________________________          Date: ______________'));
-  children.push(blank());
-  children.push(body('Contracting Officer: _____________________          Date: ______________'));
-
-  const doc = new Document({ sections: [{ children }] });
-  const blob = await Packer.toBlob(doc);
-  const fname = `market-research_${slug(state.query)}_${state.searchedAt.toISOString().slice(0,10)}.docx`;
-  saveAs(blob, fname);
-}
-
-function filterSummaryLines(f) {
-  const out = [];
-  if (f.naics) out.push(`NAICS: ${f.naics}`);
-  if (f.psc) out.push(`PSC: ${f.psc}`);
-  if (f.agency) out.push(`Agency: ${f.agency}`);
-  if (f.min || f.max) out.push(`Award range: ${f.min ? '$' + f.min : '—'} to ${f.max ? '$' + f.max : '—'}`);
-  out.push('Date range: prior 12 months');
-  return out;
-}
-
-function determinationParagraphs() {
-  const paras = [];
-  const enr = state.enrichment || {};
-
-  // Spend history summary.
-  const spend = state.bySource['usaspending'];
-  if (spend && spend.ok && spend.results && spend.results.length) {
-    const rows = spend.results;
-    const total = rows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
-    const agencies = [...new Set(rows.map(r => (r.agency || '').split(' / ')[0]).filter(Boolean))];
-    const recipients = new Set(rows.map(r => r.uei || r.title).filter(Boolean));
-    paras.push(`Government purchase history: ${rows.length} contract award${rows.length === 1 ? '' : 's'} matching this requirement were identified in USAspending for the prior 12 months, with a combined value of ${fmtCurrency(total)}, awarded to ${recipients.size} distinct recipient${recipients.size === 1 ? '' : 's'} by ${agencies.length} agenc${agencies.length === 1 ? 'y' : 'ies'}${agencies.length ? ' (' + agencies.slice(0, 4).join('; ') + (agencies.length > 4 ? '; others' : '') + ')' : ''}. The Government buys this requirement; recent prices are available as price reasonableness reference points.`);
-  } else {
-    paras.push(`Government purchase history: no matching contract awards were identified in USAspending for the prior 12 months. Either the requirement is new to the Government, or the search term does not match how past awards were described; consider alternate terms before concluding there is no purchase history.`);
-  }
-
-  // Rule of two.
-  const sb = state.bySource['small-biz'];
-  if (sb && sb.ok) paras.push(ruleOfTwoStatement(sb.meta || {}));
-
-  // Commercial availability.
-  if (spend && spend.ok && spend.results && spend.results.length) {
-    paras.push(commercialStatement(enr.commercial));
-  }
-
-  // Existing vehicles.
-  const veh = state.bySource['vehicles'];
-  if (veh && veh.ok) {
-    paras.push(veh.results && veh.results.length
-      ? `Existing vehicles: ${veh.results.length} indefinite-delivery vehicle${veh.results.length === 1 ? ' (IDIQ/GWAC/BPA) matching this search was' : 's (IDIQ/GWAC/BPA) matching this search were'} awarded in the prior 12 months. Before starting a new contract action, check whether an existing vehicle is in scope and available for ordering.`
-      : `Existing vehicles: no matching indefinite-delivery vehicles were identified in the prior 12 months.`);
-  }
-
-  // Exclusions.
-  const excl = state.bySource['sam-exclusions'];
-  if (excl && excl.ok) {
-    paras.push(excl.count === 0
-      ? `Exclusions: the SAM.gov exclusions check returned no matches for this search term (FAR 9.404). Exclusion status must be re-verified against the apparent awardee by name and UEI at time of award.`
-      : `Exclusions: the SAM.gov exclusions check returned ${excl.count} record${excl.count === 1 ? '' : 's'} matching this search term. Review each match; do not award to an excluded entity (FAR 9.404).`);
-  }
-
-  return paras;
-}
-
-function ruleOfTwoStatement(meta) {
-  const n = meta.distinctSmall || 0;
-  if (n >= 2) {
-    return `Rule of two: Market research identified ${n} distinct small business concerns that received contract awards matching this requirement in the last 12 months (business size per the contracting officer's determination reported in FPDS). Based on this data there is a reasonable expectation of receiving offers from two or more responsible small business concerns (FAR 19.104-1). Socioeconomic breakout (distinct firms): ${Object.entries(meta.catCounts || {}).map(([l, c]) => `${l}: ${c == null ? 'not checked' : c}`).join('; ')}.`;
-  }
-  if (n === 1) {
-    return `Rule of two: Only one small business concern received a matching contract award in the last 12 months. Recent award data alone does not support a reasonable expectation of two or more responsible small business offerors (FAR 19.104-1); additional market research (e.g., a sources-sought notice, SBA Dynamic Small Business Search) is recommended before a set-aside decision.`;
-  }
-  return `Rule of two: No small business concerns were identified among matching contract awards in the last 12 months. This data does not support a reasonable expectation of two or more responsible small business offerors (FAR 19.104-1). Recent award history is one indicator; a sources-sought notice or SBA Dynamic Small Business Search should be used to confirm before ruling out a set-aside.`;
-}
-
-function memoLinesFor(source, rows, meta) {
-  if (source.key === 'sole-source') {
-    if (meta && meta.noNaics) {
-      return ['Certified-firm scouting was not run: no NAICS was resolved from this search. Re-run with a NAICS filter to identify 8(a) and WOSB sole source candidates.'];
-    }
-    const totals = Object.entries((meta && meta.totals) || {}).map(([l, n]) => `${l}: ${n == null ? 'not checked' : n}`).join('; ');
-    const lines = [`Certified firms registered in SAM with primary NAICS ${meta.naics} (${totals}). Sole source use requires verification of current program eligibility and applicable dollar limits (13 CFR 124 for 8(a), 13 CFR 127 for WOSB); an 8(a) sole source additionally requires SBA acceptance of the offering.`];
-    for (const r of rows.slice(0, 12)) {
-      lines.push(`[${r.certType}] ${r.name || '(unnamed)'} — UEI ${r.uei || '—'}${r.cage ? ', CAGE ' + r.cage : ''}${r.address ? ', ' + r.address : ''}${r.certEntry ? ', certified ' + r.certEntry : ''}${r.certExit ? ' to ' + r.certExit : ''}.`);
-    }
-    return lines;
-  }
-  if (source.key === 'small-biz') {
-    const lines = [ruleOfTwoStatement(meta || {})];
-    for (const r of rows.slice(0, 10)) {
-      lines.push(`${r.name || '(unnamed)'} — ${fmtCurrency(r.total)} across ${r.awards} award${r.awards === 1 ? '' : 's'}${r.uei ? ', UEI ' + r.uei : ''}${r.naics ? ', NAICS ' + r.naics : ''}.`);
-    }
-    return lines;
-  }
-  const limit = source.fullWidth ? 10 : 5;
-  return rows.slice(0, limit).map(r => {
-    switch (source.key) {
-      case 'sam-entity':
-        return `${r.name || '(unnamed)'} — UEI ${r.uei || '—'}, CAGE ${r.cage || '—'}, ${r.registrationStatus || 'status unknown'}. ${r.address || ''}`;
-      case 'gleif':
-        return `${r.name || '(unnamed)'} — LEI ${r.lei || '—'}, ${r.jurisdiction || '—'}, ${r.status || '—'}.`;
-      case 'opencorporates':
-        return `${r.name || '(unnamed)'} — ${r.jurisdiction || '—'} #${r.number || '—'}, ${r.status || '—'}${r.incorporated ? ', incorporated ' + r.incorporated : ''}.`;
-      case 'sam-exclusions':
-        return `${r.name || '(unnamed)'} — ${r.exclusionType || r.classificationType || 'excluded'}; excluded by ${r.excludingAgency || '—'}; active ${r.activationDate || '—'}${r.terminationDate ? ' to ' + r.terminationDate : ''}. ${r.address || ''}`;
-      case 'usaspending':
-        return `${r.title || '(unnamed)'} — ${fmtCurrency(r.amount)} from ${r.agency || '—'} (${r.start || '?'} → ${r.end || '?'}). ${truncate(r.description || '', 200)}`;
-      case 'vehicles':
-        return `${r.vehicleId || '(no ID)'} held by ${r.title || '(unknown)'} — ${r.type || 'IDV'}, ${fmtCurrency(r.amount)}, ${r.agency || '—'}${r.lastOrder ? ', last date to order ' + r.lastOrder : ''}. ${truncate(r.description || '', 160)}`;
-      case 'sam-opps':
-        return `${r.title || '(untitled)'} — ${r.type || '—'}, Sol# ${r.solicitationNumber || '—'}, ${r.department || '—'}; posted ${r.postedDate || '—'}${r.responseDeadline ? ', response by ' + r.responseDeadline : ''}.`;
-      case 'federal-register':
-        return `${r.title || '(untitled)'} — ${r.type || '—'}, ${r.agency || '—'}, ${r.publishedDate || ''}. ${truncate(r.abstract || '', 220)}`;
-      case 'uspto':
-        return `${r.title || '(untitled)'} — Patent ${r.id || '—'}, ${r.date || '—'}; assignee(s): ${(r.assignees || []).join(', ')}.`;
-      case 'newsapi':
-        return `${r.title || '(untitled)'} — ${r.source || '—'}, ${r.publishedAt ? r.publishedAt.slice(0, 10) : ''}. ${truncate(r.description || '', 220)}`;
-      default:
-        return JSON.stringify(r);
-    }
-  });
-}
-
-// ===== Helpers =====
-function ulOf(items) { return `<ul class="result-list">${items.join('')}</ul>`; }
-function linkOrText(url, text) {
-  if (!url) return escapeHtml(text);
-  return `<a href="${escapeAttr(url)}" target="_blank" rel="noopener">${escapeHtml(text)}</a>`;
-}
-function escapeHtml(s) {
-  if (s == null) return '';
-  return String(s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-function escapeAttr(s) { return escapeHtml(s); }
-function truncate(s, n) {
-  if (!s) return '';
-  return s.length > n ? s.slice(0, n - 1).trim() + '…' : s;
-}
-function fmtCurrency(amount) {
-  const n = Number(amount);
-  if (!isFinite(n) || !n) return '$0';
-  if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
-  if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
-  if (n >= 1e3) return '$' + (n / 1e3).toFixed(1) + 'K';
-  return '$' + n.toLocaleString();
-}
-function slug(s) {
-  return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
-}
-</script>
-
-</body>
+    <dialog id="evidence-dialog">
+      <form id="manual-evidence-form">
+        <div class="dialog-heading">
+          <h2>Add research evidence</h2>
+          <button type="button" id="close-evidence" aria-label="Close">
+            ×
+          </button>
+        </div>
+        <p class="field-note">
+          Use public source material. Include a title and a link others can
+          verify.
+        </p>
+        <label>Title<input name="title" required maxlength="300" /></label
+        ><label
+          >Source URL<input
+            name="url"
+            type="url"
+            placeholder="https://…"
+            maxlength="2000"
+        /></label>
+        <div class="form-grid">
+          <label
+            >Supplier / organization<input
+              name="company"
+              maxlength="250" /></label
+          ><label>Source or quote date<input name="date" type="date" /></label>
+        </div>
+        <label
+          >Evidence type<select name="kind">
+            <option value="manual">Research note</option>
+            <option value="product">Product / commercial offering</option>
+            <option value="quote">Public price / quote</option>
+            <option value="supplier">Supplier capability</option>
+            <option value="vehicle">Contract vehicle</option>
+            <option value="research">Innovation / research</option>
+          </select></label
+        ><label
+          >Finding / public source excerpt<textarea
+            name="description"
+            required
+            rows="4"
+            maxlength="4000"
+          ></textarea></label
+        ><label
+          >Why it matters / what needs verification<textarea
+            name="note"
+            rows="2"
+            maxlength="8000"
+          ></textarea></label
+        ><button type="submit" class="primary">Save to evidence file</button>
+      </form>
+    </dialog>
+    <noscript
+      ><p>
+        This workspace requires JavaScript. You can still use the
+        <a href="market-research.html">market research guide</a>.
+      </p></noscript
+    >
+    <script type="module" src="market-research/desk.mjs?v=20260909-1"></script>
+    <script src="player.js?v=20260909-1"></script>
+  </body>
 </html>
