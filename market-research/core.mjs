@@ -1,4 +1,4 @@
-import { SOURCE_MAP } from "./sources.mjs?v=20260909-4";
+import { SOURCE_MAP } from "./sources.mjs?v=20260909-5";
 export const VERSION = 2;
 export const today = () => new Date().toISOString().slice(0, 10);
 export const clean = (value, max = 4000) =>

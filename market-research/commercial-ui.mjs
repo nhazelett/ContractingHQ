@@ -1,15 +1,12 @@
 import {
-  CATEGORIES,
-  categoryFor,
-  commercialLinks,
   packageUnitPrice,
   formatPrice,
   productValues,
   productEvidence,
   worksheetProducts,
   comparisonCSV,
-} from "./commercial.mjs?v=20260909-4";
-import { escapeHTML as esc, safeURL, today } from "./core.mjs?v=20260909-4";
+} from "./commercial.mjs?v=20260909-5";
+import { escapeHTML as esc, safeURL, today } from "./core.mjs?v=20260909-5";
 export function initCommercial({
   getProject,
   persist,
@@ -20,31 +17,7 @@ export function initCommercial({
   const $ = (selector) => document.querySelector(selector),
     form = $("#product-form");
   let editing = null;
-  $("#commercial-category").innerHTML = CATEGORIES.map(
-    (c) => `<option value="${c.id}">${esc(c.name)}</option>`,
-  ).join("");
-  function links() {
-    const q = $("#commercial-query").value.trim(),
-      category = $("#commercial-category").value,
-      c = CATEGORIES.find((c) => c.id === category) || CATEGORIES[0];
-    $("#commercial-guidance").innerHTML =
-      `<div class="commercial-guide-head"><div><div class="eyebrow">QUESTIONS TO GUIDE YOUR RESEARCH</div><h2>${esc(c.name)}</h2></div></div><div class="commercial-guide-grid"><div><strong>Explore product types</strong><div class="commercial-examples">${c.examples.map((e) => `<button type="button" data-commercial-example="${esc(e)}">${esc(e)} ↗</button>`).join("")}</div></div><div><strong>Check before comparing</strong><ul>${c.questions.map((q) => `<li>${esc(q)}</li>`).join("")}</ul></div></div>`;
-    $("#commercial-links").innerHTML = q
-      ? commercialLinks(q, category)
-          .map(
-            (s) =>
-              `<article class="library-card"><span class="small-label">EXTERNAL SEARCH</span><h3>${esc(s.name)}</h3><p>${esc(s.description)}</p><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.label)} ↗</a></article>`,
-          )
-          .join("")
-      : '<p class="field-note">Enter a product phrase or choose a product type to prepare commercial search links.</p>';
-  }
   function render() {
-    if (!$("#commercial-query").value) {
-      const q = $("#query").value || getProject().search.q;
-      $("#commercial-query").value = q;
-      $("#commercial-category").value = categoryFor(q);
-    }
-    links();
     renderTable();
   }
   function renderTable() {
@@ -59,7 +32,7 @@ export function initCommercial({
             return `<tr><th scope="row"><span class="badge">${esc(e.citation)}</span><a href="${esc(safeURL(e.url))}" target="_blank" rel="noopener noreferrer">${esc(p.title)} ↗</a><p>${esc(p.company)}<br>${esc(p.model || "Model not recorded")}<br>${esc(p.condition)}</p><small>Checked ${esc(p.date)}<br>${esc(e.verification)}</small></th><td><strong>${quote ? "Quote required" : p.price === "" ? "Not recorded" : esc(formatPrice(Number(p.price), p.currency))}</strong><p>${esc(p.basis)}<br>${esc(p.units || "Unknown")} ${esc(p.unit || "units")} per package</p></td><td><strong>${quote ? "Quote required" : u === null ? "Not recorded" : esc(formatPrice(u, p.currency))}</strong>${u !== null && !quote ? `<p>per ${esc(p.unit || "unit")}</p>` : ""}<small>Review shipping, taxes, installation, and terms separately.</small></td><td><details><summary>View details</summary><p>${esc(p.specs || "Specifications not recorded")}</p><p><strong>Shipping / delivery:</strong> ${esc(p.shipping || "Not recorded")}</p><p><strong>Installation / other:</strong> ${esc(p.installation || "Not recorded")}</p><p><strong>Terms:</strong> ${esc(p.terms || "Not recorded")}</p></details></td><td><p>${esc(p.note || "Not assessed")}</p></td><td><button type="button" data-edit-product="${esc(e.id)}">Edit</button><button type="button" class="danger-link" data-delete-product="${esc(e.id)}">Remove</button></td></tr>`;
           })
           .join("")}</tbody></table></div>`
-      : '<div class="empty-state"><h3>No products recorded yet</h3><p>Explore a source above, then add the product link, seller, specifications, and price you find. Each entry is also saved in your evidence file.</p></div>';
+      : '<div class="empty-state"><h3>No products recorded yet</h3><p>Add a product link, seller, specifications, and price from your research. Each entry is also saved in your evidence file.</p></div>';
   }
   function pricePreview() {
     const quote = form.elements.basis.value === "Quote required";
@@ -144,23 +117,9 @@ export function initCommercial({
   };
   $("#new-product").onclick = () => open();
   $("#cancel-product").onclick = reset;
-  $("#commercial-search-form").onsubmit = (e) => {
-    e.preventDefault();
-    links();
-  };
-  $("#commercial-category").onchange = links;
   document.addEventListener("click", (e) => {
     const b = e.target.closest("button");
     if (!b) return;
-    if (b.hasAttribute("data-use-market-query")) {
-      $("#commercial-query").value = $("#query").value;
-      $("#commercial-category").value = categoryFor($("#query").value);
-      links();
-    }
-    if (b.dataset.commercialExample) {
-      $("#commercial-query").value = b.dataset.commercialExample;
-      links();
-    }
     if (b.dataset.editProduct) {
       setView("commercial");
       open(b.dataset.editProduct);

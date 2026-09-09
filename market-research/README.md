@@ -52,9 +52,9 @@ Research files are local to a browser/device and are not cloud-synced. Use Expor
 
 To roll back the frontend, revert the overhaul commit through Git. The new Worker is separate from the legacy service; the old gateway and credentials remain available. Never deploy the historical local Worker snapshot over the live legacy Worker without reviewing its current code and bindings.
 
-## Commercial research addition September 9 2026
+## Commercial research addition September 9 2026 (lookup subsequently removed)
 
-The Commercial products view prepares external Google Shopping, manufacturer-discovery, and domain-specific Google searches for selected commercial sources. Category guides cover general products, generators, IT, facilities, office, and cleaning supplies. These are user-opened research links, not scraped listings or connected price feeds. No new API, subscription, scheduled refresh, or backend service was added.
+The original Commercial products view prepared external Google Shopping, manufacturer-discovery, and domain-specific Google searches. This lookup, its category guides, and its promotional entry point were subsequently removed at the owner's request. The sidebar now calls the retained manual worksheet Product comparison. No new API, subscription, scheduled refresh, or backend service was added.
 
 Users record products in a comparison worksheet: name, seller, exact model, source URL, check date, condition, price basis, currency, package price, package quantity, unit of measure, specifications, shipping, installation, terms, and requirement fit. Unit price is package price divided by quantity; blank values stay missing and quote-required entries do not retain stale price values. Different currencies and units are not converted or ranked. Currency, date, source URL, and numeric inputs are validated.
 
@@ -69,3 +69,9 @@ For requirement-keyword searches, loaded USAspending awards and vehicles with th
 Nonmatching award descriptions carry “Search phrase not found in description.” An award-only reminder asks users to review original records because codes and descriptions may differ. Descriptions, search requests, source URLs, and saved evidence remain unchanged. The interface explicitly limits the ordering claim to loaded awards; this is not relevance ranking across the source's entire database.
 
 Validation: 35 automated tests pass, including the bottled-water / tilt-skillet mismatch, punctuation and word boundaries, full descriptions beyond the preview, preservation of broader leads and source positions, and supplier/code-only searches.
+
+## Commercial lookup removal September 9 2026
+
+Removed the Google search-link generator, category prompts, lookup form, related styles and listeners, and the search-page invitation. Product comparison, existing saved product evidence, edit actions, unit-price calculations, and exports remain available. Internal panel/module names are retained for compatibility. The retired link-generator test was removed; the remaining 34 tests pass.
+
+AbilityOne feasibility was checked separately: its official reports page at https://plims.abilityone.gov/reports/ fetches public JSON from https://plims.abilityone.gov/dynamic-fetch?type=products to generate the product workbook. On September 9, 2026 the unauthenticated request returned HTTP 200 and 17,330 rows with CNA, NSN, Name, Description, and Mandatory for Contracting Activity fields (about 9 MB). This is a portal implementation endpoint, not a verified documented public API contract. No AbilityOne feed or snapshot has been integrated into KTHQ in this change. A future integration should preserve scope, display snapshot freshness, distinguish NSN from text matches, account for duplicate rows, and avoid treating absence of a text match as a determination about Procurement List or ETS applicability.

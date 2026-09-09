@@ -367,7 +367,6 @@ test("Worker rejects prototype property names as sources", async () => {
 });
 
 import {
-  commercialLinks,
   packageUnitPrice,
   productEvidence,
   worksheetProducts,
@@ -389,22 +388,6 @@ const offer = () => ({
   specs: "Compare continuous output",
   note: "Verify delivery",
   terms: "Tax not included",
-});
-test("commercial searches are encoded external links with explicit source domains", () => {
-  const links = commercialLinks("generators & fuel #1", "power");
-  assert.ok(links.length >= 5);
-  for (const link of links) {
-    const u = new URL(link.url);
-    assert.equal(u.hostname, "www.google.com");
-    assert.ok(u.searchParams.get("q").includes("generators & fuel #1"));
-    assert.equal(u.hash, "");
-  }
-  assert.deepEqual(commercialLinks("  "), []);
-  assert.ok(
-    links.some((l) =>
-      new URL(l.url).searchParams.get("q").startsWith("site:generac.com "),
-    ),
-  );
 });
 test("SAM is removed from search choices while historical source metadata survives", () => {
   for (const id of ["opportunities", "entities", "exclusions"]) {

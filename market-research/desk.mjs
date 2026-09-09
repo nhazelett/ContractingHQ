@@ -1,10 +1,10 @@
-import { initCommercial } from "./commercial-ui.mjs?v=20260909-4";
-import { buildWordDocument } from "./report.mjs?v=20260909-4";
+import { initCommercial } from "./commercial-ui.mjs?v=20260909-5";
+import { buildWordDocument } from "./report.mjs?v=20260909-5";
 import {
   SEARCH_SOURCES,
   SOURCE_MAP,
   LIBRARY,
-} from "./sources.mjs?v=20260909-4";
+} from "./sources.mjs?v=20260909-5";
 import {
   clean,
   escapeHTML as esc,
@@ -27,7 +27,7 @@ import {
   evidenceCSV,
   awardDescriptionMatch,
   orderAwardDescriptionMatches,
-} from "./core.mjs?v=20260909-4";
+} from "./core.mjs?v=20260909-5";
 const API = "https://kthq-research-desk.nickhazelett.workers.dev";
 const STORAGE = "kthq-market-research-desk-v2";
 const $ = (s) => document.querySelector(s),
