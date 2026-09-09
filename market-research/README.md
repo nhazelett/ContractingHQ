@@ -61,3 +61,11 @@ Users record products in a comparison worksheet: name, seller, exact model, sour
 Each product is one evidence record, shared between the worksheet, evidence register, supplier assessment, JSON project file, CSV comparison export, and report pricing section. Editing retains its citation and resets verification. Removal supports undo. A persisted citation sequence prevents deleted IDs being reused after reopening a file. Old version-2 project files remain supported.
 
 Validation: 33 automated tests pass, including unit-price edge cases, quote-required handling, stable edited/deleted citations, project import, CSV column/formula escaping, external query encoding, and retired SAM attribution. Browser checks cover product creation/editing, quote-required products, reload, removal/undo, report pricing, mobile overflow, and the shared music player. No commercial data is fetched by these worksheet operations.
+
+## Award description relevance September 9 2026
+
+For requirement-keyword searches, loaded USAspending awards and vehicles with the search phrase in their full description appear before broader award leads. Matching ignores case and punctuation, respects word boundaries, and does not infer synonyms, product suitability, coding accuracy, or the source's reason for returning a record. Other sources retain their positions; source order is preserved within each award match group. Ordering happens before the 120-card display limit and applies to newly loaded pages as well. Supplier-name and code-only searches retain their previous order.
+
+Nonmatching award descriptions carry “Search phrase not found in description.” An award-only reminder asks users to review original records because codes and descriptions may differ. Descriptions, search requests, source URLs, and saved evidence remain unchanged. The interface explicitly limits the ordering claim to loaded awards; this is not relevance ranking across the source's entire database.
+
+Validation: 35 automated tests pass, including the bottled-water / tilt-skillet mismatch, punctuation and word boundaries, full descriptions beyond the preview, preservation of broader leads and source positions, and supplier/code-only searches.

@@ -1,4 +1,4 @@
-import { SOURCE_MAP } from "./sources.mjs?v=20260909-3";
+import { SOURCE_MAP } from "./sources.mjs?v=20260909-4";
 export const VERSION = 2;
 export const today = () => new Date().toISOString().slice(0, 10);
 export const clean = (value, max = 4000) =>
@@ -164,6 +164,42 @@ export function spendBody(s, id = "awards") {
     order: "desc",
   };
 }
+// This is a literal description check, not an inference about why the source
+// returned an award or whether the supplier can meet the requirement.
+export function awardDescriptionMatch(row, search) {
+  if (
+    !["awards", "small-business", "vehicles"].includes(row.source) ||
+    search.mode === "supplier"
+  )
+    return null;
+  const words = (value) =>
+    String(value || "")
+      .normalize("NFKC")
+      .toLowerCase()
+      .match(/[\p{L}\p{N}]+/gu)
+      ?.join(" ") || "";
+  const phrase = words(search.q);
+  if (!phrase) return null;
+  return ` ${words(row.description)} `.includes(` ${phrase} `);
+}
+
+export function orderAwardDescriptionMatches(rows, search) {
+  // Keep other sources in their existing positions and preserve source order
+  // within each match group. Never remove broader award leads.
+  const awards = rows.filter(
+    (row) => awardDescriptionMatch(row, search) !== null,
+  );
+  awards.sort(
+    (a, b) =>
+      Number(awardDescriptionMatch(b, search)) -
+      Number(awardDescriptionMatch(a, search)),
+  );
+  let next = 0;
+  return rows.map((row) =>
+    awardDescriptionMatch(row, search) === null ? row : awards[next++],
+  );
+}
+
 export function samWindow(s) {
   const floor = new Date(`${s.to}T00:00:00Z`);
   floor.setUTCDate(floor.getUTCDate() - 360);

@@ -8,8 +8,8 @@ import {
   productEvidence,
   worksheetProducts,
   comparisonCSV,
-} from "./commercial.mjs?v=20260909-3";
-import { escapeHTML as esc, safeURL, today } from "./core.mjs?v=20260909-3";
+} from "./commercial.mjs?v=20260909-4";
+import { escapeHTML as esc, safeURL, today } from "./core.mjs?v=20260909-4";
 export function initCommercial({
   getProject,
   persist,

@@ -1,10 +1,10 @@
-import { initCommercial } from "./commercial-ui.mjs?v=20260909-3";
-import { buildWordDocument } from "./report.mjs?v=20260909-3";
+import { initCommercial } from "./commercial-ui.mjs?v=20260909-4";
+import { buildWordDocument } from "./report.mjs?v=20260909-4";
 import {
   SEARCH_SOURCES,
   SOURCE_MAP,
   LIBRARY,
-} from "./sources.mjs?v=20260909-3";
+} from "./sources.mjs?v=20260909-4";
 import {
   clean,
   escapeHTML as esc,
@@ -25,7 +25,9 @@ import {
   reportSections,
   reportText,
   evidenceCSV,
-} from "./core.mjs?v=20260909-3";
+  awardDescriptionMatch,
+  orderAwardDescriptionMatches,
+} from "./core.mjs?v=20260909-4";
 const API = "https://kthq-research-desk.nickhazelett.workers.dev";
 const STORAGE = "kthq-market-research-desk-v2";
 const $ = (s) => document.querySelector(s),
@@ -276,14 +278,27 @@ function renderResults() {
           .toLowerCase()
           .includes(term)),
   );
-  const visible = filtered.slice(0, 120);
+  const visible = orderAwardDescriptionMatches(filtered, project.search).slice(
+    0, 120,
+  );
+  const hasAwards = filtered.some((r) =>
+    ["awards", "small-business", "vehicles"].includes(r.source),
+  );
+  $("#award-review-note").hidden = !hasAwards;
+  $("#award-order-note").hidden = !filtered.some(
+    (r) => awardDescriptionMatch(r, project.search) !== null,
+  );
   $("#result-count").textContent =
     `${visible.length} shown / ${filtered.length} matching`;
   $("#result-list").innerHTML = visible.length
     ? visible
         .map((r) => {
           const saved = project.evidence.some((e) => e.id === r.id);
-          return `<article class="result-card"><div class="result-top"><div><span class="badge">${esc(SOURCE_MAP[r.source]?.provider)} · ${esc(r.kind)}</span><h3>${esc(r.title)}</h3>${r.company ? `<div class="company">${esc(r.company)}</div>` : ""}</div><button type="button" data-save-record="${esc(r.id)}" ${saved ? "disabled" : ""}>${saved ? "✓ Saved" : "Keep evidence +"}</button></div>${r.description ? `<p>${esc(r.description.slice(0, 450))}${r.description.length > 450 ? "…" : ""}</p>` : ""}${factsHTML(r.facts)}<div class="result-bottom"><a href="${esc(safeURL(r.url))}" target="_blank" rel="noopener noreferrer">Open source ↗</a><span>${esc(r.date || "Record date not reported")}</span><details><summary>Provenance & full excerpt</summary><p>${esc(r.scope)}<br>Query: ${esc(r.query)}<br>Retrieved: ${esc(r.retrievedAt)}</p><p>${esc(r.description)}</p></details></div></article>`;
+          const descriptionNote =
+            awardDescriptionMatch(r, project.search) === false
+              ? '<span class="badge">Search phrase not found in description</span>'
+              : "";
+          return `<article class="result-card"><div class="result-top"><div><span class="badge">${esc(SOURCE_MAP[r.source]?.provider)} · ${esc(r.kind)}</span><h3>${esc(r.title)}</h3>${r.company ? `<div class="company">${esc(r.company)}</div>` : ""}</div><button type="button" data-save-record="${esc(r.id)}" ${saved ? "disabled" : ""}>${saved ? "✓ Saved" : "Keep evidence +"}</button></div>${r.description ? `<p>${esc(r.description.slice(0, 450))}${r.description.length > 450 ? "…" : ""}</p>` : ""}${descriptionNote}${factsHTML(r.facts)}<div class="result-bottom"><a href="${esc(safeURL(r.url))}" target="_blank" rel="noopener noreferrer">Open source ↗</a><span>${esc(r.date || "Record date not reported")}</span><details><summary>Provenance & full excerpt</summary><p>${esc(r.scope)}<br>Query: ${esc(r.query)}<br>Retrieved: ${esc(r.retrievedAt)}</p><p>${esc(r.description)}</p></details></div></article>`;
         })
         .join("")
     : empty(
