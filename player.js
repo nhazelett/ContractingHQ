@@ -2353,25 +2353,60 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     return true;
   }
 
+  var SOFT_HEAD_SELECTOR = 'head style, head link[rel~="stylesheet"], head meta[name="description"], head meta[name="kthq-radio-mode"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]';
+
   function markCurrentSoftHead() {
     if (softHeadMarked) return;
     softHeadMarked = true;
-    document.querySelectorAll('head style, head meta[name="description"], head meta[name="kthq-radio-mode"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]').forEach(function (node) {
+    document.querySelectorAll(SOFT_HEAD_SELECTOR).forEach(function (node) {
       if (node.id === 'cfm-player-styles') return;
       node.setAttribute('data-kthq-soft-head', 'true');
     });
   }
 
-  function updateSoftHead(doc) {
-    document.title = doc.title || document.title;
-    document.querySelectorAll('[data-kthq-soft-head]').forEach(function (node) {
-      if (node.parentNode) node.parentNode.removeChild(node);
-    });
-    doc.querySelectorAll('head style, head meta[name="description"], head meta[name="kthq-radio-mode"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]').forEach(function (node) {
+  async function updateSoftHead(doc, pageUrl) {
+    var oldNodes = Array.prototype.slice.call(document.querySelectorAll('[data-kthq-soft-head]'));
+    var pendingStyles = [];
+    var nextNodes = Array.prototype.map.call(doc.querySelectorAll(SOFT_HEAD_SELECTOR), function (node) {
       var clone = node.cloneNode(true);
+      if (clone.hasAttribute('href')) {
+        clone.setAttribute('href', new URL(clone.getAttribute('href'), pageUrl.href).href);
+      }
       clone.setAttribute('data-kthq-soft-head', 'true');
-      document.head.appendChild(clone);
+      if (clone.matches('link[rel~="stylesheet"]')) {
+        // Fetch the destination CSS without applying it to the outgoing page.
+        clone.media = 'not all';
+        pendingStyles.push(new Promise(function (resolve, reject) {
+          var timer = setTimeout(function () { finish(new Error('Stylesheet timed out: ' + clone.href)); }, 10000);
+          function finish(error) {
+            clearTimeout(timer);
+            clone.onload = clone.onerror = null;
+            if (error) reject(error);
+            else resolve();
+          }
+          clone.onload = function () { finish(); };
+          clone.onerror = function () { finish(new Error('Stylesheet failed: ' + clone.href)); };
+          document.head.appendChild(clone);
+        }));
+      }
+      return { node: clone, media: node.getAttribute('media') };
     });
+    try {
+      await Promise.all(pendingStyles);
+    } catch (error) {
+      nextNodes.forEach(function (entry) { entry.node.remove(); });
+      throw error; // softNavigateTo falls back to a normal page load.
+    }
+    oldNodes.forEach(function (node) { node.remove(); });
+    nextNodes.forEach(function (entry) {
+      if (entry.node.matches('link[rel~="stylesheet"]')) {
+        if (entry.media === null) entry.node.removeAttribute('media');
+        else entry.node.setAttribute('media', entry.media);
+      }
+      // Preserve stylesheet/inline-style cascade order from the destination.
+      document.head.appendChild(entry.node);
+    });
+    document.title = doc.title || document.title;
   }
 
   function shouldSkipSoftScript(script) {
@@ -2559,7 +2594,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
         if (script.parentNode) script.parentNode.removeChild(script);
       });
 
-      updateSoftHead(doc);
+      await updateSoftHead(doc, url);
       document.body.className = doc.body.className || '';
       document.body.innerHTML = doc.body.innerHTML;
       if (push) window.history.pushState({ kthqSoftNav: true }, '', url.href);
