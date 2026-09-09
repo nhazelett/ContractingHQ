@@ -1,6 +1,10 @@
 # Market Research Tool — Improvement Log
 
-## CHANGELOG
+## September 9 2026 overhaul
+
+The Market Research Desk replaces the implementation described in the historical log below. Automatic rule-of-two verdicts, exclusion clearances, and commerciality determinations were removed. Research now retains source-specific coverage, failure states, saved citations, researcher assessments, and portable project files. See `market-research/README.md` for current coverage and validation. Earlier verification claims and proposed endpoints below are historical and are not the current connection status.
+
+## Historical changelog
 
 | Cycle | Change | Score before → after | Test result |
 |---|---|---|---|
