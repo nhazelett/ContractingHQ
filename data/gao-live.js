@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-09-09T12:26:41.947Z",
+  "generatedAt": "2026-09-10T12:20:32.143Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -8,11 +8,11 @@ window.KTHQ_GAO_DATA = {
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
     "total": 20,
-    "latestDecisionDate": "2026-08-31",
-    "sustained": 1,
+    "latestDecisionDate": "2026-09-03",
+    "sustained": 2,
     "denied": 11,
     "dismissed": 3,
-    "mixed": 3,
+    "mixed": 2,
     "unclassified": 2,
     "sourceStatus": {
       "rss": {
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 19
+        "parsedOutcomes": 20
       },
       "productPages": {
         "attempted": 18,
@@ -36,6 +36,35 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424548,B-424548.2,B-424548.3",
+      "caseName": "Ares Enterprise, LLC",
+      "title": "Ares Enterprise, LLC",
+      "bNumbers": [
+        "B-424548",
+        "B-424548.2",
+        "B-424548.3"
+      ],
+      "bNumberText": "B-424548, B-424548.2, B-424548.3",
+      "link": "https://www.gao.gov/products/b-424548%2Cb-424548.2%2Cb-424548.3",
+      "publicationDate": "2026-09-09",
+      "decisionDate": "2026-09-03",
+      "displayDate": "Sep 3, 2026",
+      "outcome": "sustained",
+      "outcomeLabel": "Sustained",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We sustain the protest.",
+      "officialSynopsis": "Ares Enterprise, LLC, of Fairfax, Virginia, a small business, protests the issuance of a Federal Supply Schedule (FSS) task order under the...",
+      "highlights": "",
+      "digest": "1. Protest that Federal Supply Schedule (FSS) order issued under blanket purchase agreement (BPA) exceeded the scope of the BPA is sustained where the record shows that the BPA described services in support of specific functions, but the order included services that were broader than and materially different from the scope of the BPA. 2. Protest that order issued under BPA exceeded the scope of the recipient vendor's FSS is sustained where the agency failed to validly determine that the order was within the scope of the vendor's contract and its labor categories.",
+      "tags": [
+        "Small business",
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Read sustained decisions closely. They usually point to a file habit that can be fixed before the next protest.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424433.23",
       "caseName": "Aim for AdVantage, LLC",
@@ -175,6 +204,30 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-424490",
+      "caseName": "Integrity Management Consulting, Inc.",
+      "title": "Integrity Management Consulting, Inc.",
+      "bNumbers": [
+        "B-424490"
+      ],
+      "bNumberText": "B-424490",
+      "link": "https://www.gao.gov/products/b-424490",
+      "publicationDate": "2026-08-25",
+      "decisionDate": "2026-08-25",
+      "displayDate": "Aug 25, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "Integrity Management Consulting, Inc., of McLean, Virginia, protests the issuance of a call order to ASET Partners Corporation, of Alexandria,...",
+      "highlights": "",
+      "digest": "",
+      "tags": [],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
+    },
+    {
       "id": "B-424511.2",
       "caseName": "Dawson Technical, Inc.",
       "title": "Dawson Technical, Inc.",
@@ -200,32 +253,6 @@ window.KTHQ_GAO_DATA = {
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424487",
-      "caseName": "LJR Solutions, LLC",
-      "title": "LJR Solutions, LLC",
-      "bNumbers": [
-        "B-424487"
-      ],
-      "bNumberText": "B-424487",
-      "link": "https://www.gao.gov/products/b-424487",
-      "publicationDate": "2026-08-24",
-      "decisionDate": "2026-08-24",
-      "displayDate": "Aug 24, 2026",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "outcomeSource": "Inferred from GAO RSS",
-      "decisionLine": "",
-      "officialSynopsis": "LJR Solutions, LLC, a small business of Myrtle Beach, South Carolina, protests the terms of request for proposals (RFP) No. 75N98026R00042, issued by...",
-      "highlights": "",
-      "digest": "",
-      "tags": [
-        "Small business"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
     },
     {
       "id": "B-424554,B-424554.2",
@@ -392,35 +419,6 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424490",
-      "caseName": "Integrity Management Consulting, Inc.",
-      "title": "Integrity Management Consulting, Inc.",
-      "bNumbers": [
-        "B-424490"
-      ],
-      "bNumberText": "B-424490",
-      "link": "https://www.gao.gov/products/b-424490",
-      "publicationDate": "2026-08-25",
-      "decisionDate": "2026-08-13",
-      "displayDate": "Aug 13, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protest in part and deny it in part.",
-      "officialSynopsis": "Integrity Management Consulting, Inc., of McLean, Virginia, protests the issuance of a call order to ASET Partners Corporation, of Alexandria,...",
-      "highlights": "",
-      "digest": "1. Protest alleging the agency disparately evaluated the protester's and awardee's quotations under certain factors is dismissed as untimely where the information underpinning such arguments was previously available, and the protester failed to raise these arguments in a timely manner. 2. Protest that agency failed to assess additional strengths or the evaluation reflected disparate treatment is denied where the record shows that the evaluation was reasonable and consistent with the solicitation criteria. 3. Protest challenging agency's award decision is denied where the record reflects that the selection official reasonably found the quotations of the awardee and the protester to be relatively equal under the non-price factors and selected the lower-priced quotation for award.",
-      "tags": [
-        "Timeliness",
-        "Evaluation",
-        "Solicitation terms",
-        "Price / cost"
-      ],
-      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
