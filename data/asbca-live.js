@@ -1,5 +1,5 @@
 window.KTHQ_ASBCA_DATA = {
-  "generatedAt": "2026-09-10T12:23:55.192878+00:00",
+  "generatedAt": "2026-09-11T12:23:26.350442+00:00",
   "source": {
     "name": "Armed Services Board of Contract Appeals",
     "decisionsUrl": "https://www.asbca.mil/Decisions/2026/"
@@ -8,13 +8,13 @@ window.KTHQ_ASBCA_DATA = {
   "stats": {
     "total": 18,
     "latestDecisionDate": "2026-08-21",
-    "downloadedPdfs": 18,
-    "metadataOnly": 0,
+    "downloadedPdfs": 17,
+    "metadataOnly": 1,
     "outcomes": {
-      "unclassified": 3,
+      "unclassified": 4,
       "denied": 2,
       "dismissed": 10,
-      "settled": 3
+      "settled": 2
     },
     "sourceStatus": {
       "decisionsPage": {
@@ -290,19 +290,17 @@ window.KTHQ_ASBCA_DATA = {
       ],
       "decisionDate": "2026-08-11",
       "displayDate": "Aug 11, 2026",
-      "decisionType": "Consent judgment",
-      "outcome": "settled",
-      "outcomeLabel": "Settled",
+      "decisionType": "Decision",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
       "judge": "D'Alessandris",
-      "officialExcerpt": "ARMED SERVICES BOARD OF CONTRACT APPEALS Appeal of - ) ) Elbit Systems of America-Night Vision, LLC ) ) ASBCA No. McGuireWoods LLP Washington, DC APPEARANCES FOR THE GOVERNMENT: Dana J.",
-      "tags": [
-        "Settlement"
-      ],
-      "practitionerPrompt": "Consent judgments are a practical off-ramp. Use them when exposure is clear and the negotiated number is better than continued litigation.",
+      "officialExcerpt": "Metadata from the ASBCA decisions index. Open the PDF for the Board's full reasoning.",
+      "tags": [],
+      "practitionerPrompt": "Open the PDF when the facts resemble your contract file. ASBCA decisions are usually about claims discipline, final decisions, and dispute documentation.",
       "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=Chy7HwFHaS0%3d&portalid=143",
       "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceStatus": "metadata-only",
+      "sourceStatusLabel": "ASBCA index metadata",
       "sourceError": ""
     },
     {
