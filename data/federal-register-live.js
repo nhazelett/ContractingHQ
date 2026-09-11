@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-09-10T12:12:28.828Z",
-  "since": "2025-03-19",
+  "generatedAt": "2026-09-11T12:11:05.626Z",
+  "since": "2025-03-20",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,13 +14,13 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 133,
+    "total": 132,
     "latestPublicationDate": "2026-09-01",
     "openCommentWindows": 8,
     "rules": 47,
     "byTone": {
       "action": 30,
-      "monitor": 83,
+      "monitor": 82,
       "watch": 20
     }
   },
@@ -4756,40 +4756,6 @@ window.KTHQ_FEDREG_DATA = {
       ],
       "htmlUrl": "https://www.federalregister.gov/documents/2025/03/24/2025-04926/acquisition-of-items-for-which-federal-prison-industries-has-a-significant-market-share",
       "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-03-24/pdf/2025-04926.pdf",
-      "sourceQuery": "DFARS / DARS agency feed"
-    },
-    {
-      "id": "2025-04494",
-      "documentNumber": "2025-04494",
-      "title": "Conclusion of the Renewal of a Reciprocal Defense Procurement Agreement With the Government of the Italian Republic",
-      "shortTitle": "Conclusion of the Renewal of a Reciprocal Defense Procurement Agreement With the Government of the Italian Republic",
-      "system": "DFARS",
-      "stage": "Notice",
-      "topic": "Acquisition policy",
-      "actionLevel": "Awareness",
-      "actionTone": "monitor",
-      "practitionerNote": "This is a acquisition policy item. Read enough to know whether it touches your current workload, then monitor for follow-on implementation.",
-      "nextSteps": [
-        "Skim the abstract",
-        "Check whether the affected topic matches your portfolio",
-        "Save the source link if it may affect an active file"
-      ],
-      "type": "Notice",
-      "publicationDate": "2025-03-19",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-04-18",
-      "datesText": "Comments must be received April 18, 2025.",
-      "actionText": "Notice and request for public comments.",
-      "summary": "On behalf of the U.S. Government, DoD is contemplating concluding the renewal of a Reciprocal Defense Procurement Agreement with the Government of the Italian Republic. DoD had a similar agreement with Italy, signed on October 20, 2008. DoD is requesting industry feedback regarding its experience in public defense procurements conducted by or on behalf of the Ministry of Defense of the Italian Republic or Armed Forces.",
-      "citation": "90 FR 12712",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Defense Department",
-        "Defense Acquisition Regulations System"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/03/19/2025-04494/conclusion-of-the-renewal-of-a-reciprocal-defense-procurement-agreement-with-the-government-of-the",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-03-19/pdf/2025-04494.pdf",
       "sourceQuery": "DFARS / DARS agency feed"
     }
   ]
