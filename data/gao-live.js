@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-09-11T12:18:56.853Z",
+  "generatedAt": "2026-09-12T11:42:09.449Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -8,12 +8,12 @@ window.KTHQ_GAO_DATA = {
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
     "total": 20,
-    "latestDecisionDate": "2026-09-09",
+    "latestDecisionDate": "2026-09-10",
     "sustained": 1,
-    "denied": 12,
+    "denied": 10,
     "dismissed": 2,
-    "mixed": 4,
-    "unclassified": 1,
+    "mixed": 5,
+    "unclassified": 2,
     "sourceStatus": {
       "rss": {
         "ok": true,
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 22
+        "parsedOutcomes": 23
       },
       "productPages": {
         "attempted": 18,
@@ -36,6 +36,36 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424508.2,B-424509.2,B-424510.2,B-424508",
+      "caseName": "Oready, LLC",
+      "title": "Oready, LLC",
+      "bNumbers": [
+        "B-424508.2",
+        "B-424509.2",
+        "B-424510.2",
+        "B-424508"
+      ],
+      "bNumberText": "B-424508.2, B-424509.2, B-424510.2, B-424508",
+      "link": "https://www.gao.gov/products/b-424508.2%2Cb-424509.2%2Cb-424510.2",
+      "publicationDate": "2026-09-11",
+      "decisionDate": "2026-09-10",
+      "displayDate": "Sep 10, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the request for reconsideration.",
+      "officialSynopsis": "Oready, LLC, a small business of Las Vegas, Nevada, requests reconsideration of our decision in Oready, LLC, B-424508 et al., June 8, 2026, in which...",
+      "highlights": "",
+      "digest": "Request for reconsideration of decision dismissing protests as untimely filed is denied where the requester has not demonstrated error in the determination that emails to the contracting officers attaching protests filed with GAO were not agency‑level protests.",
+      "tags": [
+        "Timeliness",
+        "Small business"
+      ],
+      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424566,B-424566.2",
       "caseName": "E-Logic, Inc.",
@@ -263,34 +293,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-422717.6,B-422717.4,B-422717.5",
-      "caseName": "KriaaNet, Inc.--Reconsideration",
-      "title": "KriaaNet, Inc.--Reconsideration",
-      "bNumbers": [
-        "B-422717.6",
-        "B-422717.4",
-        "B-422717.5"
-      ],
-      "bNumberText": "B-422717.6, B-422717.4, B-422717.5",
-      "link": "https://www.gao.gov/products/b-422717.6",
-      "publicationDate": "2026-08-27",
-      "decisionDate": "2026-08-27",
-      "displayDate": "Aug 27, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "KTHQ legacy holding cache",
-      "decisionLine": "Protest challenging the agency's issuance of a reprocurement task order is denied where the record reflects that the agency's approach was consistent with applicable requirements.",
-      "officialSynopsis": "KriaaNet, Inc., a small business of Leesburg, Virginia, requests reconsideration of our decision in KriaaNet, Inc., B-422717.4, B-422717.5, Apr. 23,...",
-      "highlights": "",
-      "digest": "",
-      "tags": [
-        "Small business"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
-    },
-    {
       "id": "B-423829.3,B-423829.5",
       "caseName": "Red Cedar Harmonia, LLC",
       "title": "Red Cedar Harmonia, LLC",
@@ -318,6 +320,33 @@ window.KTHQ_GAO_DATA = {
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424200.2,B-424200.3",
+      "caseName": "ShorePoint, LLC",
+      "title": "ShorePoint, LLC",
+      "bNumbers": [
+        "B-424200.2",
+        "B-424200.3"
+      ],
+      "bNumberText": "B-424200.2, B-424200.3",
+      "link": "https://www.gao.gov/products/b-424200.2%2Cb-424200.3",
+      "publicationDate": "2026-08-27",
+      "decisionDate": "2026-08-27",
+      "displayDate": "Aug 27, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "ShorePoint, LLC, of Herndon, Virginia, protests the issuance of a task order to Booz Allen Hamilton Inc. (BAH), of McLean, Virginia, under request...",
+      "highlights": "",
+      "digest": "",
+      "tags": [
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
     },
     {
       "id": "B-424511.2",
@@ -396,35 +425,6 @@ window.KTHQ_GAO_DATA = {
       "officialSynopsis": "QinetiQ, Inc., of Lorton, Virginia, protests the Department of the Army's issuance of a task order to TCOM LP, of Columbia, Maryland, pursuant to...",
       "highlights": "",
       "digest": "1. Agency reasonably identified multiple weaknesses in protester's proposal, including its failure to propose live target testing and its deferral of integrated system testing until after delivery of the system. 2. Protester's allegations regarding various aspects of awardee's evaluation are dismissed, including allegations that the agency failed to consider offerors' past performance where the solicitation did not include a past performance factor, and allegations regarding awardee's purported misrepresentation in its proposal that fail to present a sufficient factual or legal basis for protest. 3. Agency reasonably evaluated other aspects of awardee's proposal, including the awardee's compliance with the solicitation's limitation regarding the number of slides to be used during oral presentations, and the awardee's compliance with the solicitation requirements regarding exportability of its proposed solution. 4. Agency's erroneous risk assessment regarding protester's export license was not prejudicial to the protester in the tradeoff determination. 5. Protester's complaints based on the agency's alleged failure to comply with internal agency regulations implementing the Arms Export Control Act do not state a basis for protest.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424200.2,B-424200.3",
-      "caseName": "ShorePoint, LLC",
-      "title": "ShorePoint, LLC",
-      "bNumbers": [
-        "B-424200.2",
-        "B-424200.3"
-      ],
-      "bNumberText": "B-424200.2, B-424200.3",
-      "link": "https://www.gao.gov/products/b-424200.2%2Cb-424200.3",
-      "publicationDate": "2026-08-27",
-      "decisionDate": "2026-08-24",
-      "displayDate": "Aug 24, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "ShorePoint, LLC, of Herndon, Virginia, protests the issuance of a task order to Booz Allen Hamilton Inc. (BAH), of McLean, Virginia, under request...",
-      "highlights": "",
-      "digest": "Protest challenging the agency's evaluation of past performance is denied where the agency's evaluation was reasonable and consistent with the terms of the solicitation.",
       "tags": [
         "Evaluation",
         "Solicitation terms",
