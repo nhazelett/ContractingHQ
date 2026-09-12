@@ -184,6 +184,15 @@
     }
   ];
 
+  // Release policy: append new tracks (never reorder storage indexes), set each
+  // releaseDate as YYYY-MM-DD, and optionally choose landingPriority lead tracks.
+  // The newest release leads the visible list and fresh-visit selection automatically.
+  SEP_2026_TRACKS.forEach(function (track) {
+    track.releaseDate = '2026-09-11';
+    track.landingPriority = track.title === 'Hard Things Are Hard' ? 2 :
+      track.title === 'Look for the Helpers' ? 1 : 0;
+  });
+
   // ── STATE ────────────────────────────────────────────────────────
   var DEFAULT_TRACKS = TRACKS.slice();
   var CCO_PAGE_FALLBACKS = [
@@ -418,7 +427,13 @@
   }
 
   function allTrackIndexes() {
-    return TRACKS.map(function (_, i) { return i; });
+    // Sort a view of indexes, leaving persisted favorites/skips attached to their songs.
+    return TRACKS.map(function (_, i) { return i; }).sort(function (a, b) {
+      var dateA = TRACKS[a].releaseDate || '';
+      var dateB = TRACKS[b].releaseDate || '';
+      if (dateA !== dateB) return dateA > dateB ? -1 : 1;
+      return (TRACKS[b].landingPriority || 0) - (TRACKS[a].landingPriority || 0) || a - b;
+    });
   }
 
   function getPool() {
@@ -439,9 +454,28 @@
     return next;
   }
 
+  function landingTrackIndex() {
+    var pool = getPool();
+    if (!pool.length) return 0;
+    var latest = pool.reduce(function (date, idx) {
+      var release = TRACKS[idx].releaseDate || '';
+      return release > date ? release : date;
+    }, '');
+    var newest = pool.filter(function (idx) {
+      return (TRACKS[idx].releaseDate || '') === latest;
+    });
+    var leads = newest.filter(function (idx) {
+      return (TRACKS[idx].landingPriority || 0) > 0;
+    });
+    var candidates = leads.length ? leads : newest;
+    var different = candidates.filter(function (idx) { return idx !== state.idx; });
+    if (different.length) candidates = different;
+    return candidates[Math.floor(Math.random() * candidates.length)];
+  }
+
   function randomizeStartTrack(keepPlaybackIntent) {
     if (!TRACKS.length) return;
-    state.idx = randomPlayableIndex(state.idx);
+    state.idx = landingTrackIndex();
     state.time = 0;
     if (!keepPlaybackIntent) state.wasPlaying = false;
     saveState();
@@ -1911,7 +1945,8 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       drawerEl.innerHTML = html;
       return;
     }
-    TRACKS.forEach(function (t, i) {
+    allTrackIndexes().forEach(function (i, position) {
+      var t = TRACKS[i];
       var active = i === state.idx;
       var fav = isFav(i);
       var skipped = isSkipped(i);
@@ -1919,7 +1954,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
         '<div class="cfm-track-item' + (active ? ' active' : '') + (active && isPlaying ? ' playing' : '') + (skipped ? ' skipped' : '') + '" data-idx="' + i + '">',
           '<div class="cfm-track-marker">',
             '<div class="cfm-track-dot" style="background:' + esc(t.color) + '"></div>',
-            '<div class="cfm-track-num">' + (i + 1) + '</div>',
+            '<div class="cfm-track-num">' + (position + 1) + '</div>',
           '</div>',
           '<div class="cfm-track-info">',
             '<div class="cfm-track-name">' + esc(t.title) + '</div>',
@@ -2108,13 +2143,14 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       return;
     }
 
-    TRACKS.forEach(function (track, idx) {
+    allTrackIndexes().forEach(function (idx, position) {
+      var track = TRACKS[idx];
       var active = idx === state.idx;
       var fav = isFav(idx);
       var skipped = isSkipped(idx);
       html += [
         '<div class="cfm-sb-track-item' + (active ? ' active' : '') + (skipped ? ' skipped' : '') + '" data-idx="' + idx + '">',
-          '<div class="cfm-sb-track-num">' + (idx + 1) + '</div>',
+          '<div class="cfm-sb-track-num">' + (position + 1) + '</div>',
           '<div class="cfm-sb-track-info">',
             '<div class="cfm-sb-track-name">' + esc(track.title) + '</div>',
             '<div class="cfm-sb-track-genre">' + esc(track.genre) + '</div>',
