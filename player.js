@@ -44,6 +44,146 @@
     { id: 35, title: 'Yes, If',                             subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-35.mp3', color: '#10b981' }
   ];
 
+  // September 2026 album. Append after existing tracks to preserve saved favorite indexes.
+  var SEP_2026_TRACKS = [
+    {
+      "id": "sep2026-1",
+      "title": "Comparison is the Thief of Joy",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "Comparison is the Thief of Joy.mp3",
+      "color": "#4a9eff"
+    },
+    {
+      "id": "sep2026-2",
+      "title": "Curious, Not Judgmental",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "Curious, Not Judgmental.mp3",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "sep2026-3",
+      "title": "Do the Next Right Thing",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "Do the Next Right Thing.mp3",
+      "color": "#059669"
+    },
+    {
+      "id": "sep2026-4",
+      "title": "Excel In, Airpower Out",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "Excel In, Airpower Out.mp3",
+      "color": "#d97706"
+    },
+    {
+      "id": "sep2026-5",
+      "title": "Hard Things Are Hard",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "Hard Things Are Hard.mp3",
+      "color": "#dc2626"
+    },
+    {
+      "id": "sep2026-6",
+      "title": "High T, Unlimited",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "audio/High T, Unlimited.mp3",
+      "color": "#0891b2"
+    },
+    {
+      "id": "sep2026-7",
+      "title": "It Depends",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "audio/It Depends.mp3",
+      "color": "#4a9eff"
+    },
+    {
+      "id": "sep2026-8",
+      "title": "Kurban Olurum",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "audio/Kurban Olurum.mp3",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "sep2026-9",
+      "title": "Look for the Helpers",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "audio/Look for the Helpers.mp3",
+      "color": "#059669"
+    },
+    {
+      "id": "sep2026-10",
+      "title": "Not My Fault, Still My Problem",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "audio/Not My Fault, Still My Problem.mp3",
+      "color": "#d97706"
+    },
+    {
+      "id": "sep2026-11",
+      "title": "Rewind the Tape",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "audio/Rewind the Tape.mp3",
+      "color": "#dc2626"
+    },
+    {
+      "id": "sep2026-12",
+      "title": "Still My Move",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "audio/Still My Move.mp3",
+      "color": "#0891b2"
+    },
+    {
+      "id": "sep2026-13",
+      "title": "The Obstacle Is the Way",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "audio/The Obstacle Is the Way.mp3",
+      "color": "#4a9eff"
+    },
+    {
+      "id": "sep2026-14",
+      "title": "Water the Plants",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "audio/Water the Plants.mp3",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "sep2026-15",
+      "title": "Westbound",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "audio/Westbound.mp3",
+      "color": "#059669"
+    },
+    {
+      "id": "sep2026-16",
+      "title": "Yet",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "audio/Yet.mp3",
+      "color": "#d97706"
+    },
+    {
+      "id": "sep2026-17",
+      "title": "You Can't Buy Back Time",
+      "subtitle": "Sep 2026 Album",
+      "genre": "ContractingFM",
+      "file": "audio/You Can't Buy Back Time.mp3",
+      "color": "#dc2626"
+    }
+  ];
+
   // ── STATE ────────────────────────────────────────────────────────
   var DEFAULT_TRACKS = TRACKS.slice();
   var CCO_PAGE_FALLBACKS = [
@@ -137,7 +277,7 @@
         color: track.color || '#d2a64c'
       };
     }));
-    return tracks;
+    return tracks.concat(SEP_2026_TRACKS);
   }
 
   function modeStateKey(mode) {
