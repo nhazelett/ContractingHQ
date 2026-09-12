@@ -464,13 +464,16 @@
     var newest = pool.filter(function (idx) {
       return (TRACKS[idx].releaseDate || '') === latest;
     });
-    var leads = newest.filter(function (idx) {
-      return (TRACKS[idx].landingPriority || 0) > 0;
+    // Every song in the newest eligible release can land; featured songs get
+    // two chances each, other songs one. Avoid repeating the previous landing.
+    var candidates = newest.filter(function (idx) { return idx !== state.idx; });
+    if (!candidates.length) candidates = newest;
+    var weighted = [];
+    candidates.forEach(function (idx) {
+      weighted.push(idx);
+      if ((TRACKS[idx].landingPriority || 0) > 0) weighted.push(idx);
     });
-    var candidates = leads.length ? leads : newest;
-    var different = candidates.filter(function (idx) { return idx !== state.idx; });
-    if (different.length) candidates = different;
-    return candidates[Math.floor(Math.random() * candidates.length)];
+    return weighted[Math.floor(Math.random() * weighted.length)];
   }
 
   function randomizeStartTrack(keepPlaybackIntent) {
