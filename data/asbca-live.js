@@ -1,5 +1,5 @@
 window.KTHQ_ASBCA_DATA = {
-  "generatedAt": "2026-09-15T12:55:41.309035+00:00",
+  "generatedAt": "2026-09-16T12:52:43.148058+00:00",
   "source": {
     "name": "Armed Services Board of Contract Appeals",
     "decisionsUrl": "https://www.asbca.mil/Decisions/2026/"
@@ -8,8 +8,8 @@ window.KTHQ_ASBCA_DATA = {
   "stats": {
     "total": 18,
     "latestDecisionDate": "2026-08-21",
-    "downloadedPdfs": 18,
-    "metadataOnly": 0,
+    "downloadedPdfs": 17,
+    "metadataOnly": 1,
     "outcomes": {
       "unclassified": 3,
       "denied": 2,
@@ -42,16 +42,14 @@ window.KTHQ_ASBCA_DATA = {
       "outcome": "unclassified",
       "outcomeLabel": "Read Decision",
       "judge": "%208.21.26%20Decision.pdf?ver=MJrWYcydkqd-1fRKlc0s5A%3d%3d)Sweet",
-      "officialExcerpt": "An official website of the United States government Here's how you know **Official websites use .mil** A **.mil** website belongs to an official U.S. **Secure .mil websites use HTTPS** A **lock ()** or **https://** means you've safely connected to the .mil website.",
-      "tags": [
-        "ADR"
-      ],
+      "officialExcerpt": "Metadata from the ASBCA decisions index. Open the PDF for the Board's full reasoning.",
+      "tags": [],
       "practitionerPrompt": "Open the PDF when the facts resemble your contract file. ASBCA decisions are usually about claims discipline, final decisions, and dispute documentation.",
       "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64468%20VESEQU%20LLC%20(Sweet",
       "filename": "64468 VESEQU LLC (Sweet",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
+      "sourceStatus": "metadata-only",
+      "sourceStatusLabel": "ASBCA index metadata",
+      "sourceError": "HTTP Error 422: Unprocessable Entity"
     },
     {
       "id": "2026-08-20-visionary-construction-inc-dba-visionary-services-2",
