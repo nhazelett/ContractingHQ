@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-09-15T12:50:31.854Z",
+  "generatedAt": "2026-09-16T12:46:21.020Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -8,10 +8,10 @@ window.KTHQ_GAO_DATA = {
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
     "total": 20,
-    "latestDecisionDate": "2026-09-10",
+    "latestDecisionDate": "2026-09-14",
     "sustained": 1,
-    "denied": 10,
-    "dismissed": 2,
+    "denied": 9,
+    "dismissed": 3,
     "mixed": 5,
     "unclassified": 2,
     "sourceStatus": {
@@ -36,6 +36,61 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424610",
+      "caseName": "H2L Solutions, Inc.",
+      "title": "H2L Solutions, Inc.",
+      "bNumbers": [
+        "B-424610"
+      ],
+      "bNumberText": "B-424610",
+      "link": "https://www.gao.gov/products/b-424610",
+      "publicationDate": "2026-09-15",
+      "decisionDate": "2026-09-14",
+      "displayDate": "Sep 14, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "H2L Solutions, Inc., a service-disabled veteran-owned small business (SDVOSB) of Huntsville, Alabama, protests the issuance of an order to The Dalton...",
+      "highlights": "",
+      "digest": "Protest that the agency improperly evaluated the protester's quotation is denied where the record shows that the agency's evaluation was reasonable and in accordance with the solicitation.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms",
+        "Small business"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424694.7",
+      "caseName": "Sensis Inc.",
+      "title": "Sensis Inc.",
+      "bNumbers": [
+        "B-424694.7"
+      ],
+      "bNumberText": "B-424694.7",
+      "link": "https://www.gao.gov/products/b-424694.7",
+      "publicationDate": "2026-09-15",
+      "decisionDate": "2026-09-14",
+      "displayDate": "Sep 14, 2026",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We dismiss the protest as untimely.",
+      "officialSynopsis": "Sensis Inc., a small business of Glendale, California, protests its exclusion from the competition and award of a contract to Avvy, LLC, a small...",
+      "highlights": "",
+      "digest": "Protest is dismissed as untimely where the protester failed to send its protest to the designated GAO email address when the Electronic Protest Docketing System was unavailable.",
+      "tags": [
+        "Timeliness",
+        "Small business"
+      ],
+      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424508.2,B-424509.2,B-424510.2,B-424508",
       "caseName": "Oready, LLC",
@@ -181,6 +236,58 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-424484,B-424484.2",
+      "caseName": "C.H. Guernsey & Company",
+      "title": "C.H. Guernsey & Company",
+      "bNumbers": [
+        "B-424484",
+        "B-424484.2"
+      ],
+      "bNumberText": "B-424484, B-424484.2",
+      "link": "https://www.gao.gov/products/b-424484%2Cb-424484.2",
+      "publicationDate": "2026-08-28",
+      "decisionDate": "2026-08-28",
+      "displayDate": "Aug 28, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "C.H. Guernsey & Company (Guernsey), of Oklahoma City, Oklahoma, protests the issuance of a task order to ScottMadden Inc., of Raleigh, North...",
+      "highlights": "",
+      "digest": "",
+      "tags": [
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
+    },
+    {
+      "id": "B-424477,B-424477.2",
+      "caseName": "LOGMET LLC",
+      "title": "LOGMET LLC",
+      "bNumbers": [
+        "B-424477",
+        "B-424477.2"
+      ],
+      "bNumberText": "B-424477, B-424477.2",
+      "link": "https://www.gao.gov/products/b-424477%2Cb-424477.2",
+      "publicationDate": "2026-08-28",
+      "decisionDate": "2026-08-28",
+      "displayDate": "Aug 28, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "LOGMET LLC, of Round Rock, Texas, protests the award of a contract to SkyQuest Aviation LLC, of Glendale, Arizona, under request for quotations (RFQ...",
+      "highlights": "",
+      "digest": "",
+      "tags": [],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
+    },
+    {
       "id": "B-423829.2,B-423829.7",
       "caseName": "FusionEdge Solutions, LLC",
       "title": "FusionEdge Solutions, LLC",
@@ -239,32 +346,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424563",
-      "caseName": "Hair By Allure, LLC d/b/a Allure Rejuvenation Center",
-      "title": "Hair By Allure, LLC d/b/a Allure Rejuvenation Center",
-      "bNumbers": [
-        "B-424563"
-      ],
-      "bNumberText": "B-424563",
-      "link": "https://www.gao.gov/products/b-424563",
-      "publicationDate": "2026-08-27",
-      "decisionDate": "2026-08-27",
-      "displayDate": "Aug 27, 2026",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "outcomeSource": "Inferred from GAO RSS",
-      "decisionLine": "",
-      "officialSynopsis": "Hair By Allure, LLC d/b/a Allure Rejuvenation Center (ARC), a small business of Philadelphia, Pennsylvania, protests the exclusion of its proposal...",
-      "highlights": "",
-      "digest": "",
-      "tags": [
-        "Small business"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
-    },
-    {
       "id": "B-424524",
       "caseName": "Hardwire LLC",
       "title": "Hardwire LLC",
@@ -320,33 +401,6 @@ window.KTHQ_GAO_DATA = {
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424200.2,B-424200.3",
-      "caseName": "ShorePoint, LLC",
-      "title": "ShorePoint, LLC",
-      "bNumbers": [
-        "B-424200.2",
-        "B-424200.3"
-      ],
-      "bNumberText": "B-424200.2, B-424200.3",
-      "link": "https://www.gao.gov/products/b-424200.2%2Cb-424200.3",
-      "publicationDate": "2026-08-27",
-      "decisionDate": "2026-08-27",
-      "displayDate": "Aug 27, 2026",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "outcomeSource": "Inferred from GAO RSS",
-      "decisionLine": "",
-      "officialSynopsis": "ShorePoint, LLC, of Herndon, Virginia, protests the issuance of a task order to Booz Allen Hamilton Inc. (BAH), of McLean, Virginia, under request...",
-      "highlights": "",
-      "digest": "",
-      "tags": [
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
     },
     {
       "id": "B-424511.2",
@@ -461,35 +515,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424484,B-424484.2",
-      "caseName": "C.H. Guernsey & Company",
-      "title": "C.H. Guernsey & Company",
-      "bNumbers": [
-        "B-424484",
-        "B-424484.2"
-      ],
-      "bNumberText": "B-424484, B-424484.2",
-      "link": "https://www.gao.gov/products/b-424484%2Cb-424484.2",
-      "publicationDate": "2026-08-28",
-      "decisionDate": "2026-08-12",
-      "displayDate": "Aug 12, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "C.H. Guernsey & Company (Guernsey), of Oklahoma City, Oklahoma, protests the issuance of a task order to ScottMadden Inc., of Raleigh, North...",
-      "highlights": "",
-      "digest": "1. Protest of the agency's evaluation of the awardee's quotation under the technical factor is denied where the evaluation was conducted reasonably and in accordance with the terms of the solicitation. 2. Protest of the agency's evaluation of the awardee's quotation under the past performance factor is denied where the evaluation was conducted reasonably and in accordance with the terms of the solicitation. 3. Protest of the best-value tradeoff decision is denied where the record reflects a reasonable and documented analysis.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
       "id": "B-423812.3,B-423812.4",
       "caseName": "TechSur Solutions, LLC",
       "title": "TechSur Solutions, LLC",
@@ -515,36 +540,6 @@ window.KTHQ_GAO_DATA = {
         "Orders / IDIQ"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424477,B-424477.2",
-      "caseName": "LOGMET LLC",
-      "title": "LOGMET LLC",
-      "bNumbers": [
-        "B-424477",
-        "B-424477.2"
-      ],
-      "bNumberText": "B-424477, B-424477.2",
-      "link": "https://www.gao.gov/products/b-424477%2Cb-424477.2",
-      "publicationDate": "2026-08-28",
-      "decisionDate": "2026-08-07",
-      "displayDate": "Aug 7, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "LOGMET LLC, of Round Rock, Texas, protests the award of a contract to SkyQuest Aviation LLC, of Glendale, Arizona, under request for quotations (RFQ...",
-      "highlights": "",
-      "digest": "1. Allegation that the agency failed to evaluate the protester's lowest-priced quotation, in a lowest-priced, technically acceptable procurement, is denied where the record demonstrates that the protester did not quote the lowest price. 2. Allegation that the agency conducted unfair exchanges with vendors is denied where the record demonstrates the reasonableness of the agency's discussions with vendors. 3. Allegation that the agency disparately evaluated the quotations of the protester and the awardee is denied where the evaluation was consistent with the solicitation and did not reflect unequal treatment.",
-      "tags": [
-        "Evaluation",
-        "Discussions / FPR",
-        "Solicitation terms",
-        "Price / cost"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
