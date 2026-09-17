@@ -1,0 +1,1 @@
+Illustrations are intentionally deferred until the gray-box playtest is complete. All 32 planned image paths and alt text are registered in SCENARIO.images. Set SCENARIO.artEnabled only after the required WebP assets exist. No missing images are requested during this playtest.
