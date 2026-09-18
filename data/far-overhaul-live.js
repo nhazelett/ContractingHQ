@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-09-17T13:27:18.427827+00:00",
+  "generatedAt": "2026-09-18T12:57:58.668590+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -17,7 +17,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "latestPartDate": "2026-07-01",
     "latestPartDateLabel": "Jul 1, 2026",
     "announcementCount": 9,
-    "federalRegisterCount": 3
+    "federalRegisterCount": 4
   },
   "changes": {
     "baseline": false,
@@ -8820,6 +8820,16 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     }
   ],
   "federalRegister": [
+    {
+      "id": "a1d59f70cb86e22c",
+      "title": "Federal Acquisition Regulation: Revolutionary FAR Overhaul Parts 8, 12, 13, 15, 38, 44, and 51",
+      "url": "https://www.federalregister.gov/documents/2026/09/18/2026-19162/federal-acquisition-regulation-revolutionary-far-overhaul-parts-8-12-13-15-38-44-and-51",
+      "date": "2026-09-18",
+      "dateLabel": "Sep 18, 2026",
+      "source": "Federal Register",
+      "type": "Proposed Rule",
+      "summary": "OFPP, DoD, GSA, and NASA (collectively referred to as the Federal Acquisition Regulatory Council or FAR Council) are proposing to amend the Federal Acquisition Regulation (FAR) to implement Executive Order (E.O.) 14275, Restoring Common Sense to Federal Procurement. The E.O. directs the elimination of excessive..."
+    },
     {
       "id": "3b88caa1a07d4e2f",
       "title": "Federal Acquisition Regulation; Federal Acquisition Circular 2026-01; Introduction",
