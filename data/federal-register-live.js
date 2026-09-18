@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-09-17T12:34:32.539Z",
-  "since": "2025-03-26",
+  "generatedAt": "2026-09-18T12:12:35.981Z",
+  "since": "2025-03-27",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,17 +14,209 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 131,
-    "latestPublicationDate": "2026-09-01",
-    "openCommentWindows": 3,
-    "rules": 47,
+    "total": 136,
+    "latestPublicationDate": "2026-09-18",
+    "openCommentWindows": 7,
+    "rules": 52,
     "byTone": {
-      "action": 29,
+      "active": 4,
+      "action": 30,
       "monitor": 82,
       "watch": 20
     }
   },
   "items": [
+    {
+      "id": "2026-19162",
+      "documentNumber": "2026-19162",
+      "title": "Federal Acquisition Regulation: Revolutionary FAR Overhaul Parts 8, 12, 13, 15, 38, 44, and 51",
+      "shortTitle": "Federal Acquisition Regulation: Revolutionary FAR Overhaul Parts 8, 12, 13, 15, 38, 44, and 51",
+      "system": "FAR",
+      "stage": "Proposed rule",
+      "topic": "Acquisition policy",
+      "actionLevel": "Comment window",
+      "actionTone": "active",
+      "practitionerNote": "This is not binding yet, but the comment period is open. Read it if the topic touches your office and consider whether your organization should comment.",
+      "nextSteps": [
+        "Check the comment due date",
+        "Skim the affected FAR/DFARS parts",
+        "Flag it for policy or leadership if it touches your buying lane"
+      ],
+      "type": "Proposed Rule",
+      "publicationDate": "2026-09-18",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-10-19",
+      "datesText": "Interested parties should submit written comments to the Regulatory Secretariat Division at the address shown below on or before October 19, 2026, to be considered in the formation of the final rule.",
+      "actionText": "Proposed rule.",
+      "summary": "OFPP, DoD, GSA, and NASA (collectively referred to as the Federal Acquisition Regulatory Council or FAR Council) are proposing to amend the Federal Acquisition Regulation (FAR) to implement Executive Order (E.O.) 14275, Restoring Common Sense to Federal Procurement. The E.O. directs the elimination of excessive acquisition regulations to stop the inefficient use of American taxpayer dollars. The FAR Council is issuing twelve proposed rules that collectively will streamline the FAR in its entirety. This rule propos...",
+      "citation": "91 FR 59406",
+      "regulationIds": [
+        "9000-AO88"
+      ],
+      "cfrReferences": "48 CFR part 8, 48 CFR part 12, 48 CFR part 13, 48 CFR part 15, 48 CFR part 38, 48 CFR part 44, 48 CFR part 51, 48 CFR part 52",
+      "agencies": [
+        "Management and Budget Office",
+        "Federal Procurement Policy Office",
+        "Defense Department",
+        "General Services Administration",
+        "National Aeronautics and Space Administration"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/09/18/2026-19162/federal-acquisition-regulation-revolutionary-far-overhaul-parts-8-12-13-15-38-44-and-51",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-09-18/pdf/2026-19162.pdf",
+      "sourceQuery": "Federal Acquisition Regulation keyword feed"
+    },
+    {
+      "id": "2026-19158",
+      "documentNumber": "2026-19158",
+      "title": "Federal Acquisition Regulation: Revolutionary Federal Acquisition Regulation Overhaul Parts 14, 28, 36, and 52",
+      "shortTitle": "Federal Acquisition Regulation: Revolutionary Federal Acquisition Regulation Overhaul Parts 14, 28, 36, and 52",
+      "system": "FAR",
+      "stage": "Proposed rule",
+      "topic": "Acquisition policy",
+      "actionLevel": "Comment window",
+      "actionTone": "active",
+      "practitionerNote": "This is not binding yet, but the comment period is open. Read it if the topic touches your office and consider whether your organization should comment.",
+      "nextSteps": [
+        "Check the comment due date",
+        "Skim the affected FAR/DFARS parts",
+        "Flag it for policy or leadership if it touches your buying lane"
+      ],
+      "type": "Proposed Rule",
+      "publicationDate": "2026-09-18",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-10-19",
+      "datesText": "Interested parties should submit written comments to the Regulatory Secretariat Division at the address shown below on or before October 19, 2026, to be considered in the formation of the final rule.",
+      "actionText": "Proposed rule.",
+      "summary": "OFPP, DoD, GSA, and NASA (collectively referred to as the Federal Acquisition Regulatory Council or FAR Council) are proposing to amend the Federal Acquisition Regulation (FAR) to implement Executive Order (E.O.) 14275, Restoring Common Sense to Federal Procurement. The E.O. directs the elimination of excessive acquisition regulations to stop the inefficient use of American taxpayer dollars. The FAR Council is issuing twelve proposed rules that collectively will streamline the FAR in its entirety. This rule propos...",
+      "citation": "91 FR 59534",
+      "regulationIds": [
+        "9000-AO83"
+      ],
+      "cfrReferences": "48 CFR part 14, 48 CFR part 28, 48 CFR part 36, 48 CFR part 52",
+      "agencies": [
+        "Management and Budget Office",
+        "Federal Procurement Policy Office",
+        "Defense Department",
+        "General Services Administration",
+        "National Aeronautics and Space Administration"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/09/18/2026-19158/federal-acquisition-regulation-revolutionary-federal-acquisition-regulation-overhaul-parts-14-28-36",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-09-18/pdf/2026-19158.pdf",
+      "sourceQuery": "Federal Acquisition Regulation keyword feed"
+    },
+    {
+      "id": "2026-19160",
+      "documentNumber": "2026-19160",
+      "title": "Federal Acquisition Regulation: Revolutionary Federal Acquisition Regulation Overhaul Parts 16, 17, and 35",
+      "shortTitle": "Federal Acquisition Regulation: Revolutionary Federal Acquisition Regulation Overhaul Parts 16, 17, and 35",
+      "system": "FAR",
+      "stage": "Proposed rule",
+      "topic": "Clauses / reps",
+      "actionLevel": "Comment window",
+      "actionTone": "active",
+      "practitionerNote": "This is not binding yet, but the comment period is open. Read it if the topic touches your office and consider whether your organization should comment.",
+      "nextSteps": [
+        "Check the comment due date",
+        "Skim the affected FAR/DFARS parts",
+        "Flag it for policy or leadership if it touches your buying lane"
+      ],
+      "type": "Proposed Rule",
+      "publicationDate": "2026-09-18",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-10-19",
+      "datesText": "Interested parties should submit written comments to the Regulatory Secretariat Division at the address shown below on or before October 19, 2026, to be considered in the formation of the final rule.",
+      "actionText": "Proposed rule.",
+      "summary": "OFPP, DoD, GSA, and NASA (collectively referred to as the Federal Acquisition Regulatory Council or FAR Council) are proposing to amend the Federal Acquisition Regulation (FAR) to implement Executive Order (E.O.) 14275, Restoring Common Sense to Federal Procurement. The E.O. directs the elimination of excessive acquisition regulations to stop the inefficient use of American taxpayer dollars. The FAR Council is issuing twelve proposed rules that collectively, if finalized, would streamline the FAR in its entirety....",
+      "citation": "91 FR 59476",
+      "regulationIds": [
+        "9000-AO91"
+      ],
+      "cfrReferences": "48 CFR part 16, 48 CFR part 17, 48 CFR part 35, 48 CFR part 52",
+      "agencies": [
+        "Management and Budget Office",
+        "Federal Procurement Policy Office",
+        "Defense Department",
+        "General Services Administration",
+        "National Aeronautics and Space Administration"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/09/18/2026-19160/federal-acquisition-regulation-revolutionary-federal-acquisition-regulation-overhaul-parts-16-17-and",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-09-18/pdf/2026-19160.pdf",
+      "sourceQuery": "Federal Acquisition Regulation keyword feed"
+    },
+    {
+      "id": "2026-19159",
+      "documentNumber": "2026-19159",
+      "title": "Federal Acquisition Regulation: Revolutionary Federal Acquisition Regulation Overhaul Parts 9, 27, and 47",
+      "shortTitle": "Federal Acquisition Regulation: Revolutionary Federal Acquisition Regulation Overhaul Parts 9, 27, and 47",
+      "system": "FAR",
+      "stage": "Proposed rule",
+      "topic": "Acquisition policy",
+      "actionLevel": "Comment window",
+      "actionTone": "active",
+      "practitionerNote": "This is not binding yet, but the comment period is open. Read it if the topic touches your office and consider whether your organization should comment.",
+      "nextSteps": [
+        "Check the comment due date",
+        "Skim the affected FAR/DFARS parts",
+        "Flag it for policy or leadership if it touches your buying lane"
+      ],
+      "type": "Proposed Rule",
+      "publicationDate": "2026-09-18",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-10-19",
+      "datesText": "Interested parties should submit written comments to the Regulatory Secretariat Division at the address shown below on or before October 19, 2026, to be considered in the formation of the final rule.",
+      "actionText": "Proposed rule.",
+      "summary": "OFPP, DoD, GSA, and NASA (collectively referred to as the Federal Acquisition Regulatory Council or FAR Council) are proposing to amend the Federal Acquisition Regulation (FAR) to implement Executive Order (E.O.) 14275, Restoring Common Sense to Federal Procurement. The E.O. directs the elimination of excessive acquisition regulations to stop the inefficient use of American taxpayer dollars. The FAR Council is issuing twelve proposed rules that collectively, if finalized, would streamline the FAR in its entirety....",
+      "citation": "91 FR 59584",
+      "regulationIds": [
+        "9000-AO84"
+      ],
+      "cfrReferences": "48 CFR part 9, 48 CFR part 27, 48 CFR part 47, 48 CFR part 52",
+      "agencies": [
+        "Management and Budget Office",
+        "Federal Procurement Policy Office",
+        "Defense Department",
+        "General Services Administration",
+        "National Aeronautics and Space Administration"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/09/18/2026-19159/federal-acquisition-regulation-revolutionary-federal-acquisition-regulation-overhaul-parts-9-27-and",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-09-18/pdf/2026-19159.pdf",
+      "sourceQuery": "Federal Acquisition Regulation keyword feed"
+    },
+    {
+      "id": "2026-19207",
+      "documentNumber": "2026-19207",
+      "title": "Homeland Security Acquisition Regulation, Make Personal Protective Equipment in America Act Restrictions on Foreign Acquisition (HSAR Case 2024-003)",
+      "shortTitle": "Homeland Security Acquisition Regulation, Make Personal Protective Equipment in America Act Restrictions on Foreign Acquisition (HSAR Case 2024-003)",
+      "system": "Acquisition",
+      "stage": "Final rule",
+      "topic": "Supply chain",
+      "actionLevel": "Prepare update",
+      "actionTone": "action",
+      "practitionerNote": "This is implemented rulemaking. Check effective dates, affected parts, and whether your templates, clauses, review checklists, or training notes need to change.",
+      "nextSteps": [
+        "Read the effective date language",
+        "Search local templates for the cited parts or clauses",
+        "Tell the team if open acquisitions are affected"
+      ],
+      "type": "Rule",
+      "publicationDate": "2026-09-18",
+      "effectiveDate": "2026-10-19",
+      "commentsCloseDate": "",
+      "datesText": "The final rule is effective October 19, 2026.",
+      "actionText": "Final rule.",
+      "summary": "DHS is issuing a final rule to amend the Homeland Security Acquisition Regulation (HSAR) codifying how DHS complies with the requirements of the Make Personal Protective Equipment (PPE) in America Act. These changes are intended to ensure the sustainment and expansion of domestic manufacturing for certain types of PPE critical to the United States' national response to a public health crisis.",
+      "citation": "91 FR 59066",
+      "regulationIds": [
+        "1601-AB15"
+      ],
+      "cfrReferences": "48 CFR part 3025, 48 CFR part 3052",
+      "agencies": [
+        "Homeland Security Department"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/09/18/2026-19207/homeland-security-acquisition-regulation-make-personal-protective-equipment-in-america-act",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-09-18/pdf/2026-19207.pdf",
+      "sourceQuery": "Federal Acquisition Regulation keyword feed"
+    },
     {
       "id": "2026-17903",
       "documentNumber": "2026-17903",
