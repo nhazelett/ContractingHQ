@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-09-17T12:44:13.382Z",
+  "generatedAt": "2026-09-18T12:20:19.072Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,13 +7,13 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 20,
+    "total": 18,
     "latestDecisionDate": "2026-09-14",
     "sustained": 1,
-    "denied": 9,
-    "dismissed": 3,
+    "denied": 10,
+    "dismissed": 2,
     "mixed": 5,
-    "unclassified": 2,
+    "unclassified": 0,
     "sourceStatus": {
       "rss": {
         "ok": true,
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 23
+        "parsedOutcomes": 20
       },
       "productPages": {
         "attempted": 18,
@@ -236,56 +236,32 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424484,B-424484.2",
-      "caseName": "C.H. Guernsey & Company",
-      "title": "C.H. Guernsey & Company",
+      "id": "B-423877.4",
+      "caseName": "CSA Global LLC d/b/a Client Solution Architects",
+      "title": "CSA Global LLC d/b/a Client Solution Architects",
       "bNumbers": [
-        "B-424484",
-        "B-424484.2"
+        "B-423877.4"
       ],
-      "bNumberText": "B-424484, B-424484.2",
-      "link": "https://www.gao.gov/products/b-424484%2Cb-424484.2",
-      "publicationDate": "2026-08-28",
+      "bNumberText": "B-423877.4",
+      "link": "https://www.gao.gov/products/b-423877.4",
+      "publicationDate": "2026-09-17",
       "decisionDate": "2026-08-28",
       "displayDate": "Aug 28, 2026",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "outcomeSource": "Inferred from GAO RSS",
-      "decisionLine": "",
-      "officialSynopsis": "C.H. Guernsey & Company (Guernsey), of Oklahoma City, Oklahoma, protests the issuance of a task order to ScottMadden Inc., of Raleigh, North...",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "CSA Global LLC d/b/a Client Solution Architects (CSA), of Virginia Beach, Virginia, protests the issuance of a task order to Valiant Global Defense...",
       "highlights": "",
-      "digest": "",
+      "digest": "Protest challenging evaluation of protester's proposal and best-value tradeoff is denied where the record shows both were reasonable and consistent with the solicitation.",
       "tags": [
+        "Evaluation",
+        "Solicitation terms",
         "Orders / IDIQ"
       ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
-    },
-    {
-      "id": "B-424477,B-424477.2",
-      "caseName": "LOGMET LLC",
-      "title": "LOGMET LLC",
-      "bNumbers": [
-        "B-424477",
-        "B-424477.2"
-      ],
-      "bNumberText": "B-424477, B-424477.2",
-      "link": "https://www.gao.gov/products/b-424477%2Cb-424477.2",
-      "publicationDate": "2026-08-28",
-      "decisionDate": "2026-08-28",
-      "displayDate": "Aug 28, 2026",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "outcomeSource": "Inferred from GAO RSS",
-      "decisionLine": "",
-      "officialSynopsis": "LOGMET LLC, of Round Rock, Texas, protests the award of a contract to SkyQuest Aviation LLC, of Glendale, Arizona, under request for quotations (RFQ...",
-      "highlights": "",
-      "digest": "",
-      "tags": [],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "rss",
-      "sourceStatusLabel": "RSS fallback"
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
     },
     {
       "id": "B-423829.2,B-423829.7",
@@ -485,32 +461,6 @@ window.KTHQ_GAO_DATA = {
         "Orders / IDIQ"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424695",
-      "caseName": "FCN Inc.",
-      "title": "FCN Inc.",
-      "bNumbers": [
-        "B-424695"
-      ],
-      "bNumberText": "B-424695",
-      "link": "https://www.gao.gov/products/b-424695",
-      "publicationDate": "2026-08-28",
-      "decisionDate": "2026-08-21",
-      "displayDate": "Aug 21, 2026",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protest.",
-      "officialSynopsis": "FCN Inc., a woman-owned small business of Rockville, Maryland, protests the exclusion of FCN from consideration for award of a subcontract by...",
-      "highlights": "",
-      "digest": "1. Protester challenging the firm's exclusion from consideration for award of a subcontract does not qualify as an interested party where the protester does not have a direct economic interest in the award of a contract in a federal procurement. 2. GAO will not consider a protest involving the award of a subcontract where the prime contractor retained responsibility for handling substantially all of the substantive aspects of the procurement.",
-      "tags": [
-        "Small business"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
