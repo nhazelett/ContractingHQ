@@ -1,5 +1,5 @@
 window.KTHQ_ASBCA_DATA = {
-  "generatedAt": "2026-09-17T12:49:05.581530+00:00",
+  "generatedAt": "2026-09-18T12:24:39.742026+00:00",
   "source": {
     "name": "Armed Services Board of Contract Appeals",
     "decisionsUrl": "https://www.asbca.mil/Decisions/2026/"
@@ -8,12 +8,12 @@ window.KTHQ_ASBCA_DATA = {
   "stats": {
     "total": 18,
     "latestDecisionDate": "2026-08-21",
-    "downloadedPdfs": 16,
-    "metadataOnly": 2,
+    "downloadedPdfs": 15,
+    "metadataOnly": 3,
     "outcomes": {
-      "unclassified": 3,
+      "unclassified": 4,
       "denied": 2,
-      "dismissed": 10,
+      "dismissed": 9,
       "settled": 3
     },
     "sourceStatus": {
@@ -190,20 +190,18 @@ window.KTHQ_ASBCA_DATA = {
       ],
       "decisionDate": "2026-08-17",
       "displayDate": "Aug 17, 2026",
-      "decisionType": "Dismissal",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
+      "decisionType": "Decision",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
       "judge": "Eyester",
-      "officialExcerpt": "The dispute has been settled. The appeal is dismissed with prejudice.",
-      "tags": [
-        "Settlement"
-      ],
-      "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
+      "officialExcerpt": "Metadata from the ASBCA decisions index. Open the PDF for the Board's full reasoning.",
+      "tags": [],
+      "practitionerPrompt": "Open the PDF when the facts resemble your contract file. ASBCA decisions are usually about claims discipline, final decisions, and dispute documentation.",
       "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=ax7JmRn4JA0%3d&portalid=143",
       "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
+      "sourceStatus": "metadata-only",
+      "sourceStatusLabel": "ASBCA index metadata",
+      "sourceError": "HTTP Error 422: Unprocessable Entity"
     },
     {
       "id": "2026-08-14-amentum-services-7",
