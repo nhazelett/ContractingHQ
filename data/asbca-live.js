@@ -1,5 +1,5 @@
 window.KTHQ_ASBCA_DATA = {
-  "generatedAt": "2026-09-18T12:24:39.742026+00:00",
+  "generatedAt": "2026-09-19T12:05:31.806094+00:00",
   "source": {
     "name": "Armed Services Board of Contract Appeals",
     "decisionsUrl": "https://www.asbca.mil/Decisions/2026/"
@@ -8,12 +8,12 @@ window.KTHQ_ASBCA_DATA = {
   "stats": {
     "total": 18,
     "latestDecisionDate": "2026-08-21",
-    "downloadedPdfs": 15,
-    "metadataOnly": 3,
+    "downloadedPdfs": 17,
+    "metadataOnly": 1,
     "outcomes": {
-      "unclassified": 4,
+      "unclassified": 3,
       "denied": 2,
-      "dismissed": 9,
+      "dismissed": 10,
       "settled": 3
     },
     "sourceStatus": {
@@ -42,14 +42,16 @@ window.KTHQ_ASBCA_DATA = {
       "outcome": "unclassified",
       "outcomeLabel": "Read Decision",
       "judge": "%208.21.26%20Decision.pdf?ver=MJrWYcydkqd-1fRKlc0s5A%3d%3d)Sweet",
-      "officialExcerpt": "Metadata from the ASBCA decisions index. Open the PDF for the Board's full reasoning.",
-      "tags": [],
+      "officialExcerpt": "An official website of the United States government Here's how you know **Official websites use .mil** A **.mil** website belongs to an official U.S. **Secure .mil websites use HTTPS** A **lock ()** or **https://** means you've safely connected to the .mil website.",
+      "tags": [
+        "ADR"
+      ],
       "practitionerPrompt": "Open the PDF when the facts resemble your contract file. ASBCA decisions are usually about claims discipline, final decisions, and dispute documentation.",
       "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64468%20VESEQU%20LLC%20(Sweet",
       "filename": "64468 VESEQU LLC (Sweet",
-      "sourceStatus": "metadata-only",
-      "sourceStatusLabel": "ASBCA index metadata",
-      "sourceError": "HTTP Error 422: Unprocessable Entity"
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
     },
     {
       "id": "2026-08-20-visionary-construction-inc-dba-visionary-services-2",
@@ -190,18 +192,20 @@ window.KTHQ_ASBCA_DATA = {
       ],
       "decisionDate": "2026-08-17",
       "displayDate": "Aug 17, 2026",
-      "decisionType": "Decision",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
       "judge": "Eyester",
-      "officialExcerpt": "Metadata from the ASBCA decisions index. Open the PDF for the Board's full reasoning.",
-      "tags": [],
-      "practitionerPrompt": "Open the PDF when the facts resemble your contract file. ASBCA decisions are usually about claims discipline, final decisions, and dispute documentation.",
+      "officialExcerpt": "The dispute has been settled. The appeal is dismissed with prejudice.",
+      "tags": [
+        "Settlement"
+      ],
+      "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
       "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=ax7JmRn4JA0%3d&portalid=143",
       "filename": "LinkClick.aspx",
-      "sourceStatus": "metadata-only",
-      "sourceStatusLabel": "ASBCA index metadata",
-      "sourceError": "HTTP Error 422: Unprocessable Entity"
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
     },
     {
       "id": "2026-08-14-amentum-services-7",
@@ -396,14 +400,19 @@ window.KTHQ_ASBCA_DATA = {
       "outcome": "unclassified",
       "outcomeLabel": "Read Decision",
       "judge": "McLish",
-      "officialExcerpt": "Metadata from the ASBCA decisions index. Open the PDF for the Board's full reasoning.",
-      "tags": [],
-      "practitionerPrompt": "Open the PDF when the facts resemble your contract file. ASBCA decisions are usually about claims discipline, final decisions, and dispute documentation.",
+      "officialExcerpt": "Considering all of the circumstances, we find that the contracting officer agreed with and adopted, at least implicitly, PM Samonte's determination that the rovers and cleanup work were necessary and should be performed. We find only that IMIA provided some amount of the work for which MHI contends it is entitled to an equitable adjustment. MHI's sole legal theory for each of its claims is constructive change.",
+      "tags": [
+        "Jurisdiction",
+        "Termination",
+        "REA / changes",
+        "CDA process"
+      ],
+      "practitionerPrompt": "Check the claim before the final decision: sum certain, certification, privity, and whether the contractor actually presented the same claim to the CO.",
       "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=NfKSzLu_DpY%3d&portalid=143",
       "filename": "LinkClick.aspx",
-      "sourceStatus": "metadata-only",
-      "sourceStatusLabel": "ASBCA index metadata",
-      "sourceError": "HTTP Error 422: Unprocessable Entity"
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
     },
     {
       "id": "2026-08-04-relyant-global-llc-15",
@@ -467,18 +476,14 @@ window.KTHQ_ASBCA_DATA = {
       "outcome": "unclassified",
       "outcomeLabel": "Read Decision",
       "judge": "Herzfeld",
-      "officialExcerpt": "62367, 25-1 BCA \u00b6 38,795 at 188,679 (\"A government representative must have actual authority to bind the government, and the Federal government generally lodges that authority with the contracting officer.\" (internal quotation and citation omitted)); FAR 1.602-1(a)(\"Contracting officers have authority to enter into, administer, or terminate contracts and make related determinations and findings.\").",
-      "tags": [
-        "Termination",
-        "REA / changes",
-        "Delivery"
-      ],
-      "practitionerPrompt": "Termination actions need clean documentation. If performance is effectively ended, make sure the file and notices match the legal theory.",
+      "officialExcerpt": "Metadata from the ASBCA decisions index. Open the PDF for the Board's full reasoning.",
+      "tags": [],
+      "practitionerPrompt": "Open the PDF when the facts resemble your contract file. ASBCA decisions are usually about claims discipline, final decisions, and dispute documentation.",
       "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=xFRaVyCz40M%3d&portalid=143",
       "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
+      "sourceStatus": "metadata-only",
+      "sourceStatusLabel": "ASBCA index metadata",
+      "sourceError": "HTTP Error 503: Service Unavailable"
     }
   ]
 };
