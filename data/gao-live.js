@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-09-18T12:20:19.072Z",
+  "generatedAt": "2026-09-19T12:01:16.906Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -8,7 +8,7 @@ window.KTHQ_GAO_DATA = {
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
     "total": 18,
-    "latestDecisionDate": "2026-09-14",
+    "latestDecisionDate": "2026-09-17",
     "sustained": 1,
     "denied": 10,
     "dismissed": 2,
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 20
+        "parsedOutcomes": 13
       },
       "productPages": {
         "attempted": 18,
@@ -36,6 +36,90 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424214.6",
+      "caseName": "B&N Capital Suppliers, d/b/a B&N Inspection",
+      "title": "B&N Capital Suppliers, d/b/a B&N Inspection",
+      "bNumbers": [
+        "B-424214.6"
+      ],
+      "bNumberText": "B-424214.6",
+      "link": "https://www.gao.gov/products/b-424214.6",
+      "publicationDate": "2026-09-18",
+      "decisionDate": "2026-09-17",
+      "displayDate": "Sep 17, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "B&N Capital Suppliers, doing business as B&N Inspection (B&N), a small business of Chesterfield, Missouri, protests the issuance of a...",
+      "highlights": "",
+      "digest": "1. Protest challenging the agency's evaluation of the protester's proposal as technically unacceptable, and therefore ineligible for award, is denied where the agency's evaluation was reasonable and in accordance with the terms of the solicitation. 2. Protest that agency failed to engage in meaningful discussions during corrective action is denied where the record shows that the agency's discussions led the protester into the area of its proposal that required revision.",
+      "tags": [
+        "Evaluation",
+        "Corrective action",
+        "Discussions / FPR",
+        "Solicitation terms"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424591.2",
+      "caseName": "SkyMate, Inc.",
+      "title": "SkyMate, Inc.",
+      "bNumbers": [
+        "B-424591.2"
+      ],
+      "bNumberText": "B-424591.2",
+      "link": "https://www.gao.gov/products/b-424591.2",
+      "publicationDate": "2026-09-18",
+      "decisionDate": "2026-09-17",
+      "displayDate": "Sep 17, 2026",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We dismiss the protest because, as filed with our Office, it does not establish a legally and factually sufficient basis for challenging the agency's action.",
+      "officialSynopsis": "SkyMate, Inc., a small business located in Reston, Virginia, protests the establishment of a blanket purchase agreement (BPA) with Directional...",
+      "highlights": "",
+      "digest": "Protest challenging agency's reevaluation following corrective action is dismissed as factually and legally insufficient where protester merely speculates that the reevaluation did not differ from the initial evaluation and this speculation does not satisfy the protester's burden to present credible allegations supported by sufficient evidence to establish its protest.",
+      "tags": [
+        "Evaluation",
+        "Corrective action",
+        "Small business"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424581,B-424581.2",
+      "caseName": "MEPT/FCP Patriots Plaza, LLC",
+      "title": "MEPT/FCP Patriots Plaza, LLC",
+      "bNumbers": [
+        "B-424581",
+        "B-424581.2"
+      ],
+      "bNumberText": "B-424581, B-424581.2",
+      "link": "https://www.gao.gov/products/b-424581%2Cb-424581.2",
+      "publicationDate": "2026-09-18",
+      "decisionDate": "2026-09-15",
+      "displayDate": "Sep 15, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "MEPT/FCP Patriots Plaza, LLC (Patriots Plaza), of Bethesda, Maryland, protests the Commodity Futures Trading Commission's (CFTC) statement of intent...",
+      "highlights": "",
+      "digest": "Protest challenging the agency's intent to negotiate and award a sole-source lease is denied where the agency has a reasonable basis for the contemplated action.",
+      "tags": [
+        "Sole source"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424610",
       "caseName": "H2L Solutions, Inc.",
@@ -181,33 +265,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424433.23",
-      "caseName": "Aim for AdVantage, LLC",
-      "title": "Aim for AdVantage, LLC",
-      "bNumbers": [
-        "B-424433.23"
-      ],
-      "bNumberText": "B-424433.23",
-      "link": "https://www.gao.gov/products/b-424433.23",
-      "publicationDate": "2026-09-01",
-      "decisionDate": "2026-08-31",
-      "displayDate": "Aug 31, 2026",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protest.",
-      "officialSynopsis": "Aim for AdVantage, LLC (AFA), a minority woman-owned small business of Bel Air, Maryland, protests \"undisclosed material submission requirement[s]\"...",
-      "highlights": "",
-      "digest": "Protest challenging rejection of proposal due to purportedly undisclosed submission requirements is dismissed as an abuse of GAO's bid protest process where the protester materially misrepresented facts in its protest to our Office.",
-      "tags": [
-        "Solicitation terms",
-        "Small business"
-      ],
-      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
       "id": "B-424528,B-424528.2,B-424528.3",
       "caseName": "DLH, LLC",
       "title": "DLH, LLC",
@@ -288,34 +345,6 @@ window.KTHQ_GAO_DATA = {
         "Corrective action",
         "Solicitation terms",
         "Small business"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424511.3,B-424511.4",
-      "caseName": "GSI Pacific, Inc.",
-      "title": "GSI Pacific, Inc.",
-      "bNumbers": [
-        "B-424511.3",
-        "B-424511.4"
-      ],
-      "bNumberText": "B-424511.3, B-424511.4",
-      "link": "https://www.gao.gov/products/b-424511.3%2Cb-424511.4",
-      "publicationDate": "2026-09-01",
-      "decisionDate": "2026-08-27",
-      "displayDate": "Aug 27, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "GSI Pacific, Inc., of Honolulu, Hawaii, protests the decision of the Department of the Navy, Navy Facilities Engineering Command, to eliminate GSI...",
-      "highlights": "",
-      "digest": "1. Protest that agency unreasonably evaluated proposal under experience factor is denied where protester failed to provide required dates for several submitted projects. 2. Protest that agency treated offerors disparately in evaluating proposals is denied where agency evaluated each proposal in accordance with the solicitation requirements and evaluation results were based on the differences in the proposals.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
@@ -461,35 +490,6 @@ window.KTHQ_GAO_DATA = {
         "Orders / IDIQ"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-423812.3,B-423812.4",
-      "caseName": "TechSur Solutions, LLC",
-      "title": "TechSur Solutions, LLC",
-      "bNumbers": [
-        "B-423812.3",
-        "B-423812.4"
-      ],
-      "bNumberText": "B-423812.3, B-423812.4",
-      "link": "https://www.gao.gov/products/b-423812.3%2Cb-423812.4",
-      "publicationDate": "2026-09-02",
-      "decisionDate": "2026-08-11",
-      "displayDate": "Aug 11, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "TechSur Solutions, LLC, a small business of Reston, Virginia, protests the establishment of a blanket purchase agreement (BPA) with, and the issuance...",
-      "highlights": "",
-      "digest": "Protest challenging establishment of a blanket purchase agreement is denied where the record demonstrates that the agency reasonably determined that labor categories required by the solicitation fall within the scope of the labor categories quoted by the awardee from its multiple award schedule contract.",
-      "tags": [
-        "Solicitation terms",
-        "Small business",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
