@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-09-21T14:03:33.104Z",
-  "since": "2025-03-30",
+  "generatedAt": "2026-09-22T12:34:30.507Z",
+  "since": "2025-03-31",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,18 +14,53 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 136,
-    "latestPublicationDate": "2026-09-18",
-    "openCommentWindows": 7,
-    "rules": 52,
+    "total": 137,
+    "latestPublicationDate": "2026-09-22",
+    "openCommentWindows": 8,
+    "rules": 53,
     "byTone": {
-      "active": 4,
+      "active": 5,
       "action": 30,
       "monitor": 82,
       "watch": 20
     }
   },
   "items": [
+    {
+      "id": "2026-19331",
+      "documentNumber": "2026-19331",
+      "title": "General Services Administration Acquisition Regulation; GSAR Implementation of Executive Order 14275, Federal Supply Schedule Ordering Procedures",
+      "shortTitle": "General Services Administration Acquisition Regulation; GSAR Implementation of Executive Order 14275, Federal Supply Schedule Ordering Procedures",
+      "system": "FAR",
+      "stage": "Proposed rule",
+      "topic": "Acquisition policy",
+      "actionLevel": "Comment window",
+      "actionTone": "active",
+      "practitionerNote": "This is not binding yet, but the comment period is open. Read it if the topic touches your office and consider whether your organization should comment.",
+      "nextSteps": [
+        "Check the comment due date",
+        "Skim the affected FAR/DFARS parts",
+        "Flag it for policy or leadership if it touches your buying lane"
+      ],
+      "type": "Proposed Rule",
+      "publicationDate": "2026-09-22",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-10-22",
+      "datesText": "Interested parties should submit written comments to the Regulatory Secretariat Division at the address shown below on or before October 22, 2026 to be considered in the formation of the final rule.",
+      "actionText": "Proposed rule.",
+      "summary": "GSA is proposing to amend the General Services Administration Acquisition Regulation (GSAR) to move Federal Supply Schedule (FSS) ordering procedures from the Federal Acquisition Regulation (FAR) to GSAR part 538. This rule would direct ordering activities to use the FSS ordering procedures established by GSA.",
+      "citation": "91 FR 60063",
+      "regulationIds": [
+        "3090-AL13"
+      ],
+      "cfrReferences": "48 CFR part 538",
+      "agencies": [
+        "General Services Administration"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/09/22/2026-19331/general-services-administration-acquisition-regulation-gsar-implementation-of-executive-order-14275",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-09-22/pdf/2026-19331.pdf",
+      "sourceQuery": "Federal Acquisition Regulation keyword feed"
+    },
     {
       "id": "2026-19162",
       "documentNumber": "2026-19162",
