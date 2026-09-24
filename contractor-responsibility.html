@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-X2RXS78N7K");</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="How a contracting officer determines that a firm can actually perform before award: the seven FAR 9.104-1 standards, where the evidence comes from, how to document it, and what happens when a small business is found nonresponsible. Includes a determination builder and a quiz." />
+  <title>Contractor Responsibility | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .cr-bg { background: #040d1f; padding: 0 0 6rem; min-height: 80vh; }
+
+    .cr-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(74,158,255,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .cr-tab { padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }
+    .cr-tab:hover { color: var(--white); }
+    .cr-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .cr-panel { display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .cr-panel.active { display: block; }
+
+    .cr-intro { text-align: center; padding: 2.5rem 1.5rem 0; }
+    .cr-intro-tag { display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); color: var(--accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }
+    .cr-intro h2 { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .cr-intro p { color: var(--silver); font-size: 0.9rem; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.6; }
+
+    .learn-section { margin-bottom: 2.5rem; }
+    .learn-section h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .learn-section h3 .section-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(74,158,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+    .learn-section h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin: 1.5rem 0 0.5rem; }
+    .learn-body { color: var(--silver); font-size: 0.92rem; line-height: 1.75; }
+    .learn-body p { margin-bottom: 1rem; }
+    .learn-body strong { color: var(--white); font-weight: 600; }
+    .learn-body a { color: var(--accent); }
+    .learn-body .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; color: var(--silver); line-height: 1.7; }
+    .learn-body .highlight-box.warn { background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }
+    .learn-body .highlight-box.warn strong { color: #fca5a5; }
+    .learn-body .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .learn-body .highlight-box.tip strong { color: #6ee7b7; }
+    .learn-body .highlight-box strong { color: var(--white); }
+    .learn-body ul, .learn-body ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+    .learn-body li { margin-bottom: 0.5rem; }
+    .learn-divider { border: none; border-top: 1px solid rgba(74,158,255,0.08); margin: 2rem 0; }
+
+    /* Scenario card */
+    .scenario-card { background: rgba(10,22,50,0.5); border: 1px solid rgba(74,158,255,0.15); border-left: 3px solid var(--accent); border-radius: 0 12px 12px 0; padding: 1.1rem 1.35rem; margin: 1.25rem 0; }
+    .scenario-label { font-family: 'Rajdhani', sans-serif; font-size: 0.75rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.4rem; }
+    .scenario-card p { font-size: 0.88rem; margin-bottom: 0.6rem; }
+    .scenario-card p:last-child { margin-bottom: 0; }
+
+    /* Tables */
+    .table-scroll { overflow-x: auto; border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; margin: 1.25rem 0; }
+    .cr-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 620px; line-height: 1.6; }
+    .cr-table th { text-align: left; padding: 0.75rem 1rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); background: rgba(74,158,255,0.08); border-bottom: 1px solid rgba(74,158,255,0.15); }
+    .cr-table td { padding: 0.85rem 1rem; vertical-align: top; color: var(--silver); border-bottom: 1px solid rgba(74,158,255,0.08); }
+    .cr-table tr:last-child td { border-bottom: none; }
+    .cr-table td:first-child { color: var(--white); font-weight: 600; width: 24%; }
+    .cr-table tr:hover td { background: rgba(74,158,255,0.03); }
+
+    /* Sample document block */
+    .doc-block { white-space: pre-wrap; overflow-wrap: anywhere; background: rgba(0,0,0,0.3); border: 1px solid rgba(74,158,255,0.15); border-left: 3px solid rgba(74,158,255,0.4); border-radius: 10px; padding: 1.1rem 1.25rem; margin: 1rem 0; font-family: ui-monospace, Consolas, monospace; font-size: 0.8rem; line-height: 1.7; color: var(--silver-light); }
+
+    /* Look It Up */
+    .lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .lookup-card { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.5rem; transition: all 0.2s; }
+    .lookup-card:hover { border-color: rgba(74,158,255,0.3); transform: translateY(-2px); }
+    .lookup-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .lookup-card p { color: var(--silver); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+    .lookup-card a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.18s; }
+    .lookup-card a:hover { color: var(--white); }
+    .lookup-card a::after { content: '\2197'; font-size: 0.9rem; }
+
+    /* Try It: determination builder */
+    .walk-step { background: rgba(10,22,50,0.5); border: 1px solid rgba(74,158,255,0.15); border-radius: 14px; padding: 1.5rem; margin: 1.25rem 0; }
+    .walk-step-label { font-family: 'Rajdhani', sans-serif; font-size: 0.75rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem; }
+    .walk-step h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; }
+    .walk-step p { color: var(--silver); font-size: 0.88rem; line-height: 1.7; margin-bottom: 0.75rem; }
+    .walk-step .highlight-box { background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; color: var(--silver); line-height: 1.7; }
+    .walk-step .highlight-box.tip { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+    .walk-step .highlight-box.tip strong { color: #6ee7b7; }
+    .walk-step .highlight-box strong { color: var(--white); }
+    .cr-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin: 0.75rem 0; }
+    .cr-btn { padding: 0.6rem 1.4rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(74,158,255,0.25); background: rgba(74,158,255,0.08); color: var(--silver); cursor: pointer; font-family: inherit; transition: all 0.18s; }
+    .cr-btn:hover { background: rgba(74,158,255,0.18); color: var(--white); }
+    .cr-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .cr-btn.primary:hover { background: #3a8eef; }
+    .cr-note { font-size: 0.8rem; color: var(--silver); }
+    .cr-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; margin: 0.75rem 0; }
+    .cr-field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+    .cr-field.full { grid-column: 1 / -1; }
+    .cr-field label { font-size: 0.82rem; font-weight: 600; color: var(--silver-light); }
+    .cr-field input, .cr-field select, .cr-field textarea { width: 100%; background: rgba(0,0,0,0.3); color: var(--text); border: 1px solid rgba(74,158,255,0.2); border-radius: 8px; padding: 0.6rem 0.75rem; font: 0.88rem/1.5 'Inter', sans-serif; }
+    .cr-field textarea { min-height: 70px; resize: vertical; }
+    .cr-field input:focus, .cr-field select:focus, .cr-field textarea:focus { outline: 2px solid rgba(74,158,255,0.5); outline-offset: 1px; }
+    .cr-field ::placeholder { color: rgba(138,155,176,0.7); }
+    .std-row { border: 1px solid rgba(74,158,255,0.12); border-radius: 12px; padding: 1rem 1.1rem; margin: 0.75rem 0; background: rgba(0,0,0,0.15); }
+    .std-head { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 0.75rem; }
+    .std-title { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); }
+    .std-title small { display: block; font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 400; color: var(--silver); margin-top: 0.15rem; }
+    .std-choice { display: inline-flex; align-self: flex-start; border: 1px solid rgba(74,158,255,0.2); border-radius: 8px; overflow: hidden; flex-shrink: 0; }
+    .std-choice button { border: none; background: transparent; color: var(--silver); font: 700 0.75rem 'Inter', sans-serif; padding: 0.5rem 0.75rem; cursor: pointer; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.5px; }
+    .std-choice button + button { border-left: 1px solid rgba(74,158,255,0.2); }
+    .std-choice button:hover { color: var(--white); background: rgba(74,158,255,0.1); }
+    .std-choice button.on-ok { background: rgba(52,211,153,0.18); color: #6ee7b7; }
+    .std-choice button.on-no { background: rgba(248,113,113,0.18); color: #fca5a5; }
+    .std-choice button.on-open { background: rgba(251,191,36,0.16); color: #fcd34d; }
+    .status-card { border: 1px solid rgba(74,158,255,0.2); border-radius: 12px; padding: 1.1rem 1.25rem; margin: 1.25rem 0; background: rgba(10,22,50,0.6); }
+    .status-card h5 { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .status-card p { font-size: 0.86rem; color: var(--silver); line-height: 1.65; margin: 0; }
+    .status-card.ready { border-color: rgba(52,211,153,0.4); background: rgba(52,211,153,0.05); }
+    .status-card.ready h5 { color: #6ee7b7; }
+    .status-card.hold { border-color: rgba(251,191,36,0.4); background: rgba(251,191,36,0.05); }
+    .status-card.hold h5 { color: #fcd34d; }
+    .status-card.stop { border-color: rgba(248,113,113,0.4); background: rgba(248,113,113,0.05); }
+    .status-card.stop h5 { color: #fca5a5; }
+    .draft-out { width: 100%; min-height: 380px; resize: vertical; background: rgba(0,0,0,0.35); color: var(--silver-light); border: 1px solid rgba(74,158,255,0.2); border-radius: 10px; padding: 1rem; font: 0.8rem/1.65 ui-monospace, Consolas, monospace; margin-top: 0.5rem; }
+
+    /* Quiz */
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem; }
+    .quiz-score { font-size: 0.8rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; }
+    .quiz-progress-bar { width: 100%; height: 4px; background: rgba(74,158,255,0.1); border-radius: 99px; margin-bottom: 2rem; }
+    .quiz-progress-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.3s; }
+    .quiz-question { background: rgba(10,22,50,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 14px; padding: 1.75rem; margin-bottom: 1.5rem; }
+    .quiz-q-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem; }
+    .quiz-q-text { font-size: 1rem; color: var(--white); line-height: 1.7; margin-bottom: 1rem; }
+    .quiz-choices { display: grid; gap: 0.65rem; }
+    .quiz-choice { padding: 0.85rem 1.2rem; border-radius: 10px; border: 1px solid rgba(74,158,255,0.15); background: rgba(10,22,50,0.6); color: var(--silver); font-size: 0.9rem; font-weight: 600; cursor: pointer; text-align: left; font-family: inherit; transition: all 0.18s; line-height: 1.35; }
+    .quiz-choice:hover:not(:disabled) { border-color: rgba(74,158,255,0.4); color: var(--white); background: rgba(74,158,255,0.08); }
+    .quiz-choice.correct { border-color: #34d399; background: rgba(52,211,153,0.1); color: #6ee7b7; }
+    .quiz-choice.wrong { border-color: #f87171; background: rgba(248,113,113,0.08); color: #fca5a5; }
+    .quiz-choice:disabled { cursor: default; }
+    .quiz-feedback { margin-top: 1rem; padding: 0.85rem 1.1rem; border-radius: 10px; font-size: 0.875rem; line-height: 1.55; display: none; }
+    .quiz-feedback.correct { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); color: #6ee7b7; }
+    .quiz-feedback.wrong { background: rgba(248,113,113,0.06); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; }
+    .quiz-feedback.visible { display: block; }
+    .quiz-next { margin-top: 1rem; display: none; }
+    .quiz-next.visible { display: block; }
+    .quiz-done { text-align: center; padding: 3rem 1rem; display: none; }
+    .quiz-done.visible { display: block; }
+    .quiz-done h2 { font-family: 'Rajdhani', sans-serif; font-size: 2.2rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .quiz-done .final-score { font-size: 4rem; font-weight: 800; color: var(--accent); line-height: 1; margin: 1rem 0; }
+    .quiz-done p { color: var(--silver); font-size: 0.95rem; margin-bottom: 1.5rem; }
+
+    @media (max-width: 768px) {
+      .cr-tab { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+      .cr-panel { padding: 2rem 1rem; }
+      .lookup-grid { grid-template-columns: 1fr; }
+      .cr-fields { grid-template-columns: 1fr; }
+      .std-choice { width: 100%; }
+      .std-choice button { flex: 1; }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+
+  <!-- SEO: Open Graph & Twitter Card -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="ContractingHQ" />
+  <meta property="og:title"       content="Contractor Responsibility | ContractingHQ" />
+  <meta property="og:description" content="Can the firm actually perform? The seven FAR 9.104-1 standards, where the evidence comes from, how to document the determination, and the SBA Certificate of Competency process." />
+  <meta property="og:url"         content="https://kthq.org/contractor-responsibility.html" />
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:site"        content="@ContractingHQ" />
+  <meta name="twitter:title"       content="Contractor Responsibility | ContractingHQ" />
+  <meta name="twitter:description" content="Can the firm actually perform? The seven FAR 9.104-1 standards, where the evidence comes from, how to document the determination, and the SBA Certificate of Competency process." />
+  <link rel="canonical"            href="https://kthq.org/contractor-responsibility.html" />
+</head>
+<body>
+<nav class="navbar" id="navbar" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html" class="active">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main id="main">
+
+<div class="page-hero">
+  <div class="container">
+    <span class="hero-badge">Beginner Track &bull; Topic 25</span>
+    <h1 class="page-hero-title">Contractor Responsibility</h1>
+    <p class="page-hero-sub">The quote is acceptable and the price is fair. One question left before you sign: can this firm actually do the work? That question is responsibility, and your signature is the answer.</p>
+  </div>
+</div>
+
+
+<div class="training-nav-band training-nav-band-top"><div id="training-nav-top" class="training-nav training-nav-top"></div></div>
+
+<div class="cr-bg">
+
+  <div class="cr-intro">
+    <span class="cr-intro-tag">Interactive Training</span>
+    <h2>Determining Contractor Responsibility</h2>
+    <p>FAR Part 9 gives you seven standards and a short list of places to look. Learn what each one means for the buy in front of you, build a determination, then test yourself on the calls you will actually have to make.</p>
+  </div>
+
+  <div class="cr-tabs" role="tablist">
+    <button class="cr-tab active" data-tab="learn" role="tab">&#128218; Learn</button>
+    <button class="cr-tab" data-tab="tryit" role="tab">&#9889; Try It</button>
+    <button class="cr-tab" data-tab="quiz" role="tab">&#127919; Test Yourself</button>
+    <button class="cr-tab" data-tab="lookup" role="tab">&#128269; Look It Up</button>
+  </div>
+
+  <!-- ═══════════════ LEARN ═══════════════ -->
+  <div id="panel-learn" class="cr-panel active">
+
+    <div class="learn-section">
+      <h3><span class="section-num">1</span> Where Responsibility Sits</h3>
+      <div class="learn-body">
+        <p>By the time you get here you have evaluated the quotes (Topic 23), settled on an apparent winner, and satisfied yourself that the price is fair and reasonable (Topic 24). Everything so far has been about the quote. Responsibility is about the firm. FAR 9.103(a) says to award contracts to responsible prospective contractors only, and 9.103(b) says not to award before making an affirmative determination of responsibility. If you cannot get to a clear indication that the firm is responsible, the same paragraph tells you what the determination is: nonresponsibility.</p>
+
+        <p>The burden sits with the contractor. FAR 9.103(c) says a prospective contractor must affirmatively demonstrate its responsibility, including, when necessary, the responsibility of its proposed subcontractors. The job on your side is to check that the firm has shown you it can perform, and to ask for more when it has not.</p>
+
+        <p>Keep it separate from the other pre-award questions. Whether the quote meets the requirement is technical acceptability. Whether the price is right is price analysis. Whether the firm can perform is responsibility. A fully acceptable quote at a great price from a firm with no technicians is still a no. It runs the other way too: a firm you trust does not get to skip the technical evaluation because you know they are good.</p>
+
+        <p>Past performance deserves its own sentence, because it shows up on both sides of the line. As an evaluation factor, past performance asks how well a firm has performed and how much confidence that gives you about this job. You compare quoters on it, and a stronger record can beat a weaker one. Responsibility asks whether the firm can perform at all. That is a threshold every awardee has to clear, and there is no ranking involved. The two draw on the same record (the performance record is standard (c) in the next section), which is why the labels get mixed. If you are comparing firms on how well, you are evaluating. If you are deciding whether one firm clears the bar, you are making a responsibility call, and for a small business that has consequences. Section 5 covers them.</p>
+
+        <div class="highlight-box tip">
+          <strong>The signature is the determination.</strong> FAR 9.105-2(a)(1): the contracting officer's signing of a contract constitutes a determination that the prospective contractor is responsible with respect to that contract. For an affirmative finding there is no separate form. What has to be there is the support. FAR 9.105-2(b)(1) puts the documents and reports behind the determination in the contract file, so anyone reading it later can see the basis without asking you. Signing carries the determination; the file has to carry the evidence.
+        </div>
+
+        <p>One vocabulary note. "Nonresponsive" is a sealed-bidding term about whether a bid conforms to the invitation. On an RFQ, a quote that fails is not "nonresponsive." Write down what actually failed: the quoted unit is undersized, the firm did not address the emergency-response requirement, the firm cannot finance the first quarter. The reason you write down decides which procedure applies next, and for a small business it decides whether SBA gets involved. Section 5 covers that.</p>
+
+        <div class="scenario-card">
+          <div class="scenario-label">Running example</div>
+          <p>Same requirement as Evaluating Quotations: quarterly preventive maintenance on 12 rooftop units at Building 1240, base plus two options, roughly $142,000 total. Suppose the evaluation lands on Wright-Patt HVAC LLC at $116,700. Small business, four employees, two EPA 608 certified technicians, three years in business, no CPARS record. The quote is technically acceptable and the price is the lowest you received. That is where the responsibility question starts.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> The Seven Standards</h3>
+      <div class="learn-body">
+        <p>FAR 9.104-1 lists what a prospective contractor has to have. The list works better as seven questions about the specific job, so that is how the table reads. Three of the seven (financial resources, organization and skills, equipment and facilities) come with the words "or the ability to obtain them." FAR 9.104-3(a) says that when a firm does not already have the resources, require evidence that it can get them. A signed lease, a bank letter, a subcontract agreement, or a hiring commitment all count. "We'll sort it out after award" does not.</p>
+
+        <div class="table-scroll" tabindex="0" role="region" aria-label="The seven responsibility standards">
+          <table class="cr-table">
+            <thead><tr><th>FAR 9.104-1</th><th>The question for this buy</th><th>What answers it</th></tr></thead>
+            <tbody>
+              <tr><td>(a) Financial resources</td><td>Can they cover payroll, parts, and fuel until the first invoice clears?</td><td>A bank letter or line of credit, recent financials, or a cash-flow explanation that matches the size of the job.</td></tr>
+              <tr><td>(b) Delivery or performance schedule</td><td>Can they meet this schedule with everything else they have committed to? The FAR says to consider all existing commercial and governmental business commitments.</td><td>Current workload, staffing, supplier lead times, a realistic start date.</td></tr>
+              <tr><td>(c) Performance record</td><td>What does their relevant record show?</td><td>CPARS, FAPIIS, reference calls, your customer's experience with them. No record by itself proves nothing in either direction (see below).</td></tr>
+              <tr><td>(d) Integrity and business ethics</td><td>Is there anything on the record that bears on whether they deal honestly?</td><td>FAPIIS, SAM exclusions, the responsibility certifications in their reps and certs, and anything they disclosed and explained.</td></tr>
+              <tr><td>(e) Organization, experience, controls, and technical skills</td><td>Do they have the people and the systems this job needs, or a credible way to get them?</td><td>Named staff and certifications, quality and safety procedures appropriate to the work, accounting controls scaled to the contract type.</td></tr>
+              <tr><td>(f) Equipment and facilities</td><td>Do they have the gear and the shop, or documented access to them?</td><td>Equipment lists, leases, a site visit, subcontract arrangements.</td></tr>
+              <tr><td>(g) Otherwise qualified and eligible</td><td>Can the Government legally award to them?</td><td>Active SAM registration, no active exclusion, size status if the buy is set aside, and no statutory bar (inverted domestic corporations, arms-control exclusions, and similar).</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>An empty record proves nothing.</strong> FAR 9.104-1(c): do not determine a prospective contractor responsible or nonresponsible based solely on a lack of relevant performance history. An empty CPARS search sends you to the other evidence. It does not end the inquiry in either direction.
+        </div>
+
+        <p>The other side of the performance record: FAR 9.104-3(b) says to presume a firm nonresponsible if it is or recently has been deficient in contract performance, unless the circumstances were beyond its control or it has taken corrective action. A bad CPARS from last year is a real problem for the firm, and the way it gets resolved is by the firm explaining what changed. Ask.</p>
+
+        <p>Scale the evidence to the buy. An $18,000 purchase order for filters does not need a bank letter. A $2 million service contract with a firm nobody in the office has worked with does. FAR 9.105-1(b)(3) adds that, to the extent feasible, financial and performance information gets obtained or updated up to the date of award, which matters when the evaluation ran long.</p>
+
+        <div class="scenario-card">
+          <div class="scenario-label">Running example</div>
+          <p>Wright-Patt HVAC LLC has the certifications (e), the schedule is feasible for a four-person shop putting two techs on this contract (b), and SAM and exclusions are clean (g). The open questions are (a) and (c). They will front a quarter of labor and parts before the first invoice, and they have no federal record. So you ask them how they will carry the first 90 days, and you call the two commercial references they listed. A dated letter from their bank confirming a $50,000 line of credit answers (a). Two reference calls describing on-time quarterly service and a small billing issue they fixed answer (c). For a buy this size, that is the whole inquiry.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> Where the Evidence Comes From</h3>
+      <div class="learn-body">
+        <p>FAR 9.105-1 says to obtain information establishing that the firm currently meets the standards, generally promptly after receipt of offers, and it lists the sources. In practice the list looks like this.</p>
+
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Sources of responsibility information">
+          <table class="cr-table">
+            <thead><tr><th>Source</th><th>What it tells you</th><th>What it leaves out</th></tr></thead>
+            <tbody>
+              <tr><td>SAM.gov</td><td>Active registration, UEI and CAGE code, entity-level reps and certs, and the exclusions search. FAR 4.203-1(b) requires an active registration at the time of quote and at award, with exceptions for micro-purchases, deployed contracting officers, certain foreign vendors, and a few others. FAR 4.203-2(a)(1) says to document the date you verified it.</td><td>Registration says nothing about cash, staff, or how they performed last time.</td></tr>
+              <tr><td>FAPIIS</td><td>Terminations for default or cause, prior nonresponsibility determinations, administrative agreements, and certain proceedings from the last five years. Records are entered through CPARS and show up in SAM.gov under Responsibility/Qualification. Above the simplified acquisition threshold, FAR 9.104-6 requires you to review it before award, and 9.104-6(d) requires you to document how you considered it.</td><td>A five-year-old default on a different kind of work may be irrelevant, and 9.104-6(b)(4) says so. Judge relevance.</td></tr>
+              <tr><td>CPARS</td><td>Narrative past performance from other federal contracts, with the contractor's comments.</td><td>Nothing on a firm that has only done commercial work.</td></tr>
+              <tr><td>Supplier Performance Risk System (SPRS)</td><td>DoD's supplier, item, and price risk scores, plus cybersecurity assessment status.</td><td>A score is an input. It does not assess the seven standards for this contract.</td></tr>
+              <tr><td>Your customer and your office</td><td>Who has used this vendor and how it went. The base HVAC shop knows the local HVAC vendors. FAR 9.105-1(c)(1) counts verifiable knowledge of personnel in the contracting office as a source.</td><td>Opinions without specifics. "They're fine" needs a follow-up question.</td></tr>
+              <tr><td>The firm itself</td><td>Financial statements, bank letters, staffing lists, equipment lists, current workload, and the story behind anything adverse. FAR 9.105-1(c)(2) puts the prospective contractor on the source list.</td><td>Unsupported promises. Ask for the document that backs the statement.</td></tr>
+              <tr><td>References, commercial sources, other agencies</td><td>Reference calls, commercial credit reports, other contracting offices. FAR 9.105-1(c)(3) and (4).</td><td>Reference lists are curated by the vendor. Ask the reference what went wrong, not only what went right.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>FAR 9.104-6(c) covers what to do when FAPIIS turns up a termination for default, a prior nonresponsibility finding, or a relevant proceeding: promptly request additional information from the offeror so it can demonstrate its responsibility, and notify the agency official who handles suspension and debarment if the information looks like something that official should see. The FAPIIS entry starts a conversation. The firm's response and your analysis of it are what end up in the file.</p>
+
+        <p>Preaward surveys still exist as a tool. The FAR Overhaul reserved 9.106, so there is no longer FAR text on when to request one, but the SF 1403-series forms remain in the GSA forms library, and some offices still ask a contract administration office to look at a plant, an accounting system, or a firm's finances for a large or unusual buy. A survey informs your determination. It does not make it for you.</p>
+
+        <div class="highlight-box">
+          <strong>Keep it inside the Government.</strong> FAR 9.105-3: information gathered for the purpose of determining responsibility does not get released outside the Government, except as the Freedom of Information Act procedures in Part 24 require. A firm's bank letter and financial statements are in your file because they trusted you with them.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Writing It Down</h3>
+      <div class="learn-body">
+        <p><strong>Affirmative.</strong> Your signature is the determination. What the file needs is the support: the SAM and exclusions check with the date, the FAPIIS review and how you weighed it if the buy is above the simplified acquisition threshold (FAR 9.104-6(d)), and whatever else you relied on. FAR 9.105-2(b)(1) says the file includes the documents and reports supporting the determination. If you had to run down a concern, a short memo for record saying what the concern was, what you looked at, and why it is resolved will save the next person from redoing your work. Length is your call. Proportional wins.</p>
+
+        <p><strong>Nonresponsibility.</strong> When you reject the offer that would otherwise get the award because the firm is nonresponsible, FAR 9.105-2(a)(1) requires a signed determination stating the grounds. Write it so that someone who was not in the room can follow it: the standard at issue, what the evidence showed, what the firm said when you asked, and why that does not resolve it. A skeleton:</p>
+
+<pre class="doc-block">DETERMINATION OF NONRESPONSIBILITY
+
+Acquisition:     [solicitation number and requirement]
+Offeror:         [legal name, UEI]
+Award position:  [why this firm would otherwise receive award]
+
+Standard at issue:          FAR 9.104-1([letter]), [name of standard]
+What the evidence shows:    [facts, with sources and dates]
+What the offeror said:      [its explanation and anything it provided]
+Why that does not resolve it: [your analysis]
+
+Conclusion: [Firm] has not affirmatively demonstrated [standard].
+I am unable to make an affirmative determination of responsibility
+and determine [Firm] nonresponsible for this acquisition.
+
+Small business status:  [yes or no, and the basis]
+Next action:            [SBA referral under FAR 19.204 / next offeror / other]
+Attachments:            [list]
+
+[Name], Contracting Officer                          [Date]</pre>
+
+        <p>Your office may call this a determination, an MFR, or a D&amp;F. The name matters less than the content. FAR 9.105-2 does not ask for a formal Part 1 determination and findings; it asks for a signed determination that states the grounds.</p>
+
+        <div class="highlight-box">
+          <strong>FAPIIS reporting after a nonresponsibility finding.</strong> FAR 9.105-2(b)(2): if the contract is valued above the simplified acquisition threshold, the determination was based on performance record or integrity and business ethics, and SBA does not issue a Certificate of Competency, document the determination in FAPIIS within three working days. Except for past performance reviews, FAPIIS entries become public after a 14-day waiting period, so the entry should say what the determination said and nothing that is exempt from disclosure.
+        </div>
+
+        <div class="highlight-box warn">
+          <strong>"Could not verify" has a default.</strong> FAR 9.103(b): without a clear indication of responsibility, make a determination of nonresponsibility. If the bank letter never shows up and the references do not call back, the choices are to keep asking or to write the nonresponsibility determination. Signing an affirmative determination with an open question underneath it is the one option the FAR does not give you.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Small Business: The Certificate of Competency</h3>
+      <div class="learn-body">
+        <p>When the firm you found nonresponsible is a small business, the decision does not end with you. FAR 9.103(b) and 9.104-3(d)(1) send you to Part 19, and FAR 19.204 lays out the Certificate of Competency (COC) process. A Certificate of Competency is SBA's statement that, for this specific contract, the firm is responsible on all elements of responsibility. SBA gets to second-guess you here on purpose. Congress built it in.</p>
+
+        <p>FAR 19.204(b) sets the scope: the program applies to all Government acquisitions except 8(a) sole-source awards. If you determine the apparent successful small business offeror to be nonresponsible, you must refer that firm to SBA, even if the next acceptable offer is also from a small business, and contracting officers overseas follow it too for U.S. small businesses. Under 19.204(c), a finding that a small business cannot comply with the limitations on subcontracting is treated as an element of responsibility and goes through the same process.</p>
+
+        <h4>The steps</h4>
+        <ol>
+          <li><strong>Withhold award and write the determination.</strong> The signed nonresponsibility determination from Section 4 is the foundation of the referral. FAR 19.204(d)(1).</li>
+          <li><strong>Refer it to the SBA Government Contracting Area Office serving the area where the firm's headquarters is located, in accordance with agency procedures.</strong> In practice that starts with your small business specialist. Agency supplements add routing (DoD's is in DFARS and PGI Part 219). FAR 19.204(d)(2).</li>
+          <li><strong>Send the package.</strong> FAR 19.204(e) requires a notice that the firm was determined nonresponsible, specifying the element or elements you found lacking, plus copies of the solicitation and the firm's final offer. SBA's own regulation at 13 CFR 125.5(c) expects more: the abstract of bids or price negotiation memorandum, any preaward survey, your written determination, the technical data package, and whatever else supports the finding. Send the fuller set. A referral without the evidence behind it slows everyone down.</li>
+          <li><strong>Wait 15 business days, counted from the day the Area Office receives a referral that includes all required documentation.</strong> FAR 19.204(f). An incomplete package does not start the clock. 13 CFR 125.5(c)(2) allows a longer period if SBA and the contracting officer agree, so if SBA asks for a few more days, that is a conversation with your small business specialist rather than a hard wall.</li>
+          <li><strong>SBA reviews.</strong> SBA notifies the firm and invites it to apply. Under 13 CFR 125.5(f) the review is not limited to the elements you cited; SBA may look at all of them. FAR 19.204(g).</li>
+          <li><strong>Act on the answer.</strong> COC issued: award to the firm. FAR 19.204(i) makes the COC final on all elements of responsibility, and the firm cannot be required to meet any other responsibility requirement. You may still decline to award for reasons unrelated to responsibility. COC denied: document it and proceed with the next offeror. No COC within the 15 business days: FAR 19.204(j) directs award to another appropriately selected and responsible offeror. Check with the small business specialist before acting on that one, since an agreed extension moves the date.</li>
+        </ol>
+
+        <p>If new information convinces you the firm is responsible before award is made, FAR 19.204(h) has the off-ramp: reverse the determination, notify SBA, withdraw the referral, and proceed to award.</p>
+
+        <h4>What counts as a responsibility rejection</h4>
+        <p>SBA's regulation at 13 CFR 125.5(a)(2) reaches further than the word "nonresponsible." Referral is required when you deny award to the apparent successful small business on the basis of responsibility, when you refuse to consider a small business after evaluating it on a non-comparative (pass/fail) basis under one or more responsibility-type factors such as experience or past performance, and when you refuse to consider it because it failed a definitive responsibility criterion stated in the solicitation. Calling a pass/fail experience screen "technical" does not change what it is. GAO sustained a protest on exactly that point in <em>Phil Howry Co.</em>, B-291402.3 (2003), where a rejection on past performance grounds was in substance a nonresponsibility finding made without an SBA referral. A comparative evaluation, where one firm's stronger past performance beats another's, is a different animal and stays with you. That boundary is Advanced-track material.</p>
+
+        <div class="highlight-box tip">
+          <strong>Size status is its own question.</strong> The COC process assumes the firm is a small business for this acquisition. If the real issue is whether the firm qualifies as small, that is a size determination under 13 CFR Part 121 with its own procedure. Suspension and debarment are eligibility questions under Subpart 9.4, and a COC does not cure those either.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> Making the Call Downrange</h3>
+      <div class="learn-body">
+        <p>FAR 9.102(a)(2) applies the subpart to contractors located outside the United States unless applying it would be inconsistent with the laws or customs where the contractor is located. Being deployed changes what the evidence looks like, and the requirement to have some comes with you.</p>
+
+        <p>The local firm quoting on generator maintenance has no CPARS, no FAPIIS entry, and possibly no SAM registration. FAR 4.203-1(b)(5)(i) exempts contracts awarded by deployed contracting officers supporting military operations from the SAM requirement, and (b)(7) exempts actions at or below $40,000 with foreign vendors for work outside the United States when registration is impractical. Two things come with those exceptions: under 4.203-1(e) you still collect the offeror's identifying information and entity-level representations when the quote comes in, and under 4.203-1(d), if practical, you modify the contract later to require registration.</p>
+
+        <p>With the databases empty, the evidence is what you can see and confirm:</p>
+        <ul>
+          <li><strong>Go look.</strong> The shop, the trucks, the parts on the shelf, the people who will do the work. A site visit answers (e) and (f) faster than any document, and it is the kind of verifiable knowledge that FAR 9.105-1(c)(1) has in mind. Take a technical expert with you if you can.</li>
+          <li><strong>Ask who else they work for.</strong> The previous rotation's contracting officer, the civil engineer or logistics customer who has watched them perform, host-nation or coalition partners on the same installation. Write down who told you what and when.</li>
+          <li><strong>Ask about money and lead times.</strong> Local firms often need mobilization funds or have long supply chains for parts. If the firm says a partner in the capital will supply the compressor, get the partner's name and a document.</li>
+          <li><strong>Run the eligibility checks that exist.</strong> SAM exclusions still apply to foreign vendors. Theater vendor vetting, base access, and local business licensing are part of (g) whether or not SAM is in play. Your theater contracting guidance will say what the process is.</li>
+          <li><strong>Record the limits.</strong> Note what you could not verify, what you tried, and what you did instead. A dated memo reading "visited the shop on 14 Mar, saw two service trucks and a parts inventory sufficient for the first month, spoke to the owner and lead technician through an interpreter" is a responsibility file.</li>
+        </ul>
+
+        <div class="highlight-box">
+          <strong>A host-nation firm is not an SBA small business.</strong> The Certificate of Competency process in FAR 19.204 applies to U.S. small business concerns, including overseas. A host-nation firm that fails responsibility gets a documented determination, and you move to the next offeror. A U.S. small business that fails it while you are deployed still gets referred to SBA.</div>
+
+        <div class="highlight-box tip">
+          <strong>Next:</strong> the Try It tab walks the Wright-Patt HVAC example through all seven standards and produces a draft you can adapt. Test Yourself has eight calls to make.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ TRY IT ═══════════════ -->
+  <div id="panel-tryit" class="cr-panel">
+
+    <div class="walk-step">
+      <div class="walk-step-label">Determination Builder</div>
+      <h4>Work the seven standards and see what the file needs</h4>
+      <p>Fill in the context, rate each standard on the evidence you have, and the builder tells you where you stand: sign, keep asking, or write the nonresponsibility determination and, for a small business, refer it to SBA. Generate a draft at the bottom and copy it into your own document. Nothing here is saved or sent anywhere. It lives in this page until you leave it.</p>
+      <div class="cr-actions">
+        <button class="cr-btn primary" type="button" id="loadExample">Load the Wright-Patt HVAC example</button>
+        <button class="cr-btn" type="button" id="clearAll">Clear</button>
+        <span class="cr-note" id="exampleNote"></span>
+      </div>
+    </div>
+
+    <div class="walk-step">
+      <div class="walk-step-label">Step 1</div>
+      <h4>The award context</h4>
+      <div class="cr-fields">
+        <div class="cr-field"><label for="firm">Offeror</label><input id="firm" maxlength="160" placeholder="Legal business name"></div>
+        <div class="cr-field"><label for="solicitation">Solicitation or requirement number</label><input id="solicitation" maxlength="160" placeholder="FA8601-26-Q-0000"></div>
+        <div class="cr-field full"><label for="requirement">The work, in one or two lines</label><textarea id="requirement" maxlength="1200" placeholder="What they have to do, how much, how fast, and anything that makes it hard"></textarea></div>
+        <div class="cr-field"><label for="sbStatus">Small business for this acquisition?</label><select id="sbStatus"><option value="unknown">Not verified yet</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+        <div class="cr-field"><label for="inLine">Otherwise in line for award?</label><select id="inLine"><option value="unknown">Not settled yet</option><option value="yes">Yes, apparent successful offeror</option><option value="no">No, something else removed them</option></select></div>
+        <div class="cr-field"><label for="aboveSat">Value above the simplified acquisition threshold?</label><select id="aboveSat"><option value="no">No</option><option value="yes">Yes</option></select></div>
+        <div class="cr-field"><label for="eightA">8(a) sole-source award?</label><select id="eightA"><option value="no">No</option><option value="yes">Yes</option></select></div>
+      </div>
+    </div>
+
+    <div class="walk-step">
+      <div class="walk-step-label">Step 2</div>
+      <h4>The seven standards</h4>
+      <p>For each one, pick where the evidence stands. "Open" means you have asked, or should ask, and do not have the answer yet.</p>
+      <div id="stdRows"></div>
+      <label class="cr-note" style="display:flex;gap:.6rem;align-items:flex-start;margin-top:.75rem;cursor:pointer">
+        <input type="checkbox" id="noHistory" style="margin-top:.2rem;accent-color:#4a9eff">
+        <span>The only performance-record concern is that the firm has no relevant history. Nothing adverse has turned up.</span>
+      </label>
+    </div>
+
+    <div class="walk-step">
+      <div class="walk-step-label">Step 3</div>
+      <h4>Where you stand</h4>
+      <div class="status-card" id="statusCard">
+        <h5 id="statusTitle">Fill in the context and rate the standards</h5>
+        <p id="statusText">This card updates as you go.</p>
+      </div>
+      <div class="cr-fields">
+        <div class="cr-field full"><label for="reasoning">Your reasoning (goes into the draft as written)</label><textarea id="reasoning" maxlength="3000" placeholder="How the evidence supports the conclusion. If something is open, what you asked for, from whom, and when."></textarea></div>
+        <div class="cr-field"><label for="coName">Contracting officer</label><input id="coName" maxlength="120" placeholder="Name for the signature line"></div>
+        <div class="cr-field"><label for="reviewDate">Date</label><input id="reviewDate" type="date"></div>
+      </div>
+      <div class="cr-actions">
+        <button class="cr-btn primary" type="button" id="genDraft">Generate draft</button>
+        <button class="cr-btn" type="button" id="copyDraft" style="display:none">Copy draft</button>
+        <span class="cr-note" id="copyNote"></span>
+      </div>
+      <textarea class="draft-out" id="draftOut" readonly spellcheck="false" style="display:none" aria-label="Generated draft"></textarea>
+      <div class="highlight-box tip" style="margin-top:1rem">
+        <strong>What the draft is.</strong> A starting point in your own words. The determination is yours when you sign it, and for a nonresponsibility finding on a small business the referral still has to physically go to SBA. The builder does not do either of those things.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════ TEST YOURSELF ═══════════════ -->
+  <div id="panel-quiz" class="cr-panel">
+    <div class="cr-intro" style="padding-top:0">
+      <span class="cr-intro-tag">Test Yourself</span>
+      <h2>Eight Calls</h2>
+      <p>Eight situations, one decision each. Pick the answer you would sign your name to.</p>
+    </div>
+
+    <div id="quizContainer">
+      <div class="quiz-header">
+        <span class="quiz-score" id="quizScore">Score: 0 / 0</span>
+        <span class="quiz-score" id="quizProgress">Question 1 of 8</span>
+      </div>
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizBar" style="width:0%"></div></div>
+      <div id="quizQuestion"></div>
+      <div class="quiz-choices" id="quizChoices"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <div class="quiz-next" id="quizNext">
+        <button class="cr-btn primary" type="button" onclick="nextQuestion()">Next Question &#8594;</button>
+      </div>
+    </div>
+    <div class="quiz-done" id="quizDone">
+      <h2>Quiz Complete</h2>
+      <div class="final-score" id="finalScore">0%</div>
+      <p id="finalMsg"></p>
+      <button class="cr-btn primary" type="button" onclick="restartQuiz()">Try Again</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ LOOK IT UP ═══════════════ -->
+  <div id="panel-lookup" class="cr-panel">
+    <div class="cr-intro" style="padding-top:0">
+      <span class="cr-intro-tag">Reference</span>
+      <h2>Look It Up</h2>
+      <p>The authorities this page is built on, in the order you will use them. Check the version that governs your acquisition; agency deviations to the FAR Overhaul text vary.</p>
+    </div>
+    <div class="lookup-grid">
+      <div class="lookup-card">
+        <h4>FAR Part 9: Contractor Qualifications</h4>
+        <p>Subpart 9.1 is the whole responsibility framework: policy at 9.103, the seven standards at 9.104-1, how to apply them at 9.104-3, the FAPIIS review at 9.104-6, and evidence and documentation at 9.105. FAR Overhaul model text.</p>
+        <a href="https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9" target="_blank" rel="noopener">Open RFO Part 9</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 19.204: Certificate of Competency</h4>
+        <p>The referral process when a small business is found nonresponsible: what to withhold, where to send it, what goes in the package, the 15 business days, and what a COC does once SBA issues it. The legacy cite was Subpart 19.6.</p>
+        <a href="https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-19" target="_blank" rel="noopener">Open RFO Part 19</a>
+      </div>
+      <div class="lookup-card">
+        <h4>13 CFR 125.5: SBA's COC Regulation</h4>
+        <p>SBA's side of the same process. Paragraph (a)(2) defines what counts as a responsibility rejection, (c) lists the referral package, (f) describes the review, and (g) covers who decides and what can be appealed.</p>
+        <a href="https://www.ecfr.gov/current/title-13/chapter-I/part-125/section-125.5" target="_blank" rel="noopener">Open 13 CFR 125.5</a>
+      </div>
+      <div class="lookup-card">
+        <h4>FAR 4.203: SAM Registration</h4>
+        <p>When registration is required, the exceptions (including deployed contracting officers and small foreign-vendor actions), and the instruction to document the date you verified it.</p>
+        <a href="https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-4" target="_blank" rel="noopener">Open RFO Part 4</a>
+      </div>
+      <div class="lookup-card">
+        <h4>SAM.gov</h4>
+        <p>Entity registration, reps and certs, the exclusions search, and the Responsibility/Qualification section where FAPIIS records surface. Save the search results with the date.</p>
+        <a href="https://sam.gov/" target="_blank" rel="noopener">Open SAM.gov</a>
+      </div>
+      <div class="lookup-card">
+        <h4>CPARS and FAPIIS</h4>
+        <p>Past performance narratives live in CPARS. FAPIIS records (terminations, nonresponsibility determinations, administrative agreements) are entered through the same system. Government users need an account.</p>
+        <a href="https://www.cpars.gov/" target="_blank" rel="noopener">Open CPARS</a>
+      </div>
+      <div class="lookup-card">
+        <h4>Supplier Performance Risk System (SPRS)</h4>
+        <p>DoD's supplier, item, and price risk scores plus cybersecurity assessment status. One more input for DoD buys, especially for supplies.</p>
+        <a href="https://www.sprs.csd.disa.mil/" target="_blank" rel="noopener">Open SPRS</a>
+      </div>
+      <div class="lookup-card">
+        <h4>DoD FAR Overhaul Class Deviations</h4>
+        <p>DoD's deviations and the accompanying DFARS and PGI text, including Part 219 for small business routing. Other agencies have their own; check your supplement.</p>
+        <a href="https://www.acq.osd.mil/dpap/dars/dfars_far_overhaul_class_deviations.html" target="_blank" rel="noopener">Open DoD RFO Deviations</a>
+      </div>
+      <div class="lookup-card">
+        <h4>GAO: Phil Howry Co., B-291402.3</h4>
+        <p>The decision to read on the evaluation/responsibility line. A rejection framed as past performance was in substance a nonresponsibility finding, and the agency had not referred the small business to SBA.</p>
+        <a href="https://www.gao.gov/products/b-291402.3%2Cb-291402.4" target="_blank" rel="noopener">Read the decision</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="training-nav-band"><div id="training-nav" class="training-nav"></div></div>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+/* ── Tab switching ── */
+document.querySelectorAll('.cr-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.cr-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.cr-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ══════════════════ DETERMINATION BUILDER ══════════════════ */
+(function () {
+  const $ = id => document.getElementById(id);
+  const STANDARDS = [
+    ['a', 'Financial resources', 'Can they cover payroll, parts, and fuel until the first invoice clears?'],
+    ['b', 'Delivery or performance schedule', 'Can they meet this schedule alongside everything else they have committed to?'],
+    ['c', 'Performance record', 'What does the relevant record show? An empty record by itself proves nothing.'],
+    ['d', 'Integrity and business ethics', 'Anything on the record that bears on whether they deal honestly?'],
+    ['e', 'Organization, experience, controls, and technical skills', 'Do they have the people and systems this job needs, or a credible way to get them?'],
+    ['f', 'Equipment and facilities', 'Do they have the gear and the shop, or documented access to them?'],
+    ['g', 'Otherwise qualified and eligible', 'Active SAM registration, no exclusion, size status if set aside, no statutory bar?']
+  ];
+  const LABEL = { ok: 'Supported', no: 'Not supported', open: 'Open', '': 'Not rated' };
+  const ratings = {};
+  let example = false;
+
+  $('stdRows').innerHTML = STANDARDS.map(([k, title, q]) => `
+    <div class="std-row" data-std="${k}">
+      <div class="std-head">
+        <div class="std-title">9.104-1(${k}) ${title}<small>${q}</small></div>
+        <div class="std-choice" role="group" aria-label="Rating for standard ${k}">
+          <button type="button" data-val="ok">Supported</button>
+          <button type="button" data-val="no">Not supported</button>
+          <button type="button" data-val="open">Open</button>
+        </div>
+      </div>
+      <div class="cr-field"><label for="ev-${k}">What you looked at and what it showed (source and date)</label><textarea id="ev-${k}" maxlength="1500" placeholder="Bank letter dated 12 Sep confirming $50K line of credit; reference call with J. Smith, 10 Sep"></textarea></div>
+    </div>`).join('');
+
+  document.querySelectorAll('.std-choice button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const row = btn.closest('.std-row'); const k = row.dataset.std; const val = btn.dataset.val;
+      ratings[k] = ratings[k] === val ? '' : val;
+      row.querySelectorAll('.std-choice button').forEach(b => { b.className = ''; if (ratings[k] === b.dataset.val) b.classList.add('on-' + b.dataset.val); });
+      refresh();
+    });
+  });
+  ['sbStatus', 'inLine', 'aboveSat', 'eightA', 'noHistory'].forEach(id => $(id).addEventListener('change', refresh));
+  ['firm', 'solicitation', 'requirement', 'reasoning', 'coName', 'reviewDate'].forEach(id => $(id).addEventListener('input', () => { if ($('draftOut').style.display !== 'none') $('draftOut').value = buildDraft(assess()); }));
+  document.querySelectorAll('#stdRows textarea').forEach(t => t.addEventListener('input', () => { if ($('draftOut').style.display !== 'none') $('draftOut').value = buildDraft(assess()); }));
+
+  function assess() {
+    const sb = $('sbStatus').value, inLine = $('inLine').value, aboveSat = $('aboveSat').value === 'yes', eightA = $('eightA').value === 'yes', noHistory = $('noHistory').checked;
+    const rated = STANDARDS.filter(([k]) => ratings[k]);
+    const badHistory = noHistory && (ratings.c === 'no' || ratings.c === 'open');
+    const failed = STANDARDS.filter(([k]) => ratings[k] === 'no' && !(k === 'c' && badHistory));
+    const open = STANDARDS.filter(([k]) => ratings[k] === 'open' && !(k === 'c' && badHistory));
+    let tone = '', title = 'Fill in the context and rate the standards', text = 'This card updates as you go.', kind = 'notes';
+    if (!rated.length) {
+      /* nothing yet */
+    } else if (eightA && (failed.length || open.length)) {
+      tone = 'hold'; title = '8(a) sole source: the COC program does not apply';
+      text = 'FAR 19.204(b) excludes 8(a) sole-source awards from the Certificate of Competency process. Work the capability problem with SBA under the 8(a) procedures. The exclusion is not an affirmative finding.';
+    } else if (badHistory && !failed.length) {
+      tone = 'hold'; title = 'No relevant history is not a finding';
+      text = 'FAR 9.104-1(c) does not allow a determination either way based solely on a lack of relevant performance history. Rate (c) on the rest of the evidence: commercial references, the customer, what the firm can show you.';
+    } else if (failed.length) {
+      kind = 'nonresp';
+      if (sb === 'unknown') { tone = 'hold'; title = 'Verify size status before deciding the next step'; text = 'The evidence points to nonresponsibility on ' + failed.map(f => '(' + f[0] + ')').join(', ') + '. Whether SBA gets the next call depends on whether this is a small business for this acquisition. Settle that first.'; }
+      else if (sb === 'yes' && inLine === 'yes') { tone = 'stop'; title = 'Nonresponsible: withhold award and refer to SBA'; text = 'FAR 19.204(d): withhold award and refer the firm to the SBA Area Office serving its headquarters, through your small business specialist. Sign the determination stating the grounds, send the package, and count 15 business days from the day the Area Office has all of it.'; }
+      else if (sb === 'yes' && inLine === 'no') { tone = 'hold'; title = 'Check what actually removed the firm from consideration'; text = 'If another quote beat them on a comparative basis, there is no referral. If they were screened out on a pass/fail responsibility-type factor such as experience or past performance, 13 CFR 125.5(a)(2)(ii) treats that as a responsibility rejection and referral applies.'; }
+      else if (sb === 'yes') { tone = 'hold'; title = 'Settle award position'; text = 'The referral in FAR 19.204 applies to the apparent successful small business offeror. Confirm whether this firm is otherwise in line for award.'; }
+      else { tone = 'stop'; title = 'Nonresponsible: sign the determination and move on'; text = 'FAR 9.105-2(a)(1): sign a determination stating the grounds and proceed with the next offeror.' + (aboveSat ? ' Above the simplified acquisition threshold, if the ground is performance record or integrity, document the determination in FAPIIS within three working days (9.105-2(b)(2)).' : ''); }
+    } else if (open.length) {
+      tone = 'hold'; title = 'Open items on ' + open.map(o => '(' + o[0] + ')').join(', ');
+      text = 'FAR 9.103(b): without a clear indication of responsibility, the determination is nonresponsibility. Keep asking, or write it up. An affirmative determination with an open question underneath it is the one option you do not have.';
+    } else if (rated.length < STANDARDS.length) {
+      title = rated.length + ' of 7 rated'; text = 'Keep going. Every standard needs a rating before the file is complete.';
+    } else {
+      tone = 'ready'; kind = 'affirm'; title = 'Affirmative: your signature is the determination';
+      text = 'FAR 9.105-2(a)(1). File the support: the SAM and exclusions check with its date, what you looked at for each standard, and anything you had to resolve.' + (aboveSat ? ' Above the simplified acquisition threshold, document how you considered FAPIIS (9.104-6(d)).' : '');
+    }
+    $('statusCard').className = 'status-card' + (tone ? ' ' + tone : ''); $('statusTitle').textContent = title; $('statusText').textContent = text;
+    return { sb, inLine, aboveSat, eightA, noHistory, badHistory, failed, open, rated, kind, title, text };
+  }
+  function refresh() { const r = assess(); if ($('draftOut').style.display !== 'none') $('draftOut').value = buildDraft(r); }
+
+  function buildDraft(r) {
+    const v = (id, fb) => $(id).value.trim() || '[' + fb + ']';
+    const yn = x => x === 'yes' ? 'Yes' : x === 'no' ? 'No' : 'Not verified';
+    const L = [];
+    if (r.kind === 'affirm') L.push('MEMORANDUM FOR RECORD: RESPONSIBILITY OF ' + v('firm', 'offeror').toUpperCase());
+    else if (r.kind === 'nonresp') L.push('DETERMINATION OF NONRESPONSIBILITY');
+    else L.push('RESPONSIBILITY WORKING NOTES (not a determination)');
+    if (example) L.push('Practice example. Every fact below is fictional.');
+    L.push('', 'Acquisition:     ' + v('solicitation', 'solicitation number') + ', ' + v('requirement', 'requirement'), 'Offeror:         ' + v('firm', 'offeror'), 'Date:            ' + v('reviewDate', 'date'),
+      'Small business for this acquisition: ' + yn(r.sb), 'Otherwise in line for award: ' + yn(r.inLine), 'Value above the simplified acquisition threshold: ' + (r.aboveSat ? 'Yes' : 'No'), '', 'STANDARDS (FAR 9.104-1)');
+    STANDARDS.forEach(([k, t]) => { L.push('', '(' + k + ') ' + t, '    Rating:   ' + LABEL[ratings[k] || ''], '    Evidence: ' + ($('ev-' + k).value.trim() || '[not recorded]')); });
+    if (r.noHistory) L.push('', 'Note on (c): the only performance-record concern is a lack of relevant history. No adverse performance information was found. Per FAR 9.104-1(c), no finding rests on that absence alone.');
+    L.push('', 'REASONING', v('reasoning', 'how the evidence supports the conclusion'));
+    L.push('', 'CONCLUSION');
+    if (r.kind === 'affirm') {
+      L.push('I have considered the information above and find ' + v('firm', 'the offeror') + ' responsible for award of ' + v('solicitation', 'this acquisition') + '. Signing the award constitutes the determination (FAR 9.105-2(a)(1)). The supporting documents are in the file.' + (r.aboveSat ? ' FAPIIS was reviewed on [date] and considered as described above (FAR 9.104-6(d)).' : ''));
+    } else if (r.kind === 'nonresp') {
+      L.push(v('firm', 'The offeror') + ' has not affirmatively demonstrated ' + r.failed.map(f => '9.104-1(' + f[0] + ') ' + f[1]).join('; ') + '. I am unable to make an affirmative determination of responsibility and determine ' + v('firm', 'the offeror') + ' nonresponsible for this acquisition (FAR 9.103(b), 9.105-2(a)(1)).');
+      L.push('', 'NEXT ACTION', r.title + '. ' + r.text);
+    } else {
+      L.push('No determination yet. ' + r.title + '. ' + r.text);
+    }
+    L.push('', 'ATTACHMENTS', '[SAM and exclusions check with date; FAPIIS review; reference notes; documents received from the offeror]', '', v('coName', 'Name') + ', Contracting Officer', 'Signature: ____________________    Date: ____________________');
+    return L.join('\n');
+  }
+
+  $('genDraft').addEventListener('click', () => { $('draftOut').style.display = 'block'; $('copyDraft').style.display = 'inline-block'; $('draftOut').value = buildDraft(assess()); $('copyNote').textContent = ''; $('draftOut').focus(); });
+  $('copyDraft').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText($('draftOut').value); $('copyNote').textContent = 'Copied.'; }
+    catch (e) { $('draftOut').select(); $('copyNote').textContent = 'Select the text and copy it with Ctrl+C.'; }
+  });
+  function clearAll() {
+    ['firm', 'solicitation', 'requirement', 'reasoning', 'coName', 'reviewDate'].forEach(id => { $(id).value = ''; });
+    ['sbStatus', 'inLine'].forEach(id => { $(id).value = 'unknown'; }); $('aboveSat').value = 'no'; $('eightA').value = 'no'; $('noHistory').checked = false;
+    STANDARDS.forEach(([k]) => { ratings[k] = ''; $('ev-' + k).value = ''; });
+    document.querySelectorAll('.std-choice button').forEach(b => { b.className = ''; });
+    $('draftOut').style.display = 'none'; $('draftOut').value = ''; $('copyDraft').style.display = 'none'; $('copyNote').textContent = ''; $('exampleNote').textContent = ''; example = false; refresh();
+  }
+  $('clearAll').addEventListener('click', clearAll);
+  $('loadExample').addEventListener('click', () => {
+    clearAll(); example = true;
+    $('firm').value = 'Wright-Patt HVAC LLC'; $('solicitation').value = 'FA8601-26-Q-0140'; $('requirement').value = 'Quarterly preventive maintenance on 12 rooftop units at Building 1240, base plus two option years, first visit within 30 days of award, four-hour emergency response.';
+    $('sbStatus').value = 'yes'; $('inLine').value = 'yes'; $('aboveSat').value = 'no'; $('reviewDate').value = new Date().toISOString().slice(0, 10); $('coName').value = 'Practice CO';
+    const ev = {
+      a: 'Bank letter dated 12 Sep confirming a $50,000 line of credit, enough to carry labor and parts through the first quarter before the first invoice.',
+      b: 'Owner walked through current workload on 10 Sep: three commercial PM contracts, none with a quarterly visit in the same weeks. Two technicians assigned. Parts supplier lead time 5 days.',
+      c: 'No CPARS record. Two commercial references called 10 Sep (property manager at Fairborn Office Park; facilities lead at a Dayton clinic): on-time quarterly service, one billing error corrected within a week.',
+      d: 'SAM exclusions search 9 Sep, no record. Reps and certs reviewed, no disclosures.',
+      e: 'Two EPA 608 certified technicians named in the quote; certifications verified. Service checklist and invoicing process described and adequate for this work.',
+      f: 'Two service vans and standard test equipment observed during a visit to the shop on 11 Sep.',
+      g: 'SAM registration active, verified 9 Sep. Size status confirmed against the NAICS 238220 size standard for this set-aside.'
+    };
+    STANDARDS.forEach(([k]) => { ratings[k] = 'ok'; $('ev-' + k).value = ev[k]; });
+    document.querySelectorAll('.std-row').forEach(row => { row.querySelector('[data-val="ok"]').classList.add('on-ok'); });
+    $('reasoning').value = 'The two open questions after evaluation were financing for the first quarter and the absence of a federal record. The bank letter resolves the first. Two verifiable commercial references resolve the second; no adverse information was found and the finding does not rest on the empty CPARS search. The remaining standards are supported by the site visit and the documents in the file.';
+    $('exampleNote').textContent = 'Example loaded. Change a rating to see how the next step changes.'; refresh();
+  });
+  refresh();
+})();
+
+/* ══════════════════ QUIZ ══════════════════ */
+const quizData = [
+  { q: 'The apparent successful quoter is a small business with no CPARS record. It gave you two commercial references you were able to reach, a bank letter, and a staffing list. What do you do with the performance-record standard?',
+    choices: ['Rate it unsatisfactory. No federal experience is a deficiency.', 'Rate it on the evidence you have: the reference calls, the customer\'s knowledge, anything the firm can show you.', 'Skip it. The active SAM registration is your affirmative determination.'],
+    correct: 1, explanation: 'FAR 9.104-1(c) bars a finding either way based solely on a lack of relevant performance history. The empty CPARS search sends you to the other evidence. SAM registration is one item under standard (g), not the determination.' },
+  { q: 'The firm does not own the refrigerant recovery equipment the work requires. It provides a signed lease that starts the week before performance, and its financing covers the lease payments. Everything else checks out.',
+    choices: ['Reject the firm. Responsibility means owning the equipment before award.', 'Verify the lease terms and start date, confirm they fit the schedule, and document that the firm has the ability to obtain the equipment.', 'Ignore it. The quote was technically acceptable, so equipment is not your problem.'],
+    correct: 1, explanation: 'FAR 9.104-1(f) reads "or the ability to obtain them," and 9.104-3(a) tells you to require evidence of that ability. A binding lease that fits the schedule is exactly that evidence.' },
+  { q: 'Commercial RFQ, not an 8(a) sole source. The apparent successful quoter is a small business, and after hearing its explanation you determine it cannot finance the work. The next quoter is also a small business.',
+    choices: ['Withhold award, sign the nonresponsibility determination, and refer the firm to the SBA Area Office with the package.', 'Award to the next small business. The set-aside goal is still met either way.', 'Wait 15 business days from the date of your determination, then award to the next quoter.'],
+    correct: 0, explanation: 'FAR 19.204(b): refer the firm to SBA even if the next acceptable offer is from a small business. The 15 business days run from the day the Area Office receives a complete referral (19.204(f)), not from your determination.' },
+  { q: 'Your RFQ requires a replacement unit with a minimum cooling capacity. A small business quotes a specific model that falls short, with no alternative. You are evaluating the product it offered, not the company.',
+    choices: ['It is a nonresponsibility finding. Any pass/fail failure is.', 'It is a technical failure of the offered product. Document the shortfall and apply your quotation evaluation procedures.', 'It is an integrity issue, since the firm quoted something that does not work.'],
+    correct: 1, explanation: 'The product does not meet the stated requirement. That is technical acceptability, and it stays under your evaluation procedures. Responsibility is about whether the firm can perform, and the SBA referral rules attach to that question, not this one.' },
+  { q: 'Deployed. A local vendor says a partner will provide the only available service truck. You cannot reach the partner. Your worksheet says "open" for equipment, and the draft conclusion says "responsible."',
+    choices: ['Sign the affirmative determination. The requirement is urgent and the vendor seems reliable.', 'Write down the vendor\'s statement and treat that as verification.', 'Resolve it. Get evidence of access to the truck, and if you cannot, make the determination the evidence supports and document the grounds.'],
+    correct: 2, explanation: 'FAR 9.103(b): without a clear indication of responsibility, the determination is nonresponsibility. Being deployed changes the kind of evidence you can get, not the requirement to have some. Go see the truck, get the partner on the phone, or write it up.' },
+  { q: 'Award will be above the simplified acquisition threshold. Your FAPIIS review turns up a termination for default from four years ago on a different kind of work.',
+    choices: ['Reject the firm. A termination for default is disqualifying.', 'Ignore it. Four years is a long time.', 'Ask the offeror for information about it, weigh its relevance to this work, notify the suspension and debarment official if it looks like something they should see, and document how you considered it.'],
+    correct: 2, explanation: 'FAR 9.104-6(c): request additional information from the offeror and notify the agency official who handles suspension and debarment if appropriate. 9.104-6(b)(4) says old information on different work may be irrelevant. 9.104-6(d) says to document how you considered it.' },
+  { q: 'You referred a small business to SBA on financial capability. SBA issues a Certificate of Competency. You still have doubts about the firm\'s cash.',
+    choices: ['Award, but add a financial-reporting condition to the contract to protect the Government.', 'Award. The COC is final on all elements of responsibility. You may decline only for reasons unrelated to responsibility.', 'Re-refer the firm to SBA with the additional evidence you have gathered.'],
+    correct: 1, explanation: 'FAR 19.204(i): a COC is final with respect to all elements of responsibility, and the firm cannot be required to meet any other responsibility requirement. 9.105-2(a)(2) says the same thing from the Part 9 side: if SBA issues a COC, award the contract to the concern.' },
+  { q: 'Commercial RFQ with a pass/fail "relevant experience" factor. A small business fails it because its experience is all in a related but different trade. It is otherwise the low quote.',
+    choices: ['Move to the next quote. Experience was a technical factor, so no referral.', 'Treat it as a responsibility-type rejection and refer the firm to SBA.', 'Relabel the factor "past performance," reject again, and move on.'],
+    correct: 1, explanation: '13 CFR 125.5(a)(2)(ii): refusing to consider a small business after a non-comparative (pass/fail) evaluation on a responsibility-type factor such as experience or past performance requires an SBA referral. The label on the factor does not change what it is. GAO sustained a protest on this point in Phil Howry Co., B-291402.3.' }
+];
+
+let currentQ = 0, score = 0, answered = false;
+
+function renderQuestion() {
+  if (currentQ >= quizData.length) { showResults(); return; }
+  const q = quizData[currentQ];
+  answered = false;
+  document.getElementById('quizQuestion').innerHTML = `<div class="quiz-question"><div class="quiz-q-label">Call ${currentQ + 1}</div><div class="quiz-q-text">${q.q}</div></div>`;
+  const choicesEl = document.getElementById('quizChoices');
+  choicesEl.innerHTML = q.choices.map((c, i) => `<button class="quiz-choice" type="button" data-idx="${i}">${c}</button>`).join('');
+  choicesEl.querySelectorAll('.quiz-choice').forEach(btn => btn.addEventListener('click', () => handleAnswer(parseInt(btn.dataset.idx))));
+  document.getElementById('quizFeedback').classList.remove('visible', 'correct', 'wrong');
+  document.getElementById('quizNext').classList.remove('visible');
+  document.getElementById('quizProgress').textContent = `Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById('quizBar').style.width = ((currentQ) / quizData.length * 100) + '%';
+  document.getElementById('quizScore').textContent = `Score: ${score} / ${currentQ}`;
+}
+
+function handleAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = quizData[currentQ];
+  const btns = document.querySelectorAll('#quizChoices .quiz-choice');
+  btns.forEach(b => { b.disabled = true; });
+  btns[q.correct].classList.add('correct');
+  const fb = document.getElementById('quizFeedback');
+  if (idx === q.correct) {
+    score++;
+    fb.className = 'quiz-feedback visible correct';
+    fb.textContent = '✓ Correct. ' + q.explanation;
+  } else {
+    btns[idx].classList.add('wrong');
+    fb.className = 'quiz-feedback visible wrong';
+    fb.textContent = '✗ Not quite. ' + q.explanation;
+  }
+  document.getElementById('quizScore').textContent = `Score: ${score} / ${currentQ + 1}`;
+  document.getElementById('quizBar').style.width = ((currentQ + 1) / quizData.length * 100) + '%';
+  document.getElementById('quizNext').classList.add('visible');
+}
+
+function nextQuestion() {
+  currentQ++;
+  renderQuestion();
+}
+
+function showResults() {
+  document.getElementById('quizContainer').style.display = 'none';
+  const pct = Math.round(score / quizData.length * 100);
+  document.getElementById('finalScore').textContent = pct + '%';
+  document.getElementById('finalMsg').textContent = pct === 100 ? "Clean sweep. Sign with confidence." : pct >= 75 ? "Solid. Reread the ones you missed in the Learn tab." : "Worth another pass through the Learn tab, especially Sections 4 and 5.";
+  document.getElementById('quizDone').classList.add('visible');
+}
+
+function restartQuiz() {
+  currentQ = 0; score = 0;
+  document.getElementById('quizContainer').style.display = 'block';
+  document.getElementById('quizDone').classList.remove('visible');
+  renderQuestion();
+}
+
+renderQuestion();
+</script>
+<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script src="player.js"></script>
+</body>
+</html>

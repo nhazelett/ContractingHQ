@@ -44,155 +44,6 @@
     { id: 35, title: 'Yes, If',                             subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-35.mp3', color: '#10b981' }
   ];
 
-  // September 2026 album. Append after existing tracks to preserve saved favorite indexes.
-  var SEP_2026_TRACKS = [
-    {
-      "id": "sep2026-1",
-      "title": "Comparison is the Thief of Joy",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "Comparison is the Thief of Joy.mp3",
-      "color": "#4a9eff"
-    },
-    {
-      "id": "sep2026-2",
-      "title": "Curious, Not Judgmental",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "Curious, Not Judgmental.mp3",
-      "color": "#8b5cf6"
-    },
-    {
-      "id": "sep2026-3",
-      "title": "Do the Next Right Thing",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "Do the Next Right Thing.mp3",
-      "color": "#059669"
-    },
-    {
-      "id": "sep2026-4",
-      "title": "Excel In, Airpower Out",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "Excel In, Airpower Out.mp3",
-      "color": "#d97706"
-    },
-    {
-      "id": "sep2026-5",
-      "title": "Hard Things Are Hard",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "Hard Things Are Hard.mp3",
-      "color": "#dc2626"
-    },
-    {
-      "id": "sep2026-6",
-      "title": "High T, Unlimited",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "audio/High T, Unlimited.mp3",
-      "color": "#0891b2"
-    },
-    {
-      "id": "sep2026-7",
-      "title": "It Depends",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "audio/It Depends.mp3",
-      "color": "#4a9eff"
-    },
-    {
-      "id": "sep2026-8",
-      "title": "Kurban Olurum",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "audio/Kurban Olurum.mp3",
-      "color": "#8b5cf6"
-    },
-    {
-      "id": "sep2026-9",
-      "title": "Look for the Helpers",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "audio/Look for the Helpers.mp3",
-      "color": "#059669"
-    },
-    {
-      "id": "sep2026-10",
-      "title": "Not My Fault, Still My Problem",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "audio/Not My Fault, Still My Problem.mp3",
-      "color": "#d97706"
-    },
-    {
-      "id": "sep2026-11",
-      "title": "Rewind the Tape",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "audio/Rewind the Tape.mp3",
-      "color": "#dc2626"
-    },
-    {
-      "id": "sep2026-12",
-      "title": "Still My Move",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "audio/Still My Move.mp3",
-      "color": "#0891b2"
-    },
-    {
-      "id": "sep2026-13",
-      "title": "The Obstacle Is the Way",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "audio/The Obstacle Is the Way.mp3",
-      "color": "#4a9eff"
-    },
-    {
-      "id": "sep2026-14",
-      "title": "Water the Plants",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "audio/Water the Plants.mp3",
-      "color": "#8b5cf6"
-    },
-    {
-      "id": "sep2026-15",
-      "title": "Westbound",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "audio/Westbound.mp3",
-      "color": "#059669"
-    },
-    {
-      "id": "sep2026-16",
-      "title": "Yet",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "audio/Yet.mp3",
-      "color": "#d97706"
-    },
-    {
-      "id": "sep2026-17",
-      "title": "You Can't Buy Back Time",
-      "subtitle": "Sep 2026 Album",
-      "genre": "ContractingFM",
-      "file": "audio/You Can't Buy Back Time.mp3",
-      "color": "#dc2626"
-    }
-  ];
-
-  // Release policy: append new tracks (never reorder storage indexes), set each
-  // releaseDate as YYYY-MM-DD, and optionally choose landingPriority lead tracks.
-  // The newest release leads the visible list and fresh-visit selection automatically.
-  SEP_2026_TRACKS.forEach(function (track) {
-    track.releaseDate = '2026-09-11';
-    track.landingPriority = track.title === 'Hard Things Are Hard' ? 2 :
-      track.title === 'Look for the Helpers' ? 1 : 0;
-  });
-
   // ── STATE ────────────────────────────────────────────────────────
   var DEFAULT_TRACKS = TRACKS.slice();
   var CCO_PAGE_FALLBACKS = [
@@ -286,7 +137,7 @@
         color: track.color || '#d2a64c'
       };
     }));
-    return tracks.concat(SEP_2026_TRACKS);
+    return tracks;
   }
 
   function modeStateKey(mode) {
@@ -427,13 +278,7 @@
   }
 
   function allTrackIndexes() {
-    // Sort a view of indexes, leaving persisted favorites/skips attached to their songs.
-    return TRACKS.map(function (_, i) { return i; }).sort(function (a, b) {
-      var dateA = TRACKS[a].releaseDate || '';
-      var dateB = TRACKS[b].releaseDate || '';
-      if (dateA !== dateB) return dateA > dateB ? -1 : 1;
-      return (TRACKS[b].landingPriority || 0) - (TRACKS[a].landingPriority || 0) || a - b;
-    });
+    return TRACKS.map(function (_, i) { return i; });
   }
 
   function getPool() {
@@ -454,31 +299,9 @@
     return next;
   }
 
-  function landingTrackIndex() {
-    var pool = getPool();
-    if (!pool.length) return 0;
-    var latest = pool.reduce(function (date, idx) {
-      var release = TRACKS[idx].releaseDate || '';
-      return release > date ? release : date;
-    }, '');
-    var newest = pool.filter(function (idx) {
-      return (TRACKS[idx].releaseDate || '') === latest;
-    });
-    // Every song in the newest eligible release can land; featured songs get
-    // two chances each, other songs one. Avoid repeating the previous landing.
-    var candidates = newest.filter(function (idx) { return idx !== state.idx; });
-    if (!candidates.length) candidates = newest;
-    var weighted = [];
-    candidates.forEach(function (idx) {
-      weighted.push(idx);
-      if ((TRACKS[idx].landingPriority || 0) > 0) weighted.push(idx);
-    });
-    return weighted[Math.floor(Math.random() * weighted.length)];
-  }
-
   function randomizeStartTrack(keepPlaybackIntent) {
     if (!TRACKS.length) return;
-    state.idx = landingTrackIndex();
+    state.idx = randomPlayableIndex(state.idx);
     state.time = 0;
     if (!keepPlaybackIntent) state.wasPlaying = false;
     saveState();
@@ -1948,8 +1771,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       drawerEl.innerHTML = html;
       return;
     }
-    allTrackIndexes().forEach(function (i, position) {
-      var t = TRACKS[i];
+    TRACKS.forEach(function (t, i) {
       var active = i === state.idx;
       var fav = isFav(i);
       var skipped = isSkipped(i);
@@ -1957,7 +1779,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
         '<div class="cfm-track-item' + (active ? ' active' : '') + (active && isPlaying ? ' playing' : '') + (skipped ? ' skipped' : '') + '" data-idx="' + i + '">',
           '<div class="cfm-track-marker">',
             '<div class="cfm-track-dot" style="background:' + esc(t.color) + '"></div>',
-            '<div class="cfm-track-num">' + (position + 1) + '</div>',
+            '<div class="cfm-track-num">' + (i + 1) + '</div>',
           '</div>',
           '<div class="cfm-track-info">',
             '<div class="cfm-track-name">' + esc(t.title) + '</div>',
@@ -2146,14 +1968,13 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       return;
     }
 
-    allTrackIndexes().forEach(function (idx, position) {
-      var track = TRACKS[idx];
+    TRACKS.forEach(function (track, idx) {
       var active = idx === state.idx;
       var fav = isFav(idx);
       var skipped = isSkipped(idx);
       html += [
         '<div class="cfm-sb-track-item' + (active ? ' active' : '') + (skipped ? ' skipped' : '') + '" data-idx="' + idx + '">',
-          '<div class="cfm-sb-track-num">' + (position + 1) + '</div>',
+          '<div class="cfm-sb-track-num">' + (idx + 1) + '</div>',
           '<div class="cfm-sb-track-info">',
             '<div class="cfm-sb-track-name">' + esc(track.title) + '</div>',
             '<div class="cfm-sb-track-genre">' + esc(track.genre) + '</div>',
@@ -2436,12 +2257,14 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'options.html',
     'ota.html',
     'past-performance.html',
+    'evaluation-responsibility-boundary.html',
     'performance-work-statements.html',
     'personal-vs-non-personal-services.html',
     'pnm.html',
     'preconstruction-conferences.html',
     'preparing-ratifications.html',
     'price-fair-reasonable.html',
+    'contractor-responsibility.html',
     'provisions-clauses-commercial.html',
     'publicizing-awards.html',
     'publicizing-contract-actions.html',
@@ -2467,6 +2290,12 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'about.html',
     'contact.html',
     'customer-education.html',
+    'ai-acquisitions.html',
+    'ai-introduction.html',
+    'ai-types.html',
+    'ai-building.html',
+    'ai-not-using.html',
+    'ai-usage.html',
     'cco-training-tools.html',
     'udm-role-overview.html',
     'unit-deployment-manager.html',
@@ -2526,60 +2355,25 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     return true;
   }
 
-  var SOFT_HEAD_SELECTOR = 'head style, head link[rel~="stylesheet"], head meta[name="description"], head meta[name="kthq-radio-mode"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]';
-
   function markCurrentSoftHead() {
     if (softHeadMarked) return;
     softHeadMarked = true;
-    document.querySelectorAll(SOFT_HEAD_SELECTOR).forEach(function (node) {
+    document.querySelectorAll('head style, head meta[name="description"], head meta[name="kthq-radio-mode"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]').forEach(function (node) {
       if (node.id === 'cfm-player-styles') return;
       node.setAttribute('data-kthq-soft-head', 'true');
     });
   }
 
-  async function updateSoftHead(doc, pageUrl) {
-    var oldNodes = Array.prototype.slice.call(document.querySelectorAll('[data-kthq-soft-head]'));
-    var pendingStyles = [];
-    var nextNodes = Array.prototype.map.call(doc.querySelectorAll(SOFT_HEAD_SELECTOR), function (node) {
-      var clone = node.cloneNode(true);
-      if (clone.hasAttribute('href')) {
-        clone.setAttribute('href', new URL(clone.getAttribute('href'), pageUrl.href).href);
-      }
-      clone.setAttribute('data-kthq-soft-head', 'true');
-      if (clone.matches('link[rel~="stylesheet"]')) {
-        // Fetch the destination CSS without applying it to the outgoing page.
-        clone.media = 'not all';
-        pendingStyles.push(new Promise(function (resolve, reject) {
-          var timer = setTimeout(function () { finish(new Error('Stylesheet timed out: ' + clone.href)); }, 10000);
-          function finish(error) {
-            clearTimeout(timer);
-            clone.onload = clone.onerror = null;
-            if (error) reject(error);
-            else resolve();
-          }
-          clone.onload = function () { finish(); };
-          clone.onerror = function () { finish(new Error('Stylesheet failed: ' + clone.href)); };
-          document.head.appendChild(clone);
-        }));
-      }
-      return { node: clone, media: node.getAttribute('media') };
-    });
-    try {
-      await Promise.all(pendingStyles);
-    } catch (error) {
-      nextNodes.forEach(function (entry) { entry.node.remove(); });
-      throw error; // softNavigateTo falls back to a normal page load.
-    }
-    oldNodes.forEach(function (node) { node.remove(); });
-    nextNodes.forEach(function (entry) {
-      if (entry.node.matches('link[rel~="stylesheet"]')) {
-        if (entry.media === null) entry.node.removeAttribute('media');
-        else entry.node.setAttribute('media', entry.media);
-      }
-      // Preserve stylesheet/inline-style cascade order from the destination.
-      document.head.appendChild(entry.node);
-    });
+  function updateSoftHead(doc) {
     document.title = doc.title || document.title;
+    document.querySelectorAll('[data-kthq-soft-head]').forEach(function (node) {
+      if (node.parentNode) node.parentNode.removeChild(node);
+    });
+    doc.querySelectorAll('head style, head meta[name="description"], head meta[name="kthq-radio-mode"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]').forEach(function (node) {
+      var clone = node.cloneNode(true);
+      clone.setAttribute('data-kthq-soft-head', 'true');
+      document.head.appendChild(clone);
+    });
   }
 
   function shouldSkipSoftScript(script) {
@@ -2767,7 +2561,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
         if (script.parentNode) script.parentNode.removeChild(script);
       });
 
-      await updateSoftHead(doc, url);
+      updateSoftHead(doc);
       document.body.className = doc.body.className || '';
       document.body.innerHTML = doc.body.innerHTML;
       if (push) window.history.pushState({ kthqSoftNav: true }, '', url.href);
