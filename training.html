@@ -431,7 +431,45 @@
   <meta name="twitter:description" content="Training for contracting officers, sorted by experience level and by role." />
   <meta name="twitter:image"       content="https://kthq.org/og-image.png" />
   <link rel="canonical"            href="https://kthq.org/training.html" />
-  <link rel="stylesheet" href="training-search.css?v=20260924-1" />
+  <!-- Inline so existing music-player navigation carries these styles with the page. -->
+  <style id="training-search-styles">
+/* Compact topic finder; results float above the training cards. */
+.training-finder[hidden],.training-finder [hidden]{display:none!important}
+.training-finder{position:relative;z-index:10;width:min(640px,calc(100% - 40px));margin:0 auto 30px;color:#e8eef8;font-family:Inter,Arial,sans-serif}
+.training-finder label{display:block;margin-bottom:9px;font-size:13px;font-weight:600;letter-spacing:.02em;color:#c5d3e7}
+.ts-field{display:flex;align-items:center;gap:12px;min-height:52px;padding:0 15px;border:1px solid #354660;border-radius:12px;background:#0c1728;box-shadow:0 6px 24px #0003;transition:border-color .15s,box-shadow .15s}
+.ts-field:focus-within{border-color:#74b1ff;box-shadow:0 0 0 3px #69aaff25,0 6px 24px #0003}
+.ts-field>svg{width:21px;height:21px;flex:none;color:#8ea7cc}
+.ts-field input{width:100%;min-width:0;padding:14px 0;border:0;outline:0;background:transparent;color:#f3f7ff;font:inherit;font-size:16px;line-height:1.4;appearance:none}
+.ts-field input::-webkit-search-cancel-button{display:none}
+.ts-field input::placeholder{color:#9baec8;opacity:1}
+.ts-clear{display:grid;place-items:center;flex:none;width:32px;height:32px;border:0;border-radius:6px;background:transparent;color:#b7c8e0;font:inherit;font-size:24px;cursor:pointer}
+.ts-clear:hover{background:#23344e;color:#fff}
+.ts-help{margin:8px 2px 0;color:#95a8c4;font-size:12px;line-height:1.5}
+.ts-panel{color-scheme:dark;scrollbar-color:#425a7a #0c1728;position:absolute;top:calc(100% + 9px);left:0;right:0;max-height:min(470px,58vh);overflow:auto;overscroll-behavior:contain;border:1px solid #3c557a;border-radius:12px;background:#0c1728;box-shadow:0 18px 50px #000a;text-align:left;scroll-padding:48px 0 12px}
+.ts-panel-top{display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:1;padding:13px 17px;background:#112139;border-bottom:1px solid #263952}
+.ts-panel-top p{margin:0;font-size:12px;font-weight:600;color:#c8d8ef}
+.ts-panel-top span{font-size:11px;color:#91a8c8;white-space:nowrap}
+.ts-list{list-style:none;margin:0;padding:5px}
+.ts-list li{margin:0;padding:0}
+.ts-result{display:block;padding:12px;border-radius:7px;text-decoration:none!important;color:#eaf2ff;transition:background .12s}
+.ts-result:hover,.ts-result:focus-visible{background:#1a304f;color:#fff}
+.ts-result-track{display:block;margin-bottom:5px;color:#b1c5e4;font-size:10px;font-weight:700;line-height:1.3;letter-spacing:.08em;text-transform:uppercase}
+.ts-result-track[data-track="Beginner"]{color:#89dfb6}
+.ts-result-track[data-track="Intermediate"]{color:#ffd087}
+.ts-result-track[data-track="Advanced"]{color:#ffaca7}
+.ts-result-track[data-track="Contingency"]{color:#e7cd95}
+.ts-result-track[data-track="UDM"]{color:#93dfea}
+.ts-result-track[data-track="Specializations"]{color:#cdb3ff}
+.ts-result-heading{display:block;color:#eff5ff;font-size:15px;font-weight:600;line-height:1.4}
+.ts-result-description{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:4px;color:#adbed7;font-size:12px;line-height:1.5}
+.ts-list .ts-empty{padding:17px 12px;color:#bdcce1;font-size:13px;line-height:1.6}
+.ts-action{display:block;width:calc(100% - 20px);margin:4px 10px 10px;padding:12px;border:1px solid #3c557a;border-radius:7px;background:#172b46;color:#dbeaff;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.ts-action:hover{background:#233e61}
+.training-finder button:focus-visible,.ts-result:focus-visible{outline:2px solid #9bc7ff;outline-offset:-2px}
+@media(max-width:540px){.training-finder{width:calc(100% - 32px);margin-bottom:24px}.ts-field{gap:9px;padding:0 12px}.ts-field input{font-size:16px}.ts-panel-top span{display:none}.ts-panel{max-height:52vh}.ts-help{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.training-finder *{transition:none!important}}
+  </style>
 </head>
 <body class="training-page">
 
@@ -487,7 +525,7 @@
 <form class="training-finder" id="training-finder" role="search" aria-label="Training topics" hidden>
   <label for="training-query">Find a training topic</label>
   <div class="ts-field">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="7.2"/><path d="m16 16 5 5"/></svg>
+    <svg width="21" height="21" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="7.2"/><path d="m16 16 5 5"/></svg>
     <input id="training-query" type="search" placeholder="Search topics or acronyms…" maxlength="120" autocomplete="off" spellcheck="false" aria-describedby="training-search-help" aria-controls="training-search-panel" />
     <button class="ts-clear" id="training-search-clear" type="button" aria-label="Clear search" hidden>×</button>
   </div>

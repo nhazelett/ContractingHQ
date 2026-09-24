@@ -10,7 +10,7 @@ python scripts/build_training_search.py --check
 node --test tests/training-search.test.mjs
 ```
 
-Commit the regenerated training-search-index.js with the content changes. Bump the query version on the training-search.js reference in training.html when publishing an updated index; that version also identifies the index request. Bump the CSS version when changing styles.
+Commit the regenerated training-search-index.js with the content changes. Bump the query version on the training-search.js reference in training.html when publishing an updated index; that version also identifies the index request. When changing training-search.css, update the matching inline style block in training.html; the regression test checks that they agree. The inline copy supports existing music-player navigation, including older cached player scripts that do not load linked stylesheets.
 
 Publish training.html, training-search.js, training-search.css, and training-search-index.js together. Keep the search script in the page body so the site's persistent music-player navigation initializes it when returning to Training. The generator and tests need no third-party packages. Index generation is currently a manual publishing step.
 

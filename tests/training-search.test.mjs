@@ -40,3 +40,11 @@ test('search initializes during the site music-player navigation',()=>{
  assert.match(body,/<script src="training-search\.js\?v=[^"]+"><\/script>/);
  assert.doesNotMatch(page.slice(0,page.indexOf('<body')),/<script[^>]+src="training-search\.js/);
 });
+test('search styling travels with page navigation, including older player scripts',()=>{
+ const page=fs.readFileSync(new URL('../training.html',import.meta.url),'utf8');
+ const css=fs.readFileSync(new URL('../training-search.css',import.meta.url),'utf8').trim();
+ const inline=page.match(/<style id="training-search-styles">([\s\S]*?)<\/style>/);
+ assert.ok(inline,'The navigation loader copies inline styles, but older versions omit stylesheet links');
+ assert.equal(inline[1].trim(),css);
+ assert.match(page,/<svg width="21" height="21" style="width:21px;height:21px"/);
+});
