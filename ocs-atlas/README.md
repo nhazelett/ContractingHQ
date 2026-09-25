@@ -231,3 +231,12 @@ The shareable preview is deployed directly at `https://kthq.org/ocs-supplier-atl
 SAM now uses the dedicated Cloudflare service described in `../ocs-backend/README.md`. The public key is a Worker secret; local and hosted previews share the same persistent quota/cache. The user authorized a 1,000-request daily ceiling without confirming the upstream entitlement; upstream rate limiting is still respected. The UI shows the shared remaining allowance and the reset time in the viewer's timezone.
 
 The prior live exclusions failure is resolved: SAM rejects the optional response-section projection, so the gateway requests its standard public response and retains only allowlisted fields. Positive U.S. exclusions and Saudi registrations were verified live, as was a valid empty Saudi exclusion result. The current automated suite contains 76 passing checks. Peers' notes and shortlists remain in their own browser storage; exports are local downloads.
+
+
+## Full registration loading — September 25, 2026
+
+Selecting SAM Registered vendors now follows all matching public registration pages automatically. GSA's Entity Management API limits each synchronous response to ten records and the first 10,000 search results; 200 matches therefore require 20 uncached upstream calls. This does not change the account's upstream entitlement or the hosted 1,000-request daily ceiling. Country/status/name/capability filters remain in effect, and entities not publicly displayed cannot be included.
+
+A progress panel above the map reports loaded records against SAM's match count, remaining possible uncached calls, and completion/partial status. Stop retains loaded records and lets the current request finish; Resume continues from the next page. Rate-limit/transport errors retain earlier pages and require an explicit retry of the failed page. Switching country or source cancels queued work, and stale responses cannot replace the current search. Firm-exclusion searches remain explicitly paginated.
+
+Automatic pages are spaced by at least 2.2 seconds, keeping search plus status refresh below the service's per-IP limit. Normalized pages and completed browser searches reuse the existing 30-minute caches. Automated coverage now totals 81 tests, including automatic completion, pause/resume during a request, late-page error recovery, source switching, complete-cache reuse, and API result ceilings.

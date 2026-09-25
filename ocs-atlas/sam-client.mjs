@@ -90,11 +90,15 @@ export function initSAM({
   onLoading = () => {},
   onError = () => {},
   onResults,
+  schedulePage = (run) => setTimeout(run, 2200),
+  cancelPage = clearTimeout,
 }) {
   let last = null,
     busy = false,
     wanted = "",
-    pending = null;
+    pending = null,
+    timer = null,
+    paused = false;
   const cache = new Map();
   const key = (q) => JSON.stringify({ ...q, page: 0 });
   const mode = () => $("samMode").value;
@@ -130,13 +134,52 @@ export function initSAM({
           status: $("samExpired").checked ? "" : "A",
         };
   }
+  function cancelScheduled() {
+    if (timer !== null) cancelPage(timer);
+    timer = null;
+  }
+  function status(message, summary = message) {
+    $("samSearchStatus").textContent = message;
+    $("samLoadProgress").textContent = summary;
+  }
+  function controls() {
+    const more = !!last?.hasNext;
+    const running = !paused && (busy || timer !== null || !!pending);
+    $("samStop").hidden = !running;
+    $("samResume").hidden = running || !(more || (paused && wanted && !last));
+    $("samMore").disabled = running || !more;
+    $("samMore").textContent = mode() === "exclusions"
+      ? "Load 10 more records" : "Resume loading all matching vendors";
+  }
+  function describe(d) {
+    const processed = d.sourceRecordsLoaded ?? d.rows.length + d.withheldRecords;
+    const remaining = Math.ceil(Math.max(0, Math.min(d.queryTotal, 10000) - processed) / 10);
+    const progress = d.hasNext
+      ? paused ? "Paused; loaded records are retained."
+        : d.kind === "exclusions" ? "More pages available."
+          : `Loading remaining pages automatically · up to ${remaining} more SAM call${remaining === 1 ? "" : "s"} if uncached.`
+      : d.capped ? "API result ceiling reached; narrow the search." : "All matching query pages loaded.";
+    status(`${d.rows.length} of ${d.queryTotal} matching ${d.kind === "exclusions" ? "exclusion records" : "registrations"} loaded for ${getCountry().name}. ${progress} ${d.withheldRecords} source records omitted by public/identity/address checks; duplicates count once. Retrieved ${d.retrievedAt.slice(0, 10)}. ${d.kind === "exclusions" ? "No match does not establish award eligibility." : "Only publicly visible registrations matching these filters; registration does not establish capacity or installation access."}`,
+      `${d.rows.length} of ${d.queryTotal} matching ${d.kind === "exclusions" ? "exclusion records" : "registrations"} loaded. ${progress}${d.withheldRecords ? ` ${d.withheldRecords} source records omitted by public/identity/address checks.` : ""}`);
+  }
   function show(d) {
     last = d;
     onResults(d);
-    $("samMore").disabled = !d.hasNext;
     $("samRetry").hidden = true;
-    $("samSearchStatus").textContent =
-      `${d.rows.length} ${d.kind === "exclusions" ? "active exclusion records" : "public registrants"} loaded for ${getCountry().name} · ${d.queryTotal} source matches · retrieved ${d.retrievedAt.slice(0, 10)}. ${d.withheldRecords} records omitted by public/identity/address checks. ${d.capped ? "API result ceiling reached; narrow the search." : d.hasNext ? "More pages available." : "Query pages complete."} Filtered search, not a complete country inventory.${d.kind === "exclusions" ? " No match does not establish award eligibility." : " Registration does not establish current capacity or installation access."}`;
+    describe(d);
+    controls();
+  }
+  function continueAutomatically() {
+    if (paused || !last?.hasNext || last.kind === "exclusions" || !isActive()
+        || key(last.query) !== wanted || timer !== null) return;
+    timer = schedulePage(() => {
+      timer = null;
+      if (!paused && isActive() && last?.hasNext && key(last.query) === wanted) {
+        pending = { ...last.query, page: last.page + 1 };
+        drain();
+      }
+    });
+    controls();
   }
   async function drain() {
     if (busy || !pending || !isActive()) return;
@@ -145,6 +188,7 @@ export function initSAM({
       old = last;
     pending = null;
     busy = true;
+    controls();
     try {
       const d = await samRequest(next);
       const result = {
@@ -154,6 +198,8 @@ export function initSAM({
         rows: next.page ? dedupe([...(old?.rows || []), ...d.rows]) : d.rows,
         withheldRecords:
           (next.page ? old?.withheldRecords || 0 : 0) + d.withheldRecords,
+        sourceRecordsLoaded: (next.page ? old?.sourceRecordsLoaded || 0 : 0)
+          + (d.sourcePageRecords ?? d.rows.length + d.withheldRecords),
       };
       cache.set(id, { at: Date.now(), data: result });
       if (cache.size > 100) cache.delete(cache.keys().next().value);
@@ -163,10 +209,10 @@ export function initSAM({
       }
     } catch (e) {
       if (isActive() && wanted === id) {
-        $("samSearchStatus").textContent =
-          (next.page
-            ? "Earlier pages retained. "
-            : "No results loaded for these criteria. ") + e.message;
+        paused = true;
+        status((next.page
+            ? `${last?.rows.length || 0} of ${last?.queryTotal || "unknown"} matching records loaded. Earlier pages retained. `
+            : "No results loaded for these criteria. ") + e.message);
         $("samRetry").hidden = false;
         $("samMore").disabled = !last?.hasNext;
         onError(mode(), e.message, !!next.page);
@@ -175,10 +221,15 @@ export function initSAM({
       busy = false;
       connection();
       if (pending) drain();
+      else continueAutomatically();
+      controls();
     }
   }
   function sync(force = false) {
+    cancelScheduled();
     pending = null;
+    paused = false;
+    $("samLoadPanel").hidden = !isActive();
     if (!isActive()) {
       wanted = "";
       return;
@@ -197,19 +248,20 @@ export function initSAM({
     $("samRetry").hidden = true;
     if (!$("samSearchForm").checkValidity()) {
       wanted = "";
-      $("samSearchStatus").textContent =
-        "Complete the filter: NAICS needs six digits; PSC needs four letters or digits.";
+      status("Complete the filter: NAICS needs six digits; PSC needs four letters or digits.");
+      controls();
       onError(mode(), $("samSearchStatus").textContent, false);
       return;
     }
     const saved = cache.get(id);
     if (!force && saved && Date.now() - saved.at < 1800000) {
       show(saved.data);
+      continueAutomatically();
       return;
     }
-    $("samSearchStatus").textContent = busy
+    status(busy
       ? "Waiting for the previous SAM request; this country's results will load next…"
-      : "Loading public SAM records…";
+      : "Loading public SAM records…");
     pending = q;
     drain();
   }
@@ -232,19 +284,37 @@ export function initSAM({
     "samPSC",
   ])
     $(id).onchange = () => sync();
-  $("samMore").onclick = () => {
+  function resume() {
+    paused = false;
+    cancelScheduled();
     if (!busy && last?.hasNext && key(last.query) === wanted) {
       pending = { ...last.query, page: last.page + 1 };
-      $("samMore").disabled = true;
-      $("samSearchStatus").textContent = "Loading the next page…";
+      describe(last);
       drain();
+    } else if (!last) {
+      if (busy) pending = query();
+      else sync(true);
     }
+    controls();
+  }
+  $("samMore").onclick = resume;
+  $("samResume").onclick = resume;
+  $("samStop").onclick = () => {
+    paused = true;
+    pending = null;
+    cancelScheduled();
+    if (last) describe(last);
+    else status("Loading stopped. Any request already in progress will finish; no further pages will start.");
+    controls();
   };
-  $("samRetry").onclick = () => sync(true);
+  $("samRetry").onclick = resume;
   $("samCheckConnection").onclick = connection;
   connection();
   return {
     suspend: () => {
+      cancelScheduled();
+      paused = true;
+      $("samLoadPanel").hidden = true;
       wanted = "";
       pending = null;
       last = null;
