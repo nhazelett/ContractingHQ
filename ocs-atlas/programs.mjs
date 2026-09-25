@@ -1,3 +1,4 @@
+import { sourceFailureMessage } from "./source-request.mjs";
 import { API, dedupe, esc } from "./core.mjs";
 import {
   PROGRAMS,
@@ -15,10 +16,13 @@ const $ = (id) => document.getElementById(id);
 export function initPrograms({ getScope, request, onChange }) {
   let catalog = [],
     metadata = null,
+    catalogError = "",
     selected = new Set(),
     busy = false,
     batch = false,
-    generation = 0;
+    generation = 0,
+    controller = new AbortController(),
+    retryMessage = "";
   const pages = new Map();
   const stateKey = (c) => getScope().country + "|" + awardKey(c);
   function contracts() {
@@ -28,6 +32,43 @@ export function initPrograms({ getScope, request, onChange }) {
     return [...pages.values()]
       .filter((p) => p.country === getScope().country)
       .flatMap((p) => p.rows);
+  }
+  function pendingContracts() {
+    return contracts().filter((c) => {
+      const p = pages.get(stateKey(c));
+      return !p || p.hasNext || p.error;
+    }).sort((a, b) => Number(!!pages.get(stateKey(a))?.error) - Number(!!pages.get(stateKey(b))?.error));
+  }
+  function discovery() {
+    const relevant = contracts().map((c) => pages.get(stateKey(c)));
+    const checked = relevant.filter((p) => p?.page).length;
+    const errors = relevant.filter((p) => p?.error);
+    const pending = pendingContracts().length;
+    const loading = busy || batch || (!metadata && !catalogError);
+    const state = loading ? "loading" : catalogError || errors.length ? "error" : pending ? checked ? "partial" : "unchecked" : "complete";
+    return {
+      state, loading, pending, checked, total: contracts().length,
+      loaded: orders().filter((r) => selected.has(r.program)).length,
+      title: loading ? `Checking ${[...selected].join(", ")} orders in ${getScope().country}…`
+        : state === "error" ? "Program check incomplete · source unavailable"
+        : state === "unchecked" ? "Country orders have not been checked yet"
+        : state === "partial" ? "Program check incomplete · more linked orders remain"
+        : "Country check complete for the catalog records",
+      message: `${checked} of ${contracts().length} catalog parent contracts checked. ${retryMessage || catalogError || errors[0]?.error || (loading ? "Looking up exact parent-linked orders for this country. You can change countries or stop the check." : pending ? "Continue checking before drawing conclusions about country coverage." : "All direct-child pages in this dated catalog were checked. Missing or indirect awards and other program versions may still be absent.")}`,
+    };
+  }
+  function cancel() {
+    generation++;
+    controller.abort();
+    controller = new AbortController();
+    busy = false;
+    batch = false;
+    retryMessage = "";
+  }
+  function changed() { render(); onChange(); }
+  function autoCheck() {
+    if (selected.size && metadata && $("programMode").value === "country" && pendingContracts().length)
+      void checkAll(false);
   }
   function render() {
     const old = $("programContract").value;
@@ -71,13 +112,13 @@ export function initPrograms({ getScope, request, onChange }) {
     $("programStop").hidden = !busy && !batch;
     $("programCatalogStatus").textContent = metadata
       ? `${catalog.length} verified parent contracts in the dated catalog · ${metadata.retrievedAt.slice(0, 10)}. Keyword discovery is not an exhaustive roster. AFCAP V and LOGCAP V only; WEXMAC versions follow each source description.`
-      : "Loading the public contract catalog…";
+      : catalogError || "Loading the public contract catalog…";
     $("programLoadStatus").textContent = p
       ? `${p.rows.length} country orders loaded for ${p.country}; ${p.reviewed} linked records checked across ${p.page} page(s). ${p.hasNext ? "More linked records remain." : "Direct-order pages complete for this parent."} ${p.error || ""}`
       : `Choose a contract to check orders reported in ${getScope().country}. Checks cover all reported dates; award keywords, buyer and date filters above do not apply. No orders checked yet for this contract/country.`;
     if (busy)
-      $("programLoadStatus").textContent =
-        "Checking a bounded page of linked orders. This can take up to two minutes; you can stop and retain earlier pages.";
+      $("programLoadStatus").textContent = retryMessage ||
+        "Checking linked orders for this country. Temporary failures retry once; you can stop and retain earlier pages.";
   }
   async function load(chosen, refresh = false) {
     const c = chosen?.awardKey
@@ -111,7 +152,16 @@ export function initPrograms({ getScope, request, onChange }) {
     if (!previous.hasNext) return;
     const token = generation;
     busy = true;
-    render();
+    retryMessage = "";
+    changed();
+    const sourceOptions = {
+      retries: 1,
+      onRetry: () => {
+        if (generation !== token) return;
+        retryMessage = "USAspending is slow or temporarily unavailable. Retrying this linked-order request once…";
+        changed();
+      },
+    };
     try {
       const childQuery = {
         award_id: awardKey(c),
@@ -125,7 +175,8 @@ export function initPrograms({ getScope, request, onChange }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(childQuery),
-      });
+        signal: controller.signal,
+      }, sourceOptions);
       if (generation !== token) return;
       const children = validateChildren(childrenData, c);
       if (children.length !== childrenData.results.length)
@@ -144,7 +195,8 @@ export function initPrograms({ getScope, request, onChange }) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(linkedOrderSearch(scope, children, page)),
-        });
+          signal: controller.signal,
+        }, sourceOptions);
         if (generation !== token) return;
         const retrievedAt = new Date().toISOString();
         rows.push(
@@ -175,47 +227,47 @@ export function initPrograms({ getScope, request, onChange }) {
         pages.set(key, {
           ...prior,
           error:
-            e.name === "AbortError"
-              ? "Source timed out. Retry this page."
-              : e.message,
+            e.kind ? sourceFailureMessage(e) : e.message,
         });
     } finally {
       if (generation === token) {
         busy = false;
-        render();
+        retryMessage = "";
+        changed();
       }
     }
   }
-  $("programCheckAll").onclick = async () => {
-    if (busy || batch) return;
+  async function checkAll(allowRefresh = true) {
+    if (busy || batch || !selected.size || !metadata) return;
     const token = generation;
-    const pending = contracts().filter((c) => {
-      const p = pages.get(stateKey(c));
-      return !p || p.hasNext || p.error;
-    });
-    const refresh = !pending.length;
+    const pending = pendingContracts();
+    const refresh = !pending.length && allowRefresh;
     const todo = (refresh ? contracts() : pending).slice(0, 8);
+    if (!todo.length) return;
     batch = true;
-    render();
+    changed();
+    let consecutiveFailures = 0;
     for (const c of todo) {
       if (generation !== token) return;
       $("programContract").value = awardKey(c);
       await load(c, refresh);
+      if (generation !== token) return;
+      // Stop a sustained outage; future checks prioritize unattempted holders.
+      consecutiveFailures = pages.get(stateKey(c))?.error ? consecutiveFailures + 1 : 0;
+      if (consecutiveFailures >= 2) break;
     }
     if (generation === token) {
       batch = false;
-      render();
-      onChange();
+      changed();
     }
-  };
-  $("programMode").onchange = onChange;
+  }
+  $("programCheckAll").onclick = () => checkAll();
+  $("programMode").onchange = () => { cancel(); changed(); autoCheck(); };
   $("programContract").onchange = render;
   $("programLoad").onclick = load;
   $("programStop").onclick = () => {
-    generation++;
-    busy = false;
-    batch = false;
-    render();
+    cancel();
+    changed();
     $("programLoadStatus").textContent =
       "Stopped. Earlier completed pages retained; the in-flight page was discarded.";
   };
@@ -258,21 +310,24 @@ export function initPrograms({ getScope, request, onChange }) {
       } catch {
         /* An unavailable optional snapshot leaves live checks available. */
       }
-      render();
-      onChange();
+      changed();
+      autoCheck();
     })
     .catch(() => {
+      catalogError = "Contract catalog unavailable. Reload to retry.";
+      onChange();
       $("programCatalogStatus").textContent =
         "Contract catalog unavailable. Reload to retry; other research remains available.";
     });
   return {
     select(program) {
-      generation++;
-      busy = false;
-      batch = false;
+      cancel();
       selected = new Set(program ? [program] : []);
       render();
+      autoCheck();
     },
+    discovery,
+    check: () => checkAll(),
     catalog: () => catalog,
     isBusy: () => busy || batch,
     active: () => selected.size > 0,
@@ -322,10 +377,9 @@ export function initPrograms({ getScope, request, onChange }) {
       },
     }),
     countryChanged() {
-      generation++;
-      busy = false;
-      batch = false;
+      cancel();
       render();
+      autoCheck();
     },
   };
 }

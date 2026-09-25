@@ -329,8 +329,10 @@ function render() {
     (originFilter
       ? `Origin filter: ${cname(originFilter)}. Select All origins to clear. `
       : "");
+  const programState = !onlySaved && programs?.active() && programs.selection().mode === "country"
+    ? programs.discovery() : null;
   if (!list.length) {
-    const loading = Object.entries(layerData).some(
+    const loading = programState?.loading || Object.entries(layerData).some(
       ([id, d]) => enabled.has(id) && d.status === "loading",
     );
     const failure = !onlySaved && Object.entries(layerData).find(
@@ -341,6 +343,9 @@ function render() {
     )?.[1].progress;
     $("resultList").innerHTML =
       `<div class="empty" role="status"><strong>${loading ? "Looking up public records…" : onlySaved ? "Your shortlist is empty" : failure ? "Search incomplete · source unavailable" : "No matching leads in the loaded records"}</strong><p>${esc(loading ? progress || "Fetching the selected source. You can change countries or criteria while this loads." : failure ? failure[1].error : "Try a broader search, another layer, or clear the loaded-result filter. This does not establish that no capable suppliers exist.")}</p>${failure && !["sam", "exclusions"].includes(failure[0]) ? `<button data-retry-source="${esc(failure[0])}">Retry this search</button>` : ""}</div>`;
+    if (programState) {
+      $("resultList").innerHTML = `<div class="empty" role="status"><strong>${esc(programState.state === "complete" ? programState.loaded ? "No program leads match the loaded-company filters" : "No linked country orders found in the records checked" : programState.title)}</strong><p>${esc(programState.message)}${programState.loaded ? ` ${programState.loaded} linked country orders are loaded; clear the company filters to see all leads.` : ""}</p>${!programState.loading && programState.pending ? `<button data-check-program>${programState.state === "error" ? "Retry program check" : "Continue country check"}</button>` : ""}</div>`;
+    }
     $("resultList").querySelector("[data-retry-source]")?.addEventListener("click", () =>
       loadLayer(failure[0], failure[1].failedPage || 1, generation),
     );
@@ -359,6 +364,9 @@ function render() {
         });
       })
       .join("");
+  if (list.length && programState && programState.state !== "complete")
+    $("resultList").insertAdjacentHTML("afterbegin", `<div class="notice" role="status"><strong>${esc(programState.title)}</strong><p>${esc(programState.message)}</p>${!programState.loading && programState.pending ? `<button data-check-program>${programState.state === "error" ? "Retry program check" : "Continue country check"}</button>` : ""}</div>`);
+  $("resultList").querySelector("[data-check-program]")?.addEventListener("click", () => programs.check());
   $("resultList")
     .querySelectorAll("[data-open]")
     .forEach((b) =>
@@ -1229,11 +1237,13 @@ async function updatePlaces(list) {
     $("locationCoverage").textContent = result.eligible
       ? `${shown.length} contractor connections · ${coarse} end at a country-only reference · ${result.missing} award records lack a usable origin or work country. Click a line or endpoint for dates and evidence.`
       : !list.length
-        ? Object.entries(layerData).some(([id, d]) => enabled.has(id) && d.status === "loading")
+        ? programs?.isBusy() || Object.entries(layerData).some(([id, d]) => enabled.has(id) && d.status === "loading")
           ? "Waiting for source records before mapping contractor locations."
           : Object.entries(layerData).some(([id, d]) => enabled.has(id) && d.status === "error")
             ? "Source request incomplete. Contractor locations cannot be assessed from this search yet."
-            : "No matching loaded records to map. Broaden the search or clear the loaded-company filters."
+            : programs?.active() && programs.selection().mode === "country" && programs.discovery().state !== "complete"
+              ? "Country program coverage is incomplete. Continue the linked-order checks to assess contractor locations."
+              : "No matching loaded records to map. Broaden the search or clear the loaded-company filters."
         : "Address points only. No task-order or award work location is loaded for these records. Registration, exclusion records and parent vehicles do not establish country work.";
     return;
   }
