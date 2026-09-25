@@ -1,3 +1,4 @@
+import { requestJSON, sourceFailureMessage } from "./source-request.mjs";
 import { initLeadFilters, leadEvidenceHTML, LEAD_CAPABILITIES } from "./lead-filters.mjs";
 import { supplierCardHTML } from "./supplier-cards.mjs";
 import { resolvePlace, recordAddress } from "./places.mjs";
@@ -170,21 +171,8 @@ function exportFile(name, body, type) {
   };
   $("exportDialog").showModal();
 }
-async function json(url, options = {}) {
-  const ac = new AbortController();
-  const abort = () => ac.abort();
-  options.signal?.addEventListener("abort", abort, { once: true });
-  if (options.signal?.aborted) ac.abort();
-  const timer = setTimeout(() => ac.abort(), 40000);
-  try {
-    const res = await fetch(url, { ...options, signal: ac.signal });
-    if (!res.ok) throw new Error(`Source returned HTTP ${res.status}.`);
-    return await res.json();
-  } finally {
-    clearTimeout(timer);
-    options.signal?.removeEventListener("abort", abort);
-  }
-}
+const json = requestJSON;
+
 function formScope() {
   if (!["awards", "subawards", "vehicles"].includes(activeSource))
     return { ...scope, country: $("country").value };
@@ -316,7 +304,8 @@ function render() {
   $("loadHistory").disabled =
     onlySaved ||
     !!historyRun ||
-    Object.values(layerData).some((d) => d.status === "loading");
+    Object.entries(layerData).some(([id, d]) => enabled.has(id) &&
+      (d.status === "loading" || d.status === "error"));
   $("loadHistory").hidden = !!programs?.active() || activeSource === "sam";
   $("shortlistToggle").classList.toggle("primary", onlySaved);
   $("shortlistToggle").firstChild.textContent = onlySaved
@@ -344,11 +333,17 @@ function render() {
     const loading = Object.entries(layerData).some(
       ([id, d]) => enabled.has(id) && d.status === "loading",
     );
-    const failed = Object.entries(layerData).some(
+    const failure = !onlySaved && Object.entries(layerData).find(
       ([id, d]) => enabled.has(id) && d.status === "error",
     );
+    const progress = Object.entries(layerData).find(
+      ([id, d]) => enabled.has(id) && d.status === "loading",
+    )?.[1].progress;
     $("resultList").innerHTML =
-      `<div class="empty"><strong>${loading ? "Looking up public records…" : onlySaved ? "Your shortlist is empty" : failed ? "A source could not be loaded" : "No matching leads in the loaded records"}</strong><p>${loading ? "Fetching the selected evidence layers." : failed ? "Open Sources & coverage for the connection status, or retry the source below." : "Try a broader search, another layer, or clear the loaded-result filter. This does not establish that no capable suppliers exist."}</p></div>`;
+      `<div class="empty" role="status"><strong>${loading ? "Looking up public records…" : onlySaved ? "Your shortlist is empty" : failure ? "Search incomplete · source unavailable" : "No matching leads in the loaded records"}</strong><p>${esc(loading ? progress || "Fetching the selected source. You can change countries or criteria while this loads." : failure ? failure[1].error : "Try a broader search, another layer, or clear the loaded-result filter. This does not establish that no capable suppliers exist.")}</p>${failure && !["sam", "exclusions"].includes(failure[0]) ? `<button data-retry-source="${esc(failure[0])}">Retry this search</button>` : ""}</div>`;
+    $("resultList").querySelector("[data-retry-source]")?.addEventListener("click", () =>
+      loadLayer(failure[0], failure[1].failedPage || 1, generation),
+    );
   } else
     $("resultList").innerHTML = list
       .map((s) => {
@@ -433,7 +428,7 @@ async function loadGlobal(token = generation) {
 async function loadLayer(id, page = 1, token = generation) {
   if (token !== generation || layerData[id]?.status === "loading") return;
   const prior = layerData[id] || { rows: [] };
-  layerData[id] = { ...prior, status: "loading" };
+  layerData[id] = { ...prior, status: "loading", progress: "" };
   render();
   try {
     const data = await json(API, {
@@ -441,6 +436,15 @@ async function loadLayer(id, page = 1, token = generation) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(spendingBody(scope, id, page)),
       signal: controller.signal,
+    }, {
+      retries: 1,
+      onRetry: (error) => {
+        if (token !== generation) return;
+        layerData[id].progress = error.kind === "timeout"
+          ? "USAspending is taking longer than expected. Retrying once automatically…"
+          : "USAspending could not be reached. Retrying once automatically…";
+        render();
+      },
     });
     if (token !== generation) return;
     const normalized = normalizeAwards(data, id, scope);
@@ -462,10 +466,7 @@ async function loadLayer(id, page = 1, token = generation) {
       ...prior,
       status: "error",
       failedPage: page,
-      error:
-        err.name === "AbortError"
-          ? "The source timed out. Retry this layer."
-          : "The source is temporarily unavailable. " + err.message,
+      error: sourceFailureMessage(err),
     };
   }
   render();
@@ -479,6 +480,9 @@ async function search() {
     notify(err.message);
     return;
   }
+  // Country changes already submit. Keep that request when Search is pressed again.
+  if (searchCacheKey(next) === searchCacheKey(scope) &&
+      [...enabled].some((id) => layerData[id]?.status === "loading")) return;
   if (historyRun) historyRun.stop = true;
   controller.abort();
   controller = new AbortController();
@@ -1224,7 +1228,13 @@ async function updatePlaces(list) {
     ).length;
     $("locationCoverage").textContent = result.eligible
       ? `${shown.length} contractor connections · ${coarse} end at a country-only reference · ${result.missing} award records lack a usable origin or work country. Click a line or endpoint for dates and evidence.`
-      : "Address points only. No task-order or award work location is loaded for these records. Registration, exclusion records and parent vehicles do not establish country work.";
+      : !list.length
+        ? Object.entries(layerData).some(([id, d]) => enabled.has(id) && d.status === "loading")
+          ? "Waiting for source records before mapping contractor locations."
+          : Object.entries(layerData).some(([id, d]) => enabled.has(id) && d.status === "error")
+            ? "Source request incomplete. Contractor locations cannot be assessed from this search yet."
+            : "No matching loaded records to map. Broaden the search or clear the loaded-company filters."
+        : "Address points only. No task-order or award work location is loaded for these records. Registration, exclusion records and parent vehicles do not establish country work.";
     return;
   }
   const groups = new Map();
