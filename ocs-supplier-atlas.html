@@ -187,6 +187,22 @@
               </div>
             </div>
           </form>
+          <section class="rail-section lead-controls" aria-label="Filter loaded companies">
+            <h2>Find the right vendors</h2>
+            <p class="muted small">Filter the companies already loaded. These controls use no additional SAM requests.</p>
+            <label>Capability<select id="leadCapability"><option value="">All capabilities</option></select></label>
+            <details><summary>Which codes match?</summary><div id="leadCodeRules" class="muted small"></div></details>
+            <label>Near a city or postal area<input id="leadPlace" placeholder="e.g. Jeddah" maxlength="100" /></label>
+            <div class="lead-radius-options">
+              <label>Within<select id="leadRadius"><option value="0">No distance filter</option><option value="25">25 km</option><option value="50">50 km</option><option value="100">100 km</option><option value="250">250 km</option><option value="500">500 km</option></select></label>
+              <label>Location evidence<select id="leadLocationRole"><option value="vendor">Vendor addresses</option><option value="work">Reported work locations</option></select></label>
+            </div>
+            <button id="leadLocate" class="secondary" type="button">Apply location</button>
+            <p id="leadPlaceStatus" class="muted small" role="status"></p>
+            <p id="leadFilterStatus" class="muted small" role="status"></p>
+            <button id="leadClear" class="text-button" type="button">Clear capability &amp; distance filters</button>
+            <p class="muted small">Distances use approximate city/postal reference points. Country-only and unresolved locations are excluded from radius results. A match is a research lead, not a verified service area or current capacity.</p>
+          </section>
           <p
             id="notice"
             class="notice"
@@ -516,6 +532,7 @@
             <button id="samStop" class="secondary" type="button" hidden>Stop loading</button>
             <button id="samResume" class="secondary" type="button" hidden>Resume loading</button>
           </section>
+          <p id="leadMatchSummary" class="lead-match-summary" role="status" hidden></p>
           <section id="mapPanel" aria-label="Country and supplier origin map">
             <div class="map-tools">
               <span
@@ -533,12 +550,12 @@
                 </select></label
               >
               <label
-                >Focus a city or postal area<input
+                >Move map to city (no filter)<input
                   id="placeQuery"
                   placeholder="e.g. Jeddah"
                   maxlength="100" /></label
               ><button id="findPlace" class="secondary">
-                Locate in country
+                Move map
               </button>
               <p id="placeStatus" class="muted small" role="status"></p>
             </div>

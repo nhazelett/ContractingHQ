@@ -1,3 +1,4 @@
+import { initLeadFilters, leadEvidenceHTML, LEAD_CAPABILITIES } from "./lead-filters.mjs";
 import { supplierCardHTML } from "./supplier-cards.mjs";
 import { resolvePlace, recordAddress } from "./places.mjs";
 import { contractorFlows, connectionCoordinates } from "./flows.mjs";
@@ -73,7 +74,7 @@ let globalData = null,
 let supplierPopup = null;
 let flowGroups = [],
   facilityPromise;
-let logistics, transport, packet, samClient, programs, countryNavigation;
+let logistics, transport, packet, samClient, programs, countryNavigation, leadFilters;
 const samProfiles = new Map(),
   researchNotes = new Map();
 let selectedCapability = "";
@@ -112,7 +113,7 @@ function visibleSuppliers() {
         scope.country,
       )
     : allSuppliers();
-  return filterSuppliers(list, {
+  const filtered = filterSuppliers(list, {
     query: $("localFilter").value,
     segment,
     layers:
@@ -122,6 +123,7 @@ function visibleSuppliers() {
       (!originFilter || s.origin === originFilter) &&
       (programs?.filter(s) ?? true),
   );
+  return leadFilters ? leadFilters.apply(filtered) : filtered;
 }
 function notify(message = "") {
   $("notice").textContent = message;
@@ -333,7 +335,7 @@ function render() {
           ? `${cname(scope.country)} · ${samClient?.mode() === "exclusions" ? "active firm exclusions" : "SAM registrations"} · SAM search criteria only. `
           : `${LAYERS[activeSource]?.name} · ${cname(scope.country)} · ${scope.from} → ${scope.to} · ${scope.agency === "dod" ? "DoD" : scope.agency === "civilian" ? "Civilian buyers, filtered after retrieval" : "All federal buyers, including DoD"}. `) +
     (partial && !onlySaved && !programs?.active()
-      ? "Partial results; load additional pages below. "
+      ? activeSource === "sam" ? "SAM results are still partial; see loading progress above the map. " : "Partial results; load additional pages below. "
       : "") +
     (originFilter
       ? `Origin filter: ${cname(originFilter)}. Select All origins to clear. `
@@ -358,6 +360,7 @@ function render() {
           countryName: cname,
           saved: !!saved[s.key],
           programHTML,
+          matchHTML: leadEvidenceHTML(s),
         });
       })
       .join("");
@@ -999,6 +1002,7 @@ function initMap() {
         "atlas-origins",
         () => (map.getCanvas().style.cursor = ""),
       );
+      leadFilters.attachMap(map);
       logistics.attachMap();
       transport.attachMap();
       countryNavigation = initCountryNavigation({
@@ -1337,6 +1341,7 @@ function fitMap() {
   map.fitBounds(bounds, { padding: 60, maxZoom: 10, duration: 600 });
 }
 function packetSearch() {
+  if (leadFilters.isResolving()) throw new Error("Let location matching finish before capturing the filtered results.");
   if (programs?.isBusy())
     throw new Error(
       "Let the linked-order check finish before capturing evidence.",
@@ -1351,7 +1356,7 @@ function packetSearch() {
     );
   return {
     scope,
-    rows: visibleSuppliers().flatMap((s) => s.rows),
+    rows: leadFilters.exportRows(visibleSuppliers()),
     filters: {
       text: $("localFilter").value,
       segment,
@@ -1362,11 +1367,12 @@ function packetSearch() {
       mapContractor:
         $("locationRole").value === "flow" ? $("flowFocus").value : "",
       contractPrograms: programs?.selection(),
+      leadDiscovery: leadFilters.selection(),
     },
-    capability:
+    capability: LEAD_CAPABILITIES.find(c => c.id === leadFilters.selection().capability)?.name || (
       capabilitySearch?.key === searchCacheKey(scope)
         ? capabilitySearch.name
-        : null,
+        : null),
     coverage: {
       ...(programs?.active() ? { programs: programs.coverage() } : {}),
       ...Object.fromEntries(
@@ -1437,6 +1443,16 @@ function renderCapabilities() {
     );
 }
 function bind() {
+  leadFilters = initLeadFilters({
+    getCountry: () => scope.country,
+    getRows: () => onlySaved ? Object.values(saved).flatMap(s => s.rows) : layerRows(),
+    normalizeCountry: code => countryCode(code, countries),
+    loadPlaces: placeData,
+    onChange: render,
+    focus: (center, km) => {
+      if (mapReady) map.flyTo({ center, zoom: Math.max(3, 10 - Math.log2(km / 10)), duration: 600 });
+    },
+  });
   programs = initPrograms({
     getScope: () => scope,
     request: json,
@@ -1573,9 +1589,9 @@ function bind() {
     .querySelectorAll("[data-close]")
     .forEach((b) => (b.onclick = () => $(b.dataset.close).close()));
   $("exportCSV").onclick = () => {
+    if (leadFilters.isResolving()) { notify("Let location matching finish before exporting the filtered results."); return; }
     const rows = dedupe(
-      visibleSuppliers()
-        .flatMap((s) => s.rows)
+      leadFilters.exportRows(visibleSuppliers())
         .filter((r) => onlySaved || programs?.active() || enabled.has(r.layer)),
     );
     if (!rows.length) return;

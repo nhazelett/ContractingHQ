@@ -122,7 +122,7 @@ export function supplierCardFacts(rows, countryName = (c) => c) {
 }
 export function supplierCardHTML(
   s,
-  { countryName, saved = false, programHTML = "", today } = {},
+  { countryName, saved = false, programHTML = "", matchHTML = "", today } = {},
 ) {
   const f = supplierCardFacts(s.rows, countryName);
   const places = (values, fallback) =>
@@ -140,6 +140,7 @@ export function supplierCardHTML(
       )
       .join("")}</div>
     <div class="card-source-tags">${[...s.layers].map((l) => `<span class="tag">${esc(LAYERS[l]?.name || l)}</span>`).join("")}</div>${programHTML ? `<div class="card-programs"><span class="card-program-label">Holder / parent program links</span><div>${programHTML}</div><small>Program links alone do not establish work in this country.</small></div>` : ""}
+    ${matchHTML}
     <dl class="card-facts"><div><dt>Reported address${f.addresses.length > 1 ? "es" : ""}</dt><dd>${places(f.addresses, "Address not reported")}${f.missingAddress ? `<small>${f.missingAddress} records lack an address location</small>` : ""}</dd></div><div><dt>Documented work locations</dt><dd>${places(f.work, f.awardCount ? "Location not reported in loaded awards" : "No award work evidence loaded")}${f.missingWork ? `<small>${f.missingWork} award records lack a work location</small>` : ""}</dd></div><div><dt>Latest award start / report</dt><dd>${esc(f.latestAward || "Not available in loaded evidence")}<small>Historical evidence; current performance unverified</small></dd></div><div><dt>Latest captured source</dt><dd>${sourceURL ? `<a href="${esc(sourceURL)}" target="_blank" rel="noopener noreferrer">${source} ↗</a>` : source}<small>Retrieved ${esc(evidenceDate(f.source?.retrievedAt) || "date not reported")}</small></dd></div></dl>
     <footer class="card-footer"><span>${esc(s.segment === "local" ? "Address in research country" : s.segment === "us" ? "U.S. address" : s.segment === "third" ? "Third-country address" : "Unknown / conflicting address country")}</span><button class="text-button" data-open="${esc(s.key)}">View evidence & details ↗</button></footer>
   </article>`;
