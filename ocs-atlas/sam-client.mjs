@@ -36,7 +36,7 @@ export async function samRequest(query, signal) {
     data = await res.json();
   } catch {
     throw new Error(
-      "Start the local SAM-enabled preview server to use this connection.",
+      "The SAM connection returned an unreadable response. Please try again shortly.",
     );
   }
   if (!res.ok) throw new Error(data.error || "SAM search unavailable.");
