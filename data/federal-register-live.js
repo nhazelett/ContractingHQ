@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-09-24T12:42:11.135Z",
-  "since": "2025-04-02",
+  "generatedAt": "2026-09-25T12:44:39.060Z",
+  "since": "2025-04-03",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,12 +14,12 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 140,
+    "total": 138,
     "latestPublicationDate": "2026-09-23",
     "openCommentWindows": 11,
     "rules": 53,
     "byTone": {
-      "monitor": 85,
+      "monitor": 83,
       "active": 5,
       "action": 30,
       "watch": 20
@@ -4991,76 +4991,6 @@ window.KTHQ_FEDREG_DATA = {
       "htmlUrl": "https://www.federalregister.gov/documents/2025/04/23/2025-06445/notice-of-rescission-of-report-on-lawful-uses-of-race-or-sex-in-federal-contracting-programs",
       "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-04-23/pdf/2025-06445.pdf",
       "sourceQuery": "Federal contracting keyword feed"
-    },
-    {
-      "id": "2025-05575",
-      "documentNumber": "2025-05575",
-      "title": "Information Collection; Federal Acquisition Regulation Part 46 Requirements",
-      "shortTitle": "Information Collection; Federal Acquisition Regulation Part 46 Requirements",
-      "system": "FAR",
-      "stage": "Information collection",
-      "topic": "Acquisition policy",
-      "actionLevel": "Monitor",
-      "actionTone": "monitor",
-      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
-      "nextSteps": [
-        "Identify the cited provision, clause, form, or system",
-        "Comment only if your office has burden data or a process concern",
-        "No template change unless a later rule follows"
-      ],
-      "type": "Notice",
-      "publicationDate": "2025-04-02",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-06-02",
-      "datesText": "DoD, GSA, and NASA will consider all comments received by June 2, 2025.",
-      "actionText": "Notice and request for comments.",
-      "summary": "In accordance with the Paperwork Reduction Act of 1995, and the Office of Management and Budget (OMB) regulations, DoD, GSA, and NASA invite the public to comment on an extension concerning Federal Acquisition Regulation part 46 requirements. DoD, GSA, and NASA invite comments on: whether the proposed collection of information is necessary for the proper performance of the functions of Federal Government acquisitions, including whether the information will have practical utility; the accuracy of the estimate of th...",
-      "citation": "90 FR 14445",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/04/02/2025-05575/information-collection-federal-acquisition-regulation-part-46-requirements",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-04-02/pdf/2025-05575.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2025-05576",
-      "documentNumber": "2025-05576",
-      "title": "Information Collection; Federal Acquisition Regulation Part 7 Requirements",
-      "shortTitle": "Information Collection; Federal Acquisition Regulation Part 7 Requirements",
-      "system": "FAR",
-      "stage": "Information collection",
-      "topic": "Acquisition policy",
-      "actionLevel": "Monitor",
-      "actionTone": "monitor",
-      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
-      "nextSteps": [
-        "Identify the cited provision, clause, form, or system",
-        "Comment only if your office has burden data or a process concern",
-        "No template change unless a later rule follows"
-      ],
-      "type": "Notice",
-      "publicationDate": "2025-04-02",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-06-02",
-      "datesText": "DoD, GSA, and NASA will consider all comments received by June 2, 2025.",
-      "actionText": "Notice and request for comments.",
-      "summary": "In accordance with the Paperwork Reduction Act of 1995, and the Office of Management and Budget (OMB) regulations, DoD, GSA, and NASA invite the public to comment on an extension concerning Federal Acquisition Regulation part 7 requirements. DoD, GSA, and NASA invite comments on: whether the proposed collection of information is necessary for the proper performance of the functions of Federal Government acquisitions, including whether the information will have practical utility; the accuracy of the estimate of the...",
-      "citation": "90 FR 14449",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/04/02/2025-05576/information-collection-federal-acquisition-regulation-part-7-requirements",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-04-02/pdf/2025-05576.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
     }
   ]
 };
