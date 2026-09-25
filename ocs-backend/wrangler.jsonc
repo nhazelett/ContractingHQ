@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "kthq-ocs-sam",
+  "main": "worker.mjs",
+  "account_id": "a7443e0102de587d778491ab08fd883f",
+  "compatibility_date": "2026-09-25",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "vars": {
+    "SAM_DAILY_BUDGET": "1000",
+    "INITIAL_USAGE_DAY": "2026-09-25",
+    "INITIAL_USAGE_COUNT": "10",
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "SAM", "class_name": "SamQuota" }],
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SamQuota"] }],
+  "ratelimits": [
+    {
+      "name": "SEARCH_LIMIT",
+      "namespace_id": "250925",
+      "simple": { "limit": 60, "period": 60 },
+    },
+  ],
+  "observability": { "enabled": true, "head_sampling_rate": 0.1 },
+}

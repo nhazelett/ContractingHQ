@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Explore public contractor records, country experience, and supplier leads with traceable evidence."
+    />
+    <title>OCS Supplier Atlas | KTHQ</title>
+    <script>
+      if (location.protocol === "file:")
+        document.documentElement.classList.add("local-file");
+    </script>
+    <style>
+      #localFileHelp {
+        display: none;
+      }
+      .local-file body > :not(#localFileHelp) {
+        display: none !important;
+      }
+      .local-file #localFileHelp {
+        display: block;
+        position: fixed;
+        inset: 0;
+        overflow: auto;
+        padding: 48px 24px;
+        background: #07121c;
+        color: #e1edf2;
+        font:
+          18px/1.6 system-ui,
+          sans-serif;
+      }
+      #localFileHelp > div {
+        max-width: 650px;
+        margin: auto;
+      }
+      #localFileHelp a {
+        color: #79e2d6;
+      }
+    </style>
+    <link rel="stylesheet" href="ocs-atlas/vendor/maplibre-gl.css" />
+    <link rel="stylesheet" href="ocs-atlas/atlas.css" />
+    <script src="ocs-atlas/vendor/maplibre-gl.js" defer></script>
+    <script type="module" src="ocs-atlas/app.mjs"></script>
+  </head>
+  <body>
+    <section id="localFileHelp" aria-labelledby="localFileTitle">
+      <div>
+        <h1 id="localFileTitle">Open the running atlas</h1>
+        <p>
+          This copy was opened directly from a folder. The atlas needs its local
+          server to load company records and connect to SAM.
+        </p>
+        <p>
+          <a href="http://127.0.0.1:8897/ocs-supplier-atlas.html"
+            >Open Supplier Atlas →</a
+          >
+        </p>
+        <p>
+          Use that address in Edge or Chrome on this computer while the local
+          preview server is running. Bookmark the address for next time.
+        </p>
+      </div>
+    </section>
+    <a class="skip" href="#results">Skip to supplier results</a>
+    <header class="topbar">
+      <a class="brand" href="index.html">KTHQ<span>CONTRACTING HQ</span></a
+      ><span class="divider"></span
+      ><span class="breadcrumb">FIELD RESEARCH <span>/</span> OCS</span>
+      <nav>
+        <a href="tools.html">All tools ↗</a
+        ><a id="dossier" href="country-contracting-dossier.html?country=SAU"
+          >Country dossier ↗</a
+        ><a href="market-research-tool.html">Research desk ↗</a>
+      </nav>
+    </header>
+    <main>
+      <div class="heading">
+        <div>
+          <div class="eyebrow">OPERATIONAL CONTRACT SUPPORT</div>
+          <h1>
+            Supplier Atlas<span class="pill">PUBLIC DATA · PEER PREVIEW</span>
+          </h1>
+          <p>
+            Find the companies. Follow the evidence. Build your next research
+            lead.
+          </p>
+        </div>
+        <button class="secondary" id="coverageButton">
+          Sources & coverage <span>↗</span>
+        </button>
+      </div>
+      <div class="workspace">
+        <aside
+          class="rail"
+          tabindex="0"
+          aria-label="Research controls — scroll independently"
+        >
+          <details class="requirements-panel">
+            <summary>OCS requirements workspace</summary>
+            <p class="muted small">
+              Choose a capability, explore keyword or industry searches, then
+              capture the evidence for your research packet. Presets are
+              research starting points.
+            </p>
+            <div id="capabilityPresets" class="capability-presets"></div>
+            <div id="capabilityRecipe" class="capability-recipe"></div>
+            <div class="packet-toolbar">
+              <button id="captureSearch" class="secondary">
+                Capture current search</button
+              ><button id="previewPacket" class="primary">
+                Preview research packet <span id="packetCount">0</span></button
+              ><span id="packetStatus" class="muted small" role="status"></span>
+            </div>
+            <details>
+              <summary>Captured searches</summary>
+              <div id="packetSearches"></div>
+            </details>
+          </details>
+          <section class="supplier-source" aria-label="Supplier source">
+            <div class="rail-heading">
+              <h2>Supplier source</h2>
+              <span id="layerCount" class="small-count">One at a time</span>
+            </div>
+            <p class="muted small">
+              Choose one source. Airfields, ports and transport remain optional
+              overlays.
+            </p>
+            <div id="layers"></div>
+          </section>
+          <form id="searchForm" class="searchbar">
+            <label class="country-field"
+              >COUNTRY<select id="country" name="country" required>
+                <option>Loading countries…</option>
+              </select></label
+            >
+            <div id="awardCriteria" class="award-criteria">
+              <label class="keyword-field"
+                >CAPABILITY OR KEYWORD<input
+                  id="q"
+                  name="q"
+                  maxlength="160"
+                  placeholder="e.g. generator maintenance"
+              /></label>
+              <label
+                >NAICS<input
+                  id="naics"
+                  name="naics"
+                  maxlength="6"
+                  inputmode="numeric"
+                  placeholder="Any sector"
+              /></label>
+              <label
+                >PSC<input
+                  id="psc"
+                  name="psc"
+                  maxlength="4"
+                  placeholder="Any service"
+              /></label>
+              <label
+                >FEDERAL BUYERS<select id="agency" name="agency">
+                  <option value="all">All, including DoD</option>
+                  <option value="dod">DoD only</option>
+                  <option value="civilian">Civilian only</option>
+                </select></label
+              >
+              <button class="primary" type="submit" id="searchButton">
+                Search this source <span>→</span>
+              </button>
+              <div class="datebar">
+                <label
+                  >From
+                  <input
+                    id="from"
+                    type="date"
+                    min="2007-10-01"
+                    required /></label
+                ><label
+                  >Through
+                  <input id="to" type="date" min="2007-10-01" required /></label
+                ><span
+                  >USAspending search window; performance dates may extend
+                  beyond it.</span
+                >
+              </div>
+            </div>
+          </form>
+          <p
+            id="notice"
+            class="notice"
+            role="status"
+            aria-live="polite"
+            hidden
+          ></p>
+          <details class="rail-section" id="programPanel" open>
+            <summary>Contract programs</summary>
+            <p class="muted small">
+              Select a program to show its verified award holders on the map and
+              in supplier results. Holder addresses do not establish work in the
+              selected country.
+            </p>
+            <label
+              >Program view<select id="programMode">
+                <option value="country">
+                  With loaded orders in research country
+                </option>
+                <option value="holders">Verified holders · worldwide</option>
+              </select></label
+            >
+            <p id="programCatalogStatus" class="muted small" role="status">
+              Loading the public contract catalog…
+            </p>
+            <button id="programCheckAll" class="primary" disabled>
+              Check holders for country work
+            </button>
+            <p id="programCountryStatus" class="muted small" role="status"></p>
+            <label
+              >Contract to investigate<select id="programContract">
+                <option value="">Select a program first</option>
+              </select></label
+            >
+            <button id="programLoad" class="secondary" disabled>
+              Check first 100 linked orders
+            </button>
+            <button id="programStop" class="text-button" hidden>
+              Stop checking orders
+            </button>
+            <p id="programLoadStatus" class="muted small" role="status">
+              Select a program and contract to investigate.
+            </p>
+            <p class="muted small">
+              Availability is unverified. An open reported ordering period does
+              not establish capacity or permission to order. Country checks
+              cover direct task orders only; unreported and indirect awards can
+              be missing.
+            </p>
+          </details>
+          <details id="samDiscovery" class="rail-section sam-discovery" open>
+            <summary>SAM vendors &amp; exclusions</summary>
+            <p class="muted small">
+              Results load automatically for the selected country. Name and
+              capability filters update when you leave a field or press Enter.
+              The first 10 source records load; additional pages are optional.
+            </p>
+            <p id="samConnection" class="muted small" role="status">
+              Checking shared SAM connection…
+            </p>
+            <button id="samCheckConnection" class="text-button" type="button">
+              Check connection
+            </button>
+            <form id="samSearchForm">
+              <label
+                >Show<select id="samMode">
+                  <option value="sam">Registered vendors</option>
+                  <option value="exclusions">
+                    Active exclusion records - firms
+                  </option>
+                </select></label
+              >
+              <label
+                >Company name contains<input
+                  id="samName"
+                  maxlength="120"
+                  placeholder="Optional legal business name"
+              /></label>
+              <div id="samRegistrationFilters">
+                <label
+                  >Declared industry contains<input
+                    id="samIndustry"
+                    maxlength="120"
+                    placeholder="e.g. transportation"
+                /></label>
+                <label
+                  >Full NAICS code<input
+                    id="samNAICS"
+                    inputmode="numeric"
+                    maxlength="6"
+                    pattern="[0-9]{6}"
+                    placeholder="Optional six-digit code"
+                /></label>
+                <label
+                  >PSC<input
+                    id="samPSC"
+                    maxlength="4"
+                    pattern="[A-Za-z0-9]{4}"
+                    placeholder="Optional four-character code"
+                /></label>
+                <label class="global-control"
+                  ><input id="samExpired" type="checkbox" /> Include expired
+                  registrations</label
+                >
+              </div>
+              <p id="samExclusionNote" class="muted small" hidden>
+                Active exclusion records for firms with an exclusion address in
+                this country. Review the type, agency and scope in each record.
+                No match does not establish award eligibility; expired
+                registration is not debarment.
+                <br /><a
+                  href="https://sam.gov/search/"
+                  target="_blank"
+                  rel="noopener"
+                  >Open official SAM search</a
+                >
+                and select Exclusions to verify a company. Live integration is
+                in preview; failed requests are not no-match results.
+              </p>
+            </form>
+            <button id="samMore" class="secondary" disabled>
+              Load 10 more records
+            </button>
+            <button id="samRetry" class="secondary" hidden type="button">
+              Retry SAM lookup
+            </button>
+            <p id="samSearchStatus" class="muted small" role="status">
+              Public results load when SAM is selected. You can capture it in
+              your research packet to preserve the evidence. Registration does
+              not establish current capacity or installation access.
+            </p>
+          </details>
+          <div class="rail-section">
+            <div class="eyebrow">GLOBAL CONTEXT</div>
+            <label class="global-control"
+              ><input id="globalToggle" type="checkbox" /> Federal award
+              activity</label
+            >
+            <p class="muted small" id="globalStatus">
+              Worldwide obligations · same dates and capability filters.
+            </p>
+            <p class="muted small">
+              Gold circles show positive net obligations by work country, not
+              supplier counts.
+            </p>
+          </div>
+          <div class="rail-section">
+            <div class="eyebrow">LOGISTICS CONTEXT</div>
+            <label class="global-control"
+              ><input id="airfieldsToggle" type="checkbox" />
+              <span class="air-color">✈</span> Airfields</label
+            >
+            <label class="global-control"
+              ><input id="portsToggle" type="checkbox" />
+              <span class="port-color">⚓</span> Ports / maritime
+              locations</label
+            >
+            <label class="logistics-label"
+              >Area<select id="logisticsScope">
+                <option value="country">Selected country</option>
+                <option value="world">Worldwide</option>
+              </select></label
+            >
+            <label class="logistics-label"
+              >Airfield types<select id="airfieldType">
+                <option value="airports">
+                  Large, medium &amp; small airports
+                </option>
+                <option value="large_airport">Large airports</option>
+                <option value="medium_airport">Medium airports</option>
+                <option value="small_airport">
+                  Small airports / airstrips
+                </option>
+                <option value="heliport">Heliports</option>
+                <option value="seaplane_base">Seaplane bases</option>
+                <option value="closed_airport">Closed airports</option>
+                <option value="all">
+                  All directory types, including closed
+                </option>
+              </select></label
+            >
+            <label class="logistics-label"
+              >Find a facility<input
+                id="logisticsFilter"
+                placeholder="Name, IATA, ICAO or UN/LOCODE"
+            /></label>
+            <p id="logisticsStatus" class="muted small" role="status">
+              Enable a directory to explore logistics locations.
+            </p>
+            <button id="fitLogistics" class="text-button">
+              Fit logistics locations ⤢
+            </button>
+            <button id="logisticsBrowse" class="text-button">
+              Browse facility directory
+            </button>
+            <button id="exportLogistics" class="text-button" disabled>
+              ↓ Export logistics evidence
+            </button>
+            <p class="muted small">
+              Independent of award dates and capability filters. Port points may
+              represent a town or port area. Coverage is not exhaustive.
+            </p>
+          </div>
+          <div class="rail-section">
+            <div class="eyebrow">TRANSPORT NETWORKS</div>
+            <label class="global-control"
+              ><input id="transport-roads" type="checkbox" />
+              <span class="road-color">━</span> Major roads</label
+            >
+            <label class="global-control"
+              ><input id="transport-rail" type="checkbox" />
+              <span class="rail-color">┄</span> Rail</label
+            >
+            <label class="global-control"
+              ><input id="transport-borders" type="checkbox" />
+              <span class="border-color">●</span> Border-control points</label
+            >
+            <button id="zoomTransport" class="text-button">
+              Zoom to local area
+            </button>
+            <button id="loadTransport" class="secondary full" disabled>
+              Load map area
+            </button>
+            <p id="transportStatus" class="muted small" role="status">
+              Zoom into a city or port, then load the map area.
+            </p>
+            <button id="exportTransport" class="text-button" disabled>
+              ↓ Export transport features
+            </button>
+            <p class="muted small">
+              OpenStreetMap · roads and rail lines, not verified routes. Border
+              mapping and current availability vary.
+              <a
+                href="https://www.openstreetmap.org/copyright"
+                target="_blank"
+                rel="noopener"
+                >© contributors · ODbL ↗</a
+              >
+            </p>
+          </div>
+          <div class="rail-section">
+            <div class="eyebrow">SUPPLIER LOCATION</div>
+            <div id="segments" class="segments">
+              <button data-segment="all" class="selected">
+                All origins <b id="count-all">0</b></button
+              ><button data-segment="local">
+                <i class="dot local"></i>In selected country
+                <b id="count-local">0</b></button
+              ><button data-segment="us">
+                <i class="dot us"></i>United States
+                <b id="count-us">0</b></button
+              ><button data-segment="third">
+                <i class="dot third"></i>Third country
+                <b id="count-third">0</b></button
+              ><button data-segment="unknown">
+                <i class="dot unknown"></i>Unknown / conflicting
+                <b id="count-unknown">0</b>
+              </button>
+            </div>
+            <p class="muted small">
+              Based on reported addresses, not ownership or nationality.
+            </p>
+          </div>
+          <div class="rail-section">
+            <div class="eyebrow">RESEARCH FILE</div>
+            <button id="shortlistToggle" class="secondary full">
+              Show shortlist <span id="shortlistCount">0</span></button
+            ><button id="exportCSV" class="text-button">
+              ↓ Export visible evidence · CSV</button
+            ><button id="compareSaved" class="secondary full">
+              Compare shortlisted companies</button
+            ><button id="exportJSON" class="text-button">
+              ↓ Export shortlist · JSON
+            </button>
+            <p class="muted small">
+              Shortlisted evidence is saved in this browser. Exports include
+              sources and search scope.
+            </p>
+          </div>
+          <div class="rail-note">
+            <strong>Evidence, with context.</strong>
+            <p>
+              Records support research leads. They do not establish current
+              capability, eligibility, or installation access.
+            </p>
+          </div>
+        </aside>
+        <div
+          class="content"
+          tabindex="0"
+          aria-label="Map and supplier results — scroll independently"
+          role="region"
+        >
+          <div class="context-heading">
+            <div>
+              <div class="eyebrow" id="regionName">COUNTRY RESEARCH</div>
+              <h2 id="countryName">Saudi Arabia</h2>
+            </div>
+            <div class="viewtabs" role="group" aria-label="View">
+              <button id="mapTab" aria-pressed="true">Map</button
+              ><button id="insightsTab" aria-pressed="false">Patterns</button>
+              <a class="results-jump" href="#results">Suppliers ↓</a>
+            </div>
+          </div>
+          <div class="metrics">
+            <div>
+              <strong id="supplierMetric">—</strong
+              ><span>Suppliers in loaded records</span>
+            </div>
+            <div>
+              <strong id="recordMetric">—</strong
+              ><span>Evidence records loaded</span>
+            </div>
+            <div>
+              <strong id="originMetric">—</strong
+              ><span>Reported origin countries</span>
+            </div>
+            <div>
+              <strong id="buyerMetric">—</strong
+              ><span>Federal buyers represented</span>
+            </div>
+          </div>
+          <section id="mapPanel" aria-label="Country and supplier origin map">
+            <div class="map-tools">
+              <span
+                ><i class="dot local"></i><b id="mapLabel">Saudi Arabia</b> ·
+                research country</span
+              ><button id="fitMap">Fit mapped locations ⤢</button>
+            </div>
+            <div class="location-controls">
+              <label
+                >Map locations<select id="locationRole">
+                  <option value="flow">Contractor → reported work</option>
+                  <option value="vendor">Vendor addresses</option>
+                  <option value="work">Reported work locations</option>
+                  <option value="both">Both · address / work</option>
+                </select></label
+              >
+              <label
+                >Focus a city or postal area<input
+                  id="placeQuery"
+                  placeholder="e.g. Jeddah"
+                  maxlength="100" /></label
+              ><button id="findPlace" class="secondary">
+                Locate in country
+              </button>
+              <p id="placeStatus" class="muted small" role="status"></p>
+            </div>
+            <p
+              id="countryMapHint"
+              class="muted small country-map-hint"
+              role="status"
+            >
+              Loading clickable country shapes…
+            </p>
+            <div id="map"></div>
+            <div id="flowControls" class="location-controls">
+              <p id="flowSummary" class="small" role="status"></p>
+              <label
+                >Inspect a contractor connection<select id="flowFocus">
+                  <option value="">All contractor connections</option>
+                </select></label
+              >
+              <p class="muted small">
+                Dotted lines connect reported addresses to award work locations.
+                They show contract relationships, not transport routes. Teal:
+                in-country · Blue: U.S. origin abroad · Purple: other foreign
+                origin. Country-only endpoints are labeled; dates may describe
+                historical work. The selector focuses the map; supplier results
+                remain unchanged.
+              </p>
+            </div>
+            <div id="mapFallback" hidden></div>
+            <div class="map-caption">
+              <span id="locationCoverage" role="status"
+                >Matching reported locations…</span
+              ><span id="locationLegend"
+                >Teal: vendor address · Purple: reported work. Approximate city
+                / postal points, never exact company sites. Unmatched records
+                stay in the list.</span
+              >
+            </div>
+            <p class="muted small logistics-attribution">
+              Place reference:
+              <a href="https://www.geonames.org/" target="_blank" rel="noopener"
+                >GeoNames</a
+              >
+              · CC BY 4.0 ·
+              <a href="ocs-atlas/data/places/SOURCES.md" target="_blank"
+                >Coverage and matching rules</a
+              >
+            </p>
+          </section>
+          <section id="logisticsDirectory" class="logistics-directory" hidden>
+            <h3>Logistics directory</h3>
+            <p id="logisticsListNote" class="muted small"></p>
+            <div id="logisticsList"></div>
+          </section>
+          <p
+            id="logisticsAttribution"
+            class="muted small logistics-attribution"
+          ></p>
+          <section id="insightsPanel" hidden>
+            <div class="insight-grid" id="insights"></div>
+            <p class="muted small">
+              Patterns describe only loaded, visible records. Additional pages
+              and sources can change these results. Prime, subcontract, and
+              vehicle amounts are never added together.
+            </p>
+          </section>
+          <section class="results" id="results" tabindex="-1">
+            <div class="results-heading">
+              <div>
+                <h2>
+                  Supplier leads
+                  <span id="resultCount" class="small-count">0</span>
+                </h2>
+                <p id="scopeLabel" class="muted small">
+                  Choose a country to begin.
+                </p>
+              </div>
+              <label class="filter-label"
+                ><span class="sr-only">Filter loaded supplier leads</span
+                ><input
+                  id="localFilter"
+                  type="search"
+                  placeholder="Filter loaded names, UEIs, descriptions…"
+              /></label>
+            </div>
+            <div id="resultList">
+              <div class="empty">Loading the research workspace…</div>
+            </div>
+            <div class="history-tools">
+              <button id="loadHistory" class="secondary">
+                Load up to 1,000 more per selected source</button
+              ><button id="stopHistory" class="secondary" hidden>
+                Stop after current page</button
+              ><button id="restoreHistory" class="text-button" hidden>
+                Restore saved search</button
+              ><span
+                id="historyStatus"
+                class="muted small"
+                role="status"
+              ></span>
+            </div>
+            <div id="pagination"></div>
+          </section>
+        </div>
+      </div>
+      <footer>
+        <span>KTHQ · Independent practitioner resource</span
+        ><span>Public procurement evidence. Every lead has a source.</span>
+      </footer>
+    </main>
+    <dialog id="packetDialog" class="packet-dialog">
+      <div class="dialog-top">
+        <h2>Market research packet</h2>
+        <button data-close="packetDialog" aria-label="Close research packet">
+          ×
+        </button>
+      </div>
+      <p class="muted small">
+        A frozen preview of captured searches, the current shortlist and enabled
+        logistics context. Download HTML to open or print it in your browser;
+        JSON retains the structured evidence.
+      </p>
+      <div class="detail-actions">
+        <button id="packetHTML" class="primary">Export printable HTML</button
+        ><button id="packetJSON" class="secondary">Export packet JSON</button>
+      </div>
+      <iframe
+        id="packetPreview"
+        title="Market research packet preview"
+        sandbox="allow-popups allow-popups-to-escape-sandbox"
+        referrerpolicy="no-referrer"
+      ></iframe>
+    </dialog>
+    <dialog id="transportDialog">
+      <div class="dialog-top">
+        <span class="eyebrow">PUBLIC TRANSPORT FEATURE</span
+        ><button
+          data-close="transportDialog"
+          aria-label="Close transport details"
+        >
+          ×
+        </button>
+      </div>
+      <div id="transportDetail"></div>
+    </dialog>
+    <dialog id="logisticsDialog">
+      <div class="dialog-top">
+        <span class="eyebrow">PUBLIC LOGISTICS DIRECTORY</span
+        ><button
+          data-close="logisticsDialog"
+          aria-label="Close logistics details"
+        >
+          ×
+        </button>
+      </div>
+      <div id="logisticsDetail"></div>
+    </dialog>
+    <dialog id="comparisonDialog" class="comparison-dialog">
+      <div class="dialog-top">
+        <h2>Compare supplier evidence</h2>
+        <button data-close="comparisonDialog" aria-label="Close comparison">
+          ×
+        </button>
+      </div>
+      <p class="muted small">
+        Saved evidence only; companies may come from different searches and date
+        windows. No capability or access rating is assigned.
+      </p>
+      <div id="comparisonChoices"></div>
+      <div id="comparisonTable"></div>
+      <button id="exportComparison" class="secondary">
+        Export comparison evidence
+      </button>
+    </dialog>
+    <dialog id="supplierDialog" class="supplier-dialog">
+      <div class="dialog-top">
+        <span class="eyebrow">SUPPLIER EVIDENCE</span
+        ><button
+          data-close="supplierDialog"
+          aria-label="Close supplier details"
+        >
+          ×
+        </button>
+      </div>
+      <div id="supplierDetail"></div>
+    </dialog>
+    <dialog id="coverageDialog">
+      <div class="dialog-top">
+        <div>
+          <div class="eyebrow">RESEARCH COVERAGE</div>
+          <h2>What is connected?</h2>
+        </div>
+        <button data-close="coverageDialog" aria-label="Close source coverage">
+          ×
+        </button>
+      </div>
+      <p class="muted">
+        A missing source is a research gap, not evidence that no suppliers
+        exist.
+      </p>
+      <div id="coverage"></div>
+      <h3>Continue the research</h3>
+      <p class="muted small">
+        These official sources are research destinations. Only sources
+        explicitly marked connected supply atlas records.
+      </p>
+      <div id="sourceLibrary"></div>
+      <div class="import-box">
+        <h3>Add a PUBLIC SAM snapshot</h3>
+        <p>
+          Load a normalized snapshot produced by the atlas import utility. Files
+          stay in this session; the public site can also host country snapshots.
+        </p>
+        <label class="secondary"
+          >Choose snapshot
+          <input id="samImport" type="file" accept=".json,application/json"
+        /></label>
+        <p class="small muted">
+          Setup and source requirements:
+          <a href="ocs-atlas/README.md" target="_blank" rel="noopener"
+            >implementation notes ↗</a
+          >
+        </p>
+      </div>
+    </dialog>
+    <dialog id="exportDialog">
+      <div class="dialog-top">
+        <div>
+          <div class="eyebrow">RESEARCH EXPORT</div>
+          <h2 id="exportTitle">Export</h2>
+        </div>
+        <button data-close="exportDialog" aria-label="Close export">×</button>
+      </div>
+      <p id="exportHelp" class="muted small"></p>
+      <div class="detail-actions">
+        <button id="downloadExport" class="primary">Download file</button
+        ><button id="copyExport" class="secondary">Copy contents</button>
+      </div>
+      <label class="sr-only" for="exportContent">Export contents</label
+      ><textarea
+        id="exportContent"
+        readonly
+        spellcheck="false"
+        style="
+          width: 100%;
+          height: 320px;
+          margin-top: 18px;
+          background: #07121c;
+          color: #bdd0dd;
+          border: 1px solid #36505e;
+          border-radius: 6px;
+          padding: 12px;
+          font: 11px/1.6 monospace;
+        "
+      ></textarea>
+    </dialog>
+    <noscript
+      ><p class="notice">
+        Enable JavaScript to load public data and use the map.
+      </p></noscript
+    >
+  </body>
+</html>
