@@ -1,5 +1,5 @@
 window.KTHQ_ASBCA_DATA = {
-  "generatedAt": "2026-09-25T13:02:50.004852+00:00",
+  "generatedAt": "2026-09-26T12:30:46.942560+00:00",
   "source": {
     "name": "Armed Services Board of Contract Appeals",
     "decisionsUrl": "https://www.asbca.mil/Decisions/2026/"
@@ -7,14 +7,14 @@ window.KTHQ_ASBCA_DATA = {
   "note": "Automated KTHQ ASBCA decision watch. Official excerpts are extracted from ASBCA PDF text when available. Practitioner prompts are deterministic triage notes, not legal advice.",
   "stats": {
     "total": 18,
-    "latestDecisionDate": "2026-08-21",
+    "latestDecisionDate": "2026-09-01",
     "downloadedPdfs": 18,
     "metadataOnly": 0,
     "outcomes": {
-      "unclassified": 3,
       "denied": 2,
-      "dismissed": 10,
-      "settled": 3
+      "settled": 4,
+      "dismissed": 8,
+      "unclassified": 4
     },
     "sourceStatus": {
       "decisionsPage": {
@@ -23,14 +23,322 @@ window.KTHQ_ASBCA_DATA = {
         "readerUrl": "https://r.jina.ai/http://r.jina.ai/http://https://www.asbca.mil/Decisions/2026/",
         "mode": "reader-markdown",
         "error": "",
-        "linksFound": 172,
+        "linksFound": 184,
         "linksUsed": 18
       }
     }
   },
   "items": [
     {
-      "id": "2026-08-21-vesequ-llc-0",
+      "id": "2026-09-01-wsp-usa-solutions-inc--2",
+      "caseName": "WSP USA Solutions Inc.",
+      "caseNumberText": "ASBCA No. 62674",
+      "caseNumbers": [
+        "ASBCA No. 62674"
+      ],
+      "decisionDate": "2026-09-01",
+      "displayDate": "Sep 1, 2026",
+      "decisionType": "Non-dispositive",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "judge": "Woodrow",
+      "officialExcerpt": "The appeal is denied.",
+      "tags": [
+        "REA / changes",
+        "Motions",
+        "Delivery"
+      ],
+      "practitionerPrompt": "When settling a change, be explicit about which delay, disruption, and impact claims are released. Ambiguous mod language keeps disputes alive.",
+      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/62674%20WSP%20USA%20Solutions%20Inc.%209.1.26%20Decision.pdf?ver=CuvDD55mIc9ArtRsFup27g%3d%3d",
+      "filename": "62674 WSP USA Solutions Inc. 9.1.26 Decision.pdf",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-09-01-kiewitphelps-1",
+      "caseName": "KiewitPhelps",
+      "caseNumberText": "ASBCA Nos. 61184, 62119, 62980, 64137",
+      "caseNumbers": [
+        "ASBCA No. 61184",
+        "ASBCA No. 62119",
+        "ASBCA No. 62980",
+        "ASBCA No. 64137"
+      ],
+      "decisionDate": "2026-09-01",
+      "displayDate": "Sep 1, 2026",
+      "decisionType": "Consent judgment",
+      "outcome": "settled",
+      "outcomeLabel": "Settled",
+      "judge": "%209.1.2026.pdf?ver=p86cwtywCVVaJypvmIgLwQ%3d%3d)Eyester",
+      "officialExcerpt": "An official website of the United States government Here's how you know **Official websites use .mil** A **.mil** website belongs to an official U.S. **Secure .mil websites use HTTPS** A **lock ()** or **https://** means you've safely connected to the .mil website.",
+      "tags": [
+        "Settlement",
+        "ADR"
+      ],
+      "practitionerPrompt": "Consent judgments are a practical off-ramp. Use them when exposure is clear and the negotiated number is better than continued litigation.",
+      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/62980%20KiewitPhelps%20(Consent%20Judgment",
+      "filename": "62980 KiewitPhelps (Consent Judgment",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-09-01-heco-pacific-manufacturing-inc--0",
+      "caseName": "HECO Pacific Manufacturing, Inc.",
+      "caseNumberText": "ASBCA Nos. 63217, 64512",
+      "caseNumbers": [
+        "ASBCA No. 63217",
+        "ASBCA No. 64512"
+      ],
+      "decisionDate": "2026-09-01",
+      "displayDate": "Sep 1, 2026",
+      "decisionType": "Consent judgment",
+      "outcome": "settled",
+      "outcomeLabel": "Settled",
+      "judge": "Melnick",
+      "officialExcerpt": "It is the Board's decision, pursuant to 41 U.S.C. \u00a7\u00a7 7105(e), 7108(b), and the parties' stipulation and agreement, that the appeal is sustained. In the nature of a consent judgment, the Board makes a monetary award to appellant in the amount of $250,000. This amount is inclusive of Contract Disputes Act interest. No further interest shall be paid.",
+      "tags": [
+        "Settlement",
+        "CDA process"
+      ],
+      "practitionerPrompt": "Consent judgments are a practical off-ramp. Use them when exposure is clear and the negotiated number is better than continued litigation.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=cx4tBJgJQdo%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-08-28-prolog-inc--3",
+      "caseName": "ProLog, Inc.",
+      "caseNumberText": "ASBCA No. 64319",
+      "caseNumbers": [
+        "ASBCA No. 64319"
+      ],
+      "decisionDate": "2026-08-28",
+      "displayDate": "Aug 28, 2026",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "Hamady",
+      "officialExcerpt": "The dispute has been settled. The appeal is dismissed with prejudice.",
+      "tags": [
+        "Settlement"
+      ],
+      "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=7ipXt8jjNYs%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-08-28-hensel-phelps-construction-co--4",
+      "caseName": "Hensel Phelps Construction Co.",
+      "caseNumberText": "ASBCA Nos. 63316, 63397, 63398",
+      "caseNumbers": [
+        "ASBCA No. 63316",
+        "ASBCA No. 63397",
+        "ASBCA No. 63398"
+      ],
+      "decisionDate": "2026-08-28",
+      "displayDate": "Aug 28, 2026",
+      "decisionType": "Decision",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "judge": "Stinson",
+      "officialExcerpt": "Paragraph 6.2 also states that PCASE (Pavement-Transportation Computer Assisted Structural Evaluation) software, developed by TSC, \"was used for the design of the pavements on this project\" utilizing applicable UFC criteria including \"subgrade and base requirements, thickness designs, drainage layer computations, compaction requirements, criteria for stabilized layers, concrete pavement joint spacing, and determination of overlay thicknesses\" (R4, tab 16 at 3772; tr. All references to F&H in the request for equitable adjustment (REA) cited by Hensel Phelps are to documents dated after contract award (R4, tab 1...",
+      "tags": [
+        "Termination",
+        "REA / changes",
+        "Settlement",
+        "Motions",
+        "CDA process"
+      ],
+      "practitionerPrompt": "Termination actions need clean documentation. If performance is effectively ended, make sure the file and notices match the legal theory.",
+      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/63316%20et%20al.%20Hensel%20Phelps%20Construction%208.28.26%20Decision.pdf?ver=FZU_oUQQcCDUZrzYptLBLQ%3d%3d",
+      "filename": "63316 et al. Hensel Phelps Construction 8.28.26 Decision.pdf",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-08-26-group-iii-mgt-inc--5",
+      "caseName": "Group III Mgt, Inc.",
+      "caseNumberText": "ASBCA No. 64176",
+      "caseNumbers": [
+        "ASBCA No. 64176"
+      ],
+      "decisionDate": "2026-08-26",
+      "displayDate": "Aug 26, 2026",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "Laufgraben",
+      "officialExcerpt": "The dispute has been settled. The appeal is dismissed with prejudice.",
+      "tags": [
+        "Settlement"
+      ],
+      "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=dEIY6vIZK6s%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-08-26-dubai-pearl-company-6",
+      "caseName": "Dubai Pearl Company",
+      "caseNumberText": "ASBCA No. 64444",
+      "caseNumbers": [
+        "ASBCA No. 64444"
+      ],
+      "decisionDate": "2026-08-26",
+      "displayDate": "Aug 26, 2026",
+      "decisionType": "Decision",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "judge": "%208.26.2026.pdf?ver=y06WNTitHgJfoKflVRmXOQ%3d%3d)O'Connell",
+      "officialExcerpt": "An official website of the United States government Here's how you know **Official websites use .mil** A **.mil** website belongs to an official U.S. **Secure .mil websites use HTTPS** A **lock ()** or **https://** means you've safely connected to the .mil website.",
+      "tags": [
+        "ADR"
+      ],
+      "practitionerPrompt": "Open the PDF when the facts resemble your contract file. ASBCA decisions are usually about claims discipline, final decisions, and dispute documentation.",
+      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64444%20Dubai%20Pearl%20Company%20(Decision",
+      "filename": "64444 Dubai Pearl Company (Decision",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-08-25-solpac-construction-inc-dba-soltek-pacific-construction-company-7",
+      "caseName": "Solpac Construction, Inc. dba Soltek Pacific Construction Company",
+      "caseNumberText": "ASBCA No. 63354",
+      "caseNumbers": [
+        "ASBCA No. 63354"
+      ],
+      "decisionDate": "2026-08-25",
+      "displayDate": "Aug 25, 2026",
+      "decisionType": "Consent judgment",
+      "outcome": "settled",
+      "outcomeLabel": "Settled",
+      "judge": "Wilson",
+      "officialExcerpt": "It is the Board's decision, pursuant to 41 U.S.C. \u00a7\u00a7 7105(e), 7108(b), and the parties' stipulation and agreement, that the appeal is sustained. In the nature of a consent judgment, the Board makes a monetary award to appellant in the amount of $20,000. This amount is inclusive of Contract Disputes Act interest. No further interest shall be paid.",
+      "tags": [
+        "Settlement",
+        "CDA process"
+      ],
+      "practitionerPrompt": "Consent judgments are a practical off-ramp. Use them when exposure is clear and the negotiated number is better than continued litigation.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=BHdu2RDdtQs%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-08-24-relyant-global-llc-10",
+      "caseName": "Relyant Global LLC",
+      "caseNumberText": "ASBCA Nos. 64032, 64111, 64230, 64231, 64517",
+      "caseNumbers": [
+        "ASBCA No. 64032",
+        "ASBCA No. 64111",
+        "ASBCA No. 64230",
+        "ASBCA No. 64231",
+        "ASBCA No. 64517"
+      ],
+      "decisionDate": "2026-08-24",
+      "displayDate": "Aug 24, 2026",
+      "decisionType": "Decision",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "judge": "%208.24.2026%20w%20ERATTA.pdf?ver=EQ7Q-Mm8SSviuvBysXmf9Q%3d%3d)McIlmail",
+      "officialExcerpt": "An official website of the United States government Here's how you know **Official websites use .mil** A **.mil** website belongs to an official U.S. **Secure .mil websites use HTTPS** A **lock ()** or **https://** means you've safely connected to the .mil website.",
+      "tags": [
+        "ADR"
+      ],
+      "practitionerPrompt": "Open the PDF when the facts resemble your contract file. ASBCA decisions are usually about claims discipline, final decisions, and dispute documentation.",
+      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64032%20et%20al.%20Relyant%20Global%20LLC%20(Decision",
+      "filename": "64032 et al. Relyant Global LLC (Decision",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-08-24-kropp-holdings-inc--8",
+      "caseName": "Kropp Holdings, Inc.",
+      "caseNumberText": "ASBCA No. 64523",
+      "caseNumbers": [
+        "ASBCA No. 64523"
+      ],
+      "decisionDate": "2026-08-24",
+      "displayDate": "Aug 24, 2026",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "Prouty",
+      "officialExcerpt": "The dispute has been settled. The appeal is dismissed with prejudice.",
+      "tags": [
+        "Settlement"
+      ],
+      "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=zDdCRL4kfN0%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-08-24-kbr-services-llc-11",
+      "caseName": "KBR Services, LLC",
+      "caseNumberText": "ASBCA Nos. 63870, 63956",
+      "caseNumbers": [
+        "ASBCA No. 63870",
+        "ASBCA No. 63956"
+      ],
+      "decisionDate": "2026-08-24",
+      "displayDate": "Aug 24, 2026",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "Prouty",
+      "officialExcerpt": "ARMED SERVICES BOARD OF CONTRACT APPEALS Appeals of - ) ) KBR Services, LLC ) ASBCA Nos. Reyes, JA Trial Attorneys ORDER OF DISMISSAL The dispute has been settled.",
+      "tags": [
+        "Settlement"
+      ],
+      "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
+      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=i0TF7kQkevk%3d&portalid=143",
+      "filename": "LinkClick.aspx",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-08-24-aerokool-aviation-corporation-9",
+      "caseName": "AeroKool Aviation Corporation",
+      "caseNumberText": "ASBCA No. 64377",
+      "caseNumbers": [
+        "ASBCA No. 64377"
+      ],
+      "decisionDate": "2026-08-24",
+      "displayDate": "Aug 24, 2026",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
+      "judge": "%208.24.2026.pdf?ver=s8CjOYsgt8eUen2bSpM6UA%3d%3d)Prouty",
+      "officialExcerpt": "An official website of the United States government Here's how you know **Official websites use .mil** A **.mil** website belongs to an official U.S. **Secure .mil websites use HTTPS** A **lock ()** or **https://** means you've safely connected to the .mil website.",
+      "tags": [
+        "ADR"
+      ],
+      "practitionerPrompt": "Dismissals often turn on threshold mistakes. New specialists should read these for what must happen before the Board can reach the merits.",
+      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64377%20AeroKool%20Aviation%20Corporation%20(Dismissal",
+      "filename": "64377 AeroKool Aviation Corporation (Dismissal",
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
+    },
+    {
+      "id": "2026-08-21-vesequ-llc-12",
       "caseName": "VESEQU LLC",
       "caseNumberText": "ASBCA No. 64468",
       "caseNumbers": [
@@ -54,7 +362,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-08-20-visionary-construction-inc-dba-visionary-services-2",
+      "id": "2026-08-20-visionary-construction-inc-dba-visionary-services-14",
       "caseName": "Visionary Construction, Inc. dba Visionary Services",
       "caseNumberText": "ASBCA No. 64426",
       "caseNumbers": [
@@ -81,7 +389,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-08-20-peritia-llc-1",
+      "id": "2026-08-20-peritia-llc-13",
       "caseName": "Peritia LLC",
       "caseNumberText": "ASBCA Nos. 64495, 64586",
       "caseNumbers": [
@@ -110,7 +418,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-08-19-erik-robinson-d-b-a-the-artwork-factory-3",
+      "id": "2026-08-19-erik-robinson-d-b-a-the-artwork-factory-15",
       "caseName": "Erik Robinson d/b/a The Artwork Factory",
       "caseNumberText": "ASBCA Nos. 63727, 63809",
       "caseNumbers": [
@@ -136,7 +444,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-08-18-mvation-worldwide-inc--4",
+      "id": "2026-08-18-mvation-worldwide-inc--16",
       "caseName": "Mvation Worldwide Inc.",
       "caseNumberText": "ASBCA No. 64633",
       "caseNumbers": [
@@ -160,7 +468,7 @@ window.KTHQ_ASBCA_DATA = {
       "sourceError": ""
     },
     {
-      "id": "2026-08-18-bfbc-llc-5",
+      "id": "2026-08-18-bfbc-llc-17",
       "caseName": "BFBC, LLC",
       "caseNumberText": "ASBCA No. 64509",
       "caseNumbers": [
@@ -178,312 +486,6 @@ window.KTHQ_ASBCA_DATA = {
       ],
       "practitionerPrompt": "Consent judgments are a practical off-ramp. Use them when exposure is clear and the negotiated number is better than continued litigation.",
       "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=tS80I88WNI0%3d&portalid=143",
-      "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-08-17-hydraulic-international-inc--6",
-      "caseName": "Hydraulic International, Inc.",
-      "caseNumberText": "ASBCA No. 64332",
-      "caseNumbers": [
-        "ASBCA No. 64332"
-      ],
-      "decisionDate": "2026-08-17",
-      "displayDate": "Aug 17, 2026",
-      "decisionType": "Dismissal",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "judge": "Eyester",
-      "officialExcerpt": "The dispute has been settled. The appeal is dismissed with prejudice.",
-      "tags": [
-        "Settlement"
-      ],
-      "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
-      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=ax7JmRn4JA0%3d&portalid=143",
-      "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-08-14-amentum-services-7",
-      "caseName": "Amentum Services",
-      "caseNumberText": "ASBCA No. 64582",
-      "caseNumbers": [
-        "ASBCA No. 64582"
-      ],
-      "decisionDate": "2026-08-14",
-      "displayDate": "Aug 14, 2026",
-      "decisionType": "Dismissal",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "judge": "Wilson",
-      "officialExcerpt": "The dispute has been settled. The appeal is dismissed with prejudice.",
-      "tags": [
-        "Settlement"
-      ],
-      "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
-      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64582%20Amentum%20Services%208.14.26%20Dismissal.pdf?ver=9osltJ6YMCaq8fomQAIrIw%3d%3d",
-      "filename": "64582 Amentum Services 8.14.26 Dismissal.pdf",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-08-11-microtechnologies-llc-8",
-      "caseName": "MicroTechnologies, LLC",
-      "caseNumberText": "ASBCA No. 64544",
-      "caseNumbers": [
-        "ASBCA No. 64544"
-      ],
-      "decisionDate": "2026-08-11",
-      "displayDate": "Aug 11, 2026",
-      "decisionType": "Dismissal",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "judge": "Laufgraben",
-      "officialExcerpt": "The dispute has been settled. The appeal is dismissed with prejudice.",
-      "tags": [
-        "Settlement"
-      ],
-      "practitionerPrompt": "Settlement dismissals are final off-ramps. Confirm authority to settle, make release language clear, and document why the appeal can be dismissed.",
-      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=yshuAPOqXvw%3d&portalid=143",
-      "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-08-11-government-and-military-certification-systems-inc--9",
-      "caseName": "Government and Military Certification Systems, Inc.",
-      "caseNumberText": "ASBCA Nos. 64434, 64470",
-      "caseNumbers": [
-        "ASBCA No. 64434",
-        "ASBCA No. 64470"
-      ],
-      "decisionDate": "2026-08-11",
-      "displayDate": "Aug 11, 2026",
-      "decisionType": "Dismissal",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "judge": "McNulty",
-      "officialExcerpt": "ARMED SERVICES BOARD OF CONTRACT APPEALS Appeals of - ) ) Government and Military Certification Systems, Inc.",
-      "tags": [
-        "Jurisdiction",
-        "Motions"
-      ],
-      "practitionerPrompt": "Check the claim before the final decision: sum certain, certification, privity, and whether the contractor actually presented the same claim to the CO.",
-      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=uFG9DSeEJy0%3d&portalid=143",
-      "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-08-11-elbit-systems-of-america-night-vision-llc-10",
-      "caseName": "Elbit Systems of America-Night Vision, LLC",
-      "caseNumberText": "ASBCA No. 64450",
-      "caseNumbers": [
-        "ASBCA No. 64450"
-      ],
-      "decisionDate": "2026-08-11",
-      "displayDate": "Aug 11, 2026",
-      "decisionType": "Consent judgment",
-      "outcome": "settled",
-      "outcomeLabel": "Settled",
-      "judge": "D'Alessandris",
-      "officialExcerpt": "ARMED SERVICES BOARD OF CONTRACT APPEALS Appeal of - ) ) Elbit Systems of America-Night Vision, LLC ) ) ASBCA No. McGuireWoods LLP Washington, DC APPEARANCES FOR THE GOVERNMENT: Dana J.",
-      "tags": [
-        "Settlement"
-      ],
-      "practitionerPrompt": "Consent judgments are a practical off-ramp. Use them when exposure is clear and the negotiated number is better than continued litigation.",
-      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=Chy7HwFHaS0%3d&portalid=143",
-      "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-08-11-dashti-sanat-logistics-and-general-contracting-11",
-      "caseName": "Dashti Sanat Logistics and General Contracting",
-      "caseNumberText": "ASBCA No. 63643",
-      "caseNumbers": [
-        "ASBCA No. 63643"
-      ],
-      "decisionDate": "2026-08-11",
-      "displayDate": "Aug 11, 2026",
-      "decisionType": "Non-dispositive",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "judge": "Arnett",
-      "officialExcerpt": "Kim, JA Trial Attorney 2 Because we find material facts in dispute, the motion is denied. 63525 for lack of jurisdiction because the government had not received a certified claim. The claim included a certification consistent with the language required by the Contract Disputes Act (CDA) but lacked a signature ( id. The Board requested that the parties provide supplemental briefing regarding two issues: 1) whether NDAA Section 841 requires the HCA to issue a written determination that a specific contract provides funds directly or indirectly to a covered person or entity in order for the HCA to void said contra...",
-      "tags": [
-        "Jurisdiction",
-        "Termination",
-        "REA / changes",
-        "Motions",
-        "Costs"
-      ],
-      "practitionerPrompt": "Check the claim before the final decision: sum certain, certification, privity, and whether the contractor actually presented the same claim to the CO.",
-      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/63643%20Dashti%20Sanat%20Logistics%20and%20General%20Contracting%208.11.26%20NDDec.pdf?ver=efEn0E3qXMhDVui4ZZ_65w%3d%3d",
-      "filename": "63643 Dashti Sanat Logistics and General Contracting 8.11.26 NDDec.pdf",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-08-07-warrior-construction-services-inc--12",
-      "caseName": "Warrior Construction Services, Inc.",
-      "caseNumberText": "ASBCA No. 64497",
-      "caseNumbers": [
-        "ASBCA No. 64497"
-      ],
-      "decisionDate": "2026-08-07",
-      "displayDate": "Aug 7, 2026",
-      "decisionType": "Decision",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "judge": "Arnett",
-      "officialExcerpt": "the appeal is denied.",
-      "tags": [
-        "Costs"
-      ],
-      "practitionerPrompt": "Denied appeals are useful file-discipline examples. Look for what evidence the Board expected and what the appellant could not prove.",
-      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=r1OSANCTosk%3d&portalid=143",
-      "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-08-06-u-s-aeroteam-inc--13",
-      "caseName": "U.S. Aeroteam, Inc.",
-      "caseNumberText": "ASBCA Nos. 61972, 61973",
-      "caseNumbers": [
-        "ASBCA No. 61972",
-        "ASBCA No. 61973"
-      ],
-      "decisionDate": "2026-08-06",
-      "displayDate": "Aug 6, 2026",
-      "decisionType": "Decision",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "judge": "O'Connell",
-      "officialExcerpt": "The Board dismisses the appeals in part for lack of jurisdiction. In addition, \"[a]n adequate statement of a claim requires a sufficient quantification, both as to length of delay claimed and the amount of monetary adjustment attributable to delays or changes or the like; the information must be sufficient to enable the CO to undertake a meaningful review and to then be able to render the requested determination.\" Id. The contracts have an extensive litigation history, which can be traced to two requests for equitable adjustment that appellant, U.S. The complaint raised a variety of theories including construc...",
-      "tags": [
-        "Jurisdiction",
-        "Termination",
-        "REA / changes",
-        "Settlement",
-        "Costs"
-      ],
-      "practitionerPrompt": "Check the claim before the final decision: sum certain, certification, privity, and whether the contractor actually presented the same claim to the CO.",
-      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=n0jFtW2cwEI%3d&portalid=143",
-      "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-08-06-marine-hydraulics-international-llc-14",
-      "caseName": "Marine Hydraulics International, LLC",
-      "caseNumberText": "ASBCA Nos. 63429, 63511",
-      "caseNumbers": [
-        "ASBCA No. 63429",
-        "ASBCA No. 63511"
-      ],
-      "decisionDate": "2026-08-06",
-      "displayDate": "Aug 6, 2026",
-      "decisionType": "Decision",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "judge": "McLish",
-      "officialExcerpt": "Considering all of the circumstances, we find that the contracting officer agreed with and adopted, at least implicitly, PM Samonte's determination that the rovers and cleanup work were necessary and should be performed. We find only that IMIA provided some amount of the work for which MHI contends it is entitled to an equitable adjustment. MHI's sole legal theory for each of its claims is constructive change.",
-      "tags": [
-        "Jurisdiction",
-        "Termination",
-        "REA / changes",
-        "CDA process"
-      ],
-      "practitionerPrompt": "Check the claim before the final decision: sum certain, certification, privity, and whether the contractor actually presented the same claim to the CO.",
-      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=NfKSzLu_DpY%3d&portalid=143",
-      "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-08-04-relyant-global-llc-15",
-      "caseName": "Relyant Global LLC",
-      "caseNumberText": "ASBCA No. 64199",
-      "caseNumbers": [
-        "ASBCA No. 64199"
-      ],
-      "decisionDate": "2026-08-04",
-      "displayDate": "Aug 4, 2026",
-      "decisionType": "Dismissal",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "judge": "%208.4.2026.pdf?ver=8RVM_RzbPz9ngss8CrhOlw%3d%3d)McIlmail",
-      "officialExcerpt": "An official website of the United States government Here's how you know **Official websites use .mil** A **.mil** website belongs to an official U.S. **Secure .mil websites use HTTPS** A **lock ()** or **https://** means you've safely connected to the .mil website.",
-      "tags": [
-        "ADR"
-      ],
-      "practitionerPrompt": "Dismissals often turn on threshold mistakes. New specialists should read these for what must happen before the Board can reach the merits.",
-      "pdfUrl": "https://www.asbca.mil/Portals/143/Decisions/2026/64199%20Relyant%20Global%20LLC%20(Dismissal",
-      "filename": "64199 Relyant Global LLC (Dismissal",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-07-30-globe-trailer-manufacturing-inc--17",
-      "caseName": "Globe Trailer Manufacturing, Inc.",
-      "caseNumberText": "ASBCA No. 60979-EAJA",
-      "caseNumbers": [
-        "ASBCA No. 60979-EAJA"
-      ],
-      "decisionDate": "2026-07-30",
-      "displayDate": "Jul 30, 2026",
-      "decisionType": "Consent judgment",
-      "outcome": "settled",
-      "outcomeLabel": "Settled",
-      "judge": "D'Alessandris",
-      "officialExcerpt": "It is the Board's decision, pursuant to 5 U.S.C. \u00a7 504, and the parties' stipulation and agreement, that the appeal is sustained. In the nature of a consent judgment, the Board makes a monetary award to appellant in the amount of $25,965.66.",
-      "tags": [
-        "EAJA",
-        "Settlement"
-      ],
-      "practitionerPrompt": "EAJA deadlines and party identity rules are strict. The contractor entity, not just an owner, usually needs to be the prevailing applicant.",
-      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=W--n-DQc2zs%3d&portalid=143",
-      "filename": "LinkClick.aspx",
-      "sourceStatus": "reader-extracted",
-      "sourceStatusLabel": "ASBCA PDF text extracted",
-      "sourceError": ""
-    },
-    {
-      "id": "2026-07-30-cardinal-contracting-co-llc-16",
-      "caseName": "Cardinal Contracting Co., LLC",
-      "caseNumberText": "ASBCA No. 62872",
-      "caseNumbers": [
-        "ASBCA No. 62872"
-      ],
-      "decisionDate": "2026-07-30",
-      "displayDate": "Jul 30, 2026",
-      "decisionType": "Decision",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
-      "judge": "Herzfeld",
-      "officialExcerpt": "62367, 25-1 BCA \u00b6 38,795 at 188,679 (\"A government representative must have actual authority to bind the government, and the Federal government generally lodges that authority with the contracting officer.\" (internal quotation and citation omitted)); FAR 1.602-1(a)(\"Contracting officers have authority to enter into, administer, or terminate contracts and make related determinations and findings.\").",
-      "tags": [
-        "Termination",
-        "REA / changes",
-        "Delivery"
-      ],
-      "practitionerPrompt": "Termination actions need clean documentation. If performance is effectively ended, make sure the file and notices match the legal theory.",
-      "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=xFRaVyCz40M%3d&portalid=143",
       "filename": "LinkClick.aspx",
       "sourceStatus": "reader-extracted",
       "sourceStatusLabel": "ASBCA PDF text extracted",
