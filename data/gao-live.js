@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-09-25T12:54:42.619Z",
+  "generatedAt": "2026-09-26T12:22:43.157Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,12 +7,12 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 18,
+    "total": 16,
     "latestDecisionDate": "2026-09-21",
     "sustained": 0,
     "denied": 9,
     "dismissed": 3,
-    "mixed": 6,
+    "mixed": 4,
     "unclassified": 0,
     "sourceStatus": {
       "rss": {
@@ -23,11 +23,11 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 16
+        "parsedOutcomes": 17
       },
       "productPages": {
-        "attempted": 18,
-        "enriched": 18,
+        "attempted": 16,
+        "enriched": 16,
         "blocked": 0
       },
       "legacyCache": {
@@ -450,65 +450,6 @@ window.KTHQ_GAO_DATA = {
       "officialSynopsis": "CSA Global LLC d/b/a Client Solution Architects (CSA), of Virginia Beach, Virginia, protests the issuance of a task order to Valiant Global Defense...",
       "highlights": "",
       "digest": "Protest challenging evaluation of protester's proposal and best-value tradeoff is denied where the record shows both were reasonable and consistent with the solicitation.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-423829.2,B-423829.7",
-      "caseName": "FusionEdge Solutions, LLC",
-      "title": "FusionEdge Solutions, LLC",
-      "bNumbers": [
-        "B-423829.2",
-        "B-423829.7"
-      ],
-      "bNumberText": "B-423829.2, B-423829.7",
-      "link": "https://www.gao.gov/products/b-423829.2%2Cb-423829.7",
-      "publicationDate": "2026-09-10",
-      "decisionDate": "2026-08-27",
-      "displayDate": "Aug 27, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We sustain the protest in part and deny the protest in part.",
-      "officialSynopsis": "FusionEdge Solutions, LLC, a small business joint venture of Herndon, Virginia, protests the issuance of task orders to BridgePhase, LLC, a small...",
-      "highlights": "",
-      "digest": "1. Protest of agency's intended corrective action is sustained where the limited scope of the corrective action is based on undocumented evaluation findings, and it is otherwise inconsistent with the terms of the solicitation and without a reasonable basis. 2. Protest challenging the agency's evaluation of the protester's quotation under the solicitation's code challenge factor is denied where the record reasonably supports the agency's evaluation judgments and conclusions.",
-      "tags": [
-        "Evaluation",
-        "Corrective action",
-        "Solicitation terms",
-        "Small business"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-423829.3,B-423829.5",
-      "caseName": "Red Cedar Harmonia, LLC",
-      "title": "Red Cedar Harmonia, LLC",
-      "bNumbers": [
-        "B-423829.3",
-        "B-423829.5"
-      ],
-      "bNumberText": "B-423829.3, B-423829.5",
-      "link": "https://www.gao.gov/products/b-423829.3%2Cb-423829.5",
-      "publicationDate": "2026-09-10",
-      "decisionDate": "2026-08-27",
-      "displayDate": "Aug 27, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest in part and dismiss it in part.",
-      "officialSynopsis": "Red Cedar Harmonia, LLC (RCH) of Leesburg, Virginia, protests the issuance of task orders to Peregrine Digital Services, LLC, of Arlington, Virginia...",
-      "highlights": "",
-      "digest": "1. Agency's evaluation of protester's quotation was reasonable and consistent with the terms of the solicitation and the protest allegations regarding that evaluation are denied. 2. Protester's allegations regarding alleged flaws in the agency's evaluation of the awardees' quotations fail to state sufficient bases for protest and are dismissed.",
       "tags": [
         "Evaluation",
         "Solicitation terms",
