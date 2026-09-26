@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-09-25T13:47:11.921461+00:00",
+  "generatedAt": "2026-09-26T13:05:11.251191+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
