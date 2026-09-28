@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-09-27T13:13:39.278Z",
+  "generatedAt": "2026-09-28T15:47:53.193Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,12 +7,12 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 16,
+    "total": 15,
     "latestDecisionDate": "2026-09-21",
     "sustained": 0,
     "denied": 9,
     "dismissed": 3,
-    "mixed": 4,
+    "mixed": 3,
     "unclassified": 0,
     "sourceStatus": {
       "rss": {
@@ -26,8 +26,8 @@ window.KTHQ_GAO_DATA = {
         "parsedOutcomes": 17
       },
       "productPages": {
-        "attempted": 16,
-        "enriched": 16,
+        "attempted": 15,
+        "enriched": 15,
         "blocked": 0
       },
       "legacyCache": {
@@ -115,6 +115,34 @@ window.KTHQ_GAO_DATA = {
         "Solicitation terms"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424516.2,B-424516.3",
+      "caseName": "Patriot Contract Services, LLC",
+      "title": "Patriot Contract Services, LLC",
+      "bNumbers": [
+        "B-424516.2",
+        "B-424516.3"
+      ],
+      "bNumberText": "B-424516.2, B-424516.3",
+      "link": "https://www.gao.gov/products/b-424516.2%2Cb-424516.3",
+      "publicationDate": "2026-09-28",
+      "decisionDate": "2026-09-17",
+      "displayDate": "Sep 17, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Patriot Contract Services, LLC, a small business of Houston, Texas, protests the corrective action taken in connection with a prior protest...",
+      "highlights": "",
+      "digest": "Protest objecting to proposed corrective action taken in response to an earlier protest is denied where the record shows that the agency had a reasonable basis for taking corrective action.",
+      "tags": [
+        "Corrective action",
+        "Small business"
+      ],
+      "practitionerNote": "Corrective action is broad, but not unlimited. Tie the scope to the procurement defect and document why the remedy fits.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -280,66 +308,6 @@ window.KTHQ_GAO_DATA = {
         "Evaluation",
         "Solicitation terms",
         "Price / cost"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424508.2,B-424509.2,B-424510.2,B-424508",
-      "caseName": "Oready, LLC",
-      "title": "Oready, LLC",
-      "bNumbers": [
-        "B-424508.2",
-        "B-424509.2",
-        "B-424510.2",
-        "B-424508"
-      ],
-      "bNumberText": "B-424508.2, B-424509.2, B-424510.2, B-424508",
-      "link": "https://www.gao.gov/products/b-424508.2%2Cb-424509.2%2Cb-424510.2",
-      "publicationDate": "2026-09-11",
-      "decisionDate": "2026-09-10",
-      "displayDate": "Sep 10, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the request for reconsideration.",
-      "officialSynopsis": "Oready, LLC, a small business of Las Vegas, Nevada, requests reconsideration of our decision in Oready, LLC, B-424508 et al., June 8, 2026, in which...",
-      "highlights": "",
-      "digest": "Request for reconsideration of decision dismissing protests as untimely filed is denied where the requester has not demonstrated error in the determination that emails to the contracting officers attaching protests filed with GAO were not agency‑level protests.",
-      "tags": [
-        "Timeliness",
-        "Small business"
-      ],
-      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424566,B-424566.2",
-      "caseName": "E-Logic, Inc.",
-      "title": "E-Logic, Inc.",
-      "bNumbers": [
-        "B-424566",
-        "B-424566.2"
-      ],
-      "bNumberText": "B-424566, B-424566.2",
-      "link": "https://www.gao.gov/products/b-424566%2Cb-424566.2",
-      "publicationDate": "2026-09-10",
-      "decisionDate": "2026-09-09",
-      "displayDate": "Sep 9, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "E-Logic, Inc., of Washington, D.C., a small business, protests the issuance of a Federal Supply Schedule (FSS) order to Prime Response, Inc., of...",
-      "highlights": "",
-      "digest": "Protest that agency misevaluated quotations in competition for task order among Federal Supply Schedule vendors is denied where the record shows the evaluation was reasonable and consistent with the terms of the solicitation.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Small business",
-        "Orders / IDIQ"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
