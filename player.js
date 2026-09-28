@@ -44,6 +44,155 @@
     { id: 35, title: 'Yes, If',                             subtitle: 'ContractingFM',  genre: 'ContractingFM', file: 'audio/track-35.mp3', color: '#10b981' }
   ];
 
+  // Yet album (released September 2026). Keep these appended so saved
+  // favorite/skip indexes for the original playlist remain stable.
+  var SEP_2026_TRACKS = [
+    {
+      id: 'sep2026-1',
+      title: 'Comparison is the Thief of Joy',
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: 'Comparison is the Thief of Joy.mp3',
+      color: '#4a9eff'
+    },
+    {
+      id: 'sep2026-2',
+      title: 'Curious, Not Judgmental',
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: 'Curious, Not Judgmental.mp3',
+      color: '#8b5cf6'
+    },
+    {
+      id: 'sep2026-3',
+      title: 'Do the Next Right Thing',
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: 'Do the Next Right Thing.mp3',
+      color: '#059669'
+    },
+    {
+      id: 'sep2026-4',
+      title: 'Excel In, Airpower Out',
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: 'Excel In, Airpower Out.mp3',
+      color: '#d97706'
+    },
+    {
+      id: 'sep2026-5',
+      title: 'Hard Things Are Hard',
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: 'Hard Things Are Hard.mp3',
+      color: '#dc2626'
+    },
+    {
+      id: 'sep2026-6',
+      title: 'High T, Unlimited',
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: 'audio/High T, Unlimited.mp3',
+      color: '#0891b2'
+    },
+    {
+      id: 'sep2026-7',
+      title: 'It Depends',
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: 'audio/It Depends.mp3',
+      color: '#4a9eff'
+    },
+    {
+      id: 'sep2026-8',
+      title: 'Kurban Olurum',
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: 'audio/Kurban Olurum.mp3',
+      color: '#8b5cf6'
+    },
+    {
+      id: 'sep2026-9',
+      title: 'Look for the Helpers',
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: 'audio/Look for the Helpers.mp3',
+      color: '#059669'
+    },
+    {
+      id: 'sep2026-10',
+      title: 'Not My Fault, Still My Problem',
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: 'audio/Not My Fault, Still My Problem.mp3',
+      color: '#d97706'
+    },
+    {
+      id: 'sep2026-11',
+      title: 'Rewind the Tape',
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: 'audio/Rewind the Tape.mp3',
+      color: '#dc2626'
+    },
+    {
+      id: 'sep2026-12',
+      title: 'Still My Move',
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: 'audio/Still My Move.mp3',
+      color: '#0891b2'
+    },
+    {
+      id: 'sep2026-13',
+      title: 'The Obstacle Is the Way',
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: 'audio/The Obstacle Is the Way.mp3',
+      color: '#4a9eff'
+    },
+    {
+      id: 'sep2026-14',
+      title: 'Water the Plants',
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: 'audio/Water the Plants.mp3',
+      color: '#8b5cf6'
+    },
+    {
+      id: 'sep2026-15',
+      title: 'Westbound',
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: 'audio/Westbound.mp3',
+      color: '#059669'
+    },
+    {
+      id: 'sep2026-16',
+      title: 'Yet',
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: 'audio/Yet.mp3',
+      color: '#d97706'
+    },
+    {
+      id: 'sep2026-17',
+      title: "You Can't Buy Back Time",
+      subtitle: 'Yet',
+      genre: 'ContractingFM',
+      file: "audio/You Can't Buy Back Time.mp3",
+      color: '#dc2626'
+    }
+  ];
+
+  // Newest releases lead the visible list and fresh-visit selection. All songs
+  // may land; the two featured songs receive one additional chance each.
+  SEP_2026_TRACKS.forEach(function (track) {
+    track.releaseDate = '2026-09-11';
+    track.landingPriority = track.title === 'Hard Things Are Hard' ||
+      track.title === 'Look for the Helpers' ? 1 : 0;
+  });
+
   // ── STATE ────────────────────────────────────────────────────────
   var DEFAULT_TRACKS = TRACKS.slice();
   var CCO_PAGE_FALLBACKS = [
@@ -137,7 +286,7 @@
         color: track.color || '#d2a64c'
       };
     }));
-    return tracks;
+    return tracks.concat(SEP_2026_TRACKS);
   }
 
   function modeStateKey(mode) {
@@ -278,7 +427,14 @@
   }
 
   function allTrackIndexes() {
-    return TRACKS.map(function (_, i) { return i; });
+    // Sort only the displayed/played index view so stored favorite/skip indexes
+    // continue to point to the same songs.
+    return TRACKS.map(function (_, i) { return i; }).sort(function (a, b) {
+      var dateA = TRACKS[a].releaseDate || '';
+      var dateB = TRACKS[b].releaseDate || '';
+      if (dateA !== dateB) return dateA > dateB ? -1 : 1;
+      return (TRACKS[b].landingPriority || 0) - (TRACKS[a].landingPriority || 0) || a - b;
+    });
   }
 
   function getPool() {
@@ -299,9 +455,29 @@
     return next;
   }
 
+  function landingTrackIndex() {
+    var pool = getPool();
+    if (!pool.length) return 0;
+    var latest = pool.reduce(function (date, idx) {
+      var release = TRACKS[idx].releaseDate || '';
+      return release > date ? release : date;
+    }, '');
+    var newest = pool.filter(function (idx) {
+      return (TRACKS[idx].releaseDate || '') === latest;
+    });
+    var candidates = newest.filter(function (idx) { return idx !== state.idx; });
+    if (!candidates.length) candidates = newest;
+    var weighted = [];
+    candidates.forEach(function (idx) {
+      weighted.push(idx);
+      if ((TRACKS[idx].landingPriority || 0) > 0) weighted.push(idx);
+    });
+    return weighted[Math.floor(Math.random() * weighted.length)];
+  }
+
   function randomizeStartTrack(keepPlaybackIntent) {
     if (!TRACKS.length) return;
-    state.idx = randomPlayableIndex(state.idx);
+    state.idx = landingTrackIndex();
     state.time = 0;
     if (!keepPlaybackIntent) state.wasPlaying = false;
     saveState();
@@ -1771,7 +1947,8 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       drawerEl.innerHTML = html;
       return;
     }
-    TRACKS.forEach(function (t, i) {
+    allTrackIndexes().forEach(function (i, position) {
+      var t = TRACKS[i];
       var active = i === state.idx;
       var fav = isFav(i);
       var skipped = isSkipped(i);
@@ -1779,7 +1956,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
         '<div class="cfm-track-item' + (active ? ' active' : '') + (active && isPlaying ? ' playing' : '') + (skipped ? ' skipped' : '') + '" data-idx="' + i + '">',
           '<div class="cfm-track-marker">',
             '<div class="cfm-track-dot" style="background:' + esc(t.color) + '"></div>',
-            '<div class="cfm-track-num">' + (i + 1) + '</div>',
+            '<div class="cfm-track-num">' + (position + 1) + '</div>',
           '</div>',
           '<div class="cfm-track-info">',
             '<div class="cfm-track-name">' + esc(t.title) + '</div>',
@@ -1968,13 +2145,14 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       return;
     }
 
-    TRACKS.forEach(function (track, idx) {
+    allTrackIndexes().forEach(function (idx, position) {
+      var track = TRACKS[idx];
       var active = idx === state.idx;
       var fav = isFav(idx);
       var skipped = isSkipped(idx);
       html += [
         '<div class="cfm-sb-track-item' + (active ? ' active' : '') + (skipped ? ' skipped' : '') + '" data-idx="' + idx + '">',
-          '<div class="cfm-sb-track-num">' + (idx + 1) + '</div>',
+          '<div class="cfm-sb-track-num">' + (position + 1) + '</div>',
           '<div class="cfm-sb-track-info">',
             '<div class="cfm-sb-track-name">' + esc(track.title) + '</div>',
             '<div class="cfm-sb-track-genre">' + esc(track.genre) + '</div>',
