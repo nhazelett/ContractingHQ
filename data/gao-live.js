@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-09-29T14:16:00.952Z",
+  "generatedAt": "2026-09-30T14:07:51.584Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -8,7 +8,7 @@ window.KTHQ_GAO_DATA = {
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
     "total": 15,
-    "latestDecisionDate": "2026-09-21",
+    "latestDecisionDate": "2026-09-28",
     "sustained": 0,
     "denied": 10,
     "dismissed": 2,
@@ -36,6 +36,33 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424433.18",
+      "caseName": "Cinteot, Inc.",
+      "title": "Cinteot, Inc.",
+      "bNumbers": [
+        "B-424433.18"
+      ],
+      "bNumberText": "B-424433.18",
+      "link": "https://www.gao.gov/products/b-424433.18",
+      "publicationDate": "2026-09-29",
+      "decisionDate": "2026-09-28",
+      "displayDate": "Sep 28, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Cinteot, Inc., a small business of Chambersburg, Pennsylvania, protests the terms of request for proposals (RFP) No. W15P7T26RA006, issued by the...",
+      "highlights": "",
+      "digest": "1. Protest challenging the procurement process and terms of the solicitation is denied where offerors are able to compete intelligently and on a common basis. 2. Protest challenging the time set to respond to solicitation amendments is denied where the agency allowed sufficient time after amendment of the solicitation for revision of proposals. 3. Protest challenging inclusion of an allegedly defective form is denied where any defect was resolved by clear instructions from the agency and would not otherwise prevent offerors from competing on a common basis.",
+      "tags": [
+        "Solicitation terms",
+        "Small business"
+      ],
+      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424616",
       "caseName": "A.B. Martin Services, Inc.",
@@ -399,34 +426,6 @@ window.KTHQ_GAO_DATA = {
       "tags": [
         "Evaluation",
         "OCI"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-423877.4",
-      "caseName": "CSA Global LLC d/b/a Client Solution Architects",
-      "title": "CSA Global LLC d/b/a Client Solution Architects",
-      "bNumbers": [
-        "B-423877.4"
-      ],
-      "bNumberText": "B-423877.4",
-      "link": "https://www.gao.gov/products/b-423877.4",
-      "publicationDate": "2026-09-17",
-      "decisionDate": "2026-08-28",
-      "displayDate": "Aug 28, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "CSA Global LLC d/b/a Client Solution Architects (CSA), of Virginia Beach, Virginia, protests the issuance of a task order to Valiant Global Defense...",
-      "highlights": "",
-      "digest": "Protest challenging evaluation of protester's proposal and best-value tradeoff is denied where the record shows both were reasonable and consistent with the solicitation.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Orders / IDIQ"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
