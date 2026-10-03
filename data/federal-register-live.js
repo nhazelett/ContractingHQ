@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-10-02T13:49:27.271Z",
-  "since": "2025-04-10",
+  "generatedAt": "2026-10-03T12:29:13.909Z",
+  "since": "2025-04-11",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,18 +14,53 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 148,
-    "latestPublicationDate": "2026-10-02",
-    "openCommentWindows": 19,
-    "rules": 53,
+    "total": 149,
+    "latestPublicationDate": "2026-10-05",
+    "openCommentWindows": 20,
+    "rules": 54,
     "byTone": {
+      "active": 6,
       "monitor": 93,
-      "active": 5,
       "action": 30,
       "watch": 20
     }
   },
   "items": [
+    {
+      "id": "2026-20317",
+      "documentNumber": "2026-20317",
+      "title": "General Services Administration Acquisition Regulation; GSAR Implementation of Executive Order 14275, Acquisition of Utility Services",
+      "shortTitle": "General Services Administration Acquisition Regulation; GSAR Implementation of Executive Order 14275, Acquisition of Utility Services",
+      "system": "FAR",
+      "stage": "Proposed rule",
+      "topic": "Acquisition policy",
+      "actionLevel": "Comment window",
+      "actionTone": "active",
+      "practitionerNote": "This is not binding yet, but the comment period is open. Read it if the topic touches your office and consider whether your organization should comment.",
+      "nextSteps": [
+        "Check the comment due date",
+        "Skim the affected FAR/DFARS parts",
+        "Flag it for policy or leadership if it touches your buying lane"
+      ],
+      "type": "Proposed Rule",
+      "publicationDate": "2026-10-05",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-11-04",
+      "datesText": "Interested parties should submit written comments to the Regulatory Secretariat Division at the address shown below on or before November 4, 2026 to be considered in the formation of the final rule.",
+      "actionText": "Proposed rule.",
+      "summary": "GSA is proposing to amend the General Services Administration Acquisition Regulation (GSAR) part 541 which outlines procedures and guidance for the procurement of utility services. GSA guidance does not apply to agencies using their special authorities listed in Federal Acquisition Regulation (FAR) section 41.103(a)(2) and (3). This proposed rule would align the GSAR with the FAR Council's proposed rule for FAR part 41.",
+      "citation": "91 FR 63243",
+      "regulationIds": [
+        "3090-AL14"
+      ],
+      "cfrReferences": "48 CFR part 541, 48 CFR part 552",
+      "agencies": [
+        "General Services Administration"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/10/05/2026-20317/general-services-administration-acquisition-regulation-gsar-implementation-of-executive-order-14275",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-10-05/pdf/2026-20317.pdf",
+      "sourceQuery": "Federal Acquisition Regulation keyword feed"
+    },
     {
       "id": "2026-20271",
       "documentNumber": "2026-20271",
