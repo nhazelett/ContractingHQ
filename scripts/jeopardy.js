@@ -30,6 +30,101 @@ const state = {
 };
 
 const stage = document.getElementById('jStage');
+let modalReturnFocus = null;
+
+function updateGameChrome() {
+  const playing = state.screen !== 'start';
+  document.body.classList?.toggle('game-playing', playing);
+  const exit = document.getElementById('gameExit');
+  if (exit) exit.hidden = !playing;
+  syncSoundControl();
+}
+
+function syncSoundControl() {
+  const button = document.getElementById('gameSound');
+  const label = document.getElementById('gameSoundLabel');
+  if (!button || !label) return;
+  button.hidden = !window.Sounds;
+  if (window.Sounds) {
+    button.setAttribute('aria-pressed', String(Sounds.enabled()));
+    label.textContent = Sounds.enabled() ? 'Sound On' : 'Sound Off';
+  }
+}
+
+function quitGame() {
+  if (!confirm('Exit this game and return to the start?')) return;
+  clearInterval(state.timerHandle);
+  if (window.Sounds) Sounds.stopThink();
+  closeOverlay();
+  renderStart();
+}
+
+function renderClueWaiting() {
+  const idle = el('div', { class: 'clue-waiting' });
+  idle.appendChild(el('div', { class: 'panel-eyebrow' }, 'YOUR NEXT CHALLENGE'));
+  idle.appendChild(el('div', { class: 'waiting-symbol', 'aria-hidden': 'true' }, '?'));
+  idle.appendChild(el('h2', {}, 'Pick your moment.'));
+  idle.appendChild(el('p', {}, 'Choose a category and a dollar value. Your clue will appear here.'));
+  idle.appendChild(el('div', { class: 'waiting-source' }, 'Every answer. An official source.'));
+  return idle;
+}
+
+// Regular clues live beside the board. Wagers and round changes remain dialogs.
+function mountOverlay(overlay, docked = false) {
+  const dock = docked && document.getElementById('clueDock');
+  if (dock) {
+    dock.innerHTML = '';
+    overlay.className += ' clue-overlay';
+    overlay.setAttribute('role', 'region');
+    overlay.setAttribute('aria-label', 'Current clue');
+    dock.appendChild(overlay);
+    const board = document.getElementById('gameBoard');
+    if (board) board.inert = true;
+  } else {
+    modalReturnFocus = document.activeElement;
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', overlay.querySelector?.('h1, h2')?.textContent || 'Game clue');
+    document.body.appendChild(overlay);
+    const main = document.getElementById('main');
+    const nav = document.getElementById('navbar');
+    if (main) main.inert = true;
+    if (nav) nav.inert = true;
+    overlay.addEventListener('keydown', event => {
+      if (event.key !== 'Tab') return;
+      const controls = [...overlay.querySelectorAll('button:not(:disabled), input, a[href]')];
+      if (!controls.length) return;
+      const first = controls[0], last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    });
+  }
+  const card = overlay.children[0];
+  card.setAttribute('tabindex', '-1');
+  setTimeout(() => {
+    if (!card.isConnected) return;
+    const focusTarget = !dock && overlay.querySelector('input, button');
+    (focusTarget || card).focus({ preventScroll: true });
+    if (dock && window.matchMedia('(max-width: 1050px)').matches) card.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  }, 0);
+}
+
+function initGameControls() {
+  document.getElementById('gameSound')?.addEventListener('click', () => {
+    if (!window.Sounds) return;
+    Sounds.setEnabled(!Sounds.enabled());
+    if (Sounds.enabled()) { Sounds.select(); if (state.round === 'final' && state.screen === 'finalClue') Sounds.startThink(); }
+    else Sounds.stopThink();
+    syncSoundControl();
+  });
+  document.getElementById('gameHelp')?.addEventListener('click', event => {
+    const help = document.getElementById('howStrip');
+    help.hidden = !help.hidden;
+    event.currentTarget.setAttribute('aria-expanded', String(!help.hidden));
+    if (!help.hidden) help.focus();
+  });
+  document.getElementById('gameExit')?.addEventListener('click', quitGame);
+}
 
 /* ─── Utilities ─── */
 function shuffle(arr) {
@@ -87,18 +182,19 @@ function renderStart() {
   state.players.forEach(p => { p.score = 0; p.finalWager = 0; p.finalCorrect = null; });
 
   const card = el('div', { class: 'start-card' });
-  card.appendChild(el('h2', {}, 'New Game'));
+  card.appendChild(el('div', { class: 'panel-eyebrow' }, 'STEP INTO THE SPOTLIGHT'));
+  card.appendChild(el('h2', {}, 'Make it your game.'));
 
   // Play mode
   const modeStep = el('div', { class: 'start-step' });
   modeStep.appendChild(el('label', {}, 'Play Mode'));
   const modeToggle = el('div', { class: 'mode-toggle' });
   const soloBtn = el('button', {
-    class: 'mode-btn' + (state.playMode === 'solo' ? ' active' : ''),
+    class: 'mode-btn' + (state.playMode === 'solo' ? ' active' : ''), 'aria-pressed': String(state.playMode === 'solo'),
     onclick: () => { state.playMode = 'solo'; renderStart(); }
   }, 'Solo');
   const multiBtn = el('button', {
-    class: 'mode-btn' + (state.playMode === 'multi' ? ' active' : ''),
+    class: 'mode-btn' + (state.playMode === 'multi' ? ' active' : ''), 'aria-pressed': String(state.playMode === 'multi'),
     onclick: () => { state.playMode = 'multi'; renderStart(); }
   }, 'Multiplayer');
   modeToggle.appendChild(soloBtn);
@@ -123,12 +219,12 @@ function renderStart() {
   const rows = el('div', { class: 'player-rows' });
   state.players.forEach((p, i) => {
     const row = el('div', { class: 'player-row' });
-    const input = el('input', { type: 'text', value: p.name, placeholder: 'Name', maxlength: '20' });
+    const input = el('input', { type: 'text', value: p.name, placeholder: 'Name', maxlength: '20', 'aria-label': 'Player ' + (i + 1) + ' name' });
     input.addEventListener('input', e => { state.players[i].name = e.target.value; });
     row.appendChild(input);
     if (state.playMode === 'multi' && state.players.length > 2) {
       const rm = el('button', {
-        class: 'remove-player',
+        class: 'remove-player', 'aria-label': 'Remove ' + p.name,
         onclick: () => { state.players.splice(i, 1); renderStart(); }
       }, '×');
       row.appendChild(rm);
@@ -174,7 +270,19 @@ function renderStart() {
   card.appendChild(goBtn);
 
   stage.innerHTML = '';
-  stage.appendChild(card);
+  const lobby = el('div', { class: 'game-lobby' });
+  const intro = el('div', { class: 'lobby-intro' });
+  intro.appendChild(el('div', { class: 'panel-eyebrow' }, 'THINK FAST. LEARN SOMETHING.'));
+  intro.appendChild(el('h2', {}, 'Big clues.\nBigger knowledge.'));
+  intro.appendChild(el('p', {}, 'From the FAR to the finish line. Pick your category, back your knowledge, and make every answer count.'));
+  const preview = el('div', { class: 'board-preview', 'aria-hidden': 'true' });
+  ['FAR PARTS', 'MARKET RESEARCH', 'POST-AWARD', '$200', '$200', '$200', '$400', '$400', '$400', '$600', '$600', '$600'].forEach((text, i) => preview.appendChild(el('div', { class: i < 3 ? 'preview-cat' : 'preview-value' }, text)));
+  intro.appendChild(preview);
+  intro.appendChild(el('div', { class: 'lobby-proof' }, '300 reviewed clues · Official sources with every answer'));
+  lobby.appendChild(intro);
+  lobby.appendChild(card);
+  stage.appendChild(lobby);
+  updateGameChrome();
 }
 
 /* ─── Build a round's board from the bank ─── */
@@ -229,71 +337,62 @@ function startGame() {
   state.players.forEach(p => { p.score = 0; p.finalWager = 0; p.finalCorrect = null; });
   buildBoard('single');
   renderBoard();
+  document.getElementById('navbar')?.scrollIntoView({ block: 'start' });
 }
 
 /* ─── Board screen ─── */
 function renderBoard() {
   state.screen = 'board';
-  const wrap = el('div');
-
-  // Round bar + scoreboard
+  const wrap = el('div', { class: 'game-shell' });
   wrap.appendChild(renderRoundBar());
-
-  // Board grid
-  const board = el('div', { class: 'j-board' });
-  // Category headers (top row)
-  state.categories.forEach(cat => {
-    board.appendChild(el('div', { class: 'j-cat' }, cat));
-  });
-  // Value cells (5 rows, each row = one value across all categories)
+  const layout = el('div', { class: 'board-layout' });
+  const boardWrap = el('div', { class: 'board-wrap' });
+  const scroll = el('div', { class: 'board-scroll', tabindex: '0', 'aria-label': 'Jeopardy board. Scroll horizontally on small screens to see all six categories.' });
+  const board = el('div', { class: 'j-board', id: 'gameBoard', 'aria-label': 'Choose a clue' });
+  state.categories.forEach(cat => board.appendChild(el('div', { class: 'j-cat' }, cat)));
   for (let r = 0; r < 5; r++) {
     for (let c = 0; c < 6; c++) {
       const cell = state.board[c][r];
-      const cls = 'j-cell' + (cell.used ? ' used' : '');
-      const cellEl = el('div', {
-        class: cls,
-        onclick: () => { if (!cell.used) openClue(c, r); }
+      const cellEl = el('button', {
+        type: 'button', class: 'j-cell' + (cell.used ? ' used' : ''),
+        'data-col': String(c), 'data-row': String(r),
+        'aria-label': cell.cat + ', ' + fmtMoney(cell.value) + (cell.used ? ', already played' : ''),
+        onclick: () => { if (!cell.used && state.screen === 'board') { cellEl.className += ' selected'; openClue(c, r); } }
       }, cell.used ? '' : fmtMoney(cell.value));
+      cellEl.disabled = cell.used;
       board.appendChild(cellEl);
     }
   }
-  wrap.appendChild(board);
-
+  scroll.appendChild(board);
+  boardWrap.appendChild(scroll);
+  boardWrap.appendChild(el('div', { class: 'board-hint' }, 'Swipe to explore all six categories →'));
+  layout.appendChild(boardWrap);
+  const dock = el('aside', { class: 'clue-dock', id: 'clueDock', 'aria-label': 'Clue and answer' });
+  dock.appendChild(renderClueWaiting());
+  layout.appendChild(dock);
+  wrap.appendChild(layout);
   stage.innerHTML = '';
   stage.appendChild(wrap);
-
-  if (state.cluesLeft === 0) {
-    setTimeout(() => advanceRound(), 500);
-  }
+  updateGameChrome();
+  if (state.cluesLeft === 0) setTimeout(() => advanceRound(), 500);
 }
 
 function renderRoundBar() {
   const bar = el('div', { class: 'round-bar' });
-
-  const left = el('div');
+  const left = el('div', { class: 'round-info' });
   const label = state.round === 'single' ? 'Jeopardy Round' :
                 state.round === 'double' ? 'Double Jeopardy' : 'Final Jeopardy';
   left.appendChild(el('div', { class: 'round-label' }, label));
   left.appendChild(el('div', { class: 'round-sub' }, state.cluesLeft + ' clue' + (state.cluesLeft === 1 ? '' : 's') + ' remaining'));
   bar.appendChild(left);
-
-  const board = el('div', { class: 'scoreboard' });
-  state.players.forEach((p, i) => {
-    const active = state.playMode === 'multi' && false;  // no fixed active turn; we pick on correct
-    const pill = el('div', { class: 'score-pill' + (active ? ' active' : '') });
+  const scores = el('div', { class: 'scoreboard', 'aria-label': 'Player scores', 'aria-live': 'polite' });
+  state.players.forEach(p => {
+    const pill = el('div', { class: 'score-pill' + (state.playMode === 'solo' ? ' active' : '') });
     pill.appendChild(el('div', { class: 'score-name' }, p.name));
-    const v = el('div', { class: 'score-value' + (p.score < 0 ? ' negative' : '') }, fmtMoney(p.score));
-    pill.appendChild(v);
-    board.appendChild(pill);
+    pill.appendChild(el('div', { class: 'score-value' + (p.score < 0 ? ' negative' : '') }, fmtMoney(p.score)));
+    scores.appendChild(pill);
   });
-  bar.appendChild(board);
-
-  const quit = el('button', {
-    class: 'quit-btn',
-    onclick: () => { if (confirm('Quit game and return to start?')) renderStart(); }
-  }, 'Quit');
-  bar.appendChild(quit);
-
+  bar.appendChild(scores);
   return bar;
 }
 
@@ -326,14 +425,14 @@ function openDailyDoubleWager() {
       who.appendChild(el('button', {
         class: 'who-btn',
         onclick: () => {
-          document.body.removeChild(overlay);
+          closeOverlay();
           openDailyDoubleWagerFor(i);
         }
       }, p.name));
     });
     card.appendChild(who);
     overlay.appendChild(card);
-    document.body.appendChild(overlay);
+    mountOverlay(overlay);
   } else {
     openDailyDoubleWagerFor(0);
   }
@@ -351,7 +450,7 @@ function openDailyDoubleWagerFor(playerIdx) {
   card.appendChild(el('h2', {}, 'Make your wager'));
   card.appendChild(el('p', {}, 'Category: ' + state.currentClue.cat));
   if (state.playMode === 'multi') card.appendChild(el('div', { class: 'wager-player' }, player.name));
-  const input = el('input', { type: 'number', min: String(minWager), max: String(maxWager), value: String(Math.min(maxBoardVal, maxWager)) });
+  const input = el('input', { type: 'number', 'aria-label': 'Daily Double wager', min: String(minWager), max: String(maxWager), value: String(Math.min(maxBoardVal, maxWager)) });
   card.appendChild(input);
   card.appendChild(el('div', { class: 'wager-range' }, 'Min $' + minWager + ' · Max ' + fmtMoney(maxWager)));
   const submit = el('button', {
@@ -360,13 +459,13 @@ function openDailyDoubleWagerFor(playerIdx) {
       let w = parseInt(input.value, 10);
       if (isNaN(w) || w < minWager) w = minWager;
       if (w > maxWager) w = maxWager;
-      document.body.removeChild(overlay);
+      closeOverlay();
       renderClueOverlay(w, playerIdx, true);
     }
   }, 'Lock it in');
   card.appendChild(submit);
   overlay.appendChild(card);
-  document.body.appendChild(overlay);
+  mountOverlay(overlay);
   setTimeout(() => input.focus(), 50);
 }
 
@@ -410,7 +509,7 @@ function renderClueOverlay(value, ddPlayerIdx = null, isDD = false) {
 
   card.appendChild(footer);
   overlay.appendChild(card);
-  document.body.appendChild(overlay);
+  mountOverlay(overlay, true);
 
   startTimer(CLUE_TIMER_SECONDS);
 }
@@ -443,7 +542,7 @@ function revealAnswer(card, footer, btns) {
   clearInterval(state.timerHandle);
   // Insert answer
   const ans = el('div', { class: 'clue-answer' });
-  ans.appendChild(el('span', { class: 'ans-label' }, 'Answer'));
+  ans.appendChild(el('span', { class: 'ans-label' }, 'Answer revealed'));
   ans.appendChild(document.createTextNode(state.currentClue.answer));
   appendClueSources(ans, state.currentClue);
   card.insertBefore(ans, footer);
@@ -462,6 +561,7 @@ function revealAnswer(card, footer, btns) {
       class: 'clue-btn clue-btn-wrong',
       onclick: () => resolveDD(pIdx, false)
     }, 'Missed'));
+    btns.querySelector?.('button')?.focus({ preventScroll: true });
     return;
   }
 
@@ -469,15 +569,15 @@ function revealAnswer(card, footer, btns) {
     btns.appendChild(el('button', {
       class: 'clue-btn clue-btn-right',
       onclick: () => resolveSolo(true)
-    }, 'I got it'));
+    }, 'Correct'));
     btns.appendChild(el('button', {
       class: 'clue-btn clue-btn-wrong',
       onclick: () => resolveSolo(false)
-    }, 'Missed it'));
+    }, 'Incorrect'));
     btns.appendChild(el('button', {
       class: 'clue-btn clue-btn-skip',
       onclick: () => resolveSolo(null)
-    }, 'No points'));
+    }, 'Skip · no points'));
   } else {
     // Multi: who got it?
     const label = el('div', { class: 'who-label' }, 'Who got it?');
@@ -502,6 +602,7 @@ function revealAnswer(card, footer, btns) {
     btns.appendChild(label);
     btns.appendChild(who);
   }
+  btns.querySelector?.('button')?.focus({ preventScroll: true });
 }
 
 // Keep the rule behind each answer available without exposing it before reveal.
@@ -522,7 +623,21 @@ function appendClueSources(answerElement, clue) {
 
 function closeOverlay() {
   const overlay = document.querySelector('.overlay');
-  if (overlay) document.body.removeChild(overlay);
+  if (!overlay) return;
+  const isDocked = overlay.className.includes('clue-overlay');
+  overlay.parentNode.removeChild(overlay);
+  const main = document.getElementById('main'), nav = document.getElementById('navbar');
+  if (main) main.inert = false;
+  if (nav) nav.inert = false;
+  const board = document.getElementById('gameBoard');
+  if (board) board.inert = false;
+  if (!isDocked && modalReturnFocus?.isConnected) modalReturnFocus.focus({ preventScroll: true });
+}
+
+function focusNextClue() {
+  const next = document.querySelector('.j-cell:not(:disabled)');
+  next?.focus({ preventScroll: true });
+  if (window.matchMedia?.('(max-width: 1050px)').matches) document.getElementById('gameBoard')?.scrollIntoView({ block: 'nearest' });
 }
 
 function markCellUsed() {
@@ -542,6 +657,7 @@ function resolveSolo(correct) {
   markCellUsed();
   closeOverlay();
   renderBoard();
+  focusNextClue();
 }
 
 function resolveMulti(playerIdx, correct) {
@@ -553,6 +669,7 @@ function resolveMulti(playerIdx, correct) {
   markCellUsed();
   closeOverlay();
   renderBoard();
+  focusNextClue();
 }
 
 function resolveDD(playerIdx, correct) {
@@ -562,6 +679,7 @@ function resolveDD(playerIdx, correct) {
   markCellUsed();
   closeOverlay();
   renderBoard();
+  focusNextClue();
 }
 
 /* ─── Round transitions ─── */
@@ -587,10 +705,10 @@ function showTransition(title, subtitle, onNext) {
   card.appendChild(el('p', {}, subtitle));
   card.appendChild(el('button', {
     class: 'again-btn',
-    onclick: () => { document.body.removeChild(overlay); onNext(); }
+    onclick: () => { closeOverlay(); onNext(); }
   }, 'Continue'));
   overlay.appendChild(card);
-  document.body.appendChild(overlay);
+  mountOverlay(overlay);
 }
 
 /* ─── Final Jeopardy ─── */
@@ -633,7 +751,7 @@ function nextFinalWager() {
   card.appendChild(el('p', {}, 'Category: ' + state.finalCat));
   if (state.playMode === 'multi') card.appendChild(el('div', { class: 'wager-player' }, player.name));
   card.appendChild(el('p', {}, 'Current score: ' + fmtMoney(player.score)));
-  const input = el('input', { type: 'number', min: '0', max: String(player.score), value: '0' });
+  const input = el('input', { type: 'number', 'aria-label': 'Final Jeopardy wager for ' + player.name, min: '0', max: String(player.score), value: '0' });
   card.appendChild(input);
   card.appendChild(el('div', { class: 'wager-range' }, 'Min $0 · Max ' + fmtMoney(player.score)));
   const submit = el('button', {
@@ -644,17 +762,18 @@ function nextFinalWager() {
       if (w > player.score) w = player.score;
       player.finalWager = w;
       state.finalPlayerIdx++;
-      document.body.removeChild(overlay);
+      closeOverlay();
       nextFinalWager();
     }
   }, 'Lock wager');
   card.appendChild(submit);
   overlay.appendChild(card);
-  document.body.appendChild(overlay);
+  mountOverlay(overlay);
   setTimeout(() => input.focus(), 50);
 }
 
 function showFinalClue() {
+  state.screen = 'finalClue';
   state.finalPlayerIdx = 0;
 
   const overlay = el('div', { class: 'overlay' });
@@ -677,7 +796,7 @@ function showFinalClue() {
   footer.appendChild(btns);
   card.appendChild(footer);
   overlay.appendChild(card);
-  document.body.appendChild(overlay);
+  mountOverlay(overlay);
   startTimer(FINAL_TIMER_SECONDS);
   if (window.Sounds) Sounds.startThink();
 }
@@ -686,7 +805,7 @@ function judgeFinal(card, footer, btns) {
   if (window.Sounds) Sounds.stopThink();
   // Show answer
   const ans = el('div', { class: 'clue-answer' });
-  ans.appendChild(el('span', { class: 'ans-label' }, 'Answer'));
+  ans.appendChild(el('span', { class: 'ans-label' }, 'Answer revealed'));
   ans.appendChild(document.createTextNode(state.finalClue.answer));
   appendClueSources(ans, state.finalClue);
   card.insertBefore(ans, footer);
@@ -698,12 +817,13 @@ function judgeFinal(card, footer, btns) {
   const who = el('div', { class: 'who-players' });
   state.players.forEach((p, i) => {
     if (p.score <= 0) return;
-    const rowDiv = el('div', { style: 'display:flex;gap:0.3rem;align-items:center;margin:0.25rem' });
-    rowDiv.appendChild(el('span', { style: 'color:#c8d4e0;font-weight:600;margin-right:0.4rem;min-width:80px;text-align:right' },
+    const rowDiv = el('div', { class: 'final-judge-row' });
+    rowDiv.appendChild(el('span', { class: 'final-judge-player' },
       p.name + ' (wagered ' + fmtMoney(p.finalWager) + ')'));
     rowDiv.appendChild(el('button', {
       class: 'who-btn',
       id: 'final-right-' + i,
+      'aria-label': 'Mark ' + p.name + ' correct',
       onclick: () => {
         p.finalCorrect = true;
         p.score += p.finalWager;
@@ -717,6 +837,7 @@ function judgeFinal(card, footer, btns) {
     rowDiv.appendChild(el('button', {
       class: 'who-btn',
       id: 'final-wrong-' + i,
+      'aria-label': 'Mark ' + p.name + ' incorrect',
       style: 'background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#f87171',
       onclick: () => {
         p.finalCorrect = false;
@@ -732,6 +853,7 @@ function judgeFinal(card, footer, btns) {
   });
   btns.appendChild(label);
   btns.appendChild(who);
+  btns.querySelector?.('button')?.focus({ preventScroll: true });
 
   // If no one was eligible, just go to game over
   if (eligiblePlayers().length === 0) {
@@ -801,10 +923,12 @@ function showGameOver() {
 
   stage.innerHTML = '';
   stage.appendChild(card);
+  updateGameChrome();
 }
 
 /* ─── Boot ─── */
 (async function boot() {
+  initGameControls();
   stage.innerHTML = '<div class="start-card"><h2>Loading clue bank…</h2></div>';
   const ok = await loadBank();
   if (ok) renderStart();
