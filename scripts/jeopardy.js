@@ -197,6 +197,8 @@ function buildBoard(roundKey) {
         value: val,
         clue: chosenClue.clue,
         answer: chosenClue.answer,
+        id: chosenClue.id,
+        sources: chosenClue.sources,
         used: false,
         dd: false
       };
@@ -443,6 +445,7 @@ function revealAnswer(card, footer, btns) {
   const ans = el('div', { class: 'clue-answer' });
   ans.appendChild(el('span', { class: 'ans-label' }, 'Answer'));
   ans.appendChild(document.createTextNode(state.currentClue.answer));
+  appendClueSources(ans, state.currentClue);
   card.insertBefore(ans, footer);
 
   // Replace buttons
@@ -499,6 +502,22 @@ function revealAnswer(card, footer, btns) {
     btns.appendChild(label);
     btns.appendChild(who);
   }
+}
+
+// Keep the rule behind each answer available without exposing it before reveal.
+function appendClueSources(answerElement, clue) {
+  if (!clue.sources?.length) return;
+  const refs = el('div', { class: 'clue-sources' });
+  refs.appendChild(el('span', {}, 'Check the rule: '));
+  clue.sources.forEach((source, index) => {
+    if (index) refs.appendChild(document.createTextNode(' · '));
+    refs.appendChild(el('a', {
+      href: source.url,
+      target: '_blank',
+      rel: 'noopener noreferrer'
+    }, source.label));
+  });
+  answerElement.appendChild(refs);
 }
 
 function closeOverlay() {
@@ -669,6 +688,7 @@ function judgeFinal(card, footer, btns) {
   const ans = el('div', { class: 'clue-answer' });
   ans.appendChild(el('span', { class: 'ans-label' }, 'Answer'));
   ans.appendChild(document.createTextNode(state.finalClue.answer));
+  appendClueSources(ans, state.finalClue);
   card.insertBefore(ans, footer);
 
   btns.innerHTML = '';
