@@ -69,7 +69,7 @@ async function loadBank() {
   }
   // Fallback: fetch JSON (works only over http(s)://)
   try {
-    const res = await fetch('data/jeopardy-clues.json');
+    const res = await fetch('data/jeopardy-clues.json?v=rfo-2026-10-05');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     CLUE_BANK = await res.json();
   } catch (e) {
