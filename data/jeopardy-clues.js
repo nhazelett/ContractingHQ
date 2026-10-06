@@ -1,7 +1,7 @@
-/* RFO clue bank reviewed 2026-10-05; see jeopardy-clues-audit.json. */
+/* RFO accuracy reviewed 2026-10-05; clue quality reviewed 2026-10-06; see jeopardy-clues-audit.json. */
 window.CLUE_BANK_DATA = {
   "_meta": {
-    "version": "1.1",
+    "version": "1.2",
     "reviewed_on": "2026-10-05",
     "clue_count": 300,
     "rfo": "Reviewed against Acquisition.gov Revolutionary FAR Overhaul model text on October 5, 2026. Agency adoption, deviations and contract terms determine applicability. GAO procedural details use 4 CFR Part 21, as directed by RFO 33.105-1.",
@@ -15,8 +15,10 @@ window.CLUE_BANK_DATA = {
       "Commercial terminations use RFO 12.304 and 52.212-4(l) for convenience or (m) for cause.",
       "Ratification requires all criteria in RFO 1.405; intent, good faith and contractor reliance are not substitutes.",
       "Avoid unsupported local procedures, universal document titles and DoD-only system or certification trivia.",
-      "State the scope, trigger and relevant exceptions for thresholds, notice periods, remedies and approvals."
-    ]
+      "State the scope, trigger and relevant exceptions for thresholds, notice periods, remedies and approvals.",
+      "Write clues that test knowledge; avoid giving away the requested answer in the clue or category."
+    ],
+    "editorial_reviewed_on": "2026-10-06"
   },
   "single": {
     "FAR PARTS": {
@@ -282,8 +284,8 @@ window.CLUE_BANK_DATA = {
         },
         {
           "id": "S022",
-          "clue": "Under Part 10, this research must be conducted before developing new requirements documents.",
-          "answer": "market research",
+          "clue": "An agency is developing a new requirements document. Part 10 requires market research at this point in that process.",
+          "answer": "before developing the new requirements document",
           "sources": [
             {
               "label": "RFO 10.001",
@@ -475,7 +477,7 @@ window.CLUE_BANK_DATA = {
       "5": [
         {
           "id": "S037",
-          "clue": "The determination that only one source can meet the need leans on this FAR Part 6 exception.",
+          "clue": "Market research finds no alternative supplier capable of meeting the agency's need. Name the Part 6 competition exception that may apply.",
           "answer": "only one responsible source",
           "sources": [
             {
@@ -618,7 +620,7 @@ window.CLUE_BANK_DATA = {
         },
         {
           "id": "S048",
-          "clue": "Before contract execution, a CO must normally obtain this written funding assurance, or expressly condition the contract on availability of funds.",
+          "clue": "Before signing a contract that is not conditioned on future funding, the CO normally must obtain this confirmation from the responsible fiscal authority.",
           "answer": "written assurance that adequate funds are available",
           "sources": [
             {
@@ -714,7 +716,7 @@ window.CLUE_BANK_DATA = {
         },
         {
           "id": "S056",
-          "clue": "This source-selection approach permits tradeoffs between price and non-price factors.",
+          "clue": "An agency may select a higher-priced proposal when its non-price benefits justify the added cost. Name this source-selection approach.",
           "answer": "the tradeoff approach",
           "sources": [
             {
@@ -760,7 +762,7 @@ window.CLUE_BANK_DATA = {
         },
         {
           "id": "S060",
-          "clue": "This special written approval contains a determination supported by findings of fact and is required by law or regulation for certain contract actions.",
+          "clue": "For certain contract actions, law or regulation requires a formal written approval stating the decision and the factual basis supporting it. Name this document.",
           "answer": "a determination and findings (D&F)",
           "sources": [
             {
@@ -775,7 +777,7 @@ window.CLUE_BANK_DATA = {
       "1": [
         {
           "id": "S061",
-          "clue": "This solicitation requests quotations; a quotation submitted in response is not itself a binding offer.",
+          "clue": "Under commercial simplified procedures, a vendor's response to this solicitation is not itself an offer that the Government can accept to form a binding contract.",
           "answer": "a request for quotations (RFQ)",
           "sources": [
             {
@@ -875,7 +877,7 @@ window.CLUE_BANK_DATA = {
       "3": [
         {
           "id": "S069",
-          "clue": "When SAM registration is required, offerors complete applicable annual representations and certifications in this system.",
+          "clue": "When vendor registration is required, offerors submit their entity-level representations and certifications in this Governmentwide online system.",
           "answer": "SAM.gov",
           "sources": [
             {
@@ -940,7 +942,7 @@ window.CLUE_BANK_DATA = {
         },
         {
           "id": "S074",
-          "clue": "The CO's standard uniform contract format uses these lettered sections A through M.",
+          "clue": "For a negotiated acquisition, the prescribed solicitation layout runs through thirteen lettered sections, A through M. Name this organizational structure.",
           "answer": "the Uniform Contract Format",
           "sources": [
             {
@@ -1038,7 +1040,7 @@ window.CLUE_BANK_DATA = {
         },
         {
           "id": "S082",
-          "clue": "Part 12 names this Governmentwide commercial card as a method for making micro-purchases.",
+          "clue": "For a micro-purchase, an authorized buyer uses this payment tool as a primary purchasing method instead of issuing a purchase order.",
           "answer": "the Governmentwide commercial purchase card (GPC)",
           "sources": [
             {
@@ -1134,7 +1136,7 @@ window.CLUE_BANK_DATA = {
         },
         {
           "id": "S090",
-          "clue": "RFO Table 12-3 identifies additional clauses to include, as applicable, in commercial prime contracts; it is a table of these, rather than subcontract flowdowns.",
+          "clue": "For a commercial acquisition, RFO Table 12-2 lists solicitation provisions. Table 12-3 lists this other type of requirement to include, as applicable, in the prime contract.",
           "answer": "additional contract clauses",
           "sources": [
             {
@@ -1260,7 +1262,7 @@ window.CLUE_BANK_DATA = {
         },
         {
           "id": "S100",
-          "clue": "Part 13 directs noncommercial micro-purchases to the micro-purchase procedures in this part's Subpart 12.4.",
+          "clue": "For a noncommercial buy at or below the micro-purchase threshold, the RFO directs the buyer to the purchasing procedures in this other FAR part.",
           "answer": "Part 12",
           "sources": [
             {
@@ -1579,7 +1581,7 @@ window.CLUE_BANK_DATA = {
       "2": [
         {
           "id": "D005",
-          "clue": "This Part 6 exception applies when only one responsible source can provide the supply or service.",
+          "clue": "Market research establishes that no alternative supplies or services will satisfy the requirement and the needed item is available from a unique qualified supplier. Name the applicable Part 6 exception.",
           "answer": "only one responsible source (sole source)",
           "sources": [
             {
@@ -1590,7 +1592,7 @@ window.CLUE_BANK_DATA = {
         },
         {
           "id": "D006",
-          "clue": "This Part 6 exception applies when unusual and compelling urgency precludes full and open competition.",
+          "clue": "Waiting for full and open competition would seriously injure the Government, financially or otherwise. Name the Part 6 exception that may permit limiting the suppliers solicited.",
           "answer": "unusual and compelling urgency",
           "sources": [
             {
@@ -1601,7 +1603,7 @@ window.CLUE_BANK_DATA = {
         },
         {
           "id": "D007",
-          "clue": "This Part 6 exception applies when international agreements require use of a specific source.",
+          "clue": "An agreement between the United States and a foreign government requires purchases from a specified source. Name the Part 6 competition exception that may apply.",
           "answer": "international agreement",
           "sources": [
             {
@@ -1612,7 +1614,7 @@ window.CLUE_BANK_DATA = {
         },
         {
           "id": "D008",
-          "clue": "This Part 6 exception can preserve industrial mobilization capacity or essential engineering, research or development capability, or obtain expert services for litigation.",
+          "clue": "To keep a specialized supplier available for a national emergency, an agency needs to direct an award to that supplier. Name the Part 6 exception that can support maintaining this readiness.",
           "answer": "industrial mobilization; engineering, developmental or research capability; or expert services",
           "sources": [
             {
@@ -1799,7 +1801,7 @@ window.CLUE_BANK_DATA = {
         },
         {
           "id": "D023",
-          "clue": "Under the RFO, this Part 15 source selection approach awards to the highest technically rated offer with a fair and reasonable price.",
+          "clue": "The agency seeks the strongest technical proposal and will accept any price it determines to be fair and reasonable, without a tradeoff analysis. Name this RFO source-selection approach.",
           "answer": "Highest Technically Rated with a Fair and Reasonable Price (HTRFRP)",
           "sources": [
             {
@@ -1823,7 +1825,7 @@ window.CLUE_BANK_DATA = {
       "2": [
         {
           "id": "D025",
-          "clue": "Under RFO Part 15, these exchanges clarify a proposal without revising it, while these other exchanges can lead to material proposal revisions.",
+          "clue": "Part 15 distinguishes exchanges that resolve minor uncertainties without proposal revisions from exchanges that can lead to material revisions. Name both types.",
           "answer": "clarifications and negotiations",
           "sources": [
             {
@@ -2054,7 +2056,7 @@ window.CLUE_BANK_DATA = {
         },
         {
           "id": "D044",
-          "clue": "This contract vehicle provides for an indefinite quantity of supplies or services over a stated period.",
+          "clue": "This contract vehicle establishes minimum and maximum quantities, with individual orders placed as needs arise during its stated ordering period.",
           "answer": "indefinite-delivery indefinite-quantity (IDIQ)",
           "sources": [
             {
@@ -2067,7 +2069,7 @@ window.CLUE_BANK_DATA = {
       "2": [
         {
           "id": "D045",
-          "clue": "Two techniques the CO uses to determine that a price is fair and reasonable are cost analysis and this.",
+          "clue": "A CO assesses an offered price without evaluating its separate cost elements or proposed profit. Name this analysis technique.",
           "answer": "price analysis",
           "sources": [
             {
@@ -2217,7 +2219,7 @@ window.CLUE_BANK_DATA = {
       "5": [
         {
           "id": "D057",
-          "clue": "When certified cost or pricing data are required, the contractor executes this document certifying the data were accurate, complete and current as of the applicable date.",
+          "clue": "When a price negotiation requires certification of the contractor's factual data, the contractor signs this document to attest that the disclosure is accurate, complete and current as of the applicable date.",
           "answer": "Certificate of Current Cost or Pricing Data",
           "sources": [
             {
@@ -2228,7 +2230,7 @@ window.CLUE_BANK_DATA = {
         },
         {
           "id": "D058",
-          "clue": "Under Limitations on Pass-Through Charges, indirect cost or fee charged on subcontracted work with no or negligible added value may be this.",
+          "clue": "A prime contractor bills indirect cost or fee on a subcontractor's work while contributing no or negligible value. The FAR may classify those billed amounts as this.",
           "answer": "an excessive pass-through charge",
           "sources": [
             {
@@ -2387,7 +2389,7 @@ window.CLUE_BANK_DATA = {
         },
         {
           "id": "D071",
-          "clue": "Under Part 15, past performance information drawn from CPARS must meet this threshold of relevance before it can be used.",
+          "clue": "A CPARS record describes excellent work on an unrelated effort. Before using it in source selection, the CO must assess this connection to the work being acquired.",
           "answer": "relevance to the instant acquisition",
           "sources": [
             {
@@ -2457,7 +2459,7 @@ window.CLUE_BANK_DATA = {
       "5": [
         {
           "id": "D077",
-          "clue": "Under the RFO, COR-relevant past performance cites now point to this FAR part rather than to old Subpart 42.15.",
+          "clue": "Under the RFO, which FAR part contains the requirements for evaluating and reporting contractor past performance?",
           "answer": "Part 42",
           "sources": [
             {
@@ -2612,8 +2614,8 @@ window.CLUE_BANK_DATA = {
         },
         {
           "id": "D088",
-          "clue": "Under 52.212-4(l), payment includes the percentage of contract price reflecting work performed before notice, plus reasonable charges resulting from this.",
-          "answer": "the termination",
+          "clue": "Under the basic clause at 52.212-4(l), payment for a commercial convenience termination covers the percentage of the price reflecting work performed before notice, plus this other category of recoverable amount.",
+          "answer": "reasonable charges the contractor can demonstrate resulted from the termination",
           "sources": [
             {
               "label": "RFO 52.212-4",
@@ -3345,7 +3347,7 @@ window.CLUE_BANK_DATA = {
     },
     {
       "id": "F025",
-      "clue": "For a noncommercial micro-purchase, RFO Part 13 directs the buyer to this other part's Subpart 12.4 procedures.",
+      "clue": "A buyer has a noncommercial requirement valued at or below the micro-purchase threshold. The RFO routes that purchase to this other FAR part, despite its commercial-acquisition title.",
       "answer": "Part 12",
       "sources": [
         {
@@ -3749,7 +3751,7 @@ window.CLUE_BANK_DATA = {
     },
     {
       "id": "F055",
-      "clue": "This approval, required by statute or regulation for certain actions, contains a determination supported by findings of fact and is signed by the authorized official.",
+      "clue": "Certain actions require a formal written approval that states the decision, explains its factual basis, and bears the authorized official's signature. Name this document.",
       "answer": "a determination and findings (D&F)",
       "sources": [
         {
@@ -3765,7 +3767,7 @@ window.CLUE_BANK_DATA = {
     },
     {
       "id": "F056",
-      "clue": "A solicitation seeking quotes under simplified procedures is called this.",
+      "clue": "A vendor responds to a commercial simplified solicitation. Its submission alone is not an offer; a contract forms when it accepts the Government's subsequent purchase order. Name the solicitation type.",
       "answer": "a Request for Quotations (RFQ)",
       "sources": [
         {
@@ -3777,7 +3779,7 @@ window.CLUE_BANK_DATA = {
     },
     {
       "id": "F057",
-      "clue": "A solicitation seeking proposals in a Part 15 negotiated acquisition is called this.",
+      "clue": "For a negotiated acquisition under Part 15, this solicitation invites vendors to submit offers and identifies the factors used to evaluate them.",
       "answer": "a Request for Proposals (RFP)",
       "sources": [
         {
