@@ -6,7 +6,7 @@ const fields = {
     ["orderType", "Order type", ["Purchase order", "Delivery order", "BPA call"]],
     ["contractNumber", "1. Contract / purchase order / agreement no."],
     ["orderNumber", "2. Delivery order / call no."],
-    ["orderDate", "3. Date of order / call (YYYYMMDD)"],
+    ["orderDate", "3. Date of order / call (YYYYMMMDD)"],
     ["requisition", "4. Requisition / purchase request no."],
     ["priority", "5. Priority"]
   ],
@@ -14,7 +14,7 @@ const fields = {
     ["issuedCode", "6. Issuing office DoDAAC"], ["issuedBy", "6. Issued by / buyer / phone", "textarea"],
     ["adminCode", "7. Administration DoDAAC"], ["adminBy", "7. Administered by", "textarea"],
     ["fob", "8. Delivery FOB", ["Destination", "Other — see schedule"]],
-    ["deliveryDate", "10. Deliver to FOB point by (YYYYMMDD)"],
+    ["deliveryDate", "10. Deliver to FOB point by (YYYYMMMDD)"],
     ["invoiceBlock", "13. Invoice address block", ["6", "7", "14", "15", "See Schedule"]],
     ["shipCode", "14. Ship-to DoDAAC"], ["shipTo", "14. Ship to", "textarea"],
     ["paymentCode", "15. Payment office DoDAAC"], ["paymentBy", "15. Payment will be made by", "textarea"]
@@ -24,17 +24,31 @@ const fields = {
     ["small", "11. Small business", "checkbox"], ["disadvantaged", "11. Small disadvantaged", "checkbox"], ["womenOwned", "11. Women-owned", "checkbox"],
     ["discount", "12. Discount terms (purchase orders)"], ["quotation", "16. Quotation reference"],
     ["acceptance", "16. Supplier acceptance required", "checkbox"], ["copies", "16. Copies to return", "number"],
-    ["supplierSigner", "16. Supplier typed name / title"], ["supplierDate", "16. Date signed (YYYYMMDD)"],
+    ["supplierSigner", "16. Supplier typed name / title"], ["supplierDate", "16. Date signed (YYYYMMMDD)"],
     ["supplierSigned", "16. Show simulated supplier signature", "checkbox"],
     ["officer", "24. Contracting / ordering officer"], ["officerSigned", "24. Show simulated officer signature", "checkbox"]
   ],
-  terms: [["accounting", "17. Accounting and appropriation data", "textarea"], ["terms", "Schedule terms / clauses / delivery instructions", "textarea"]]
+  terms: [["accounting", "17. Accounting and appropriation data", "textarea"], ["terms", "Schedule terms / clauses / delivery instructions", "textarea"]],
+  receiving: [
+    ["differences", "26. Differences", "textarea"],
+    ["inspected", "27a. Inspected", "checkbox"], ["received", "27a. Received", "checkbox"], ["accepted", "27a. Accepted", "checkbox"],
+    ["exceptions", "27a. Exceptions noted", "textarea"], ["receiverSignature", "27b. Simulated representative signature"],
+    ["acceptanceDate", "27c. Date (YYYYMMMDD)"], ["receiverName", "27d. Representative name / title"],
+    ["receiverAddress", "27e. Representative mailing address", "textarea"], ["receiverPhone", "27f. Telephone"], ["receiverEmail", "27g. Email"],
+    ["shipmentNumber", "28. Shipment no."], ["shipmentStatus", "28. Shipment status", ["", "Partial", "Final"]],
+    ["voucherNumber", "29. D.O. voucher no."], ["initials", "30. Initials"],
+    ["paymentStatus", "31. Payment status", ["", "Complete", "Partial", "Final"]], ["paidBy", "32. Paid by", "textarea"],
+    ["verifiedAmount", "33. Amount verified correct for"], ["checkNumber", "34. Check number"], ["billOfLading", "35. Bill of lading no."],
+    ["certificationDate", "36a. Date (YYYYMMMDD)"], ["certifierSignature", "36b. Simulated certifying officer signature / title"],
+    ["receivedAt", "37. Received at"], ["receivedBy", "38. Received by"], ["receivedDate", "39. Date received (YYYYMMMDD)"],
+    ["containers", "40. Total containers"], ["srAccount", "41. S/R account number"], ["srVoucher", "42. S/R voucher no."]
+  ]
 };
 const sample = {
-  orderType:"Purchase order", contractNumber:"FA4867XXP0001", orderNumber:"", orderDate:"20XX0429",
+  orderType:"Purchase order", contractNumber:"FA4867XXP0001", orderNumber:"", orderDate:"20XXAPR29",
   requisition:"F2D3JC-F9-20XX-0001", priority:"", issuedCode:"FA4867",
   issuedBy:"Deployed Contracting Squadron\n67 Deployed St\nUndisclosed Location, Overseas\nBuyer: Capt Nadia Sullivan\nPhone: DSN 318-555-0106",
-  adminCode:"", adminBy:"See Block 6", fob:"Destination", deliveryDate:"20XX0529", invoiceBlock:"15",
+  adminCode:"", adminBy:"See Block 6", fob:"Destination", deliveryDate:"20XXMAY29", invoiceBlock:"15",
   shipCode:"F2D3JC", shipTo:"Expeditionary Support Squadron\n104 Expeditionary Support Ave\nUndisclosed Location, Overseas",
   paymentCode:"F03000", paymentBy:"DFAS Columbus\nTraining payment office",
   cage:"9XX01", facility:"", contractor:"Pioneer Logistics Group LLC\n64 Forward Vendor Lot\nUndisclosed Location, Overseas",
@@ -43,8 +57,10 @@ const sample = {
   officer:"Capt Nadia Sullivan", officerSigned:false,
   accounting:"TRAINING FUNDING ONLY\nACRN AA — 57XX3400 — F2D3JC-F9-20XX-0001",
   terms:"Delivery: FOB destination to Block 14 by the date in Block 10.\nInspection and acceptance: Government representative at destination.\nPackaging: Commercial packaging suitable for overseas delivery.\nInsert scenario-specific clauses and payment instructions here.",
-  lines:[{number:"0001", description:"NSN: None\nPortable work lights; commercial packaging. Inspection and acceptance at destination.", quantity:12, unit:"EA", price:125, delivery:"20XX0529", acrn:"AA"}]
+  lines:[{number:"0001", description:"NSN: None\nPortable work lights; commercial packaging. Inspection and acceptance at destination.", quantity:12, unit:"EA", price:125, delivery:"20XXMAY29", acrn:"AA"}]
 };
+// Older v1 drafts predate the optional receiving/payment editor.
+for (const [key,,type] of fields.receiving) sample[key] = type === "checkbox" ? false : "";
 const definitions = Object.values(fields).flat();
 const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money = value => new Intl.NumberFormat("en-US", {style:"currency",currency:"USD"}).format(value);
@@ -54,7 +70,7 @@ function validateDraft(data) {
   if (!data || data.format !== FORMAT || !data.state || typeof data.state !== "object") throw new Error("Choose a DD 1155 draft exported by this builder.");
   const clean = structuredClone(sample);
   for (const [key,label,type] of definitions) {
-    const value = data.state[key];
+    const value = fields.receiving.some(field=>field[0]===key) ? (data.state[key] ?? sample[key]) : data.state[key];
     if (type === "checkbox" ? typeof value !== "boolean" : type === "number" ? !Number.isInteger(value) || value < 0 || value > 100 : typeof value !== "string" || value.length > 50000 || (Array.isArray(type) && !type.includes(value))) throw new Error(`Invalid value for ${label}.`);
     clean[key] = value;
   }
@@ -105,25 +121,7 @@ function splitText(text,max=2200) {
 }
 function renderPreview() {
   const isPurchase = state.orderType === "Purchase order";
-  // Long values continue on additional pages instead of disappearing from the printed order.
   const continuations=[];
-  const face = key => {
-    const value=String(state[key]);
-    if (value.length<=220 && value.split("\n").length<=6) return value;
-    continuations.push(...splitText(value).map((text,index)=>`<h2>${escapeHtml(definitions.find(field=>field[0]===key)[1])}${index?" — continued":""}</h2><div class="dd-text">${escapeHtml(text)}</div>`));
-    return "See continuation";
-  };
-  const cover = `<h1>ORDER FOR SUPPLIES OR SERVICES</h1>` +
-    row(box("1. Contract / purch order / agreement no.",face("contractNumber"))+box("2. Delivery order / call no.",isPurchase?"":face("orderNumber"))+box("3. Date of order / call",face("orderDate"))+box("4. Requisition / purch request no.",face("requisition"))+box("5. Priority",face("priority")),"five")+
-    row(box("6. Issued by",`${face("issuedCode")}\n${face("issuedBy")}`)+box("7. Administered by",`${face("adminCode")}\n${face("adminBy")}`)+box("8. Delivery FOB",state.fob),"three")+
-    row(box("9. Contractor",`CAGE: ${face("cage")}   Facility: ${face("facility")}\n${face("contractor")}`)+box("10. Deliver to FOB point by",face("deliveryDate")))+
-    row(box("11. Business",`${tick(state.small)} Small\n${tick(state.disadvantaged)} Small disadvantaged\n${tick(state.womenOwned)} Women-owned`)+box("12. Discount terms",isPurchase?face("discount"):"")+box("13. Mail invoices to address in block",state.invoiceBlock),"three")+
-    row(box("14. Ship to",`${face("shipCode")}\n${face("shipTo")}`)+box("15. Payment will be made by",`${face("paymentCode")}\n${face("paymentBy")}`))+
-    row(box("16. Type of order",`${tick(isPurchase)} Purchase order\n${tick(!isPurchase)} Delivery order / call\n${isPurchase?`Quotation: ${face("quotation")}\n${tick(state.acceptance)} Acceptance required; copies: ${state.copies}`:"Issued under the agreement / contract in Block 1."}`)+box("16. Supplier acceptance",`${state.supplierSigned?"SIMULATED SIGNATURE: ":"Typed name: "}${face("supplierSigner")}\n${state.supplierSigned?`Date signed: ${face("supplierDate")}`:"Signature / date: __________________"}`))+
-    row(box("17. Accounting and appropriation data / local use",face("accounting")),"one")+
-    `<div class="dd-note">18–23. Schedule of supplies / services: SEE CONTINUATION.</div>`+
-    row(box("24. United States of America — contracting / ordering officer",`${state.officerSigned?"SIMULATED SIGNATURE: ":"Typed name: "}${face("officer")}${state.officerSigned?"":"\nSignature: __________________"}`)+box("25. Total",money(totalAmount())))+
-    `<p class="dd-note">Blocks 26–42: Receiving and payment functions reserved for later processing. This training layout covers order preparation.</p>`;
   const linePages=[];
   let batch=[]; let length=0;
   for (const line of state.lines) {
@@ -134,9 +132,13 @@ function renderPreview() {
     parts.forEach(text=>continuations.push(`<h2>CLIN ${escapeHtml(line.number)} — description continued</h2><div class="dd-text">${escapeHtml(text)}</div>`));
   }
   if(batch.length || !linePages.length) linePages.push(schedule(batch));
-  const contents=[cover,...linePages.map(content=>`<h2>Schedule of Supplies / Services</h2>${content}`),...continuations,...splitText(state.terms).map((text,index)=>`<h2>Order Terms${index?" — continued":""}</h2><div class="dd-text">${escapeHtml(text)}</div>`)];
-  document.querySelector("#preview").innerHTML=`<div class="document-pack">${contents.map((content,index)=>page(content,index+1,contents.length)).join("")}</div>`;
-  document.querySelector("#pageCount").textContent=`${contents.length} pages`;
+  const cover = renderExactCover(1, continuations);
+  const contents=[...linePages.map(content=>`<h2>Schedule of Supplies / Services</h2>${content}`),...continuations,...splitText(state.terms).map((text,index)=>`<h2>Order Terms${index?" — continued":""}</h2><div class="dd-text">${escapeHtml(text)}</div>`)];
+  const totalPages=1+contents.length;
+  // Update page count without running overflow collection a second time.
+  const finalCover=cover.replace(/(data-template-field="totalPages"[^>]*>)1(<\/div>)/, (_,before,after)=>before+totalPages+after);
+  document.querySelector("#preview").innerHTML=`<div class="document-pack">${finalCover}${contents.map((content,index)=>page(content,index+2,totalPages)).join("")}</div>`;
+  document.querySelector("#pageCount").textContent=`${totalPages} pages`;
   document.querySelector("#orderTotal").textContent=`Order total: ${money(totalAmount())}`;
   document.querySelectorAll("[data-amount]").forEach(element=>element.textContent=money(lineAmount(state.lines[Number(element.dataset.amount)])));
   document.querySelector('[data-field="orderNumber"]').disabled=isPurchase;
