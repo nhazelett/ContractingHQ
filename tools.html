@@ -72,6 +72,8 @@ html:has(#toolsDirectory), body:has(#toolsDirectory) { overflow-x:clip; }
 .td-collection[data-scrollable='false'] .td-row-actions { display:none; }
 .td-shelf { display:grid; grid-auto-flow:column; grid-auto-columns:calc((100% - 54px)/4); gap:18px; overflow-x:auto; overscroll-behavior-x:contain; scroll-snap-type:x mandatory; scroll-padding-inline:3px; scrollbar-width:none; padding:8px 3px 22px; margin:-8px -3px -22px; }
 .td-shelf::-webkit-scrollbar { display:none; }
+.td-shelf.td-auto-scroll { scroll-snap-type:none; }
+.td-row-actions .td-motion-toggle { width:auto; padding:0 9px; font-size:11px; }
 .td-card { --cover-accent:#8cceff; --cover-base:#183654; --cover-dark:#0c1b30; display:block; height:320px; min-width:0; color:#fff; background:var(--td-panel); border:1px solid #ffffff13; border-radius:10px; overflow:hidden; text-decoration:none; scroll-snap-align:start; position:relative; transition:transform .2s,border-color .2s,box-shadow .2s; }
 .td-card:hover { transform:translateY(-5px); border-color:var(--cover-accent); box-shadow:0 10px 20px #0005; }
 .td-cover { height:178px; position:relative; isolation:isolate; overflow:hidden; background:radial-gradient(ellipse at 85% 5%,var(--cover-base),transparent 80%),var(--cover-dark); }
@@ -322,6 +324,7 @@ html:has(#toolsDirectory), body:has(#toolsDirectory) { overflow-x:clip; }
   var results = root.querySelector('#toolResults');
   var collection = 'all';
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var rotations = [];
   function updateShelf(group) {
     var shelf = group.querySelector('.td-shelf');
     var previous = group.querySelector('[data-direction="previous"]');
@@ -354,11 +357,61 @@ html:has(#toolsDirectory), body:has(#toolsDirectory) { overflow-x:clip; }
     var shelf = group.querySelector('.td-shelf');
     group.querySelectorAll('[data-direction]').forEach(function (button) {
       button.addEventListener('click', function () {
+        rotation.resumeAt = performance.now() + 8000;
+        rotation.position = null;
         shelf.scrollBy({ left: (button.dataset.direction === 'next' ? 1 : -1) * shelf.clientWidth * .88, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
       });
     });
     shelf.addEventListener('scroll', function () { updateShelf(group); }, { passive: true });
+    var rotation = { group:group, shelf:shelf, paused:false, hovering:false, touching:false, resumeAt:performance.now()+4000, position:null };
+    rotations.push(rotation);
+    var toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'td-motion-toggle';
+    toggle.textContent = 'Pause';
+    toggle.setAttribute('aria-label', 'Pause automatic scrolling for ' + group.querySelector('h2').textContent);
+    toggle.setAttribute('aria-pressed', 'false');
+    toggle.hidden = reducedMotion.matches;
+    group.querySelector('.td-row-actions').prepend(toggle);
+    toggle.addEventListener('click', function () {
+      rotation.paused = !rotation.paused;
+      toggle.textContent = rotation.paused ? 'Play' : 'Pause';
+      toggle.setAttribute('aria-pressed', String(rotation.paused));
+      toggle.setAttribute('aria-label', (rotation.paused ? 'Resume' : 'Pause') + ' automatic scrolling for ' + group.querySelector('h2').textContent);
+    });
+    group.addEventListener('mouseenter', function () { rotation.hovering = true; });
+    group.addEventListener('mouseleave', function () { rotation.hovering = false; rotation.resumeAt = performance.now()+2000; });
+    shelf.addEventListener('pointerdown', function () { rotation.touching = true; });
+    window.addEventListener('pointerup', function () { if(rotation.touching) { rotation.touching = false; rotation.resumeAt = performance.now()+8000; } });
+    shelf.addEventListener('pointercancel', function () { rotation.touching = false; rotation.resumeAt = performance.now()+8000; });
+    shelf.addEventListener('wheel', function () { rotation.resumeAt = performance.now()+8000; }, { passive:true });
+    reducedMotion.addEventListener('change', function () { toggle.hidden = reducedMotion.matches; });
   });
+  var previousFrame = performance.now();
+  function rotateShelves(now) {
+    if (!root.isConnected) return;
+    var elapsed = Math.min(now-previousFrame, 50);
+    previousFrame = now;
+    rotations.forEach(function (rotation) {
+      var shelf = rotation.shelf;
+      var bounds = shelf.getBoundingClientRect();
+      var maximum = shelf.scrollWidth-shelf.clientWidth;
+      var running = !reducedMotion.matches && !document.hidden && !rotation.group.hidden && root.dataset.searching !== 'true' && maximum > 4 && bounds.bottom > 0 && bounds.top < window.innerHeight && !rotation.paused && !rotation.hovering && !rotation.touching && !rotation.group.contains(document.activeElement) && now >= rotation.resumeAt;
+      shelf.classList.toggle('td-auto-scroll', running);
+      if (!running) { rotation.position = null; return; }
+      if (rotation.position === null || Math.abs(shelf.scrollLeft-rotation.position)>2) rotation.position = shelf.scrollLeft;
+      if (rotation.position >= maximum-1) {
+        if (!rotation.atEnd) { rotation.atEnd = true; rotation.resumeAt = now+4000; }
+        else { shelf.scrollLeft = 0; rotation.position = 0; rotation.atEnd = false; rotation.resumeAt = now+4000; }
+      } else {
+        rotation.atEnd = false;
+        rotation.position = Math.min(maximum, rotation.position+elapsed*.018);
+        shelf.scrollLeft = rotation.position;
+      }
+    });
+    requestAnimationFrame(rotateShelves);
+  }
+  requestAnimationFrame(rotateShelves);
   window.addEventListener('resize', function () {
     if (root.isConnected) groups.forEach(updateShelf);
   }, { passive: true });
