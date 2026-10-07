@@ -62,7 +62,7 @@ function clauseWarnings() {
     seen.add(clause.number.trim().toUpperCase());
     if(clause.method==="Full text" && !clause.body.trim()) warnings.push(`${label}: full text is empty.`);
     if(clause.sourceUrl && !safeClauseUrl(clause.sourceUrl)) warnings.push(`${label}: source URL must start with http:// or https://.`);
-    if(["52.212-5","252.232-7006"].includes(clause.number) && clause.method!=="In parent contract / BPA" && !clause.fillIns.trim()) warnings.push(`${label}: review and enter the applicable selections or fill-ins.`);
+    if(clause.number==="252.232-7006" && clause.method!=="In parent contract / BPA" && !clause.fillIns.trim()) warnings.push(`${label}: review and enter the applicable selections or fill-ins.`);
   });
   const newReferences=selected.some(clause=>clause.method==="Reference");
   if(newReferences && !selected.some(clause=>clause.number==="52.252-2" && clause.method!=="In parent contract / BPA")) warnings.push("Review incorporation-by-reference authority. Add 52.252-2 or document the applicable incorporation language.");
@@ -77,7 +77,7 @@ function syncClauseContext() {
   document.querySelector('[data-clause-setting="bpaBasis"]').closest("label").hidden=!bpa;
   document.querySelector('[data-clause-setting="scheduleContract"]').closest("label").hidden=!(bpa && state.clauseSettings.bpaBasis==="Federal Supply Schedule BPA");
   document.querySelector('[data-clause-setting="parentTerms"]').closest("label").hidden=purchase;
-  document.querySelector("#clauseContext").textContent=purchase?"Select clauses for this purchase. Starter sets are editable; review prescriptions, fill-ins, alternates, and agency deviations.":`Block 1 identifies the parent ${bpa?"BPA":"contract"}. Mark existing parent clauses separately from clauses added to this ${bpa?"call":"order"}.`;
+  document.querySelector("#clauseContext").textContent=purchase?(state.clauseSettings.purchaseProfile==="Commercial purchase"?"The commercial starter adds only 52.212-4 (RFO model text). Enter your agency deviation date; add any other clauses or custom text you need.":"The noncommercial starter is editable. Review the applicable prescriptions and agency deviations; add any other clauses or custom text you need."):`Block 1 identifies the parent ${bpa?"BPA":"contract"}. Mark existing parent clauses separately from clauses added to this ${bpa?"call":"order"}.`;
   state.clauseSettings.clauses.forEach((clause,index)=>{document.querySelector(`[data-clause-body="${index}"]`).hidden=clause.method!=="Full text";});
   const warnings=clauseWarnings();
   document.querySelector("#clauseWarnings").innerHTML=warnings.length?`<strong>To review</strong><ul>${warnings.map(warning=>`<li>${escapeHtml(warning)}</li>`).join("")}</ul>`:"";
@@ -109,6 +109,7 @@ function clausePageContents() {
   if(references.length) blocks.push({title:"Clauses Incorporated by Reference",text:references.map(clause=>`${clause.number} — ${clause.title} (${clause.date})${clause.sourceUrl?"\nSource: "+clause.sourceUrl:""}${clause.fillIns?"\nFill-ins / selections: "+clause.fillIns:""}`).join("\n\n")});
   selected.filter(clause=>clause.method==="Full text").forEach(clause=>{
     let text=clause.body;
+    if(clause.number==="52.212-4" && clause.date.trim()) text=text.replace(/\(Deviation Date\)/g,`(${clause.date.trim()})`);
     if(clause.number==="52.252-2" && settings.incorporationUrls.trim()) text=text.replace(/_{10,}[\s\S]*?\[\s*Insert one or more Internet addresses\s*\]/,settings.incorporationUrls.trim());
     if(clause.fillIns.trim()) text+="\n\nFill-ins / selections:\n"+clause.fillIns;
     blocks.push({title:`${clause.number} — ${clause.title} (${clause.date})`,text:text||"[Full text not entered]"});
@@ -138,5 +139,5 @@ function setupClauseEvents() {
   document.querySelector("#addCatalogClauseBtn").addEventListener("click",()=>{addCatalogClause(document.querySelector("#clauseCatalog").value);renderClauseRows();dirty();renderPreview();});
   document.querySelector("#addCustomClauseBtn").addEventListener("click",()=>{if(state.clauseSettings.clauses.length>=200)return;state.clauseSettings.clauses.push({number:"",title:"",date:"",method:"Full text",body:"",fillIns:"",sourceUrl:"",included:true});renderClauseRows();dirty();renderPreview();});
   document.querySelector("#addIncorporationClauseBtn").addEventListener("click",()=>{addCatalogClause("52.252-2");renderClauseRows();dirty();renderPreview();});
-  document.querySelector("#applyClauseProfileBtn").addEventListener("click",()=>{const numbers=state.clauseSettings.purchaseProfile==="Commercial purchase"?["52.212-4","52.212-5","52.252-2"]:["52.213-4"];numbers.forEach(addCatalogClause);renderClauseRows();dirty();renderPreview();});
+  document.querySelector("#applyClauseProfileBtn").addEventListener("click",()=>{const numbers=state.clauseSettings.purchaseProfile==="Commercial purchase"?["52.212-4"]:["52.213-4"];numbers.forEach(addCatalogClause);renderClauseRows();dirty();renderPreview();});
 }
