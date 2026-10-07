@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Build training DD 1155-style purchase orders, delivery orders, and BPA calls with calculated line items, saved drafts, and print-to-PDF.">
+  <title>DD 1155 Builder | ContractingHQ</title>
+  <link rel="stylesheet" href="../1449-sf30-builder/assets/styles.css">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><strong>DD 1155 Builder</strong><a href="../tools.html#collection-forms">All contract builders</a></div>
+    <div class="actions">
+      <button type="button" id="sampleBtn">Sample</button>
+      <button type="button" id="saveDraftBtn">Save Draft</button>
+      <button type="button" id="exportBtn">Export JSON</button>
+      <label class="file-button">Import JSON<input type="file" id="importInput" accept="application/json"></label>
+      <button type="button" id="printBtn" class="primary">Save to PDF</button>
+    </div>
+  </header>
+  <main class="workspace">
+    <form id="editor" class="editor">
+      <section class="editor-section"><div class="section-heading"><h2>Document</h2><span id="draftStatus" role="status">Unsaved</span></div>
+        <p class="empty-note">Training order builder using the exact DD 1155, DEC 2001 layout. Use fictional exercise data. Receiving and payment fields are optional.</p>
+        <div id="documentFields" class="field-grid two"></div>
+      </section>
+      <section class="editor-section"><div class="section-heading"><h2>Government &amp; Delivery</h2></div><div id="governmentFields" class="field-grid two"></div></section>
+      <section class="editor-section"><div class="section-heading"><h2>Contractor &amp; Acceptance</h2></div><div id="contractorFields" class="field-grid two"></div></section>
+      <section class="editor-section"><div class="section-heading"><h2>Schedule of Supplies / Services</h2><button type="button" id="addLineBtn" class="small">Add CLIN</button></div><div id="lineEditor"></div><strong id="orderTotal"></strong></section>
+      <section class="editor-section"><div class="section-heading"><h2>Funding &amp; Order Terms</h2></div><div id="termsFields" class="field-grid two"></div></section>
+      <section class="editor-section" id="clausesSection">
+        <div class="section-heading"><h2>Clauses &amp; Terms</h2></div>
+        <p id="clauseContext" class="empty-note"></p>
+        <div id="clauseSettings" class="field-grid two"></div>
+        <div class="clause-actions"><button type="button" id="applyClauseProfileBtn" class="small">Add purchase starter</button><button type="button" id="addIncorporationClauseBtn" class="small">Add 52.252-2</button></div>
+        <label>Clause library<select id="clauseCatalog"></select></label>
+        <div class="clause-actions"><button type="button" id="addCatalogClauseBtn" class="small">Add selected clause</button><button type="button" id="addCustomClauseBtn" class="small">Add custom clause</button></div>
+        <p class="empty-note">52.212-4 uses FAR Overhaul model text; enter the applicable agency deviation date. Other library entries use base FAR/DFARS snapshots checked October 7, 2026. <a href="../clause-matrix.html" target="_blank" rel="noopener">Review clause applicability</a>. Review selections, alternates, and agency deviations before using a starter set.</p>
+        <div id="clauseWarnings" class="clause-review" role="status" aria-live="polite"></div>
+        <div id="clauseEditor"></div>
+      </section>
+      <section class="editor-section"><div class="section-heading"><h2>Receiving &amp; Payment</h2></div><div id="receivingFields" class="field-grid two"></div></section>
+      <p class="empty-note">Reference: <a href="https://www.esd.whs.mil/Directives/forms/dd1000_1499/DD1155/" target="_blank" rel="noopener">Official DD 1155</a> · <a href="https://www.acquisition.gov/dfarspgi/pgi-253.213-70-completion-dd-form-1155-order-supplies-or-services." target="_blank" rel="noopener">Completion instructions</a></p>
+    </form>
+    <section class="preview-shell" aria-label="Order preview">
+      <div class="preview-top"><strong>DD 1155 Preview</strong><span id="pageCount"></span></div>
+      <div id="preview" class="preview"></div>
+    </section>
+  </main>
+  <script src="assets/template-fields.js"></script>
+  <script src="assets/exact-form.js"></script>
+  <script src="assets/clause-catalog.js"></script>
+  <script src="assets/clauses.js"></script>
+  <script src="assets/pagination.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
