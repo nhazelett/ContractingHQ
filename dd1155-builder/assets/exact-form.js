@@ -22,8 +22,8 @@ function renderExactCover(totalPages, continuations) {
   assign("twelve", purchase ? state.discount : "");
   assign("sixteen_refYour", purchase ? state.quotation : "");
   assign("sixteen_nameOfContractor", state.contractor.split("\n")[0]);
-  assign("SignatureField1", state.supplierSigned ? "SIMULATED: " + state.supplierSigner : "");
-  assign("sixteen_dateSigned", state.supplierSigned ? date(state.supplierDate) : "");
+  assign("SignatureField1", purchase && state.supplierSigned ? "SIMULATED: " + state.supplierSigner : "");
+  assign("sixteen_dateSigned", purchase && state.supplierSigned ? date(state.supplierDate) : "");
   assign("sixteen_copies", purchase && state.acceptance ? state.copies : "");
   assign("twenty4_by", state.officerSigned ? "SIMULATED: " + state.officer : state.officer);
   assign("twenty5", money(totalAmount()));
