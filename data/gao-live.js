@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-10-06T14:25:01.787Z",
+  "generatedAt": "2026-10-07T14:41:10.168Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,10 +7,10 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 17,
+    "total": 16,
     "latestDecisionDate": "2026-10-01",
     "sustained": 0,
-    "denied": 9,
+    "denied": 8,
     "dismissed": 3,
     "mixed": 5,
     "unclassified": 0,
@@ -23,11 +23,11 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 22
+        "parsedOutcomes": 23
       },
       "productPages": {
-        "attempted": 17,
-        "enriched": 17,
+        "attempted": 16,
+        "enriched": 16,
         "blocked": 0
       },
       "legacyCache": {
@@ -113,6 +113,37 @@ window.KTHQ_GAO_DATA = {
       "tags": [
         "Solicitation terms",
         "Small business"
+      ],
+      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424612,B-424612.2,B-424612.3",
+      "caseName": "Turning Point Global Solutions, L.L.C.",
+      "title": "Turning Point Global Solutions, L.L.C.",
+      "bNumbers": [
+        "B-424612",
+        "B-424612.2",
+        "B-424612.3"
+      ],
+      "bNumberText": "B-424612, B-424612.2, B-424612.3",
+      "link": "https://www.gao.gov/products/b-424612%2Cb-424612.2%2Cb-424612.3",
+      "publicationDate": "2026-10-07",
+      "decisionDate": "2026-09-24",
+      "displayDate": "Sep 24, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We sustain the protest in part and deny the protest in part.",
+      "officialSynopsis": "Turning Point Global Solutions, L.L.C. (TPGS), a small business of Rockville, Maryland, protests the award of an indefinite-delivery, indefinite-...",
+      "highlights": "",
+      "digest": "1. Protest that awardee is ineligible for award for providing a non-compliant carrier commitment letter is sustained where one of the submitted letters did not satisfy the solicitation's requirements. 2. Protest is sustained where the awardee's proposal included assumptions that took exception to the solicitation's mandatory service level agreements. 3. Protest alleging that the agency failed to adequately consider an alleged conflict of interest is denied where the protester has not identified any hard facts supporting the allegation.",
+      "tags": [
+        "OCI",
+        "Solicitation terms",
+        "Small business",
+        "Orders / IDIQ"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
       "sourceStatus": "product-page",
@@ -348,34 +379,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424573,B-424573.2",
-      "caseName": "INTECON LLC",
-      "title": "INTECON LLC",
-      "bNumbers": [
-        "B-424573",
-        "B-424573.2"
-      ],
-      "bNumberText": "B-424573, B-424573.2",
-      "link": "https://www.gao.gov/products/b-424573%2Cb-424573.2",
-      "publicationDate": "2026-09-22",
-      "decisionDate": "2026-09-14",
-      "displayDate": "Sep 14, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "INTECON, LLC, of Fredericksburg, Virginia, protests the non-selection of its proposal for award under request for proposals (RFP) No. N66001-26-R-...",
-      "highlights": "",
-      "digest": "Protest challenging the agency's evaluation of the protester's proposal under the organizational experience evaluation factor is denied where the evaluation was reasonable and consistent with the terms of the solicitation.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
       "id": "B-424555,B-424555.2,B-424555.3",
       "caseName": "iWorks Corporation",
       "title": "iWorks Corporation",
@@ -396,35 +399,6 @@ window.KTHQ_GAO_DATA = {
       "officialSynopsis": "iWorks Corporation, of McLean, Virginia, protests the issuance of an order to ICF Incorporated, L.L.C., of Reston, Virginia, under request for...",
       "highlights": "",
       "digest": "1. Protest that agency failed to perform a reasonable evaluation of awardee's quotation under price and non-price factors is denied where the record shows the agency reasonably evaluated the awardee's quotation consistent with the solicitation's evaluation criteria and applicable procurement law and regulations. 2. Protest that agency applied unstated evaluation criteria in determining that certain aspects of protester's quotation \"decrease confidence\" is denied where the findings were not considered in the best-value determination and the protester therefore cannot demonstrate a reasonable possibility of competitive prejudice. 3. Protest that agency misevaluated quotations and treated vendors disparately is denied where the record shows the agency's evaluation was reasonable and consistent with the solicitation, and where differences in the evaluation were based on differences in quotations rather than unequal treatment. 4. Protest that agency's best-value determination was flawed is denied where the agency reasonably conducted a tradeoff and determined that awardee's and protester's quotations were of equal technical merit, and that features of the protester's quotation did not warrant payment of a price premium.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Price / cost"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424575,B-424575.2",
-      "caseName": "Battelle Memorial Institute",
-      "title": "Battelle Memorial Institute",
-      "bNumbers": [
-        "B-424575",
-        "B-424575.2"
-      ],
-      "bNumberText": "B-424575, B-424575.2",
-      "link": "https://www.gao.gov/products/b-424575%2Cb-424575.2",
-      "publicationDate": "2026-09-22",
-      "decisionDate": "2026-09-10",
-      "displayDate": "Sep 10, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We sustain the protest in part and deny it in part.",
-      "officialSynopsis": "Battelle Memorial Institute, of Columbus, Ohio, protests the award of a contract to KBR Services, LLC, of Houston, Texas, under request for proposals...",
-      "highlights": "",
-      "digest": "1. Allegation that the agency unreasonably failed to consider a corporate transaction concerning the awardee is denied where the record shows the agency analyzed the scope and ramifications of the pending transaction. 2. Allegation that the agency's cost realism evaluation was unreasonable is denied where the record shows the agency examined the awardee's labor rates and the supporting data to determine they realistically could support recruiting and retaining labor. 3. Allegation that the agency unreasonably evaluated the awardee's proposed key person is denied where the record shows that the agency did not relax any material solicitation requirements to accommodate the proposed individual's \"cooling off\" period. 4. Allegation that the agency unreasonably considered whether the awardee unfairly accessed competitive information through its hiring of a former agency official is denied where the record shows the contracting officer meaningfully investigated and reasonably determined that the individual did not have access to non-public competitively useful information and the scope of his duties and nature of his prior employment did not create the appearance of an impropriety. 5. Allegations that the agency unreasonably evaluated the protester's management approach are denied whe...",
       "tags": [
         "Evaluation",
         "Solicitation terms",
