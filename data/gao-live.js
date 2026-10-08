@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-10-07T14:41:10.168Z",
+  "generatedAt": "2026-10-08T14:49:21.182Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,11 +7,11 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 16,
+    "total": 14,
     "latestDecisionDate": "2026-10-01",
     "sustained": 0,
-    "denied": 8,
-    "dismissed": 3,
+    "denied": 7,
+    "dismissed": 2,
     "mixed": 5,
     "unclassified": 0,
     "sourceStatus": {
@@ -26,8 +26,8 @@ window.KTHQ_GAO_DATA = {
         "parsedOutcomes": 23
       },
       "productPages": {
-        "attempted": 16,
-        "enriched": 16,
+        "attempted": 14,
+        "enriched": 14,
         "blocked": 0
       },
       "legacyCache": {
@@ -236,33 +236,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424616",
-      "caseName": "A.B. Martin Services, Inc.",
-      "title": "A.B. Martin Services, Inc.",
-      "bNumbers": [
-        "B-424616"
-      ],
-      "bNumberText": "B-424616",
-      "link": "https://www.gao.gov/products/b-424616",
-      "publicationDate": "2026-09-23",
-      "decisionDate": "2026-09-21",
-      "displayDate": "Sep 21, 2026",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protest.",
-      "officialSynopsis": "A.B. Martin Services, Inc. (ABMS), a small business of Springdale, Arkansas, protests the issuance of a purchase order by the Department of Defense,...",
-      "highlights": "",
-      "digest": "Protest challenging the agency's evaluation of the protester's quotation is dismissed where, even assuming the protester were to prevail on its allegations, the protester is unable to demonstrate that it was competitively prejudiced by the alleged errors.",
-      "tags": [
-        "Evaluation",
-        "Small business"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
       "id": "B-424433.14,B-424433.16,B-424433.17,B-424433.20,B-424433.21,B-424433.25",
       "caseName": "Kearney & Company, P.C.; NextGen Federal Systems LLC; Integral Federal, Inc.; Alpha Tech Alliance, LLC",
       "title": "Kearney & Company, P.C.; NextGen Federal Systems LLC; Integral Federal, Inc.; Alpha Tech Alliance, LLC",
@@ -289,32 +262,6 @@ window.KTHQ_GAO_DATA = {
       "tags": [
         "Solicitation terms",
         "Small business"
-      ],
-      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424162.4",
-      "caseName": "Acacia Center for Justice",
-      "title": "Acacia Center for Justice",
-      "bNumbers": [
-        "B-424162.4"
-      ],
-      "bNumberText": "B-424162.4",
-      "link": "https://www.gao.gov/products/b-424162.4",
-      "publicationDate": "2026-09-23",
-      "decisionDate": "2026-09-18",
-      "displayDate": "Sep 18, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Acacia Center for Justice (Acacia), of Washington, D.C., protests the terms of request for proposals (RFP) No. 75P00126R00003, issued by the...",
-      "highlights": "",
-      "digest": "1. Protest challenging invoicing submission terms as unduly restrictive of competition is denied where the solicitation's requirements are reasonably related to the agency's requirements. 2. Protest challenging the scope of representation and hearing requirements as unduly restrictive of competition is denied where the protester's interpretation of the solicitation language is not reasonable when the solicitation is read as a whole and in a manner that gives effect to all of its provisions. 3. Protest challenging supporting documentation requirements for invoicing as unreasonable is denied where the agency has articulated a reasonable basis for imposing the requirement.",
-      "tags": [
-        "Solicitation terms"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
       "sourceStatus": "product-page",
