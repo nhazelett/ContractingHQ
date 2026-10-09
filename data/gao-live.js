@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-10-08T14:49:21.182Z",
+  "generatedAt": "2026-10-09T14:33:07.742Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,12 +7,12 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 14,
-    "latestDecisionDate": "2026-10-01",
-    "sustained": 0,
-    "denied": 7,
+    "total": 16,
+    "latestDecisionDate": "2026-10-07",
+    "sustained": 1,
+    "denied": 9,
     "dismissed": 2,
-    "mixed": 5,
+    "mixed": 4,
     "unclassified": 0,
     "sourceStatus": {
       "rss": {
@@ -23,11 +23,11 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 23
+        "parsedOutcomes": 22
       },
       "productPages": {
-        "attempted": 14,
-        "enriched": 14,
+        "attempted": 16,
+        "enriched": 16,
         "blocked": 0
       },
       "legacyCache": {
@@ -36,6 +36,89 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424568.3",
+      "caseName": "Asset Protection & Security Services, L.P.",
+      "title": "Asset Protection & Security Services, L.P.",
+      "bNumbers": [
+        "B-424568.3"
+      ],
+      "bNumberText": "B-424568.3",
+      "link": "https://www.gao.gov/products/b-424568.3",
+      "publicationDate": "2026-10-09",
+      "decisionDate": "2026-10-07",
+      "displayDate": "Oct 7, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Asset Protection & Security Services, L.P., of Corpus Christi, Texas, protests the agency's decision to take corrective action in response to...",
+      "highlights": "",
+      "digest": "Protest that the agency unreasonably elected to take corrective action in response to another firm's protest is denied where the record shows that the solicitation provided inaccurate information to offerors and failed to specify the rates applicable under the Service Contract Act.",
+      "tags": [
+        "Corrective action",
+        "Solicitation terms"
+      ],
+      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424661,B-424661.2",
+      "caseName": "RFD Beaufort, Inc.",
+      "title": "RFD Beaufort, Inc.",
+      "bNumbers": [
+        "B-424661",
+        "B-424661.2"
+      ],
+      "bNumberText": "B-424661, B-424661.2",
+      "link": "https://www.gao.gov/products/b-424661%2Cb-424661.2",
+      "publicationDate": "2026-10-09",
+      "decisionDate": "2026-10-07",
+      "displayDate": "Oct 7, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "RFD Beaufort, Inc., of Sharon Center, Ohio, protests the award of a sole-source contract to Mustang Survival Manufacturing, Inc., of Jacksonville,...",
+      "highlights": "",
+      "digest": "The sole-source award of a contract to produce submarine escape and surface survival personnel equipment suits was unobjectionable where the record shows that the agency's action was reasonably based on its industrial mobilization needs.",
+      "tags": [
+        "Sole source",
+        "Staffing"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424444.2,B-424444",
+      "caseName": "Aero Simulation, Inc.",
+      "title": "Aero Simulation, Inc.",
+      "bNumbers": [
+        "B-424444.2",
+        "B-424444"
+      ],
+      "bNumberText": "B-424444.2, B-424444",
+      "link": "https://www.gao.gov/products/b-424444.2",
+      "publicationDate": "2026-10-09",
+      "decisionDate": "2026-10-05",
+      "displayDate": "Oct 5, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the request for reconsideration because it fails to demonstrate any material factual or legal errors with respect to the underlying decision dismissing ASI's protest.",
+      "officialSynopsis": "Aero Simulation, Inc. (ASI), of Tampa, Florida, requests reconsideration of our decision in Aero Simulation, Inc., B-424444, July 31, 2026,...",
+      "highlights": "",
+      "digest": "Request for reconsideration of our decision dismissing a protest as presenting an untimely challenge to the terms of a solicitation is denied where the request does not establish that our prior decision contains material errors of fact or law.",
+      "tags": [
+        "Timeliness",
+        "Solicitation terms"
+      ],
+      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-423714.5",
       "caseName": "Hendall Inc.",
@@ -115,6 +198,35 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424599,B-424599.2",
+      "caseName": "Peterson's LLC",
+      "title": "Peterson's LLC",
+      "bNumbers": [
+        "B-424599",
+        "B-424599.2"
+      ],
+      "bNumberText": "B-424599, B-424599.2",
+      "link": "https://www.gao.gov/products/b-424599%2Cb-424599.2",
+      "publicationDate": "2026-10-09",
+      "decisionDate": "2026-09-25",
+      "displayDate": "Sep 25, 2026",
+      "outcome": "sustained",
+      "outcomeLabel": "Sustained",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We sustain the protest.",
+      "officialSynopsis": "Peterson's LLC, a small business of Greenwood Village, Colorado, protests the award of a contract to Vantage Point Consulting, Inc. (VPC), a small...",
+      "highlights": "",
+      "digest": "Protest challenging the technical acceptability of the awardee's proposal is sustained where the awardee's proposal did not respond to a material solicitation requirement and the agency unreasonably concluded that the proposal met the requirement.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms",
+        "Small business"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -346,64 +458,6 @@ window.KTHQ_GAO_DATA = {
       "officialSynopsis": "iWorks Corporation, of McLean, Virginia, protests the issuance of an order to ICF Incorporated, L.L.C., of Reston, Virginia, under request for...",
       "highlights": "",
       "digest": "1. Protest that agency failed to perform a reasonable evaluation of awardee's quotation under price and non-price factors is denied where the record shows the agency reasonably evaluated the awardee's quotation consistent with the solicitation's evaluation criteria and applicable procurement law and regulations. 2. Protest that agency applied unstated evaluation criteria in determining that certain aspects of protester's quotation \"decrease confidence\" is denied where the findings were not considered in the best-value determination and the protester therefore cannot demonstrate a reasonable possibility of competitive prejudice. 3. Protest that agency misevaluated quotations and treated vendors disparately is denied where the record shows the agency's evaluation was reasonable and consistent with the solicitation, and where differences in the evaluation were based on differences in quotations rather than unequal treatment. 4. Protest that agency's best-value determination was flawed is denied where the agency reasonably conducted a tradeoff and determined that awardee's and protester's quotations were of equal technical merit, and that features of the protester's quotation did not warrant payment of a price premium.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Price / cost"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424543,B-424543.3",
-      "caseName": "VGS Infrastructure Services, Inc.",
-      "title": "VGS Infrastructure Services, Inc.",
-      "bNumbers": [
-        "B-424543",
-        "B-424543.3"
-      ],
-      "bNumberText": "B-424543, B-424543.3",
-      "link": "https://www.gao.gov/products/b-424543%2Cb-424543.3",
-      "publicationDate": "2026-09-24",
-      "decisionDate": "2026-09-09",
-      "displayDate": "Sep 9, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "VGS Infrastructure Services, Inc., (Versar), of Greenville, South Carolina, protests the award of a contract to Pond Constructors, Inc., of Peachtree...",
-      "highlights": "",
-      "digest": "1. Allegation that the agency's discussions were misleading, unfair, or not meaningful is denied where the protester cannot demonstrate that it was prejudiced by the agency's conduct of discussions. 2. Protest that the agency unreasonably evaluated technical proposals is dismissed where the source selection evaluation board's discussion of unannounced evaluation criteria conferred no protest rights on any offerors. 3. Protest that the agency unreasonably evaluated price proposals is denied where the evaluation was consistent with the solicitation and procurement law and regulation and reasonable. 4. Allegation that the agency conducted a defective best-value tradeoff analysis is denied where the record demonstrates that the analysis was consistent with the evaluation findings and reasonable.",
-      "tags": [
-        "Evaluation",
-        "Discussions / FPR",
-        "Solicitation terms",
-        "Price / cost"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424543.2",
-      "caseName": "Weston Solutions, Inc.",
-      "title": "Weston Solutions, Inc.",
-      "bNumbers": [
-        "B-424543.2"
-      ],
-      "bNumberText": "B-424543.2",
-      "link": "https://www.gao.gov/products/b-424543.2",
-      "publicationDate": "2026-09-24",
-      "decisionDate": "2026-09-09",
-      "displayDate": "Sep 9, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protest.",
-      "officialSynopsis": "Weston Solutions, Inc., of West Chester, Pennsylvania, protests the award of a contract to Pond Constructors, Inc., of Peachtree Corners, Georgia,...",
-      "highlights": "",
-      "digest": "1. Protest that the agency failed to evaluate the actual cost of performance of the unpriced contract line item for corrective maintenance is dismissed for failing to state a valid basis of protest when the solicitation provided a plug number for corrective maintenance, offerors were instructed not to price it, and the prices for corrective maintenance service orders were to be negotiated during contract performance on a per service order basis. 2. Protest that the agency unreasonably evaluated the awardee's price proposal as compliant with the solicitation is dismissed because the protester would not be next in line for award if its protest was sustained and is therefore not an interested party to bring its allegation.",
       "tags": [
         "Evaluation",
         "Solicitation terms",
