@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-10-09T14:33:07.742Z",
+  "generatedAt": "2026-10-10T13:55:50.179Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,10 +7,10 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 16,
+    "total": 15,
     "latestDecisionDate": "2026-10-07",
     "sustained": 1,
-    "denied": 9,
+    "denied": 8,
     "dismissed": 2,
     "mixed": 4,
     "unclassified": 0,
@@ -26,8 +26,8 @@ window.KTHQ_GAO_DATA = {
         "parsedOutcomes": 22
       },
       "productPages": {
-        "attempted": 16,
-        "enriched": 16,
+        "attempted": 15,
+        "enriched": 15,
         "blocked": 0
       },
       "legacyCache": {
@@ -376,34 +376,6 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424516.2,B-424516.3",
-      "caseName": "Patriot Contract Services, LLC",
-      "title": "Patriot Contract Services, LLC",
-      "bNumbers": [
-        "B-424516.2",
-        "B-424516.3"
-      ],
-      "bNumberText": "B-424516.2, B-424516.3",
-      "link": "https://www.gao.gov/products/b-424516.2%2Cb-424516.3",
-      "publicationDate": "2026-09-28",
-      "decisionDate": "2026-09-17",
-      "displayDate": "Sep 17, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Patriot Contract Services, LLC, a small business of Houston, Texas, protests the corrective action taken in connection with a prior protest...",
-      "highlights": "",
-      "digest": "Protest objecting to proposed corrective action taken in response to an earlier protest is denied where the record shows that the agency had a reasonable basis for taking corrective action.",
-      "tags": [
-        "Corrective action",
-        "Small business"
-      ],
-      "practitionerNote": "Corrective action is broad, but not unlimited. Tie the scope to the procurement defect and document why the remedy fits.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
