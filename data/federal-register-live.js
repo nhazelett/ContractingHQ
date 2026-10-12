@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-10-11T13:59:16.588Z",
-  "since": "2025-04-19",
+  "generatedAt": "2026-10-12T16:41:55.486Z",
+  "since": "2025-04-20",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
