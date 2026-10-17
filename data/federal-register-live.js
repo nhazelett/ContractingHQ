@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-10-16T12:21:49.371Z",
-  "since": "2025-04-24",
+  "generatedAt": "2026-10-17T11:33:54.940Z",
+  "since": "2025-04-25",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,18 +14,153 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 148,
-    "latestPublicationDate": "2026-10-05",
-    "openCommentWindows": 20,
+    "total": 152,
+    "latestPublicationDate": "2026-10-19",
+    "openCommentWindows": 23,
     "rules": 54,
     "byTone": {
+      "monitor": 96,
       "active": 6,
-      "monitor": 92,
       "action": 30,
       "watch": 20
     }
   },
   "items": [
+    {
+      "id": "2026-21327",
+      "documentNumber": "2026-21327",
+      "title": "Information Collection Requirement; Defense Federal Acquisition Regulation Supplement (DFARS) Part 215 Negotiation",
+      "shortTitle": "Information Collection Requirement; Defense Federal Acquisition Regulation Supplement (DFARS) Part 215 Negotiation",
+      "system": "DFARS",
+      "stage": "Information collection",
+      "topic": "Clauses / reps",
+      "actionLevel": "Monitor",
+      "actionTone": "monitor",
+      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
+      "nextSteps": [
+        "Identify the cited provision, clause, form, or system",
+        "Comment only if your office has burden data or a process concern",
+        "No template change unless a later rule follows"
+      ],
+      "type": "Notice",
+      "publicationDate": "2026-10-19",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-12-18",
+      "datesText": "DoD will consider all comments received by December 18, 2026.",
+      "actionText": "Notice and request for comments regarding a proposed extension of an approved information collection requirement.",
+      "summary": "In compliance with the Paperwork Reduction Act of 1995, DoD announces the proposed extension of a public information collection requirement and seeks public comment on the provisions thereof. DoD invites comments on: whether the proposed collection of information is necessary for the proper performance of the functions of DoD, including whether the information will have practical utility; the accuracy of DoD's estimate of the burden of the proposed information collection; ways to enhance the quality, utility, and...",
+      "citation": "91 FR 66113",
+      "regulationIds": [],
+      "cfrReferences": "",
+      "agencies": [
+        "Defense Department",
+        "Defense Acquisition Regulations System"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/10/19/2026-21327/information-collection-requirement-defense-federal-acquisition-regulation-supplement-dfars-part-215",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-10-19/pdf/2026-21327.pdf",
+      "sourceQuery": "DFARS / DARS agency feed"
+    },
+    {
+      "id": "2026-21330",
+      "documentNumber": "2026-21330",
+      "title": "Information Collection Requirement; Defense Federal Acquisition Regulation Supplement (DFARS) Parts 223 and 226, Occupational Safety and Drug-Free Work Force",
+      "shortTitle": "Information Collection Requirement; Defense Federal Acquisition Regulation Supplement (DFARS) Parts 223 and 226, Occupational Safety and Drug-Free Work Force",
+      "system": "DFARS",
+      "stage": "Information collection",
+      "topic": "Clauses / reps",
+      "actionLevel": "Monitor",
+      "actionTone": "monitor",
+      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
+      "nextSteps": [
+        "Identify the cited provision, clause, form, or system",
+        "Comment only if your office has burden data or a process concern",
+        "No template change unless a later rule follows"
+      ],
+      "type": "Notice",
+      "publicationDate": "2026-10-19",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-12-18",
+      "datesText": "DoD will consider all comments received by December 18, 2026.",
+      "actionText": "Notice and request for comments regarding a proposed extension of an approved information collection requirement.",
+      "summary": "In compliance with the Paperwork Reduction Act of 1995, DoD announces the proposed extension of a public information collection requirement and seeks public comment on the provisions thereof. DoD invites comments on: whether the proposed collection of information is necessary for the proper performance of the functions of DoD, including whether the information will have practical utility; the accuracy of DoD's estimate of the burden of the proposed information collection; ways to enhance the quality, utility, and...",
+      "citation": "91 FR 66112",
+      "regulationIds": [],
+      "cfrReferences": "",
+      "agencies": [
+        "Defense Department",
+        "Defense Acquisition Regulations System"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/10/19/2026-21330/information-collection-requirement-defense-federal-acquisition-regulation-supplement-dfars-parts-223",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-10-19/pdf/2026-21330.pdf",
+      "sourceQuery": "DFARS / DARS agency feed"
+    },
+    {
+      "id": "2026-21329",
+      "documentNumber": "2026-21329",
+      "title": "Information Collection Requirement; Defense Federal Acquisition Regulation Supplement (DFARS); Inspection and Receiving Report",
+      "shortTitle": "Information Collection Requirement; Defense Federal Acquisition Regulation Supplement (DFARS); Inspection and Receiving Report",
+      "system": "DFARS",
+      "stage": "Information collection",
+      "topic": "Clauses / reps",
+      "actionLevel": "Monitor",
+      "actionTone": "monitor",
+      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
+      "nextSteps": [
+        "Identify the cited provision, clause, form, or system",
+        "Comment only if your office has burden data or a process concern",
+        "No template change unless a later rule follows"
+      ],
+      "type": "Notice",
+      "publicationDate": "2026-10-19",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-12-18",
+      "datesText": "DoD will consider all comments received by December 18, 2026.",
+      "actionText": "Notice and request for comments regarding a proposed extension of an approved information collection requirement.",
+      "summary": "In compliance with the Paperwork Reduction Act of 1995, DoD announces the proposed extension of a public information collection requirement and seeks public comment on the provisions thereof. DoD invites comments on: whether the proposed collection of information is necessary for the proper performance of the functions of DoD, including whether the information will have practical utility; the accuracy of DoD's estimate of the burden of the proposed information collection; ways to enhance the quality, utility, and...",
+      "citation": "91 FR 66113",
+      "regulationIds": [],
+      "cfrReferences": "",
+      "agencies": [
+        "Defense Department",
+        "Defense Acquisition Regulations System"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/10/19/2026-21329/information-collection-requirement-defense-federal-acquisition-regulation-supplement-dfars",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-10-19/pdf/2026-21329.pdf",
+      "sourceQuery": "DFARS / DARS agency feed"
+    },
+    {
+      "id": "2026-21255",
+      "documentNumber": "2026-21255",
+      "title": "Information Collection; General Services Administration Acquisition Regulation; Prohibition on Certain Supply Chain Services or Equipment Under Lease Acquisitions and Commercial Solution Openings",
+      "shortTitle": "Information Collection; General Services Administration Acquisition Regulation; Prohibition on Certain Supply Chain Services or Equipment Under Lease Acquisitions and Commercial Solution Openings",
+      "system": "Acquisition",
+      "stage": "Information collection",
+      "topic": "Labor / construction",
+      "actionLevel": "Monitor",
+      "actionTone": "monitor",
+      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
+      "nextSteps": [
+        "Identify the cited provision, clause, form, or system",
+        "Comment only if your office has burden data or a process concern",
+        "No template change unless a later rule follows"
+      ],
+      "type": "Notice",
+      "publicationDate": "2026-10-19",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-12-18",
+      "datesText": "GSA will consider all comments received by December 18, 2026.",
+      "actionText": "Notice; request for comments.",
+      "summary": "In accordance with the Paperwork Reduction Act of 1995 and Office of Management and Budget (OMB) regulations, GSA is extending a previously approved information collection regarding OMB Control Number 3090-0322, Prohibition on Certain Supply Chain Services or Equipment Under Lease Acquisitions and Commercial Solution Openings, without changes except for updated wage rates, until the information collection can be assessed and revised after the completion of the rulemaking related to the Revolutionary GSA Regulation...",
+      "citation": "91 FR 66150",
+      "regulationIds": [],
+      "cfrReferences": "",
+      "agencies": [
+        "General Services Administration"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/10/19/2026-21255/information-collection-general-services-administration-acquisition-regulation-prohibition-on-certain",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-10-19/pdf/2026-21255.pdf",
+      "sourceQuery": "Federal Acquisition Regulation keyword feed"
+    },
     {
       "id": "2026-20317",
       "documentNumber": "2026-20317",
