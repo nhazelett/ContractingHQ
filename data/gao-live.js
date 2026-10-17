@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-10-16T12:39:26.093Z",
+  "generatedAt": "2026-10-17T11:43:01.629Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -8,11 +8,11 @@ window.KTHQ_GAO_DATA = {
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
     "total": 17,
-    "latestDecisionDate": "2026-10-13",
+    "latestDecisionDate": "2026-10-14",
     "sustained": 1,
-    "denied": 9,
+    "denied": 8,
     "dismissed": 2,
-    "mixed": 5,
+    "mixed": 6,
     "unclassified": 0,
     "sourceStatus": {
       "rss": {
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 19
+        "parsedOutcomes": 18
       },
       "productPages": {
         "attempted": 17,
@@ -36,6 +36,34 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424785",
+      "caseName": "Casey & Company LLC",
+      "title": "Casey & Company LLC",
+      "bNumbers": [
+        "B-424785"
+      ],
+      "bNumberText": "B-424785",
+      "link": "https://www.gao.gov/products/b-424785",
+      "publicationDate": "2026-10-16",
+      "decisionDate": "2026-10-14",
+      "displayDate": "Oct 14, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Casey & Company LLC, a small business of Washington, District of Columbia, protests the issuance of a purchase order to Brann Services LLC, a...",
+      "highlights": "",
+      "digest": "Protest challenging agency's decision not to consider vendor's quotation is denied where the quotation was not timely received at the solicitation's designated email address because the protester's email submission was quarantined by the agency's email security system.",
+      "tags": [
+        "Timeliness",
+        "Solicitation terms",
+        "Small business"
+      ],
+      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424607.2",
       "caseName": "Sterling Readiness Rounds, LLC--Reconsideration",
@@ -226,29 +254,32 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424433.18",
-      "caseName": "Cinteot, Inc.",
-      "title": "Cinteot, Inc.",
+      "id": "B-424598,B-424598.2",
+      "caseName": "Coulson Aviation (USA) Inc.",
+      "title": "Coulson Aviation (USA) Inc.",
       "bNumbers": [
-        "B-424433.18"
+        "B-424598",
+        "B-424598.2"
       ],
-      "bNumberText": "B-424433.18",
-      "link": "https://www.gao.gov/products/b-424433.18",
-      "publicationDate": "2026-09-29",
+      "bNumberText": "B-424598, B-424598.2",
+      "link": "https://www.gao.gov/products/b-424598%2Cb-424598.2",
+      "publicationDate": "2026-10-16",
       "decisionDate": "2026-09-28",
       "displayDate": "Sep 28, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
       "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Cinteot, Inc., a small business of Chambersburg, Pennsylvania, protests the terms of request for proposals (RFP) No. W15P7T26RA006, issued by the...",
+      "decisionLine": "We deny the protest in part and dismiss it in part.",
+      "officialSynopsis": "Coulson Aviation (USA) Inc., of Portland, Oregon, protests the issuance of task orders by the Department of Agriculture, U.S. Forest Service, to 10...",
       "highlights": "",
-      "digest": "1. Protest challenging the procurement process and terms of the solicitation is denied where offerors are able to compete intelligently and on a common basis. 2. Protest challenging the time set to respond to solicitation amendments is denied where the agency allowed sufficient time after amendment of the solicitation for revision of proposals. 3. Protest challenging inclusion of an allegedly defective form is denied where any defect was resolved by clear instructions from the agency and would not otherwise prevent offerors from competing on a common basis.",
+      "digest": "1. Agency reasonably evaluated the protester's technical proposal, identifying both strengths and weaknesses, in a manner consistent with the terms of the solicitation. 2. Protester's allegations regarding the agency's evaluation of the awardees' proposals fail to state sufficient factual or legal bases for protest. 3. Where the agency reasonably concluded that the offerors' technical proposals were essentially equal, the agency properly relied on proposed cost/price to make its source selection decisions, and the agency's erroneous cost/price calculations were not competitively prejudicial to the protester.",
       "tags": [
+        "Evaluation",
         "Solicitation terms",
-        "Small business"
+        "Price / cost",
+        "Orders / IDIQ"
       ],
-      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -424,36 +455,6 @@ window.KTHQ_GAO_DATA = {
       "digest": "1. Protest challenging the sufficiency of the agency's consolidation determination is denied where it complies with applicable statutory and regulatory requirements. 2. Protest alleging improper bundling is denied where there is no basis to conclude the consolidated requirement is unsuitable for award to small businesses. 3. Protests arguing the solicitation suffers from ambiguities and internal inconsistencies that prevent offerors from competing intelligently and on a common basis are denied where the solicitation is sufficiently clear and provides adequate information. 4. Protests alleging the solicitation contains unduly restrictive requirements are denied where the requirements reasonably relate to the agency's needs and withstand logical scrutiny.",
       "tags": [
         "Solicitation terms",
-        "Small business"
-      ],
-      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424600,B-424600.2",
-      "caseName": "Tryfacta, Inc.",
-      "title": "Tryfacta, Inc.",
-      "bNumbers": [
-        "B-424600",
-        "B-424600.2"
-      ],
-      "bNumberText": "B-424600, B-424600.2",
-      "link": "https://www.gao.gov/products/b-424600%2Cb-424600.2",
-      "publicationDate": "2026-09-29",
-      "decisionDate": "2026-09-17",
-      "displayDate": "Sep 17, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Tryfacta, Inc., a small business of Pleasanton, California, protests the issuance of a task order to Magnolia Government Solutions, LLC (MGS), a...",
-      "highlights": "",
-      "digest": "Protest challenging rejection of protester's proposal as unacceptable is denied where the solicitation provided that offerors proposing compensation insufficient to recruit and retain qualified personnel would be ineligible for award, and the agency reasonably concluded that the protester's proposed compensation was insufficient.",
-      "tags": [
-        "Solicitation terms",
-        "Price / cost",
-        "Staffing",
         "Small business"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
