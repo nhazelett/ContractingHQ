@@ -1853,6 +1853,11 @@
 
 <div class="tool-safety-note"><strong>Public tool:</strong> Do not enter CUI, source selection material, proposal information, classified data, or anything your organization would not allow on public infrastructure.</div>
 
+<div id="requirementsReturn" class="tool-safety-note" hidden>
+  <a href="requirements-builder.html?resume=package" target="_blank" rel="noopener"><strong>Return to requirements package &rarr;</strong></a>
+  <span>Opens your saved package in a new tab so your PWS stays open here. Download the PWS separately and include it with your package.</span>
+</div>
+
 <div id="progress-wrap">
   <div class="prog-step active" id="prog-0">1 · Contract Type</div>
   <div class="prog-step" id="prog-1">2 · Overview</div>
@@ -3542,6 +3547,9 @@ function hydrateFromOllie() {
   // Only hydrate for the service path. Product path doesn't end here.
   if (!req || req.kind !== 'service') return;
 
+  // Available on every step, even after the pre-fill banner is dismissed.
+  document.getElementById('requirementsReturn').hidden = false;
+
   // Pick the services contract type for the user (clicks the tile so the
   // Services-specific section reveals).
   const servicesTile = document.querySelector('.tile[onclick*="services"]');
@@ -3621,8 +3629,13 @@ function dismissOllieBanner() {
 
 function clearOllieData() {
   if (!confirm('Clear all pre-filled data from Ollie and start fresh? You will need to re-enter anything Ollie filled in.')) return;
-  try { localStorage.removeItem('kthq_req_v1'); } catch (e) { /* ignore */ }
-  location.reload();
+  // Clear only the imported fields; the requirements package is separate work.
+  document.querySelectorAll('.from-ollie').forEach(el => {
+    el.value = el.tagName === 'SELECT' ? el.options[0].value : '';
+    el.classList.remove('from-ollie');
+    el.dispatchEvent(new Event('input'));
+  });
+  dismissOllieBanner();
 }
 </script>
 
