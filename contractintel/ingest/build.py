@@ -24,9 +24,10 @@ def main():
     info['estimated_d1_writes']=sum(db.execute('SELECT count(*) FROM '+t).fetchone()[0]*factor for t,factor in [('transactions',3),('awards',3),('fy_obligations',1),('data_quality_issues',1),('source_files',1)])
     info['sql_parts']=parts
     info['sqlite_bytes']=(out/'dataset.sqlite').stat().st_size
+    # Preserve the measured size even when a capacity guard stops publication.
+    (out/'dataset.json').write_text(json.dumps(info,indent=2),encoding='utf-8')
     if info['sqlite_bytes']>200_000_000:
         raise SystemExit('Dataset exceeds conservative free-D1 staging budget; review before deployment')
-    (out/'dataset.json').write_text(json.dumps(info,indent=2),encoding='utf-8')
     activate(db,version)  # Only the local preview. Remote activation is separately verified.
     db.close()
     print(json.dumps(info,indent=2))
