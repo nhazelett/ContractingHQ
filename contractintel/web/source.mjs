@@ -34,8 +34,21 @@ export async function resolve(url,env){
  'The selected search window covers reported actions. Earlier awards with no action in that window may be absent. Public DoD reporting is delayed.',
  'Dates and values come from the award API. Potential ends include options that may not have been exercised.',
  'The public transaction API supplies option-exercise codes but not per-mod PoP dates. A confirmed option exercise does not by itself establish a PoP change.',
- 'Responses may be cached in this browser session for six hours. A large office loads in batches; sorting and counts cover loaded records only.'
+ 'Responses may be cached in this browser session for six hours. Register, end-date, and set-aside counts cover loaded records. Fiscal cards use a separate prior/current FY transaction scan and stay blank until it completes.'
  ]};
+ if(url.pathname==='/api/fiscal'){
+  const office=p.get('office'),start=isoDate(p.get('start')),end=isoDate(p.get('end'));
+  if(!DIRECTORY.has(office)||!start||!end||end<start||start.slice(0,7)!==end.slice(0,7))throw new ServiceError('Invalid fiscal query.');
+  const page=number(p.get('page'),1,100);
+  const data=await upstream(env,'/api/v2/search/spending_by_transaction/',{filters:{award_type_codes:['A','B','C','D'],keywords:[office+'*'],time_period:[{start_date:start,end_date:end}]},fields:['Award ID','Mod','Action Date','Transaction Amount','generated_internal_id','internal_id'],limit:100,page,sort:'Action Date',order:'desc'});
+  if(!Array.isArray(data.results)||typeof data.page_metadata?.hasNext!=='boolean')throw new ServiceError('Unexpected fiscal response.',503);
+  const rows=data.results.filter(r=>String(r['Award ID']||'').toUpperCase().startsWith(office)).map(r=>{
+   const date=isoDate(r['Action Date']),id=r.generated_internal_id;
+   if(!validAwardID(id)||!date||date<start||date>end)throw new ServiceError('Invalid fiscal record; totals remain incomplete.',503);
+   return {award_id:id,date,cents:cents(r['Transaction Amount'])};
+  });
+  return {rows,has_next:data.page_metadata.hasNext,page};
+ }
  if(url.pathname==='/api/awards'){
   const office=p.get('office');if(!DIRECTORY.has(office))throw new ServiceError('Select an office from the directory.');
   const start=p.get('start')||'2021-10-01';if(!['2007-10-01','2021-10-01','2024-10-01','2025-10-01'].includes(start))throw new ServiceError('Invalid search window.');
@@ -61,3 +74,4 @@ export async function resolve(url,env){
  }
  throw new ServiceError('Unknown endpoint.',404);
 }
+
