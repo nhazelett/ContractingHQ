@@ -98,7 +98,12 @@ export async function handle(request, env) {
       if (!award) throw new InputError('Award not found in this dataset.', 404);
       const issues = await all('SELECT code,detail FROM data_quality_issues WHERE version_id=? AND record_id=?', [version, id]);
       const orders = await all('SELECT award_id,piid,recipient,current_end_date,obligation_cents FROM awards WHERE version_id=? AND parent_piid=? ORDER BY current_end_date LIMIT 1000', [version, award.piid]);
-      return reply({ version, award, issues, orders, orders_note: 'Related records match the reported parent PIID within the loaded dataset; this is not a complete government-wide order inventory.' });
+      const optionWhere = "version_id=? AND award_id=? AND upper(trim(coalesce(json_extract(raw_json,'$.action_type_code'),'')))='G'";
+      const optionCount = await first('SELECT count(*) AS count FROM transactions WHERE '+optionWhere, [version,id]);
+      const optionActions = await all("SELECT transaction_id,action_date,modification_number,source_sha256,json_extract(raw_json,'$.transaction_description') AS description,json_extract(raw_json,'$.period_of_performance_current_end_date') AS reported_current_end FROM transactions WHERE "+optionWhere+" ORDER BY action_date DESC,modification_number DESC,transaction_id DESC LIMIT 20", [version,id]);
+      const options = { total_options: null, current_option_year: null, exercise_actions_loaded: optionCount.count, actions: optionActions,
+        note: 'Option totals and the current option year are not verified. An exercise action can cover different periods or quantities; its count is not an option-year number. Confirm against the contract schedule and subsequent modifications.' };
+      return reply({ version, award, issues, orders, options, orders_note: 'Related records match the reported parent PIID within the loaded dataset; this is not a complete government-wide order inventory.' });
     }
     if (url.pathname === '/api/transactions') {
       let where = 'version_id=?', args = [version];
