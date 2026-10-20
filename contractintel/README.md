@@ -1,5 +1,10 @@
 # ContractIntel
 
+**Current preview (2026-10-20): on-demand public API, 1,432 office prefixes.**
+See [ON_DEMAND.md](ON_DEMAND.md) for current behavior, limits, and validation.
+The bulk-import documentation below describes the retained legacy pipeline.
+The history workflow remains disabled; the deployed Worker has no D1 or R2 binding.
+
 Public contracting-office portfolios for KTHQ. Pilot offices: FA4800 (633 CONS,
 Langley), FA4855 (27 SOCONS, Cannon), FA8101 (AFSC/PZIO, Tinker).
 

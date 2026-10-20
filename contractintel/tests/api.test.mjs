@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync } from 'node:fs';
-import { handle, csv, fiscalYear, sourceAmountCents } from '../worker/api.mjs';
+import { handle, csv, fiscalYear, sourceAmountCents } from '../worker/stored-api.mjs';
 function env() {
   const db = new DatabaseSync(':memory:');
   db.exec(readFileSync(new URL('../migrations/0001.sql', import.meta.url), 'utf8'));
