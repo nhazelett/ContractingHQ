@@ -127,3 +127,27 @@ and cross-office search are not enabled. When added, match scores are heuristics
 not probabilities, and government-only unrevealed data must stay out of this
 public application. Multiple keys do not automatically multiply an authorized
 quota; entitlement must be verified for each endpoint and account type.
+
+## Portfolio planning and recent-history recovery
+
+The default **Portfolio to review** includes records with either a current or
+potential end date today or later. It is a planning queue, not a certified active
+inventory. Date statuses distinguish current PoP, potentially ongoing awards
+requiring verification, passed dates, and missing/inconsistent dates. The end-date
+basis selector changes the 90/180/365-day windows and upcoming-date panel between
+current performance ends and potential final ends. Both source dates and the
+latest loaded action remain visible. Passed dates do not establish closeout.
+
+The **ContractIntel recent history recovery** workflow prioritizes the requested
+2021-10-01 through 2026-10-20 window, downloading missing months newest first.
+It reuses retained partitions only when their exact start/end boundaries match.
+The build includes only this contiguous requested window; older archived sources
+remain in R2 for later reconstruction. This is a five-year-plus-current-FY window,
+not lifetime award history. Run a normal refresh without --resume to retrieve
+source corrections in previously captured months.
+
+Idempotent source GET opens retry up to three attempts for selected temporary
+HTTP/network failures. Export-creation POSTs are never automatically retried.
+Errors identify the source phase and HTTP status without exposing URLs or bodies.
+All existing storage/write guards and atomic-publication checks remain in force.
+The working pilot stays active if export, build, or capacity validation fails.

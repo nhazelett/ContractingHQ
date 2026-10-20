@@ -28,11 +28,36 @@ def months(start,end):
         day=finish+dt.timedelta(days=1)
 
 
+def retained_partition(catalog, start, end):
+    source=catalog['partitions'].get(start[:7])
+    return source if source and source['request']['filters']['date_range']=={'start_date':start,'end_date':end} else None
+
+
+def sources_in_window(catalog, start, end, requested_only=False):
+    sources=[]
+    for key,source in sorted(catalog['partitions'].items()):
+        window=source['request']['filters']['date_range']
+        if requested_only and (window['start_date']<start or window['end_date']>end):
+            continue
+        sources.append(source)
+    if not sources: raise ValueError('No source partitions available for the requested build window')
+    ranges=[source['request']['filters']['date_range'] for source in sources]
+    if requested_only and (ranges[0]['start_date']!=start or ranges[-1]['end_date']!=end):
+        raise ValueError('Requested build window is incomplete')
+    for left,right in zip(ranges,ranges[1:]):
+        if dt.date.fromisoformat(left['end_date'])+dt.timedelta(days=1)!=dt.date.fromisoformat(right['start_date']):
+            raise ValueError('Source manifest has a gap; fill missing months before publication')
+    return sources
+
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--start',default=(dt.datetime.now(dt.timezone.utc).date()-dt.timedelta(days=120)).replace(day=1).isoformat())
     parser.add_argument('--end',default=dt.datetime.now(dt.timezone.utc).date().isoformat())
     parser.add_argument('--publish',action='store_true')
+    parser.add_argument('--resume',action='store_true',help='Reuse retained exact monthly partitions instead of creating new exports')
+    parser.add_argument('--newest-first',action='store_true',help='Archive recent missing months before older ones')
+    parser.add_argument('--build-requested-window',action='store_true',help='Build only the requested contiguous window; retain other archives')
     args=parser.parse_args()
     windows=list(months(args.start,args.end))
     if len(windows)>324:
@@ -53,7 +78,12 @@ def main():
             (work/'catalog.json').write_text(json.dumps(catalog))
             put_object('catalog.json',work/'catalog.json')
     downloaded={}
-    for start,end in windows:
+    for start,end in (reversed(windows) if args.newest_first else windows):
+        previous=catalog['partitions'].get(start[:7])
+        if args.resume and retained_partition(catalog,start,end):
+            print('Source partition retained:',start[:7],flush=True)
+            continue
+        print('Preparing source partition:',start,end,flush=True)
         source=download(start,end,work/'sources')
         # Refuse a refresh that would truncate a previously captured month.
         previous=catalog['partitions'].get(start[:7])
@@ -73,13 +103,14 @@ def main():
             put_object('catalog.json',work/'catalog.json')
         print('Source partition ready:',start[:7],source['byte_count'],'bytes')
     sources=[]
-    for key,source in sorted(catalog['partitions'].items()):
+    for source in sources_in_window(catalog,args.start,args.end,args.build_requested_window):
         path=work/'sources'/(source['sha256']+'.zip')
         if source['sha256'] not in downloaded:
             if not args.publish: raise RuntimeError('Retained source requires archive access')
             get_object('raw/'+source['sha256']+'.zip',path)
         if file_hash(path)!=source['sha256']: raise RuntimeError('Archive integrity check failed')
         sources.append({**source,'path':str(path.resolve())})
+    if not sources: raise ValueError('No source partitions available for the requested build window')
     ranges=[s['request']['filters']['date_range'] for s in sources]
     # Missing months are explicit blockers, not zero-dollar years in the UI.
     for left,right in zip(ranges,ranges[1:]):

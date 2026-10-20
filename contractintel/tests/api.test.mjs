@@ -53,3 +53,20 @@ test('Option exercise evidence is version scoped and never invents an option cou
   assert.deepEqual(empty.options.actions,[]);
   e.db.close();
 });
+
+test('Planning portfolio includes potential dates, separates uncertainty and respects expiration basis',async()=>{
+ const e=env();const day=n=>new Date(Date.now()+n*86400000).toISOString().slice(0,10);
+ const insert=e.db.prepare(`INSERT INTO awards(version_id,award_id,piid,office_code,office_name,first_action_date,latest_action_date,obligation_cents,transaction_count,number_of_actions,latest_transaction_id,current_end_date,potential_end_date) VALUES ('v1',?,?,'FA4800','Test','2025-01-01','2025-09-30',0,0,0,'t',?,?)`);
+ for(const[id,c,p]of [['current',day(20),day(200)],['potential',day(-20),day(20)],['missing_current',null,day(20)],['past',day(-100),day(-20)],['missing',null,null],['inconsistent',day(200),day(100)]])insert.run(id,id,c,p);
+ const get=async path=>{const r=await handle(new Request('https://local/api/'+path),e);assert.equal(r.status,200);return r.json();};
+ assert.equal((await get('awards?view=review&sort=review')).total,4);
+ assert.equal((await get('awards?view=verify')).total,2);
+ assert.equal((await get('awards?view=past')).total,1);
+ assert.equal((await get('awards?view=date_review')).total,3);
+ assert.equal((await get('awards?view=90&date_basis=current')).total,1);
+ assert.equal((await get('awards?view=90&date_basis=potential')).total,2);
+ const summary=await get('summary?date_basis=potential');
+ assert.equal(summary.counts.portfolio_review,4);assert.equal(summary.counts.needs_verification,2);assert.equal(summary.counts.expires_90,2);
+ assert.equal((await handle(new Request('https://local/api/summary?date_basis=invalid'),e)).status,400);
+ e.db.close();
+});

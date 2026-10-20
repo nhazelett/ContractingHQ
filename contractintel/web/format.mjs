@@ -25,5 +25,14 @@ export function daysRemaining(endDate,today=new Date().toISOString().slice(0,10)
 }
 export function endLabel(endDate,today){
   const days=daysRemaining(endDate,today);
-  return days===null?'Not reported':days<0?'Ended':days===0?'Ends today':days===1?'1 day':days.toLocaleString()+' days';
+  return days===null?'Not reported':days<0?'Date passed':days===0?'Ends today':days===1?'1 day':days.toLocaleString()+' days';
+}
+
+export function portfolioStatus(row,today=new Date().toISOString().slice(0,10)){
+  const current=daysRemaining(row.current_end_date,today),potential=daysRemaining(row.potential_end_date,today);
+  if(current!==null&&potential!==null&&potential<current)return 'Dates inconsistent';
+  if(current!==null&&current>=0)return 'Within reported current PoP';
+  if(potential!==null&&potential>=0)return 'Potentially ongoing — verify';
+  if(current!==null&&potential!==null)return 'Reported dates passed';
+  return 'Dates need review';
 }

@@ -1,5 +1,5 @@
 const OFFICES = new Set(['FA4800', 'FA4855', 'FA8101']);
-const SORTS = { end: 'current_end_date', value: 'obligation_cents', vendor: 'recipient', action: 'latest_action_date', piid: 'piid' };
+const SORTS = { end: 'current_end_date', potential: 'potential_end_date', review: "CASE WHEN current_end_date>=date('now') THEN current_end_date WHEN potential_end_date>=date('now') THEN potential_end_date ELSE coalesce(current_end_date,potential_end_date) END", value: 'obligation_cents', vendor: 'recipient', action: 'latest_action_date', piid: 'piid' };
 export const fiscalYear = value => Number(value.slice(0, 4)) + (Number(value.slice(5, 7)) >= 10 ? 1 : 0);
 const currentDate = () => new Date().toISOString().slice(0, 10);
 class InputError extends Error { constructor(message, status = 400) { super(message); this.status = status; } }
@@ -54,6 +54,9 @@ export async function handle(request, env) {
     if (!dataset) return reply({ error: 'This dataset version is unavailable. Refresh to load the current version.' }, 409);
     const office = p.get('office') || 'FA4800';
     if (!OFFICES.has(office)) throw new InputError('Unknown pilot office.');
+    const dateBasis=p.get('date_basis')||'current';
+    if(!['current','potential'].includes(dateBasis)) throw new InputError('Unknown end-date basis.');
+    const dateColumn=dateBasis==='potential'?'potential_end_date':'current_end_date';
     const limit = Math.max(1, int(p.get('limit'), 200, 1000));
     const offset = int(p.get('offset'), 0, 1_000_000);
     if (url.pathname === '/api/summary') {
@@ -61,12 +64,14 @@ export async function handle(request, env) {
       const rollups = await all('SELECT * FROM fy_obligations WHERE version_id=? AND office_code=? AND fiscal_year BETWEEN ? AND ? ORDER BY fiscal_year,dimension,obligation_cents DESC', [version, office, fy - 5, fy]);
       const counts = await first(`SELECT count(*) AS awards,
         sum(CASE WHEN current_end_date>=? THEN 1 ELSE 0 END) AS unexpired,
+        sum(CASE WHEN current_end_date>=date('now') OR potential_end_date>=date('now') THEN 1 ELSE 0 END) AS portfolio_review,
+        sum(CASE WHEN (current_end_date IS NULL OR current_end_date<date('now')) AND potential_end_date>=date('now') THEN 1 ELSE 0 END) AS needs_verification,
         sum(CASE WHEN current_end_date IS NULL THEN 1 ELSE 0 END) AS missing_end,
-        sum(CASE WHEN current_end_date BETWEEN ? AND date(?,'+90 days') THEN 1 ELSE 0 END) AS expires_90,
-        sum(CASE WHEN current_end_date BETWEEN ? AND date(?,'+180 days') THEN 1 ELSE 0 END) AS expires_180,
-        sum(CASE WHEN current_end_date BETWEEN ? AND date(?,'+365 days') THEN 1 ELSE 0 END) AS expires_365
+        sum(CASE WHEN ${dateColumn} BETWEEN ? AND date(?,'+90 days') THEN 1 ELSE 0 END) AS expires_90,
+        sum(CASE WHEN ${dateColumn} BETWEEN ? AND date(?,'+180 days') THEN 1 ELSE 0 END) AS expires_180,
+        sum(CASE WHEN ${dateColumn} BETWEEN ? AND date(?,'+365 days') THEN 1 ELSE 0 END) AS expires_365
         FROM awards WHERE version_id=? AND office_code=?`, [currentDate(), currentDate(), currentDate(), currentDate(), currentDate(), currentDate(), currentDate(), version, office]);
-      return reply({ version, office, fiscal_year: fy, rollups, counts, dataset });
+      return reply({ version, office, date_basis: dateBasis, as_of: currentDate(), fiscal_year: fy, rollups, counts, dataset });
     }
     if (url.pathname === '/api/awards') {
       const clauses = ['version_id=?', 'office_code=?'], args = [version, office];
@@ -79,9 +84,14 @@ export async function handle(request, env) {
       }
       for (const key of ['naics', 'psc']) if (p.get(key)) { clauses.push(key + '=?'); args.push(p.get(key)); }
       const view = p.get('view') || 'all';
-      if (view === 'active') { clauses.push('current_end_date>=?'); args.push(currentDate()); }
+      if (view === 'review') { clauses.push('(current_end_date>=? OR potential_end_date>=?)'); args.push(currentDate(),currentDate()); }
+      else if (view === 'verify') { clauses.push('(current_end_date IS NULL OR current_end_date<?) AND potential_end_date>=?'); args.push(currentDate(),currentDate()); }
+      else if (view === 'date_review') clauses.push('(current_end_date IS NULL OR potential_end_date IS NULL OR potential_end_date<current_end_date)');
+      else if (view === 'past') { clauses.push('current_end_date<? AND potential_end_date<?'); args.push(currentDate(),currentDate()); }
+      else if (view === 'potential_active') { clauses.push('potential_end_date>=?'); args.push(currentDate()); }
+      else if (view === 'active') { clauses.push('current_end_date>=?'); args.push(currentDate()); }
       else if (view === 'unknown') clauses.push('current_end_date IS NULL');
-      else if (['90', '180', '365'].includes(view)) { clauses.push("current_end_date BETWEEN ? AND date(?, '+' || ? || ' days')"); args.push(currentDate(), currentDate(), view); }
+      else if (['90', '180', '365'].includes(view)) { clauses.push(dateColumn+" BETWEEN ? AND date(?, '+' || ? || ' days')"); args.push(currentDate(), currentDate(), view); }
       else if (['1y', '3y', '5y'].includes(view)) { clauses.push("latest_action_date>=date(?, '-' || ? || ' years')"); args.push(currentDate(), view[0]); }
       else if (view !== 'all') throw new InputError('Unknown portfolio filter.');
       const where = clauses.join(' AND '), sort = SORTS[p.get('sort') || 'end'];

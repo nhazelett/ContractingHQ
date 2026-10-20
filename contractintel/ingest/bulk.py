@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import tempfile
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from core import utcnow, file_hash
@@ -28,11 +29,32 @@ class SafeRedirect(urllib.request.HTTPRedirectHandler):
         return super().redirect_request(req,fp,code,msg,headers,newurl)
 
 
-def request_json(url, payload=None):
+def open_source(request, phase, timeout=90):
+    """Retry idempotent reads only; never duplicate export creation requests."""
+    method = request.get_method() if isinstance(request, urllib.request.Request) else 'GET'
+    attempts = 3 if method == 'GET' else 1
+    for attempt in range(attempts):
+        try:
+            return urllib.request.build_opener(SafeRedirect()).open(request, timeout=timeout)
+        except urllib.error.HTTPError as error:
+            status = error.code
+            retry_after = error.headers.get('Retry-After', '') if error.headers else ''
+            delay = max(2 ** (attempt + 1), int(retry_after)) if retry_after.isdigit() else 2 ** (attempt + 1)
+            error.close()
+            if status not in (408, 429, 500, 502, 503, 504) or attempt + 1 == attempts or delay > 60:
+                raise RuntimeError(f'USAspending {phase} failed: HTTP {status}. Completed source partitions are retained.') from None
+        except (urllib.error.URLError, TimeoutError, OSError):
+            delay = 2 ** (attempt + 1)
+            if attempt + 1 == attempts:
+                raise RuntimeError(f'USAspending {phase} failed: network timeout or connection error. Completed source partitions are retained.') from None
+        print(f'USAspending {phase}: temporary read failure; retry {attempt + 1}/{attempts - 1} in {delay}s', flush=True)
+        time.sleep(delay)
+
+
+def request_json(url, payload=None, phase='export status'):
     req = urllib.request.Request(safe_url(url), data=json.dumps(payload).encode() if payload is not None else None,
                                  headers={'Content-Type':'application/json','Accept':'application/json'})
-    # Download creation is not retried automatically: avoid duplicate export jobs.
-    with urllib.request.build_opener(SafeRedirect()).open(req, timeout=90) as response:
+    with open_source(req, phase) as response:
         raw = response.read(2_000_001)
         if len(raw)>2_000_000:
             raise ValueError('Unexpectedly large API response')
@@ -61,7 +83,7 @@ def download(start, end, directory):
     used = sum(p.stat().st_size for p in directory.glob('*.zip'))
     if used >= MAX_ARCHIVE_BYTES:
         raise ValueError('Archive size guard reached; review scope before downloading more')
-    job = request_json('https://api.usaspending.gov/api/v2/bulk_download/awards/',payload)
+    job = request_json('https://api.usaspending.gov/api/v2/bulk_download/awards/',payload,phase='export creation')
     status_url = safe_url(job['status_url'])
     for attempt in range(90):
         state = request_json(status_url)
@@ -79,7 +101,7 @@ def download(start, end, directory):
     try:
         with tempfile.NamedTemporaryFile(dir=directory,suffix='.download',delete=False) as target:
             temp_name = target.name
-            with urllib.request.build_opener(SafeRedirect()).open(url,timeout=180) as response:
+            with open_source(url, 'archive download', timeout=180) as response:
                 while chunk := response.read(1024*1024):
                     total += len(chunk)
                     if total > MAX_FILE_BYTES or used + total > MAX_ARCHIVE_BYTES:

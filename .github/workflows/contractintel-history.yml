@@ -1,4 +1,4 @@
-name: ContractIntel initial historical backfill
+name: ContractIntel recent history recovery
 on:
   workflow_dispatch:
   push:
@@ -31,7 +31,7 @@ jobs:
       - name: Archive history and publish only within existing capacity guards
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
-        run: python -u contractintel/ingest/pipeline.py --start 2000-10-01 --end 2026-10-20 --publish
+        run: python -u contractintel/ingest/pipeline.py --start 2021-10-01 --end 2026-10-20 --resume --newest-first --build-requested-window --publish
       - name: Retain measured capacity and binding even if a guard stops publication
         if: always()
         uses: actions/upload-artifact@v4
