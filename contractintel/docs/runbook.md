@@ -151,3 +151,23 @@ HTTP/network failures. Export-creation POSTs are never automatically retried.
 Errors identify the source phase and HTTP status without exposing URLs or bodies.
 All existing storage/write guards and atomic-publication checks remain in force.
 The working pilot stays active if export, build, or capacity validation fails.
+
+## Modification evidence
+
+The register shows the latest reported mod, distinct mod numbers loaded, and
+latest reported option-exercise mod. Zero-number original awards and blank
+identifiers are excluded from modification counts. Counts are not inferred from
+mod-number suffixes and do not establish lifetime completeness.
+
+Opening an award compares its reported action history. Duplicate mod identifiers
+are grouped; conflicts, missing dates, same-day ordering, and non-adjacent mod
+sequences prevent a firm option-related end-date attribution. An option mod must
+be coded G and have a changed reported current end against the preceding loaded
+mod to qualify. Later funding/admin/non-option mods remain visible. A separate
+candidate flags observed changes across sequence gaps. Latest PoP values continue
+to come from the latest loaded source action, not from the option mod alone.
+
+The detail scan is bounded at the latest 5,000 source actions with source-description
+excerpts of up to 1,000 characters; truncation is explicitly shown. All analyses
+are pinned to the selected dataset version. A larger history requires a full
+offline analysis; do not treat a bounded scan as a complete modification count.

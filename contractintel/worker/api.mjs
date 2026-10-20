@@ -1,3 +1,4 @@
+import {summarizeModifications} from './modifications.mjs';
 const OFFICES = new Set(['FA4800', 'FA4855', 'FA8101']);
 const SORTS = { end: 'current_end_date', potential: 'potential_end_date', review: "CASE WHEN current_end_date>=date('now') THEN current_end_date WHEN potential_end_date>=date('now') THEN potential_end_date ELSE coalesce(current_end_date,potential_end_date) END", value: 'obligation_cents', vendor: 'recipient', action: 'latest_action_date', piid: 'piid' };
 export const fiscalYear = value => Number(value.slice(0, 4)) + (Number(value.slice(5, 7)) >= 10 ? 1 : 0);
@@ -98,7 +99,11 @@ export async function handle(request, env) {
       if (!sort) throw new InputError('Unknown sort column.');
       const direction = p.get('direction') === 'desc' ? 'DESC' : 'ASC';
       const total = await first('SELECT count(*) AS count FROM awards WHERE ' + where, args);
-      const rows = await all('SELECT * FROM awards WHERE ' + where + ` ORDER BY ${sort} IS NULL,${sort} ${direction},award_id ASC LIMIT ? OFFSET ?`, [...args, limit, offset]);
+      const rows = await all(`SELECT awards.*,
+        (SELECT modification_number FROM transactions t WHERE t.version_id=awards.version_id AND t.award_id=awards.award_id AND trim(t.modification_number)<>'' AND trim(t.modification_number) GLOB '*[^0]*' ORDER BY action_date DESC,modification_number DESC,transaction_id DESC LIMIT 1) AS latest_mod_number,
+        (SELECT count(DISTINCT CASE WHEN trim(t.modification_number) NOT GLOB '*[^0-9]*' THEN CAST(CAST(trim(t.modification_number) AS INTEGER) AS TEXT) ELSE upper(trim(t.modification_number)) END) FROM transactions t WHERE t.version_id=awards.version_id AND t.award_id=awards.award_id AND trim(t.modification_number)<>'' AND trim(t.modification_number) GLOB '*[^0]*') AS mods_loaded,
+        (SELECT modification_number FROM transactions t WHERE t.version_id=awards.version_id AND t.award_id=awards.award_id AND upper(trim(json_extract(t.raw_json,'$.action_type_code')))='G' AND trim(t.modification_number)<>'' AND trim(t.modification_number) GLOB '*[^0]*' ORDER BY action_date DESC,modification_number DESC,transaction_id DESC LIMIT 1) AS latest_option_mod_number
+        FROM awards WHERE ` + where + ` ORDER BY ${sort} IS NULL,${sort} ${direction},award_id ASC LIMIT ? OFFSET ?`, [...args, limit, offset]);
       return reply({ version, total: total.count, offset, limit, rows });
     }
     if (url.pathname === '/api/award') {
@@ -108,12 +113,10 @@ export async function handle(request, env) {
       if (!award) throw new InputError('Award not found in this dataset.', 404);
       const issues = await all('SELECT code,detail FROM data_quality_issues WHERE version_id=? AND record_id=?', [version, id]);
       const orders = await all('SELECT award_id,piid,recipient,current_end_date,obligation_cents FROM awards WHERE version_id=? AND parent_piid=? ORDER BY current_end_date LIMIT 1000', [version, award.piid]);
-      const optionWhere = "version_id=? AND award_id=? AND upper(trim(coalesce(json_extract(raw_json,'$.action_type_code'),'')))='G'";
-      const optionCount = await first('SELECT count(*) AS count FROM transactions WHERE '+optionWhere, [version,id]);
-      const optionActions = await all("SELECT transaction_id,action_date,modification_number,source_sha256,json_extract(raw_json,'$.transaction_description') AS description,json_extract(raw_json,'$.period_of_performance_current_end_date') AS reported_current_end FROM transactions WHERE "+optionWhere+" ORDER BY action_date DESC,modification_number DESC,transaction_id DESC LIMIT 20", [version,id]);
-      const options = { total_options: null, current_option_year: null, exercise_actions_loaded: optionCount.count, actions: optionActions,
-        note: 'Option totals and the current option year are not verified. An exercise action can cover different periods or quantities; its count is not an option-year number. Confirm against the contract schedule and subsequent modifications.' };
-      return reply({ version, award, issues, orders, options, orders_note: 'Related records match the reported parent PIID within the loaded dataset; this is not a complete government-wide order inventory.' });
+      const historyRows = await all("SELECT transaction_id,action_date,modification_number,source_sha256,json_extract(raw_json,'$.action_type_code') AS action_type_code,json_extract(raw_json,'$.action_type') AS action_type,substr(json_extract(raw_json,'$.transaction_description'),1,1000) AS description,json_extract(raw_json,'$.period_of_performance_start_date') AS reported_start,json_extract(raw_json,'$.period_of_performance_current_end_date') AS reported_current_end,json_extract(raw_json,'$.period_of_performance_potential_end_date') AS reported_potential_end FROM transactions WHERE version_id=? AND award_id=? ORDER BY action_date DESC,modification_number DESC,transaction_id DESC LIMIT 5001", [version,id]);
+      const modifications=summarizeModifications(historyRows.slice(0,5000),{truncated:historyRows.length>5000});
+      const options = { total_options: null, current_option_year: null, exercise_actions_loaded: modifications.option_mods_loaded, actions: modifications.actions.filter(r=>r.option_exercised).slice(0,20), note: 'Option totals and current option year are not verified. Reported option-exercise mods and observed PoP changes are shown below.' };
+      return reply({ version, award, issues, orders, options, modifications, orders_note: 'Related records match the reported parent PIID within the loaded dataset; this is not a complete government-wide order inventory.' });
     }
     if (url.pathname === '/api/transactions') {
       let where = 'version_id=?', args = [version];

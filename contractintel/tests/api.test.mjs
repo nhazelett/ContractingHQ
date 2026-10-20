@@ -41,6 +41,9 @@ test('Option exercise evidence is version scoped and never invents an option cou
   const response=await handle(new Request('https://local/api/award?id=a1&version=v1'),e);
   assert.equal(response.status,200);
   const data=await response.json();
+  const listing=await (await handle(new Request('https://local/api/awards?office=FA4800&version=v1'),e)).json();
+  assert.equal(listing.rows[0].mods_loaded,3);assert.equal(listing.rows[0].latest_mod_number,'P00003');assert.equal(listing.rows[0].latest_option_mod_number,'P00001');
+  assert.equal(data.modifications.mods_loaded,3);assert.equal(data.modifications.latest_mod.modification_number,'P00003');assert.equal(data.modifications.latest_option_pop_change,null);
   assert.equal(data.options.exercise_actions_loaded,1);
   assert.equal(data.options.total_options,null);
   assert.equal(data.options.current_option_year,null);
