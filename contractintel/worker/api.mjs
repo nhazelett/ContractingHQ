@@ -1,6 +1,8 @@
 import {summarizeModifications} from './modifications.mjs';
 const OFFICES = new Set(['FA4800', 'FA4855', 'FA8101']);
-const SORTS = { end: 'current_end_date', potential: 'potential_end_date', review: "CASE WHEN current_end_date>=date('now') THEN current_end_date WHEN potential_end_date>=date('now') THEN potential_end_date ELSE coalesce(current_end_date,potential_end_date) END", value: 'obligation_cents', vendor: 'recipient', action: 'latest_action_date', piid: 'piid' };
+const CONTRACT_END = 'coalesce(potential_end_date,current_end_date)';
+const AWARD_AMOUNT = "(SELECT json_extract(t.raw_json,'$.current_total_value_of_award') FROM transactions t WHERE t.version_id=awards.version_id AND t.transaction_id=awards.latest_transaction_id) AS award_amount_source";
+const SORTS = { contract_end: CONTRACT_END, end: 'current_end_date', potential: 'potential_end_date', review: "CASE WHEN current_end_date>=date('now') THEN current_end_date WHEN potential_end_date>=date('now') THEN potential_end_date ELSE coalesce(current_end_date,potential_end_date) END", value: 'obligation_cents', vendor: 'recipient', action: 'latest_action_date', piid: 'piid' };
 export const fiscalYear = value => Number(value.slice(0, 4)) + (Number(value.slice(5, 7)) >= 10 ? 1 : 0);
 const currentDate = () => new Date().toISOString().slice(0, 10);
 class InputError extends Error { constructor(message, status = 400) { super(message); this.status = status; } }
@@ -9,7 +11,17 @@ function int(value, fallback, maximum) {
   if (!/^\d+$/.test(value) || Number(value) > maximum) throw new InputError('Invalid pagination or fiscal year.');
   return Number(value);
 }
+// Source award totals are cumulative; transaction deltas can cover only a partial history.
+export function sourceAmountCents(value) {
+  const match=/^(-?)(\d+)(?:\.(\d{1,2}))?$/.exec(String(value??'').trim());
+  if(!match)return null;
+  return String((match[1]? -1n:1n)*(BigInt(match[2])*100n+BigInt((match[3]||'').padEnd(2,'0'))));
+}
 function moneyStrings(row) {
+  if(Object.hasOwn(row,'award_amount_source')){
+    row.award_amount_cents=sourceAmountCents(row.award_amount_source);
+    delete row.award_amount_source;
+  }
   return Object.fromEntries(Object.entries(row).map(([key, value]) => [key, key.endsWith('_cents') && value !== null ? String(value) : value]));
 }
 function csvValue(value) {
@@ -95,21 +107,24 @@ export async function handle(request, env) {
       else if (['90', '180', '365'].includes(view)) { clauses.push(dateColumn+" BETWEEN ? AND date(?, '+' || ? || ' days')"); args.push(currentDate(), currentDate(), view); }
       else if (['1y', '3y', '5y'].includes(view)) { clauses.push("latest_action_date>=date(?, '-' || ? || ' years')"); args.push(currentDate(), view[0]); }
       else if (view !== 'all') throw new InputError('Unknown portfolio filter.');
-      const where = clauses.join(' AND '), sort = SORTS[p.get('sort') || 'end'];
+      const where = clauses.join(' AND '), sortKey = p.get('sort') || 'contract_end', sort = SORTS[sortKey];
       if (!sort) throw new InputError('Unknown sort column.');
       const direction = p.get('direction') === 'desc' ? 'DESC' : 'ASC';
+      const ordering=sortKey==='contract_end'
+        ? `CASE WHEN ${CONTRACT_END}>=date('now') THEN 0 WHEN ${CONTRACT_END}<date('now') THEN 1 ELSE 2 END, CASE WHEN ${CONTRACT_END}>=date('now') THEN ${CONTRACT_END} END ${direction}, CASE WHEN ${CONTRACT_END}<date('now') THEN ${CONTRACT_END} END DESC`
+        : `${sort} IS NULL,${sort} ${direction}`;
       const total = await first('SELECT count(*) AS count FROM awards WHERE ' + where, args);
-      const rows = await all(`SELECT awards.*,
+      const rows = await all(`SELECT awards.*, ${AWARD_AMOUNT},
         (SELECT modification_number FROM transactions t WHERE t.version_id=awards.version_id AND t.award_id=awards.award_id AND trim(t.modification_number)<>'' AND trim(t.modification_number) GLOB '*[^0]*' ORDER BY action_date DESC,modification_number DESC,transaction_id DESC LIMIT 1) AS latest_mod_number,
         (SELECT count(DISTINCT CASE WHEN trim(t.modification_number) NOT GLOB '*[^0-9]*' THEN CAST(CAST(trim(t.modification_number) AS INTEGER) AS TEXT) ELSE upper(trim(t.modification_number)) END) FROM transactions t WHERE t.version_id=awards.version_id AND t.award_id=awards.award_id AND trim(t.modification_number)<>'' AND trim(t.modification_number) GLOB '*[^0]*') AS mods_loaded,
         (SELECT modification_number FROM transactions t WHERE t.version_id=awards.version_id AND t.award_id=awards.award_id AND upper(trim(json_extract(t.raw_json,'$.action_type_code')))='G' AND trim(t.modification_number)<>'' AND trim(t.modification_number) GLOB '*[^0]*' ORDER BY action_date DESC,modification_number DESC,transaction_id DESC LIMIT 1) AS latest_option_mod_number
-        FROM awards WHERE ` + where + ` ORDER BY ${sort} IS NULL,${sort} ${direction},award_id ASC LIMIT ? OFFSET ?`, [...args, limit, offset]);
+        FROM awards WHERE ` + where + ` ORDER BY ${ordering},award_id ASC LIMIT ? OFFSET ?`, [...args, limit, offset]);
       return reply({ version, total: total.count, offset, limit, rows });
     }
     if (url.pathname === '/api/award') {
       const id = p.get('id');
       if (!id || id.length > 300) throw new InputError('Invalid award identifier.');
-      const award = await first('SELECT * FROM awards WHERE version_id=? AND award_id=?', [version, id]);
+      const award = await first(`SELECT awards.*, ${AWARD_AMOUNT} FROM awards WHERE version_id=? AND award_id=?`, [version, id]);
       if (!award) throw new InputError('Award not found in this dataset.', 404);
       const issues = await all('SELECT code,detail FROM data_quality_issues WHERE version_id=? AND record_id=?', [version, id]);
       const orders = await all('SELECT award_id,piid,recipient,current_end_date,obligation_cents FROM awards WHERE version_id=? AND parent_piid=? ORDER BY current_end_date LIMIT 1000', [version, award.piid]);

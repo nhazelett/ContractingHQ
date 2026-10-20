@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync } from 'node:fs';
-import { handle, csv, fiscalYear } from '../worker/api.mjs';
+import { handle, csv, fiscalYear, sourceAmountCents } from '../worker/api.mjs';
 function env() {
   const db = new DatabaseSync(':memory:');
   db.exec(readFileSync(new URL('../migrations/0001.sql', import.meta.url), 'utf8'));
@@ -71,5 +71,32 @@ test('Planning portfolio includes potential dates, separates uncertainty and res
  const summary=await get('summary?date_basis=potential');
  assert.equal(summary.counts.portfolio_review,4);assert.equal(summary.counts.needs_verification,2);assert.equal(summary.counts.expires_90,2);
  assert.equal((await handle(new Request('https://local/api/summary?date_basis=invalid'),e)).status,400);
+ e.db.close();
+});
+
+test('Default all-award order prioritizes upcoming final ends across pages, then past and unknown',async()=>{
+ const e=env(),day=n=>new Date(Date.now()+n*86400000).toISOString().slice(0,10);
+ const insert=e.db.prepare(`INSERT INTO awards(version_id,award_id,piid,office_code,office_name,first_action_date,latest_action_date,obligation_cents,transaction_count,number_of_actions,latest_transaction_id,current_end_date,potential_end_date) VALUES ('v1',?,?,'FA4800','Test','2025-01-01','2025-09-30',0,0,0,'t',?,?)`);
+ for(const[id,c,p]of [['old',day(-200),day(-100)],['near',day(-20),day(2)],['later',day(1),day(30)],['today',day(0),null],['recent',day(-1),day(-1)],['unknown',null,null]])insert.run(id,id,c,p);
+ const page=async offset=>(await (await handle(new Request('https://local/api/awards?limit=2&offset='+offset),e)).json());
+ const pages=await Promise.all([page(0),page(2),page(4)]);
+ assert.deepEqual(pages.flatMap(p=>p.rows.map(r=>r.award_id)),['today','near','later','recent','old','unknown']);
+ assert.equal(pages[0].total,6);
+ e.db.close();
+});
+test('Award Amount uses the latest source cumulative value, preserving cents and missing data',async()=>{
+ assert.equal(sourceAmountCents('28779919.15'),'2877991915');
+ assert.equal(sourceAmountCents('90071992547409.91'),'9007199254740991');
+ assert.equal(sourceAmountCents('-0.01'),'-1');assert.equal(sourceAmountCents('0.00'),'0');
+ for(const v of [null,'','not available','1.234'])assert.equal(sourceAmountCents(v),null);
+ const e=env();
+ e.db.exec(`INSERT INTO source_files VALUES ('sha','key','https://example.org/source','{}','2026-01-01',1,0);
+ INSERT INTO awards(version_id,award_id,piid,office_code,office_name,first_action_date,latest_action_date,obligation_cents,current_value_cents,transaction_count,number_of_actions,latest_transaction_id) VALUES ('v1','bos','BOS','FA4800','Test','2025-09-05','2025-09-05',-13514404,0,1,1,'t43');`);
+ e.db.prepare(`INSERT INTO transactions(version_id,transaction_id,award_id,piid,action_date,fiscal_year,modification_number,office_code,office_name,obligation_cents,number_of_actions,source_sha256,raw_json) VALUES ('v1','t43','bos','BOS','2025-09-05',2025,'P00043','FA4800','Test',-13514404,1,'sha',?)`).run(JSON.stringify({current_total_value_of_award:'28779919.15',base_and_exercised_options_value:'0.00',action_type_code:'C'}));
+ const listing=await (await handle(new Request('https://local/api/awards'),e)).json();
+ const detail=await (await handle(new Request('https://local/api/award?id=bos'),e)).json();
+ assert.equal(listing.rows[0].award_amount_cents,'2877991915');assert.equal(detail.award.award_amount_cents,'2877991915');
+ assert.equal(listing.rows[0].latest_mod_number,'P00043');assert.equal(listing.rows[0].latest_option_mod_number,null);
+ assert.equal(detail.options.total_options,null);assert.equal(Object.hasOwn(detail.award,'award_amount_source'),false);
  e.db.close();
 });

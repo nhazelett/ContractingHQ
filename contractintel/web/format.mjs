@@ -36,3 +36,7 @@ export function portfolioStatus(row,today=new Date().toISOString().slice(0,10)){
   if(current!==null&&potential!==null)return 'Reported dates passed';
   return 'Dates need review';
 }
+
+// Planning duration includes all reported options; current end stays separately visible.
+export const contractEnd=row=>row.potential_end_date||row.current_end_date||null;
+export const totalPop=row=>text(row.start_date)+' → '+text(row.potential_end_date);

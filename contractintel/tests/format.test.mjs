@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {money,dollars,csvCell,daysRemaining,endLabel,portfolioStatus} from '../web/format.mjs';
+import {money,dollars,csvCell,daysRemaining,endLabel,portfolioStatus,contractEnd,totalPop} from '../web/format.mjs';
 test('Financial formatting preserves cents, sign, missing and large values',()=>{
   assert.equal(money('9007199254740991'),'$90,071,992,547,409.91');
   assert.equal(money('-1'),'−$0.01');assert.equal(money(null),'Not reported');
@@ -25,4 +25,11 @@ test('Portfolio status distinguishes option uncertainty, missing dates and incon
  assert.equal(portfolioStatus({current_end_date:'2025-01-01',potential_end_date:'2026-01-01'},today),'Reported dates passed');
  assert.equal(portfolioStatus({current_end_date:'2028-01-01',potential_end_date:'2027-01-01'},today),'Dates inconsistent');
  assert.equal(portfolioStatus({},today),'Dates need review');
+});
+
+test('Contract countdown and full PoP use potential end without replacing the current end',()=>{
+ const row={start_date:'2024-03-01',current_end_date:'2025-08-31',potential_end_date:'2027-08-31'};
+ assert.equal(contractEnd(row),'2027-08-31');assert.equal(totalPop(row),'2024-03-01 → 2027-08-31');
+ assert.equal(contractEnd({current_end_date:'2025-08-31'}),'2025-08-31');
+ assert.equal(totalPop({start_date:'2024-03-01'}),'2024-03-01 → Not reported');assert.equal(contractEnd({}),null);
 });

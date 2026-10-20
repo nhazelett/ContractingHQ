@@ -171,3 +171,11 @@ The detail scan is bounded at the latest 5,000 source actions with source-descri
 excerpts of up to 1,000 characters; truncation is explicitly shown. All analyses
 are pinned to the selected dataset version. A larger history requires a full
 offline analysis; do not treat a bounded scan as a complete modification count.
+
+### Register defaults (2026-10-20)
+
+The register starts on **All loaded awards** with PIID, Requirement, Award Amount, Latest Mod #, Latest option Mod, Current PoP end, Total contract PoP, Days until contract ends, and Awardee. It no longer displays a loaded-mod count. Missing option evidence reads **Not yet verified**, never evidence that options do not exist.
+
+Award Amount reads the latest source record's cumulative current_total_value_of_award, parsed to exact cents. It must not use a sum of transaction deltas from partial history. Total contract PoP displays start through potential final end. The countdown and default ordering use potential end, falling back to current end when potential is missing; upcoming dates sort soonest first, then passed dates most recently passed first, then unknown dates. This is a planning horizon, not proof options were exercised. CSV uses the same values and date basis.
+
+The history recovery workflow sets CONTRACTINTEL_DATA_ONLY=1. Data publication keeps its capacity guards, validation and atomic pointer switch, but does not deploy the workflow's code checkout. Dashboard code is deployed independently by the preview workflow, preventing a long history import from restoring an older UI.
