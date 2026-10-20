@@ -18,9 +18,15 @@ checked-in workflow targets the named ContractIntel resources only. The account
 owner must create and store the token directly. Never paste it into a chat, a
 repository file, a workflow input, a command argument, or an issue.
 
+The workflows also accept the existing repository secret `CLOUDFARE_API_TOKEN`
+(legacy spelling). The correctly spelled name takes precedence if both exist.
+The **ContractIntel Cloudflare access check** makes three read-only requests to
+verify D1, R2, and Workers account access. It logs pass/fail only; it does not
+create resources or establish that write operations will succeed.
+
 Cloudflare login in a browser does not authorize a GitHub runner. The publisher
 fails before remote work if its token is absent. The token is used only in the
-explicit publication job, not pull-request tests. Wrangler is pinned to 4.140.0,
+explicit publication job and the read-only access check, not pull-request tests. Wrangler is pinned to 4.140.0,
 with optional telemetry disabled. The frontend contains no credentials.
 
 ## First launch
