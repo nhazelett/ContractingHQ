@@ -1,9 +1,11 @@
 # On-demand ContractIntel
 
-The preview uses the public USAspending API. No SAM key is required by this path.
+The preview uses the public USAspending API directly from the browser. Its CORS policy
+permits these public requests without a key. Direct requests avoid Cloudflare-to-source
+timeouts observed during deployment. No SAM key is required by this path.
 The supplied Claude FY22–26 directory provides 1,432 selectable six-character office codes.
 Award assignment follows the user's requested PIID-prefix rule. USAspending keyword searches
-produce candidates; the Worker rejects every candidate whose award PIID does not begin with
+produce candidates; the shared source adapter rejects every candidate whose award PIID does not begin with
 the selected code, including matches only in parent identifiers or descriptions.
 
 ## Loading and coverage
@@ -31,8 +33,10 @@ the latest option that changed PoP cannot be established without additional sour
 
 ## Storage and cost controls
 
-The deployed Worker has **no D1 or R2 binding**. It uses ephemeral Cloudflare Cache API responses
-with a six-hour TTL and a per-IP 120 requests/minute read limiter. No archives, stored office
+The deployed Worker has **no D1 or R2 binding**. Public data requests are paced in the browser, with a bounded six-hour in-memory session cache.
+Office directory/status responses use the Worker with a six-hour cache and a per-IP
+120 requests/minute read limiter. The optional proxy routes share the tested adapter
+but are not used by the UI; some source endpoints time out from Cloudflare. No archives, stored office
 imports, cron trigger, paid plan, or increased usage allowance is added. Existing small R2
 archives and D1 snapshot are retained separately. The GitHub history workflow remains disabled.
 Cloudflare service quotas still apply; this is not a promise of unlimited API capacity.
