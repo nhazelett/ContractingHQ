@@ -91,6 +91,7 @@ def publish(dbid,build_dir,allowance=80000):
     previous=active[0]['version_id'] if active else None
     if previous==info['id']:
         print('Identical dataset already active; no database writes required.')
+        wrangler('deploy','--config',config)
         return info['id']
     # Do not keep importing into a free-tier DB until it runs out of storage.
     database=cf('/d1/database/'+dbid)

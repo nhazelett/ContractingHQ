@@ -18,6 +18,7 @@ async function loadOffice(){
   try{const status=await api('status',{},state.controller.signal);if(generation!==state.generation)return;if(!status.dataset)throw new Error('The pipeline is configured, but no validated dataset has been published yet.');state.version=status.dataset.id;const s=await api('summary',pin(),state.controller.signal);if(generation!==state.generation)return;state.summary=s;
     const totals=s.rollups.filter(r=>r.dimension==='all');const total=fy=>coveredFiscalYear(s.dataset,fy)?totals.find(r=>r.fiscal_year===fy)?.obligation_cents??'0':null;
     metric('FY '+s.fiscal_year+' NET OBLIGATIONS','current-label',['current-amount',total(s.fiscal_year)]);metric('FY '+(s.fiscal_year-1)+' NET OBLIGATIONS','prior-label',['prior-amount',total(s.fiscal_year-1)]);
+    $('current-fy').disabled=!coveredFiscalYear(s.dataset,s.fiscal_year);$('prior-fy').disabled=!coveredFiscalYear(s.dataset,s.fiscal_year-1);
     for(const[id,fy]of [['current-amount',s.fiscal_year],['prior-amount',s.fiscal_year-1]])if(!coveredFiscalYear(s.dataset,fy)){$(id).textContent='Not covered';$(id).title='This fiscal year is outside the source window.';}
     $('unexpired-count').textContent=(s.counts.unexpired||0).toLocaleString();$('expiring-count').textContent=(s.counts.expires_90||0).toLocaleString();
     $('freshness').textContent=`Coverage: ${s.dataset.coverage_start} to ${s.dataset.coverage_end}. ${s.dataset.completeness} Published ${s.dataset.published_at?.slice(0,16).replace('T',' ')||'pending'} UTC. DoD reporting delays apply.`;

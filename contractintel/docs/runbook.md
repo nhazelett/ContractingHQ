@@ -29,6 +29,15 @@ fails before remote work if its token is absent. The token is used only in the
 explicit publication job and the read-only access check, not pull-request tests. Wrangler is pinned to 4.140.0,
 with optional telemetry disabled. The frontend contains no credentials.
 
+## Pilot deployment
+
+The bounded **ContractIntel September pilot deployment** workflow publishes only
+2025-09-01 through 2025-09-30. Its branch push trigger is restricted to changes
+to that workflow file. It does not enable the nightly schedule or merge the
+feature into KTHQ. The Worker serves a preview of the same static dashboard
+at its workers.dev address; the API is still read-only. The homepage stays
+unchanged until historical coverage and acceptance checks are complete.
+
 ## First launch
 
 1. Pass the CI checks and finish desktop/mobile interactive browser QA.

@@ -1,0 +1,44 @@
+name: ContractIntel September pilot deployment
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/contractintel]
+    paths: [.github/workflows/contractintel-pilot.yml]
+permissions:
+  contents: read
+concurrency:
+  group: contractintel-publisher
+  cancel-in-progress: false
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      WRANGLER_SEND_METRICS: 'false'
+      CLOUDFLARE_ACCOUNT_ID: a7443e0102de587d778491ab08fd883f
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate before deployment
+        run: |
+          python -m unittest discover -s contractintel/tests -v
+          node --test contractintel/tests/*.test.mjs
+          node --check contractintel/web/app.mjs
+      - name: Publish only the September 2025 pilot window
+        id: build
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
+        run: python contractintel/ingest/pipeline.py --start 2025-09-01 --end 2025-09-30 --publish
+      - name: Retain validated pilot and generated database binding
+        uses: actions/upload-artifact@v4
+        with:
+          name: contractintel-pilot
+          path: |
+            ${{ steps.build.outputs.build_dir }}
+            contractintel/worker/wrangler.jsonc
+          retention-days: 3
