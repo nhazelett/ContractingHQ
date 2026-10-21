@@ -44,3 +44,13 @@ The existing ContractIntel preview workflow runs validation and deploys web chan
 10. Empty/error: no-match dataset shows an explicit empty state; invalid award shows an error and working Retry control. Existing source tests cover malformed responses, rate limiting, retry exhaustion and missing details.
 
 Automated validation: 43 tests passed. Source modules and the existing API, portfolio/fiscal loader and CSV function bodies were compared with the pre-redesign working copy and remain unchanged.
+
+## Requirement-first follow-up
+
+- Office selector now uses an accent surface, a Contracting office label, and an explicit Change office action.
+- A visible USAspending notice explains that full loading may take several minutes and counts remain partial. It reflects loading, pause/interruption, fiscal-only loading, and completion.
+- Overview replaces the runway and duplicate Next to end list with one register-style Contracts ending soon table. Descriptions lead each requirement, with PIID below.
+- Expiring uses the same description-first table and retains inline evidence expansion.
+- Full Register includes Requirement by default, with wrapped descriptions and preserved PIID links. CSV columns and underlying source/loader logic are unchanged.
+
+Follow-up QA: real FA4800 descriptions, overview-to-details, Register descriptions, grouped inline evidence, potential-end headings, office search and 390px overflow checks passed; loading and paused notices verified. All 43 existing tests pass.

@@ -1,4 +1,4 @@
-import {scopeNames,scopeRows,category,expiryRows,countdown,swatch,drawRunway,drawLegend,drawSetAsides,runwayRow,valueTotal,empty} from './presentation.mjs';
+import {scopeNames,scopeRows,category,expiryRows,countdown,swatch,drawContracts,drawSetAsides,valueTotal,empty} from './presentation.mjs';
 import {money,csvCell,dollars,text,daysRemaining,endLabel,portfolioStatus,contractEnd,totalPop} from './format.mjs';
 import {summarizeModifications} from './modifications.mjs';
 import {selectRows} from './register.mjs';
@@ -13,7 +13,7 @@ const $=id=>document.getElementById(id);
 const API=location.hostname==='127.0.0.1'||location.hostname==='localhost'?'':'https://kthq-contractintel.nickhazelett.workers.dev';
 const state={scope:'active',office:'FA4800',directory:[],records:new Map(),rows:[],pending:[],page:1,cursor:null,sortValue:null,hasNext:true,busy:false,paused:false,generation:0,direction:'asc',controller:null,candidates:0,excluded:0,cache:new Map(),lastRequest:0,checked:null};
 const fields=[['piid','PIID','145px'],['description','Requirement','minmax(195px,1fr)'],['award_amount_cents','Award Amount','140px'],['latest_mod_number','Latest Mod #','110px'],['latest_option_mod_number','Latest option Mod','145px'],['current_end_date','Current PoP end','130px'],['total_pop','Total contract PoP','200px'],['days_left','Days until contract ends','175px'],['recipient','Awardee','155px'],['set_aside','Set-aside','200px'],['latest_action_date','Latest source action','145px'],['status','Date status','205px'],['start_date','PoP start','115px'],['potential_end_date','Potential final end','145px'],['obligation_cents','Source net obligations','155px']];
-const defaultColumns=['days_left','piid','recipient','set_aside','current_end_date','potential_end_date','award_amount_cents','latest_action_date'];
+const defaultColumns=['days_left','description','piid','recipient','set_aside','current_end_date','potential_end_date','award_amount_cents','latest_action_date'];
 const visible=new Set(defaultColumns);
 const ui={tab:'overview',page:0,pageSize:50,selected:null,expanded:new Set(),expiryLimit:50};
 let detailGeneration=0;
@@ -26,11 +26,19 @@ function startDialog(title,kicker='SOURCE EVIDENCE'){$('detail-title').textConte
 function controls(){const done=!state.hasNext&&!state.pending.length;$('continue').disabled=state.busy||done;$('continue').textContent=done?'Portfolio loaded':state.busy?'Loading portfolio…':'Resume loading';$('continue').hidden=state.busy||done;$('pause').disabled=!state.busy;$('load-more').hidden=done||state.busy;$('load-more').disabled=state.busy;$('export').disabled=!state.records.size;$('retry-missing').hidden=![...state.records.values()].some(r=>r.details_unavailable);$('retry-missing').disabled=state.busy;}
 function progress(){
  const all=[...state.records.values()],ready=all.filter(r=>!r.details_pending&&!r.details_unavailable).length,missing=all.filter(r=>r.details_unavailable).length,complete=!state.hasNext&&!state.pending.length,o=state.directory.find(o=>o.code===state.office);
- $('office-label').textContent=state.office+' · '+(o?.name||'Select office')+(o?.base?' · '+o.base:'')+' ▾';
+ $('office-label').textContent=state.office+' · '+(o?.name||'Select office')+(o?.base?' · '+o.base:'');
  $('freshness').textContent=(state.busy?(state.paused?'Pausing':'Loading portfolio'):complete?'Search complete':state.paused?'Paused':'Ready')+' · '+ready.toLocaleString()+' contracts loaded';
  $('coverage').textContent=(state.busy?'Loading — counts cover loaded records. ':complete?'Search complete for selected window. ':'Counts cover loaded records. ')+ready.toLocaleString()+' detailed / '+all.length.toLocaleString()+' matching awards'+(missing?' · '+missing+' unavailable details':'')+' · '+state.candidates.toLocaleString()+' candidates checked';
  if(state.busy&&!complete)$('progress').removeAttribute('value');else $('progress').value=complete?100:0;
- $('progress').hidden=!state.busy;controls();if(state.busy&&!state.records.size)renderOverview();
+ $('progress').hidden=!state.busy;renderLoadingNotice();controls();if(state.busy&&!state.records.size)renderOverview();
+}
+function renderLoadingNotice(){
+ const portfolioComplete=!state.hasNext&&!state.pending.length,fiscalComplete=fiscal.index===fiscal.months?.length;
+ $('loading-notice').hidden=portfolioComplete&&fiscalComplete;
+ if(portfolioComplete&&fiscalComplete)return;
+ const loading=portfolioComplete?fiscal.busy:state.busy&&!state.paused,interrupted=portfolioComplete?Boolean(fiscal.error):!$('error').hidden;
+ $('loading-notice-title').textContent=loading?(portfolioComplete?'Loading fiscal-year totals from USAspending':'Loading your office portfolio from USAspending'):interrupted?'USAspending loading interrupted':state.paused||portfolioComplete?(!portfolioComplete&&fiscal.busy?'Portfolio paused · fiscal totals still loading':'USAspending loading paused'):'Preparing your USAspending portfolio';
+ $('loading-notice-copy').textContent=loading?'A full portfolio can take several minutes to load, especially for larger offices. Explore results as they arrive; portfolio counts are partial until the scan finishes, and fiscal totals appear when their scan completes. Keep this page open, or use Pause and Resume.':interrupted?'Loaded records are retained. Use the loading controls to retry. Completing the USAspending scan can take several minutes; results remain partial until it finishes.':'The full USAspending portfolio can take several minutes to load. Loaded records stay available in this page; resume loading when you are ready. Results remain partial until their scans finish.';
 }
 function incorporate(data){const h=summarizeModifications(data.history.actions,{truncated:data.history.has_next});return {...data.award,latest_mod_number:h.latest_mod?.modification_number||null,latest_option_mod_number:h.latest_option_mod?.modification_number||null,latest_action_date:data.history.actions[0]?.action_date||data.award.latest_action_date,details_pending:false};}
 async function loadOffice(){state.controller?.abort();state.controller=new AbortController();state.generation++;state.office=$('office').value;state.records=new Map();state.cache=new Map();state.pending=[];state.page=1;state.cursor=null;state.sortValue=null;state.hasNext=true;state.busy=false;state.paused=false;state.candidates=0;state.excluded=0;$('error').hidden=true;$('table-scroll').scrollTop=0;$('set-aside').value='';resetFiscal();render();loadFiscal();await loadBatch();}
@@ -73,23 +81,25 @@ function renderOverview(){
  $('kpi-active').textContent=(active.length-review.length).toLocaleString();$('kpi-review').textContent='+ '+review.length.toLocaleString()+' need date review';
  $('expiring-180-count').textContent=upcoming.filter(r=>r.days<=180).length.toLocaleString();$('kpi-90').textContent=upcoming.filter(r=>r.days<=90).length.toLocaleString()+' within 90 days';$('kpi-date-mode').textContent='Selected dataset · '+(basis==='potential'?'potential end':'current PoP')+' ↗';
  $('recompete-count').textContent=recompetes.length.toLocaleString();
- drawLegend($('runway-legend'),upcoming.slice(0,10).map(r=>r.row));drawRunway($('overview-runway'),upcoming.slice(0,10),r=>award(r.award_id),state.busy);
- $('runway-caption').textContent='Next '+Math.min(upcoming.length,10)+' of '+upcoming.length.toLocaleString()+' reported ends within 365 days · '+mode+'.';
- const next=$('end-dates');next.replaceChildren();
- for(const {row,days}of upcoming.slice(0,5)){const b=el('button',undefined,'end-date-row'),label=el('span',undefined,'end-date-main');label.append(el('strong',row.piid),el('span',text(row.recipient)));b.append(countdown(days),label,el('span',row[basis==='potential'?'potential_end_date':'current_end_date'],'end-date-value'));b.addEventListener('click',()=>award(row.award_id));next.append(b);}
- if(!upcoming.length)empty(next,state.busy,'No upcoming reported ends in this dataset.');
+ drawContracts($('overview-contracts'),upcoming.slice(0,10),basis,r=>award(r.award_id),state.busy);
+ $('upcoming-caption').textContent='Next '+Math.min(upcoming.length,10)+' of '+upcoming.length.toLocaleString()+' reported ends within 365 days · '+mode+'.';
  renderSetAsides(rows);drawSetAsides($('set-aside-mix'),rows,selectCategory,state.busy,true);renderExpiring(upcoming);
 }
 function renderExpiring(upcoming){
  const panel=$('expiration-groups');panel.replaceChildren();let more=false;
  for(const [min,max,label]of [[0,90,'Within 90 days'],[91,180,'91–180 days'],[181,365,'181–365 days']]){
   const entries=upcoming.filter(r=>r.days>=min&&r.days<=max),section=el('section',undefined,'panel'),heading=el('div',undefined,'panel-heading'),totals=el('span',entries.length.toLocaleString()+' contracts · '+valueTotal(entries),'group-count');heading.append(el('h2',label),totals);section.append(heading);
-  if(entries.length){const scroll=el('div',undefined,'runway-scroll'),inner=el('div',undefined,'runway-inner');
-   for(const entry of entries.slice(0,ui.expiryLimit)){
-    const id=entry.row.award_id,button=runwayRow(entry,()=>{ui.expanded.has(id)?ui.expanded.delete(id):ui.expanded.add(id);renderExpiring(upcoming);const target=[...panel.querySelectorAll('[data-award]')].find(n=>n.dataset.award===id);target?.focus();});button.dataset.award=id;button.setAttribute('aria-expanded',String(ui.expanded.has(id)));inner.append(button);
-    if(ui.expanded.has(id)){const r=entry.row,detail=el('div',undefined,'inline-evidence'),data=state.cache.get(id);detail.append(el('strong',text(r.description)),el('p','Current end: '+text(r.current_end_date)+' · Potential final end: '+text(r.potential_end_date)+' · Current value: '+money(r.award_amount_cents)),el('p','Latest reported mod: '+(r.latest_mod_number||'None Found')+' · Latest option-exercise mod: '+(r.latest_option_mod_number||'None Found')));if(data)detail.append(evidenceTable(data.history.actions.slice(0,3),[['action_date','Date'],['modification_number','Mod'],['obligation_cents','Obligation change'],['description','Description']]));const full=el('button','Open full source evidence →');full.addEventListener('click',()=>award(id));detail.append(full);inner.append(detail);}
-   }scroll.append(inner);section.append(scroll);if(entries.length>ui.expiryLimit){more=true;section.append(el('p','Showing '+ui.expiryLimit+' of '+entries.length+' loaded matches.','caption'));}
-  }else{const box=el('div');empty(box,state.busy,'No matching contracts in this interval.');section.append(box);}panel.append(section);
+  const box=el('div');
+  drawContracts(box,entries.slice(0,ui.expiryLimit),$('date-basis').value,r=>{
+   const id=r.award_id;ui.expanded.has(id)?ui.expanded.delete(id):ui.expanded.add(id);renderExpiring(upcoming);
+   [...panel.querySelectorAll('[data-award]')].find(n=>n.dataset.award===id)?.focus({preventScroll:true});
+  },state.busy,{expanded:ui.expanded,detailFor:r=>{
+   const detail=el('div',undefined,'inline-evidence'),data=state.cache.get(r.award_id);
+   detail.append(el('strong',text(r.description)),el('p','Current end: '+text(r.current_end_date)+' · Potential final end: '+text(r.potential_end_date)+' · Current value: '+money(r.award_amount_cents)),el('p','Latest reported mod: '+(r.latest_mod_number||'None Found')+' · Latest option-exercise mod: '+(r.latest_option_mod_number||'None Found')));
+   if(data)detail.append(evidenceTable(data.history.actions.slice(0,3),[['action_date','Date'],['modification_number','Mod'],['obligation_cents','Obligation change'],['description','Description']]));
+   const full=el('button','Open full source evidence →');full.addEventListener('click',()=>award(r.award_id));detail.append(full);return detail;
+  }});
+  section.append(box);if(entries.length>ui.expiryLimit){more=true;section.append(el('p','Showing '+ui.expiryLimit+' of '+entries.length+' loaded matches.','caption'));}panel.append(section);
  }$('more-expiring').hidden=!more;
 }
 function renderRows(){
@@ -97,13 +107,14 @@ function renderRows(){
  const pages=Math.max(1,Math.ceil(state.rows.length/ui.pageSize));ui.page=Math.min(ui.page,pages-1);
  $('dataset-empty').hidden=state.rows.length>0;$('dataset-empty').textContent=state.busy?'Loading — matching contracts appear as details arrive.':'No contracts match this dataset and the Register filters.';
  const ordered=[...defaultColumns,...fields.map(f=>f[0]).filter(k=>!defaultColumns.includes(k))],columns=ordered.filter(k=>visible.has(k)).map(k=>fields.find(f=>f[0]===k));
- const widths={days_left:'85px',piid:'160px',recipient:'minmax(180px,1fr)',set_aside:'190px',current_end_date:'125px',potential_end_date:'125px',award_amount_cents:'145px',latest_action_date:'125px'},labels={days_left:'Ends in',recipient:'Awardee',award_amount_cents:'Current value',latest_action_date:'Latest action'};
+ const widths={description:'minmax(340px,1.6fr)',days_left:'85px',piid:'160px',recipient:'minmax(180px,1fr)',set_aside:'190px',current_end_date:'125px',potential_end_date:'125px',award_amount_cents:'145px',latest_action_date:'125px'},labels={days_left:'Ends in',recipient:'Awardee',award_amount_cents:'Current value',latest_action_date:'Latest action'};
  const grid=columns.map(f=>widths[f[0]]||f[2]).join(' ');$('table-head').style.gridTemplateColumns=grid;$('table-head').replaceChildren(...columns.map(f=>{const n=el('div',labels[f[0]]||f[1]);n.setAttribute('role','columnheader');return n;}));$('virtual-table').setAttribute('aria-rowcount',state.rows.length+1);$('table-space').style.height='auto';$('table-rows').replaceChildren();
  const first=ui.page*ui.pageSize,last=Math.min(state.rows.length,first+ui.pageSize),basis=$('date-basis').value;
  for(let i=first;i<last;i++){
   const row=state.rows[i],life=lifecycle(row),div=el('div',undefined,'data-row lifecycle-'+life.kind+(ui.selected===row.award_id?' selected':''));div.style.gridTemplateColumns=grid;div.setAttribute('role','row');div.setAttribute('aria-rowindex',i+2);div.setAttribute('aria-label',row.piid+' · '+life.label);div.addEventListener('click',e=>{if(!e.target.closest('a'))award(row.award_id);});
   for(const[field]of columns){const cell=el('div');cell.setAttribute('role','cell');
    if(field==='piid'){const a=el('a',row.piid);a.href='#register?award='+encodeURIComponent(row.award_id);a.addEventListener('click',e=>{e.preventDefault();award(row.award_id);});cell.className='piid-cell';cell.append(a);if(life.kind!=='upcoming'){const badge=el('span',life.label,'lifecycle-badge');badge.title=life.reason;cell.append(badge);}}
+   else if(field==='description'){const a=el('a',row.description||'Description not reported','requirement-link');a.href='#register?award='+encodeURIComponent(row.award_id);a.addEventListener('click',e=>{e.preventDefault();award(row.award_id);});cell.className='requirement-cell';cell.append(a);}
    else if(field==='days_left'){cell.append(countdown(life.kind==='review'?null:daysRemaining(row[basis==='potential'?'potential_end_date':'current_end_date'])));}
    else if(field==='set_aside'){const label=setAsideLabel(row);cell.append(swatch(label),el('span',' '+label));}
    else{const detail=['award_amount_cents','latest_mod_number','latest_option_mod_number','potential_end_date','total_pop'];cell.textContent=row.details_pending&&detail.includes(field)?'Loading…':row.details_unavailable&&detail.includes(field)?'Unavailable':field==='latest_mod_number'||field==='latest_option_mod_number'?(row[field]||'None Found'):field==='total_pop'?totalPop(row):field==='status'?portfolioStatus(row):field.endsWith('_cents')?money(row[field]):text(row[field]);if(field.endsWith('_cents'))cell.className='money';else if(field.endsWith('_date'))cell.className='mono';}
@@ -171,7 +182,7 @@ $('dataset').addEventListener('change',()=>{state.scope=$('dataset').value;ui.pa
 $('kpi-active-button').addEventListener('click',()=>{state.scope='active';openRegister();});
 $('expiring-180').addEventListener('click',()=>openRegister('180'));
 $('recompetes').addEventListener('click',()=>openRegister('365','potential'));
-$('runway-register').addEventListener('click',()=>openRegister('365'));
+$('upcoming-register').addEventListener('click',()=>openRegister('365'));
 $('more-expiring').addEventListener('click',()=>{ui.expiryLimit+=50;renderOverview();});
 for(const [id,step]of [['previous-page',-1],['next-page',1]])$(id).addEventListener('click',()=>{ui.page+=step;$('table-scroll').scrollTop=0;renderRows();});
 const tabs=['overview','expiring','register','set-asides'];
@@ -206,7 +217,7 @@ function renderFiscal(){
   $(prefix+'-contracts').textContent=complete?b.awards.size.toLocaleString():'—';
  }
  $('fiscal-status').textContent=complete?'Office-wide scan complete · net obligations including deobligations · distinct contracts with reported activity.':(fiscal.busy?'Loading fiscal totals. ':fiscal.error?fiscal.error+' ':'Fiscal totals paused. ')+(fiscal.index||0)+' of '+(fiscal.months?.length||0)+' monthly windows complete. Totals remain blank until the full scan completes.';
- renderFiscalVisual(totals,complete);$('fiscal-continue').hidden=complete||fiscal.busy;$('fiscal-pause').hidden=!fiscal.busy;$('fiscal-continue').disabled=fiscal.busy||complete;$('fiscal-continue').textContent=fiscal.error?'Retry fiscal-year totals':'Continue fiscal-year totals';$('fiscal-pause').disabled=!fiscal.busy;
+ renderLoadingNotice();renderFiscalVisual(totals,complete);$('fiscal-continue').hidden=complete||fiscal.busy;$('fiscal-pause').hidden=!fiscal.busy;$('fiscal-continue').disabled=fiscal.busy||complete;$('fiscal-continue').textContent=fiscal.error?'Retry fiscal-year totals':'Continue fiscal-year totals';$('fiscal-pause').disabled=!fiscal.busy;
 }
 async function loadFiscal(){
  if(fiscal.busy||fiscal.index===fiscal.months.length)return;
