@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-10-20T12:53:22.489Z",
+  "generatedAt": "2026-10-21T13:06:32.707Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -8,10 +8,10 @@ window.KTHQ_GAO_DATA = {
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
     "total": 17,
-    "latestDecisionDate": "2026-10-14",
+    "latestDecisionDate": "2026-10-19",
     "sustained": 1,
-    "denied": 8,
-    "dismissed": 2,
+    "denied": 9,
+    "dismissed": 1,
     "mixed": 6,
     "unclassified": 0,
     "sourceStatus": {
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 18
+        "parsedOutcomes": 16
       },
       "productPages": {
         "attempted": 17,
@@ -36,6 +36,60 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424435.3",
+      "caseName": "CAKAR ULUSLARARASI NAKLIYAT SANAYI VE TICARET LIMITED SIRKETI",
+      "title": "CAKAR ULUSLARARASI NAKLIYAT SANAYI VE TICARET LIMITED SIRKETI",
+      "bNumbers": [
+        "B-424435.3"
+      ],
+      "bNumberText": "B-424435.3",
+      "link": "https://www.gao.gov/products/b-424435.3",
+      "publicationDate": "2026-10-20",
+      "decisionDate": "2026-10-19",
+      "displayDate": "Oct 19, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "CAKAR ULUSLARARASI NAKLIYAT SANAYI VE TICARET LIMITED SIRKETI (CAKAR), of Mardin, Turkey, protests the award of a contract to S&D International...",
+      "highlights": "",
+      "digest": "Protest challenging the agency's evaluation of the protester's proposal as technically unacceptable is denied where the evaluation was reasonable and consistent with the solicitation's evaluation criteria.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424724",
+      "caseName": "Prestique, Inc.",
+      "title": "Prestique, Inc.",
+      "bNumbers": [
+        "B-424724"
+      ],
+      "bNumberText": "B-424724",
+      "link": "https://www.gao.gov/products/b-424724",
+      "publicationDate": "2026-10-20",
+      "decisionDate": "2026-10-19",
+      "displayDate": "Oct 19, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Prestique, Inc., of Dayton, Texas, a small business, protests the rejection of its bid and the subsequent award of a contract to Miwok Construction,...",
+      "highlights": "",
+      "digest": "Protest that agency improperly rejected protester's bid for roofing repair and replacement is denied where invitation for bids required bidders to include in the bid a draft warranty from the roofing manufacturer that demonstrated the bidder's clear ability to provide a warranty meeting listed requirements but protester's draft warranty omitted required elements.",
+      "tags": [
+        "Solicitation terms",
+        "Small business"
+      ],
+      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424785",
       "caseName": "Casey & Company LLC",
@@ -226,30 +280,32 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424631",
-      "caseName": "Mission Analytics, LLC",
-      "title": "Mission Analytics, LLC",
+      "id": "B-424613,B-424613.2",
+      "caseName": "Integrity Management Consulting, Inc.",
+      "title": "Integrity Management Consulting, Inc.",
       "bNumbers": [
-        "B-424631"
+        "B-424613",
+        "B-424613.2"
       ],
-      "bNumberText": "B-424631",
-      "link": "https://www.gao.gov/products/b-424631",
-      "publicationDate": "2026-10-02",
-      "decisionDate": "2026-09-30",
-      "displayDate": "Sep 30, 2026",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
+      "bNumberText": "B-424613, B-424613.2",
+      "link": "https://www.gao.gov/products/b-424613%2Cb-424613.2",
+      "publicationDate": "2026-10-20",
+      "decisionDate": "2026-10-01",
+      "displayDate": "Oct 1, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
       "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protest as untimely.",
-      "officialSynopsis": "Mission Analytics, LLC, a small business of Falls Church, Virginia, protests the terms of request for proposals (RFP) No. HC101925R007, issued by the...",
+      "decisionLine": "We deny the protest in part and dismiss it in part.",
+      "officialSynopsis": "Integrity Management Consulting, Inc., a small business of McLean, Virginia, protests the issuance of a task order to ASET Partners Corp., a small...",
       "highlights": "",
-      "digest": "1. Protest challenging solicitation terms is dismissed as untimely where it was not filed at GAO within 10 days of the solicitation's closing date for receipt of proposals, which constituted initial adverse agency action on the protester's agency‑level protest. 2. Protest challenging the agency's award of a contract is dismissed as untimely where the allegations are derivative of the protester's untimely challenges to the terms of the solicitation.",
+      "digest": "1. Protest that solicitation contained a latent ambiguity is denied where the protester's interpretation of the solicitation language in question is not reasonable. 2. Protester is not an interested party to challenge other aspects of the evaluation where its quotation was reasonably evaluated as ineligible for award.",
       "tags": [
-        "Timeliness",
+        "Evaluation",
         "Solicitation terms",
-        "Small business"
+        "Small business",
+        "Orders / IDIQ"
       ],
-      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -371,36 +427,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424583,B-424583.2,B-424583.3",
-      "caseName": "Keta Environmental and Infrastructure, LLC",
-      "title": "Keta Environmental and Infrastructure, LLC",
-      "bNumbers": [
-        "B-424583",
-        "B-424583.2",
-        "B-424583.3"
-      ],
-      "bNumberText": "B-424583, B-424583.2, B-424583.3",
-      "link": "https://www.gao.gov/products/b-424583%2Cb-424583.2%2Cb-424583.3",
-      "publicationDate": "2026-10-02",
-      "decisionDate": "2026-09-22",
-      "displayDate": "Sep 22, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Keta Environmental and Infrastructure, LLC, a small business of Colorado Springs, Colorado, protests the award of a contract to KTH Services JV, LLC...",
-      "highlights": "",
-      "digest": "1. Protest that the best-value tradeoff between the past performance and price factors was unreasonable is denied where the agency reasonably determined that the higher priced offeror had superior past performance for which it was worth paying a price premium. 2. Protest that the agency unreasonably failed to engage in discussions with the protester concerning adverse past performance is denied where the past performance information at issue concerned the relevance of past performance examples and not the quality of the protester's performance on the contracts.",
-      "tags": [
-        "Discussions / FPR",
-        "Price / cost",
-        "Small business"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
       "id": "B-424146.2,B-424146.3",
       "caseName": "Tetra Tech, Inc.",
       "title": "Tetra Tech, Inc.",
@@ -486,35 +512,6 @@ window.KTHQ_GAO_DATA = {
       "tags": [
         "Evaluation",
         "Discussions / FPR",
-        "Solicitation terms",
-        "Price / cost"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424560,B-424560.2",
-      "caseName": "CESC Mall LLC",
-      "title": "CESC Mall LLC",
-      "bNumbers": [
-        "B-424560",
-        "B-424560.2"
-      ],
-      "bNumberText": "B-424560, B-424560.2",
-      "link": "https://www.gao.gov/products/b-424560%2Cb-424560.2",
-      "publicationDate": "2026-10-02",
-      "decisionDate": "2026-09-04",
-      "displayDate": "Sep 4, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest in part and dismiss it in part.",
-      "officialSynopsis": "CESC Mall LLC, of Bethesda, Maryland, protests the terms of request for lease proposals (RLP) No. 6VA0632, issued by the General Services...",
-      "highlights": "",
-      "digest": "1. Protest challenging the solicitation's occupancy date as unduly restrictive and unreasonable is denied where the requirement was reasonably necessary to meet the agency's needs; relatedly, protest challenging the solicitation's failure to include holdover damages as part of the price evaluation is denied where the record fails to support the protester's argument that holdover damages are imminent based on the solicitation's occupancy date. 2. Protest asserting that the record fails to support the agency's decision to compete the solicitation by using full and open competition is dismissed where the protester was not prejudiced by the agency's action.",
-      "tags": [
-        "Evaluation",
         "Solicitation terms",
         "Price / cost"
       ],
