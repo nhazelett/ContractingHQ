@@ -6,6 +6,8 @@ Research date: 2026-10-21. This is a delivery plan, not a claim that the feature
 
 Build an opportunity discovery and research workflow around the existing office portfolio. Prioritize federal opportunity discovery, then tracking and capture, then broader intelligence and sources. State/local remains a later phase, as previously requested. Match useful workflows rather than HigherGov's visual layout or every adjacent product category.
 
+User priorities confirmed after review: newest source-posted opportunities first; defer tracking, favorites, saved searches, alerts and private capture until login/account support exists. Intelligence can proceed as public research when supported by evidence. Broader coverage remains incremental.
+
 The first usable release should let someone answer: What is the requirement? Is it relevant to me? When do I need to act? What changed? What evidence supports the answer?
 
 ## Evidence and current baseline
@@ -23,10 +25,10 @@ The deployed Worker has no D1 or R2 binding. Existing historical ingestion code 
 | Federal posted opportunities | Not present | SAM notice ingestion, search, and details |
 | Advanced filters | Loaded office-award filters | Agency/office, keyword, NAICS, PSC, set-aside, location, notice type, posted date, due date, source status |
 | Notice detail and documents | Award transactions and source links | Notice description, contacts, attachments, source link, source-check timestamp |
-| Favorites and no-bid | Not present | Personal saved items and reversible no-bid exclusion |
-| Saved searches | Not present | Named filter state, reopening, updating, and shareable query links |
-| Change tracking and alerts | Not present | Durable observed versions, deadline/document changes, opt-in digests |
-| Capture pipeline | Not present | Stages, notes, next action, owner, bid/no-bid rationale |
+| Favorites and no-bid | Deferred until accounts | Personal saved items and reversible no-bid exclusion |
+| Saved searches | Deferred until accounts | Named filter state, reopening, updating; public query links do not require accounts |
+| Change tracking and alerts | Deferred until accounts | Durable observed versions, deadline/document changes, opt-in digests |
+| Capture pipeline | Deferred until accounts | Private stages, notes, next action, owner, bid/no-bid rationale |
 | Incumbent and office intelligence | Office award portfolio | Evidence-backed related awards, vendors, buying history and likely incumbent candidates |
 | Forecasts and potential recompetes | Date-derived recompete candidates | Separate forecast records and confidence-labelled notice/award associations |
 | DIBBS, vehicles and other federal feeds | Not present | Source-specific adapters after the SAM workflow works |
@@ -39,9 +41,13 @@ The deployed Worker has no D1 or R2 binding. Existing historical ingestion code 
 
 Create an Opportunities workspace alongside the existing Portfolio workspace. Preserve portfolio tabs and the office picker. Opportunities should allow searching the selected office or a broader federal scope; the selected office must not silently constrain a national search. Map notices through reported organization hierarchy rather than inferring their office from solicitation numbers.
 
-Use a description/title-led table with deadline, agency/office, notice type, set-aside, NAICS/PSC, place of performance, and posting date. Keep identifiers visible as secondary metadata. Detail view shows the full description, official documents, contacts, source status, reported deadline and source links. Clicking back retains filters and position. Support CSV and shareable search URLs.
+Use a description/title-led table with deadline, agency/office, notice type, set-aside, NAICS/PSC, place of performance, and posting date.
 
-Quick views: active-source solicitations, sources sought/presolicitations, deadlines within 7/30 days, deadlines requiring review, saved items. Award notices, forecasts and inferred recompetes must remain distinguishable from solicitations. A future deadline alone does not establish that an opportunity is open or that a user is eligible.
+Newest posted first is the default across every filter and pagination request. Preserve the full source posting timestamp and its precision rather than discarding the time. Never use source-check/ingestion time to make an older notice appear new. Use a deterministic source-ID tie-breaker; unknown posting dates go last. Do not assume an unreported timezone or fabricate a missing posting time. Version/updated dates, when supported, must be labelled separately from the source posting date.
+
+ Keep identifiers visible as secondary metadata. Detail view shows the full description, official documents, contacts, source status, reported deadline and source links. Clicking back retains filters and position. Support CSV and shareable search URLs.
+
+Quick views: active-source solicitations, sources sought/presolicitations, deadlines within 7/30 days, deadlines requiring review. Saved-item views are deferred with account features. Award notices, forecasts and inferred recompetes must remain distinguishable from solicitations. A future deadline alone does not establish that an opportunity is open or that a user is eligible.
 
 Build keyword phrase/include/exclude and structured filters against our own index. The SAM API's title parameter is not equivalent to searching full descriptions or attachment contents. Do not label title-only upstream queries as full-text search. Document-content search is a separate ingestion step after reliable description indexing.
 
@@ -55,9 +61,9 @@ Definition of done:
 - Pagination, duplicate notices, cancellations, missing descriptions and source rate limits are tested.
 - Existing portfolio loaders and CSV behavior pass regression checks.
 
-### 2. Saved work and change tracking
+### Deferred: saved work and change tracking (requires accounts)
 
-Add named searches, favorites and reversible no-bid labels, followed by a private user workspace for cross-device persistence and alerts. A browser-only pilot may save locally, but must say so and cannot be described as a shared account or an alert service.
+Defer named searches, favorites, no-bid labels and alerts until an authenticated private user workspace is available. Do not build browser-local tracking as a substitute. Public source snapshots and ingestion checkpoints are still needed for reliable data maintenance, but are separate from user tracking.
 
 Store immutable observed notice versions. Show field-level differences for deadline, status, set-aside, title and requirement text; use attachment manifests/content fingerprints for changed documents, not merely attachment counts. A notice fetched twice with identical content must not generate two alerts.
 
@@ -65,17 +71,17 @@ Add opt-in notification frequency, unsubscribe, last evaluation time and deliver
 
 SAM's search API supplies the latest version; it does not retrospectively provide every amendment. Label our timeline as observed history beginning at first capture. Recover earlier history only from an appropriate official history/data source and identify its provenance.
 
-### 3. Opportunity-to-award intelligence
+### 2. Public opportunity-to-award intelligence
 
 Connect a notice to related office awards and likely incumbents using identifiers when available, then transparent agency/office, requirement, classification, place and date evidence. Distinguish confirmed source links from candidate matches. Show ambiguous candidates rather than silently choosing a winner. Do not treat a passed PoP as a confirmed solicitation, award, closeout or recompete.
 
 Add vendor profiles, office buying patterns, awardee concentration, set-aside history, and relevant prior requirements. Historical set-aside use is not evidence of present vendor eligibility. An incumbent's possible ineligibility needs current certification/size evidence, not an inference from an older award or a graduation date alone.
 
-### 4. Capture workflow
+### Deferred: capture workflow (requires accounts)
 
-Create a simple pipeline: discovered, researching, bid decision, preparing response, submitted, won/lost/no-bid. Include notes, next-action date, owner and supporting evidence. Let users work from a table or board. Keep team roles and shared work private; anonymous visitors must never see another user's capture notes.
+Once authenticated private workspaces exist, create a simple pipeline: discovered, researching, bid decision, preparing response, submitted, won/lost/no-bid. Include notes, next-action date, owner and supporting evidence. Let users work from a table or board. Keep team roles and shared work private; anonymous visitors must never see another user's capture notes.
 
-### 5. Broader coverage
+### 3. Broader coverage
 
 Add agency forecasts, DIBBS and selected vehicle integrations based on demand and official access. Each adapter needs coverage, update cadence and document-access rules. Then implement state/local as a source-adapter program, with a small set of jurisdictions proven before promising nationwide coverage. There is no single state/local feed equivalent to a national SAM notice source.
 
