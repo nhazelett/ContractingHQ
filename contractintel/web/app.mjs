@@ -25,6 +25,7 @@ function query(){return {q:$('search').value,view:$('view').value,sort:$('sort')
 function startDialog(title,kicker='SOURCE EVIDENCE'){$('detail-title').textContent=title;$('detail-kicker').textContent=kicker;$('detail-body').replaceChildren(el('p','Loading…','muted'));if(!$('detail').open)$('detail').showModal();return ++detailGeneration;}
 function controls(){const done=!state.hasNext&&!state.pending.length;$('continue').disabled=state.busy||done;$('continue').textContent=done?'Portfolio loaded':state.busy?'Loading portfolio…':'Resume loading';$('continue').hidden=state.busy||done;$('pause').disabled=!state.busy;$('load-more').hidden=done||state.busy;$('load-more').disabled=state.busy;$('export').disabled=!state.records.size;$('retry-missing').hidden=![...state.records.values()].some(r=>r.details_unavailable);$('retry-missing').disabled=state.busy;}
 function progress(){
+ $('opportunities-link').href='./opportunities.html?selected_office='+encodeURIComponent(state.office);
  const all=[...state.records.values()],ready=all.filter(r=>!r.details_pending&&!r.details_unavailable).length,missing=all.filter(r=>r.details_unavailable).length,complete=!state.hasNext&&!state.pending.length,o=state.directory.find(o=>o.code===state.office);
  $('office-label').textContent=state.office+' · '+(o?.name||'Select office')+(o?.base?' · '+o.base:'');
  $('freshness').textContent=(state.busy?(state.paused?'Pausing':'Loading portfolio'):complete?'Search complete':state.paused?'Paused':'Ready')+' · '+ready.toLocaleString()+' contracts loaded';

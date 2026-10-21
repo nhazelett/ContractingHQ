@@ -37,20 +37,26 @@ export function normalizeNotice(record,{checkedAt,descriptionText=null}={}){
  const sourceActive=typeof record.active==='boolean'?record.active:/^yes$/i.test(clean(record.active)||'')?true:/^no$/i.test(clean(record.active)||'')?false:null;
  return {
   source:'SAM.gov',record_kind:'posted_notice',notice_id:id.toLowerCase(),title:clean(record.title),solicitation_number:clean(record.solicitationNumber),
-  notice_type:type,source_active:sourceActive,posted_date:date(record.postedDate),
+  notice_type:type,source_active:sourceActive,posted_date:date(record.postedDate),posted:normalizeDeadline(record.postedDate),
   deadline:normalizeDeadline(record.responseDeadLine??record.reponseDeadLine),
   organization_path_code:path,organization_path_name:clean(record.fullParentPathName),
   // Office identity comes from the source hierarchy, never the solicitation prefix.
-  office_code:parts.length>=3?parts.at(-1):null,
+  office_code:parts.length>=3?parts.at(-1):null,agency_name:clean(record.fullParentPathName)?.split('.')[0]||null,
   naics:clean(record.naicsCode),psc:clean(record.classificationCode),
   set_aside_code:clean(record.typeOfSetAside??record.setAsideCode),set_aside_description:clean(record.typeOfSetAsideDescription??record.setAside),
   place_state:clean(record.placeOfPerformance?.state?.code),place_city:clean(record.placeOfPerformance?.city?.name),
   description_text:clean(descriptionText),
   // The search response's description field is an authenticated URL, not prose.
   description_available:Boolean(clean(record.description)),attachment_count:Array.isArray(record.resourceLinks)?record.resourceLinks.length:0,
-  source_url:samLink(record.uiLink),source_checked_at:new Date(checkedAt).toISOString()
+  source_url:samLink(record.uiLink),source_checked_at:new Date(checkedAt).toISOString(),
+  contacts:(Array.isArray(record.pointOfContact)?record.pointOfContact:Array.isArray(record.pointofContact)?record.pointofContact:[]).slice(0,20).map(p=>({name:clean(p.fullName??p.fullname),title:clean(p.title),email:clean(p.email),phone:clean(p.phone)})),
+  documents:(Array.isArray(record.resourceLinks)?record.resourceLinks:[]).slice(0,100).map(publicDocument).filter(Boolean)
  };
 }
+
+function publicDocument(value){try{const u=new URL(value);if(u.protocol!=='https:'||u.username||u.password)return null;for(const key of [...u.searchParams.keys()])if(/^(api_?key)$/i.test(key))u.searchParams.delete(key);return u.href;}catch{return null;}}
+export function postedKey(notice){const p=notice.posted;if(!p?.date)return '';return p.instant?.slice(0,23)||p.raw.replace(' ','T').padEnd(23,'0');}
+export function newestFirst(rows){return [...rows].sort((a,b)=>postedKey(b).localeCompare(postedKey(a))||a.notice_id.localeCompare(b.notice_id));}
 
 export function matchesOffice(notice,code){return Boolean(code)&&notice.office_code===code;}
 

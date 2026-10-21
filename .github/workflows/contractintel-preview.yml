@@ -1,11 +1,17 @@
 name: ContractIntel preview update
 on:
   workflow_dispatch:
+    inputs:
+      refresh_notices:
+        description: Refresh the SAM notice index within its existing request budget
+        type: boolean
+        default: false
   push:
     branches: [codex/contractintel]
     paths:
       - contractintel/web/**
       - contractintel/worker/**
+      - contractintel/opportunities/**
       - .github/workflows/contractintel-preview.yml
 permissions:
   contents: read
@@ -28,7 +34,13 @@ jobs:
         run: |
           node --test contractintel/tests/*.test.mjs
           node --check contractintel/web/app.mjs
-      - name: Update preview code without changing stored data
+      - name: Publish validated opportunity index and update dashboard
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
-        run: npx --yes wrangler@4.140.0 deploy --config contractintel/worker/wrangler.jsonc
+          SAM_API_KEY: ${{ secrets.SAM_API_KEY }}
+          FORCE_OPPORTUNITY_REFRESH: ${{ inputs.refresh_notices && '1' || '0' }}
+        run: |
+          node contractintel/opportunities/deploy.mjs prepare
+          node contractintel/opportunities/deploy.mjs refresh
+          node contractintel/opportunities/deploy.mjs secret
+          npx --yes wrangler@4.140.0 deploy --config contractintel/worker/wrangler.jsonc

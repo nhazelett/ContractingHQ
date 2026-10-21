@@ -1,4 +1,6 @@
 import offices from './offices.json' with {type:'json'};
+import {opportunityRoute} from '../opportunities/api.mjs';
+import {OpportunityError} from '../opportunities/source.mjs';
 import {resolve as sourceResolve,ServiceError} from '../web/source.mjs';
 export {normalizeAward,normalizeAction,cents,isoDate,validAwardID} from '../web/source.mjs';
 export const resolve=(url,env={})=>sourceResolve(url,{...env,OFFICES:offices});
@@ -14,6 +16,7 @@ export async function handle(request,env={},ctx={}){
  if(url.href.length>2000)return reply({error:'Request is too long.'},400);
  try{
   if(env.READ_LIMIT&&!(await env.READ_LIMIT.limit({key:request.headers.get('CF-Connecting-IP')||'unknown'})).success)return reply({error:'Request limit reached. Your records are retained. Wait one minute, then continue.'},429,{'Retry-After':'60'});
+  if(['/api/opportunities','/api/opportunity'].includes(url.pathname)){const data=await opportunityRoute(url,env);return data instanceof Response?data:reply(data);}
   // Canonical route keys prevent irrelevant parameters from bypassing shared caching.
   const allowed={'/api/offices':[],'/api/status':[],'/api/awards':['office','start','page','cursor','sort_value'],'/api/award':['id'],'/api/history':['id','page']}[url.pathname];
   if(!allowed)throw new ServiceError('Unknown endpoint.',404);
@@ -24,6 +27,7 @@ export async function handle(request,env={},ctx={}){
   const body=await pending;
   if(cache){const put=cache.put(key,json(body,200,{'Cache-Control':'public, max-age='+TTL}));if(ctx.waitUntil)ctx.waitUntil(put);else await put;}
   return reply(body,200,{'X-ContractIntel-Cache':'miss'});
- }catch(error){return reply({error:error instanceof ServiceError?error.message:'Data service unavailable. Try again shortly.'},error instanceof ServiceError?error.status:503);}
+ }catch(error){return reply({error:error instanceof ServiceError||error instanceof OpportunityError?error.message:'Data service unavailable. Try again shortly.'},error instanceof ServiceError||error instanceof OpportunityError?error.status:503);}
 }
 export default {fetch:handle};
+
