@@ -16,7 +16,7 @@ The Opportunities workspace is separate from the existing USAspending Portfolio.
 
 This initial pilot uses at most three SAM search requests per import. It queries day windows newest first, requesting up to 1,000 records per source page. The requested lookback is seven days, but only the windows/pages actually checked are shown as covered. Quota limits or a busy source day can leave a partial window. This is not a complete active federal opportunity inventory.
 
-Ingestion and on-demand descriptions share an atomic D1 counter capped at ten SAM calls per UTC day. That is a conservative application guard, not a statement of the account's entitlement. SAM can reject sooner because of other usage or provider limits. Cached descriptions are reused for six hours; a failed description request retains metadata and official source links. Description text is rendered as text, never executable source HTML. Very long descriptions are shortened with a visible source-link instruction.
+Ingestion and on-demand descriptions share an atomic D1 counter capped at ten SAM calls per UTC day. That is a conservative application guard, not a statement of the account's entitlement. SAM can reject sooner because of other usage or provider limits. Up to two initial notice descriptions are warmed from the trusted import runner, using the same shared daily budget. Only same-origin SAM redirects are followed, with each hop counted. Cached descriptions are reused for six hours; a failed description request retains metadata and official source links. Description text is rendered as text, never executable source HTML. Very long descriptions are shortened with a visible source-link instruction.
 
 The SAM key remains in GitHub Actions and the existing Worker server secret. No browser API key, authenticated description URL or deployment credential is returned by the public API.
 
@@ -43,7 +43,7 @@ Preparation writes the actual existing database UUID into the runner's Wrangler 
 
 ## Validation
 
-58 automated tests pass, including eight new service tests covering global newest-first pagination and filtering; source page indexes; bounded/partial coverage; failed-import recovery; atomic shared quotas; cached, non-executable descriptions; source failures; CSV formula prevention; and empty/unconfigured/retired dataset distinctions.
+59 automated tests pass, including nine new service tests covering global newest-first pagination and filtering; source page indexes; bounded/partial coverage; failed-import recovery; atomic shared quotas; cached, non-executable descriptions; source failures; CSV formula prevention; and empty/unconfigured/retired dataset distinctions.
 
 The browser transport disconnected during this implementation. Interactive desktop/mobile, visual and keyboard checks are pending until that connection is restored; do not claim they passed. Deployment is additionally gated on a successful real-source import, CI and live API/asset checks.
 

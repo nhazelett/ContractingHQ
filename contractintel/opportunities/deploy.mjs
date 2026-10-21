@@ -2,6 +2,7 @@
 import fs from 'node:fs/promises';
 import {refreshNotices} from './source.mjs';
 import {createD1Adapter} from './d1-rest.mjs';
+import {opportunityRoute} from './api.mjs';
 const root=new URL('../',import.meta.url),account='a7443e0102de587d778491ab08fd883f',database='kthq-contractintel';
 async function cf(path,method='GET',body){
  const token=process.env.CLOUDFLARE_API_TOKEN;if(!token)throw new Error('Cloudflare deployment access is missing.');
@@ -24,6 +25,10 @@ async function main(){
   const db=await dbAdapter(),active=await db.prepare('SELECT r.checked_at FROM opp_runs r JOIN opp_active a ON a.run_id=r.id').first();
   if(active&&Date.now()-Date.parse(active.checked_at)<21600000&&process.env.FORCE_OPPORTUNITY_REFRESH!=='1'){await db.prepare('UPDATE opp_refresh SET last_error=NULL,lease_until=NULL WHERE last_attempt=?').bind(active.checked_at).run();console.log('Recent validated opportunity index retained; no SAM calls made.');return;}
   try{const result=await refreshNotices({OPPORTUNITIES_DB:db,SAM_API_KEY:process.env.SAM_API_KEY});console.log(JSON.stringify({opportunity_rows:result.rows,checked_at:result.checked_at,source_requests:result.coverage.calls,windows:result.coverage.windows,complete_requested_window:result.coverage.complete}));}catch(e){if(!active)throw e;console.log('Refresh did not complete. Existing validated opportunity data retained.');}
+ }else if(action==='warm'){
+  const db=await dbAdapter(),rows=await db.prepare("SELECT n.notice_id FROM opp_notices n JOIN opp_active a ON a.run_id=n.run_id WHERE n.description_ref IS NOT NULL AND n.source_active=1 AND n.notice_type IN ('Solicitation','Combined Synopsis/Solicitation','Sources Sought','Presolicitation') ORDER BY n.posted_key DESC,n.notice_id ASC LIMIT 2").all();let warmed=0;
+  for(const row of rows.results){const data=await opportunityRoute(new URL('https://local/api/opportunity?id='+row.notice_id+'&description=1'),{OPPORTUNITIES_DB:db,SAM_API_KEY:process.env.SAM_API_KEY});if(data.description.text)warmed++;}
+  console.log('Source descriptions available for '+warmed+' of '+rows.results.length+' initial notices; shared request guard retained.');
  }else if(action==='secret'){
   if(!process.env.SAM_API_KEY)throw new Error('The existing SAM_API_KEY repository secret is missing.');
   await cf('/workers/scripts/kthq-contractintel/secrets','PUT',{name:'SAM_API_KEY',text:process.env.SAM_API_KEY,type:'secret_text'});console.log('SAM access configured on the existing server; no browser credential.');

@@ -11,9 +11,16 @@ export async function reserveRequest(db,now=new Date()){
 }
 export async function samRequest(db,key,url,{fetcher=fetch,now=new Date()}={}){
  if(!key)throw new OpportunityError('SAM access is not configured.');
- if(url.origin!=='https://api.sam.gov')throw new OpportunityError('Unexpected source address.',400);
- await reserveRequest(db,now);const target=new URL(url);target.searchParams.set('api_key',key);
- let r;try{r=await fetcher(target,{headers:{Accept:'application/json'},redirect:'error',signal:AbortSignal.timeout(25000)});}catch{throw new OpportunityError('SAM could not be reached. Previously indexed records are retained.');}
+ if(url.origin!=='https://api.sam.gov'||url.username||url.password)throw new OpportunityError('Unexpected source address.',400);
+ let target=new URL(url),r;const signal=AbortSignal.timeout(25000);
+ for(let hop=0;hop<3;hop++){
+  await reserveRequest(db,now);target.searchParams.set('api_key',key);
+  try{r=await fetcher(target,{headers:{Accept:'application/json'},redirect:'manual',signal});}catch{throw new OpportunityError('SAM could not be reached. Previously indexed records are retained.');}
+  if([301,302,303,307,308].includes(r.status)){
+   let next;try{next=new URL(r.headers.get('Location'),target);}catch{throw new OpportunityError('SAM returned an invalid redirect.');}await r.body?.cancel();
+   if(hop===2||next.origin!=='https://api.sam.gov'||next.username||next.password)throw new OpportunityError('SAM returned an unsupported redirect.');target=next;continue;
+  }break;
+ }
  if(!r.ok){await r.body?.cancel();throw new OpportunityError(r.status===429?'SAM has reached its request limit. Previously indexed records are retained.':'SAM could not complete the request (HTTP '+r.status+'). Previously indexed records are retained.',r.status===429?429:503);}
  const reader=r.body.getReader();let size=0,parts=[];
  try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>12_000_000){await reader.cancel();throw new OpportunityError('SAM response exceeded the bounded import size.');}parts.push(value);}}finally{reader.releaseLock();}

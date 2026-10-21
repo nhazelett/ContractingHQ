@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import {readFileSync} from 'node:fs';
-import {refreshNotices,reserveRequest,descriptionText} from '../opportunities/source.mjs';
+import {refreshNotices,reserveRequest,descriptionText,samRequest} from '../opportunities/source.mjs';
 import {opportunityRoute} from '../opportunities/api.mjs';
 import {handle} from '../worker/api.mjs';
 import {createD1Adapter} from '../opportunities/d1-rest.mjs';
@@ -59,5 +59,11 @@ test('REST deployment adapter publishes batches containing both bound and parame
   const db=createD1Adapter(async(sql,params)=>{assert.equal(typeof sql,'string');assert.ok(Array.isArray(params));const statement=f.sqlite.prepare(sql);if(statement.columns().length)return {results:statement.all(...params)};statement.run(...params);return {results:[]};});
   await refreshNotices({OPPORTUNITIES_DB:db,SAM_API_KEY:'test'},{now,days:1,fetcher:source([notice(1)]),pause:async()=>{}});
   assert.equal((await get({OPPORTUNITIES_DB:db})).total,1);assert.equal(f.sqlite.prepare('SELECT last_error,lease_until FROM opp_refresh').get().last_error,null);assert.equal(f.sqlite.prepare('SELECT lease_until FROM opp_refresh').get().lease_until,null);
+ }finally{f.sqlite.close();}
+});
+
+test('SAM description redirects stay on the authenticated source origin and every hop uses the shared budget',async()=>{
+ const f=fixture();try{let calls=0;const value=await samRequest(f.db,'private-test-key',new URL('https://api.sam.gov/prod/opportunities/v1/noticedesc'),{now,fetcher:async(u,options)=>{calls++;assert.equal(u.origin,'https://api.sam.gov');assert.equal(options.redirect,'manual');assert.equal(u.searchParams.get('api_key'),'private-test-key');return calls===1?new Response(null,{status:302,headers:{Location:'/opportunities/v1/noticedesc'}}):new Response('Description');}});assert.equal(value,'Description');assert.equal(calls,2);assert.equal(f.sqlite.prepare('SELECT requests FROM opp_usage').get().requests,2);
+ await assert.rejects(samRequest(f.db,'private-test-key',new URL('https://api.sam.gov/prod/opportunities/v1/noticedesc'),{now,fetcher:async()=>new Response(null,{status:302,headers:{Location:'https://example.org/steal'}})}),/unsupported redirect/);assert.equal(f.sqlite.prepare('SELECT requests FROM opp_usage').get().requests,3);
  }finally{f.sqlite.close();}
 });
