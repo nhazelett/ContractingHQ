@@ -1,10 +1,12 @@
 import {money,csvCell,dollars,text,daysRemaining,endLabel,portfolioStatus,contractEnd,totalPop} from './format.mjs';
 import {summarizeModifications} from './modifications.mjs';
 import {selectRows} from './register.mjs';
+import {createSourceFetch} from './source-requests.mjs';
 import {lifecycle,lifecycleRows} from './lifecycle.mjs';
 import {resolve as sourceResolve} from './source.mjs';
 import {fiscalYear,fiscalMonths,fiscalTotals,setAsideLabel,setAsideGroups,endingCounts} from './overview.mjs';
 const sourceCache=new Map();
+const sourceFetch=createSourceFetch({onRetry:({delay})=>{$('source-retry').textContent='USAspending is busy. Automatically retrying after '+Math.ceil(delay/1000)+' seconds; loaded records are retained.';}});
 let fiscal={};
 const $=id=>document.getElementById(id);
 const API=location.hostname==='127.0.0.1'||location.hostname==='localhost'?'':'https://kthq-contractintel.nickhazelett.workers.dev';
@@ -15,32 +17,32 @@ let detailGeneration=0;
 function el(tag,content,className){const n=document.createElement(tag);if(content!==undefined)n.textContent=content;if(className)n.className=className;return n;}
 function failure(error){$('error').hidden=false;$('error').textContent=error.message;}
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-async function api(path,params={},signal){const u=new URL(API+'/api/'+path,location.origin);for(const[k,v]of Object.entries(params))if(v!==null&&v!==undefined)u.searchParams.set(k,v);if(['awards','award','history','fiscal'].includes(path)){const key=u.href,cached=sourceCache.get(key);if(cached&&Date.now()-cached.time<21600000)return cached.data;const data=await sourceResolve(u,{OFFICES:state.directory,SIGNAL:signal});if(sourceCache.size>=250)sourceCache.delete(sourceCache.keys().next().value);sourceCache.set(key,{time:Date.now(),data});return data;}const r=await fetch(u,{signal});let data;try{data=await r.json();}catch{throw new Error('The data service did not return a readable response.');}if(!r.ok)throw Object.assign(new Error(data.error||'The data service is unavailable.'),{status:r.status});return data;}
+async function api(path,params={},signal){const u=new URL(API+'/api/'+path,location.origin);for(const[k,v]of Object.entries(params))if(v!==null&&v!==undefined)u.searchParams.set(k,v);if(['awards','award','history','fiscal'].includes(path)){const key=u.href,cached=sourceCache.get(key);if(cached&&Date.now()-cached.time<21600000)return cached.data;const data=await sourceResolve(u,{OFFICES:state.directory,SIGNAL:signal,SOURCE_FETCH:sourceFetch});if(sourceCache.size>=250)sourceCache.delete(sourceCache.keys().next().value);sourceCache.set(key,{time:Date.now(),data});$('source-retry').textContent='';return data;}const r=await fetch(u,{signal});let data;try{data=await r.json();}catch{throw new Error('The data service did not return a readable response.');}if(!r.ok)throw Object.assign(new Error(data.error||'The data service is unavailable.'),{status:r.status});return data;}
 function query(){return {q:$('search').value,view:$('view').value,sort:$('sort').value,direction:state.direction,basis:$('date-basis').value};}
 function startDialog(title,kicker='SOURCE EVIDENCE'){$('detail-title').textContent=title;$('detail-kicker').textContent=kicker;$('detail-body').replaceChildren(el('p','Loading…','muted'));if(!$('detail').open)$('detail').showModal();return ++detailGeneration;}
-function controls(){const done=!state.hasNext&&!state.pending.length;$('continue').disabled=state.busy||done;$('continue').textContent=state.pending.length?'Continue current batch':'Load next 100 candidates';$('pause').disabled=!state.busy;$('load-more').hidden=done;$('load-more').disabled=state.busy;$('export').disabled=!state.records.size;$('retry-missing').hidden=![...state.records.values()].some(r=>r.details_unavailable);$('retry-missing').disabled=state.busy;}
-function progress(){const ready=[...state.records.values()].filter(r=>!r.details_pending&&!r.details_unavailable).length;const complete=!state.hasNext&&!state.pending.length;const o=state.directory.find(o=>o.code===state.office);$('freshness').textContent=state.office+' · '+(o?.name||'')+' · PIID prefix assignment · Direct public API · cached in this session up to 6 hours';$('coverage').textContent=(state.busy?(state.paused?'Pausing… ':'Loading… '):complete?'Search complete for this window. ':state.paused?'Paused. ':'Partial portfolio. ')+ready.toLocaleString()+' awards verified / '+state.records.size.toLocaleString()+' prefix matches found · '+state.candidates.toLocaleString()+' search candidates checked'+([...state.records.values()].filter(r=>r.details_unavailable).length?' · '+[...state.records.values()].filter(r=>r.details_unavailable).length+' detail records not yet available':'')+(state.excluded?' · '+state.excluded+' nonmatching PIIDs excluded':'')+'. Counts, filters, exports, and end-date order cover loaded awards only.';$('progress').value=state.records.size?100*ready/state.records.size:0;controls();}
+function controls(){const done=!state.hasNext&&!state.pending.length;$('continue').disabled=state.busy||done;$('continue').textContent=done?'Portfolio loaded':state.busy?'Loading portfolio…':'Resume loading';$('continue').hidden=state.busy||done;$('pause').disabled=!state.busy;$('load-more').hidden=done||state.busy;$('load-more').disabled=state.busy;$('export').disabled=!state.records.size;$('retry-missing').hidden=![...state.records.values()].some(r=>r.details_unavailable);$('retry-missing').disabled=state.busy;}
+function progress(){const ready=[...state.records.values()].filter(r=>!r.details_pending&&!r.details_unavailable).length;const complete=!state.hasNext&&!state.pending.length;const o=state.directory.find(o=>o.code===state.office);$('freshness').textContent=state.office+' · '+(o?.name||'')+' · PIID prefix assignment · Direct public API · cached in this session up to 6 hours';$('coverage').textContent=(state.busy?(state.paused?'Pausing… ':'Loading… '):complete?'Search complete for this window. ':state.paused?'Paused. ':'Partial portfolio. ')+ready.toLocaleString()+' awards verified / '+state.records.size.toLocaleString()+' prefix matches found · '+state.candidates.toLocaleString()+' search candidates checked'+([...state.records.values()].filter(r=>r.details_unavailable).length?' · '+[...state.records.values()].filter(r=>r.details_unavailable).length+' detail records not yet available':'')+(state.excluded?' · '+state.excluded+' nonmatching PIIDs excluded':'')+'. Counts, filters, exports, and end-date order cover loaded awards only.';if(state.busy&&!complete)$('progress').removeAttribute('value');else $('progress').value=complete?100:0;controls();}
 function incorporate(data){const h=summarizeModifications(data.history.actions,{truncated:data.history.has_next});return {...data.award,latest_mod_number:h.latest_mod?.modification_number||null,latest_option_mod_number:h.latest_option_mod?.modification_number||null,latest_action_date:data.history.actions[0]?.action_date||data.award.latest_action_date,details_pending:false};}
 async function loadOffice(){state.controller?.abort();state.controller=new AbortController();state.generation++;state.office=$('office').value;state.records=new Map();state.cache=new Map();state.pending=[];state.page=1;state.cursor=null;state.sortValue=null;state.hasNext=true;state.busy=false;state.paused=false;state.candidates=0;state.excluded=0;$('error').hidden=true;$('table-scroll').scrollTop=0;$('set-aside').value='';resetFiscal();render();loadFiscal();await loadBatch();}
 async function loadBatch(){
  if(state.busy||!state.hasNext&&!state.pending.length)return;
- const generation=state.generation,signal=state.controller.signal;state.busy=true;state.paused=false;$('error').hidden=true;progress();let candidatesThisRun=0;
+ const generation=state.generation,signal=state.controller.signal;state.busy=true;state.paused=false;$('error').hidden=true;progress();
  try{do{
   if(!state.pending.length&&state.hasNext){
    const data=await api('awards',{office:state.office,start:$('window').value,page:state.page,cursor:state.cursor,sort_value:state.sortValue},signal);
    if(generation!==state.generation)return;
-   state.page++;state.cursor=data.cursor;state.sortValue=data.sort_value;state.hasNext=data.has_next;state.candidates+=data.candidates;state.excluded+=data.excluded;candidatesThisRun+=data.candidates;state.checked=data.fetched_at;
+   state.page++;state.cursor=data.cursor;state.sortValue=data.sort_value;state.hasNext=data.has_next;state.candidates+=data.candidates;state.excluded+=data.excluded;state.checked=data.fetched_at;
    for(const row of data.rows)if(!state.records.has(row.award_id)){state.records.set(row.award_id,row);state.pending.push(row.award_id);}state.pending=selectRows(state.pending.map(id=>state.records.get(id)),{sort:'contract_end'}).map(r=>r.award_id);render();
   }
   while(state.pending.length&&!state.paused){
-   // At most two award requests in flight, paced below the public proxy's read limit.
+   // Two award loads in flight; every underlying source call shares the request scheduler.
    const ids=state.pending.slice(0,2),results=[];
    for(const id of ids){await sleep(Math.max(0,700-(Date.now()-state.lastRequest)));if(generation!==state.generation||state.paused)break;state.lastRequest=Date.now();results.push(api('award',{id},signal).then(data=>({id,data}),error=>({id,error})));}
    const batch=await Promise.all(results);if(generation!==state.generation)return;
    let error;for(const result of batch){if(result.error){if(result.error.status===404){state.records.set(result.id,{...state.records.get(result.id),details_pending:false,details_unavailable:true,detail_error:result.error.message});state.pending=state.pending.filter(id=>id!==result.id);}else error=result.error;continue;}state.records.set(result.id,incorporate(result.data));if(state.cache.size>=500)state.cache.delete(state.cache.keys().next().value);state.cache.set(result.id,result.data);state.pending=state.pending.filter(id=>id!==result.id);}
    render();if(error)throw error;
   }
- }while(!state.paused&&state.hasNext&&$('auto-load').checked&&candidatesThisRun<1000);
+ }while(!state.paused&&state.hasNext);
  }catch(error){if(error.name!=='AbortError'&&generation===state.generation){state.paused=true;failure(error);}}
  finally{if(generation===state.generation){state.busy=false;render();}}
 }
@@ -102,7 +104,7 @@ function renderFiscal(){
 async function loadFiscal(){
  if(fiscal.busy||fiscal.index===fiscal.months.length)return;
  const f=fiscal,generation=state.generation;f.busy=true;f.paused=false;f.error=null;renderFiscal();
- try{for(let requests=0;requests<20&&f.index<f.months.length&&!f.paused;requests++){
+ try{while(f.index<f.months.length&&!f.paused){
   const month=f.months[f.index],data=await api('fiscal',{office:state.office,...month,page:f.page},state.controller.signal);
   if(generation!==state.generation)return;
   if(data.has_next&&f.page>=100)throw new Error('This month exceeds the source paging limit; fiscal totals are unavailable.');

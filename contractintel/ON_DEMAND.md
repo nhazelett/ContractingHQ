@@ -13,10 +13,11 @@ the selected code, including matches only in parent identifiers or descriptions.
 - Default action window: FY22 onward. FY25, FY26, and all searchable API history (FY08 onward) are available.
 - Search pages contain up to 100 candidates. Details and 200 recent actions load per matching award.
 - Two award requests maximum in flight, paced at least 700 ms apart. Pause/continue retain the current batch.
-- Automatic continuation is opt-in and pauses after at most 1,000 additional candidates per run.
+- Portfolio and fiscal scans continue automatically until complete or paused; there is no 100/1,000-candidate user checkpoint. Resume preserves progress.
+- All browser source calls share a 400 ms minimum start interval (at most approximately 750 starts per five minutes per tab). Temporary failures retry up to three times with shared backoff and Retry-After support. This does not coordinate multiple tabs or users sharing an IP address.
 - Every office is available on demand; the entire department is never fetched in the background.
 - Counts, local text filters, CSV, and sorting cover loaded records only. Partial coverage is visible.
-- The default register is All loaded awards, sorted by upcoming potential final end (current end fallback), soonest first, then past and unknown ends.
+- The default register is Active / upcoming, sorted by upcoming potential final end (current end fallback), soonest first, then past and unknown ends.
 - Public reporting delays and source search/detail indexing differences remain. An indexed award with a 404 detail is retained with unavailable fields; Retry missing details retries only those awards. Other source failures pause loading without erasing progress.
 - Search continuation converts the source's epoch-millisecond End Date cursor to an ISO date; passing the returned numeric string verbatim produces a source 503.
 
@@ -55,3 +56,4 @@ Army office W9124J, and BOS FA480024C0006: 44 source actions, latest P00043, lat
 current and potential end 2025-08-31, cumulative award value $28,779,919.15.
 
 Official source contracts: https://github.com/fedspendingtransparency/usaspending-api/tree/master/usaspending_api/api_contracts/contracts/v2
+
