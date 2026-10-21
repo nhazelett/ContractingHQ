@@ -1,6 +1,7 @@
 // Runs only in the trusted deployment workflow; no credentials or source URLs are logged.
 import fs from 'node:fs/promises';
 import {refreshNotices} from './source.mjs';
+import {createD1Adapter} from './d1-rest.mjs';
 const root=new URL('../',import.meta.url),account='a7443e0102de587d778491ab08fd883f',database='kthq-contractintel';
 async function cf(path,method='GET',body){
  const token=process.env.CLOUDFLARE_API_TOKEN;if(!token)throw new Error('Cloudflare deployment access is missing.');
@@ -10,8 +11,7 @@ async function cf(path,method='GET',body){
 async function dbAdapter(){
  const config=JSON.parse(await fs.readFile(new URL('worker/wrangler.jsonc',root),'utf8')),id=config.d1_databases?.find(b=>b.binding==='OPPORTUNITIES_DB')?.database_id;if(!id)throw new Error('Run opportunity deployment preparation first.');
  const query=async(sql,params=[])=>{try{const result=await cf('/d1/database/'+id+'/query','POST',{sql,params});if(result.some(b=>!b.success))throw new Error('Opportunity index query failed.');return result[0]||{results:[]};}catch(e){const stage=sql.match(/(?:INSERT(?: OR IGNORE)? INTO|UPDATE|DELETE FROM|FROM)\s+(opp_[a-z_]+)/i)?.[1]||'schema';throw new Error('Cloudflare query failed at '+stage+' ('+params.length+' parameters): '+e.message);}};
- const prepare=sql=>({bind:(...params)=>({sql,params,all:()=>query(sql,params),first:async()=>((await query(sql,params)).results||[])[0]||null,run:()=>query(sql,params)}),all:()=>query(sql),first:async()=>((await query(sql)).results||[])[0]||null,run:()=>query(sql)});
- return {prepare,batch:async statements=>{const out=[];for(const s of statements)out.push(await query(s.sql,s.params));return out;}};
+ return createD1Adapter(query);
 }
 async function main(){
  const action=process.argv[2];
@@ -22,7 +22,7 @@ async function main(){
   const sql=await fs.readFile(new URL('opportunities/schema.sql',root),'utf8'),migrated=await cf('/d1/database/'+db.uuid+'/query','POST',{sql});if(migrated.some(r=>!r.success))throw new Error('Opportunity schema migration failed.');console.log('Opportunity index prepared within the existing D1 storage guard.');
  }else if(action==='refresh'){
   const db=await dbAdapter(),active=await db.prepare('SELECT r.checked_at FROM opp_runs r JOIN opp_active a ON a.run_id=r.id').first();
-  if(active&&Date.now()-Date.parse(active.checked_at)<21600000&&process.env.FORCE_OPPORTUNITY_REFRESH!=='1'){console.log('Recent validated opportunity index retained; no SAM calls made.');return;}
+  if(active&&Date.now()-Date.parse(active.checked_at)<21600000&&process.env.FORCE_OPPORTUNITY_REFRESH!=='1'){await db.prepare('UPDATE opp_refresh SET last_error=NULL,lease_until=NULL WHERE last_attempt=?').bind(active.checked_at).run();console.log('Recent validated opportunity index retained; no SAM calls made.');return;}
   try{const result=await refreshNotices({OPPORTUNITIES_DB:db,SAM_API_KEY:process.env.SAM_API_KEY});console.log(JSON.stringify({opportunity_rows:result.rows,checked_at:result.checked_at,source_requests:result.coverage.calls,windows:result.coverage.windows,complete_requested_window:result.coverage.complete}));}catch(e){if(!active)throw e;console.log('Refresh did not complete. Existing validated opportunity data retained.');}
  }else if(action==='secret'){
   if(!process.env.SAM_API_KEY)throw new Error('The existing SAM_API_KEY repository secret is missing.');

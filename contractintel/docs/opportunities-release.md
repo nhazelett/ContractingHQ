@@ -43,8 +43,10 @@ Preparation writes the actual existing database UUID into the runner's Wrangler 
 
 ## Validation
 
-57 automated tests pass, including seven new service tests covering global newest-first pagination and filtering; source page indexes; bounded/partial coverage; failed-import recovery; atomic shared quotas; cached, non-executable descriptions; source failures; CSV formula prevention; and empty/unconfigured/retired dataset distinctions.
+58 automated tests pass, including eight new service tests covering global newest-first pagination and filtering; source page indexes; bounded/partial coverage; failed-import recovery; atomic shared quotas; cached, non-executable descriptions; source failures; CSV formula prevention; and empty/unconfigured/retired dataset distinctions.
 
 The browser transport disconnected during this implementation. Interactive desktop/mobile, visual and keyboard checks are pending until that connection is restored; do not claim they passed. Deployment is additionally gated on a successful real-source import, CI and live API/asset checks.
 
 Existing USAspending API, award loader, fiscal loader, pause/resume and CSV routines remain unchanged. The portfolio presentation adds only a workspace link carrying the selected office.
+
+Initial real SAM import: 1,257 notices posted 2026-10-20, with the 2026-10-21 source window returning zero at the time checked. The default active solicitation/early-notice view matched 790. Source returned posting dates without times; same-day notice-ID tie-breaking is disclosed. Deployment adapter regression now covers parameter-free batch statements.

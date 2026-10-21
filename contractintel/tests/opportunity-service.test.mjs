@@ -5,6 +5,7 @@ import {readFileSync} from 'node:fs';
 import {refreshNotices,reserveRequest,descriptionText} from '../opportunities/source.mjs';
 import {opportunityRoute} from '../opportunities/api.mjs';
 import {handle} from '../worker/api.mjs';
+import {createD1Adapter} from '../opportunities/d1-rest.mjs';
 
 const today=new Date().toISOString().slice(0,10),now=new Date(today+'T23:00:00Z');
 function fixture(){
@@ -51,4 +52,12 @@ test('Filters, CSV and read-only routes reject injection and retain all filtered
 
 test('Empty, unconfigured and retired indexes stay distinct',async()=>{
  const f=fixture();try{await assert.rejects(get(f.env),e=>e.status===503);await refreshNotices(f.env,{now,days:1,fetcher:source([]),pause:async()=>{}});assert.equal((await get(f.env)).total,0);await assert.rejects(get(f.env,'run='+'a'.repeat(36)),e=>e.status===409);assert.equal((await handle(new Request('https://test/api/opportunities'),{})).status,503);}finally{f.sqlite.close();}
+});
+
+test('REST deployment adapter publishes batches containing both bound and parameter-free D1 statements',async()=>{
+ const f=fixture();try{
+  const db=createD1Adapter(async(sql,params)=>{assert.equal(typeof sql,'string');assert.ok(Array.isArray(params));const statement=f.sqlite.prepare(sql);if(statement.columns().length)return {results:statement.all(...params)};statement.run(...params);return {results:[]};});
+  await refreshNotices({OPPORTUNITIES_DB:db,SAM_API_KEY:'test'},{now,days:1,fetcher:source([notice(1)]),pause:async()=>{}});
+  assert.equal((await get({OPPORTUNITIES_DB:db})).total,1);assert.equal(f.sqlite.prepare('SELECT last_error,lease_until FROM opp_refresh').get().last_error,null);assert.equal(f.sqlite.prepare('SELECT lease_until FROM opp_refresh').get().lease_until,null);
+ }finally{f.sqlite.close();}
 });
