@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-10-21T13:06:32.707Z",
+  "generatedAt": "2026-10-22T13:07:11.919Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -10,8 +10,8 @@ window.KTHQ_GAO_DATA = {
     "total": 17,
     "latestDecisionDate": "2026-10-19",
     "sustained": 1,
-    "denied": 9,
-    "dismissed": 1,
+    "denied": 10,
+    "dismissed": 0,
     "mixed": 6,
     "unclassified": 0,
     "sourceStatus": {
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 16
+        "parsedOutcomes": 12
       },
       "productPages": {
         "attempted": 17,
@@ -87,6 +87,32 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424681",
+      "caseName": "Hatalom Corporation",
+      "title": "Hatalom Corporation",
+      "bNumbers": [
+        "B-424681"
+      ],
+      "bNumberText": "B-424681",
+      "link": "https://www.gao.gov/products/b-424681",
+      "publicationDate": "2026-10-21",
+      "decisionDate": "2026-10-16",
+      "displayDate": "Oct 16, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Hatalom Corporation (Hatalom), a service-disabled, veteran-owned small business (SDVOSB) of Orlando, Florida, protests the elimination of its...",
+      "highlights": "",
+      "digest": "Protest challenging the elimination of the protester's proposal is denied where the record establishes that the agency had a reasonable basis for elimination.",
+      "tags": [
+        "Small business"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -253,33 +279,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-423714.5",
-      "caseName": "Hendall Inc.",
-      "title": "Hendall Inc.",
-      "bNumbers": [
-        "B-423714.5"
-      ],
-      "bNumberText": "B-423714.5",
-      "link": "https://www.gao.gov/products/b-423714.5",
-      "publicationDate": "2026-10-05",
-      "decisionDate": "2026-10-01",
-      "displayDate": "Oct 1, 2026",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protest.",
-      "officialSynopsis": "Hendall Inc., of Rockville, Maryland protests the issuance of a task order to Serco, Inc. of Herndon, Virginia, under request for quotation (RFQ) No...",
-      "highlights": "",
-      "digest": "Protest filed more than 10 days after the bases of protest were or should have been known is untimely.",
-      "tags": [
-        "Timeliness",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
       "id": "B-424613,B-424613.2",
       "caseName": "Integrity Management Consulting, Inc.",
       "title": "Integrity Management Consulting, Inc.",
@@ -400,33 +399,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424657",
-      "caseName": "Advantix Engineering, Corp.",
-      "title": "Advantix Engineering, Corp.",
-      "bNumbers": [
-        "B-424657"
-      ],
-      "bNumberText": "B-424657",
-      "link": "https://www.gao.gov/products/b-424657",
-      "publicationDate": "2026-10-02",
-      "decisionDate": "2026-09-22",
-      "displayDate": "Sep 22, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Advantix Engineering, Corp., a small business of Caguas, Puerto Rico, protests the rejection of its bid as nonresponsive under invitation for bids (...",
-      "highlights": "",
-      "digest": "In a sealed bid procurement that required the submission of a bid guarantee in the amount of 20 percent of the bid price, the agency properly rejected the protester's bid as nonresponsive, where the bid included a bid guarantee that stated that the penal sum amount was limited to 20 percent of the bid price, but the liability limit of the surety was limited to an amount that was significantly less than 20 percent of the bid price.",
-      "tags": [
-        "Price / cost",
-        "Small business"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
       "id": "B-424146.2,B-424146.3",
       "caseName": "Tetra Tech, Inc.",
       "title": "Tetra Tech, Inc.",
@@ -514,6 +486,33 @@ window.KTHQ_GAO_DATA = {
         "Discussions / FPR",
         "Solicitation terms",
         "Price / cost"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424244",
+      "caseName": "Business Integra Technology Solutions, Inc.",
+      "title": "Business Integra Technology Solutions, Inc.",
+      "bNumbers": [
+        "B-424244"
+      ],
+      "bNumberText": "B-424244",
+      "link": "https://www.gao.gov/products/b-424244",
+      "publicationDate": "2026-10-21",
+      "decisionDate": "2026-05-12",
+      "displayDate": "May 12, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Business Integra Technology Solutions, Inc., of Bethesda, Maryland, protests the award of a contract to HII Mission Technologies Corporation, of...",
+      "highlights": "",
+      "digest": "1. Protest challenging the agency's evaluation of the protester's proposal under the technical security and general services factor is denied where the agency's evaluation was reasonable and consistent with the solicitation criteria. 2. Protester is not an interested party to challenge the other aspects of the evaluation and best-value tradeoff where proposal was reasonably found to be ineligible for award.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
