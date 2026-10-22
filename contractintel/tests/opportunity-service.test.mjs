@@ -18,6 +18,39 @@ const notice=(n,extra={})=>({noticeId:n.toString(16).padStart(32,'0'),title:'HVA
 const source=rows=>async()=>new Response(JSON.stringify({totalRecords:rows.length,opportunitiesData:rows}));
 const get=(env,query='')=>opportunityRoute(new URL('https://test/api/opportunities?'+query),env);
 
+test('Literal title search supports phrases and exclusions across the complete index and CSV',async()=>{
+ const f=fixture();try{
+  await refreshNotices(f.env,{now,days:1,pause:async()=>{},fetcher:source([
+   notice(1,{title:'Base operations maintenance'}),notice(2,{title:'Base operations repair'}),
+   notice(3,{title:'Operations at the base maintenance'}),notice(4,{title:'Cyber OR security'}),
+   notice(5,{title:'Cyber security'})
+  ])});
+  const search=q=>get(f.env,'q='+encodeURIComponent(q));
+  assert.equal((await search('base operations')).total,3);
+  const phrase=await search('"base operations" -repair');assert.equal(phrase.total,1);assert.equal(phrase.rows[0].notice_id,notice(1).noticeId);
+  assert.equal((await search('base -"operations repair"')).total,2);
+  assert.equal((await search('-repair -cyber')).total,2);
+  assert.equal((await search('OR')).total,1);
+  assert.equal((await search('TEST-3')).rows[0].notice_id,notice(3).noticeId);
+  const csv=await get(f.env,'q='+encodeURIComponent('"base operations" -repair')+'&export=csv');assert.equal((await csv.text()).trim().split('\r\n').length,2);
+  for(const q of ['"unfinished','""','-','base"operations"','"base"operations',Array(25).fill('a').join(' ')])await assert.rejects(search(q),e=>e.status===400);
+ }finally{f.sqlite.close();}
+});
+
+test('Opportunity quick-view type groups retain newest ordering and structured filters',async()=>{
+ const f=fixture();try{
+  await refreshNotices(f.env,{now,days:1,pause:async()=>{},fetcher:source([
+   notice(1,{type:'o'}),notice(2,{type:'k'}),notice(3,{type:'r'}),notice(4,{type:'p'}),notice(5,{type:'a'}),notice(6,{type:'o',active:'No'})
+  ])});
+  const solicitations=await get(f.env,'type=solicitations&status=active');assert.equal(solicitations.total,2);assert.ok(solicitations.rows.every(n=>['Solicitation','Combined Synopsis/Solicitation'].includes(n.notice_type)));
+  const early=await get(f.env,'type=early_notices&status=active');assert.equal(early.total,2);assert.ok(early.rows.every(n=>['Sources Sought','Presolicitation'].includes(n.notice_type)));
+  assert.equal((await get(f.env,'type=early_notices&office=FA4800')).total,1);
+  const due=await get(f.env,'type=opportunities&status=active&due=7');assert.equal(due.total,4);assert.ok(due.rows.every(n=>n.deadline.date===today));
+  assert.deepEqual(due.rows.map(n=>n.notice_id),[notice(4),notice(3),notice(2),notice(1)].map(n=>n.noticeId));
+  assert.equal((await get(f.env,'type=opportunities&status=active&due=unknown')).total,0);
+ }finally{f.sqlite.close();}
+});
+
 test('Opportunity search sorts full source timestamps across pages and filters without ingestion-time ordering',async()=>{
  const f=fixture();try{await refreshNotices(f.env,{now,days:1,fetcher:source(Array.from({length:65},(_,i)=>notice(i+1))),pause:async()=>{}});const a=await get(f.env),b=await get(f.env,'page=2&run='+a.run);assert.equal(a.total,65);assert.equal(a.rows.length,50);assert.equal(b.rows.length,15);const rows=[...a.rows,...b.rows];assert.deepEqual(rows.map(r=>r.posted.raw),[...rows].sort((a,b)=>b.posted.raw.localeCompare(a.posted.raw)).map(r=>r.posted.raw));
  const filtered=await get(f.env,'office=FA4800&q=HVAC&naics=238220&psc=J041&set_aside=SBA');assert.equal(filtered.total,33);assert.ok(filtered.rows.every(r=>r.office_code==='FA4800'));assert.equal(filtered.sort,'newest_posted_first');assert.equal(a.coverage.windows[0].complete,true);

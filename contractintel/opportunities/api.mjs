@@ -1,5 +1,6 @@
 import {OpportunityError,samRequest,descriptionText} from './source.mjs';
 import {csvCell} from '../web/format.mjs';
+import {searchTerms} from './search.mjs';
 
 const inFlight=new Map();
 const facetCache=new Map();
@@ -22,13 +23,14 @@ function input(url){
 }
 function where(p,run){
  const clauses=['n.run_id=?'],params=[run];
- for(const [key,col]of Object.entries({office:'office_code',agency:'agency_name',naics:'naics',psc:'psc',set_aside:'set_aside_code',state:'place_state',type:'notice_type'}))if(p[key]){if(key==='type'&&p.type==='opportunities'){clauses.push("n.notice_type IN ('Solicitation','Combined Synopsis/Solicitation','Sources Sought','Presolicitation')");}else{clauses.push('n.'+col+'=?');params.push(p[key]);}}
+ const typeGroups={opportunities:['Solicitation','Combined Synopsis/Solicitation','Sources Sought','Presolicitation'],solicitations:['Solicitation','Combined Synopsis/Solicitation'],early_notices:['Sources Sought','Presolicitation']};
+ for(const [key,col]of Object.entries({office:'office_code',agency:'agency_name',naics:'naics',psc:'psc',set_aside:'set_aside_code',state:'place_state',type:'notice_type'}))if(p[key]){if(key==='type'&&Object.hasOwn(typeGroups,p.type)){const types=typeGroups[p.type];clauses.push('n.notice_type IN ('+types.map(()=>'?').join(',')+')');params.push(...types);}else{clauses.push('n.'+col+'=?');params.push(p[key]);}}
  if(p.status&&p.status!=='all')clauses.push(p.status==='unknown'?'n.source_active IS NULL':'n.source_active='+(p.status==='active'?1:0));
  const today=new Date().toISOString().slice(0,10);
  if(p.due==='unknown')clauses.push('n.deadline_date IS NULL');else if(p.due){clauses.push('n.deadline_date BETWEEN ? AND ?');params.push(today,new Date(Date.now()+Number(p.due)*86400000).toISOString().slice(0,10));}
  if(p.posted_from){clauses.push("json_extract(n.data_json,'$.posted_date')>=?");params.push(p.posted_from);}
  if(p.posted_to){clauses.push("json_extract(n.data_json,'$.posted_date')<=?");params.push(p.posted_to);}
- if(p.q?.trim()){const terms=p.q.trim().match(/[\p{L}\p{N}_-]+/gu)||[];if(!terms.length)throw new OpportunityError('Enter a title word or solicitation number.',400);clauses.push('n.notice_id IN (SELECT notice_id FROM opp_search WHERE opp_search MATCH ? AND run_id=?)');params.push(terms.map(t=>'"'+t.replaceAll('"','""')+'"').join(' AND '),run);}
+ if(p.q?.trim()){let terms;try{terms=searchTerms(p.q);}catch(e){throw new OpportunityError(e.message,400);}for(const [kind,expression]of Object.entries(terms))if(expression){clauses.push('n.notice_id '+(kind==='exclude'?'NOT IN':'IN')+' (SELECT notice_id FROM opp_search WHERE opp_search MATCH ? AND run_id=?)');params.push(expression,run);}}
  return {sql:clauses.join(' AND '),params};
 }
 async function activeRun(db,requested){

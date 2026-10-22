@@ -6,6 +6,8 @@ The Opportunities workspace is separate from the existing USAspending Portfolio.
 
 - National indexed scope or the selected six-character office.
 - Title/solicitation search, agency, source type/status, set-aside, NAICS, PSC, performance state, deadline window and posting-date filters.
+- Literal search supports required words, quoted phrases and minus exclusions (including excluded phrases). Search covers indexed titles and solicitation numbers, not attachment content. Unclosed quotes and punctuation-only terms return a readable validation message.
+- Quick views for all opportunities, solicitations, early market research, response dates within 7/30 days and missing response dates. Views set source-active/type/deadline filters, retaining the chosen search scope, office, keywords and classifications. Every view retains newest-posted-first ordering.
 - Stable 50-row pagination pinned to an immutable published index; full filtered CSV export.
 - Notice details, public source link, source attachment links, reported contacts and a separately cached SAM requirement description.
 - Explicit source-active and deadline uncertainty; no inference that a forecast, award notice or passed award PoP is an open solicitation.
@@ -35,6 +37,7 @@ node --test contractintel/tests/*.test.mjs
 node --check contractintel/web/opportunities.mjs
 node contractintel/opportunities/deploy.mjs prepare
 node contractintel/opportunities/deploy.mjs refresh
+node contractintel/opportunities/deploy.mjs warm
 node contractintel/opportunities/deploy.mjs secret
 npx --yes wrangler@4.140.0 deploy --config contractintel/worker/wrangler.jsonc
 ```
@@ -43,9 +46,9 @@ Preparation writes the actual existing database UUID into the runner's Wrangler 
 
 ## Validation
 
-59 automated tests pass, including nine new service tests covering global newest-first pagination and filtering; source page indexes; bounded/partial coverage; failed-import recovery; atomic shared quotas; cached, non-executable descriptions; source failures; CSV formula prevention; and empty/unconfigured/retired dataset distinctions.
+61 automated tests pass, including eleven service tests covering phrase/exclusion search and its filtered CSV parity; grouped quick views; global newest-first pagination and filtering; source page indexes; bounded/partial coverage; failed-import recovery; atomic shared quotas; cached, non-executable descriptions; source failures; CSV formula prevention; and empty/unconfigured/retired dataset distinctions. Live smoke checks additionally verify grouped-view counts, exclusion search and invalid-query handling.
 
-The browser transport disconnected during this implementation. Interactive desktop/mobile, visual and keyboard checks are pending until that connection is restored; do not claim they passed. Deployment is additionally gated on a successful real-source import, CI and live API/asset checks.
+Interactive desktop/mobile, visual and keyboard checks remain pending. On resumption, Edge tab creation was restricted in standalone sidebar mode, the in-app browser could not attach, and automatic approval review rejected observing an unrelated MSN tab. That tab was not used. Deployment is additionally gated on automated tests and live API/asset checks; a source failure retains the last validated index with its original source-check timestamp.
 
 Existing USAspending API, award loader, fiscal loader, pause/resume and CSV routines remain unchanged. The portfolio presentation adds only a workspace link carrying the selected office.
 
