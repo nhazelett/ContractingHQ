@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-10-22T13:07:11.919Z",
+  "generatedAt": "2026-10-23T12:47:36.546Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,12 +7,12 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 17,
+    "total": 16,
     "latestDecisionDate": "2026-10-19",
     "sustained": 1,
     "denied": 10,
     "dismissed": 0,
-    "mixed": 6,
+    "mixed": 5,
     "unclassified": 0,
     "sourceStatus": {
       "rss": {
@@ -26,8 +26,8 @@ window.KTHQ_GAO_DATA = {
         "parsedOutcomes": 12
       },
       "productPages": {
-        "attempted": 17,
-        "enriched": 17,
+        "attempted": 16,
+        "enriched": 16,
         "blocked": 0
       },
       "legacyCache": {
@@ -385,7 +385,7 @@ window.KTHQ_GAO_DATA = {
       "outcomeLabel": "Mixed",
       "outcomeSource": "GAO product page",
       "decisionLine": "We sustain the protest in part and deny the protest in part.",
-      "officialSynopsis": "Turning Point Global Solutions, L.L.C. (TPGS), a small business of Rockville, Maryland, protests the award of an indefinite-delivery, indefinite-...",
+      "officialSynopsis": "Turning Point Global Solutions, L.L.C. (TPGS), a small business of Rockville, Maryland, protests the award of an indefinite-delivery, indefinite...",
       "highlights": "",
       "digest": "1. Protest that awardee is ineligible for award for providing a non-compliant carrier commitment letter is sustained where one of the submitted letters did not satisfy the solicitation's requirements. 2. Protest is sustained where the awardee's proposal included assumptions that took exception to the solicitation's mandatory service level agreements. 3. Protest alleging that the agency failed to adequately consider an alleged conflict of interest is denied where the protester has not identified any hard facts supporting the allegation.",
       "tags": [
@@ -395,35 +395,6 @@ window.KTHQ_GAO_DATA = {
         "Orders / IDIQ"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424146.2,B-424146.3",
-      "caseName": "Tetra Tech, Inc.",
-      "title": "Tetra Tech, Inc.",
-      "bNumbers": [
-        "B-424146.2",
-        "B-424146.3"
-      ],
-      "bNumberText": "B-424146.2, B-424146.3",
-      "link": "https://www.gao.gov/products/b-424146.2%2Cb-424146.3",
-      "publicationDate": "2026-10-05",
-      "decisionDate": "2026-09-22",
-      "displayDate": "Sep 22, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest in part and dismiss it in part.",
-      "officialSynopsis": "Tetra Tech, Inc., of Pasadena, California, protests the award of a contract to Weston Solutions, Inc., of West Chester, Pennsylvania, under request...",
-      "highlights": "",
-      "digest": "1. Protest challenging the evaluation of the protester's proposal as unacceptable is denied where the agency reasonably assessed a deficiency in the protester's proposed key personnel for failing to satisfy the solicitation's minimum qualifications. 2. Protester is not an interested party to challenge the agency's past performance evaluation where the agency reasonably assessed a deficiency against the protester's proposal under the key personnel factor, thus rendering the proposal otherwise unacceptable and unawardable.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Staffing"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
