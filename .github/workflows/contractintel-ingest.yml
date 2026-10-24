@@ -1,0 +1,61 @@
+name: ContractIntel guarded backfill
+on:
+  schedule:
+    - cron: '20 8 * * *'
+  workflow_dispatch:
+    inputs:
+      start:
+        description: First day of the earliest month to download or refresh
+        required: true
+        default: '2000-10-01'
+      end:
+        description: Last action date to include (YYYY-MM-DD)
+        required: true
+      publish:
+        description: Archive and publish the validated dataset to Cloudflare
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: contractintel-publisher
+  cancel-in-progress: false
+jobs:
+  ingest:
+    if: github.event_name == 'workflow_dispatch' || vars.CONTRACTINTEL_SCHEDULE_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      WRANGLER_SEND_METRICS: 'false'
+      CLOUDFLARE_ACCOUNT_ID: a7443e0102de587d778491ab08fd883f
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate ingestion and API behavior
+        run: |
+          python -m unittest discover -s contractintel/tests -v
+          node --test contractintel/tests/*.test.mjs
+      - name: Download, validate, and optionally publish
+        id: build
+        env:
+          START_DATE: ${{ inputs.start }}
+          END_DATE: ${{ inputs.end }}
+          PUBLISH: ${{ github.event_name == 'schedule' || inputs.publish }}
+          CLOUDFLARE_API_TOKEN: ${{ (github.event_name == 'schedule' || inputs.publish) && (secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN) || '' }}
+        shell: bash
+        run: |
+          args=()
+          if [ -n "$START_DATE" ]; then args+=(--start "$START_DATE"); fi
+          if [ -n "$END_DATE" ]; then args+=(--end "$END_DATE"); fi
+          if [ "$PUBLISH" = 'true' ]; then args+=(--publish); fi
+          python contractintel/ingest/pipeline.py "${args[@]}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: contractintel-validated-dataset
+          path: ${{ steps.build.outputs.build_dir }}
+          retention-days: 3

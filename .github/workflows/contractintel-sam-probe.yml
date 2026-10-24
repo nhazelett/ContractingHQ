@@ -1,0 +1,33 @@
+name: ContractIntel SAM access check
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/contractintel]
+    paths:
+      - .github/workflows/contractintel-sam-probe.yml
+      - contractintel/ingest/sam_probe.py
+permissions:
+  contents: read
+concurrency:
+  group: contractintel-sam-probe
+  cancel-in-progress: false
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Test two SAM endpoints without logging records or credentials
+        env:
+          SAM_API_KEY: ${{ secrets.SAM_API_KEY }}
+        run: python contractintel/ingest/sam_probe.py
+      - name: Retain sanitized result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sam-access-check
+          path: sam-probe.json
+          retention-days: 7
