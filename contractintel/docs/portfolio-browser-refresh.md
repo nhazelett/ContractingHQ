@@ -1,6 +1,6 @@
 # Portfolio browser refresh and workspace identity
 
-Portfolio remains the root landing page; fresh entry opens Overview. Explicit award/tab hashes, opportunity URLs and browser history retain their meaning. Office selection is remembered locally, with an explicit URL office taking priority. Workspace selection is never stored as a default. Opportunities uses an ivory/amber content palette (warm charcoal/gold in dark mode) with the same header colors as Portfolio, a clear workspace badge, tinted search panel, dark table headings, quick views, and expandable refinements. Content tokens are scoped to the workspace and details dialog so the shared header, branding and office picker retain Portfolio colors. Set-aside categories and deadline warnings keep their original meanings.
+Portfolio remains the root landing page; fresh entry opens Overview. Explicit award/tab hashes, opportunity URLs and browser history retain their meaning. Office selection is remembered locally, with an explicit URL office taking priority. Workspace selection is never stored as a default. Opportunities uses a soft grey content palette (charcoal and cool greys in dark mode) with the same header colors as Portfolio, a clear workspace badge, grey search panel, tonal table headings, quick views, and expandable refinements. Content tokens are scoped to the workspace and details dialog so the shared header, branding and office picker retain Portfolio colors. Set-aside categories and deadline warnings keep their original meanings.
 
 ## Loading and storage
 
