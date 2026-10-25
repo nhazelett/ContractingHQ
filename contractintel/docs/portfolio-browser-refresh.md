@@ -1,6 +1,6 @@
 # Portfolio browser refresh and workspace identity
 
-Portfolio remains the root landing page; fresh entry opens Overview. Explicit award/tab hashes, opportunity URLs and browser history retain their meaning. Office selection is remembered locally, with an explicit URL office taking priority. Workspace selection is never stored as a default. Opportunities uses a scoped teal/mint light/dark theme, a clear workspace heading, search-first layout, quick views, and expandable refinements. Set-aside categories and deadline warnings keep their original meanings.
+Portfolio remains the root landing page; fresh entry opens Overview. Explicit award/tab hashes, opportunity URLs and browser history retain their meaning. Office selection is remembered locally, with an explicit URL office taking priority. Workspace selection is never stored as a default. Opportunities uses a quiet slate light/dark page background with the same header colors as Portfolio, a clear workspace heading, search-first layout, quick views, and expandable refinements. Set-aside categories and deadline warnings keep their original meanings.
 
 ## Loading and storage
 
