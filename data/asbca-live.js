@@ -1,5 +1,5 @@
 window.KTHQ_ASBCA_DATA = {
-  "generatedAt": "2026-10-24T12:16:18.609201+00:00",
+  "generatedAt": "2026-10-25T12:48:10.293736+00:00",
   "source": {
     "name": "Armed Services Board of Contract Appeals",
     "decisionsUrl": "https://www.asbca.mil/Decisions/2026/"
@@ -8,13 +8,13 @@ window.KTHQ_ASBCA_DATA = {
   "stats": {
     "total": 18,
     "latestDecisionDate": "2026-10-02",
-    "downloadedPdfs": 17,
-    "metadataOnly": 1,
+    "downloadedPdfs": 18,
+    "metadataOnly": 0,
     "outcomes": {
       "settled": 2,
-      "dismissed": 8,
-      "unclassified": 5,
+      "dismissed": 9,
       "denied": 2,
+      "unclassified": 4,
       "sustained": 1
     },
     "sourceStatus": {
@@ -116,18 +116,21 @@ window.KTHQ_ASBCA_DATA = {
       ],
       "decisionDate": "2026-10-01",
       "displayDate": "Oct 1, 2026",
-      "decisionType": "Decision",
-      "outcome": "unclassified",
-      "outcomeLabel": "Read Decision",
+      "decisionType": "Dismissal",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
       "judge": "Wilson",
-      "officialExcerpt": "Metadata from the ASBCA decisions index. Open the PDF for the Board's full reasoning.",
-      "tags": [],
-      "practitionerPrompt": "Open the PDF when the facts resemble your contract file. ASBCA decisions are usually about claims discipline, final decisions, and dispute documentation.",
+      "officialExcerpt": "Accordingly, this appeal is dismissed with prejudice with each party to bear their own fees, costs, and expenses.",
+      "tags": [
+        "Costs",
+        "Delivery"
+      ],
+      "practitionerPrompt": "Dismissals often turn on threshold mistakes. New specialists should read these for what must happen before the Board can reach the merits.",
       "pdfUrl": "https://www.asbca.mil/LinkClick.aspx?fileticket=1OWL2NxR7-0%3d&portalid=143",
       "filename": "LinkClick.aspx",
-      "sourceStatus": "metadata-only",
-      "sourceStatusLabel": "ASBCA index metadata",
-      "sourceError": "HTTP Error 422: Unprocessable Entity"
+      "sourceStatus": "reader-extracted",
+      "sourceStatusLabel": "ASBCA PDF text extracted",
+      "sourceError": ""
     },
     {
       "id": "2026-10-01-kearfott-corporation-4",
