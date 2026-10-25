@@ -1,3 +1,6 @@
+import {scanPortfolio} from './portfolio-loader.mjs';
+import {createPortfolioMemory,makeSnapshot,visiblePortfolio} from './portfolio-memory.mjs';
+import {incorporatePortfolio,summariesComplete,portfolioComplete} from './portfolio-progress.mjs';
 import {scopeNames,scopeRows,category,expiryRows,countdown,swatch,drawContracts,drawSetAsides,valueTotal,empty} from './presentation.mjs';
 import {money,csvCell,dollars,text,daysRemaining,endLabel,portfolioStatus,contractEnd,totalPop} from './format.mjs';
 import {summarizeModifications} from './modifications.mjs';
@@ -6,12 +9,17 @@ import {createSourceFetch} from './source-requests.mjs';
 import {lifecycle,lifecycleRows} from './lifecycle.mjs';
 import {resolve as sourceResolve} from './source.mjs';
 import {fiscalYear,fiscalMonths,fiscalTotals,setAsideLabel,setAsideGroups,endingCounts} from './overview.mjs';
-const sourceCache=new Map();
-const sourceFetch=createSourceFetch({onRetry:({delay})=>{$('source-retry').textContent='USAspending is busy. Automatically retrying after '+Math.ceil(delay/1000)+' seconds; loaded records are retained.';}});
+const sourceCache=new Map(),evidenceTasks=new Map(),browserMemory=createPortfolioMemory();
+let saveTimer;
+const displayRecords=()=>visiblePortfolio(state.records,state.preview);
+function saveBrowserPortfolio(){clearTimeout(saveTimer);saveTimer=null;if(!state.checked&&!state.records.size&&!state.preview.size)return;browserMemory.put(makeSnapshot(state.office,state.window,displayRecords()));}
+function queueSave(){if(!saveTimer)saveTimer=setTimeout(saveBrowserPortfolio,15000);}
+window.addEventListener('pagehide',saveBrowserPortfolio);
+const sourceFetch=createSourceFetch({fetcher:(url,options)=>fetch(url,{...options,cache:'no-store'}),onRetry:({delay})=>{$('source-retry').textContent='USAspending is busy. Automatically retrying after '+Math.ceil(delay/1000)+' seconds; loaded records are retained.';}});
 let fiscal={};
 const $=id=>document.getElementById(id);
 const API=location.hostname==='127.0.0.1'||location.hostname==='localhost'?'':'https://kthq-contractintel.nickhazelett.workers.dev';
-const state={scope:'active',office:'FA4800',directory:[],records:new Map(),rows:[],pending:[],page:1,cursor:null,sortValue:null,hasNext:true,busy:false,paused:false,generation:0,direction:'asc',controller:null,candidates:0,excluded:0,cache:new Map(),lastRequest:0,checked:null};
+const state={scope:'active',office:'FA4800',directory:[],records:new Map(),preview:new Map(),window:'2021-10-01',evidencePending:[],rows:[],pending:[],page:1,cursor:null,sortValue:null,hasNext:true,busy:false,paused:false,generation:0,direction:'asc',controller:null,candidates:0,excluded:0,cache:new Map(),lastRequest:0,checked:null};
 const fields=[['piid','PIID','145px'],['description','Requirement','minmax(195px,1fr)'],['award_amount_cents','Award Amount','140px'],['latest_mod_number','Latest Mod #','110px'],['latest_option_mod_number','Latest option Mod','145px'],['current_end_date','Current PoP end','130px'],['total_pop','Total contract PoP','200px'],['days_left','Days until contract ends','175px'],['recipient','Awardee','155px'],['set_aside','Set-aside','200px'],['latest_action_date','Latest source action','145px'],['status','Date status','205px'],['start_date','PoP start','115px'],['potential_end_date','Potential final end','145px'],['obligation_cents','Source net obligations','155px']];
 const defaultColumns=['days_left','description','piid','recipient','set_aside','current_end_date','potential_end_date','award_amount_cents','latest_action_date'];
 const visible=new Set(defaultColumns);
@@ -20,53 +28,59 @@ let detailGeneration=0;
 function el(tag,content,className){const n=document.createElement(tag);if(content!==undefined)n.textContent=content;if(className)n.className=className;return n;}
 function failure(error){$('error').hidden=false;$('error').textContent=error.message;}
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-async function api(path,params={},signal){const u=new URL(API+'/api/'+path,location.origin);for(const[k,v]of Object.entries(params))if(v!==null&&v!==undefined)u.searchParams.set(k,v);if(['awards','award','history','fiscal'].includes(path)){const key=u.href,cached=sourceCache.get(key);if(cached&&Date.now()-cached.time<21600000)return cached.data;const data=await sourceResolve(u,{OFFICES:state.directory,SIGNAL:signal,SOURCE_FETCH:sourceFetch});if(sourceCache.size>=250)sourceCache.delete(sourceCache.keys().next().value);sourceCache.set(key,{time:Date.now(),data});$('source-retry').textContent='';return data;}const r=await fetch(u,{signal});let data;try{data=await r.json();}catch{throw new Error('The data service did not return a readable response.');}if(!r.ok)throw Object.assign(new Error(data.error||'The data service is unavailable.'),{status:r.status});return data;}
+async function api(path,params={},signal){const summary=path==='award-summary',u=new URL(API+'/api/'+(summary?'award':path),location.origin);for(const[k,v]of Object.entries(params))if(v!==null&&v!==undefined)u.searchParams.set(k,v);if(['awards','award','award-summary','history','fiscal'].includes(path)){const key=u.href+(summary?'#summary':''),cached=sourceCache.get(key);if(cached&&Date.now()-cached.time<21600000)return cached.data;const data=await sourceResolve(u,{OFFICES:state.directory,SIGNAL:signal,SOURCE_FETCH:sourceFetch,SUMMARY_ONLY:summary});if(sourceCache.size>=250)sourceCache.delete(sourceCache.keys().next().value);sourceCache.set(key,{time:Date.now(),data});$('source-retry').textContent='';return data;}const r=await fetch(u,{signal});let data;try{data=await r.json();}catch{throw new Error('The data service did not return a readable response.');}if(!r.ok)throw Object.assign(new Error(data.error||'The data service is unavailable.'),{status:r.status});return data;}
 function query(){return {q:$('search').value,view:$('view').value,sort:$('sort').value,direction:state.direction,basis:$('date-basis').value};}
 function startDialog(title,kicker='SOURCE EVIDENCE'){$('detail-title').textContent=title;$('detail-kicker').textContent=kicker;$('detail-body').replaceChildren(el('p','Loading…','muted'));if(!$('detail').open)$('detail').showModal();return ++detailGeneration;}
-function controls(){const done=!state.hasNext&&!state.pending.length;$('continue').disabled=state.busy||done;$('continue').textContent=done?'Portfolio loaded':state.busy?'Loading portfolio…':'Resume loading';$('continue').hidden=state.busy||done;$('pause').disabled=!state.busy;$('load-more').hidden=done||state.busy;$('load-more').disabled=state.busy;$('export').disabled=!state.records.size;$('retry-missing').hidden=![...state.records.values()].some(r=>r.details_unavailable);$('retry-missing').disabled=state.busy;}
+function controls(){const done=portfolioComplete(state);$('continue').disabled=state.busy||done;$('continue').textContent=done?'Portfolio loaded':state.busy?'Updating portfolio...':'Resume loading';$('continue').hidden=state.busy||done;$('pause').disabled=!state.busy;$('load-more').hidden=done||state.busy;$('load-more').disabled=state.busy;$('export').disabled=!displayRecords().length;$('retry-missing').hidden=![...state.records.values()].some(r=>r.details_unavailable);$('retry-missing').disabled=state.busy;}
+
 function progress(){
  $('opportunities-link').href='./opportunities.html?selected_office='+encodeURIComponent(state.office);
- const all=[...state.records.values()],ready=all.filter(r=>!r.details_pending&&!r.details_unavailable).length,missing=all.filter(r=>r.details_unavailable).length,complete=!state.hasNext&&!state.pending.length,o=state.directory.find(o=>o.code===state.office);
+ $('home-link').href='./?office='+encodeURIComponent(state.office);
+ const all=[...state.records.values()],ready=all.filter(r=>!r.details_pending&&!r.details_unavailable).length,missing=all.filter(r=>r.details_unavailable).length,complete=portfolioComplete(state),o=state.directory.find(o=>o.code===state.office),saved=displayRecords().filter(r=>r.source_refresh_pending).length;
  $('office-label').textContent=state.office+' · '+(o?.name||'Select office')+(o?.base?' · '+o.base:'');
- $('freshness').textContent=(state.busy?(state.paused?'Pausing':'Loading portfolio'):complete?'Search complete':state.paused?'Paused':'Ready')+' · '+ready.toLocaleString()+' contracts loaded';
- $('coverage').textContent=(state.busy?'Loading — counts cover loaded records. ':complete?'Search complete for selected window. ':'Counts cover loaded records. ')+ready.toLocaleString()+' detailed / '+all.length.toLocaleString()+' matching awards'+(missing?' · '+missing+' unavailable details':'')+' · '+state.candidates.toLocaleString()+' candidates checked';
+ $('freshness').textContent=(state.busy?(state.paused?'Pausing':summariesComplete(state)?'Loading transaction evidence':'Updating portfolio'):complete?'Search complete':state.paused?'Paused':'Ready')+' · '+ready.toLocaleString()+' contracts loaded';
+ $('coverage').textContent=(complete?'Search complete for selected window. ':'Updating from USAspending. ')+ready.toLocaleString()+' detailed / '+all.length.toLocaleString()+' matching awards'+(saved?' · '+saved+' browser-saved records refreshing':'')+(state.evidencePending.length?' · '+state.evidencePending.length+' evidence loads pending':'')+(missing?' · '+missing+' unavailable details':'');
  if(state.busy&&!complete)$('progress').removeAttribute('value');else $('progress').value=complete?100:0;
- $('progress').hidden=!state.busy;renderLoadingNotice();controls();if(state.busy&&!state.records.size)renderOverview();
+ $('progress').hidden=!state.busy;renderLoadingNotice();controls();
 }
+
 function renderLoadingNotice(){
- const portfolioComplete=!state.hasNext&&!state.pending.length,fiscalComplete=fiscal.index===fiscal.months?.length;
- $('loading-notice').hidden=portfolioComplete&&fiscalComplete;
- if(portfolioComplete&&fiscalComplete)return;
- const loading=portfolioComplete?fiscal.busy:state.busy&&!state.paused,interrupted=portfolioComplete?Boolean(fiscal.error):!$('error').hidden;
- $('loading-notice-title').textContent=loading?(portfolioComplete?'Loading fiscal-year totals from USAspending':'Loading your office portfolio from USAspending'):interrupted?'USAspending loading interrupted':state.paused||portfolioComplete?(!portfolioComplete&&fiscal.busy?'Portfolio paused · fiscal totals still loading':'USAspending loading paused'):'Preparing your USAspending portfolio';
- $('loading-notice-copy').textContent=loading?'A full portfolio can take several minutes to load, especially for larger offices. Explore results as they arrive; portfolio counts are partial until the scan finishes, and fiscal totals appear when their scan completes. Keep this page open, or use Pause and Resume.':interrupted?'Loaded records are retained. Use the loading controls to retry. Completing the USAspending scan can take several minutes; results remain partial until it finishes.':'The full USAspending portfolio can take several minutes to load. Loaded records stay available in this page; resume loading when you are ready. Results remain partial until their scans finish.';
+ const done=portfolioComplete(state),fiscalDone=fiscal.index===fiscal.months?.length,saved=displayRecords().some(r=>r.source_refresh_pending);
+ $('loading-notice').hidden=done&&fiscalDone;
+ if(done&&fiscalDone)return;
+ const loading=done?fiscal.busy:state.busy&&!state.paused,interrupted=done?Boolean(fiscal.error):!$('error').hidden;
+ $('loading-notice-title').textContent=loading?(done?'Loading fiscal-year totals from USAspending':summariesComplete(state)?'Loading transaction evidence from USAspending':'Updating your office portfolio from USAspending'):interrupted?'USAspending loading interrupted':state.paused||done?'USAspending loading paused':'Preparing your USAspending portfolio';
+ $('loading-notice-copy').textContent=(saved?'Your saved browser results are available while fresh source records load. Rows marked Updating have not refreshed yet. ':'')+(loading?'A full scan can take several minutes. Contract summaries load first, then transaction evidence. Explore results as they arrive; counts remain partial until discovery finishes, and fiscal totals appear after their scan completes.':interrupted?'Available results are retained. Resume or retry the source scan; the page is not fully refreshed.':'Available results stay on this device. Resume loading when ready; the source scan is not complete.');
 }
-function incorporate(data){const h=summarizeModifications(data.history.actions,{truncated:data.history.has_next});return {...data.award,latest_mod_number:h.latest_mod?.modification_number||null,latest_option_mod_number:h.latest_option_mod?.modification_number||null,latest_action_date:data.history.actions[0]?.action_date||data.award.latest_action_date,details_pending:false};}
-async function loadOffice(){state.controller?.abort();state.controller=new AbortController();state.generation++;state.office=$('office').value;state.records=new Map();state.cache=new Map();state.pending=[];state.page=1;state.cursor=null;state.sortValue=null;state.hasNext=true;state.busy=false;state.paused=false;state.candidates=0;state.excluded=0;$('error').hidden=true;$('table-scroll').scrollTop=0;$('set-aside').value='';resetFiscal();render();loadFiscal();await loadBatch();}
-async function loadBatch(){
- if(state.busy||!state.hasNext&&!state.pending.length)return;
- const generation=state.generation,signal=state.controller.signal;state.busy=true;state.paused=false;$('error').hidden=true;progress();
- try{do{
-  if(!state.pending.length&&state.hasNext){
-   const data=await api('awards',{office:state.office,start:$('window').value,page:state.page,cursor:state.cursor,sort_value:state.sortValue},signal);
-   if(generation!==state.generation)return;
-   state.page++;state.cursor=data.cursor;state.sortValue=data.sort_value;state.hasNext=data.has_next;state.candidates+=data.candidates;state.excluded+=data.excluded;state.checked=data.fetched_at;
-   for(const row of data.rows)if(!state.records.has(row.award_id)){state.records.set(row.award_id,row);state.pending.push(row.award_id);}state.pending=selectRows(state.pending.map(id=>state.records.get(id)),{sort:'contract_end'}).map(r=>r.award_id);render();
-  }
-  while(state.pending.length&&!state.paused){
-   // Two award loads in flight; every underlying source call shares the request scheduler.
-   const ids=state.pending.slice(0,2),results=[];
-   for(const id of ids){await sleep(Math.max(0,700-(Date.now()-state.lastRequest)));if(generation!==state.generation||state.paused)break;state.lastRequest=Date.now();results.push(api('award',{id},signal).then(data=>({id,data}),error=>({id,error})));}
-   const batch=await Promise.all(results);if(generation!==state.generation)return;
-   let error;for(const result of batch){if(result.error){if(result.error.status===404){state.records.set(result.id,{...state.records.get(result.id),details_pending:false,details_unavailable:true,detail_error:result.error.message});state.pending=state.pending.filter(id=>id!==result.id);}else error=result.error;continue;}state.records.set(result.id,incorporate(result.data));if(state.cache.size>=500)state.cache.delete(state.cache.keys().next().value);state.cache.set(result.id,result.data);state.pending=state.pending.filter(id=>id!==result.id);}
-   render();if(error)throw error;
-  }
- }while(!state.paused&&state.hasNext);
- }catch(error){if(error.name!=='AbortError'&&generation===state.generation){state.paused=true;failure(error);}}
- finally{if(generation===state.generation){state.busy=false;render();}}
+
+function incorporate(data){return incorporatePortfolio(data);}
+async function hydrateEvidence(id,signal=state.controller?.signal){
+ const generation=state.generation,key=generation+'|'+id;
+ if(evidenceTasks.has(key))return evidenceTasks.get(key);
+ const task=(async()=>{
+  let data=state.cache.get(id)||{award:state.records.get(id),history:null};
+  if(!data.award)throw new Error('Contract summary is no longer loaded.');
+  if(!data.history)data={...data,history:await api('history',{id,page:1},signal)};
+  if(generation!==state.generation)return data;
+  state.records.set(id,incorporate(data));if(state.cache.size>=500&&!state.cache.has(id))state.cache.delete(state.cache.keys().next().value);state.cache.set(id,data);state.evidencePending=state.evidencePending.filter(x=>x!==id);queueSave();return data;
+ })();evidenceTasks.set(key,task);try{return await task;}finally{evidenceTasks.delete(key);}
 }
+
+async function loadOffice(){
+ if(state.records.size||state.preview.size)saveBrowserPortfolio();
+ state.controller?.abort();sourceCache.clear();state.controller=new AbortController();state.generation++;const generation=state.generation;
+ state.office=$('office').value;state.window=$('window').value;state.records=new Map();state.preview=new Map();state.cache=new Map();state.pending=[];state.evidencePending=[];state.page=1;state.cursor=null;state.sortValue=null;state.hasNext=true;state.busy=false;state.paused=false;state.checked=null;state.candidates=0;state.excluded=0;
+ try{localStorage.setItem('contractintel-office',state.office);}catch{}
+ const url=new URL(location.href);url.searchParams.set('office',state.office);history.replaceState(null,'',url);
+ $('error').hidden=true;$('table-scroll').scrollTop=0;$('set-aside').value='';resetFiscal();render();
+ browserMemory.get(state.office,state.window).then(saved=>{if(generation!==state.generation||summariesComplete(state)||!saved)return;state.preview=new Map(saved.records.map(r=>[r.award_id,r]));render();});
+ loadFiscal();await loadBatch();
+}
+
+async function loadBatch(){return scanPortfolio({state,api,hydrateEvidence,incorporate,selectRows,sleep,render,progress,queueSave,saveNow:saveBrowserPortfolio,failure,clearError:()=>{$('error').hidden=true;}});}
+
 function render(){
- state.rows=selectRows(scopeRows([...state.records.values()],state.scope).filter(r=>!$('set-aside').value||setAsideLabel(r)===$('set-aside').value),query());
+ state.rows=selectRows(scopeRows(displayRecords(),state.scope).filter(r=>!$('set-aside').value||setAsideLabel(r)===$('set-aside').value),query());
  $('dataset').value=state.scope;renderRows();renderOverview();progress();
 }
 function openRegister(view='all',basis=null,setAside=''){
@@ -76,7 +90,7 @@ function openRegister(view='all',basis=null,setAside=''){
 }
 function selectCategory(label){openRegister('all',null,label);}
 function renderOverview(){
- const all=[...state.records.values()],ready=all.filter(r=>!r.details_pending&&!r.details_unavailable),rows=scopeRows(ready,state.scope),basis=$('date-basis').value,upcoming=expiryRows(rows,basis),recompetes=expiryRows(rows,'potential'),active=scopeRows(all,'active'),review=scopeRows(all,'review');
+ const all=displayRecords(),ready=all.filter(r=>!r.details_pending&&!r.details_unavailable),rows=scopeRows(ready,state.scope),basis=$('date-basis').value,upcoming=expiryRows(rows,basis),recompetes=expiryRows(rows,'potential'),active=scopeRows(all,'active'),review=scopeRows(all,'review');
  const mode=basis==='potential'?'Potential final end':'Reported current PoP';
  $('overview-basis').textContent=mode;$('expiring-basis').textContent=mode+' · '+scopeNames[state.scope];
  $('kpi-active').textContent=(active.length-review.length).toLocaleString();$('kpi-review').textContent='+ '+review.length.toLocaleString()+' need date review';
@@ -96,7 +110,7 @@ function renderExpiring(upcoming){
    [...panel.querySelectorAll('[data-award]')].find(n=>n.dataset.award===id)?.focus({preventScroll:true});
   },state.busy,{expanded:ui.expanded,detailFor:r=>{
    const detail=el('div',undefined,'inline-evidence'),data=state.cache.get(r.award_id);
-   detail.append(el('strong',text(r.description)),el('p','Current end: '+text(r.current_end_date)+' · Potential final end: '+text(r.potential_end_date)+' · Current value: '+money(r.award_amount_cents)),el('p','Latest reported mod: '+(r.latest_mod_number||'None Found')+' · Latest option-exercise mod: '+(r.latest_option_mod_number||'None Found')));
+   detail.append(el('strong',text(r.description)),el('p','Current end: '+text(r.current_end_date)+' · Potential final end: '+text(r.potential_end_date)+' · Current value: '+money(r.award_amount_cents)),el('p','Latest reported mod: '+(r.history_pending?'Loading evidence...':r.latest_mod_number||'None Found')+' · Latest option-exercise mod: '+(r.history_pending?'Loading evidence...':r.latest_option_mod_number||'None Found')));
    if(data)detail.append(evidenceTable(data.history.actions.slice(0,3),[['action_date','Date'],['modification_number','Mod'],['obligation_cents','Obligation change'],['description','Description']]));
    const full=el('button','Open full source evidence →');full.addEventListener('click',()=>award(r.award_id));detail.append(full);return detail;
   }});
@@ -114,15 +128,15 @@ function renderRows(){
  for(let i=first;i<last;i++){
   const row=state.rows[i],life=lifecycle(row),div=el('div',undefined,'data-row lifecycle-'+life.kind+(ui.selected===row.award_id?' selected':''));div.style.gridTemplateColumns=grid;div.setAttribute('role','row');div.setAttribute('aria-rowindex',i+2);div.setAttribute('aria-label',row.piid+' · '+life.label);div.addEventListener('click',e=>{if(!e.target.closest('a'))award(row.award_id);});
   for(const[field]of columns){const cell=el('div');cell.setAttribute('role','cell');
-   if(field==='piid'){const a=el('a',row.piid);a.href='#register?award='+encodeURIComponent(row.award_id);a.addEventListener('click',e=>{e.preventDefault();award(row.award_id);});cell.className='piid-cell';cell.append(a);if(life.kind!=='upcoming'){const badge=el('span',life.label,'lifecycle-badge');badge.title=life.reason;cell.append(badge);}}
+   if(field==='piid'){const a=el('a',row.piid);a.href='#register?award='+encodeURIComponent(row.award_id);a.addEventListener('click',e=>{e.preventDefault();award(row.award_id);});cell.className='piid-cell';cell.append(a);if(row.source_refresh_pending)cell.append(el('span','Updating','refresh-badge'));if(life.kind!=='upcoming'){const badge=el('span',life.label,'lifecycle-badge');badge.title=life.reason;cell.append(badge);}}
    else if(field==='description'){const a=el('a',row.description||'Description not reported','requirement-link');a.href='#register?award='+encodeURIComponent(row.award_id);a.addEventListener('click',e=>{e.preventDefault();award(row.award_id);});cell.className='requirement-cell';cell.append(a);}
    else if(field==='days_left'){cell.append(countdown(life.kind==='review'?null:daysRemaining(row[basis==='potential'?'potential_end_date':'current_end_date'])));}
    else if(field==='set_aside'){const label=setAsideLabel(row);cell.append(swatch(label),el('span',' '+label));}
-   else{const detail=['award_amount_cents','latest_mod_number','latest_option_mod_number','potential_end_date','total_pop'];cell.textContent=row.details_pending&&detail.includes(field)?'Loading…':row.details_unavailable&&detail.includes(field)?'Unavailable':field==='latest_mod_number'||field==='latest_option_mod_number'?(row[field]||'None Found'):field==='total_pop'?totalPop(row):field==='status'?portfolioStatus(row):field.endsWith('_cents')?money(row[field]):text(row[field]);if(field.endsWith('_cents'))cell.className='money';else if(field.endsWith('_date'))cell.className='mono';}
+   else{const detail=['award_amount_cents','latest_mod_number','latest_option_mod_number','potential_end_date','total_pop'];cell.textContent=row.history_pending&&['latest_mod_number','latest_option_mod_number','latest_action_date'].includes(field)?'Loading evidence...':row.details_pending&&detail.includes(field)?'Loading…':row.details_unavailable&&detail.includes(field)?'Unavailable':field==='latest_mod_number'||field==='latest_option_mod_number'?(row[field]||'None Found'):field==='total_pop'?totalPop(row):field==='status'?portfolioStatus(row):field.endsWith('_cents')?money(row[field]):text(row[field]);if(field.endsWith('_cents'))cell.className='money';else if(field.endsWith('_date'))cell.className='mono';}
    cell.title=cell.textContent;div.append(cell);
   }$('table-rows').append(div);
  }
- $('award-count').textContent=state.rows.length.toLocaleString()+' matches';$('register-summary').textContent=state.rows.length.toLocaleString()+' of '+scopeRows([...state.records.values()],state.scope).length.toLocaleString()+' loaded contracts match · '+scopeNames[state.scope]+' · countdown uses '+(basis==='potential'?'potential final end':'current PoP end');
+ $('award-count').textContent=state.rows.length.toLocaleString()+' matches';$('register-summary').textContent=state.rows.length.toLocaleString()+' of '+scopeRows(displayRecords(),state.scope).length.toLocaleString()+' loaded contracts match · '+scopeNames[state.scope]+' · countdown uses '+(basis==='potential'?'potential final end':'current PoP end');
  $('table-state').textContent=state.rows.length?(first+1)+'–'+last+' of '+state.rows.length.toLocaleString():'0 results';$('page-number').textContent='Page '+(ui.page+1)+' / '+pages;$('previous-page').disabled=ui.page===0;$('next-page').disabled=ui.page>=pages-1;if(focused)[...$('table-rows').querySelectorAll('a')].find(n=>n.textContent===focused)?.focus({preventScroll:true});
 }
 function evidenceTable(rows,columns){const wrap=el('div',undefined,'evidence-scroll'),table=el('table',undefined,'evidence-table'),head=el('tr');for(const[,label]of columns)head.append(el('th',label));const thead=el('thead');thead.append(head);table.append(thead);const body=el('tbody');for(const row of rows){const tr=el('tr');for(const[key]of columns){const td=el('td',key.endsWith('_cents')?money(row[key]):text(row[key]));tr.append(td);}body.append(tr);}table.append(body);wrap.append(table);return wrap;}
@@ -149,7 +163,7 @@ function renderModifications(history){
 async function award(id){
  ui.selected=id;setTab('register',false);if(location.hash!=='#register?award='+encodeURIComponent(id))history.pushState(null,'','#register?award='+encodeURIComponent(id));renderRows();const token=startDialog('Award details');
  try{
-  let data=state.cache.get(id)||await api('award',{id});if(token!==detailGeneration)return;const a=data.award;let history={...data.history,actions:[...data.history.actions]};
+  let data=state.cache.get(id)||await api('award',{id});if(!data.history){data=await hydrateEvidence(id);render();}if(token!==detailGeneration)return;const a=data.award;let history={...data.history,actions:[...data.history.actions]};
   const draw=()=>{
    if(token!==detailGeneration)return;const body=$('detail-body');$('detail-title').textContent=a.piid;body.replaceChildren();
    const identity=el('div',undefined,'detail-identity');identity.append(swatch(setAsideLabel(a)),el('strong',text(a.recipient)),el('span',setAsideLabel(a)));const source=el('a','Open on USAspending ↗');source.href=a.source_url;source.target='_blank';source.rel='noopener noreferrer';identity.append(source);body.append(identity,el('p',text(a.description)));
@@ -165,7 +179,7 @@ async function award(id){
  }catch(error){if(token===detailGeneration){const retry=el('button','Retry award details');retry.addEventListener('click',()=>award(id));$('detail-body').replaceChildren(el('p',error.message,'notice'),retry);}}
 }
 async function status(){const token=startDialog('Data status');try{const data=await api('status');if(token!==detailGeneration)return;$('detail-body').replaceChildren(el('h3',data.mode),...data.notes.map(n=>el('p',n,'muted')));}catch(error){if(token===detailGeneration)$('detail-body').replaceChildren(el('p',error.message,'notice'));}}
-function exportLoaded(){const columns=fields.map(([key,label])=>[key,label]).concat([['lifecycle','Portfolio group'],['source_url','Public source'],['details_pending','Details still pending'],['detail_error','Source detail error']]);const lines=[columns.map(c=>csvCell(c[1])).join(',')];for(const row of state.rows)lines.push(columns.map(([key])=>csvCell(key==='lifecycle'?lifecycle(row).label:key==='status'?portfolioStatus(row):key==='total_pop'?totalPop(row):key==='days_left'?daysRemaining(contractEnd(row)):key.endsWith('_cents')?dollars(row[key]):row[key])).join(','));const link=el('a');link.href=URL.createObjectURL(new Blob(['\uFEFF'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'}));link.download='kthq-'+state.scope+'-'+state.office+'-'+new Date().toISOString().slice(0,10)+'.csv';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000);}
+function exportLoaded(){const columns=fields.map(([key,label])=>[key,label]).concat([['lifecycle','Portfolio group'],['source_url','Public source'],['details_pending','Details still pending'],['history_pending','Transaction evidence pending'],['source_refresh_pending','Source refresh pending'],['detail_error','Source detail error']]);const lines=[columns.map(c=>csvCell(c[1])).join(',')];for(const row of state.rows)lines.push(columns.map(([key])=>csvCell(key==='lifecycle'?lifecycle(row).label:key==='status'?portfolioStatus(row):key==='total_pop'?totalPop(row):key==='days_left'?daysRemaining(contractEnd(row)):key.endsWith('_cents')?dollars(row[key]):row[key])).join(','));const link=el('a');link.href=URL.createObjectURL(new Blob(['\uFEFF'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'}));link.download='kthq-'+state.scope+'-'+state.office+'-'+new Date().toISOString().slice(0,10)+'.csv';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000);}
 function filterOffices(){const q=$('office-search').value.trim().toLowerCase(),department=$('department').value;const matches=state.directory.filter(o=>(!department||o.department===department)&&[o.code,o.name,o.reported_name,o.base,o.location,o.command].some(v=>String(v).toLowerCase().includes(q)));$('office').replaceChildren();const selected=state.directory.find(o=>o.code===state.office);if(selected&&!matches.includes(selected)){const option=el('option',selected.code+' · '+selected.name+' (selected)');option.value=selected.code;$('office').append(option);}for(const o of matches){const option=el('option',o.code+' · '+o.name+(o.base?' · '+o.base:''));option.value=o.code;$('office').append(option);}$('office').value=state.office;$('directory-count').textContent=matches.length.toLocaleString()+' of '+state.directory.length.toLocaleString()+' supplied office codes · FY22–26 directory';}
 for(const[key,label]of fields){const option=el('label'),input=el('input');input.type='checkbox';input.checked=visible.has(key);input.disabled=key==='piid';input.addEventListener('change',()=>{input.checked?visible.add(key):visible.delete(key);renderRows();});option.append(input,el('span',label));$('columns').querySelector('.column-options').append(option);}
 for(const id of ['view','sort','date-basis','set-aside'])$(id).addEventListener('change',()=>{ui.page=0;$('table-scroll').scrollTop=0;render();});
@@ -244,5 +258,5 @@ function renderFiscalVisual(totals,complete){
 
 $('fiscal-continue').addEventListener('click',loadFiscal);$('fiscal-pause').addEventListener('click',()=>{fiscal.paused=true;});
 
-async function init(){try{const data=await api('offices');state.directory=data.offices;for(const name of [...new Set(data.offices.map(o=>o.department))].sort()){const option=el('option',name);option.value=name;$('department').append(option);}const selected=new URLSearchParams(location.search).get('office');if(data.offices.some(o=>o.code===selected))state.office=selected;filterOffices();const hash=location.hash;if(hash.startsWith('#award-'))award(decodeURIComponent(hash.slice(7)));route();await loadOffice();}catch(error){failure(error);$('freshness').textContent='Unable to load the public API. Try refreshing.';}}init();
+async function init(){try{const data=await api('offices');state.directory=data.offices;for(const name of [...new Set(data.offices.map(o=>o.department))].sort()){const option=el('option',name);option.value=name;$('department').append(option);}let remembered;try{remembered=localStorage.getItem('contractintel-office');}catch{}const selected=new URLSearchParams(location.search).get('office')||remembered;if(data.offices.some(o=>o.code===selected))state.office=selected;filterOffices();const hash=location.hash;if(hash.startsWith('#award-'))award(decodeURIComponent(hash.slice(7)));route();await loadOffice();}catch(error){failure(error);$('freshness').textContent='Unable to load the public API. Try refreshing.';}}init();
 

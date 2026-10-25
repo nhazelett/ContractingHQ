@@ -34,7 +34,7 @@ export async function resolve(url,env){
  'The selected search window covers reported actions. Earlier awards with no action in that window may be absent. Public DoD reporting is delayed.',
  'Dates and values come from the award API. Potential ends include options that may not have been exercised.',
  'The public transaction API supplies option-exercise codes but not per-mod PoP dates. A confirmed option exercise does not by itself establish a PoP change.',
- 'Responses may be cached in this browser session for six hours. Register, end-date, and set-aside counts cover loaded records. Fiscal cards use a separate prior/current FY transaction scan and stay blank until it completes.'
+ 'Opening an office starts a fresh source scan. Up to three small metadata snapshots can be kept on this device while fresh records load; saved rows are marked Updating. Contract summaries load before transaction evidence. Register, end-date, and set-aside counts cover available records. Fiscal cards use a separate prior/current FY transaction scan and stay blank until it completes.'
  ]};
  if(url.pathname==='/api/fiscal'){
   const office=p.get('office'),start=isoDate(p.get('start')),end=isoDate(p.get('end'));
@@ -68,7 +68,8 @@ export async function resolve(url,env){
   const page=number(p.get('page'),1,1000);
   const history=async()=>{const data=await upstream(env,'/api/v2/transactions/',{award_id:id,limit:200,page,sort:'action_date',order:'desc'});if(!Array.isArray(data.results)||typeof data.page_metadata?.hasNext!=='boolean')throw new ServiceError('USAspending returned an unexpected history response.',503);return {actions:data.results.map(normalizeAction),has_next:data.page_metadata.hasNext,page};};
   if(url.pathname==='/api/history')return {...await history(),fetched_at:new Date().toISOString()};
-  const [data,hist]=await Promise.all([upstream(env,'/api/v2/awards/'+encodeURIComponent(id)+'/'),history()]);
+  // Browser scan can request core fields first; default public award responses retain history.
+  const [data,hist]=await Promise.all([upstream(env,'/api/v2/awards/'+encodeURIComponent(id)+'/'),env.SUMMARY_ONLY?null:history()]);
   if(data.generated_unique_award_id!==id||!String(data.piid||'').startsWith(prefix))throw new ServiceError('The source award identity could not be verified.',503);
   return {award:{...normalizeAward(data),office_code:prefix,office_name:DIRECTORY.get(prefix).name},history:hist,fetched_at:new Date().toISOString()};
  }

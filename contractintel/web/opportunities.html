@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="light"><head>
+<html lang="en" data-theme="light" data-workspace="opportunities"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Find recent federal contract opportunities and inspect their public source evidence.">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://kthq-contractintel.nickhazelett.workers.dev; img-src 'self' data:; object-src 'none'; base-uri 'self'">
@@ -7,18 +7,18 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="./styles.css"><link rel="stylesheet" href="./opportunities.css"><script type="module" src="./opportunities.mjs"></script></head><body>
 <a class="skip" href="#opportunity-results">Skip to opportunities</a>
-<header class="topbar"><a class="brand" href="./"><span class="brandmark">K</span><span>KTHQ <span class="brand-sep">/</span> <strong>ContractIntel</strong></span></a>
+<header class="topbar"><a id="home-link" class="brand" href="./"><span class="brandmark">K</span><span>KTHQ <span class="brand-sep">/</span> <strong>ContractIntel</strong></span></a>
 <nav class="workspace-nav" aria-label="Workspaces"><a id="portfolio-link" href="./">Portfolio</a><a href="./opportunities.html" aria-current="page">Opportunities</a></nav>
 <details class="office-dropdown" id="opp-office-picker"><summary><span class="office-kicker">Contracting office</span><span id="opp-office-label">FA4800 · Langley</span><span class="office-change">Change office ▾</span></summary><div class="office-picker"><label for="opp-office-search">Find an office</label><input id="opp-office-search" type="search" placeholder="DoDAAC, office, base…"><label for="opp-office">Contracting office</label><select id="opp-office"><option value="FA4800">FA4800 · Langley</option></select><span class="caption">Use “Selected office” in Search scope to apply this office.</span></div></details>
 <div class="top-actions"><button id="opp-export" disabled>Export results CSV ↓</button><button id="theme" aria-label="Switch color theme">Dark mode</button></div></header>
 <main class="opportunity-workspace">
-<div class="page-heading"><div><p class="eyebrow">FEDERAL OPPORTUNITY DISCOVERY</p><h1>Find your next requirement.</h1><p class="intro">Recent public notices. Newest posted first. The evidence one click away.</p></div><span class="context-label">SAM.gov · newest posted first</span></div>
+<div class="page-heading opportunity-heading"><div><p class="eyebrow">OPPORTUNITIES</p><h1>Find federal opportunities.</h1><p class="intro">Recent public notices. Newest posted first. The evidence one click away.</p></div><span class="context-label">SAM.gov · newest posted first</span></div>
 <aside class="loading-notice" aria-label="Opportunity index coverage"><span class="loading-info" aria-hidden="true">i</span><div><strong id="opp-coverage-title">Loading the shared opportunity index</strong><p id="opp-coverage">Results use a bounded recent-postings index. This is separate from the office award portfolio.</p></div></aside>
-<section class="panel"><div class="opp-quick-views" role="group" aria-label="Opportunity quick views"><span>Quick views</span><button type="button" data-opp-view="all" aria-pressed="true">All opportunities</button><button type="button" data-opp-view="solicitations" aria-pressed="false">Solicitations</button><button type="button" data-opp-view="early" aria-pressed="false">Early market research</button><button type="button" data-opp-view="week" aria-pressed="false">Due within 7 days</button><button type="button" data-opp-view="month" aria-pressed="false">Due within 30 days</button><button type="button" data-opp-view="review" aria-pressed="false">Missing response dates</button></div><form id="opp-filters" class="opportunity-filters" aria-label="Search opportunities">
+<section class="panel opportunity-search-panel"><form id="opp-filters" class="opportunity-filters" aria-label="Search opportunities">
 <label class="opp-query">Title or solicitation number<input id="opp-query" name="q" type="search" maxlength="160" aria-describedby="opp-search-help" placeholder='"base operations" -repair'><span id="opp-search-help">All words required. Use "quoted phrases" and -exclude words or phrases.</span></label>
 <label>Search scope<select id="opp-scope"><option value="all">All indexed federal notices</option><option value="office">Selected office</option></select></label>
 <button type="submit" class="primary-button">Search opportunities</button><button type="button" id="opp-reset">Reset filters</button>
-<details class="opp-filter-details" open><summary>Refine results</summary><div class="opp-filter-grid">
+<details class="opp-filter-details"><summary>Refine results</summary><div class="opp-filter-grid">
 <label>Agency<select id="opp-agency"><option value="">All agencies</option></select></label>
 <label>Notice type<select id="opp-type"><option value="opportunities" data-fixed="true">Solicitations &amp; early notices</option><option value="solicitations" data-fixed="true">Solicitations only</option><option value="early_notices" data-fixed="true">Sources sought &amp; presolicitations</option><option value="">All notice types</option></select></label>
 <label>Source status<select id="opp-status"><option value="active">Source active</option><option value="all">All source statuses</option><option value="inactive">Source inactive</option><option value="unknown">Status not reported</option></select></label>
@@ -29,6 +29,7 @@
 <label>Response date<select id="opp-due"><option value="">Any reported date</option><option value="7">Within 7 days</option><option value="30">Within 30 days</option><option value="90">Within 90 days</option><option value="unknown">Date not reported / invalid</option></select></label>
 <label>Posted from<input id="opp-posted-from" type="date"></label><label>Posted through<input id="opp-posted-to" type="date"></label>
 </div></details></form>
+<div class="opp-quick-views" role="group" aria-label="Opportunity quick views"><span>Quick views</span><button type="button" data-opp-view="all" aria-pressed="true">All opportunities</button><button type="button" data-opp-view="solicitations" aria-pressed="false">Solicitations</button><button type="button" data-opp-view="early" aria-pressed="false">Early market research</button><button type="button" data-opp-view="week" aria-pressed="false">Due within 7 days</button><button type="button" data-opp-view="month" aria-pressed="false">Due within 30 days</button><button type="button" data-opp-view="review" aria-pressed="false">Missing response dates</button></div>
 <div class="opportunity-summary"><p id="opp-result-count" role="status">Loading notices…</p><span id="opp-checked" class="caption"></span></div>
 <div id="opp-error" class="opportunity-error" role="alert" hidden><p id="opp-error-message"></p><button id="opp-retry">Retry search</button></div>
 <div id="opp-empty" class="empty" hidden>No notices match these filters in the current recent-postings index. Try a broader scope or reset the filters.</div>

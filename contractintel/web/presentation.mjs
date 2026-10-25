@@ -43,7 +43,7 @@ export function drawContracts(container,entries,basis,onOpen,busy,{expanded,deta
   button.type='button';button.dataset.award=row.award_id;button.title=text(row.description);button.setAttribute('aria-label',(row.description||'Description not reported')+' · '+row.piid);
   if(expanded){button.setAttribute('aria-expanded',String(expanded.has(row.award_id)));button.setAttribute('aria-controls','evidence-'+row.award_id);}
   button.addEventListener('click',()=>onOpen(row));
-  requirement.append(button,node('span',row.piid,'requirement-piid'));
+  requirement.append(button,node('span',row.piid,'requirement-piid'));if(row.source_refresh_pending)requirement.append(node('span','Updating','refresh-badge'));
   ends.append(countdown(days));const setAside=node('td'),label=setAsideLabel(row);setAside.append(swatch(label),node('span',' '+label));
   tr.append(ends,requirement,node('td',text(row.recipient)),node('td',text(row[basis==='potential'?'potential_end_date':'current_end_date']),'mono'),node('td',money(row.award_amount_cents),'money'),setAside);
   tr.addEventListener('click',e=>{if(!e.target.closest('button'))onOpen(row);});body.append(tr);
