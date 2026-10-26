@@ -1,0 +1,44 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kthq-contractintel",
+  "main": "api.mjs",
+  "account_id": "a7443e0102de587d778491ab08fd883f",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "preview_urls": false,
+  "assets": {
+    "directory": "../web",
+    "run_worker_first": [
+      "/api/*"
+    ]
+  },
+  "ratelimits": [
+    {
+      "name": "READ_LIMIT",
+      "namespace_id": "261020",
+      "simple": {
+        "limit": 120,
+        "period": 60
+      }
+    }
+  ],
+  "observability": {
+    "enabled": false
+  },
+  "triggers": {
+    "crons": [
+      "0 7 * * *"
+    ]
+  },
+  "limits": {
+    "cpu_ms": 30000
+  },
+  "d1_databases": [
+    {
+      "binding": "PORTFOLIO_DB",
+      "database_name": "kthq-contractintel-portfolio",
+      "database_id": "7b24b846-e4ca-4a0b-8958-439567cec44f",
+      "migrations_dir": "../portfolio/migrations"
+    }
+  ]
+}

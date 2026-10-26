@@ -1,0 +1,45 @@
+name: ContractIntel recent history recovery
+# Publish stored history without redeploying an older dashboard checkout.
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/contractintel]
+    paths: [.github/workflows/contractintel-history.yml]
+permissions:
+  contents: read
+concurrency:
+  group: contractintel-publisher
+  cancel-in-progress: false
+jobs:
+  history:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      WRANGLER_SEND_METRICS: 'false'
+      CONTRACTINTEL_DATA_ONLY: '1'
+      CLOUDFLARE_ACCOUNT_ID: a7443e0102de587d778491ab08fd883f
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate ingestion and API before extending coverage
+        run: |
+          python -m unittest discover -s contractintel/tests -v
+          node --test contractintel/tests/*.test.mjs
+      - name: Archive history and publish only within existing capacity guards
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
+        run: python -u contractintel/ingest/pipeline.py --start 2021-10-01 --end 2026-10-20 --resume --newest-first --build-requested-window --publish
+      - name: Retain measured capacity and binding even if a guard stops publication
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contractintel-history-capacity
+          path: |
+            contractintel/.runtime/run-*/build/dataset.json
+            contractintel/worker/wrangler.jsonc
+          retention-days: 7

@@ -1,0 +1,26 @@
+name: ContractIntel Cloudflare access check
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/contractintel]
+    paths:
+      - .github/workflows/contractintel-cloudflare-probe.yml
+      - contractintel/ingest/cloud_probe.py
+permissions:
+  contents: read
+concurrency:
+  group: contractintel-cloudflare-probe
+  cancel-in-progress: false
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Check account access with three read-only requests
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
+        run: python contractintel/ingest/cloud_probe.py
