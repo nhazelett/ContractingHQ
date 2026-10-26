@@ -1,3 +1,4 @@
+import {officeEnabled} from './r2/admission.mjs';
 // Cron and authenticated HTTP only dispatch GitHub; no USAspending request is made here.
 import {CONFIG} from './ingest.mjs';
 import {currentDate} from '../web/calendar.mjs';
@@ -20,7 +21,8 @@ async function dispatchOne(env,{mode='nightly',origin='cron',fetcher=fetch,now=D
 }
 
 export async function dispatchIngest(env,options={}){
- const offices=options.office?[options.office]:env.PORTFOLIO_R2?Object.entries(CONFIG.r2Offices).filter(([,profile])=>profile.readEnabled&&env[profile.binding]).map(([office])=>office):CONFIG.offices;
+ let offices=options.office?[options.office]:CONFIG.offices;
+ if(!options.office&&env.PORTFOLIO_R2){offices=[];for(const [office,profile]of Object.entries(CONFIG.r2Offices))if(env[profile.binding]&&await officeEnabled(office,env[profile.binding]))offices.push(office);}
  if(!offices.length)throw new Error('No verified offices are enabled for dispatch.');
  if(offices.length===1)return dispatchOne(env,{...options,office:offices[0]});
  const results=[];for(const office of offices)results.push(await dispatchOne(env,{...options,office}));

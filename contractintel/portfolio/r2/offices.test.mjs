@@ -31,3 +31,21 @@ test('A scoped gateway rejects keys belonging to the other office before reading
  const response=await worker.fetch(new Request('https://gateway/object?key=pilot%2FFA4528%2Fcurrent.json',{headers:{Authorization:'Bearer fixture'}}),{TARGET:bucket,BASELINE:bucket,R2_UPDATE_TOKEN:'fixture'});
  assert.equal(response.status,400);assert.equal(reads,0);
 });
+
+test('Admission is schema/office-specific and never enables a partial or mismatched office',async()=>{
+ const {validAdmission,officeEnabled}=await import('./admission.mjs');
+ const value={office:'FA4800',verified:true,schema_version:CONFIG.schemaVersion,publication_id:'verified-publication',comparison_sha256:'a'.repeat(64)};
+ assert.equal(validAdmission(value,'FA4800'),true);assert.equal(validAdmission(value,'FA4528'),false);assert.equal(validAdmission({...value,schema_version:0},'FA4800'),false);
+ assert.equal(await officeEnabled('FA4800',{get:async()=>null}),false);
+ assert.equal(await officeEnabled('FA4800',{get:async()=>({json:async()=>value})}),true);
+});
+
+test('Continuation respects terminal data/cost guards and finite batches',async()=>{
+ const {continuationDecision}=await import('./cohort-policy.mjs');
+ assert.equal(continuationDecision({status:'yielded',resume_recommended:true},1).resume,true);
+ assert.equal(continuationDecision({status:'failed',source_failures:[{status:500}],error:'temporarily unavailable'},1).resume,true);
+ assert.equal(continuationDecision({status:'failed',source_failures:[{status:500}],error:'Independent source comparison did not match'},1).resume,false);
+ assert.equal(continuationDecision({status:'failed',error:'Checkpoint JSON budget reached'},1).resume,false);
+ assert.equal(continuationDecision({status:'yielded',resume_recommended:true},CONFIG.r2Nightly.maxCohortRuns).blocked,true);
+ assert.equal(continuationDecision({status:'passed',source_failures:[{status:500}]},1).resume,false);
+});

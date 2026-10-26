@@ -8,7 +8,7 @@ import {createFormat} from './format.mjs';
 
 export function createOfficeIngest(profile){
 const {PILOT,bytes,pack,unpack,canonical,checkTables,buildBundle,restoreBundle,validateManifest,digest}=createFormat(profile);
-const SETTINGS={...CONFIG.r2Nightly,...profile,checkpointKey:profile.prefix+'/checkpoint.json.gz',ledgerKey:profile.prefix+'/budget.json',verificationKey:profile.prefix+'/verification.json.gz',workerPrefix:'kthq-ci-r2-'+profile.office.toLowerCase()};
+const SETTINGS={...CONFIG.r2Nightly,...profile,checkpointKey:profile.prefix+'/checkpoint.json.gz',ledgerKey:profile.prefix+'/budget.json',verificationKey:profile.prefix+'/verification.json.gz',admissionKey:profile.prefix+'/admission.json',workerPrefix:'kthq-ci-r2-'+profile.office.toLowerCase()};
 const CURRENT=PILOT.prefix+'/current.json';
 class BudgetReached extends Error {}
 const must=(value,message)=>{if(!value)throw new Error(message);};
@@ -139,6 +139,7 @@ async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,now=Date
  const remaining=()=>now()-started<config.maxRuntimeMs-config.shutdownReserveMs&&requests.count<config.maxSourceRequests-config.sourceRequestReserve;
  const ensure=()=>{if(!remaining())throw new BudgetReached('Source/time budget reached.');};
  const rawResponses=new Map(),paced=createSourceFetch({interval:config.sourceIntervalMs,fetcher:async(url,options)=>{
+  if(state.mode==='backfill'&&state.source_requests>=SETTINGS.maxOfficeBackfillRequests)throw new Error('Office backfill request budget reached; review required.');
   if(requests.count>=config.maxSourceRequests){const error=new BudgetReached('Source request limit reached.');deadline.abort(error);throw error;}
   requests.count++;state.source_requests++;const response=await fetcher(url,options);
   if(!response.ok)requests.failures.push(response.status);

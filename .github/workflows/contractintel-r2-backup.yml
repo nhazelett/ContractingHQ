@@ -6,11 +6,27 @@ on:
 permissions:
   contents: read
 jobs:
+  offices:
+    runs-on: ubuntu-latest
+    outputs:
+      offices: ${{ steps.gate.outputs.offices }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/contractintel
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Select only admitted offices before joining a writer queue
+        id: gate
+        run: |
+          node --input-type=module -e "import fs from 'node:fs';import {CONFIG} from './contractintel/portfolio/ingest.mjs';let coverage={offices:[]};try{const response=await fetch(CONFIG.r2Pilot.productionBase+'/api/office/coverage');if(response.ok)coverage=await response.json();}catch{}const offices=Object.entries(CONFIG.r2Offices).filter(([office,p])=>p.readEnabled===true||p.admitOnVerified&&coverage.offices.some(row=>row.office===office&&row.status==='stored'&&row.source==='r2')).map(([office])=>office);fs.appendFileSync(process.env.GITHUB_OUTPUT,'offices='+JSON.stringify(offices)+'\n');"
   refresh:
+    needs: offices
     strategy:
       fail-fast: false
       matrix:
-        office: [FA4528, FA4800]
+        office: ${{ fromJSON(needs.offices.outputs.offices) }}
     concurrency:
       group: contractintel-r2-${{ matrix.office }}
       cancel-in-progress: false
@@ -23,17 +39,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Check the verified-office gate
-        id: gate
-        env:
-          PILOT_OFFICE: ${{ matrix.office }}
-        run: |
-          node --input-type=module -e "import fs from 'node:fs';import {CONFIG} from './contractintel/portfolio/ingest.mjs';fs.appendFileSync(process.env.GITHUB_OUTPUT,'enabled='+String(CONFIG.r2Offices[process.env.PILOT_OFFICE]?.readEnabled===true)+'\n');"
       - name: Resume or refresh the verified office
-        if: steps.gate.outputs.enabled == 'true'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
           PILOT_OFFICE: ${{ matrix.office }}
+          REQUIRE_ADMISSION: 'true'
           RUN_MODE: nightly
           WRANGLER_SEND_METRICS: 'false'
         run: node contractintel/portfolio/r2/runner.mjs

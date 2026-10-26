@@ -1,3 +1,4 @@
+import {validAdmission} from './admission.mjs';
 import {cleanupRetained} from './retention.mjs';
 // GitHub Actions entry point for the FA4528-only R2 shadow updater.
 // No D1 requests, no production deploy, no stored source data in job artifacts.
@@ -75,6 +76,7 @@ async function main(){
   async put(key,body,options){const response=await call('/object?area='+area+'&key='+encodeURIComponent(key),{method:'PUT',body,...options});return {etag:response.headers.get('ETag')};}
  });
  const store=cacheImmutable(remote('target'),profile),baseline=cacheImmutable(remote('baseline'),profile);
+ if(process.env.REQUIRE_ADMISSION==='true'&&!profile.readEnabled){const admission=await store.get(SETTINGS.admissionKey);if(!admission||!validAdmission(JSON.parse(new TextDecoder().decode(admission.bytes)),SETTINGS.office)){report.status='not_admitted';return;}report.admission_present=true;}
  if(profile.seedVerifiedPilot&&!await store.get(CURRENT)){
   const pointer=await baseline.get(CURRENT);must(pointer,'The previously verified FA4528 pilot is missing.');
   const manifest=validateManifest(JSON.parse(new TextDecoder().decode(pointer.bytes)));
@@ -93,7 +95,7 @@ async function main(){
  const fetcher=async(sourceURL,options={})=>{
   must(report.source_requests<SETTINGS.maxSourceRequestsPerJob,'Job source-request budget reached.');report.source_requests++;
   const parsed=new URL(sourceURL);must(parsed.origin==='https://api.usaspending.gov'&&((options.method||'GET')==='GET'&&parsed.pathname.startsWith('/api/v2/awards/')||options.method==='POST'&&['/api/v2/search/spending_by_award/','/api/v2/search/spending_by_transaction/','/api/v2/transactions/'].includes(parsed.pathname)),'Unexpected source operation refused.');
-  return fetch(sourceURL,options);
+  try{const response=await fetch(sourceURL,options);if(!response.ok)(report.source_failures??=[]).push({status:response.status,path:parsed.pathname});return response;}catch(error){report.source_network_errors=(report.source_network_errors||0)+1;throw error;}
  };
  let result;
  for(let chunk=0;chunk<SETTINGS.maxChunksPerJob;chunk++){
@@ -104,7 +106,7 @@ async function main(){
   if(['completed','retained'].includes(result.status))break;
  }
  must(result&&['completed','retained'].includes(result.status),'Chunk limit reached; saved progress will resume on the next manual run.');
- const after=await loadPublication(store);report.production_changed=profile.readEnabled&&result.status==='completed';report.publication_id=after.manifest.source_publication_id;report.source_published_at=after.manifest.source_published_at;
+ const after=await loadPublication(store);report.production_changed=(profile.readEnabled||report.admission_present)&&result.status==='completed';report.publication_id=after.manifest.source_publication_id;report.source_published_at=after.manifest.source_published_at;
  report.views=CONFIG.windows.map(start=>{const prior=before?snapshotFromTables(before.tables,start):{records:[]},current=snapshotFromTables(after.tables,start);return {start,today:current.today,before:counts(prior.records,current.today),after:counts(current.records,current.today),fiscal_totals:current.fiscal_totals.map(({award_ids,...total})=>total)};});
  report.change_summary={new_awards:after.tables.awards.filter(row=>!(before?.tables.awards||[]).some(old=>old.generated_unique_award_id===row.generated_unique_award_id)).length,removed_awards:(before?.tables.awards||[]).filter(row=>!after.tables.awards.some(next=>next.generated_unique_award_id===row.generated_unique_award_id)).length,changed_awards:after.tables.awards.filter(row=>{const old=(before?.tables.awards||[]).find(previous=>previous.generated_unique_award_id===row.generated_unique_award_id);return old&&old.source_hash!==row.source_hash;}).length};
  report.retention_cleanup=await cleanupRetained(store,after,profile);
@@ -120,13 +122,18 @@ async function main(){
   const saved=await store.get(SETTINGS.verificationKey);let pending=saved?await unpack(saved.bytes,null,SETTINGS.maxCheckpointJSONBytes):null,etag=saved?.etag||null,saves=0;
   const persist=async()=>{if(!pending)return;const packed=await pack(pending);const stored=await store.put(SETTINGS.verificationKey,packed.bytes,{expected:etag,sha:packed.sha256});etag=stored.etag;};
   try{
-   const comparison=await compareOffice({office:SETTINGS.office,directory:directoryData,publicationKey:after.manifest.source_publication_id,checkpoint:pending,fetcher,getSnapshot:async start=>snapshotFromTables(after.tables,start),onCheckpoint:async state=>{pending=state;if(++saves%SETTINGS.verificationSaveEvery===0)await persist();}});
+   must(!pending||pending.requests<SETTINGS.maxVerificationRequests,'Independent verification request budget reached; review required.');
+   const comparison=await compareOffice({office:SETTINGS.office,directory:directoryData,publicationKey:after.manifest.source_publication_id,checkpoint:pending,fetcher,getSnapshot:async start=>snapshotFromTables(after.tables,start),onCheckpoint:async state=>{pending=state;must(pending.requests<=SETTINGS.maxVerificationRequests,'Independent verification request budget reached; review required.');if(++saves%SETTINGS.verificationSaveEvery===0)await persist();}});
    report.independent_comparison=comparison;must(comparison.match,'Independent source comparison did not match; cached reads remain gated.');
+   if(profile.admitOnVerified){const priorAdmission=await store.get(SETTINGS.admissionKey);if(!priorAdmission||!validAdmission(JSON.parse(new TextDecoder().decode(priorAdmission.bytes)),SETTINGS.office)){const admission=bytes({office:SETTINGS.office,verified:true,schema_version:CONFIG.schemaVersion,publication_id:after.manifest.source_publication_id,comparison_sha256:await digest(bytes(comparison)),verified_at:new Date().toISOString()});await store.put(SETTINGS.admissionKey,admission,{expected:priorAdmission?.etag||null,sha:await digest(admission)});}report.cache_admitted=true;report.production_changed=true;}
   }finally{await persist();}
  }
+ report.read_enabled=profile.readEnabled||report.cache_admitted===true||report.admission_present===true;
  report.status='passed';
 }
-try{await main();}catch(error){report.status='failed';report.error=error.message;if(error.result)report.failed_chunk=error.result;console.error(error.message);process.exitCode=1;}finally{
+try{await main();}catch(error){report.status='failed';report.error=error.message;
+ const boundedYield=/Chunk limit reached|Job source-request budget reached|Job upload budget reached/.test(error.message)||report.source_requests>=SETTINGS.maxSourceRequestsPerJob&&!report.source_failures?.length;
+ if(boundedYield&&process.env.AUTO_RESUME==='true'){report.status='yielded';report.resume_recommended=true;}if(error.result)report.failed_chunk=error.result;console.error(error.message);process.exitCode=report.status==='yielded'?0:1;}finally{
  if(workerName&&cf)try{const response=await cf('/workers/scripts/'+workerName,'DELETE');must(response.ok||response.status===404,'Temporary gateway cleanup failed.');report.temporary_worker_deleted=true;}catch(error){report.temporary_worker_deleted=false;report.cleanup_error=error.message;process.exitCode=1;}
  report.finished_at=new Date().toISOString();await save();console.log(JSON.stringify({r2_update_report:report}));
 }

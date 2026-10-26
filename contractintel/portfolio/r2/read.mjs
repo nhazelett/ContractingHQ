@@ -1,8 +1,9 @@
+import {officeEnabled} from './admission.mjs';
 // Published R2 reads only. Missing or damaged copies fall back through the caller.
 import {CONFIG,r2Profile} from '../ingest.mjs';
 import {createFormat,PILOT,validateManifest,unpack,refreshSnapshot,PilotError} from './format.mjs';
 export async function readR2(bucket,office,{start=CONFIG.windows[1],id,page=1,now=Date.now}={}){
- if(!bucket||!CONFIG.r2Offices[office]?.readEnabled)throw new PilotError('R2 office unavailable.',404);
+ if(!bucket||!await officeEnabled(office,bucket))throw new PilotError('R2 office unavailable.',404);
  const {PILOT,validateManifest,unpack,refreshSnapshot}=createFormat(r2Profile(office));
  const pointer=await bucket.get(PILOT.prefix+'/current.json');if(!pointer)throw new PilotError('R2 publication unavailable.',404);
  const manifest=validateManifest(await pointer.json());

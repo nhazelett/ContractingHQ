@@ -2,6 +2,13 @@ name: ContractIntel FA4800 backfill and verification
 on:
   workflow_dispatch:
     inputs:
+      auto_resume:
+        description: Continue bounded batches without this chat staying connected
+        default: true
+        type: boolean
+      batch:
+        default: '1'
+        type: string
       office:
         default: FA4800
         type: choice
@@ -43,6 +50,8 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
           PILOT_OFFICE: FA4800
           RUN_MODE: ${{ inputs.mode || 'nightly' }}
+          AUTO_RESUME: ${{ github.event_name == 'push' && 'true' || inputs.auto_resume && 'true' || 'false' }}
+          REQUIRE_ADMISSION: ${{ github.event_name != 'push' && !inputs.verify && 'true' || 'false' }}
           PERFORM_VERIFY: ${{ github.event_name == 'push' && 'true' || inputs.verify && 'true' || 'false' }}
           WRANGLER_SEND_METRICS: 'false'
         run: node contractintel/portfolio/r2/runner.mjs
@@ -55,3 +64,11 @@ jobs:
           overwrite: true
           path: contractintel/portfolio/r2/out/fa4800-r2-update.json
           if-no-files-found: ignore
+      - name: Continue the next bounded batch if needed
+        if: always() && (github.event_name == 'push' || inputs.auto_resume)
+        env:
+          PILOT_OFFICE: FA4800
+          COHORT_BATCH: ${{ inputs.batch || '1' }}
+          PERFORM_VERIFY: ${{ github.event_name == 'push' && 'true' || inputs.verify && 'true' || 'false' }}
+          DISPATCH_SECRET: ${{ secrets.CONTRACTINTEL_GITHUB_TOKEN }}
+        run: node contractintel/portfolio/r2/resume-cohort.mjs
