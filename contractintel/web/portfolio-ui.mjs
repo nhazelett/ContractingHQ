@@ -29,7 +29,7 @@ export function datePresentation(row,basis,countdown){
 }
 export function simpleContractCells(row,basis,onOpen,countdown,tag='td'){
  const description=el(tag,undefined,'simple-requirement'),a=el('a',row.description||'Description not reported','requirement-link');a.href='#register?award='+encodeURIComponent(row.award_id);a.title=row.description||'Description not reported';a.dataset.award=row.award_id;a.addEventListener('click',e=>{if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();onOpen(row);});description.append(a);
- if(row.piid){const number=el('span',row.piid,'contract-number');number.title='Contract number (PIID), as reported by USAspending';description.append(number);}
+ const number=el('span',undefined,'contract-number');number.title='Contract number (PIID), as reported by USAspending';number.append(el('span','Contract #: ','contract-number-label'),el('span',row.piid||'Not reported','contract-number-value'));description.append(number);
  if(row.source_refresh_pending)description.append(el('span','Updating','refresh-badge'));
  const life=lifecycle(row);if(life.kind==='review'||life.kind==='uncertain'||life.kind==='completed'){const badge=el('small',life.kind==='review'?'Dates unclear':life.label,'lifecycle-badge');badge.title=life.reason;description.append(badge);}
  const vendor=el(tag,text(row.recipient),'simple-vendor'),date=el(tag,undefined,'simple-date'),value=el(tag,row.details_pending?'Loading…':row.details_unavailable?'Unavailable':money(row.award_amount_cents),'simple-value');date.append(datePresentation(row,basis,countdown));

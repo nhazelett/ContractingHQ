@@ -9,7 +9,7 @@ const countdown=days=>document.createElement('span');
 
 test('Contract rows retain source identity and actions while presenting four fields and subordinate alternative dates',()=>{
  globalThis.document=createDocument();let opened;const cells=simpleContractCells({...row,source_refresh_pending:true},'current',r=>opened=r,countdown);
- assert.equal(cells.length,4);assert.equal(cells[0].dataset.label,'Requirement');assert.match(cells[0].textContent,/Ventilation/);assert.equal(cells[0].querySelector('.contract-number').textContent,row.piid);assert.match(cells[0].textContent,/Updating/);assert.equal(cells[1].textContent,row.recipient);assert.match(cells[3].textContent,/12,345/);
+ assert.equal(cells.length,4);assert.equal(cells[0].dataset.label,'Requirement');assert.match(cells[0].textContent,/Ventilation/);assert.equal(cells[0].querySelector('.contract-number-value').textContent,row.piid);assert.match(cells[0].querySelector('.contract-number').textContent,/Contract #:/);assert.match(cells[0].textContent,/Updating/);assert.equal(cells[1].textContent,row.recipient);assert.match(cells[3].textContent,/12,345/);
  cells[0].querySelector('a').click();assert.equal(opened.award_id,row.award_id);assert.ok(cells[0].querySelector('a').href.includes(encodeURIComponent(row.award_id)));
  const current=datePresentation(row,'current',countdown),potential=datePresentation(row,'potential',countdown);
  assert.match(current.querySelector('.secondary-date').textContent,/^Could run to /);assert.match(potential.querySelector('.secondary-date').textContent,/^Current period ends /);assert.match(potential.querySelector('.primary-date').children[0].title,/unexercised options/);
@@ -53,11 +53,16 @@ test('One-line progress retains the full accessible message and pins contract co
 test('Ending-soon renderer retains expandable rows, source IDs, four visible fields and full-evidence callbacks',()=>{
  globalThis.document=createDocument();const container=document.createElement('div');let opened;const expanded=new Set([row.award_id]);
  drawContracts(container,[{row,days:30}],'current',r=>opened=r,false,{expanded,detailFor:r=>{const note=document.createElement('p');note.textContent='Pending evidence for '+r.piid;return note;}});
- assert.equal(container.querySelectorAll('th').length,4);assert.match(container.textContent,/Could run to/);const button=container.querySelector('button');assert.equal(button.dataset.award,row.award_id);assert.equal(button.getAttribute('aria-expanded'),'true');button.click();assert.equal(opened.award_id,row.award_id);assert.match(container.querySelector('.expanded-evidence').textContent,/Pending evidence/);
+ assert.equal(container.querySelectorAll('th').length,4);assert.equal(container.querySelector('.contract-number-value').textContent,row.piid);assert.match(container.textContent,/Contract #:/);assert.match(container.textContent,/Could run to/);const button=container.querySelector('button');assert.equal(button.dataset.award,row.award_id);assert.equal(button.getAttribute('aria-expanded'),'true');button.click();assert.equal(opened.award_id,row.award_id);assert.match(container.querySelector('.expanded-evidence').textContent,/Pending evidence/);
 });
 
 test('Who-can-bid charts retain source group counts and filter callbacks while showing plain labels',()=>{
  globalThis.document=createDocument();const container=document.createElement('div');let selected;
  drawSetAsides(container,[{...row,set_aside:'TOTAL SMALL BUSINESS SET ASIDE'},{...row,award_id:row.award_id+'x',set_aside:'NO SET ASIDE USED'}],label=>selected=label,false);
  assert.match(container.textContent,/Small businesses only/);assert.match(container.textContent,/No set-aside listed/);assert.ok(!container.textContent.includes('Anyone'));const buttons=container.querySelectorAll('button');assert.equal(buttons.length,4);buttons[0].click();assert.ok(['TOTAL SMALL BUSINESS SET ASIDE','NO SET ASIDE USED'].includes(selected));
+});
+
+
+test('My office and Ending soon use the same visible contract-number row in collapsed and expanded states',()=>{
+ globalThis.document=createDocument();for(const expanded of [undefined,new Set(),new Set([row.award_id])]){const container=document.createElement('div');drawContracts(container,[{row,days:30}],'current',()=>{},false,{expanded,detailFor:()=>document.createElement('p')});assert.equal(container.querySelectorAll('.contract-number-value').length,1);assert.equal(container.querySelector('.contract-number-value').textContent,row.piid);assert.match(container.querySelector('.contract-number').textContent,/Contract #:/);}
 });
