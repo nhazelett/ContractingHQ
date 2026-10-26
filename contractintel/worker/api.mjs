@@ -1,3 +1,6 @@
+import {portfolioRoute} from '../portfolio/http.mjs';
+import {runIngest} from '../portfolio/ingest.mjs';
+import {PortfolioError} from '../portfolio/read.mjs';
 import offices from './offices.json' with {type:'json'};
 import {opportunityRoute} from '../opportunities/api.mjs';
 import {OpportunityError} from '../opportunities/source.mjs';
@@ -11,6 +14,12 @@ export async function handle(request,env={},ctx={}){
  const url=new URL(request.url),origin=request.headers.get('Origin');
  const cors=['https://kthq.org','https://www.kthq.org','http://127.0.0.1:8898'].includes(origin)?{'Access-Control-Allow-Origin':origin,'Vary':'Origin'}:{};
  const reply=(data,status=200,headers={})=>json(data,status,{...cors,...headers});
+ if(url.pathname.startsWith('/api/office/')||url.pathname.startsWith('/api/admin/portfolio/')){
+  try{
+   if(url.pathname.startsWith('/api/office/')&&env.READ_LIMIT&&!(await env.READ_LIMIT.limit({key:request.headers.get('CF-Connecting-IP')||'unknown'})).success)return reply({error:'Request limit reached. Wait one minute, then retry.'},429,{'Retry-After':'60'});
+   return reply(await portfolioRoute(request,{...env,OFFICES:offices}));
+  }catch(error){return reply({error:error instanceof PortfolioError||url.pathname.startsWith('/api/admin/portfolio/')?error.message:'Portfolio service unavailable; live loading remains available.'},error instanceof PortfolioError?error.status:503);}
+ }
  if(request.method==='OPTIONS')return new Response(null,{status:204,headers:{...cors,'Access-Control-Allow-Methods':'GET, OPTIONS'}});
  if(request.method!=='GET')return reply({error:'Read-only API.'},405);
  if(url.href.length>2000)return reply({error:'Request is too long.'},400);
@@ -29,5 +38,6 @@ export async function handle(request,env={},ctx={}){
   return reply(body,200,{'X-ContractIntel-Cache':'miss'});
  }catch(error){return reply({error:error instanceof ServiceError||error instanceof OpportunityError?error.message:'Data service unavailable. Try again shortly.'},error instanceof ServiceError||error instanceof OpportunityError?error.status:503);}
 }
-export default {fetch:handle};
+export async function scheduled(controller,env){return runIngest({...env,OFFICES:offices},{mode:'nightly'});}
+export default {fetch:handle,scheduled};
 

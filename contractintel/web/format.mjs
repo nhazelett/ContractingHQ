@@ -1,3 +1,4 @@
+import {currentDate} from './calendar.mjs';
 export function money(value, compact=false) {
   if (value===null || value===undefined) return 'Not reported';
   const cents=BigInt(value), negative=cents<0n, absolute=negative?-cents:cents;
@@ -17,7 +18,7 @@ export function dollars(cents) {
 }
 export const text=value=>value===null||value===undefined||value===''?'Not reported':String(value);
 export function coveredFiscalYear(dataset,fy){return dataset.coverage_start<=`${fy}-09-30`&&dataset.coverage_end>=`${fy-1}-10-01`;}
-export function daysRemaining(endDate,today=new Date().toISOString().slice(0,10)){
+export function daysRemaining(endDate,today=currentDate()){
   if(!/^\d{4}-\d{2}-\d{2}$/.test(endDate||'')||!/^\d{4}-\d{2}-\d{2}$/.test(today))return null;
   const end=Date.parse(endDate+'T00:00:00Z'),start=Date.parse(today+'T00:00:00Z');
   if(!Number.isFinite(end)||!Number.isFinite(start)||new Date(end).toISOString().slice(0,10)!==endDate)return null;
@@ -28,7 +29,7 @@ export function endLabel(endDate,today){
   return days===null?'Not reported':days<0?'Date passed':days===0?'Ends today':days===1?'1 day':days.toLocaleString()+' days';
 }
 
-export function portfolioStatus(row,today=new Date().toISOString().slice(0,10)){
+export function portfolioStatus(row,today=currentDate()){
   const current=daysRemaining(row.current_end_date,today),potential=daysRemaining(row.potential_end_date,today);
   if(current!==null&&potential!==null&&potential<current)return 'Dates inconsistent';
   if(current!==null&&current>=0)return 'Within reported current PoP';
@@ -40,3 +41,4 @@ export function portfolioStatus(row,today=new Date().toISOString().slice(0,10)){
 // Planning duration includes all reported options; current end stays separately visible.
 export const contractEnd=row=>row.potential_end_date||row.current_end_date||null;
 export const totalPop=row=>text(row.start_date)+' → '+text(row.potential_end_date);
+

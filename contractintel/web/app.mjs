@@ -1,8 +1,10 @@
-import {datasetNames,endName,endHelp,fieldNames,biddingLabel,datePresentation,renderSimpleRegister,settingsChips,wirePanel,revealOffice,welcomeOffice,compactLoading} from './portfolio-ui.mjs?v=piid-visible-20261026';
+import {tryOfficeSnapshot,tryStoredEvidence,storedFiscal,freshnessLabel} from './portfolio-store.mjs?v=d1-pilot-20261026';
+import {currentDate} from './calendar.mjs';
+import {datasetNames,endName,endHelp,fieldNames,biddingLabel,datePresentation,renderSimpleRegister,settingsChips,wirePanel,revealOffice,welcomeOffice,compactLoading} from './portfolio-ui.mjs?v=d1-pilot-20261026';
 import {scanPortfolio} from './portfolio-loader.mjs';
 import {createPortfolioMemory,makeSnapshot,visiblePortfolio} from './portfolio-memory.mjs';
 import {incorporatePortfolio,summariesComplete,portfolioComplete} from './portfolio-progress.mjs';
-import {scopeNames,scopeRows,category,expiryRows,countdown,swatch,drawContracts,drawSetAsides,valueTotal,empty} from './presentation.mjs?v=piid-visible-20261026';
+import {scopeNames,scopeRows,category,expiryRows,countdown,swatch,drawContracts,drawSetAsides,valueTotal,empty} from './presentation.mjs?v=d1-pilot-20261026';
 import {money,csvCell,dollars,text,daysRemaining,endLabel,portfolioStatus,contractEnd,totalPop} from './format.mjs';
 import {summarizeModifications} from './modifications.mjs';
 import {selectRows} from './register.mjs';
@@ -25,11 +27,12 @@ const fields=[['piid','PIID','145px'],['description','Requirement','minmax(195px
 const defaultColumns=['days_left','description','piid','recipient','set_aside','current_end_date','potential_end_date','award_amount_cents','latest_action_date'];
 const visible=new Set(defaultColumns);
 const ui={officeChosen:false,detailedRows:false,tab:'overview',page:0,pageSize:50,selected:null,expanded:new Set(),expiryLimit:50};
+$('portfolio-source').value=new URL(location.href).searchParams.get('source')==='live'?'live':'auto';
 let detailGeneration=0;
 function el(tag,content,className){const n=document.createElement(tag);if(content!==undefined)n.textContent=content;if(className)n.className=className;return n;}
 function failure(error){$('error').hidden=false;$('error').textContent=error.message;}
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-async function api(path,params={},signal){const summary=path==='award-summary',u=new URL(API+'/api/'+(summary?'award':path),location.origin);for(const[k,v]of Object.entries(params))if(v!==null&&v!==undefined)u.searchParams.set(k,v);if(['awards','award','award-summary','history','fiscal'].includes(path)){const key=u.href+(summary?'#summary':''),cached=sourceCache.get(key);if(cached&&Date.now()-cached.time<21600000)return cached.data;const data=await sourceResolve(u,{OFFICES:state.directory,SIGNAL:signal,SOURCE_FETCH:sourceFetch,SUMMARY_ONLY:summary});if(sourceCache.size>=250)sourceCache.delete(sourceCache.keys().next().value);sourceCache.set(key,{time:Date.now(),data});$('source-retry').textContent='';return data;}const r=await fetch(u,{signal});let data;try{data=await r.json();}catch{throw new Error('The data service did not return a readable response.');}if(!r.ok)throw Object.assign(new Error(data.error||'The data service is unavailable.'),{status:r.status});return data;}
+async function api(path,params={},signal){if(state.fromD1){const stored=await tryStoredEvidence({path,params,office:state.office,signal,base:API});if(stored)return stored;}const summary=path==='award-summary',u=new URL(API+'/api/'+(summary?'award':path),location.origin);for(const[k,v]of Object.entries(params))if(v!==null&&v!==undefined)u.searchParams.set(k,v);if(['awards','award','award-summary','history','fiscal'].includes(path)){const key=u.href+(summary?'#summary':''),cached=sourceCache.get(key);if(cached&&Date.now()-cached.time<21600000)return cached.data;const data=await sourceResolve(u,{OFFICES:state.directory,SIGNAL:signal,SOURCE_FETCH:sourceFetch,SUMMARY_ONLY:summary});if(sourceCache.size>=250)sourceCache.delete(sourceCache.keys().next().value);sourceCache.set(key,{time:Date.now(),data});$('source-retry').textContent='';return data;}const r=await fetch(u,{signal});let data;try{data=await r.json();}catch{throw new Error('The data service did not return a readable response.');}if(!r.ok)throw Object.assign(new Error(data.error||'The data service is unavailable.'),{status:r.status});return data;}
 function query(){return {q:$('search').value,view:$('view').value,sort:$('sort').value,direction:state.direction,basis:$('date-basis').value};}
 function startDialog(title,kicker='SOURCE EVIDENCE'){$('detail-title').textContent=title;$('detail-kicker').textContent=kicker;$('detail-body').replaceChildren(el('p','Loading…','muted'));if(!$('detail').open)$('detail').showModal();return ++detailGeneration;}
 function controls(){const done=portfolioComplete(state);$('continue').disabled=state.busy||done;$('continue').textContent=done?'Portfolio loaded':state.busy?'Updating portfolio...':'Resume loading';$('continue').hidden=state.busy||done;$('pause').disabled=!state.busy;$('load-more').hidden=done||state.busy;$('load-more').disabled=state.busy;$('export').disabled=!displayRecords().length;$('retry-missing').hidden=![...state.records.values()].some(r=>r.details_unavailable);$('retry-missing').disabled=state.busy;}
@@ -55,6 +58,7 @@ function renderLoadingNotice(){
  else if(!done)$('freshness').textContent='Ready · '+ready.toLocaleString()+' contracts loaded';
  else if(fiscal.busy)$('freshness').textContent='Loading fiscal-year totals for '+name;
  else $('freshness').textContent='Search complete · '+ready.toLocaleString()+' contracts loaded';
+ if(state.fromD1)$('freshness').textContent=freshnessLabel(state.checked)+' · '+ready.toLocaleString()+' contracts';
  compactLoading();$('progress').hidden=!state.busy&&!fiscal.busy;if(fiscal.busy&&!state.busy)$('progress').removeAttribute('value');
  if(done&&fiscalDone)return;
  const loading=done?fiscal.busy:state.busy&&!state.paused,interrupted=done?Boolean(fiscal.error):!$('error').hidden;
@@ -76,12 +80,23 @@ async function hydrateEvidence(id,signal=state.controller?.signal){
 }
 
 async function loadOffice(){
+ state.fromD1=false;state.d1Fiscal=null;
  if(state.records.size||state.preview.size)saveBrowserPortfolio();
  state.controller?.abort();sourceCache.clear();state.controller=new AbortController();state.generation++;const generation=state.generation;
  state.office=$('office').value;state.window=$('window').value;state.records=new Map();state.preview=new Map();state.cache=new Map();state.pending=[];state.evidencePending=[];state.page=1;state.cursor=null;state.sortValue=null;state.hasNext=true;state.busy=false;state.paused=false;state.checked=null;state.candidates=0;state.excluded=0;
  try{localStorage.setItem('contractintel-office',state.office);}catch{}
  const url=new URL(location.href);url.searchParams.set('office',state.office);history.replaceState(null,'',url);
  $('error').hidden=true;$('table-scroll').scrollTop=0;$('set-aside').value='';resetFiscal();render();
+ const sourceURL=new URL(location.href);sourceURL.searchParams.set('source',$('portfolio-source').value);history.replaceState(null,'',sourceURL);
+ if($('portfolio-source').value!=='live'){
+  const snapshot=await tryOfficeSnapshot({office:state.office,start:state.window,signal:state.controller.signal,base:API});
+  if(generation!==state.generation)return;
+  const fy=fiscalYear(currentDate());
+  if(snapshot&&snapshot.fiscal_totals.some(t=>t.year===fy)&&snapshot.fiscal_totals.some(t=>t.year===fy-1)){
+   state.fromD1=true;state.d1Fiscal=snapshot.fiscal_totals;state.checked=snapshot.published_at;state.records=new Map(snapshot.records.map(r=>[r.award_id,r]));state.hasNext=false;state.pending=[];state.evidencePending=[];fiscal.index=fiscal.months.length;
+   renderFiscal();render();return;
+  }
+ }
  browserMemory.get(state.office,state.window).then(saved=>{if(generation!==state.generation||summariesComplete(state)||!saved)return;state.preview=new Map(saved.records.map(r=>[r.award_id,r]));render();});
  loadFiscal();await loadBatch();
 }
@@ -117,7 +132,7 @@ function renderExpiring(upcoming){
   const entries=upcoming.filter(r=>r.days>=min&&r.days<=max),section=el('section',undefined,'panel'),heading=el('div',undefined,'panel-heading'),totals=el('span',entries.length.toLocaleString()+' contracts · '+valueTotal(entries),'group-count');heading.append(el('h2',label),totals);section.append(heading);
   const box=el('div');
   drawContracts(box,entries.slice(0,ui.expiryLimit),$('date-basis').value,r=>{
-   const id=r.award_id;ui.expanded.has(id)?ui.expanded.delete(id):ui.expanded.add(id);renderExpiring(upcoming);
+   const id=r.award_id;if(state.fromD1&&!state.cache.has(id)){const generation=state.generation;api('award',{id},state.controller.signal).then(data=>{if(generation!==state.generation)return;state.cache.set(id,data);renderOverview();}).catch(failure);}ui.expanded.has(id)?ui.expanded.delete(id):ui.expanded.add(id);renderExpiring(upcoming);
    [...panel.querySelectorAll('[data-award]')].find(n=>n.dataset.award===id)?.focus({preventScroll:true});
   },state.busy,{expanded:ui.expanded,detailFor:r=>{
    const detail=el('div',undefined,'inline-evidence'),data=state.cache.get(r.award_id);
@@ -201,7 +216,7 @@ for(const[key,label]of fields){const option=el('label'),input=el('input');input.
 for(const id of ['view','sort','date-basis','set-aside'])$(id).addEventListener('change',()=>{ui.page=0;$('table-scroll').scrollTop=0;render();});
 $('search').addEventListener('input',()=>{ui.page=0;$('table-scroll').scrollTop=0;render();});
 $('direction').addEventListener('click',()=>{state.direction=state.direction==='asc'?'desc':'asc';$('direction').textContent=state.direction==='asc'?'Ascending ↑':'Descending ↓';render();});
-for(const id of ['office','window'])$(id).addEventListener('change',()=>{if(!ui.officeChosen){if(id==='office')state.office=$('office').value;return;}ui.page=0;ui.selected=null;ui.expanded.clear();$('office-dropdown').open=false;loadOffice();});
+for(const id of ['office','window','portfolio-source'])$(id).addEventListener('change',()=>{if(!ui.officeChosen){if(id==='office')state.office=$('office').value;return;}ui.page=0;ui.selected=null;ui.expanded.clear();$('office-dropdown').open=false;loadOffice();});
 $('office-search').addEventListener('input',filterOffices);$('department').addEventListener('change',filterOffices);$('continue').addEventListener('click',loadBatch);
 $('retry-missing').addEventListener('click',()=>{for(const row of state.records.values())if(row.details_unavailable){row.details_pending=true;row.details_unavailable=false;state.pending.push(row.award_id);}render();loadBatch();});
 $('load-more').addEventListener('click',loadBatch);$('pause').addEventListener('click',()=>{state.paused=true;progress();});$('export').addEventListener('click',exportLoaded);
@@ -247,7 +262,7 @@ let saved;try{saved=localStorage.getItem('contractintel-theme');}catch{}theme(sa
 
 function resetFiscal(){fiscal={generation:state.generation,months:fiscalMonths(),index:0,page:1,rows:[],busy:false,paused:false,error:null};renderFiscal();}
 function renderFiscal(){
- const fy=fiscalYear(),totals=fiscalTotals(fiscal.rows||[]),complete=fiscal.index===fiscal.months?.length;
+ const fy=fiscalYear(),totals=state.d1Fiscal?storedFiscal(state.d1Fiscal):fiscalTotals(fiscal.rows||[]),complete=fiscal.index===fiscal.months?.length;
  for(const [i,prefix] of ['prior','current'].entries()){
   const b=totals[i],year=i?fy:fy-1;
   $(prefix+'-dollar-label').textContent='Money spent · FY'+year;

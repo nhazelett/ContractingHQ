@@ -1,5 +1,6 @@
+import {currentDate} from './calendar.mjs';
 import {contractEnd,daysRemaining} from './format.mjs';
-export function selectRows(records,{q='',view='all',sort='contract_end',direction='asc',basis='current',today=new Date().toISOString().slice(0,10)}={}){
+export function selectRows(records,{q='',view='all',sort='contract_end',direction='asc',basis='current',today=currentDate()}={}){
  const query=q.trim().toLowerCase(),dateKey=basis==='potential'?'potential_end_date':'current_end_date';
  const rows=records.filter(r=>{
   if(query&&![r.piid,r.description,r.recipient].some(v=>String(v||'').toLowerCase().includes(query)))return false;
@@ -27,3 +28,4 @@ export function selectRows(records,{q='',view='all',sort='contract_end',directio
   return a.piid.localeCompare(b.piid)||a.award_id.localeCompare(b.award_id);
  });return rows;
 }
+

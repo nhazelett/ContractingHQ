@@ -1,4 +1,4 @@
-import {simpleContractCells,endName,endHelp,biddingLabel,whoCanBid} from './portfolio-ui.mjs?v=piid-visible-20261026';
+import {simpleContractCells,endName,endHelp,biddingLabel,whoCanBid} from './portfolio-ui.mjs?v=d1-pilot-20261026';
 import {daysRemaining,money,text} from './format.mjs';
 import {lifecycle} from './lifecycle.mjs';
 import {setAsideLabel,setAsideGroups} from './overview.mjs';

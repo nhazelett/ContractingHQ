@@ -13,6 +13,7 @@ on:
       - contractintel/worker/**
       - contractintel/opportunities/**
       - contractintel/tests/**
+      - contractintel/portfolio/**
       - .github/workflows/contractintel-preview.yml
 permissions:
   contents: read
@@ -22,7 +23,7 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 90
     env:
       WRANGLER_SEND_METRICS: 'false'
       CLOUDFLARE_ACCOUNT_ID: a7443e0102de587d778491ab08fd883f
@@ -45,6 +46,38 @@ jobs:
           node contractintel/opportunities/deploy.mjs refresh
           node contractintel/opportunities/deploy.mjs warm
           node contractintel/opportunities/deploy.mjs secret
+          node contractintel/portfolio/deploy.mjs
           npx --yes wrangler@4.140.0 deploy --config contractintel/worker/wrangler.jsonc
       - name: Verify live opportunity data, filters, pagination, exports and assets
         run: node contractintel/opportunities/smoke.mjs
+      - name: Backfill FA4528 only and verify counts and storage
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          PORTFOLIO_INGEST_SECRET="$(openssl rand -hex 32)"
+          echo "::add-mask::$PORTFOLIO_INGEST_SECRET"
+          printf '%s' "$PORTFOLIO_INGEST_SECRET" | npx --yes wrangler@4.140.0 secret put PORTFOLIO_INGEST_SECRET --config contractintel/worker/wrangler.jsonc
+          BASE=https://kthq-contractintel.nickhazelett.workers.dev
+          COMPLETE=false
+          CHUNK_BUDGET=$(node --input-type=module -e "import {CONFIG} from './contractintel/portfolio/ingest.mjs'; console.log(CONFIG.maxBackfillChunks)")
+          for CHUNK in $(seq 1 "$CHUNK_BUDGET"); do
+            RESULT=$(curl --silent --show-error --fail-with-body --max-time 240 -X POST "$BASE/api/admin/portfolio/ingest" -H "X-ContractIntel-Ingest-Secret: $PORTFOLIO_INGEST_SECRET" -H 'Content-Type: application/json' --data '{"office":"FA4528","mode":"backfill"}') || { printf '%s\n' "$RESULT"; exit 1; }
+            echo "$RESULT"
+            STATUS=$(printf '%s' "$RESULT" | python3 -c 'import json,sys; print(json.load(sys.stdin)["status"])')
+            if [ "$STATUS" = completed ]; then COMPLETE=true; break; fi
+            if [ "$STATUS" != yielded ]; then echo 'Pilot ingestion stopped; checkpoint retained.'; exit 1; fi
+          done
+          if [ "$COMPLETE" != true ]; then echo 'Pilot chunk budget exhausted; checkpoint retained.'; exit 1; fi
+          curl --silent --show-error --fail "$BASE/api/admin/portfolio/storage" -H "X-ContractIntel-Ingest-Secret: $PORTFOLIO_INGEST_SECRET" -o contractintel/portfolio/fa4528-storage.json
+          node contractintel/portfolio/verify.mjs
+      - name: Preserve FA4528 verification report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contractintel-fa4528-verification
+          path: |
+            contractintel/portfolio/fa4528-report.json
+            contractintel/portfolio/fa4528-storage.json
+          if-no-files-found: ignore

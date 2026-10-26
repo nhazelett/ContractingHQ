@@ -1,7 +1,8 @@
+import {currentDate} from './calendar.mjs';
 import {daysRemaining} from './format.mjs';
 
 // Planning classification only: performance dates do not establish actual closeout.
-export function lifecycle(row,today=new Date().toISOString().slice(0,10)){
+export function lifecycle(row,today=currentDate()){
  const result=(kind,label,reason)=>({kind,label,reason,scope:kind==='completed'?'completed':'active'});
  if(row.details_pending)return result('review','Checking dates','Award details are still loading.');
  if(row.details_unavailable)return result('review','Dates need review','The source detail record is unavailable.');

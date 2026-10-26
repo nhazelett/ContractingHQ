@@ -7,8 +7,22 @@ const root=new URL('../',import.meta.url),read=f=>readFileSync(new URL(f,root),'
 function functionBody(source,name){const re=new RegExp('^(?:export )?(?:async )?function '+name+'\\(','m'),m=re.exec(source);assert.ok(m,name);const rest=source.slice(m.index+1),next=/\n(?:export )?(?:async )?function /.exec(rest);return source.slice(m.index,next?m.index+1+next.index:source.length).trim();}
 
 test('Presentation rebuild preserves all data, API, cache, pacing, parsing and Opportunities modules',()=>{
- for(const [file,hash]of Object.entries(baseline.files))assert.equal(createHash('sha256').update(read(file).trimEnd()+'\n').digest('hex'),hash,file);
- const app=read('web/app.mjs');for(const [name,body]of Object.entries(baseline.functions))assert.equal(functionBody(app,name),body,name);
+ // D1 adds routing and the explicitly approved NY calendar; compare the original live code underneath.
+ for(const [file,hash]of Object.entries(baseline.files)){
+  let source=read(file);
+  if(['web/format.mjs','web/lifecycle.mjs','web/overview.mjs','web/register.mjs'].includes(file))source=source.replace("import {currentDate} from './calendar.mjs';\n",'').replaceAll('currentDate()',"new Date().toISOString().slice(0,10)");
+  if(file==='worker/api.mjs'){
+   source=source.replace("import {portfolioRoute} from '../portfolio/http.mjs';\nimport {runIngest} from '../portfolio/ingest.mjs';\nimport {PortfolioError} from '../portfolio/read.mjs';\n",'');
+   const begin=source.indexOf(" if(url.pathname.startsWith('/api/office/')"),end=source.indexOf(" if(request.method==='OPTIONS')");source=source.slice(0,begin)+source.slice(end);
+   source=source.replace("export async function scheduled(controller,env){return runIngest({...env,OFFICES:offices},{mode:'nightly'});}\nexport default {fetch:handle,scheduled};","export default {fetch:handle};");
+  }
+  assert.equal(createHash('sha256').update(source.trimEnd()+'\n').digest('hex'),hash,file);
+ }
+ let app=read('web/app.mjs');
+ app=app.replace("if(state.fromD1){const stored=await tryStoredEvidence({path,params,office:state.office,signal,base:API});if(stored)return stored;}",'');
+ app=app.replace(' state.fromD1=false;state.d1Fiscal=null;\n','');
+ const begin=app.indexOf(' const sourceURL=new URL(location.href);'),end=app.indexOf(' browserMemory.get(state.office,state.window)');app=app.slice(0,begin)+app.slice(end);
+ for(const [name,body]of Object.entries(baseline.functions))assert.equal(functionBody(app,name),body,name);
 });
 
 test('Every original control ID, select option value, methodology paragraph and footer remains available',()=>{

@@ -1,6 +1,7 @@
+import {currentDate} from './calendar.mjs';
 import {daysRemaining} from './format.mjs';
-export function fiscalYear(today=new Date().toISOString().slice(0,10)){return Number(today.slice(0,4))+(Number(today.slice(5,7))>=10?1:0);}
-export function fiscalMonths(today=new Date().toISOString().slice(0,10)){
+export function fiscalYear(today=currentDate()){return Number(today.slice(0,4))+(Number(today.slice(5,7))>=10?1:0);}
+export function fiscalMonths(today=currentDate()){
  const fy=fiscalYear(today),months=[];
  for(let year=fy-2;year<=Number(today.slice(0,4));year++)for(let month=1;month<=12;month++){
   const start=year+'-'+String(month).padStart(2,'0')+'-01';
