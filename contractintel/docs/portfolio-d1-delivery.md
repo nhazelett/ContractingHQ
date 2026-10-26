@@ -198,7 +198,7 @@ All existing tabs, office controls, search/status/set-aside filters, date-mode/h
 9. Review `fa4528-report.json` for four-window count equality, fiscal equality, timing samples and table storage. Any difference blocks expansion.
 10. Test a source failure or disabled D1 binding in a local test environment; retain prior complete data and verify live fallback.
 
-The automated suite has 110 passing tests and uses Node SQLite and a minimal DOM fixture. No real-browser/mobile visual result is claimed by these tests.
+The automated suite has 111 passing tests and uses Node SQLite and a minimal DOM fixture. No real-browser/mobile visual result is claimed by these tests.
 
 ## Pilot progress
 
@@ -211,3 +211,5 @@ Nightly changed-award cursor timestamps use the same date-string conversion as t
 Nightly runs copy unchanged published evidence into staging inside D1 with one idempotent SQL operation, instead of downloading each unchanged record/history to the runner and sending it back. Changed/new awards still use the same source adapter and pacing. This reduces runner/D1 round trips while retaining exact history-window membership, every business field, the same source hashes, and the publication gate.
 
 The independent count comparison uses the existing summary-only award-detail read: requested counts depend on award dates and availability, not modification history. It still fetches every source award summary independently and separately scans fiscal transactions. Stored modification/history identity is protected by publication validation. This removes redundant history requests from count verification without changing pacing or any count rules. Classification uses the New York date at comparison time; the report separately records the fiscal scan cutoff date.
+
+The source-request reserve applies between complete award operations, not between the two requests inside an award read. The hard request cap aborts through the shared source signal and preserves the checkpoint. A regression test covers an odd number of discovery requests at this boundary.

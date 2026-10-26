@@ -83,3 +83,11 @@ test('Independent count comparison reads fresh award summaries and fiscal transa
  const x=sqlite();await seedOffices(x.db,[office]);const upstream=source();await runIngest({PORTFOLIO_DB:x.db,OFFICES:[office]},{mode:'backfill',now:fixed,fetcher:upstream.fetcher,config:{sourceIntervalMs:0}});upstream.calls.length=0;
  const report=await compareOffice({directory:[office],today:'2026-10-25',sourceFetch:upstream.fetcher,getSnapshot:start=>officeSnapshot(x.db,'FA4528',start,{now:fixed})});assert.equal(report.match,true);assert.equal(report.windows.length,4);assert.equal(report.windows.reduce((n,w)=>n+w.metrics.length,0),96);assert.equal(upstream.calls.filter(c=>c.path.includes('/transactions/')).length,0);assert.equal(upstream.calls.filter(c=>c.path.includes('/awards/')).length,5);
 });
+
+test('An odd discovery request count cannot interrupt an award pair at the soft request boundary',async()=>{
+ const x=sqlite();await seedOffices(x.db,[office]);const upstream=source(),env={PORTFOLIO_DB:x.db,OFFICES:[office]},options={now:fixed,fetcher:upstream.fetcher,config:{sourceIntervalMs:0}};
+ await runIngest(env,{...options,mode:'backfill'});
+ const first=await runIngest(env,{...options,mode:'nightly',config:{sourceIntervalMs:0,maxSourceRequests:8}});
+ assert.equal(first.status,'yielded');assert.equal(first.sourceRequests,7);assert.ok(first.sourceRequests<=8);
+ assert.equal((await runIngest(env,{...options,mode:'nightly'})).status,'completed');
+});

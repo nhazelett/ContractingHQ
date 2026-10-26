@@ -69,7 +69,7 @@ export async function runIngest(env,{mode='nightly',now=Date.now,fetcher=fetch,c
  const ensure=()=>{if(!remaining())throw new YieldRun('Budget reached; checkpoint retained.');};
  const rawResponses=new Map(),deadline=new AbortController(),deadlineTimer=setTimeout(()=>deadline.abort(new Error('Ingestion time budget reached.')),config.maxRuntimeMs);
  const paced=createSourceFetch({interval:config.sourceIntervalMs,fetcher:async(url,options)=>{
-  ensure();stats.sourceRequests++;const response=await fetcher(url,options);if(!response.ok)stats.sourceFailures.push({status:response.status,path:new URL(url).pathname});
+  if(stats.sourceRequests>=config.maxSourceRequests){deadline.abort(new YieldRun('Source request budget reached.'));deadline.signal.throwIfAborted();}stats.sourceRequests++;const response=await fetcher(url,options);if(!response.ok)stats.sourceFailures.push({status:response.status,path:new URL(url).pathname});
   if(response.ok)try{rawResponses.set(new URL(url).pathname+(new URL(url).pathname==='/api/v2/transactions/'?'|'+JSON.parse(options.body).award_id:''),await response.clone().json());}catch{}
   return response;
  }});
