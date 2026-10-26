@@ -29,6 +29,7 @@ on:
       - .github/workflows/contractintel-r2-cohort.yml
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: contractintel-r2-FA4800
   cancel-in-progress: false
@@ -56,6 +57,10 @@ jobs:
           PERFORM_VERIFY: ${{ github.event_name == 'push' && 'true' || inputs.verify && 'true' || 'false' }}
           WRANGLER_SEND_METRICS: 'false'
         run: node contractintel/portfolio/r2/runner.mjs
+      - name: Report full FA4800 import cost after authoritative verification
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node contractintel/portfolio/fa4800-metrics.mjs
       - name: Save measurements only
         if: always()
         uses: actions/upload-artifact@v4
@@ -63,7 +68,9 @@ jobs:
           name: contractintel-fa4800-r2-report
           retention-days: 1
           overwrite: true
-          path: contractintel/portfolio/r2/out/fa4800-r2-update.json
+          path: |
+            contractintel/portfolio/r2/out/fa4800-r2-update.json
+            contractintel/portfolio/r2/out/fa4800-cost.json
           if-no-files-found: ignore
       - name: Continue the next bounded batch if needed
         if: always() && (github.event_name == 'push' || inputs.auto_resume)

@@ -1,6 +1,7 @@
 // All NEW ingestion limits live here. Existing source helper internals are intentionally unchanged.
 export const CONFIG=Object.freeze({
  queue:Object.freeze({executionEnabled:false,maxGroupOffices:5,maxOffices:1432,maxGroups:300,maxStateBytes:1048576,maxRequestBytes:16384,maxCheckpointRefLength:256,maxAttempts:64,retryDelayMs:300000,leaseGraceMs:300000,maxDailySourceRequests:2160,maxDailyRuntimeMs:5400000,maxTotalStorageBytes:268435456,maxStorageMeasurementAgeMs:300000,retainedBudgetDays:8}),
+ metrics:Object.freeze({maxRuns:100,maxAttemptsPerRun:5,maxJobsPerAttempt:5,maxLogBytes:4194304}),
  access:Object.freeze({jwksCacheMs:300000,clockSkewSeconds:30,maxTokenBytes:16384,maxJwksBytes:65536,maxKeys:32,timeoutMs:10000}),
  authority:Object.freeze({stageBatchRows:20,stageIndexBatchRows:1000,maxStageRows:200000,readBatchRows:100,maxStageRowBytes:1500000,maxHTTPRequestsPerJob:1800,storageCheckEveryBatches:10,maxReceiptBytes:262144,legacyCheckpointJSONBytes:1048576,retryAttempts:5,retryBaseMs:1000,retryMaxMs:30000,retryJitterMs:1000,seedOfficeCount:150}),
  coverage:Object.freeze({listLimit:161,progressMetadataBytes:1024}),
