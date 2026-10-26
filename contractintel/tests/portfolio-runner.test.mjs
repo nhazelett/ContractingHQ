@@ -6,6 +6,7 @@ import {dispatchIngest} from '../portfolio/dispatch.mjs';
 import {officeSnapshot} from '../portfolio/read.mjs';
 import {runPackage} from '../portfolio/runner.mjs';
 import {portfolioRoute} from '../portfolio/http.mjs';
+import {compareOffice} from '../portfolio/compare.mjs';
 import {sqlite,source,office,fixed} from './fixtures/portfolio-d1.mjs';
 function httpFixture(){
  const {db,sql}=sqlite(),bodies=[];
@@ -70,4 +71,15 @@ test('Nightly changed-award pagination converts timestamp cursors exactly like t
   }return upstream.fetcher(url,options);
  };
  assert.equal((await runIngest(env,{mode:'nightly',now:fixed,fetcher,config:{sourceIntervalMs:0}})).status,'completed');assert.equal(pages,2);assert.equal(observed.last_record_sort_value,'2026-10-25');assert.equal(observed.last_record_unique_id,55);
+});
+
+test('Nightly reuses unchanged evidence inside D1 while preserving every published business record',async()=>{
+ const x=sqlite();await seedOffices(x.db,[office]);const upstream=source(),env={PORTFOLIO_DB:x.db,OFFICES:[office]},options={now:fixed,fetcher:upstream.fetcher,config:{sourceIntervalMs:0}};await runIngest(env,{...options,mode:'backfill'});
+ const before=x.sql.prepare('SELECT * FROM awards ORDER BY generated_unique_award_id').all(),history=x.sql.prepare('SELECT * FROM award_history_pages ORDER BY generated_unique_award_id').all();let copies=0;const prepare=x.db.prepare;x.db.prepare=sql=>{if(sql.includes('Copy unchanged'))copies++;if(sql.startsWith('INSERT INTO ingest_stage')&&sql.includes('FROM awards a LEFT JOIN'))copies++;return prepare(sql);};
+ await runIngest(env,{...options,mode:'nightly'});assert.equal(copies,1);assert.deepEqual(x.sql.prepare('SELECT * FROM awards ORDER BY generated_unique_award_id').all(),before);assert.deepEqual(x.sql.prepare('SELECT * FROM award_history_pages ORDER BY generated_unique_award_id').all(),history);
+});
+
+test('Independent count comparison reads fresh award summaries and fiscal transactions without redundant history requests',async()=>{
+ const x=sqlite();await seedOffices(x.db,[office]);const upstream=source();await runIngest({PORTFOLIO_DB:x.db,OFFICES:[office]},{mode:'backfill',now:fixed,fetcher:upstream.fetcher,config:{sourceIntervalMs:0}});upstream.calls.length=0;
+ const report=await compareOffice({directory:[office],today:'2026-10-25',sourceFetch:upstream.fetcher,getSnapshot:start=>officeSnapshot(x.db,'FA4528',start,{now:fixed})});assert.equal(report.match,true);assert.equal(report.windows.length,4);assert.equal(report.windows.reduce((n,w)=>n+w.metrics.length,0),96);assert.equal(upstream.calls.filter(c=>c.path.includes('/transactions/')).length,0);assert.equal(upstream.calls.filter(c=>c.path.includes('/awards/')).length,5);
 });

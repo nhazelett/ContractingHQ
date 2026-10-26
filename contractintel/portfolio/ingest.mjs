@@ -119,7 +119,14 @@ export async function runIngest(env,{mode='nightly',now=Date.now,fetcher=fetch,c
     if(!data.has_next){checkpoint.window++;checkpoint.page=1;checkpoint.cursor=null;checkpoint.sortValue=null;if(checkpoint.window===config.windows.length)checkpoint.phase='hydrate';}
     await save();
    }else if(checkpoint.phase==='hydrate'){
-    const next=await db.prepare("SELECT record_key,data_json FROM ingest_stage WHERE work_id=? AND record_kind='candidate' AND record_key>? ORDER BY record_key LIMIT 1").bind(workId,checkpoint.after).first();
+    if(runMode==='nightly'&&!checkpoint.baselineCopied){
+     // Copy unchanged published evidence inside D1, avoiding thousands of runner round trips.
+     const info=await db.prepare('PRAGMA table_info(awards)').all(),columns=info.results.map(c=>c.name).filter(c=>!['record_json','raw_json','source_hash','published_run_id'].includes(c));
+     const fields=columns.map(c=>"'"+c+"',a."+c).join(',');
+     const sql="INSERT INTO ingest_stage(work_id,record_kind,record_key,data_json) SELECT ?,'award',a.generated_unique_award_id,json_object('db',json_object("+fields+"),'record',json(a.record_json),'raw',json(a.raw_json),'history',CASE WHEN h.page IS NULL THEN NULL ELSE json_object('actions',json(h.actions_json),'has_next',json(CASE WHEN h.has_next=1 THEN 'true' ELSE 'false' END),'page',1) END,'rawHistory',json(h.raw_json),'source_hash',a.source_hash) FROM awards a LEFT JOIN award_history_pages h ON h.generated_unique_award_id=a.generated_unique_award_id AND h.page=1 WHERE a.office_dodaac=? AND EXISTS(SELECT 1 FROM ingest_stage c WHERE c.work_id=? AND c.record_kind='candidate' AND c.record_key=a.generated_unique_award_id) AND NOT EXISTS(SELECT 1 FROM ingest_stage c WHERE c.work_id=? AND c.record_kind='changed' AND c.record_key=a.generated_unique_award_id) ON CONFLICT(work_id,record_kind,record_key) DO NOTHING";
+     await db.prepare(sql).bind(workId,office,workId,workId).run();checkpoint.baselineCopied=true;await save();
+    }
+    const next=await db.prepare("SELECT record_key,data_json FROM ingest_stage c WHERE work_id=? AND record_kind='candidate' AND record_key>? AND NOT EXISTS(SELECT 1 FROM ingest_stage a WHERE a.work_id=c.work_id AND a.record_kind='award' AND a.record_key=c.record_key) ORDER BY record_key LIMIT 1").bind(workId,checkpoint.after).first();
     if(!next){checkpoint.phase='fiscal';await save();continue;}
     if(checkpoint.awardCount===undefined){const count=await db.prepare("SELECT count(*) n FROM ingest_stage WHERE work_id=? AND record_kind='candidate'").bind(workId).first();checkpoint.awardCount=count.n;}
     if(checkpoint.awardCount>config.maxAwards)throw new Error('Office award budget exceeded.');

@@ -198,7 +198,7 @@ All existing tabs, office controls, search/status/set-aside filters, date-mode/h
 9. Review `fa4528-report.json` for four-window count equality, fiscal equality, timing samples and table storage. Any difference blocks expansion.
 10. Test a source failure or disabled D1 binding in a local test environment; retain prior complete data and verify live fallback.
 
-The automated suite has 108 passing tests and uses Node SQLite and a minimal DOM fixture. No real-browser/mobile visual result is claimed by these tests.
+The automated suite has 110 passing tests and uses Node SQLite and a minimal DOM fixture. No real-browser/mobile visual result is claimed by these tests.
 
 ## Pilot progress
 
@@ -207,3 +207,7 @@ The automated suite has 108 passing tests and uses Node SQLite and a minimal DOM
 Raw transaction captures are keyed by award ID as well as endpoint. A regression test reproduces a late history response following an unavailable award; normalized and raw transaction IDs must match before staging/publication. The publication phase validates older staged checkpoints too and re-fetches any mismatched award evidence through the same original source adapter and pacing helper. This repairs source identity, not dashboard counts.
 
 Nightly changed-award cursor timestamps use the same date-string conversion as the unchanged live source adapter. Source API date-window discovery follows its UTC-date convention, while all countdowns, date review and dataset classification use America/New_York. The two boundaries are deliberately distinct.
+
+Nightly runs copy unchanged published evidence into staging inside D1 with one idempotent SQL operation, instead of downloading each unchanged record/history to the runner and sending it back. Changed/new awards still use the same source adapter and pacing. This reduces runner/D1 round trips while retaining exact history-window membership, every business field, the same source hashes, and the publication gate.
+
+The independent count comparison uses the existing summary-only award-detail read: requested counts depend on award dates and availability, not modification history. It still fetches every source award summary independently and separately scans fiscal transactions. Stored modification/history identity is protected by publication validation. This removes redundant history requests from count verification without changing pacing or any count rules. Classification uses the New York date at comparison time; the report separately records the fiscal scan cutoff date.
