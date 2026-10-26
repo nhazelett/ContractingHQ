@@ -1,3 +1,4 @@
+import {queueSummary} from '../queue/store.mjs';
 import {CONFIG,r2Profile} from '../ingest.mjs';
 import {storedCoverage} from './coverage.mjs';
 import {createFormat} from './format.mjs';
@@ -28,6 +29,7 @@ export async function coverageDashboard(env){
   }catch{row.issue='Coverage measurements unavailable. Existing contract loading is unchanged.';}
   offices.push(row);
  }
- return {offices,default_status:'live',directory_count:env.OFFICES?.length||null,generated_at:new Date().toISOString(),
+ const queue=await queueSummary(env.PORTFOLIO_DB);
+ return {queue,offices,default_status:'live',directory_count:env.OFFICES?.length||null,generated_at:new Date().toISOString(),
   note:'Saved progress is not a heartbeat. A batch may be running, waiting, or stopped; its workflow has the current execution status. Storage is measured, not a billing estimate.'};
 }

@@ -36,3 +36,14 @@ for(const asset of ['coverage.html','coverage.css','coverage.mjs']){
 const home=await(await fetch(origin+'/')).text();assert.ok(home.includes('href="./coverage.html"'));
 const forbidden=await fetch(origin+'/api/office/coverage/details?office=FA9999');assert.equal(forbidden.status,400);
 console.log(JSON.stringify({coverage_live_smoke:{passed:true,offices:coverage.offices.map(({office,status,phase,progress,storage,issue})=>({office,status,phase,progress,storage,issue}))}}));
+
+assert.equal(coverage.queue.available,true,'Durable queue migration is available');
+assert.equal(coverage.queue.execution_enabled,false,'Queue execution remains disabled');
+assert.equal(coverage.queue.active,null,'Disabled queue has no active batch');
+assert.ok(Array.isArray(coverage.queue.groups),'Shared queue groups are readable');
+assert.equal(coverage.queue.limits.maxGroupOffices,CONFIG.queue.maxGroupOffices);
+const planner=await(await fetch(origin+'/coverage.html')).text();assert.ok(planner.includes('id="queue-section"'));assert.ok(planner.includes('id="queue-export"'));
+const planAsset=await fetch(origin+'/queue-plan.mjs');assert.equal(planAsset.status,200);
+const forbiddenQueueWrite=await fetch(origin+'/api/admin/portfolio/queue',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'resume',expected_revision:0})});
+assert.equal(forbiddenQueueWrite.status,401);
+console.log(JSON.stringify({queue_preview_live_smoke:{passed:true,execution_enabled:false,shared_groups:coverage.queue.groups.length,revision:coverage.queue.revision,limits:coverage.queue.limits}}));

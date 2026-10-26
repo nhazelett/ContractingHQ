@@ -1,3 +1,4 @@
+import {queueRequest,QueueError} from './queue/store.mjs';
 import {coverageDashboard} from './r2/dashboard.mjs';
 import {storedCoverage} from './r2/coverage.mjs';
 import {readR2} from './r2/read.mjs';
@@ -29,8 +30,12 @@ export async function portfolioRoute(request,env){
   if([...url.searchParams.keys()].some(k=>k!=='start'))throw new PortfolioError('Unexpected query parameter.',400);
   try{return await readR2(env[CONFIG.r2Offices[match[1]]?.binding],match[1],{start:url.searchParams.get('start')||CONFIG.windows[1]});}catch{}return officeSnapshot(env.PORTFOLIO_DB,match[1],url.searchParams.get('start')||CONFIG.windows[1]);
  }
- if(!['/api/admin/portfolio/ingest','/api/admin/portfolio/storage','/api/admin/portfolio/status'].includes(url.pathname))throw new PortfolioError('Unknown portfolio route.',404);
+ if(!['/api/admin/portfolio/ingest','/api/admin/portfolio/storage','/api/admin/portfolio/status','/api/admin/portfolio/queue'].includes(url.pathname))throw new PortfolioError('Unknown portfolio route.',404);
  if(!await authorized(request,env.PORTFOLIO_INGEST_SECRET))throw new PortfolioError('Unauthorized.',401);
+ if(url.pathname.endsWith('/queue')){
+  if(url.search)throw new PortfolioError('Unexpected query parameter.',400);
+  try{return await queueRequest(request,env.PORTFOLIO_DB,env.OFFICES||[]);}catch(error){throw new PortfolioError(error instanceof QueueError?error.message:'Queue storage unavailable.',error instanceof QueueError?error.status:503);}
+ }
  if(url.pathname.endsWith('/ingest')){
   if(request.method!=='POST')throw new PortfolioError('Use POST to trigger ingestion.',405);
   let body;try{body=await request.json();}catch{throw new PortfolioError('Invalid request body.',400);}
