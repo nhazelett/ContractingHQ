@@ -49,3 +49,11 @@ test('Continuation respects terminal data/cost guards and finite batches',async(
  assert.equal(continuationDecision({status:'yielded',resume_recommended:true},CONFIG.r2Nightly.maxCohortRuns).blocked,true);
  assert.equal(continuationDecision({status:'passed',source_failures:[{status:500}]},1).resume,false);
 });
+
+test('Temporary gateway failures resume within the existing cap; storage and consistency failures stop',async()=>{
+ const {continuationDecision}=await import('./cohort-policy.mjs');
+ for(const status of [429,500,502,503,504])assert.equal(continuationDecision({status:'failed',error:'R2 gateway HTTP '+status},8).resume,true);
+ for(const status of [400,401,403,409,412,413])assert.equal(continuationDecision({status:'failed',error:'R2 gateway HTTP '+status},8).resume,false);
+ assert.equal(continuationDecision({status:'failed',error:'R2 gateway HTTP 503'},CONFIG.r2Nightly.maxCohortRuns).blocked,true);
+ assert.equal(continuationDecision({status:'failed',error:'R2 gateway HTTP 503: checksum differs'},8).resume,false);
+});
