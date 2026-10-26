@@ -1,0 +1,48 @@
+name: ContractIntel R2 nightly backup
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 10 * * *'
+permissions:
+  contents: read
+jobs:
+  refresh:
+    strategy:
+      fail-fast: false
+      matrix:
+        office: [FA4528, FA4800]
+    concurrency:
+      group: contractintel-r2-${{ matrix.office }}
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/contractintel
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check the verified-office gate
+        id: gate
+        env:
+          PILOT_OFFICE: ${{ matrix.office }}
+        run: |
+          node --input-type=module -e "import fs from 'node:fs';import {CONFIG} from './contractintel/portfolio/ingest.mjs';fs.appendFileSync(process.env.GITHUB_OUTPUT,'enabled='+String(CONFIG.r2Offices[process.env.PILOT_OFFICE]?.readEnabled===true)+'\n');"
+      - name: Resume or refresh the verified office
+        if: steps.gate.outputs.enabled == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
+          PILOT_OFFICE: ${{ matrix.office }}
+          RUN_MODE: nightly
+          WRANGLER_SEND_METRICS: 'false'
+        run: node contractintel/portfolio/r2/runner.mjs
+      - name: Save office measurements
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contractintel-r2-backup-${{ matrix.office }}
+          retention-days: 1
+          overwrite: true
+          path: contractintel/portfolio/r2/out/*-r2-update.json
+          if-no-files-found: ignore
