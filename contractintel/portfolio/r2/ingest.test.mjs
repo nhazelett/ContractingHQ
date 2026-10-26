@@ -14,7 +14,7 @@ const config={sourceIntervalMs:0};
 function bucket(){
  const objects=new Map();let revision=0;
  const wrap=entry=>entry?{...entry,size:entry.bytes.length,arrayBuffer:async()=>entry.bytes.slice().buffer,json:async()=>JSON.parse(new TextDecoder().decode(entry.bytes))}:null;
- return {objects,get:async key=>wrap(objects.get(key)),head:async key=>wrap(objects.get(key)),async put(key,value,options={}){
+ return {objects,delete:async key=>{objects.delete(key);},get:async key=>wrap(objects.get(key)),head:async key=>wrap(objects.get(key)),async put(key,value,options={}){
   const previous=objects.get(key),condition=options.onlyIf;
   if(condition?.get('If-Match')&&condition.get('If-Match')!==previous?.httpEtag)return null;
   if(condition?.get('If-None-Match')==='*'&&previous)return null;
@@ -25,6 +25,7 @@ export function gatewayStore(target=bucket(),baseline=bucket()){
  const gateway=createGateway(),env={TARGET:target,BASELINE:baseline,R2_UPDATE_TOKEN:'fixture-secret'},calls=[];
  const call=async(key,method='GET',body,options={},area='target')=>{
   const headers={Authorization:'Bearer '+env.R2_UPDATE_TOKEN};
+  if(method==='DELETE')headers['X-Current-Etag']=options.expected;
   if(method==='PUT'){headers['X-Object-SHA256']=options.sha;headers[options.expected===null?'If-None-Match':'If-Match']=options.expected===null?'*':options.expected;}
   const response=await gateway.fetch(new Request('https://r2/object?key='+encodeURIComponent(key)+'&area='+area,{method,headers,body}),env);calls.push({key,method,area,status:response.status});
   if(response.status===404)return null;
@@ -83,7 +84,7 @@ test('A validation failure retains the old pointer and a retry reuses already up
 
 test('Concurrent pointer changes, incomplete fiscal pages, and the two-version guard fail closed',async()=>{
  const x=await fixture();await runR2Chunk(ingest(x));const before=(await x.store.get(CURRENT)).bytes;
- await assert.rejects(runR2Chunk({...ingest(x),force:true}),/Two-version/);assert.deepEqual((await x.store.get(CURRENT)).bytes,before);
+ assert.equal((await runR2Chunk({...ingest(x),force:true})).status,'completed');assert.equal((await loadPublication(x.store)).manifest.retained_versions.length,2);
  const y=await fixture();await runR2Chunk({...ingest(y),config:{...config,maxSourceRequests:4,sourceRequestReserve:2}});
  const cp=await y.store.get(SETTINGS.checkpointKey),state=await unpack(cp.bytes);state.phase='publish';state.hydrate_index=Object.keys(state.candidates).length;
  const encoded=await pack(state);await y.store.put(SETTINGS.checkpointKey,encoded.bytes,{expected:cp.etag,sha:encoded.sha256});
@@ -166,4 +167,17 @@ test('Only immutable R2 reads are cached, and newly uploaded files must be downl
  const pointerReads=x.calls.filter(call=>call.key===CURRENT&&call.method==='GET').length;await cached.get(CURRENT);await cached.get(CURRENT);assert.equal(x.calls.filter(call=>call.key===CURRENT&&call.method==='GET').length-pointerReads,2);
  const encoded=await pack({new:'source record'}),newKey=PILOT.prefix+'/objects/new-'+encoded.sha256+'.json.gz';
  assert.equal(await cached.get(newKey),null);await cached.put(newKey,encoded.bytes,{expected:null,sha:encoded.sha256});const first=x.calls.length;assert.deepEqual((await cached.get(newKey)).bytes,encoded.bytes);assert.equal(x.calls.slice(first).filter(call=>call.key===newKey&&call.method==='GET').length,1);
+});
+
+test('Retention protects current/previous objects and only deletes old unreferenced tracked files after grace',async()=>{
+ const x=await fixture();await runR2Chunk(ingest(x));await runR2Chunk({...ingest(x),force:true});const current=await x.store.get(CURRENT),manifest=JSON.parse(new TextDecoder().decode(current.bytes));
+ const protectedKey=manifest.objects[0].key;
+ await assert.rejects(x.call(protectedKey,'DELETE',undefined,{expected:current.etag}),/protected/);
+ const obsolete=x.bundle.manifest.metadata.key;
+ await x.call(obsolete,'DELETE',undefined,{expected:current.etag});assert.ok(x.target.objects.has(obsolete));
+ x.target.objects.get(obsolete).uploaded=new Date(Date.now()-SETTINGS.retentionGraceMs-CONFIG.millisecondsPerDay);
+ await assert.rejects(x.call(obsolete,'DELETE',undefined,{expected:'"stale"'}),/Publication changed/);
+ await x.call(obsolete,'DELETE',undefined,{expected:current.etag});assert.ok(!x.target.objects.has(obsolete));
+ assert.ok(!(await (await x.target.get(SETTINGS.ledgerKey)).json()).keys[obsolete]);
+ const stored=await loadPublication(x.store);assert.equal(stored.tables.awards.length,x.tables.awards.length);
 });

@@ -26,6 +26,21 @@ export function createGateway(){return {async fetch(request,env){
    const headers={ETag:object.httpEtag||'"'+object.etag+'"','X-Object-SHA256':object.customMetadata?.sha256||'','Content-Type':'application/octet-stream','X-Object-Bytes':String(object.size)};
    return reply(request.method==='HEAD'?'':new Uint8Array(await object.arrayBuffer()),200,headers);
   }
+  if(request.method==='DELETE'&&area==='target'&&validKey(key)&&!isCurrent){
+   const pointer=await get(env.TARGET,CURRENT);must(pointer&&request.headers.get('X-Current-Etag')===(pointer.httpEtag||'"'+pointer.etag+'"'),'Publication changed; cleanup refused.',412);
+   const current=validateManifest(await pointer.json());must(current.previous_manifest,'Previous publication archive required before cleanup.');
+   const archived=await get(env.TARGET,current.previous_manifest.key);must(archived,'Previous publication archive is missing.');
+   const previous=validateManifest(await unpack(new Uint8Array(await archived.arrayBuffer()),current.previous_manifest.sha256));must(previous.version===current.retained_versions[1],'Previous version identity differs.');
+   const protectedKeys=new Set([CURRENT,current.previous_manifest.key,...current.objects.map(o=>o.key),...previous.objects.map(o=>o.key)]);
+   must(!protectedKeys.has(key),'Current or previous publication object is protected.');
+   const ledgerObject=await get(env.TARGET,S.ledgerKey),ledger=await ledgerObject.json();must(ledger.keys[key],'Cleanup refuses untracked objects.');
+   const object=await head(env.TARGET,key);
+   if(object&&(!object.uploaded||Date.now()-new Date(object.uploaded).getTime()<S.retentionGraceMs))return reply({deleted:false,reason:'retention_grace'});
+   if(object){await env.TARGET.delete(key);stats.writes++;}
+   delete ledger.keys[key];
+   must(await put(S.ledgerKey,bytes(ledger),{onlyIf:new Headers({'If-Match':ledgerObject.httpEtag||'"'+ledgerObject.etag+'"'}),httpMetadata:{contentType:'application/json'}}),'Cleanup reservation reconciliation needs retry.',412);
+   return reply({deleted:true});
+  }
   must(request.method==='PUT'&&area==='target'&&!isLedger,'Gateway method is not allowed.',405);
   must(request.headers.has('If-Match')||request.headers.get('If-None-Match')==='*','Conditional write required.',428);
   const cap=isCurrent?S.maxManifestBytes:isCheckpoint?S.maxCheckpointBytes:PILOT.maxObjectBytes;
@@ -37,7 +52,8 @@ export function createGateway(){return {async fetch(request,env){
   if(isCheckpoint){const state=await unpack(body,null,S.maxCheckpointJSONBytes);must(state.office===S.office&&state.format_version===S.formatVersion&&typeof state.work_id==='string','Invalid checkpoint.');}
   if(isCurrent){
    const manifest=validateManifest(JSON.parse(new TextDecoder().decode(body))),prior=existing?validateManifest(await (await get(env.TARGET,key)).json()):null;
-   const retained=[...new Set([manifest.version,...(prior?.retained_versions||[])])];
+   const retained=[...new Set([manifest.version,...(prior?.retained_versions||[])])].slice(0,manifest.previous_manifest?PILOT.maxStoredVersions:Infinity);
+   if(manifest.previous_manifest){const descriptor=manifest.previous_manifest;must(validKey(descriptor.key),'Invalid previous archive.');const archive=await get(env.TARGET,descriptor.key);must(archive,'Previous archive missing.');const previous=await unpack(new Uint8Array(await archive.arrayBuffer()),descriptor.sha256);must(prior&&canonical(previous)===canonical(prior),'Previous archive does not match current publication.');}
    must(retained.length<=PILOT.maxStoredVersions&&canonical(retained)===canonical(manifest.retained_versions),'Pilot retention limit reached; old copies retained.');
    const descriptors=new Map(manifest.objects.map(object=>[object.key,object]));
    for(const descriptor of [manifest.metadata,manifest.lookup,...Object.values(manifest.snapshots)])must(canonical(descriptors.get(descriptor.key))===canonical(descriptor),'Manifest descriptor differs.');

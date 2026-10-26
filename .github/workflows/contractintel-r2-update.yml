@@ -40,6 +40,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
           PILOT_OFFICE: ${{ inputs.office || 'FA4528' }}
           RUN_MODE: ${{ inputs.mode || 'nightly' }}
+          FORCE_R2_REFRESH: ${{ contains(github.event.head_commit.message, '[verify-r2-rollover]') && 'true' || 'false' }}
           WRANGLER_SEND_METRICS: 'false'
         run: node contractintel/portfolio/r2/runner.mjs
       - name: Preserve measurements without source records

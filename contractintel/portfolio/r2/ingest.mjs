@@ -73,9 +73,10 @@ export function candidateTables(base,state,{now=Date.now,sourceRequests=state.so
 export async function publishCandidate(store,base,state,tables,{now=Date.now,beforePublish=async()=>{}}={}){
  const current=await store.get(CURRENT);must(current?.etag===base.etag,'Another publication won; checkpoint retained for review.');
  const bundle=await buildBundle(tables,{now,previousLookup:base.lookup});
- const retained=[...new Set([bundle.manifest.version,...base.manifest.retained_versions])];
- must(retained.length<=PILOT.maxStoredVersions,'Two-version pilot limit reached; no raw evidence was deleted.');
- bundle.manifest.retained_versions=retained;
+ const archive=await pack(base.manifest),archiveKey=PILOT.prefix+'/objects/manifest-'+base.manifest.version+'-'+archive.sha256+'.json.gz';
+ if(!await store.head(archiveKey))await store.put(archiveKey,archive.bytes,{expected:null,sha:archive.sha256});
+ bundle.manifest.previous_manifest={key:archiveKey,sha256:archive.sha256,compressed_bytes:archive.bytes.length,raw_bytes:archive.rawBytes};
+ bundle.manifest.retained_versions=[...new Set([bundle.manifest.version,...base.manifest.retained_versions])].slice(0,PILOT.maxStoredVersions);
  let uploaded=0,reused=0;
  for(const object of bundle.objects){
   const existing=await store.head(object.key);

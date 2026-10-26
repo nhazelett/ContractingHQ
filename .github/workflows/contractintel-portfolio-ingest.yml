@@ -13,6 +13,11 @@ on:
         required: true
         type: choice
         options: [nightly, backfill]
+      backend:
+        description: Manual D1 recovery or R2 refresh
+        default: d1
+        type: choice
+        options: [d1, r2]
       origin:
         description: Trigger origin
         default: manual
@@ -31,7 +36,7 @@ permissions:
   contents: read
   actions: read
 concurrency:
-  group: contractintel-portfolio-ingest
+  group: contractintel-r2-shadow-ingest
   cancel-in-progress: false
 jobs:
   ingest:
@@ -76,14 +81,20 @@ jobs:
           path: contractintel/portfolio
           github-token: ${{ github.token }}
           run-id: ${{ steps.source_checkpoint.outputs.result }}
-      - name: Run the unchanged ingestion package through D1 HTTP batches
+      - name: Run the selected portfolio storage backend
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
+          RUN_BACKEND: ${{ github.event_name == 'schedule' && 'r2' || inputs.backend || 'd1' }}
           RUN_MODE: ${{ inputs.mode || 'nightly' }}
           RUN_ORIGIN: ${{ github.event_name == 'schedule' && 'backup' || inputs.origin || 'manual' }}
           PERFORM_VERIFY: ${{ inputs.verify && 'true' || 'false' }}
           VERIFY_RETAINED: ${{ inputs.verify && 'true' || 'false' }}
-        run: node contractintel/portfolio/runner.mjs
+        run: |
+          if [ "$RUN_BACKEND" = r2 ]; then
+            node contractintel/portfolio/r2/runner.mjs
+          else
+            node contractintel/portfolio/runner.mjs
+          fi
       - name: Preserve pilot evidence
         if: always()
         uses: actions/upload-artifact@v4

@@ -15,12 +15,12 @@ export const CONFIG=Object.freeze({
   processOutputBytes:4194304,workerPrefix:'kthq-ci-r2-fa4528',
   workerCPUMs:30000,runnerMinutes:20,artifactDays:1,productionBase:'https://kthq-contractintel.nickhazelett.workers.dev'}),
  r2Nightly:Object.freeze({office:'FA4528',bucket:'kthq-contractintel-r2-fa4528-nightly',
-  baselineBucket:'kthq-contractintel-r2-fa4528-pilot',workerPrefix:'kthq-ci-r2-update-fa4528',
+  baselineBucket:'kthq-contractintel-r2-fa4528-pilot',githubWorkflow:'contractintel-r2-update.yml',workerPrefix:'kthq-ci-r2-update-fa4528',
   checkpointKey:'pilot/FA4528/checkpoint.json.gz',ledgerKey:'pilot/FA4528/budget.json',
   maxBucketBytes:33554432,maxBucketObjects:160,maxCheckpointBytes:8388608,maxCheckpointJSONBytes:67108864,
   maxUploadBytesPerJob:33554432,maxHTTPRequestsPerJob:1600,maxSourceRequestsPerJob:720,
   maxChunksPerJob:4,checkpointEveryAwards:10,checkpointEverySearchPages:5,checkpointEveryFiscalPages:5,maxChangedPages:1000,maxCandidates:100000,
-  runnerMinutes:30,artifactDays:1,maxAuditRuns:128,maxManifestBytes:262144,maxLedgerBytes:65536,formatVersion:1}),
+  runnerMinutes:30,artifactDays:1,maxAuditRuns:128,retentionGraceMs:86400000,maxManifestBytes:262144,maxLedgerBytes:65536,formatVersion:1}),
  schemaVersion:1,timeZone:'America/New_York',cron:'0 7 * * *',
  modes:['backfill','nightly'],storageProjectionOffices:1432
 });
