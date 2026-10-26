@@ -29,7 +29,7 @@ test('A lost publication response recognizes the committed complete snapshot and
 test('Cron dispatch makes only a GitHub workflow request and deduplicates accepted daily dispatches',async()=>{
  const x=sqlite(),calls=[];const env={PORTFOLIO_DB:x.db,GITHUB_DISPATCH_TOKEN:'unit-test-only'};
  const fetcher=async(url,options)=>{calls.push({url,body:JSON.parse(options.body)});return new Response(null,{status:204});};
- assert.equal((await dispatchIngest(env,{fetcher,now:fixed})).status,'dispatched');assert.equal((await dispatchIngest(env,{fetcher,now:fixed})).status,'already_dispatched');assert.equal(calls.length,1);assert.ok(calls[0].url.startsWith('https://api.github.com/repos/nhazelett/ContractingHQ/actions/workflows/'));assert.equal(calls[0].body.inputs.office,'FA4528');assert.equal(calls[0].body.inputs.verify,'false');
+ assert.equal((await dispatchIngest(env,{fetcher,now:fixed})).status,'dispatched');assert.equal((await dispatchIngest(env,{fetcher,now:fixed})).status,'already_dispatched');assert.equal(calls.length,1);assert.ok(calls[0].url.startsWith('https://api.github.com/repos/nhazelett/ContractingHQ/actions/workflows/'));assert.equal(calls[0].body.inputs.office,'FA4528');assert.equal(calls[0].body.inputs.verify,false);
 });
 test('Failed GitHub dispatch remains retryable; missing or expired credentials never masquerade as success',async()=>{
  const x=sqlite();await assert.rejects(dispatchIngest({PORTFOLIO_DB:x.db}),/CONTRACTINTEL_GITHUB_TOKEN/);
