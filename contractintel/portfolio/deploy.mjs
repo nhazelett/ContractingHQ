@@ -1,3 +1,4 @@
+import {prepareCoverageAccess} from './access-deploy.mjs';
 // Trusted deployment preparation; credentials are never included in reports or source.
 import fs from 'node:fs/promises';
 import {CONFIG,seedOffices} from './ingest.mjs';
@@ -23,5 +24,6 @@ try{
  config.r2_buckets=[...(config.r2_buckets||[]).filter(b=>!profiles.some(profile=>profile.binding===b.binding)),...profiles.map(profile=>({binding:profile.binding,bucket_name:profile.bucket}))];
  config.triggers={...(config.triggers||{}),crons:[CONFIG.cron]};config.limits={...(config.limits||{}),cpu_ms:30000};
  await fs.writeFile(configPath,JSON.stringify(config,null,2)+'\n');
+ await prepareCoverageAccess(configPath,async(path,method='GET',body)=>{try{return {ok:true,status:200,result:await cf(path,method,body)};}catch(error){const code=/HTTP (\d+)/.exec(error.message);return {ok:false,status:code?Number(code[1]):null};}});
  console.log(JSON.stringify({portfolio_prepared:true,database_name:name,database_id:id,directory_offices:1432,pilot_offices:CONFIG.offices,cron:CONFIG.cron}));
 }catch(error){console.error(error.message?.startsWith('Cloudflare')||error.message?.startsWith('Portfolio')?error.message:'Portfolio deployment preparation failed safely.');process.exitCode=1;}

@@ -85,7 +85,7 @@ async function main(){
  };
  let ready=false;for(let attempt=0;attempt<PILOT.readyAttempts;attempt++){const response=await call('/health',{allow:[401,404,503]});if(response.ok){ready=true;break;}await wait(PILOT.readyWaitMs);}must(ready,'Temporary gateway did not become ready.');
  const remote=area=>({
-  async get(key){const response=await call('/object?area='+area+'&key='+encodeURIComponent(key),{allow:[404]});return response.status===404?null:{bytes:new Uint8Array(await response.arrayBuffer()),etag:response.headers.get('ETag')};},
+  async get(key){const response=await call('/object?area='+area+'&key='+encodeURIComponent(key),{allow:[404]});if(response.status===404)return null;const value={bytes:new Uint8Array(await response.arrayBuffer()),etag:response.headers.get('ETag')};if(key===SETTINGS.checkpointKey)report.checkpoint_bytes=value.bytes.length;return value;},
   async head(key){const response=await call('/object?area='+area+'&key='+encodeURIComponent(key),{method:'HEAD',allow:[404]});return response.status===404?null:{sha:response.headers.get('X-Object-SHA256'),etag:response.headers.get('ETag')};},
   async remove(key,expected){return (await call('/object?area='+area+'&key='+encodeURIComponent(key),{method:'DELETE',expected})).json();},
   async put(key,body,options){let response=await call('/object?area='+area+'&key='+encodeURIComponent(key),{method:'PUT',body,...options,allow:[412]});if(response.status===412){const head=await call('/object?area='+area+'&key='+encodeURIComponent(key),{method:'HEAD'});must(head.headers.get('X-Object-SHA256')===options.sha,'Conditional write identity differs; review required.');return {etag:head.headers.get('ETag')};}return {etag:response.headers.get('ETag')};}
@@ -116,6 +116,7 @@ async function main(){
  }
  let result,candidate;
  for(let chunk=0;chunk<SETTINGS.maxChunksPerJob;chunk++){
+  if(chunk&&SETTINGS.maxUploadBytesPerJob-report.r2.uploaded_bytes<2*SETTINGS.maxCheckpointBytes)throw new Error('Job upload budget reached; stopped before starting another source chunk.');
   result=await runR2Chunk({store,directory:directoryData,mode,fetcher,force:process.env.FORCE_R2_REFRESH==='true',prepareOnly:true,onPrepared:async value=>{candidate=value;}});
   report.chunks.push(result);await save();console.log(JSON.stringify({r2_update_chunk:result}));
   if(['prepared','completed','retained'].includes(result.status))break;

@@ -1,6 +1,7 @@
 // All NEW ingestion limits live here. Existing source helper internals are intentionally unchanged.
 export const CONFIG=Object.freeze({
  queue:Object.freeze({executionEnabled:false,maxGroupOffices:5,maxOffices:1432,maxGroups:300,maxStateBytes:1048576,maxRequestBytes:16384,maxCheckpointRefLength:256,maxAttempts:64,retryDelayMs:300000,leaseGraceMs:300000,maxDailySourceRequests:2160,maxDailyRuntimeMs:5400000,maxTotalStorageBytes:268435456,maxStorageMeasurementAgeMs:300000,retainedBudgetDays:8}),
+ access:Object.freeze({jwksCacheMs:300000,clockSkewSeconds:30,maxTokenBytes:16384,maxJwksBytes:65536,maxKeys:32,timeoutMs:10000}),
  authority:Object.freeze({stageBatchRows:20,stageIndexBatchRows:1000,maxStageRows:200000,readBatchRows:100,maxStageRowBytes:1500000,maxHTTPRequestsPerJob:1800,storageCheckEveryBatches:10,maxReceiptBytes:262144,legacyCheckpointJSONBytes:1048576,retryAttempts:5,retryBaseMs:1000,retryMaxMs:30000,retryJitterMs:1000,seedOfficeCount:150}),
  coverage:Object.freeze({listLimit:161,progressMetadataBytes:1024}),
  r2Offices:Object.freeze({FA4528:Object.freeze({bucket:'kthq-contractintel-r2-fa4528-nightly',binding:'PORTFOLIO_R2',readEnabled:true,seedVerifiedPilot:true}),FA4800:Object.freeze({bucket:'kthq-contractintel-r2-fa4800',binding:'PORTFOLIO_R2_FA4800',workflow:'contractintel-r2-cohort.yml',verifyInput:true,admitOnVerified:true,maxAuditRuns:264,maxCheckpointJSONBytes:134217728,readEnabled:false,seedVerifiedPilot:false})}),
@@ -23,7 +24,7 @@ export const CONFIG=Object.freeze({
   checkpointKey:'pilot/FA4528/checkpoint.json.gz',ledgerKey:'pilot/FA4528/budget.json',
   maxBucketBytes:33554432,maxBucketObjects:160,maxCheckpointBytes:8388608,maxCheckpointJSONBytes:67108864,
   maxUploadBytesPerJob:33554432,maxHTTPRequestsPerJob:1600,maxSourceRequestsPerJob:720,
-  maxChunksPerJob:4,checkpointEveryAwards:10,backfillCheckpointEveryAwards:50,verificationSaveEvery:50,maxCohortRuns:64,maxCohortSetupRuns:3,maxOfficeBackfillRequests:36000,maxVerificationRequests:18000,checkpointEverySearchPages:5,checkpointEveryFiscalPages:5,maxChangedPages:1000,maxCandidates:100000,
+  maxChunksPerJob:4,checkpointEveryAwards:10,backfillCheckpointEveryAwards:200,verificationSaveEvery:100,maxCohortRuns:64,maxCohortSetupRuns:3,maxOfficeBackfillRequests:36000,maxVerificationRequests:18000,checkpointEverySearchPages:5,checkpointEveryFiscalPages:5,maxChangedPages:1000,maxCandidates:100000,
   runnerMinutes:30,artifactDays:1,maxAuditRuns:128,retentionGraceMs:86400000,maxManifestBytes:262144,maxLedgerBytes:65536,formatVersion:1}),
  schemaVersion:1,timeZone:'America/New_York',cron:'0 7 * * *',
  modes:['backfill','nightly'],storageProjectionOffices:1432
