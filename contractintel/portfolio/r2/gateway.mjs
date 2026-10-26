@@ -1,5 +1,6 @@
 // Short-lived, authenticated R2 gateway for a GitHub runner. No source fetches,
-// D1 binding, public bucket, scheduled task, listing or delete endpoint.
+// D1 binding, public bucket or scheduled task. Cleanup is limited to tracked,
+// unreferenced objects outside both retained publications and the grace period.
 import {CONFIG} from '../ingest.mjs';
 import {PILOT,bytes,digest,validKey,validateManifest,unpack,limitedBody,PilotError,canonical} from './format.mjs';
 const S=CONFIG.r2Nightly,CURRENT=PILOT.prefix+'/current.json';

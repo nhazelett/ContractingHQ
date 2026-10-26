@@ -1,3 +1,4 @@
+import {cleanupRetained} from './retention.mjs';
 // GitHub Actions entry point for the FA4528-only R2 shadow updater.
 // No D1 requests, no production deploy, no stored source data in job artifacts.
 import fs from 'node:fs/promises';
@@ -81,6 +82,7 @@ async function main(){
   await store.put(CURRENT,pointer.bytes,{expected:null,sha:await digest(pointer.bytes)});report.seeded_from_verified_r2=true;
  }else report.seeded_from_verified_r2=false;
  const before=await loadPublication(store);report.previous_publication_id=before.manifest.source_publication_id;
+ report.retention_before=await cleanupRetained(store,before);
  const directoryData=JSON.parse(await fs.readFile(new URL('worker/offices.json',root),'utf8'));
  // This fetcher is exclusively for the source adapter. Every source operation
  // is either a GET award read or one of the existing read-only search POSTs.
@@ -98,16 +100,10 @@ async function main(){
   if(['completed','retained'].includes(result.status))break;
  }
  must(result&&['completed','retained'].includes(result.status),'Chunk limit reached; saved progress will resume on the next manual run.');
- const after=await loadPublication(store);report.publication_id=after.manifest.source_publication_id;report.source_published_at=after.manifest.source_published_at;
+ const after=await loadPublication(store);report.production_changed=result.status==='completed';report.publication_id=after.manifest.source_publication_id;report.source_published_at=after.manifest.source_published_at;
  report.views=CONFIG.windows.map(start=>{const prior=snapshotFromTables(before.tables,start),current=snapshotFromTables(after.tables,start);return {start,today:current.today,before:counts(prior.records,current.today),after:counts(current.records,current.today),fiscal_totals:current.fiscal_totals.map(({award_ids,...total})=>total)};});
  report.change_summary={new_awards:after.tables.awards.filter(row=>!before.tables.awards.some(old=>old.generated_unique_award_id===row.generated_unique_award_id)).length,removed_awards:before.tables.awards.filter(row=>!after.tables.awards.some(next=>next.generated_unique_award_id===row.generated_unique_award_id)).length,changed_awards:after.tables.awards.filter(row=>{const old=before.tables.awards.find(previous=>previous.generated_unique_award_id===row.generated_unique_award_id);return old&&old.source_hash!==row.source_hash;}).length};
- report.retention_cleanup={deleted:0,protected_or_grace:0};
- if(after.manifest.previous_manifest){
-  const previousObject=await store.get(after.manifest.previous_manifest.key),previous=validateManifest(await unpack(previousObject.bytes,after.manifest.previous_manifest.sha256));
-  const protectedKeys=new Set([CURRENT,SETTINGS.checkpointKey,SETTINGS.ledgerKey,after.manifest.previous_manifest.key,...after.manifest.objects.map(o=>o.key),...previous.objects.map(o=>o.key)]);
-  const reservation=JSON.parse(new TextDecoder().decode((await store.get(SETTINGS.ledgerKey)).bytes));
-  for(const key of Object.keys(reservation.keys)){if(protectedKeys.has(key))continue;const outcome=await store.remove(key,after.etag);if(outcome.deleted)report.retention_cleanup.deleted++;else report.retention_cleanup.protected_or_grace++;}
- }
+ report.retention_cleanup=await cleanupRetained(store,after);
  const unchangedBefore=report.r2.writes,replay=await runR2Chunk({store,directory:directoryData,fetcher:async()=>{throw new Error('Same-day replay must not fetch the source.');}});must(replay.status==='retained'&&report.r2.writes===unchangedBefore,'Same-day replay did work.');report.same_day_replay={status:replay.status,source_requests:0,r2_writes:report.r2.writes-unchangedBefore};
  const ledger=await store.get(SETTINGS.ledgerKey),keys=JSON.parse(new TextDecoder().decode(ledger.bytes)).keys;
  report.reserved_storage_bytes=Object.values(keys).reduce((sum,entry)=>sum+entry.bytes,0)+SETTINGS.maxLedgerBytes;
@@ -115,7 +111,7 @@ async function main(){
  report.actual_stored_bytes=Object.entries(keys).filter(([key])=>![CURRENT,SETTINGS.checkpointKey].includes(key)).reduce((sum,[,entry])=>sum+entry.bytes,0)+ledger.bytes.length+pointer.bytes.length+(checkpoint?.bytes.length||0);
  report.stored_objects=Object.keys(keys).length+1;
  report.stored_compressed_publication_bytes=after.manifest.objects.reduce((sum,object)=>sum+object.compressed_bytes,0);
- report.limitations=['Shadow R2 publication only; the live website and Cron continue using the existing D1 path.','This is an incremental refresh from the previously verified baseline, not another independent 4,091-award source backfill.','Current and previous complete versions are retained. Unreferenced older objects are removed only after the configured grace period; byte/object guards still stop growth.'];
+ report.limitations=['Live FA4528 reads R2 first, with D1 and browser live fallback. Primary Cron and the registered backup use R2.','This is an incremental refresh from the previously verified baseline, not another independent 4,091-award source backfill.','Current and previous complete versions are retained. Unreferenced older objects are removed only after the configured grace period; byte/object guards still stop growth.'];
  report.status='passed';
 }
 try{await main();}catch(error){report.status='failed';report.error=error.message;if(error.result)report.failed_chunk=error.result;console.error(error.message);process.exitCode=1;}finally{

@@ -18,3 +18,11 @@ test('Published R2 returns every existing page field and evidence; corruption an
  objects.delete(bundle.manifest.snapshots[CONFIG.windows[1]].key);
  const fallback=await portfolioRoute(new Request('https://site/api/office/FA4528'),{PORTFOLIO_R2:bucket,PORTFOLIO_DB:db});assert.equal(fallback.source,'d1');
 });
+
+test('R2 scheduler targets the R2 workflow and deduplicates the primary daily dispatch',async()=>{
+ const {dispatchIngest}=await import('../portfolio/dispatch.mjs'),{db}=sqlite();let requests=0;
+ const env={PORTFOLIO_DB:db,PORTFOLIO_R2:{},GITHUB_DISPATCH_TOKEN:'fixture-secret'};
+ const options={now:fixed,fetcher:async(url,options)=>{requests++;assert.ok(url.endsWith(CONFIG.r2Nightly.githubWorkflow+'/dispatches'));assert.deepEqual(JSON.parse(options.body).inputs,{office:'FA4528',mode:'nightly'});return new Response(null,{status:204});}};
+ assert.equal((await dispatchIngest(env,options)).status,'dispatched');
+ assert.equal((await dispatchIngest(env,options)).status,'already_dispatched');assert.equal(requests,1);
+});

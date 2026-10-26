@@ -1,5 +1,5 @@
 // Lossless R2 format shared by the benchmark and the isolated nightly updater.
-// Neither package is enabled in the live Portfolio Worker yet.
+// FA4528 live reads and the scheduled runner share this exact format.
 import {CONFIG,derive} from '../../portfolio/ingest.mjs';
 import {currentDate} from '../../web/calendar.mjs';
 export const PILOT=CONFIG.r2Pilot;

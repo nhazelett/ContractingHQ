@@ -1,129 +1,68 @@
-# FA4528 R2 shadow updater
+# FA4528 live R2 portfolio
 
-Measured source refresh, storage sizes, preserved-field inventory and short
-activation checks: [FA4528 verification](../../docs/fa4528-r2-update.md).
+FA4528 now reads its published private R2 snapshot first. Missing/damaged copies
+fall back to D1, then the browser's existing live USAspending path. All other
+offices continue using their existing path. No new office has been ingested.
 
-This package refreshes a separate private copy of **FA4528 only**. It is not the
-live website's read path. It does not write D1 or replace its existing updater.
-The browser's live USAspending fallback, pacing, retry, parsing, session cache,
-Pause/Resume, field semantics and CSV export remain unchanged.
+[Live-promotion verification and field preservation](../../docs/fa4528-r2-promotion.md).
 
-## What runs
+The original browser parsing, pacing, retry, pause/resume, session cache, CSV
+headers, date modes, classifications and controls are preserved. The only
+browser adapter change accepts the honest R2 source marker.
 
-- `ingest.mjs` runs in GitHub Actions, using the existing `createSourceFetch`,
-  `resolve`, `documentFor`, fiscal helpers and America/New_York calendar.
-- `format.mjs` is the previously tested lossless R2 format, moved out of the
-  benchmark directory. The benchmark retains a compatibility re-export.
-- `gateway.mjs` is deployed temporarily with a random, masked, encrypted Worker
-  secret. The runner uses it to access private R2 bindings, then deletes it.
-  It has no Cron, source-fetch code, D1 binding, public write route or deletion
-  endpoint. Its baseline binding is read-only in code.
-- `runner.mjs` initializes a separate shadow bucket from the already verified
-  R2 copy, refreshes it, validates every field and all 32 CSV combinations, and
-  emits a small measurement report. Source records stay in private R2.
+## Updates and retention
 
-All new limits are in `CONFIG.r2Nightly` at the top of `portfolio/ingest.mjs`.
-Shared format limits remain in `CONFIG.r2Pilot`; source pacing, windows and
-classification limits use the existing top-level CONFIG. The existing retry
-helper keeps its explicitly exempt hardcoded values.
+The existing Cloudflare 07:00 UTC Cron dispatches the registered R2 workflow
+when the production R2 binding is present. The 10:00 UTC GitHub schedule is
+backup and uses the same R2 runner. The original D1 runner remains available as
+an explicit manual recovery backend. Every R2-writing workflow shares the
+contractintel-r2-shadow-ingest concurrency group; this serialization is also
+required for cleanup. No other R2 writer may bypass that group.
 
-## Incremental refresh and recovery
+The runner reuses unchanged raw/normalized evidence, rechecks all four history
+windows and both fiscal years, and saves bounded resumable checkpoints.
+All candidate bytes are downloaded and verified before a conditional manifest
+write publishes the new office. Source HTTP 500 remains a failed job with saved
+progress; existing source retry helpers are unchanged.
 
-1. Load the last complete immutable publication. Bootstrap from the verified
-   pilot bucket only when the shadow bucket has no publication.
-2. Discover awards changed in the configured 14-day lookback, using the same
-   read-only search as the D1 ingest package.
-3. Re-scan membership in all four source history windows. This retains the
-   browser's action-window semantics instead of guessing membership from dates.
-4. Fetch award and first-page transaction evidence only for changed, new, or
-   previously unavailable awards. Reuse other stored raw records and normalized
-   action rows exactly. A full backfill reconciles all evidence; it becomes due
-   30 days after the last full reconciliation, rather than the last nightly run.
-5. Recompute both fiscal years using the existing monthly transaction scan.
-   Validate that every month and every page completed before publication.
-6. Upload checksum-addressed chunks that do not already exist. Read the actual
-   stored bytes back, validate checksums and compare every source/table field.
-   The runner also checks the application payloads and original CSV exporter.
-7. Switch the current manifest with an R2 conditional ETag write. Another writer
-   cannot overwrite a newer publication. Reconcile a lost successful response.
+Before publication, the exact current manifest is archived as a compressed,
+checksum-addressed object. The candidate retains its own version and the prior
+version, plus a pointer to that archive. Cleanup protects the current objects,
+all previous-publication objects and that archive. It can remove only other
+tracked immutable objects, after CONFIG.r2Nightly.retentionGraceMs (24 hours).
+Unknown ages and missing/invalid previous archives stop or defer cleanup.
+Stale publication ETags reject deletion. Budget reservations are released only
+after deletion; interrupted reconciliation conservatively retains reservations.
 
-The prior evidence grouping is retained when awards are inserted or removed.
-An early-sorting new PIID does not shift every subsequent hundred-award file.
-Raw table ordering is restored explicitly when the files are reassembled.
+Cleanup runs both before staging (to make room within the guard) and after
+publication. Recently retired objects can remain during the grace period.
+The 32 MiB / 160-object reservation guard still stops growth safely; it is not
+a Cloudflare account billing cap. Raw award/evidence JSON stays intact in both
+retained complete copies. No normalized-field or raw-page stripping occurs.
 
-One compressed checkpoint references the old baseline and stores only new
-discovery state, changed evidence, fiscal pages and bounded attempt metadata.
-It is saved atomically after configured batches of search/fiscal pages, at
-history-window boundaries, after groups of hydrated awards, and on yield/failure.
-An abrupt runner termination can repeat at most four search/fiscal pages with
-the default five-page checkpoint batch. Source reads are idempotent. Unchanged
-awards do not each generate a checkpoint write. Source, time, request, upload and storage guards fail without changing
-the complete publication. A later job resumes its checkpoint. A same-day replay
-of a completed job performs no source calls or R2 writes.
-Within one job, already verified immutable R2 files are cached in runner memory.
-Mutable publication pointers, checkpoints and budget controls always read R2;
-new uploads must still be read back from R2 before publication.
+All new ingest thresholds live at the top of portfolio/ingest.mjs. Serving
+recomputes classification/countdown fields using today in America/New_York.
 
-Source HTTP 500 is still an error, not a new retry policy. A failed job is marked
-failed in GitHub and leaves both its checkpoint and the last complete copy.
-It must be rerun; this package does not hide the failure.
+## Verification and credentials
 
-## Cost boundaries and retention
-
-The shadow bucket has a durable reservation ledger: 32 MiB maximum reserved
-space, at most 160 objects, bounded mutable checkpoint/manifest slots, and at
-most two published versions. Immutable objects are reused by checksum. The
-third different publication stops for review; there is no automatic removal
-of raw award JSON, raw evidence JSON, prior publications or orphan uploads.
-Reservations for an interrupted upload remain conservative and can cause an
-early stop. There is no garbage collector in this pilot.
-
-Each GitHub job also has limits on source requests, HTTP requests, uploaded
-bytes, chunk count and runtime. These are **application guardrails**, not a
-Cloudflare account spending cap. A compressed read copy alone does not prove
-all-office ingest costs. Measure actual change volume and decide retention
-before enabling ongoing R2 refreshes or expanding offices.
-
-## Execution and secrets
-
+Run:
 ```sh
-node --test contractintel/portfolio/r2/ingest.test.mjs contractintel/benchmarks/r2/pilot.test.mjs
-CLOUDFLARE_API_TOKEN='<provided securely in the environment>' RUN_MODE=nightly node contractintel/portfolio/r2/runner.mjs
+node --test contractintel/portfolio/r2/ingest.test.mjs contractintel/benchmarks/r2/pilot.test.mjs contractintel/tests/portfolio-r2-read.test.mjs
 ```
 
-Use repository secrets, not a literal token in shell history. The existing
-`CLOUDFLARE_API_TOKEN` repository secret is sufficient for the pilot. No new SAM
-or GitHub key is required to test this updater. The temporary gateway key is
-generated in the runner, masked before use and installed via Wrangler stdin.
-Only the JSON measurement report is uploaded as an artifact, for one day.
+Use the existing repository Cloudflare secret for the runner. Temporary gateway
+credentials are randomly generated, masked, installed via Wrangler stdin and
+removed with the temporary Worker. Source data stays in private R2; only small
+measurement reports are uploaded as one-day artifacts.
 
-`.github/workflows/contractintel-r2-update.yml` supports a manual run and a
-limited push smoke test. It has no schedule. It is registered on the default
-branch for manual dispatch and checks out the trusted working branch. The existing production Cloudflare
-07:00 UTC Cron and 10:00 UTC GitHub backup remain configured for the D1 package;
-they are not silently redirected to this shadow updater.
-The shadow workflow has its own concurrency group because it writes only its
-separate bucket; production D1 jobs cannot replace its queued test. New temporary
-Worker credentials receive bounded provisioning retries for HTTP 401 only.
-This does not change USAspending retry behavior.
+The repository secret CONTRACTINTEL_GITHUB_TOKEN is installed as encrypted
+Worker secret GITHUB_DISPATCH_TOKEN. A live permission check successfully read
+the workflow (HTTP 200) and dispatched the R2 job (HTTP 204). The real next
+Cloudflare timer firing is separate from this explicit dispatch test.
 
-For a later production promotion, wire the approved workflow into the existing
-Cron dispatch bridge and keep GitHub schedule only as a backup. The missing
-fine-grained GitHub token belongs in repository secret
-`CONTRACTINTEL_GITHUB_TOKEN` (only this repository, Actions read/write); the
-existing deployment installs it as encrypted Worker secret
-`GITHUB_DISPATCH_TOKEN`. It is not needed until activation. If the repository
-moves, update CONFIG repository/ref/workflow, workflow checkouts, secret
-permissions and the deployment bridge. Ingest stays in GitHub Actions because
-Workers-to-USAspending returned HTTP 525.
+Ingest runs in GitHub Actions because Workers-to-USAspending returned HTTP 525.
+If the repository moves, update CONFIG repository/ref/workflow, checkouts,
+registration on the default branch and token permissions/deployment secrets.
 
-## Before promotion
-
-- Review the saved FA4528 update report and any changed source counts.
-- Confirm the source stamp advances only after a complete refresh.
-- Confirm an interrupted run resumes and incomplete publication stays hidden.
-- Confirm stored payloads and every CSV filter/date-mode combination agree.
-- Select an approved retention/cleanup policy; the pilot stops at two versions.
-- Configure the deferred GitHub dispatch key and test the Cron bridge.
-- Separately enable and test R2 reads and D1/live fallback on the website.
-- Expand beyond FA4528 only after the user's explicit approval.
+Before another office is enabled, keep the same per-office count/field gate
+and measure its size and nightly work. FA4800 is the proposed next office.

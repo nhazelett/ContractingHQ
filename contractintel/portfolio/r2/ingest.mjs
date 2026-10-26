@@ -1,4 +1,4 @@
-// Resumable FA4528 shadow ingest. It never writes D1 or changes the live website.
+// Resumable FA4528 R2 ingest. Atomic publication; no D1 award writes.
 import {CONFIG,documentFor} from '../ingest.mjs';
 import {resolve,validAwardID} from '../../web/source.mjs';
 import {createSourceFetch} from '../../web/source-requests.mjs';
