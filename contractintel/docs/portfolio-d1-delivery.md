@@ -4,25 +4,21 @@ This pilot adds a stored source before the existing live loader. The live source
 
 ## Current pilot result
 
-FA4528 published **4,091 awards** at 2026-10-26T03:48:51Z. Only FA4528 award data is in scope. The first independent comparison stopped on a temporary USAspending failure; a targeted re-check is in progress. No parity or under-two-second claim is made yet.
+FA4528 published **4,091 awards** at 2026-10-26T03:48:48.493Z. Only FA4528 award data is in scope.
 
-Measured database size is **44.789 MiB physical**. The 1,432-office linear scenario is **56.117 GB logical before overhead**, not a forecast. Award records dominate; history does not. See [the measured table report](fa4528-storage-report.md) and [machine-readable storage](fa4528-storage-measured.json). No raw JSON was deleted and expansion remains blocked pending parity and storage review.
+The independent comparison **passed all 96 checks** across all four history windows, including dataset counts, current/potential 90/180/365-day ends, recompete candidates, prior/current FY net obligations and distinct contract counts. Award identity sets also match exactly. [Side-by-side results](fa4528-verification.md) and [complete JSON](fa4528-verification.json) record the source scan timestamps and current New York classification date. No values were adjusted to force equality.
 
-The latest deployment passed 112 JavaScript tests and 7 Python tests. Primary Cloudflare Cron dispatch still needs repository secret `CONTRACTINTEL_GITHUB_TOKEN` copied to encrypted Worker secret `GITHUB_DISPATCH_TOKEN`. The GitHub backup schedule does not replace that requirement.
+Default FY22 portfolio endpoint timings were **94, 100 and 107 ms**, including download and JSON parsing on the GitHub runner. Full history returned 4,091 awards in 297 ms during preflight. Browser rendering and 390 px interaction remain manual checks.
+
+Measured database size is **44.789 MiB physical**. The 1,432-office linear scenario is **56.117 GB logical before overhead**, not a forecast. Award records dominate; history does not. See [the measured table report](fa4528-storage-report.md) and [machine-readable storage](fa4528-storage-measured.json). No raw JSON was deleted. Expansion remains disabled pending explicit review of counts and storage.
+
+The latest automated checks passed **114 JavaScript tests and 7 Python tests**. Primary Cloudflare Cron dispatch still needs repository secret `CONTRACTINTEL_GITHUB_TOKEN` copied to encrypted Worker secret `GITHUB_DISPATCH_TOKEN`. Add it in repository Actions secrets, then start a NEW [preview deployment workflow](https://github.com/nhazelett/ContractingHQ/actions/workflows/contractintel-preview.yml) with verification unchecked. Manual deployments always check out the trusted working branch; a new run reads the newly configured repository secret.
 
 ## Prior Worker ingestion attempt — superseded by the runner design
 
-The D1 schema, binding, public read path, source switch, Eastern date computations, authenticated endpoints, cron handler and verification tools are deployed. All 99 local/CI tests pass, and deployed assets match the working source. The live browser loader remains available.
+Before migration to the runner, the Worker attempt `331ff3a9-7962-4089-be33-d3bf33ea1eac` (2026-10-26T01:50:25.289Z–01:52:23.002Z) failed before its first discovery page with USAspending HTTP 525. Four source attempts were made and its checkpoint was retained. The unchanged Worker proxy also timed out, while an independent Node request through the same source adapter returned HTTP 200. Those observations led to the approved runner architecture; TLS verification was not weakened and the data source was not substituted.
 
-Database: `kthq-contractintel-portfolio` (`7b24b846-e4ca-4a0b-8958-439567cec44f`). Only directory labels have been seeded; no office award publication has completed.
-
-The actual FA4528 backfill failed before the first discovery page completed. Run `331ff3a9-7962-4089-be33-d3bf33ea1eac` started 2026-10-26T01:50:25.289Z and ended 2026-10-26T01:52:23.002Z with: `USAspending is temporarily unavailable. Retry shortly. Source HTTP 525 at /api/v2/search/spending_by_award/.` The invocation made four source attempts and retained its checkpoint. A separate request through the unchanged Worker proxy also timed out. An independent Node request using the same source adapter returned HTTP 200, 100 matching first-page candidates, and has-next=true. Those 100 candidates are not a total award count.
-
-Deployment/diagnostic workflow: https://github.com/nhazelett/ContractingHQ/actions/runs/40256069992
-
-No count comparison, under-two-second completed-office measurement, populated-table storage report, or all-office storage projection is claimed. These require an actual completed backfill; an empty awards table would give a misleading projection. No other office has been ingested.
-
-The user approved this architecture change after a manual runner probe: run the same ingestion module in the existing trusted GitHub Actions runner, writing to the same D1 database, with Cloudflare Cron as the primary dispatcher and a GitHub schedule as backup. Keep the Cloudflare read path, fallback, page behavior, field mappings and FA4528 allowlist. The package now has a transactional D1 HTTP adapter and a Cron-to-workflow dispatch bridge. The original Worker-only failure is retained here as diagnostic history. Do not weaken TLS verification or substitute another source to hide the failure.
+Historical diagnostics: https://github.com/nhazelett/ContractingHQ/actions/runs/40256069992
 
 ## Runner architecture and verified connectivity
 
@@ -207,7 +203,7 @@ All existing tabs, office controls, search/status/set-aside filters, date-mode/h
 9. Review `fa4528-report.json` for four-window count equality, fiscal equality, timing samples and table storage. Any difference blocks expansion.
 10. Test a source failure or disabled D1 binding in a local test environment; retain prior complete data and verify live fallback.
 
-The automated suite has 112 passing JavaScript tests and 7 passing Python tests and uses Node SQLite and a minimal DOM fixture. No real-browser/mobile visual result is claimed by these tests.
+The automated suite has 114 passing JavaScript tests and 7 passing Python tests and uses Node SQLite and a minimal DOM fixture. No real-browser/mobile visual result is claimed by these tests.
 
 ## Pilot progress
 
@@ -227,3 +223,12 @@ The source-request reserve applies between complete award operations, not betwee
 Read snapshots use a transactional batch of publication metadata, individual award rows and fiscal totals. The result shape is unchanged. Avoiding a single `json_group_array` scalar prevents a large portfolio from exceeding D1's 2,000,000-byte per-value limit. A regression test serves five large records whose combined JSON exceeds that limit while each source record remains below it.
 
 A completed publication is retained on ordinary code deployments. To explicitly rerun the independent comparison without re-ingesting it, run the preview workflow with `verify_portfolio=true` (or commit a requested verification with `[verify-fa4528]`). `PERFORM_VERIFY=true VERIFY_RETAINED=true RUN_ORIGIN=deployment RUN_MODE=backfill node contractintel/portfolio/runner.mjs` performs the same targeted check with an authenticated local environment. Every stored window is read before the long live comparison so a broken API fails early. Temporary source failures fail verification visibly and do not alter the published office.
+
+
+## Resumable independent verification
+
+The source-side comparison has its own source-only checkpoint. It saves completed award summaries and complete fiscal months, never uses D1 rows to construct live-side values, and preserves an incomplete fiscal month for a clean re-read rather than duplicating obligations. A checkpoint is valid only for the same office, publication ID, UTC source day and fiscal cutoff, within CONFIG.verificationCheckpointMs (six hours); CONFIG.verificationMaxCheckpointBytes caps its size. Classification still uses the current America/New_York day when the comparison finishes. A changed publication invalidates the checkpoint.
+
+On source failure, the workflow preserves `fa4528-source-checkpoint.json` as a one-day artifact. A rerun restores it using GitHub's automatically issued Actions-read token; Cloudflare/SAM/GitHub PAT values are never included in that artifact. The original source fetch/retry helper is unchanged. HTTP 500 errors are logged by status/path and fail the attempt rather than being converted into successful or missing records. Once source collection finishes, the complete report compares both figures and exact award-ID sets. The final FA4528 check resumed successfully and all 96 metrics matched.
+
+The manual workflows are registered on the default branch. Their trusted source checkout remains `codex/contractintel`; moving the repo/branch requires updating this pin and CONFIG, as described above. `verify_portfolio=true` on the preview workflow explicitly rechecks an existing publication. A normal code deployment retains it without repeating the long independent scan.

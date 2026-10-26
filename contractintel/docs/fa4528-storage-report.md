@@ -1,6 +1,6 @@
 # FA4528 D1 pilot — measured storage
 
-Measured 2026-10-26T03:54:12Z after publication `3185f41e-129b-455f-981e-3a6e0dc7bcd4` at 2026-10-26T03:48:51Z. Only FA4528 award data has been published. All 1,432 office directory labels are present.
+Measured 2026-10-26T03:54:12Z after publication `3185f41e-129b-455f-981e-3a6e0dc7bcd4` at 2026-10-26T03:48:48.493Z. Only FA4528 award data has been published. All 1,432 office directory labels are present.
 
 ## Measured table payload
 
@@ -45,6 +45,8 @@ Evidence:
 
 ## Verification status
 
-The backfill completed. The initial independent comparison stopped after about 300 of 4,091 source awards when USAspending returned a temporary-unavailable error. That did not alter the published office. A targeted comparison against the same publication is running with the existing summary-only source read, four exact history windows and a separate fiscal transaction scan. No count parity or endpoint timing claim is made until the final report is available.
+The independent comparison passed **all 96 metrics** across all four history windows, including exact award identity sets. See [the comparison report](fa4528-verification.md). The scan resumed source-only checkpoints after USAspending HTTP 500 interruptions; no D1 figures were altered. Classification uses 2026-10-26 in America/New_York.
+
+Default FY22 endpoint samples, including download and JSON parsing on the runner, were **94, 100 and 107 ms**. Browser rendering remains a manual check.
 
 Primary Cloudflare Cron dispatch is awaiting repository secret `CONTRACTINTEL_GITHUB_TOKEN` and deployment to encrypted Worker secret `GITHUB_DISPATCH_TOKEN`. The daily Cloudflare Cron remains primary; GitHub schedule is backup only.
