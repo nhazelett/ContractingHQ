@@ -8,6 +8,12 @@ export const CONFIG=Object.freeze({
  githubRepository:'nhazelett/ContractingHQ',githubWorkflow:'contractintel-portfolio-ingest.yml',githubRef:'codex/contractintel',backupCron:'0 10 * * *',runnerJobMinutes:360,maxStorageBytes:268435456,maxRunRowsWritten:100000,
  millisecondsPerDay:86400000,reconciliationDays:30,expiryWindows:[90,180,365],recompeteDays:365,
  verificationCheckpointMs:21600000,verificationMaxCheckpointBytes:16777216,
+ r2Pilot:Object.freeze({office:'FA4528',bucket:'kthq-contractintel-r2-fa4528-pilot',prefix:'pilot/FA4528',formatVersion:1,
+  exportBatchRows:100,chunkAwards:100,chunkJSONBytes:4194304,maxObjectBytes:16777216,maxSnapshotBytes:33554432,
+  maxExportBytes:134217728,maxUploadBytes:33554432,maxObjects:96,maxD1Requests:220,maxHTTPRequests:256,
+  maxStoredVersions:2,readSamples:5,evidenceSamples:3,httpTimeoutMs:60000,readyAttempts:10,readyWaitMs:2000,
+  processOutputBytes:4194304,workerPrefix:'kthq-ci-r2-fa4528',
+  workerCPUMs:30000,runnerMinutes:20,artifactDays:1,productionBase:'https://kthq-contractintel.nickhazelett.workers.dev'}),
  schemaVersion:1,timeZone:'America/New_York',cron:'0 7 * * *',
  modes:['backfill','nightly'],storageProjectionOffices:1432
 });

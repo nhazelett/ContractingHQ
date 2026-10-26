@@ -1,0 +1,38 @@
+name: ContractIntel R2 pilot benchmark
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/contractintel]
+    paths:
+      - contractintel/benchmarks/r2/**
+      - .github/workflows/contractintel-r2-pilot.yml
+permissions:
+  contents: read
+concurrency:
+  group: contractintel-portfolio-ingest
+  cancel-in-progress: false
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Test field preservation and publication safety
+        run: node --test contractintel/benchmarks/r2/pilot.test.mjs
+      - name: Copy existing FA4528 to a private R2 pilot and measure it
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
+          WRANGLER_SEND_METRICS: 'false'
+        run: node contractintel/benchmarks/r2/run.mjs
+      - name: Preserve benchmark measurements
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contractintel-fa4528-r2-benchmark
+          retention-days: 1
+          overwrite: true
+          path: contractintel/benchmarks/r2/out/fa4528-r2-report.json
+          if-no-files-found: ignore
