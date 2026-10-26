@@ -12,7 +12,7 @@ import {compareCSV} from './csv.mjs';
 import {PILOT,buildBundle,restoreBundle,unpack,canonical,compatible,bytes,digest,validateManifest,snapshotFromTables} from './core.mjs';
 const root=new URL('../../',import.meta.url),output=new URL('./out/',import.meta.url),currentKey=PILOT.prefix+'/current.json';
 const report={office:PILOT.office,started_at:new Date().toISOString(),production_changed:false,source_api_calls:0,d1:{http_requests:0,rows_read:0,rows_written:0},r2:{http_requests:0,reads:0,writes:0,uploaded_bytes:0},cloud_status:'not_started',temporary_worker_deleted:null};
-let temporaryConfig=null,temporaryName=null,secret='',remoteBase='';
+let temporaryConfig=null,temporaryName=null,secret='',remoteBase='',cfRequest=null;
 const save=async()=>{await fs.mkdir(output,{recursive:true});await fs.writeFile(new URL('fa4528-r2-report.json',output),JSON.stringify(report,null,2)+'\n');};
 function must(condition,message){if(!condition)throw new Error(message);}
 async function command(args,input=''){
@@ -22,7 +22,8 @@ async function command(args,input=''){
 }
 async function main(){
  const configuration=JSON.parse(await fs.readFile(new URL('worker/wrangler.jsonc',root),'utf8')),binding=configuration.d1_databases.find(b=>b.binding==='PORTFOLIO_DB'),token=process.env.CLOUDFLARE_API_TOKEN;must(token,'Cloudflare repository secret is missing.');
- const cf=async(path,method='GET',body)=>{const response=await fetch('https://api.cloudflare.com/client/v4/accounts/'+configuration.account_id+path,{method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),redirect:'error',signal:AbortSignal.timeout(PILOT.httpTimeoutMs)});let data;try{data=await response.json();}catch{throw new Error('Cloudflare returned an unreadable benchmark response.');}return {ok:response.ok&&data.success,status:response.status,data};};
+ const cf=cfRequest=async(path,method='GET',body)=>{const response=await fetch('https://api.cloudflare.com/client/v4/accounts/'+configuration.account_id+path,{method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),redirect:'error',signal:AbortSignal.timeout(PILOT.httpTimeoutMs)});let data;try{data=await response.json();}catch{throw new Error('Cloudflare returned an unreadable benchmark response.');}return {ok:response.ok&&data.success,status:response.status,data};};
+ report.previous_temporary_worker_cleanup=[];for(const name of (process.env.R2_PILOT_CLEANUP_NAMES||'').split(',').filter(Boolean)){must(new RegExp('^'+PILOT.workerPrefix+'-[0-9]+-[0-9]+$').test(name),'Cleanup refuses unrelated Worker names.');const result=await cf('/workers/scripts/'+name,'DELETE');must(result.ok||result.status===404,'Previous temporary Worker cleanup failed.');report.previous_temporary_worker_cleanup.push({name,deleted:true});}
  const auditedFetch=async(url,options)=>{
   must(++report.d1.http_requests<=PILOT.maxD1Requests,'D1 read-request budget reached.');const body=JSON.parse(options.body),statements=body.batch||[body];must(statements.every(s=>/^SELECT\b/i.test(s.sql.trim())),'Benchmark refuses any D1 mutation.');
   const response=await fetch(url,options);if(response.ok){const data=await response.clone().json();for(const result of data.result||[]){report.d1.rows_read+=result.meta?.rows_read||0;report.d1.rows_written+=result.meta?.rows_written||0;}}return response;
@@ -43,13 +44,13 @@ async function main(){
  const runSuffix=(process.env.GITHUB_RUN_ID||Date.now().toString())+'-'+(process.env.GITHUB_RUN_ATTEMPT||'1');temporaryName=PILOT.workerPrefix+'-'+runSuffix;
  const directory=new URL('./.pilot-run/',import.meta.url);await fs.mkdir(directory,{recursive:true});temporaryConfig=fileURLToPath(new URL('wrangler.json',directory));
  await fs.writeFile(temporaryConfig,JSON.stringify({name:temporaryName,main:'../worker.mjs',account_id:configuration.account_id,compatibility_date:configuration.compatibility_date,workers_dev:true,preview_urls:false,observability:{enabled:false},limits:{cpu_ms:PILOT.workerCPUMs},r2_buckets:[{binding:'BUCKET',bucket_name:PILOT.bucket}]},null,2));
- secret=crypto.randomUUID()+crypto.randomUUID();console.log('::add-mask::'+secret);
+ secret=crypto.randomUUID()+crypto.randomUUID();if(process.env.GITHUB_ACTIONS==='true')console.log('::add-mask::'+secret);
  const deployment=await command(['deploy','--config',temporaryConfig]),addresses=deployment.match(/https:\/\/[a-z0-9.-]+\.workers\.dev/g)||[];remoteBase=addresses.find(address=>new URL(address).hostname.startsWith(temporaryName+'.'));must(remoteBase,'Temporary Worker URL was not returned.');
  await command(['secret','put','R2_BENCH_TOKEN','--config',temporaryConfig],secret);
  const call=async(path,{method='GET',body,sha,authenticated=true,allow=[]}={})=>{
   must(++report.r2.http_requests<=PILOT.maxHTTPRequests,'R2 benchmark request budget reached.');const response=await fetch(remoteBase+path,{method,headers:{...(authenticated?{Authorization:'Bearer '+secret}:{}),...(sha?{'X-Object-SHA256':sha}:{})},body,redirect:'error',signal:AbortSignal.timeout(PILOT.httpTimeoutMs)});report.r2.reads+=Number(response.headers.get('X-Benchmark-R2-Reads')||0);report.r2.writes+=Number(response.headers.get('X-Benchmark-R2-Writes')||0);if(!response.ok&&!allow.includes(response.status))throw new Error('R2 benchmark endpoint returned HTTP '+response.status+' at '+path.split('?')[0]);return response;
  };
- let ready=false;for(let attempt=0;attempt<PILOT.readyAttempts;attempt++){const response=await call('/__bench/health',{allow:[401,503]});if(response.ok){ready=true;break;}await wait(PILOT.readyWaitMs);}must(ready,'Temporary Worker credential did not become ready.');
+ let ready=false;for(let attempt=0;attempt<PILOT.readyAttempts;attempt++){const response=await call('/__bench/health',{allow:[401,404,503]});if(response.ok){ready=true;break;}await wait(PILOT.readyWaitMs);}must(ready,'Temporary Worker credential/address did not become ready.');
  must((await call('/api/office/FA4528',{authenticated:false,allow:[401]})).status===401,'Unauthenticated benchmark access was allowed.');must((await call('/api/office/FA4800',{allow:[404]})).status===404,'Another office was accessible.');
  const objectPath=key=>'/__bench/object?key='+encodeURIComponent(key),priorResponse=await call(objectPath(currentKey),{allow:[404]}),prior=priorResponse.ok?validateManifest(await priorResponse.json()):null;
  const retained=[...new Set([bundle.manifest.version,...(prior?.retained_versions||[])])];must(retained.length<=PILOT.maxStoredVersions,'Pilot retention guard reached; existing copies retained.');bundle.manifest.retained_versions=retained;
@@ -76,6 +77,6 @@ async function main(){
  const perOffice=bundle.compressed_bytes+pointer.length;report.projection={offices:CONFIG.storageProjectionOffices,one_version_bytes:perOffice*CONFIG.storageProjectionOffices,two_versions_upper_bound_bytes:perOffice*CONFIG.storageProjectionOffices*PILOT.maxStoredVersions,warning:'FA4528-only linear scenario; office sizes, source-change rates, traffic and other account usage vary. This is not a bill or a spending cap.'};report.cloud_status='passed';
 }
 try{await main();}catch(error){report.error=error.message;report.cloud_status=report.cloud_status==='blocked'?'blocked':'failed';process.exitCode=1;console.error(error.message);}finally{
- if(temporaryName&&temporaryConfig)try{await command(['delete','--config',temporaryConfig,'--force']);report.temporary_worker_deleted=true;}catch(error){report.temporary_worker_deleted=false;report.cleanup_error=error.message;process.exitCode=1;}
+ if(temporaryName&&cfRequest)try{const result=await cfRequest('/workers/scripts/'+temporaryName,'DELETE');must(result.ok||result.status===404,'Temporary Worker deletion failed: HTTP '+result.status);report.temporary_worker_deleted=true;}catch(error){report.temporary_worker_deleted=false;report.cleanup_error=error.message;process.exitCode=1;}
  report.finished_at=new Date().toISOString();await save();console.log(JSON.stringify({r2_pilot_result:report}));
 }
