@@ -19,7 +19,7 @@ export const CONFIG=Object.freeze({
   checkpointKey:'pilot/FA4528/checkpoint.json.gz',ledgerKey:'pilot/FA4528/budget.json',
   maxBucketBytes:33554432,maxBucketObjects:160,maxCheckpointBytes:8388608,maxCheckpointJSONBytes:67108864,
   maxUploadBytesPerJob:33554432,maxHTTPRequestsPerJob:1600,maxSourceRequestsPerJob:720,
-  maxChunksPerJob:4,checkpointEveryAwards:10,maxChangedPages:1000,maxCandidates:100000,
+  maxChunksPerJob:4,checkpointEveryAwards:10,checkpointEverySearchPages:5,checkpointEveryFiscalPages:5,maxChangedPages:1000,maxCandidates:100000,
   runnerMinutes:30,artifactDays:1,maxAuditRuns:128,maxManifestBytes:262144,maxLedgerBytes:65536,formatVersion:1}),
  schemaVersion:1,timeZone:'America/New_York',cron:'0 7 * * *',
  modes:['backfill','nightly'],storageProjectionOffices:1432

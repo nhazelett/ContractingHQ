@@ -14,10 +14,11 @@ const compare=(a,b)=>a<b?-1:a>b?1:0;
 export async function loadPublication(store){
  const entry=await store.get(CURRENT);if(!entry)return null;
  const manifest=validateManifest(JSON.parse(new TextDecoder().decode(entry.bytes)));
+ let lookup;
  const tables=await restoreBundle(manifest,async descriptor=>{
-  const object=await store.get(descriptor.key);must(object,'Publication object is missing.');return unpack(object.bytes,descriptor.sha256);
+  const object=await store.get(descriptor.key);must(object,'Publication object is missing.');const value=await unpack(object.bytes,descriptor.sha256);if(descriptor.key===manifest.lookup.key)lookup=value;return value;
  });
- return {manifest,tables,etag:entry.etag};
+ return {manifest,tables,lookup,etag:entry.etag};
 }
 
 // The checkpoint is one bounded, atomic R2 object. Published evidence is referenced,
@@ -71,7 +72,7 @@ export function candidateTables(base,state,{now=Date.now,sourceRequests=state.so
 
 export async function publishCandidate(store,base,state,tables,{now=Date.now,beforePublish=async()=>{}}={}){
  const current=await store.get(CURRENT);must(current?.etag===base.etag,'Another publication won; checkpoint retained for review.');
- const bundle=await buildBundle(tables,{now});
+ const bundle=await buildBundle(tables,{now,previousLookup:base.lookup});
  const retained=[...new Set([bundle.manifest.version,...base.manifest.retained_versions])];
  must(retained.length<=PILOT.maxStoredVersions,'Two-version pilot limit reached; no raw evidence was deleted.');
  bundle.manifest.retained_versions=retained;
@@ -118,7 +119,6 @@ export async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,n
   else must(state.base_version===base.manifest.version,'Published data changed under a pending checkpoint; stopped for review.');
  }
  const started=now(),today=currentDate(started),requests={count:0,failures:[]},deadline=new AbortController();
- const timer=setTimeout(()=>deadline.abort(new BudgetReached('Chunk time budget reached.')),config.maxRuntimeMs);
  if(!state){
   const lastFull=base.tables.ingest_runs.filter(row=>row.mode==='backfill'&&row.status==='completed').sort((a,b)=>compare(b.started_at,a.started_at))[0];
   const reconcile=mode==='backfill'||!lastFull||started-Date.parse(lastFull.started_at)>config.reconciliationDays*config.millisecondsPerDay;
@@ -128,6 +128,7 @@ export async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,n
    hydrate_index:0,month:0,fiscal_page:1,months:fiscalMonths(today),fiscal_pages:{},source_requests:0,attempts:[]};
   etag=await saveCheckpoint(store,state,etag);
  }
+ const timer=setTimeout(()=>deadline.abort(new BudgetReached('Chunk time budget reached.')),config.maxRuntimeMs);
  const remaining=()=>now()-started<config.maxRuntimeMs-config.shutdownReserveMs&&requests.count<config.maxSourceRequests-config.sourceRequestReserve;
  const ensure=()=>{if(!remaining())throw new BudgetReached('Source/time budget reached.');};
  const rawResponses=new Map(),paced=createSourceFetch({interval:config.sourceIntervalMs,fetcher:async(url,options)=>{
@@ -157,7 +158,8 @@ export async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,n
     must(Object.keys(state.changed).length<=config.maxAwards,'Changed-award budget reached.');
     state.page++;state.cursor=data.page_metadata.last_record_unique_id??null;state.sort_value=data.page_metadata.last_record_sort_value??null;
     if(!data.page_metadata.hasNext){state.phase='discover';state.page=1;state.cursor=null;state.sort_value=null;}
-    await persist();
+    state.search_pages_since_checkpoint=(state.search_pages_since_checkpoint||0)+1;
+    if(state.search_pages_since_checkpoint>=SETTINGS.checkpointEverySearchPages||state.phase==='discover'){state.search_pages_since_checkpoint=0;await persist();}
    }else if(state.phase==='discover'){
     const start=config.windows[state.window],data=await request('awards',{office:SETTINGS.office,start,page:state.page,cursor:state.cursor,sort_value:state.sort_value});
     state.candidate_scans=(state.candidate_scans||0)+data.candidates;must(state.candidate_scans<=SETTINGS.maxCandidates,'Discovery candidate limit reached.');
@@ -165,7 +167,8 @@ export async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,n
     state.windows[start]=[...ids].sort(compare);must(Object.keys(state.candidates).length<=config.maxAwards,'Office award limit reached.');
     state.page++;state.cursor=data.cursor;state.sort_value=data.sort_value;
     if(!data.has_next){state.window++;state.page=1;state.cursor=null;state.sort_value=null;if(state.window===config.windows.length)state.phase='hydrate';}
-    await persist();
+    state.search_pages_since_checkpoint=(state.search_pages_since_checkpoint||0)+1;
+    if(state.search_pages_since_checkpoint>=SETTINGS.checkpointEverySearchPages||!data.has_next){state.search_pages_since_checkpoint=0;await persist();}
    }else if(state.phase==='hydrate'){
     const old=new Map(base.tables.awards.map(row=>[row.generated_unique_award_id,row])),ids=Object.keys(state.candidates).sort(compare);
     if(state.hydrate_index===ids.length){state.phase='fiscal';await persist();continue;}
@@ -189,11 +192,12 @@ export async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,n
     must(!data.has_next||state.fiscal_page<config.maxFiscalPages,'Fiscal month exceeds the existing paging limit.');
     state.fiscal_pages[month.start+'|'+String(state.fiscal_page).padStart(String(config.maxFiscalPages).length,'0')]=data;
     if(data.has_next)state.fiscal_page++;else{state.month++;state.fiscal_page=1;}
-    await persist();
+    state.fiscal_pages_since_checkpoint=(state.fiscal_pages_since_checkpoint||0)+1;
+    if(state.fiscal_pages_since_checkpoint>=SETTINGS.checkpointEveryFiscalPages||state.month===state.months.length){state.fiscal_pages_since_checkpoint=0;await persist();}
    }else throw new Error('Unknown checkpoint phase.');
   }
   ensure();const tables=candidateTables(base.tables,state,{now});
-  const published=await publishCandidate(store,base,state,tables,{now,beforePublish});state.status='completed';state.phase='done';result={status:'completed',...published};
+  const published=await publishCandidate(store,base,state,tables,{now,beforePublish:async candidate=>{ensure();await beforePublish?.(candidate);ensure();}});state.status='completed';state.phase='done';result={status:'completed',...published};
  }catch(problem){
   error=problem;state.status=problem instanceof BudgetReached||deadline.signal.aborted?'yielded':'failed';result={status:state.status,error:problem.message};
  }finally{

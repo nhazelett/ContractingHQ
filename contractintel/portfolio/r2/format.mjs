@@ -33,18 +33,32 @@ export function evidenceFromTables(tables,id,page=1){const award=tables.awards.f
 export function compatible(value){const {source,...payload}=value;return payload;}
 export function validKey(key){return typeof key==='string'&&(key===PILOT.prefix+'/current.json'||new RegExp('^'+PILOT.prefix+'/objects/[a-z0-9-]+-[a-f0-9]{64}\\.json\\.gz$').test(key));}
 export function validateManifest(manifest){if(manifest?.office!==PILOT.office||manifest.format_version!==PILOT.formatVersion||!/^[a-f0-9]{64}$/.test(manifest.version)||!Array.isArray(manifest.objects)||manifest.objects.length>PILOT.maxObjects||!Array.isArray(manifest.retained_versions)||manifest.retained_versions.length>PILOT.maxStoredVersions||!manifest.retained_versions.includes(manifest.version))throw new PilotError('Invalid pilot manifest.');const keys=new Set();for(const obj of manifest.objects){if(!validKey(obj.key)||!obj.key.endsWith('-'+obj.sha256+'.json.gz')||!/^[a-f0-9]{64}$/.test(obj.sha256)||!Number.isSafeInteger(obj.compressed_bytes)||obj.compressed_bytes>PILOT.maxObjectBytes||keys.has(obj.key))throw new PilotError('Invalid pilot object descriptor.');keys.add(obj.key);}for(const start of CONFIG.windows)if(!keys.has(manifest.snapshots?.[start]?.key))throw new PilotError('Missing source window.');if(!keys.has(manifest.metadata?.key)||!keys.has(manifest.lookup?.key))throw new PilotError('Missing evidence index.');return manifest;}
-export async function buildBundle(tables,{now=Date.now}={}){
+export async function buildBundle(tables,{now=Date.now,previousLookup}={}){
  const pub=checkTables(tables),serialized=canonical(tables);if(bytes(serialized).length>PILOT.maxExportBytes)throw new PilotError('Export byte budget exceeded.');
  const version=await digest(canonical({format_version:PILOT.formatVersion,tables})),base=PILOT.prefix+'/objects/',objects=[];
  const add=async(name,value)=>{const packed=await pack(value),object={key:base+name+'-'+packed.sha256+'.json.gz',...packed};objects.push(object);return {key:object.key,sha256:object.sha256,compressed_bytes:object.bytes.byteLength,raw_bytes:object.rawBytes};};
  const metadataTables=Object.fromEntries(Object.entries(tables).filter(([key])=>!['awards','award_history_pages'].includes(key)));
  const metadata=await add('metadata',{tables:metadataTables}),historyById=new Map();for(const row of tables.award_history_pages){const id=row.generated_unique_award_id;if(!historyById.has(id))historyById.set(id,[]);historyById.get(id).push(row);}
- const lookup={},chunks=[];let group=[],groupBytes=0;
- const flush=async()=>{if(!group.length)return;const ids=new Set(group.map(row=>row.generated_unique_award_id)),chunk=await add('evidence-'+chunks.length,{awards:group,award_history_pages:group.flatMap(row=>historyById.get(row.generated_unique_award_id)||[])});for(const id of ids)lookup[id]=chunk;chunks.push(chunk);group=[];groupBytes=0;};
- for(const row of tables.awards){const cost=bytes({row,history:historyById.get(row.generated_unique_award_id)||[]}).length;if(cost>PILOT.chunkJSONBytes)throw new PilotError('One award exceeds the evidence chunk budget.');if(group.length&&(group.length>=PILOT.chunkAwards||groupBytes+cost>PILOT.chunkJSONBytes))await flush();group.push(row);groupBytes+=cost;}await flush();
+ const lookup={},chunks=[],priorGroups=new Map(),newRows=[];let nextGroup=0;
+ // Preserve the prior evidence grouping. Inserting one early-sorting award
+ // must not shift every subsequent hundred-award chunk and rewrite the office.
+ for(const row of tables.awards){
+  const descriptor=previousLookup?.awards?.[row.generated_unique_award_id],match=descriptor?.key?.match(/\/evidence-(\d+)-[a-f0-9]{64}\.json\.gz$/);
+  if(!match){newRows.push(row);continue;}
+  const number=Number(match[1]);nextGroup=Math.max(nextGroup,number+1);if(!priorGroups.has(number))priorGroups.set(number,[]);priorGroups.get(number).push(row);
+ }
+ const groups=[...priorGroups].sort((a,b)=>a[0]-b[0]);
+ if(newRows.length){if(groups.length)groups.at(-1)[1].push(...newRows);else groups.push([nextGroup++,newRows]);}
+ for(const [number,rows]of groups){
+  rows.sort((a,b)=>a.generated_unique_award_id<b.generated_unique_award_id?-1:a.generated_unique_award_id>b.generated_unique_award_id?1:0);
+  let group=[],groupBytes=0,name=number;
+  const flush=async()=>{if(!group.length)return;const chunk=await add('evidence-'+name,{awards:group,award_history_pages:group.flatMap(row=>historyById.get(row.generated_unique_award_id)||[])});for(const row of group)lookup[row.generated_unique_award_id]=chunk;chunks.push(chunk);group=[];groupBytes=0;};
+  for(const row of rows){const cost=bytes({row,history:historyById.get(row.generated_unique_award_id)||[]}).length;if(cost>PILOT.chunkJSONBytes)throw new PilotError('One award exceeds the evidence chunk budget.');if(group.length&&(group.length>=PILOT.chunkAwards||groupBytes+cost>PILOT.chunkJSONBytes)){await flush();name=nextGroup++;}group.push(row);groupBytes+=cost;}
+  await flush();
+ }
  const index=await add('lookup',{awards:lookup}),snapshots={};for(const start of CONFIG.windows){const snapshot=snapshotFromTables(tables,start,now),ids=new Set(tables.award_windows.filter(w=>w.window_start===start).map(w=>w.generated_unique_award_id));delete snapshot.today;delete snapshot.time_zone;snapshot.records=tables.awards.filter(row=>ids.has(row.generated_unique_award_id)).map(row=>JSON.parse(row.record_json));snapshots[start]=await add('window-'+start,snapshot);}
  const manifest={format_version:PILOT.formatVersion,office:PILOT.office,version,retained_versions:[version],source_publication_id:pub.published_run_id,source_published_at:pub.published_at,copied_at:new Date(now()).toISOString(),metadata,lookup:index,snapshots,objects:objects.map(o=>({key:o.key,sha256:o.sha256,compressed_bytes:o.bytes.byteLength,raw_bytes:o.rawBytes}))};
  const compressedBytes=objects.reduce((n,o)=>n+o.bytes.length,0);if(objects.length>PILOT.maxObjects||compressedBytes>PILOT.maxUploadBytes)throw new PilotError('Object/upload budget exceeded.');validateManifest(manifest);
  return {manifest,objects,source_encoded_bytes:bytes(serialized).length,compressed_bytes:compressedBytes};
 }
-export async function restoreBundle(manifest,read){validateManifest(manifest);const metadata=await read(manifest.metadata),index=await read(manifest.lookup),tables={...metadata.tables,awards:[],award_history_pages:[]},seen=new Set();for(const descriptor of Object.values(index.awards)){if(seen.has(descriptor.key))continue;seen.add(descriptor.key);const chunk=await read(descriptor);tables.awards.push(...chunk.awards);tables.award_history_pages.push(...chunk.award_history_pages);}checkTables(tables);return tables;}
+export async function restoreBundle(manifest,read){validateManifest(manifest);const metadata=await read(manifest.metadata),index=await read(manifest.lookup),tables={...metadata.tables,awards:[],award_history_pages:[]},seen=new Set();for(const descriptor of Object.values(index.awards)){if(seen.has(descriptor.key))continue;seen.add(descriptor.key);const chunk=await read(descriptor);tables.awards.push(...chunk.awards);tables.award_history_pages.push(...chunk.award_history_pages);}const compare=(a,b)=>a<b?-1:a>b?1:0;tables.awards.sort((a,b)=>compare(a.generated_unique_award_id,b.generated_unique_award_id));tables.award_history_pages.sort((a,b)=>compare(a.generated_unique_award_id,b.generated_unique_award_id)||a.page-b.page);checkTables(tables);return tables;}

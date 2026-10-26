@@ -44,13 +44,22 @@ helper keeps its explicitly exempt hardcoded values.
 7. Switch the current manifest with an R2 conditional ETag write. Another writer
    cannot overwrite a newer publication. Reconcile a lost successful response.
 
+The prior evidence grouping is retained when awards are inserted or removed.
+An early-sorting new PIID does not shift every subsequent hundred-award file.
+Raw table ordering is restored explicitly when the files are reassembled.
+
 One compressed checkpoint references the old baseline and stores only new
 discovery state, changed evidence, fiscal pages and bounded attempt metadata.
-It is saved atomically after search/fiscal pages, after groups of hydrated
-awards, and on yield/failure. Unchanged awards do not each generate a checkpoint
-write. Source, time, request, upload and storage guards fail without changing
+It is saved atomically after configured batches of search/fiscal pages, at
+history-window boundaries, after groups of hydrated awards, and on yield/failure.
+An abrupt runner termination can repeat at most four search/fiscal pages with
+the default five-page checkpoint batch. Source reads are idempotent. Unchanged
+awards do not each generate a checkpoint write. Source, time, request, upload and storage guards fail without changing
 the complete publication. A later job resumes its checkpoint. A same-day replay
 of a completed job performs no source calls or R2 writes.
+Within one job, already verified immutable R2 files are cached in runner memory.
+Mutable publication pointers, checkpoints and budget controls always read R2;
+new uploads must still be read back from R2 before publication.
 
 Source HTTP 500 is still an error, not a new retry policy. A failed job is marked
 failed in GitHub and leaves both its checkpoint and the last complete copy.

@@ -9,6 +9,7 @@ import {counts} from '../compare.mjs';
 import {compareCSV} from '../../benchmarks/r2/csv.mjs';
 import {PILOT,bytes,digest,validateManifest,restoreBundle,unpack,canonical,snapshotFromTables} from './format.mjs';
 import {SETTINGS,CURRENT,loadPublication,runR2Chunk} from './ingest.mjs';
+import {cacheImmutable} from './cache.mjs';
 
 const root=new URL('../../',import.meta.url),output=new URL('./out/',import.meta.url);
 const report={office:SETTINGS.office,started_at:new Date().toISOString(),status:'starting',production_changed:false,d1_requests:0,
@@ -67,7 +68,7 @@ async function main(){
   async head(key){const response=await call('/object?area='+area+'&key='+encodeURIComponent(key),{method:'HEAD',allow:[404]});return response.status===404?null:{sha:response.headers.get('X-Object-SHA256'),etag:response.headers.get('ETag')};},
   async put(key,body,options){const response=await call('/object?area='+area+'&key='+encodeURIComponent(key),{method:'PUT',body,...options});return {etag:response.headers.get('ETag')};}
  });
- const store=remote('target'),baseline=remote('baseline');
+ const store=cacheImmutable(remote('target')),baseline=cacheImmutable(remote('baseline'));
  if(!await store.get(CURRENT)){
   const pointer=await baseline.get(CURRENT);must(pointer,'The previously verified FA4528 pilot is missing.');
   const manifest=validateManifest(JSON.parse(new TextDecoder().decode(pointer.bytes)));
@@ -100,7 +101,11 @@ async function main(){
  report.views=CONFIG.windows.map(start=>{const prior=snapshotFromTables(before.tables,start),current=snapshotFromTables(after.tables,start);return {start,today:current.today,before:counts(prior.records,current.today),after:counts(current.records,current.today),fiscal_totals:current.fiscal_totals.map(({award_ids,...total})=>total)};});
  report.change_summary={new_awards:after.tables.awards.filter(row=>!before.tables.awards.some(old=>old.generated_unique_award_id===row.generated_unique_award_id)).length,removed_awards:before.tables.awards.filter(row=>!after.tables.awards.some(next=>next.generated_unique_award_id===row.generated_unique_award_id)).length,changed_awards:after.tables.awards.filter(row=>{const old=before.tables.awards.find(previous=>previous.generated_unique_award_id===row.generated_unique_award_id);return old&&old.source_hash!==row.source_hash;}).length};
  const unchangedBefore=report.r2.writes,replay=await runR2Chunk({store,directory:directoryData,fetcher:async()=>{throw new Error('Same-day replay must not fetch the source.');}});must(replay.status==='retained'&&report.r2.writes===unchangedBefore,'Same-day replay did work.');report.same_day_replay={status:replay.status,source_requests:0,r2_writes:report.r2.writes-unchangedBefore};
- const ledger=await store.get(SETTINGS.ledgerKey);report.storage_ledger=JSON.parse(new TextDecoder().decode(ledger.bytes));report.reserved_storage_bytes=Object.values(report.storage_ledger.keys).reduce((sum,entry)=>sum+entry.bytes,0)+SETTINGS.maxLedgerBytes;delete report.storage_ledger;
+ const ledger=await store.get(SETTINGS.ledgerKey),keys=JSON.parse(new TextDecoder().decode(ledger.bytes)).keys;
+ report.reserved_storage_bytes=Object.values(keys).reduce((sum,entry)=>sum+entry.bytes,0)+SETTINGS.maxLedgerBytes;
+ const pointer=await store.get(CURRENT),checkpoint=await store.get(SETTINGS.checkpointKey);
+ report.actual_stored_bytes=Object.entries(keys).filter(([key])=>![CURRENT,SETTINGS.checkpointKey].includes(key)).reduce((sum,[,entry])=>sum+entry.bytes,0)+ledger.bytes.length+pointer.bytes.length+(checkpoint?.bytes.length||0);
+ report.stored_objects=Object.keys(keys).length+1;
  report.stored_compressed_publication_bytes=after.manifest.objects.reduce((sum,object)=>sum+object.compressed_bytes,0);
  report.limitations=['Shadow R2 publication only; the live website and Cron continue using the existing D1 path.','This is an incremental refresh from the previously verified baseline, not another independent 4,091-award source backfill.','At two published versions or the configured byte/object budget, further updates stop for review. No raw evidence is deleted.'];
  report.status='passed';

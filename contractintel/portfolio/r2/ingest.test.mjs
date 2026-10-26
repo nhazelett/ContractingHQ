@@ -8,6 +8,7 @@ import {compareCSV} from '../../benchmarks/r2/csv.mjs';
 import {PILOT,buildBundle,bytes,digest,canonical,compatible,pack,unpack,snapshotFromTables} from './format.mjs';
 import {createGateway} from './gateway.mjs';
 import {CURRENT,SETTINGS,runR2Chunk,loadPublication} from './ingest.mjs';
+import {cacheImmutable} from './cache.mjs';
 
 const config={sourceIntervalMs:0};
 function bucket(){
@@ -145,4 +146,24 @@ test('Missing fiscal pages and mismatched source office IDs are rejected before 
   const response=await y.upstream.fetcher(url,options);if(!url.includes('spending_by_award'))return response;const data=await response.json();data.results[0].generated_internal_id='CONT_AWD_FA4800UNRELATED_9700_-NONE-_-NONE-';return Response.json(data);
  };
  await assert.rejects(runR2Chunk({...ingest(y),fetcher}),/identity conflicts/);assert.ok(!y.upstream.calls.some(call=>call.path.includes('/awards/CONT_AWD_FA4800')));
+});
+
+test('Adding an early-sorting award preserves other evidence chunks and the next unchanged build is byte-identical',async()=>{
+ const x=await fixture(),tables=structuredClone(x.tables),template=tables.awards[0];
+ const makeRow=label=>{const row=structuredClone(template),id='CONT_AWD_FA4528'+label+'_9700_-NONE-_-NONE-';row.generated_unique_award_id=id;row.piid='FA4528'+label;const record=JSON.parse(row.record_json);record.award_id=id;record.piid=row.piid;row.record_json=JSON.stringify(record);const raw=JSON.parse(row.raw_json);raw.generated_unique_award_id=id;raw.piid=row.piid;row.raw_json=JSON.stringify(raw);return row;};
+ tables.awards=Array.from({length:CONFIG.r2Pilot.chunkAwards*2+5},(_,i)=>makeRow('T'+String(i).padStart(4,'0')));
+ tables.award_history_pages=[];tables.award_windows=tables.awards.flatMap(row=>CONFIG.windows.map(window_start=>({generated_unique_award_id:row.generated_unique_award_id,window_start})));tables.office_publications[0].award_count=tables.awards.length;
+ const a=await buildBundle(tables,{now:fixed}),index=async bundle=>{const object=bundle.objects.find(row=>row.key===bundle.manifest.lookup.key);return unpack(object.bytes,object.sha256);};
+ const inserted=makeRow('0EARLY');tables.awards.unshift(inserted);tables.award_windows.unshift(...CONFIG.windows.map(window_start=>({generated_unique_award_id:inserted.generated_unique_award_id,window_start})));tables.office_publications[0].award_count++;
+ const b=await buildBundle(tables,{now:fixed,previousLookup:await index(a)}),oldEvidence=a.objects.filter(row=>row.key.includes('/evidence-'));
+ assert.equal(oldEvidence.filter(row=>b.objects.some(next=>next.key===row.key)).length,2);
+ const c=await buildBundle(tables,{now:fixed,previousLookup:await index(b)});assert.deepEqual(c.objects.map(row=>row.key),b.objects.map(row=>row.key));
+});
+
+test('Only immutable R2 reads are cached, and newly uploaded files must be downloaded for verification',async()=>{
+ const x=await fixture(),cached=cacheImmutable(x.store),key=x.bundle.objects[0].key;
+ const before=x.calls.length;await cached.get(key);await cached.get(key);assert.equal(x.calls.slice(before).filter(call=>call.key===key&&call.method==='GET').length,1);
+ const pointerReads=x.calls.filter(call=>call.key===CURRENT&&call.method==='GET').length;await cached.get(CURRENT);await cached.get(CURRENT);assert.equal(x.calls.filter(call=>call.key===CURRENT&&call.method==='GET').length-pointerReads,2);
+ const encoded=await pack({new:'source record'}),newKey=PILOT.prefix+'/objects/new-'+encoded.sha256+'.json.gz';
+ assert.equal(await cached.get(newKey),null);await cached.put(newKey,encoded.bytes,{expected:null,sha:encoded.sha256});const first=x.calls.length;assert.deepEqual((await cached.get(newKey)).bytes,encoded.bytes);assert.equal(x.calls.slice(first).filter(call=>call.key===newKey&&call.method==='GET').length,1);
 });
