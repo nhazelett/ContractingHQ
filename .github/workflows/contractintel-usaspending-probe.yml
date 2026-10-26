@@ -1,0 +1,24 @@
+name: ContractIntel USAspending connectivity probe
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Make exactly one read-only USAspending search request
+        shell: bash
+        run: |
+          END_DATE=$(date -u +%F)
+          curl --silent --show-error --fail \
+            --retry 0 --connect-timeout 15 --max-time 60 \
+            --request POST \
+            --header 'Content-Type: application/json' \
+            --data "{\"filters\":{\"award_type_codes\":[\"A\",\"B\",\"C\",\"D\"],\"keywords\":[\"FA4528\"],\"time_period\":[{\"start_date\":\"2007-10-01\",\"end_date\":\"$END_DATE\"}]},\"fields\":[\"Award ID\",\"Recipient Name\",\"Description\",\"Start Date\",\"End Date\",\"Award Amount\",\"generated_internal_id\",\"Last Modified Date\"],\"limit\":100,\"page\":1,\"sort\":\"End Date\",\"order\":\"desc\"}" \
+            --output /dev/null \
+            --write-out 'http_status=%{http_code}\nconnect_seconds=%{time_connect}\ntls_seconds=%{time_appconnect}\nfirst_byte_seconds=%{time_starttransfer}\ntotal_seconds=%{time_total}\n' \
+            'https://api.usaspending.gov/api/v2/search/spending_by_award/'
