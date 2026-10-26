@@ -57,8 +57,22 @@ return {async fetch(request,env){
   if(!isCurrent&&!isCheckpoint&&!isVerification&&!isAdmission&&existing){must(existing.customMetadata?.sha256===sha&&existing.size===body.length,'Immutable evidence differs.');return reply({unchanged:true},200,{ETag:existing.httpEtag||'"'+existing.etag+'"'});}
   if(isAdmission){const admission=JSON.parse(new TextDecoder().decode(body)),pointer=await get(env.TARGET,CURRENT);must(pointer,'A complete publication is required before admission.');const manifest=validateManifest(await pointer.json());must(admission.office===S.office&&admission.verified===true&&admission.schema_version===CONFIG.schemaVersion&&admission.publication_id===manifest.source_publication_id&&/^[a-f0-9]{64}$/.test(admission.comparison_sha256||''),'Admission requires a matching verified publication.');}
   let progress={};
-  if(isVerification){const state=await unpack(body,null,S.maxCheckpointJSONBytes);must(state.office===S.office&&state.version===CONFIG.schemaVersion&&typeof state.publication_key==='string','Invalid independent-source checkpoint.');progress=progressMetadata(state,true);}
-  if(isCheckpoint){const state=await unpack(body,null,S.maxCheckpointJSONBytes);must(state.office===S.office&&state.format_version===S.formatVersion&&typeof state.work_id==='string','Invalid checkpoint.');progress=progressMetadata(state);}
+  if(isVerification||isCheckpoint){
+   const encoded=request.headers.get('X-Checkpoint-Summary');let summary;
+   if(encoded){
+    must(new TextEncoder().encode(encoded).length<=CONFIG.coverage.progressMetadataBytes,'Invalid checkpoint summary.',400);
+    summary=JSON.parse(encoded);
+    must(summary.office===S.office&&summary.format_version===S.formatVersion&&typeof summary.work_id==='string','Invalid checkpoint identity.',400);
+    const parsed=JSON.parse(summary.progress||'null');
+    must(parsed&&parsed.kind===(isVerification?'verification':'import'),'Invalid checkpoint progress.',400);
+    progress={progress:summary.progress};
+   }else{
+    // Compatibility for small legacy fixtures only; large checkpoint validation lives in Node.
+    const state=await unpack(body,null,CONFIG.authority.legacyCheckpointJSONBytes);
+    must(state.office===S.office&&(isVerification?state.version===CONFIG.schemaVersion:state.format_version===S.formatVersion),'Invalid checkpoint identity.',400);
+    progress=progressMetadata(state,isVerification);
+   }
+  }
   if(isCurrent){
    const manifest=validateManifest(JSON.parse(new TextDecoder().decode(body))),prior=existing?validateManifest(await (await get(env.TARGET,key)).json()):null;
    const retained=[...new Set([manifest.version,...(prior?.retained_versions||[])])].slice(0,manifest.previous_manifest?PILOT.maxStoredVersions:Infinity);
@@ -75,7 +89,7 @@ return {async fetch(request,env){
   // maximum size once. There is no automatic deletion of raw evidence.
   const ledgerObject=await get(env.TARGET,S.ledgerKey),ledger=ledgerObject?await ledgerObject.json():{office:S.office,keys:{}};
   must(ledger.office===S.office,'Invalid storage ledger.');
-  const reservation=isCurrent?S.maxManifestBytes:isCheckpoint?S.maxCheckpointBytes:body.length;
+  const reservation=isCurrent||isAdmission?S.maxManifestBytes:isCheckpoint||isVerification?S.maxCheckpointBytes:body.length;
   if(!ledger.keys[key]){
    ledger.keys[key]={bytes:reservation,sha:isCurrent||isAdmission||isCheckpoint||isVerification?null:sha};
    const used=Object.values(ledger.keys).reduce((sum,entry)=>sum+entry.bytes,0)+S.maxLedgerBytes;

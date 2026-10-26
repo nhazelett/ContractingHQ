@@ -1,3 +1,4 @@
+import {progressMetadata} from './progress.mjs';
 // Resumable FA4528 R2 ingest. Atomic publication; no D1 award writes.
 import {CONFIG,documentFor,r2Profile} from '../ingest.mjs';
 import {resolve,validAwardID} from '../../web/source.mjs';
@@ -28,7 +29,7 @@ async function loadPublication(store){
 async function saveCheckpoint(store,state,etag){
  must(bytes(state).length<=SETTINGS.maxCheckpointJSONBytes,'Checkpoint JSON budget reached; publication retained.');
  const object=await pack(state);must(object.bytes.length<=SETTINGS.maxCheckpointBytes,'Checkpoint storage budget reached; publication retained.');
- const result=await store.put(SETTINGS.checkpointKey,object.bytes,{expected:etag,sha:object.sha256});return result.etag;
+ const result=await store.put(SETTINGS.checkpointKey,object.bytes,{expected:etag,sha:object.sha256,summary:{office:SETTINGS.office,format_version:SETTINGS.formatVersion,work_id:state.work_id,...progressMetadata(state)}});return result.etag;
 }
 
 function candidateTables(base,state,{now=Date.now,sourceRequests=state.source_requests}={}){
@@ -72,9 +73,9 @@ function candidateTables(base,state,{now=Date.now,sourceRequests=state.source_re
  checkTables(tables);return tables;
 }
 
-async function publishCandidate(store,base,state,tables,{now=Date.now,beforePublish=async()=>{}}={}){
+async function publishCandidate(store,base,state,tables,{now=Date.now,beforePublish=async()=>{},d1PublicationVersion=null}={}){
  const current=await store.get(CURRENT);must((current?.etag||null)===base.etag,'Another publication won; checkpoint retained for review.');
- const bundle=await buildBundle(tables,{now,previousLookup:base.lookup});
+ const bundle=await buildBundle(tables,{now,previousLookup:base.lookup,d1PublicationVersion});
  if(base.manifest.version){const archive=await pack(base.manifest),archiveKey=PILOT.prefix+'/objects/manifest-'+base.manifest.version+'-'+archive.sha256+'.json.gz';
  if(!await store.head(archiveKey))await store.put(archiveKey,archive.bytes,{expected:null,sha:archive.sha256});
  bundle.manifest.previous_manifest={key:archiveKey,sha256:archive.sha256,compressed_bytes:archive.bytes.length,raw_bytes:archive.rawBytes};}
@@ -102,7 +103,7 @@ async function publishCandidate(store,base,state,tables,{now=Date.now,beforePubl
  return {publication_id:state.work_id,version:bundle.manifest.version,uploaded_objects:uploaded,reused_objects:reused,compressed_bytes:bundle.compressed_bytes,raw_round_trip_match:true};
 }
 
-async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,now=Date.now,config:overrides={},beforePublish,force=false}={}){
+async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,now=Date.now,config:overrides={},beforePublish,force=false,prepareOnly=false,onPrepared}={}){
  must(CONFIG.modes.includes(mode),'Invalid ingest mode.');
  must(directory.some(office=>office.code===SETTINGS.office),'Selected office directory entry is missing.');
  const config={...CONFIG,offices:[SETTINGS.office],...overrides};must(config.offices.length===1&&config.offices[0]===SETTINGS.office,'Cross-office ingestion is not permitted.');
@@ -205,7 +206,8 @@ async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,now=Date
    }else throw new Error('Unknown checkpoint phase.');
   }
   ensure();const tables=candidateTables(base.tables,state,{now});
-  const published=await publishCandidate(store,base,state,tables,{now,beforePublish:async candidate=>{ensure();await beforePublish?.(candidate);ensure();}});state.status='completed';state.phase='done';result={status:'completed',...published};
+  if(prepareOnly){await onPrepared?.({tables,state,base});state.status='prepared';result={status:'prepared'};}
+  else{const published=await publishCandidate(store,base,state,tables,{now,beforePublish:async candidate=>{ensure();await beforePublish?.(candidate);ensure();}});state.status='completed';state.phase='done';result={status:'completed',...published};}
  }catch(problem){
   error=problem;state.status=problem instanceof BudgetReached||deadline.signal.aborted?'yielded':'failed';result={status:state.status,error:problem.message};
  }finally{

@@ -13,7 +13,7 @@ try{
  const databases=await cf('/d1/database?per_page=100');let database=databases.find(d=>d.name===name);
  if(!database)database=await cf('/d1/database','POST',{name});
  const id=database.uuid,info=await cf('/d1/database/'+id);if(Number(info.file_size||0)>=CONFIG.maxStorageBytes)throw new Error('Portfolio pilot storage guard reached.');
- const sql=(await Promise.all(['0001.sql','0002.sql','0003.sql'].map(file=>fs.readFile(new URL('portfolio/migrations/'+file,root),'utf8')))).join('\n');const result=await cf('/d1/database/'+id+'/query','POST',{sql});if(result.some(r=>!r.success))throw new Error('Portfolio migration failed.');
+ const sql=(await Promise.all(['0001.sql','0002.sql','0003.sql','0004.sql'].map(file=>fs.readFile(new URL('portfolio/migrations/'+file,root),'utf8')))).join('\n');const result=await cf('/d1/database/'+id+'/query','POST',{sql});if(result.some(r=>!r.success))throw new Error('Portfolio migration failed.');
  const db=createD1Adapter(async(sql,params=[])=>{const result=await cf('/d1/database/'+id+'/query','POST',{sql,params});if(result.some(r=>!r.success))throw new Error('Portfolio seed failed.');return result[0];});
  await seedOffices(db,JSON.parse(await fs.readFile(new URL('worker/offices.json',root),'utf8')));
  const configPath=new URL('worker/wrangler.jsonc',root),config=JSON.parse(await fs.readFile(configPath,'utf8'));

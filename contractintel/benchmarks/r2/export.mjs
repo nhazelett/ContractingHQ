@@ -1,8 +1,9 @@
 // Reads the existing completed pilot. Never starts ingestion or calls USAspending/SAM.
 import {CONFIG} from '../../portfolio/ingest.mjs';
 import {publication} from '../../portfolio/read.mjs';
-import {PILOT,checkTables,PilotError} from './core.mjs';
-export async function exportOffice(db){
+import {createFormat} from '../../portfolio/r2/format.mjs';
+export async function exportOffice(db,{profile=CONFIG.r2Pilot}={}){
+ const {PILOT,checkTables,PilotError}=createFormat(profile);
  const office=PILOT.office,pub=await publication(db,office);if(!pub)throw new PilotError('FA4528 has no completed publication.');
  const tables={offices:(await db.prepare('SELECT * FROM offices WHERE dodaac=?').bind(office).all()).results,office_publications:[pub],ingest_runs:(await db.prepare('SELECT * FROM ingest_runs WHERE id=?').bind(pub.published_run_id).all()).results,fiscal_totals:(await db.prepare('SELECT * FROM fiscal_totals WHERE office_dodaac=? ORDER BY fiscal_year').bind(office).all()).results,awards:[],award_windows:[],award_history_pages:[]};
  let after='';for(;;){const rows=(await db.prepare('SELECT * FROM awards WHERE office_dodaac=? AND generated_unique_award_id>? ORDER BY generated_unique_award_id LIMIT ?').bind(office,after,PILOT.exportBatchRows).all()).results;if(!rows.length)break;tables.awards.push(...rows);if(tables.awards.length>CONFIG.maxAwards)throw new PilotError('Award export guard reached.');after=rows.at(-1).generated_unique_award_id;}
