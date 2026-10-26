@@ -16,11 +16,11 @@ The original methodology text, footer, controls/option values, CSV field definit
 | 8 | Four history windows | Advanced → History; active value displayed as a chip. |
 | 9 | Current/potential end-date basis | Advanced → End dates; active value displayed as a chip. Source values unchanged. |
 | 10 | All four original headline cards and their subsidiary counts | One new 12-month headline; three original cards in More about this office; original 180/90-day card in 90- and 180-day breakdown. |
-| 11 | Next-ten ending-contract list and full-register link | My office → Contracts ending soon; See all ending contracts and All contracts links below list. |
+| 11 | Next-ten ending-contract list and full-register link | My office → Contracts ending soon; contract number beneath each description; See all ending contracts and All contracts links below list. |
 | 12 | Set-aside mix | How this office buys → Who can bid; full view remains in secondary navigation. |
 | 13 | Net obligations-by-FY chart, current year partial | How this office buys → Money spent by fiscal year; YTD flag retained. |
 | 14 | Fiscal comparison, four totals, independent loading controls | How this office buys → Fiscal-year comparison. Existing auto-start, Pause/Continue/Retry and math unchanged. |
-| 15 | Register search, filters, contract rows and pagination | All contracts; simple rows by default, search above, filters in Advanced, pagination below. |
+| 15 | Register search, filters, contract rows and pagination | All contracts; simple rows show contract numbers beneath descriptions, search above, filters in Advanced, pagination below. |
 | 16 | Contract source-evidence modal and USAspending link | Open any contract; existing modal/drawer and official link retained. |
 | 17 | All five methodology sections, verbatim | How this data works; exact original text preserved. Moved loading explanation appended. |
 | 18 | Portfolio footer disclaimer, verbatim | Portfolio footer after office selection, unchanged text. |

@@ -9,7 +9,7 @@ const countdown=days=>document.createElement('span');
 
 test('Contract rows retain source identity and actions while presenting four fields and subordinate alternative dates',()=>{
  globalThis.document=createDocument();let opened;const cells=simpleContractCells({...row,source_refresh_pending:true},'current',r=>opened=r,countdown);
- assert.equal(cells.length,4);assert.equal(cells[0].dataset.label,'Requirement');assert.match(cells[0].textContent,/Ventilation/);assert.match(cells[0].textContent,/Updating/);assert.equal(cells[1].textContent,row.recipient);assert.match(cells[3].textContent,/12,345/);
+ assert.equal(cells.length,4);assert.equal(cells[0].dataset.label,'Requirement');assert.match(cells[0].textContent,/Ventilation/);assert.equal(cells[0].querySelector('.contract-number').textContent,row.piid);assert.match(cells[0].textContent,/Updating/);assert.equal(cells[1].textContent,row.recipient);assert.match(cells[3].textContent,/12,345/);
  cells[0].querySelector('a').click();assert.equal(opened.award_id,row.award_id);assert.ok(cells[0].querySelector('a').href.includes(encodeURIComponent(row.award_id)));
  const current=datePresentation(row,'current',countdown),potential=datePresentation(row,'potential',countdown);
  assert.match(current.querySelector('.secondary-date').textContent,/^Could run to /);assert.match(potential.querySelector('.secondary-date').textContent,/^Current period ends /);assert.match(potential.querySelector('.primary-date').children[0].title,/unexercised options/);
