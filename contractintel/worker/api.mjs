@@ -1,4 +1,3 @@
-import {storedCoverage} from '../portfolio/r2/coverage.mjs';
 import {portfolioRoute} from '../portfolio/http.mjs';
 import {dispatchIngest} from '../portfolio/dispatch.mjs';
 import {PortfolioError} from '../portfolio/read.mjs';
@@ -15,12 +14,6 @@ export async function handle(request,env={},ctx={}){
  const url=new URL(request.url),origin=request.headers.get('Origin');
  const cors=['https://kthq.org','https://www.kthq.org','http://127.0.0.1:8898'].includes(origin)?{'Access-Control-Allow-Origin':origin,'Vary':'Origin'}:{};
  const reply=(data,status=200,headers={})=>json(data,status,{...cors,...headers});
- if(url.pathname==='/api/coverage'){
-  if(request.method!=='GET')return reply({error:'Read-only coverage.'},405);
-  if(url.search)return reply({error:'Unexpected query parameter.'},400);
-  if(env.READ_LIMIT&&!(await env.READ_LIMIT.limit({key:request.headers.get('CF-Connecting-IP')||'unknown'})).success)return reply({error:'Request limit reached.'},429);
-  return reply(await storedCoverage(env));
- }
  if(url.pathname.startsWith('/api/office/')||url.pathname.startsWith('/api/admin/portfolio/')){
   try{
    if(url.pathname.startsWith('/api/office/')&&env.READ_LIMIT&&!(await env.READ_LIMIT.limit({key:request.headers.get('CF-Connecting-IP')||'unknown'})).success)return reply({error:'Request limit reached. Wait one minute, then retry.'},429,{'Retry-After':'60'});

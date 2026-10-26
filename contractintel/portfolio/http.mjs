@@ -1,3 +1,4 @@
+import {storedCoverage} from './r2/coverage.mjs';
 import {readR2} from './r2/read.mjs';
 import {CONFIG} from './ingest.mjs';
 import {dispatchIngest} from './dispatch.mjs';
@@ -9,6 +10,7 @@ async function authorized(request,secret){
 }
 export async function portfolioRoute(request,env){
  const url=new URL(request.url),progress=/^\/api\/office\/([A-Z0-9]{6})\/progress$/.exec(url.pathname),match=/^\/api\/office\/([A-Z0-9]{6})(\/award)?$/.exec(url.pathname);
+ if(url.pathname==='/api/office/coverage'){if(request.method!=='GET')throw new PortfolioError('Read-only coverage.',405);if(url.search)throw new PortfolioError('Unexpected query parameter.',400);return storedCoverage(env);}
  if(progress){
   if(request.method!=='GET')throw new PortfolioError('Read-only progress endpoint.',405);
   if(url.search||!CONFIG.offices.includes(progress[1]))throw new PortfolioError('Unknown pilot office.',404);

@@ -301,7 +301,7 @@ $('fiscal-continue').addEventListener('click',loadFiscal);$('fiscal-pause').addE
 
 async function init(){try{
  const data=await api('offices');state.directory=data.offices;
- api('coverage').then(coverage=>{officeCoverage=Object.fromEntries(coverage.offices.map(row=>[row.office,row]));coverageReady=true;filterOffices();}).catch(()=>{});
+ api('office/coverage').then(coverage=>{officeCoverage=Object.fromEntries(coverage.offices.map(row=>[row.office,row]));coverageReady=true;filterOffices();}).catch(()=>{});
  for(const name of [...new Set(data.offices.map(o=>o.department))].sort()){const option=el('option',name);option.value=name;$('department').append(option);}
  let remembered;try{remembered=localStorage.getItem('contractintel-office');}catch{}const selected=new URLSearchParams(location.search).get('office')||remembered,known=data.offices.some(o=>o.code===selected);
  if(known)state.office=selected;filterOffices();if(known)revealOffice();else await welcomeOffice();ui.officeChosen=true;

@@ -40,7 +40,7 @@ async function main(){
   return {ok:response.ok&&data.success,status:response.status,data};
  };
  let bucket=await cf('/r2/buckets/'+SETTINGS.bucket);
- if(!bucket.ok&&bucket.status===404)bucket=await cf('/r2/buckets','POST',{name:SETTINGS.bucket});
+ if(!bucket.ok&&bucket.status===404){bucket=await cf('/r2/buckets','POST',{name:SETTINGS.bucket});if(!bucket.ok)bucket=await cf('/r2/buckets/'+SETTINGS.bucket);}
  must(bucket.ok,'The private R2 shadow bucket could not be opened.');
  for(const name of [SETTINGS.bucket,SETTINGS.baselineBucket]){const managed=await cf('/r2/buckets/'+name+'/domains/managed');must(managed.ok&&managed.data.result.enabled===false,'Private bucket status could not be confirmed.');}
  report.bucket=SETTINGS.bucket;report.bucket_public_access=false;
@@ -60,7 +60,7 @@ async function main(){
   for(let attempt=0;attempt<CONFIG.secretReadyAttempts;attempt++){
    if(attempt){must(++report.r2.http_requests<=SETTINGS.maxHTTPRequestsPerJob,'Gateway request budget reached.');await wait(CONFIG.secretWaitMs);}
    response=await fetch(url+path,{method,headers,body,redirect:'error',signal:AbortSignal.timeout(PILOT.httpTimeoutMs)});
-   if(response.status!==401)break;
+   if(response.status!==401&&!(response.status===404&&!response.headers.has('X-R2-Reads')))break;
    await response.body?.cancel();
   }
   report.r2.reads+=Number(response.headers.get('X-R2-Reads')||0);report.r2.writes+=Number(response.headers.get('X-R2-Writes')||0);
