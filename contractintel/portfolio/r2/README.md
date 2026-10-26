@@ -1,5 +1,8 @@
 # FA4528 R2 shadow updater
 
+Measured source refresh, storage sizes, preserved-field inventory and short
+activation checks: [FA4528 verification](../../docs/fa4528-r2-update.md).
+
 This package refreshes a separate private copy of **FA4528 only**. It is not the
 live website's read path. It does not write D1 or replace its existing updater.
 The browser's live USAspending fallback, pacing, retry, parsing, session cache,
@@ -95,8 +98,8 @@ generated in the runner, masked before use and installed via Wrangler stdin.
 Only the JSON measurement report is uploaded as an artifact, for one day.
 
 `.github/workflows/contractintel-r2-update.yml` supports a manual run and a
-limited push smoke test. It has no schedule. Register it on the default branch
-before using GitHub's manual-dispatch UI. The existing production Cloudflare
+limited push smoke test. It has no schedule. It is registered on the default
+branch for manual dispatch and checks out the trusted working branch. The existing production Cloudflare
 07:00 UTC Cron and 10:00 UTC GitHub backup remain configured for the D1 package;
 they are not silently redirected to this shadow updater.
 The shadow workflow has its own concurrency group because it writes only its
