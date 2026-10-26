@@ -1,3 +1,4 @@
+import {progressMetadata} from './progress.mjs';
 // Short-lived, authenticated R2 gateway for a GitHub runner. No source fetches,
 // D1 binding, public bucket or scheduled task. Cleanup is limited to tracked,
 // unreferenced objects outside both retained publications and the grace period.
@@ -55,8 +56,9 @@ return {async fetch(request,env){
   const existing=await head(env.TARGET,key);
   if(!isCurrent&&!isCheckpoint&&!isVerification&&!isAdmission&&existing){must(existing.customMetadata?.sha256===sha&&existing.size===body.length,'Immutable evidence differs.');return reply({unchanged:true},200,{ETag:existing.httpEtag||'"'+existing.etag+'"'});}
   if(isAdmission){const admission=JSON.parse(new TextDecoder().decode(body)),pointer=await get(env.TARGET,CURRENT);must(pointer,'A complete publication is required before admission.');const manifest=validateManifest(await pointer.json());must(admission.office===S.office&&admission.verified===true&&admission.schema_version===CONFIG.schemaVersion&&admission.publication_id===manifest.source_publication_id&&/^[a-f0-9]{64}$/.test(admission.comparison_sha256||''),'Admission requires a matching verified publication.');}
-  if(isVerification){const state=await unpack(body,null,S.maxCheckpointJSONBytes);must(state.office===S.office&&state.version===CONFIG.schemaVersion&&typeof state.publication_key==='string','Invalid independent-source checkpoint.');}
-  if(isCheckpoint){const state=await unpack(body,null,S.maxCheckpointJSONBytes);must(state.office===S.office&&state.format_version===S.formatVersion&&typeof state.work_id==='string','Invalid checkpoint.');}
+  let progress={};
+  if(isVerification){const state=await unpack(body,null,S.maxCheckpointJSONBytes);must(state.office===S.office&&state.version===CONFIG.schemaVersion&&typeof state.publication_key==='string','Invalid independent-source checkpoint.');progress=progressMetadata(state,true);}
+  if(isCheckpoint){const state=await unpack(body,null,S.maxCheckpointJSONBytes);must(state.office===S.office&&state.format_version===S.formatVersion&&typeof state.work_id==='string','Invalid checkpoint.');progress=progressMetadata(state);}
   if(isCurrent){
    const manifest=validateManifest(JSON.parse(new TextDecoder().decode(body))),prior=existing?validateManifest(await (await get(env.TARGET,key)).json()):null;
    const retained=[...new Set([manifest.version,...(prior?.retained_versions||[])])].slice(0,manifest.previous_manifest?PILOT.maxStoredVersions:Infinity);
@@ -82,7 +84,7 @@ return {async fetch(request,env){
    const condition=ledgerObject?new Headers({'If-Match':ledgerObject.httpEtag||'"'+ledgerObject.etag+'"'}):new Headers({'If-None-Match':'*'});
    must(await put(S.ledgerKey,encoded,{onlyIf:condition,httpMetadata:{contentType:'application/json'}}),'Storage ledger changed; retry the job.',412);
   }else must(ledger.keys[key].bytes>=body.length&&(!ledger.keys[key].sha||ledger.keys[key].sha===sha),'Stored reservation differs.');
-  const result=await put(key,body,{onlyIf:request.headers,httpMetadata:{contentType:isCurrent||isAdmission?'application/json':'application/gzip'},customMetadata:{sha256:sha,office:S.office}});
+  const result=await put(key,body,{onlyIf:request.headers,httpMetadata:{contentType:isCurrent||isAdmission?'application/json':'application/gzip'},customMetadata:{sha256:sha,office:S.office,...progress}});
   must(result,'Publication/checkpoint changed; conditional write refused.',412);
   return reply({stored:true,bytes:body.length},200,{ETag:result.httpEtag||'"'+result.etag+'"'});
  }catch(error){return reply({error:error instanceof PilotError?error.message:'R2 gateway failed safely.'},error.status||503);}

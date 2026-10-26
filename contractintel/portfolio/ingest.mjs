@@ -1,5 +1,6 @@
 // All NEW ingestion limits live here. Existing source helper internals are intentionally unchanged.
 export const CONFIG=Object.freeze({
+ coverage:Object.freeze({listLimit:161,progressMetadataBytes:1024}),
  r2Offices:Object.freeze({FA4528:Object.freeze({bucket:'kthq-contractintel-r2-fa4528-nightly',binding:'PORTFOLIO_R2',readEnabled:true,seedVerifiedPilot:true}),FA4800:Object.freeze({bucket:'kthq-contractintel-r2-fa4800',binding:'PORTFOLIO_R2_FA4800',workflow:'contractintel-r2-cohort.yml',verifyInput:true,admitOnVerified:true,maxAuditRuns:264,maxCheckpointJSONBytes:134217728,readEnabled:false,seedVerifiedPilot:false})}),
  offices:['FA4528'],windows:['2007-10-01','2021-10-01','2024-10-01','2025-10-01'],
  awardTypes:['A','B','C','D'],lookbackDays:14,searchBatch:100,historyBatch:200,
