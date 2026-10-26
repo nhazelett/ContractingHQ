@@ -86,7 +86,7 @@ test('Concurrent pointer changes, incomplete fiscal pages, and the two-version g
  const y=await fixture();await runR2Chunk({...ingest(y),config:{...config,maxSourceRequests:4,sourceRequestReserve:2}});
  const cp=await y.store.get(SETTINGS.checkpointKey),state=await unpack(cp.bytes);state.phase='publish';state.hydrate_index=Object.keys(state.candidates).length;
  const encoded=await pack(state);await y.store.put(SETTINGS.checkpointKey,encoded.bytes,{expected:cp.etag,sha:encoded.sha256});
- await assert.rejects(runR2Chunk(ingest(y)),/window is incomplete/);
+ await assert.rejects(runR2Chunk(ingest(y)),/coverage is incomplete/);
  const head=await y.store.get(CURRENT);await assert.rejects(y.store.put(CURRENT,head.bytes,{expected:'"obsolete"',sha:await digest(head.bytes)}),/conditional/);
 });
 
@@ -134,4 +134,15 @@ test('A lost response after publication is reconciled, and a lost final checkpoi
  const cp=await x.store.get(SETTINGS.checkpointKey),state=await unpack(cp.bytes);state.status='running';state.phase='publish';const encoded=await pack(state);await x.store.put(SETTINGS.checkpointKey,encoded.bytes,{expected:cp.etag,sha:encoded.sha256});
  const result=await runR2Chunk({...ingest(x),fetcher:async()=>{throw new Error('Should not refetch');}});assert.equal(result.status,'retained');
  assert.equal((await unpack((await x.store.get(SETTINGS.checkpointKey)).bytes)).status,'completed');
+});
+
+test('Missing fiscal pages and mismatched source office IDs are rejected before publication',async()=>{
+ const x=await fixture(),before=(await x.store.get(CURRENT)).bytes;
+ await assert.rejects(runR2Chunk({...ingest(x),beforePublish:async()=>{throw new Error('Pause for fiscal check');}}),/Pause/);
+ const saved=await x.store.get(SETTINGS.checkpointKey),state=await unpack(saved.bytes);delete state.fiscal_pages[Object.keys(state.fiscal_pages)[0]];const encoded=await pack(state);
+ await x.store.put(SETTINGS.checkpointKey,encoded.bytes,{expected:saved.etag,sha:encoded.sha256});await assert.rejects(runR2Chunk(ingest(x)),/fiscal page is incomplete/);assert.deepEqual((await x.store.get(CURRENT)).bytes,before);
+ const y=await fixture(),fetcher=async(url,options)=>{
+  const response=await y.upstream.fetcher(url,options);if(!url.includes('spending_by_award'))return response;const data=await response.json();data.results[0].generated_internal_id='CONT_AWD_FA4800UNRELATED_9700_-NONE-_-NONE-';return Response.json(data);
+ };
+ await assert.rejects(runR2Chunk({...ingest(y),fetcher}),/identity conflicts/);assert.ok(!y.upstream.calls.some(call=>call.path.includes('/awards/CONT_AWD_FA4800')));
 });

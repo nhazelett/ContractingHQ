@@ -90,6 +90,10 @@ limited push smoke test. It has no schedule. Register it on the default branch
 before using GitHub's manual-dispatch UI. The existing production Cloudflare
 07:00 UTC Cron and 10:00 UTC GitHub backup remain configured for the D1 package;
 they are not silently redirected to this shadow updater.
+The shadow workflow has its own concurrency group because it writes only its
+separate bucket; production D1 jobs cannot replace its queued test. New temporary
+Worker credentials receive bounded provisioning retries for HTTP 401 only.
+This does not change USAspending retry behavior.
 
 For a later production promotion, wire the approved workflow into the existing
 Cron dispatch bridge and keep GitHub schedule only as a backup. The missing

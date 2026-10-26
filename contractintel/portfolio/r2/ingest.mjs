@@ -30,6 +30,7 @@ async function saveCheckpoint(store,state,etag){
 
 export function candidateTables(base,state,{now=Date.now,sourceRequests=state.source_requests}={}){
  must(state.phase==='publish'&&state.hydrate_index===Object.keys(state.candidates).length,'Award pass is incomplete.');
+ must(state.month===state.months.length&&canonical(state.months)===canonical(fiscalMonths(state.today)),'Fiscal month coverage is incomplete.');
  must(CONFIG.windows.every(start=>Array.isArray(state.windows[start])),'A history window is incomplete.');
  const windowIDs=new Set(Object.values(state.windows).flat());
  must(windowIDs.size===Object.keys(state.candidates).length&&Object.keys(state.candidates).every(id=>windowIDs.has(id)),'Window membership differs from discovered awards.');
@@ -150,7 +151,9 @@ export async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,n
     const response=await paced('https://api.usaspending.gov/api/v2/search/spending_by_award/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:deadline.signal});
     must(response.ok,'Changed-award discovery failed: HTTP '+response.status);
     const data=await response.json();must(Array.isArray(data.results)&&typeof data.page_metadata?.hasNext==='boolean','Invalid changed-award response.');
-    for(const row of data.results)if(String(row['Award ID']||'').startsWith(SETTINGS.office)&&validAwardID(row.generated_internal_id))state.changed[row.generated_internal_id]=true;
+    for(const row of data.results)if(String(row['Award ID']||'').startsWith(SETTINGS.office)&&validAwardID(row.generated_internal_id)){
+     must(row.generated_internal_id.startsWith('CONT_AWD_'+SETTINGS.office),'Changed-award identity conflicts with its office.');state.changed[row.generated_internal_id]=true;
+    }
     must(Object.keys(state.changed).length<=config.maxAwards,'Changed-award budget reached.');
     state.page++;state.cursor=data.page_metadata.last_record_unique_id??null;state.sort_value=data.page_metadata.last_record_sort_value??null;
     if(!data.page_metadata.hasNext){state.phase='discover';state.page=1;state.cursor=null;state.sort_value=null;}
@@ -158,7 +161,7 @@ export async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,n
    }else if(state.phase==='discover'){
     const start=config.windows[state.window],data=await request('awards',{office:SETTINGS.office,start,page:state.page,cursor:state.cursor,sort_value:state.sort_value});
     state.candidate_scans=(state.candidate_scans||0)+data.candidates;must(state.candidate_scans<=SETTINGS.maxCandidates,'Discovery candidate limit reached.');
-    const ids=new Set(state.windows[start]||[]);for(const row of data.rows){ids.add(row.award_id);state.candidates[row.award_id]=row;}
+    const ids=new Set(state.windows[start]||[]);for(const row of data.rows){must(row.award_id.startsWith('CONT_AWD_'+SETTINGS.office),'Discovered award identity conflicts with its office.');ids.add(row.award_id);state.candidates[row.award_id]=row;}
     state.windows[start]=[...ids].sort(compare);must(Object.keys(state.candidates).length<=config.maxAwards,'Office award limit reached.');
     state.page++;state.cursor=data.cursor;state.sort_value=data.sort_value;
     if(!data.has_next){state.window++;state.page=1;state.cursor=null;state.sort_value=null;if(state.window===config.windows.length)state.phase='hydrate';}

@@ -50,7 +50,13 @@ async function main(){
   if(body){must(report.r2.uploaded_bytes+body.length<=SETTINGS.maxUploadBytesPerJob,'Job upload budget reached.');report.r2.uploaded_bytes+=body.length;}
   const headers={Authorization:'Bearer '+secret};if(sha)headers['X-Object-SHA256']=sha;
   if(method==='PUT')headers[expected===null?'If-None-Match':'If-Match']=expected===null?'*':expected;
-  const response=await fetch(url+path,{method,headers,body,redirect:'error',signal:AbortSignal.timeout(PILOT.httpTimeoutMs)});
+  let response;
+  for(let attempt=0;attempt<CONFIG.secretReadyAttempts;attempt++){
+   if(attempt){must(++report.r2.http_requests<=SETTINGS.maxHTTPRequestsPerJob,'Gateway request budget reached.');await wait(CONFIG.secretWaitMs);}
+   response=await fetch(url+path,{method,headers,body,redirect:'error',signal:AbortSignal.timeout(PILOT.httpTimeoutMs)});
+   if(response.status!==401)break;
+   await response.body?.cancel();
+  }
   report.r2.reads+=Number(response.headers.get('X-R2-Reads')||0);report.r2.writes+=Number(response.headers.get('X-R2-Writes')||0);
   if(!response.ok&&!allow.includes(response.status)){let message='R2 gateway HTTP '+response.status;try{message+=': '+(await response.json()).error;}catch{}throw new Error(message);}
   return response;

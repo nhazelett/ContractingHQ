@@ -48,7 +48,12 @@ async function main(){
  const deployment=await command(['deploy','--config',temporaryConfig]),addresses=deployment.match(/https:\/\/[a-z0-9.-]+\.workers\.dev/g)||[];remoteBase=addresses.find(address=>new URL(address).hostname.startsWith(temporaryName+'.'));must(remoteBase,'Temporary Worker URL was not returned.');
  await command(['secret','put','R2_BENCH_TOKEN','--config',temporaryConfig],secret);
  const call=async(path,{method='GET',body,sha,authenticated=true,allow=[]}={})=>{
-  must(++report.r2.http_requests<=PILOT.maxHTTPRequests,'R2 benchmark request budget reached.');const response=await fetch(remoteBase+path,{method,headers:{...(authenticated?{Authorization:'Bearer '+secret}:{}),...(sha?{'X-Object-SHA256':sha}:{})},body,redirect:'error',signal:AbortSignal.timeout(PILOT.httpTimeoutMs)});report.r2.reads+=Number(response.headers.get('X-Benchmark-R2-Reads')||0);report.r2.writes+=Number(response.headers.get('X-Benchmark-R2-Writes')||0);if(!response.ok&&!allow.includes(response.status))throw new Error('R2 benchmark endpoint returned HTTP '+response.status+' at '+path.split('?')[0]);return response;
+  let response;for(let attempt=0;attempt<CONFIG.secretReadyAttempts;attempt++){
+   must(++report.r2.http_requests<=PILOT.maxHTTPRequests,'R2 benchmark request budget reached.');if(attempt)await wait(CONFIG.secretWaitMs);
+   response=await fetch(remoteBase+path,{method,headers:{...(authenticated?{Authorization:'Bearer '+secret}:{}),...(sha?{'X-Object-SHA256':sha}:{})},body,redirect:'error',signal:AbortSignal.timeout(PILOT.httpTimeoutMs)});
+   if(response.status!==401||!authenticated||attempt===CONFIG.secretReadyAttempts-1)break;await response.body?.cancel();
+  }
+  report.r2.reads+=Number(response.headers.get('X-Benchmark-R2-Reads')||0);report.r2.writes+=Number(response.headers.get('X-Benchmark-R2-Writes')||0);if(!response.ok&&!allow.includes(response.status))throw new Error('R2 benchmark endpoint returned HTTP '+response.status+' at '+path.split('?')[0]);return response;
  };
  let ready=false;for(let attempt=0;attempt<PILOT.readyAttempts;attempt++){const response=await call('/__bench/health',{allow:[401,404,503]});if(response.ok){ready=true;break;}await wait(PILOT.readyWaitMs);}must(ready,'Temporary Worker credential/address did not become ready.');
  must((await call('/api/office/FA4528',{authenticated:false,allow:[401]})).status===401,'Unauthenticated benchmark access was allowed.');must((await call('/api/office/FA4800',{allow:[404]})).status===404,'Another office was accessible.');
