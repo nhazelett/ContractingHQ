@@ -28,6 +28,6 @@ async function main(){
  console.log(JSON.stringify({runner_result:result}));
  const storage=await storageReport(db);await fs.writeFile(new URL('portfolio/fa4528-storage.json',root),JSON.stringify(storage,null,2)+'\n');console.log(JSON.stringify({portfolio_storage:storage}));
  if(result.status==='busy')return;
- if(process.env.PERFORM_VERIFY==='true'&&result.status==='completed')await import('./verify.mjs');
+ if(process.env.PERFORM_VERIFY==='true'&&(result.status==='completed'||result.status==='retained'&&process.env.VERIFY_RETAINED==='true'))await import('./verify.mjs');
 }
 if(process.argv[1]&&pathToFileURL(process.argv[1]).href===import.meta.url)main().catch(error=>{console.error(error.message);process.exitCode=1;});

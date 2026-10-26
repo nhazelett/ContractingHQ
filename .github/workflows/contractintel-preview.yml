@@ -6,6 +6,10 @@ on:
         description: Refresh the SAM notice index within its existing request budget
         type: boolean
         default: false
+      verify_portfolio:
+        description: Independently compare the published FA4528 pilot against USAspending
+        type: boolean
+        default: false
   push:
     branches: [codex/contractintel]
     paths:
@@ -81,6 +85,7 @@ jobs:
           RUN_MODE: backfill
           RUN_ORIGIN: deployment
           PERFORM_VERIFY: 'true'
+          VERIFY_RETAINED: ${{ (inputs.verify_portfolio || contains(github.event.head_commit.message, '[verify-fa4528]')) && 'true' || 'false' }}
         run: node contractintel/portfolio/runner.mjs
       - name: Preserve FA4528 verification report
         if: always()

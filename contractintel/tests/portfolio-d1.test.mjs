@@ -75,3 +75,12 @@ test('A genuinely empty office publishes a valid zero-award D1 result',async()=>
  const x=await setup();const fetcher=async url=>new URL(url).pathname.includes('/awards/')?x.upstream.fetcher(url):Response.json({results:[],page_metadata:{hasNext:false}});
  assert.equal((await runIngest(x.env,{...opts(),fetcher})).status,'completed');const data=await officeSnapshot(x.db,'FA4528',CONFIG.windows[1],{now:fixed});assert.equal(data.records.length,0);assert.equal(data.fiscal_totals[0].count,0);
 });
+
+test('A portfolio larger than D1 single-value limit serves complete individual records and consistent totals',async()=>{
+ const {db,sql}=sqlite({maxValueBytes:2000000});await seedOffices(db,[office]);await runIngest({PORTFOLIO_DB:db,OFFICES:[office]},{...opts(),fetcher:source().fetcher});
+ const rows=sql.prepare('SELECT generated_unique_award_id,record_json FROM awards').all();
+ for(const row of rows){const record=JSON.parse(row.record_json);record.description='Long source description '.padEnd(450000,'x');sql.prepare('UPDATE awards SET record_json=? WHERE generated_unique_award_id=?').run(JSON.stringify(record),row.generated_unique_award_id);}
+ await assert.rejects(db.prepare('SELECT json_group_array(json(record_json)) records FROM awards').first(),/maximum length/);
+ const snapshot=await officeSnapshot(db,'FA4528',CONFIG.windows[0],{now:fixed});
+ assert.equal(snapshot.records.length,5);assert.ok(snapshot.records.every(r=>r.description.length===450000));assert.equal(snapshot.fiscal_totals.length,2);assert.ok(snapshot.fiscal_totals.every(t=>Array.isArray(t.award_ids)));assert.equal(snapshot.publication_id,sql.prepare('SELECT published_run_id FROM office_publications').get().published_run_id);
+});
