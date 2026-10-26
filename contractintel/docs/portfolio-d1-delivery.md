@@ -2,6 +2,12 @@
 
 This pilot adds a stored source before the existing live loader. The live source adapter, request helper, progressive loader, browser cache and evidence normalizer are unchanged. The shared date defaults now use the current calendar date in America/New_York, including DST; monetary/date parsing and classification rules remain unchanged.
 
+## R2 follow-on experiment (production remains D1)
+
+The FA4528-only R2 benchmark passed on October 26, 2026: lossless source/evidence preservation, 96 metric checks, 32 original CSV checks, publication safety, zero D1 writes and zero unchanged re-upload writes. The complete compressed copy is about 4.18 MB including its pointer. Default-window median API download/parse time was 270 ms in the paired test. See [the measured R2 report](fa4528-r2-benchmark.md) and [JSON](fa4528-r2-benchmark.json).
+
+This is an isolated storage/read experiment. The source app continues to use D1/live, and the existing nightly ingest has not been replaced. All-office projections now have a measured compressed basis, but actual office sizes, source churn and operations still need validation. No other office was ingested and the deferred GitHub dispatch key is still pending.
+
 ## Current pilot result
 
 FA4528 published **4,091 awards** at 2026-10-26T03:48:48.493Z. Only FA4528 award data is in scope.
