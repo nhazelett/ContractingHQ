@@ -1,3 +1,4 @@
+import {simpleContractCells,endName,endHelp,biddingLabel,whoCanBid} from './portfolio-ui.mjs';
 import {daysRemaining,money,text} from './format.mjs';
 import {lifecycle} from './lifecycle.mjs';
 import {setAsideLabel,setAsideGroups} from './overview.mjs';
@@ -34,28 +35,22 @@ export function empty(container,busy,message){container.replaceChildren();if(bus
 export function drawContracts(container,entries,basis,onOpen,busy,{expanded,detailFor}={}){
  if(!entries.length){empty(container,busy,'No reported upcoming ends in this dataset and date mode.');return;}
  const wrap=node('div',undefined,'contracts-scroll');wrap.tabIndex=0;wrap.setAttribute('aria-label','Scrollable upcoming contracts');
- const table=node('table',undefined,'contracts-table'),thead=node('thead'),head=node('tr');
- table.setAttribute('aria-label','Upcoming contracts by requirement');
- for(const label of ['Ends in','Requirement / PIID','Awardee',basis==='potential'?'Potential final end':'Current PoP end','Current value','Set-aside']){const th=node('th',label);th.scope='col';head.append(th);}thead.append(head);table.append(thead);
+ const table=node('table',undefined,'contracts-table'),thead=node('thead'),head=node('tr');table.setAttribute('aria-label','Upcoming contracts by requirement');
+ for(const label of ['Requirement','Vendor',endName(basis),'Current value']){const th=node('th',label);th.scope='col';if(label===endName(basis))th.title=endHelp(basis);head.append(th);}thead.append(head);table.append(thead);
  const body=node('tbody');
- for(const {row,days}of entries){
-  const tr=node('tr'),ends=node('td'),requirement=node('td',undefined,'contract-requirement'),button=node('button',text(row.description)==='Not reported'?'Description not reported':text(row.description),'requirement-link');
-  button.type='button';button.dataset.award=row.award_id;button.title=text(row.description);button.setAttribute('aria-label',(row.description||'Description not reported')+' · '+row.piid);
-  if(expanded){button.setAttribute('aria-expanded',String(expanded.has(row.award_id)));button.setAttribute('aria-controls','evidence-'+row.award_id);}
-  button.addEventListener('click',()=>onOpen(row));
-  requirement.append(button,node('span',row.piid,'requirement-piid'));if(row.source_refresh_pending)requirement.append(node('span','Updating','refresh-badge'));
-  ends.append(countdown(days));const setAside=node('td'),label=setAsideLabel(row);setAside.append(swatch(label),node('span',' '+label));
-  tr.append(ends,requirement,node('td',text(row.recipient)),node('td',text(row[basis==='potential'?'potential_end_date':'current_end_date']),'mono'),node('td',money(row.award_amount_cents),'money'),setAside);
-  tr.addEventListener('click',e=>{if(!e.target.closest('button'))onOpen(row);});body.append(tr);
-  if(expanded){const detailRow=node('tr');detailRow.id='evidence-'+row.award_id;detailRow.hidden=!expanded.has(row.award_id);const cell=node('td');cell.colSpan=6;cell.className='expanded-evidence';if(!detailRow.hidden&&detailFor)cell.append(detailFor(row));detailRow.append(cell);body.append(detailRow);}
+ for(const {row}of entries){
+  const tr=node('tr'),cells=simpleContractCells(row,basis,onOpen,countdown);tr.className='lifecycle-'+lifecycle(row).kind;
+  if(expanded){const link=cells[0].querySelector('a'),button=node('button',link.textContent,'requirement-link');button.type='button';button.title=link.title;button.dataset.award=row.award_id;button.setAttribute('aria-label',(row.description||'Description not reported')+' · '+row.piid);button.setAttribute('aria-expanded',String(expanded.has(row.award_id)));button.setAttribute('aria-controls','evidence-'+row.award_id);button.addEventListener('click',()=>onOpen(row));link.replaceWith(button);}
+  tr.append(...cells);tr.addEventListener('click',e=>{if(!e.target.closest('button,a'))onOpen(row);});body.append(tr);
+  if(expanded){const detailRow=node('tr');detailRow.id='evidence-'+row.award_id;detailRow.hidden=!expanded.has(row.award_id);const cell=node('td');cell.colSpan=4;cell.className='expanded-evidence';if(!detailRow.hidden&&detailFor)cell.append(detailFor(row));detailRow.append(cell);body.append(detailRow);}
  }
  table.append(body);wrap.append(table);container.replaceChildren(wrap);
 }
 export function drawSetAsides(container,rows,onSelect,busy,compact=false){
  const groups=setAsideGroups(rows);if(!groups.length){empty(container,busy,'No set-aside details available for this dataset.');return;}
  container.replaceChildren();const total=groups.reduce((n,g)=>n+g.count,0),stack=node('div',undefined,'set-aside-stack');stack.setAttribute('aria-label','Set-aside share by contract count');
- for(const g of groups){const b=node('button');b.style.flex=g.count;b.style.background=category(g.label).color;b.setAttribute('aria-label',g.label+': '+g.count+' contracts');b.title=g.label+': '+g.count+' contracts';b.addEventListener('click',()=>onSelect(g.label));stack.append(b);}container.append(stack);
+ for(const g of groups){const b=node('button');b.style.flex=g.count;b.style.background=category(g.label).color;b.setAttribute('aria-label',whoCanBid(g.label)+': '+g.count+' contracts');b.title=g.label+': '+g.count+' contracts';b.addEventListener('click',()=>onSelect(g.label));stack.append(b);}container.append(stack);
  const list=node('div',undefined,compact?'set-aside-list compact':'set-aside-list');
- for(const g of groups){const b=node('button',undefined,'set-aside-row'),name=node('span',undefined,'category-name');name.append(swatch(g.label),node('span',g.label));b.append(name,node('strong',g.count.toLocaleString()+' · '+Math.round(g.count/total*100)+'%'),node('small',money(String(g.cents))+(g.missing?' · incomplete value':'')));b.addEventListener('click',()=>onSelect(g.label));list.append(b);}container.append(list);
+ for(const g of groups){const b=node('button',undefined,'set-aside-row'),name=node('span',undefined,'category-name');name.append(swatch(g.label),biddingLabel(g.label));b.append(name,node('strong',g.count.toLocaleString()+' · '+Math.round(g.count/total*100)+'%'),node('small',money(String(g.cents))+(g.missing?' · incomplete value':'')));b.addEventListener('click',()=>onSelect(g.label));list.append(b);}container.append(list);
 }
 export function valueTotal(entries){let sum=0n,missing=0;for(const {row}of entries){if(row.award_amount_cents==null)missing++;else sum+=BigInt(row.award_amount_cents);}return money(String(sum),true)+(missing?' · some values missing':'');}

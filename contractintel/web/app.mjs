@@ -1,3 +1,4 @@
+import {datasetNames,endName,endHelp,fieldNames,biddingLabel,datePresentation,renderSimpleRegister,settingsChips,wirePanel,revealOffice,welcomeOffice,compactLoading} from './portfolio-ui.mjs';
 import {scanPortfolio} from './portfolio-loader.mjs';
 import {createPortfolioMemory,makeSnapshot,visiblePortfolio} from './portfolio-memory.mjs';
 import {incorporatePortfolio,summariesComplete,portfolioComplete} from './portfolio-progress.mjs';
@@ -23,7 +24,7 @@ const state={scope:'active',office:'FA4800',directory:[],records:new Map(),previ
 const fields=[['piid','PIID','145px'],['description','Requirement','minmax(195px,1fr)'],['award_amount_cents','Award Amount','140px'],['latest_mod_number','Latest Mod #','110px'],['latest_option_mod_number','Latest option Mod','145px'],['current_end_date','Current PoP end','130px'],['total_pop','Total contract PoP','200px'],['days_left','Days until contract ends','175px'],['recipient','Awardee','155px'],['set_aside','Set-aside','200px'],['latest_action_date','Latest source action','145px'],['status','Date status','205px'],['start_date','PoP start','115px'],['potential_end_date','Potential final end','145px'],['obligation_cents','Source net obligations','155px']];
 const defaultColumns=['days_left','description','piid','recipient','set_aside','current_end_date','potential_end_date','award_amount_cents','latest_action_date'];
 const visible=new Set(defaultColumns);
-const ui={tab:'overview',page:0,pageSize:50,selected:null,expanded:new Set(),expiryLimit:50};
+const ui={officeChosen:false,detailedRows:false,tab:'overview',page:0,pageSize:50,selected:null,expanded:new Set(),expiryLimit:50};
 let detailGeneration=0;
 function el(tag,content,className){const n=document.createElement(tag);if(content!==undefined)n.textContent=content;if(className)n.className=className;return n;}
 function failure(error){$('error').hidden=false;$('error').textContent=error.message;}
@@ -47,6 +48,14 @@ function progress(){
 function renderLoadingNotice(){
  const done=portfolioComplete(state),fiscalDone=fiscal.index===fiscal.months?.length,saved=displayRecords().some(r=>r.source_refresh_pending);
  $('loading-notice').hidden=done&&fiscalDone;
+ const office=state.directory.find(o=>o.code===state.office),name=office?.base||office?.name||state.office,ready=[...state.records.values()].filter(r=>!r.details_pending&&!r.details_unavailable).length;
+ $('pause-fiscal-compact').hidden=state.busy||!fiscal.busy;
+ if(state.busy)$('freshness').textContent=(state.paused?'Pausing ':summariesComplete(state)?'Loading evidence for ':'Loading ')+name+' from USAspending, '+ready.toLocaleString()+' contracts so far';
+ else if(state.paused)$('freshness').textContent='Paused · '+ready.toLocaleString()+' contracts loaded';
+ else if(!done)$('freshness').textContent='Ready · '+ready.toLocaleString()+' contracts loaded';
+ else if(fiscal.busy)$('freshness').textContent='Loading fiscal-year totals for '+name;
+ else $('freshness').textContent='Search complete · '+ready.toLocaleString()+' contracts loaded';
+ compactLoading();$('progress').hidden=!state.busy&&!fiscal.busy;if(fiscal.busy&&!state.busy)$('progress').removeAttribute('value');
  if(done&&fiscalDone)return;
  const loading=done?fiscal.busy:state.busy&&!state.paused,interrupted=done?Boolean(fiscal.error):!$('error').hidden;
  $('loading-notice-title').textContent=loading?(done?'Loading fiscal-year totals from USAspending':summariesComplete(state)?'Loading transaction evidence from USAspending':'Updating your office portfolio from USAspending'):interrupted?'USAspending loading interrupted':state.paused||done?'USAspending loading paused':'Preparing your USAspending portfolio';
@@ -91,10 +100,12 @@ function openRegister(view='all',basis=null,setAside=''){
 function selectCategory(label){openRegister('all',null,label);}
 function renderOverview(){
  const all=displayRecords(),ready=all.filter(r=>!r.details_pending&&!r.details_unavailable),rows=scopeRows(ready,state.scope),basis=$('date-basis').value,upcoming=expiryRows(rows,basis),recompetes=expiryRows(rows,'potential'),active=scopeRows(all,'active'),review=scopeRows(all,'review');
- const mode=basis==='potential'?'Potential final end':'Reported current PoP';
- $('overview-basis').textContent=mode;$('expiring-basis').textContent=mode+' · '+scopeNames[state.scope];
- $('kpi-active').textContent=(active.length-review.length).toLocaleString();$('kpi-review').textContent='+ '+review.length.toLocaleString()+' need date review';
- $('expiring-180-count').textContent=upcoming.filter(r=>r.days<=180).length.toLocaleString();$('kpi-90').textContent=upcoming.filter(r=>r.days<=90).length.toLocaleString()+' within 90 days';$('kpi-date-mode').textContent='Selected dataset · '+(basis==='potential'?'potential end':'current PoP')+' ↗';
+ const mode=endName(basis);
+ const office=state.directory.find(o=>o.code===state.office);$('office-title').textContent=office?.name||state.office;$('office-title-meta').textContent=[office?.base,state.office].filter(Boolean).join(' · ');document.title=(office?.name||state.office)+' | Portfolio | ContractIntel';settingsChips();
+ $('ending-year-count').textContent=state.busy&&!ready.length?'—':upcoming.length.toLocaleString();$('overview-basis').title=endHelp(basis);
+ $('overview-basis').textContent=mode;$('expiring-basis').textContent=mode+' · '+datasetNames[state.scope];
+ $('kpi-active').textContent=(active.length-review.length).toLocaleString();$('kpi-review').textContent='+ '+review.length.toLocaleString()+' have unclear dates';
+ $('expiring-180-count').textContent=upcoming.filter(r=>r.days<=180).length.toLocaleString();$('kpi-90').textContent=upcoming.filter(r=>r.days<=90).length.toLocaleString()+' within 90 days';$('kpi-date-mode').textContent='Selected dataset · '+endName(basis)+' ↗';
  $('recompete-count').textContent=recompetes.length.toLocaleString();
  drawContracts($('overview-contracts'),upcoming.slice(0,10),basis,r=>award(r.award_id),state.busy);
  $('upcoming-caption').textContent='Next '+Math.min(upcoming.length,10)+' of '+upcoming.length.toLocaleString()+' reported ends within 365 days · '+mode+'.';
@@ -110,36 +121,41 @@ function renderExpiring(upcoming){
    [...panel.querySelectorAll('[data-award]')].find(n=>n.dataset.award===id)?.focus({preventScroll:true});
   },state.busy,{expanded:ui.expanded,detailFor:r=>{
    const detail=el('div',undefined,'inline-evidence'),data=state.cache.get(r.award_id);
-   detail.append(el('strong',text(r.description)),el('p','Current end: '+text(r.current_end_date)+' · Potential final end: '+text(r.potential_end_date)+' · Current value: '+money(r.award_amount_cents)),el('p','Latest reported mod: '+(r.history_pending?'Loading evidence...':r.latest_mod_number||'None Found')+' · Latest option-exercise mod: '+(r.history_pending?'Loading evidence...':r.latest_option_mod_number||'None Found')));
-   if(data)detail.append(evidenceTable(data.history.actions.slice(0,3),[['action_date','Date'],['modification_number','Mod'],['obligation_cents','Obligation change'],['description','Description']]));
+   detail.append(el('strong',text(r.description)),el('p','Contract ends: '+text(r.current_end_date)+' · Could end as late as: '+text(r.potential_end_date)+' · Current value: '+money(r.award_amount_cents)),el('p','Latest reported mod: '+(r.history_pending?'Loading evidence...':r.latest_mod_number||'None Found')+' · Latest option-exercise mod: '+(r.history_pending?'Loading evidence...':r.latest_option_mod_number||'None Found')));
+   if(data?.history)detail.append(evidenceTable(data.history.actions.slice(0,3),[['action_date','Date'],['modification_number','Mod'],['obligation_cents','Obligation change'],['description','Description']]));
    const full=el('button','Open full source evidence →');full.addEventListener('click',()=>award(r.award_id));detail.append(full);return detail;
   }});
   section.append(box);if(entries.length>ui.expiryLimit){more=true;section.append(el('p','Showing '+ui.expiryLimit+' of '+entries.length+' loaded matches.','caption'));}panel.append(section);
  }$('more-expiring').hidden=!more;
 }
 function renderRows(){
+ document.documentElement.dataset.registerLayout=ui.detailedRows?'detailed':'simple';
+ if(ui.detailedRows)return renderDetailedRows();
+ renderSimpleRegister({state,ui,total:scopeRows(displayRecords(),state.scope).length,basis:$('date-basis').value,onOpen:r=>award(r.award_id),countdown});
+}
+function renderDetailedRows(){
  const focused=document.activeElement?.closest('#table-rows a')?.textContent;
  const pages=Math.max(1,Math.ceil(state.rows.length/ui.pageSize));ui.page=Math.min(ui.page,pages-1);
  $('dataset-empty').hidden=state.rows.length>0;$('dataset-empty').textContent=state.busy?'Loading — matching contracts appear as details arrive.':'No contracts match this dataset and the Register filters.';
  const ordered=[...defaultColumns,...fields.map(f=>f[0]).filter(k=>!defaultColumns.includes(k))],columns=ordered.filter(k=>visible.has(k)).map(k=>fields.find(f=>f[0]===k));
  const widths={description:'minmax(340px,1.6fr)',days_left:'85px',piid:'160px',recipient:'minmax(180px,1fr)',set_aside:'190px',current_end_date:'125px',potential_end_date:'125px',award_amount_cents:'145px',latest_action_date:'125px'},labels={days_left:'Ends in',recipient:'Awardee',award_amount_cents:'Current value',latest_action_date:'Latest action'};
- const grid=columns.map(f=>widths[f[0]]||f[2]).join(' ');$('table-head').style.gridTemplateColumns=grid;$('table-head').replaceChildren(...columns.map(f=>{const n=el('div',labels[f[0]]||f[1]);n.setAttribute('role','columnheader');return n;}));$('virtual-table').setAttribute('aria-rowcount',state.rows.length+1);$('table-space').style.height='auto';$('table-rows').replaceChildren();
+ const grid=columns.map(f=>widths[f[0]]||f[2]).join(' ');$('table-head').style.gridTemplateColumns=grid;$('table-head').replaceChildren(...columns.map(f=>{const n=el('div',fieldNames[f[0]]||labels[f[0]]||f[1]);n.setAttribute('role','columnheader');return n;}));$('virtual-table').setAttribute('aria-rowcount',state.rows.length+1);$('table-space').style.height='auto';$('table-rows').replaceChildren();
  const first=ui.page*ui.pageSize,last=Math.min(state.rows.length,first+ui.pageSize),basis=$('date-basis').value;
  for(let i=first;i<last;i++){
   const row=state.rows[i],life=lifecycle(row),div=el('div',undefined,'data-row lifecycle-'+life.kind+(ui.selected===row.award_id?' selected':''));div.style.gridTemplateColumns=grid;div.setAttribute('role','row');div.setAttribute('aria-rowindex',i+2);div.setAttribute('aria-label',row.piid+' · '+life.label);div.addEventListener('click',e=>{if(!e.target.closest('a'))award(row.award_id);});
-  for(const[field]of columns){const cell=el('div');cell.setAttribute('role','cell');
+  for(const[field]of columns){const cell=el('div');cell.dataset.label=fieldNames[field]||fields.find(f=>f[0]===field)?.[1]||field;cell.setAttribute('role','cell');
    if(field==='piid'){const a=el('a',row.piid);a.href='#register?award='+encodeURIComponent(row.award_id);a.addEventListener('click',e=>{e.preventDefault();award(row.award_id);});cell.className='piid-cell';cell.append(a);if(row.source_refresh_pending)cell.append(el('span','Updating','refresh-badge'));if(life.kind!=='upcoming'){const badge=el('span',life.label,'lifecycle-badge');badge.title=life.reason;cell.append(badge);}}
    else if(field==='description'){const a=el('a',row.description||'Description not reported','requirement-link');a.href='#register?award='+encodeURIComponent(row.award_id);a.addEventListener('click',e=>{e.preventDefault();award(row.award_id);});cell.className='requirement-cell';cell.append(a);}
    else if(field==='days_left'){cell.append(countdown(life.kind==='review'?null:daysRemaining(row[basis==='potential'?'potential_end_date':'current_end_date'])));}
-   else if(field==='set_aside'){const label=setAsideLabel(row);cell.append(swatch(label),el('span',' '+label));}
+   else if(field==='set_aside'){const label=setAsideLabel(row);cell.append(swatch(label),biddingLabel(label));}
    else{const detail=['award_amount_cents','latest_mod_number','latest_option_mod_number','potential_end_date','total_pop'];cell.textContent=row.history_pending&&['latest_mod_number','latest_option_mod_number','latest_action_date'].includes(field)?'Loading evidence...':row.details_pending&&detail.includes(field)?'Loading…':row.details_unavailable&&detail.includes(field)?'Unavailable':field==='latest_mod_number'||field==='latest_option_mod_number'?(row[field]||'None Found'):field==='total_pop'?totalPop(row):field==='status'?portfolioStatus(row):field.endsWith('_cents')?money(row[field]):text(row[field]);if(field.endsWith('_cents'))cell.className='money';else if(field.endsWith('_date'))cell.className='mono';}
    cell.title=cell.textContent;div.append(cell);
   }$('table-rows').append(div);
  }
- $('award-count').textContent=state.rows.length.toLocaleString()+' matches';$('register-summary').textContent=state.rows.length.toLocaleString()+' of '+scopeRows(displayRecords(),state.scope).length.toLocaleString()+' loaded contracts match · '+scopeNames[state.scope]+' · countdown uses '+(basis==='potential'?'potential final end':'current PoP end');
+ $('award-count').textContent=state.rows.length.toLocaleString()+' matches';$('register-summary').textContent=state.rows.length.toLocaleString()+' of '+scopeRows(displayRecords(),state.scope).length.toLocaleString()+' loaded contracts match · '+datasetNames[state.scope]+' · countdown uses '+(basis==='potential'?'potential final end':'current PoP end');
  $('table-state').textContent=state.rows.length?(first+1)+'–'+last+' of '+state.rows.length.toLocaleString():'0 results';$('page-number').textContent='Page '+(ui.page+1)+' / '+pages;$('previous-page').disabled=ui.page===0;$('next-page').disabled=ui.page>=pages-1;if(focused)[...$('table-rows').querySelectorAll('a')].find(n=>n.textContent===focused)?.focus({preventScroll:true});
 }
-function evidenceTable(rows,columns){const wrap=el('div',undefined,'evidence-scroll'),table=el('table',undefined,'evidence-table'),head=el('tr');for(const[,label]of columns)head.append(el('th',label));const thead=el('thead');thead.append(head);table.append(thead);const body=el('tbody');for(const row of rows){const tr=el('tr');for(const[key]of columns){const td=el('td',key.endsWith('_cents')?money(row[key]):text(row[key]));tr.append(td);}body.append(tr);}table.append(body);wrap.append(table);return wrap;}
+function evidenceTable(rows,columns){const wrap=el('div',undefined,'evidence-scroll'),table=el('table',undefined,'evidence-table'),head=el('tr');for(const[,label]of columns)head.append(el('th',label));const thead=el('thead');thead.append(head);table.append(thead);const body=el('tbody');for(const row of rows){const tr=el('tr');for(const[key]of columns){const td=el('td',key.endsWith('_cents')?money(row[key]):text(row[key]));td.dataset.label=columns.find(c=>c[0]===key)[1];tr.append(td);}body.append(tr);}table.append(body);wrap.append(table);return wrap;}
 
 function renderModifications(history){
  const section=el('section',undefined,'mod-history');section.append(el('h3','Modification & option history'));
@@ -166,26 +182,26 @@ async function award(id){
   let data=state.cache.get(id)||await api('award',{id});if(!data.history){data=await hydrateEvidence(id);render();}if(token!==detailGeneration)return;const a=data.award;let history={...data.history,actions:[...data.history.actions]};
   const draw=()=>{
    if(token!==detailGeneration)return;const body=$('detail-body');$('detail-title').textContent=a.piid;body.replaceChildren();
-   const identity=el('div',undefined,'detail-identity');identity.append(swatch(setAsideLabel(a)),el('strong',text(a.recipient)),el('span',setAsideLabel(a)));const source=el('a','Open on USAspending ↗');source.href=a.source_url;source.target='_blank';source.rel='noopener noreferrer';identity.append(source);body.append(identity,el('p',text(a.description)));
-   const primary=el('dl',undefined,'detail-grid primary-stats');for(const[label,value]of [['Current PoP end',text(a.current_end_date)+' · '+endLabel(a.current_end_date)],['Potential final end',text(a.potential_end_date)],['Current value',money(a.award_amount_cents)]]){const box=el('div');box.append(el('dt',label),el('dd',value));primary.append(box);}body.append(primary);
+   const identity=el('div',undefined,'detail-identity');identity.append(swatch(setAsideLabel(a)),el('strong',text(a.recipient)),biddingLabel(setAsideLabel(a)));const source=el('a','Open on USAspending ↗');source.href=a.source_url;source.target='_blank';source.rel='noopener noreferrer';identity.append(source);body.append(identity,el('p',text(a.description)));
+   const primary=el('dl',undefined,'detail-grid primary-stats'),dateBox=el('div'),valueBox=el('div');dateBox.append(el('dt',endName($('date-basis').value)));const dates=el('dd');dates.append(datePresentation(a,$('date-basis').value,countdown));dateBox.append(dates);valueBox.append(el('dt','Current value'),el('dd',money(a.award_amount_cents)));primary.append(dateBox,valueBox);body.append(primary);
    const mods=summarizeModifications(history.actions,{truncated:history.has_next}),chips=el('div',undefined,'evidence-chips');for(const[label,mod]of [['Latest reported mod',mods.latest_mod],['Latest option-exercise mod',mods.latest_option_mod]]){const chip=el('span');chip.append(el('small',label),el('strong',mod?.modification_number||'None Found'));if(mod)chip.append(el('small',mod.action_date));chips.append(chip);}body.append(chips,el('p','Option exercise is reported by source action codes; option periods are not established. Verify before action.','notice'));
    body.append(el('h3','Recent source transactions','evidence-heading'),evidenceTable(history.actions.slice(0,10),[['action_date','Date'],['modification_number','Mod'],['obligation_cents','Obligation change'],['description','Description']]));
    const full=el('details');full.append(el('summary','View all '+history.actions.length+' loaded source transactions'),evidenceTable(history.actions,[['action_date','Date'],['modification_number','Mod'],['obligation_cents','Obligation change'],['description','Description']]));body.append(full);
    if(history.has_next){const more=el('button','Load 200 older source actions');more.className='load-evidence';more.addEventListener('click',async()=>{more.disabled=true;try{const next=await api('history',{id,page:history.page+1});if(token!==detailGeneration)return;history={...next,actions:[...history.actions,...next.actions]};draw();}catch(error){more.disabled=false;body.append(el('p',error.message,'notice'));}});body.append(more);}
    const evidence=el('details');evidence.className='detail-extra';evidence.append(el('summary','Modification and option evidence'),renderModifications(mods));body.append(evidence);
    const metadata=el('details'),grid=el('dl',undefined,'detail-grid');metadata.className='detail-extra';metadata.append(el('summary','Contract classification and additional fields'));
-   for(const[label,value]of [['Portfolio group',lifecycle(a).label],['Group explanation',lifecycle(a).reason],['Date status',portfolioStatus(a)],['PoP start',a.start_date],['Total contract PoP',totalPop(a)],['Office by PIID prefix',a.office_code+' · '+a.office_name],['Source net obligations',money(a.obligation_cents)],['Parent PIID',a.parent_piid],['Set-aside',a.set_aside],['Competition',a.competition],['Pricing',a.pricing_type]]){const box=el('div');box.append(el('dt',label),el('dd',text(value)));grid.append(box);}metadata.append(grid);body.append(metadata,el('p','Public source checked '+new Date(data.fetched_at).toLocaleString()+'. History may be incomplete.','muted'));
+   for(const[label,value]of [['Contract ends',a.current_end_date],['Could end as late as',a.potential_end_date],['Portfolio group',lifecycle(a).label],['Group explanation',lifecycle(a).reason],['Date status',portfolioStatus(a)],['PoP start',a.start_date],['Total contract PoP',totalPop(a)],['Office by PIID prefix',a.office_code+' · '+a.office_name],['Source net obligations',money(a.obligation_cents)],['Parent PIID',a.parent_piid],['Set-aside',a.set_aside],['Competition',a.competition],['Pricing',a.pricing_type]]){const box=el('div');box.append(el('dt',label),el('dd',text(value)));grid.append(box);}metadata.append(grid);body.append(metadata,el('p','Public source checked '+new Date(data.fetched_at).toLocaleString()+'. History may be incomplete.','muted'));
   };draw();
  }catch(error){if(token===detailGeneration){const retry=el('button','Retry award details');retry.addEventListener('click',()=>award(id));$('detail-body').replaceChildren(el('p',error.message,'notice'),retry);}}
 }
 async function status(){const token=startDialog('Data status');try{const data=await api('status');if(token!==detailGeneration)return;$('detail-body').replaceChildren(el('h3',data.mode),...data.notes.map(n=>el('p',n,'muted')));}catch(error){if(token===detailGeneration)$('detail-body').replaceChildren(el('p',error.message,'notice'));}}
 function exportLoaded(){const columns=fields.map(([key,label])=>[key,label]).concat([['lifecycle','Portfolio group'],['source_url','Public source'],['details_pending','Details still pending'],['history_pending','Transaction evidence pending'],['source_refresh_pending','Source refresh pending'],['detail_error','Source detail error']]);const lines=[columns.map(c=>csvCell(c[1])).join(',')];for(const row of state.rows)lines.push(columns.map(([key])=>csvCell(key==='lifecycle'?lifecycle(row).label:key==='status'?portfolioStatus(row):key==='total_pop'?totalPop(row):key==='days_left'?daysRemaining(contractEnd(row)):key.endsWith('_cents')?dollars(row[key]):row[key])).join(','));const link=el('a');link.href=URL.createObjectURL(new Blob(['\uFEFF'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'}));link.download='kthq-'+state.scope+'-'+state.office+'-'+new Date().toISOString().slice(0,10)+'.csv';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000);}
 function filterOffices(){const q=$('office-search').value.trim().toLowerCase(),department=$('department').value;const matches=state.directory.filter(o=>(!department||o.department===department)&&[o.code,o.name,o.reported_name,o.base,o.location,o.command].some(v=>String(v).toLowerCase().includes(q)));$('office').replaceChildren();const selected=state.directory.find(o=>o.code===state.office);if(selected&&!matches.includes(selected)){const option=el('option',selected.code+' · '+selected.name+' (selected)');option.value=selected.code;$('office').append(option);}for(const o of matches){const option=el('option',o.code+' · '+o.name+(o.base?' · '+o.base:''));option.value=o.code;$('office').append(option);}$('office').value=state.office;$('directory-count').textContent=matches.length.toLocaleString()+' of '+state.directory.length.toLocaleString()+' supplied office codes · FY22–26 directory';}
-for(const[key,label]of fields){const option=el('label'),input=el('input');input.type='checkbox';input.checked=visible.has(key);input.disabled=key==='piid';input.addEventListener('change',()=>{input.checked?visible.add(key):visible.delete(key);renderRows();});option.append(input,el('span',label));$('columns').querySelector('.column-options').append(option);}
+for(const[key,label]of fields){const option=el('label'),input=el('input');input.type='checkbox';input.checked=visible.has(key);input.disabled=key==='piid';input.addEventListener('change',()=>{input.checked?visible.add(key):visible.delete(key);ui.detailedRows=true;$('detailed-layout').checked=true;renderRows();});option.append(input,el('span',fieldNames[key]||label));option.title=label;$('columns').querySelector('.column-options').append(option);}
 for(const id of ['view','sort','date-basis','set-aside'])$(id).addEventListener('change',()=>{ui.page=0;$('table-scroll').scrollTop=0;render();});
 $('search').addEventListener('input',()=>{ui.page=0;$('table-scroll').scrollTop=0;render();});
 $('direction').addEventListener('click',()=>{state.direction=state.direction==='asc'?'desc':'asc';$('direction').textContent=state.direction==='asc'?'Ascending ↑':'Descending ↓';render();});
-for(const id of ['office','window'])$(id).addEventListener('change',()=>{ui.page=0;ui.selected=null;ui.expanded.clear();$('office-dropdown').open=false;loadOffice();});
+for(const id of ['office','window'])$(id).addEventListener('change',()=>{if(!ui.officeChosen){if(id==='office')state.office=$('office').value;return;}ui.page=0;ui.selected=null;ui.expanded.clear();$('office-dropdown').open=false;loadOffice();});
 $('office-search').addEventListener('input',filterOffices);$('department').addEventListener('change',filterOffices);$('continue').addEventListener('click',loadBatch);
 $('retry-missing').addEventListener('click',()=>{for(const row of state.records.values())if(row.details_unavailable){row.details_pending=true;row.details_unavailable=false;state.pending.push(row.award_id);}render();loadBatch();});
 $('load-more').addEventListener('click',loadBatch);$('pause').addEventListener('click',()=>{state.paused=true;progress();});$('export').addEventListener('click',exportLoaded);
@@ -194,6 +210,10 @@ function closeDetail(){if($('detail').open)$('detail').close();detailGeneration+
 $('close-detail').addEventListener('click',closeDetail);$('detail').addEventListener('cancel',e=>{e.preventDefault();closeDetail();});
 $('methodology-button').addEventListener('click',()=>$('methodology').showModal());$('close-methodology').addEventListener('click',()=>$('methodology').close());
 $('dataset').addEventListener('change',()=>{state.scope=$('dataset').value;ui.page=0;render();});
+$('ending-year-button').addEventListener('click',()=>openRegister('365'));
+wirePanel('advanced-button','advanced-drawer','advanced-close');wirePanel('register-options-button','register-options','register-options-close');
+$('detailed-layout').addEventListener('change',()=>{ui.detailedRows=$('detailed-layout').checked;renderRows();});
+$('pause-fiscal-compact').addEventListener('click',()=>$('fiscal-pause').click());
 $('kpi-active-button').addEventListener('click',()=>{state.scope='active';openRegister();});
 $('expiring-180').addEventListener('click',()=>openRegister('180'));
 $('recompetes').addEventListener('click',()=>openRegister('365','potential'));
@@ -203,13 +223,16 @@ for(const [id,step]of [['previous-page',-1],['next-page',1]])$(id).addEventListe
 const tabs=['overview','expiring','register','set-asides'];
 function setTab(name,write=true){
  if(!tabs.includes(name))name='overview';ui.tab=name;
- for(const tab of tabs){$('tab-'+tab).setAttribute('aria-selected',String(tab===name));$('tab-'+tab).tabIndex=tab===name?0:-1;$('panel-'+tab).hidden=tab!==name;}
+ for(const tab of tabs){const link=$('tab-'+tab);if(tab===name)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');link.tabIndex=0;$('panel-'+tab).hidden=tab!==name;}
+ if(['register','set-asides'].includes(name))$('tab-overview').setAttribute('aria-current','page');
  if(write&&location.hash!=='#'+name)history.pushState(null,'','#'+name);
+ if(write&&ui.officeChosen)$('office-title').scrollIntoView({block:'start'});
 }
 for(const [i,name]of tabs.entries()){
- $('tab-'+name).addEventListener('click',()=>setTab(name));
+ $('tab-'+name).addEventListener('click',e=>{if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();setTab(name);});
  $('tab-'+name).addEventListener('keydown',e=>{let n;if(e.key==='ArrowRight')n=(i+1)%4;if(e.key==='ArrowLeft')n=(i+3)%4;if(e.key==='Home')n=0;if(e.key==='End')n=3;if(n!==undefined){e.preventDefault();setTab(tabs[n]);$('tab-'+tabs[n]).focus();}});
 }
+
 function route(){
  const hash=location.hash.slice(1),[tab,params]=hash.split('?'),id=tab.startsWith('award-')?decodeURIComponent(tab.slice(6)):new URLSearchParams(params||'').get('award');
  setTab(id?'register':tab,false);
@@ -217,6 +240,7 @@ function route(){
  else if(!id&&$('detail').open)closeDetail();
 }
 window.addEventListener('hashchange',route);setTab(location.hash.slice(1).split('?')[0],false);
+document.querySelector('.skip').addEventListener('click',e=>{if(!ui.officeChosen)return;e.preventDefault();setTab('register');$('panel-register').focus();$('panel-register').scrollIntoView({block:'start'});});
 
 function theme(value){document.documentElement.dataset.theme=value;$('theme').textContent=value==='dark'?'Light mode':'Dark mode';try{localStorage.setItem('contractintel-theme',value);}catch{}}
 let saved;try{saved=localStorage.getItem('contractintel-theme');}catch{}theme(saved==='dark'?'dark':'light');$('theme').addEventListener('click',()=>theme(document.documentElement.dataset.theme==='dark'?'light':'dark'));
@@ -226,7 +250,7 @@ function renderFiscal(){
  const fy=fiscalYear(),totals=fiscalTotals(fiscal.rows||[]),complete=fiscal.index===fiscal.months?.length;
  for(const [i,prefix] of ['prior','current'].entries()){
   const b=totals[i],year=i?fy:fy-1;
-  $(prefix+'-dollar-label').textContent=(i?'OBLIGATED':'TOTAL PORTFOLIO')+' · FY'+year;
+  $(prefix+'-dollar-label').textContent='Money spent · FY'+year;
   $(prefix+'-count-label').textContent='CONTRACTS · FY'+year;
   $(prefix+'-dollars').textContent=complete?(b.missing?'Unavailable':money(String(b.cents))):'—';
   $(prefix+'-contracts').textContent=complete?b.awards.size.toLocaleString():'—';
@@ -246,11 +270,11 @@ async function loadFiscal(){
  finally{if(generation===state.generation){f.busy=false;renderFiscal();}}
 }
 function renderSetAsides(rows){
- const groups=setAsideGroups(rows),selected=$('set-aside').value,picker=$('set-aside');picker.replaceChildren(new Option('All set-asides',''));for(const g of groups)picker.add(new Option(g.label,g.label));if(selected&&!groups.some(g=>g.label===selected))picker.add(new Option(selected,selected));picker.value=selected;
- $('set-aside-scope').textContent=scopeNames[state.scope];drawSetAsides($('set-aside-groups'),rows,selectCategory,state.busy);
+ const groups=setAsideGroups(rows),selected=$('set-aside').value,picker=$('set-aside');picker.replaceChildren(new Option('All reported categories',''));for(const g of groups)picker.add(new Option(biddingLabel(g.label).textContent,g.label));if(selected&&!groups.some(g=>g.label===selected))picker.add(new Option(selected,selected));picker.value=selected;
+ $('set-aside-scope').textContent=datasetNames[state.scope];drawSetAsides($('set-aside-groups'),rows,selectCategory,state.busy);
 }
 function renderFiscalVisual(totals,complete){
- const fy=fiscalYear();$('kpi-fy-label').textContent='Obligations · FY'+fy+' YTD';$('kpi-obligations').textContent=complete?(totals[1].missing?'Unavailable':money(String(totals[1].cents),true)):'—';$('kpi-obligations').title=$('current-dollars').textContent;$('kpi-prior').textContent='FY'+(fy-1)+': '+(complete?(totals[0].missing?'Unavailable':money(String(totals[0].cents),true)):'loading');
+ const fy=fiscalYear();$('kpi-fy-label').textContent='Money spent · FY'+fy+' YTD';$('kpi-obligations').textContent=complete?(totals[1].missing?'Unavailable':money(String(totals[1].cents),true)):'—';$('kpi-obligations').title=$('current-dollars').textContent;$('kpi-prior').textContent='FY'+(fy-1)+': '+(complete?(totals[0].missing?'Unavailable':money(String(totals[0].cents),true)):'loading');
  const chart=$('fiscal-chart');chart.replaceChildren();if(!complete){chart.append(el('p',fiscal.error?'Fiscal source unavailable. Use Retry fiscal totals below.':fiscal.paused?'Fiscal totals paused.':'Loading fiscal totals…','muted'));return;}
  const max=Math.max(...totals.map(t=>Math.abs(Number(t.cents))),1);
  for(const t of totals){const line=el('div',undefined,'fy-bar'),track=el('div',undefined,'fy-bar-track'),fill=el('div',undefined,'fy-bar-fill');fill.style.width=t.missing?'0%':Math.abs(Number(t.cents))/max*100+'%';if(t.year===fy)fill.style.opacity='.45';track.append(fill);line.append(el('span','FY'+t.year+(t.year===fy?' YTD':'')),track,el('strong',t.missing?'Unavailable':money(String(t.cents),true)));line.title=t.missing?'Some transaction values unavailable':money(String(t.cents));chart.append(line);}
@@ -258,5 +282,9 @@ function renderFiscalVisual(totals,complete){
 
 $('fiscal-continue').addEventListener('click',loadFiscal);$('fiscal-pause').addEventListener('click',()=>{fiscal.paused=true;});
 
-async function init(){try{const data=await api('offices');state.directory=data.offices;for(const name of [...new Set(data.offices.map(o=>o.department))].sort()){const option=el('option',name);option.value=name;$('department').append(option);}let remembered;try{remembered=localStorage.getItem('contractintel-office');}catch{}const selected=new URLSearchParams(location.search).get('office')||remembered;if(data.offices.some(o=>o.code===selected))state.office=selected;filterOffices();const hash=location.hash;if(hash.startsWith('#award-'))award(decodeURIComponent(hash.slice(7)));route();await loadOffice();}catch(error){failure(error);$('freshness').textContent='Unable to load the public API. Try refreshing.';}}init();
-
+async function init(){try{
+ const data=await api('offices');state.directory=data.offices;for(const name of [...new Set(data.offices.map(o=>o.department))].sort()){const option=el('option',name);option.value=name;$('department').append(option);}
+ let remembered;try{remembered=localStorage.getItem('contractintel-office');}catch{}const selected=new URLSearchParams(location.search).get('office')||remembered,known=data.offices.some(o=>o.code===selected);
+ if(known)state.office=selected;filterOffices();if(known)revealOffice();else await welcomeOffice();ui.officeChosen=true;
+ const hash=location.hash;if(hash.startsWith('#award-'))award(decodeURIComponent(hash.slice(7)));route();await loadOffice();
+ }catch(error){failure(error);$('freshness').textContent='Unable to load the public API. Try refreshing.';}}init();
