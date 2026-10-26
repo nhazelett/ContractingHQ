@@ -29,6 +29,7 @@ export function derive(row,today){
  recompete_candidate:!row.details_pending&&!row.details_unavailable&&life.kind!=='review'&&potential!==null&&potential>=0&&potential<=CONFIG.recompeteDays?1:0,derived_as_of:today};
 }
 export async function documentFor(data,raw,rawHistory,today){
+ if(data.history&&rawHistory&&JSON.stringify(data.history.actions.map(a=>a.transaction_id))!==JSON.stringify(rawHistory.results.map(a=>String(a.id))))throw new Error('Raw history identity does not match normalized source evidence.');
  const row=incorporatePortfolio(data),latest=raw.latest_transaction_contract_data||{},recipient=raw.recipient||{};
  const db={generated_unique_award_id:row.award_id,piid:row.piid,parent_piid:row.parent_piid||null,office_dodaac:row.office_code,
  recipient_name:row.recipient||null,recipient_uei:recipient.recipient_uei||latest.recipient_uei||null,description:row.description||null,
@@ -69,7 +70,7 @@ export async function runIngest(env,{mode='nightly',now=Date.now,fetcher=fetch,c
  const rawResponses=new Map(),deadline=new AbortController(),deadlineTimer=setTimeout(()=>deadline.abort(new Error('Ingestion time budget reached.')),config.maxRuntimeMs);
  const paced=createSourceFetch({interval:config.sourceIntervalMs,fetcher:async(url,options)=>{
   ensure();stats.sourceRequests++;const response=await fetcher(url,options);if(!response.ok)stats.sourceFailures.push({status:response.status,path:new URL(url).pathname});
-  if(response.ok)try{rawResponses.set(new URL(url).pathname,await response.clone().json());}catch{}
+  if(response.ok)try{rawResponses.set(new URL(url).pathname+(new URL(url).pathname==='/api/v2/transactions/'?'|'+JSON.parse(options.body).award_id:''),await response.clone().json());}catch{}
   return response;
  }});
  const request=async(path,params={},summary=false)=>{
@@ -130,7 +131,7 @@ export async function runIngest(env,{mode='nightly',now=Date.now,fetcher=fetch,c
      doc=await documentFor({award:record,history:h?{actions:parse(h.actions_json),has_next:!!h.has_next,page:1}:null},parse(old.raw_json),h?parse(h.raw_json):null,checkpoint.today);
     }else{
      try{
-      rawResponses.clear();const data=await request('award',{id});doc=await documentFor(data,rawResponses.get('/api/v2/awards/'+encodeURIComponent(id)+'/')||{},rawResponses.get('/api/v2/transactions/')||null,checkpoint.today);
+      rawResponses.clear();const data=await request('award',{id});doc=await documentFor(data,rawResponses.get('/api/v2/awards/'+encodeURIComponent(id)+'/')||{},rawResponses.get('/api/v2/transactions/|'+id)||null,checkpoint.today);
      }catch(error){
       if(error instanceof YieldRun)throw error;
       if(error.status!==404)throw error;
@@ -147,7 +148,17 @@ export async function runIngest(env,{mode='nightly',now=Date.now,fetcher=fetch,c
     if(data.has_next)checkpoint.fiscalPage++;else{checkpoint.month++;checkpoint.fiscalPage=1;}
     await save();
    }else if(checkpoint.phase==='publish'){
-    ensure();await publishOffice(db,{workId,office,runId,checkpoint,config,now});checkpoint.phase='done';
+    ensure();
+    // Validate previously staged pages too, including checkpoints prepared by an earlier package version.
+    const bad=await db.prepare("SELECT record_key FROM ingest_stage s WHERE work_id=? AND record_kind='award' AND json_type(data_json,'$.history')='object' AND (json_array_length(data_json,'$.history.actions')<>json_array_length(data_json,'$.rawHistory.results') OR EXISTS(SELECT 1 FROM json_each(s.data_json,'$.history.actions') a LEFT JOIN json_each(s.data_json,'$.rawHistory.results') r ON r.key=a.key WHERE CAST(json_extract(a.value,'$.transaction_id') AS TEXT) IS NOT CAST(json_extract(r.value,'$.id') AS TEXT))) LIMIT 1").bind(workId).first();
+    if(bad){
+     let data,raw,rawHistory;rawResponses.clear();
+     try{data=await request('award',{id:bad.record_key});raw=rawResponses.get('/api/v2/awards/'+encodeURIComponent(bad.record_key)+'/');rawHistory=rawResponses.get('/api/v2/transactions/|'+bad.record_key);}
+     catch(error){if(error.status!==404)throw error;const candidate=await db.prepare("SELECT data_json FROM ingest_stage WHERE work_id=? AND record_kind='candidate' AND record_key=?").bind(workId,bad.record_key).first(),row=parse(candidate.data_json);data={award:{...row,office_code:office,office_name:(env.OFFICES||[]).find(o=>o.code===office)?.name,details_pending:false,details_unavailable:true,detail_error:error.message},history:null};raw={search_record:row};rawHistory=null;}
+     await put('award',bad.record_key,await documentFor(data,raw,rawHistory,checkpoint.today));await save();continue;
+    }
+
+    await publishOffice(db,{workId,office,runId,checkpoint,config,now});checkpoint.phase='done';
    }
   }
   status=checkpoint.phase==='done'?'completed':'yielded';

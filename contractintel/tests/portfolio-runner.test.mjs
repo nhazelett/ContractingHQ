@@ -40,3 +40,23 @@ test('Public pilot progress exposes counts without raw records, config or creden
  const x=sqlite();await seedOffices(x.db,[office]);await runIngest({PORTFOLIO_DB:x.db,OFFICES:[office]},{mode:'backfill',now:fixed,fetcher:source().fetcher,config:{sourceIntervalMs:0,maxSourceRequests:8}});
  const data=await portfolioRoute(new Request('https://local/api/office/FA4528/progress'),{PORTFOLIO_DB:x.db});assert.equal(data.office,'FA4528');assert.equal(data.status,'yielded');assert.ok(data.awards_prepared>=0);assert.equal(data.checkpoint_json,undefined);assert.equal(data.work_id,undefined);assert.equal(data.config_json,undefined);
 });
+
+test('Late history from an unavailable award cannot be stored as another award raw evidence',async()=>{
+ const x=sqlite();await seedOffices(x.db,[office]);const upstream=source(),[missing,next]=upstream.ids;
+ const fetcher=async(url,options={})=>{
+  const path=new URL(url).pathname,body=options.body?JSON.parse(options.body):{};
+  if(path.includes('/awards/'+missing+'/'))return new Response('',{status:404});
+  if(path.includes('/transactions/')&&body.award_id===missing){await new Promise(r=>setTimeout(r,30));return upstream.fetcher(url,options);}
+  if(path.includes('/awards/'+next+'/'))await new Promise(r=>setTimeout(r,60));
+  return upstream.fetcher(url,options);
+ };
+ await runIngest({PORTFOLIO_DB:x.db,OFFICES:[office]},{mode:'backfill',now:fixed,fetcher,config:{sourceIntervalMs:0}});
+ const stored=x.sql.prepare('SELECT actions_json,raw_json FROM award_history_pages WHERE generated_unique_award_id=?').get(next);
+ assert.equal(JSON.parse(stored.actions_json)[0].transaction_id,next+'G');assert.equal(JSON.parse(stored.raw_json).results[0].id,next+'G');
+});
+
+test('Publication repairs an older staged raw-history mismatch by re-fetching that award only',async()=>{
+ const x=sqlite();await seedOffices(x.db,[office]);const upstream=source(),env={PORTFOLIO_DB:x.db,OFFICES:[office]},options={mode:'backfill',now:fixed,fetcher:upstream.fetcher,config:{sourceIntervalMs:0,maxSourceRequests:10}};
+ assert.equal((await runIngest(env,options)).status,'yielded');const rows=x.sql.prepare("SELECT * FROM ingest_stage WHERE record_kind='award' ORDER BY record_key").all();assert.equal(rows.length,2);const old=JSON.parse(rows[1].data_json);old.rawHistory=JSON.parse(rows[0].data_json).rawHistory;x.sql.prepare('UPDATE ingest_stage SET data_json=? WHERE work_id=? AND record_kind=? AND record_key=?').run(JSON.stringify(old),rows[1].work_id,rows[1].record_kind,rows[1].record_key);
+ assert.equal((await runIngest(env,{...options,config:{sourceIntervalMs:0}})).status,'completed');const evidence=x.sql.prepare('SELECT raw_json FROM award_history_pages WHERE generated_unique_award_id=?').get(upstream.ids[1]);assert.equal(JSON.parse(evidence.raw_json).results[0].id,upstream.ids[1]+'G');assert.equal(upstream.calls.filter(c=>c.path.includes('/awards/'+upstream.ids[1]+'/')).length,2);
+});
