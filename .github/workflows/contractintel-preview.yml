@@ -73,7 +73,7 @@ jobs:
           COMPLETE=false
           CHUNK_BUDGET=$(node --input-type=module -e "import {CONFIG} from './contractintel/portfolio/ingest.mjs'; console.log(CONFIG.maxBackfillChunks)")
           for CHUNK in $(seq 1 "$CHUNK_BUDGET"); do
-            RESULT=$(curl --silent --show-error --fail-with-body --max-time 240 -X POST "$BASE/api/admin/portfolio/ingest" -H "X-ContractIntel-Ingest-Secret: $PORTFOLIO_INGEST_SECRET" -H 'Content-Type: application/json' --data '{"office":"FA4528","mode":"backfill"}') || { printf '%s\n' "$RESULT"; exit 1; }
+            RESULT=$(curl --silent --show-error --fail-with-body --max-time 240 -X POST "$BASE/api/admin/portfolio/ingest" -H "X-ContractIntel-Ingest-Secret: $PORTFOLIO_INGEST_SECRET" -H 'Content-Type: application/json' --data '{"office":"FA4528","mode":"backfill"}') || { printf '%s\n' "$RESULT"; curl --silent --show-error --fail "$BASE/api/admin/portfolio/status" -H "X-ContractIntel-Ingest-Secret: $PORTFOLIO_INGEST_SECRET"; exit 1; }
             echo "$RESULT"
             STATUS=$(printf '%s' "$RESULT" | python3 -c 'import json,sys; print(json.load(sys.stdin)["status"])')
             if [ "$STATUS" = completed ]; then COMPLETE=true; break; fi

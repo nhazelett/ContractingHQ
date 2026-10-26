@@ -59,7 +59,7 @@ export async function runIngest(env,{mode='nightly',now=Date.now,fetcher=fetch,c
  if(!config.modes.includes(mode))throw new Error('Invalid ingestion mode.');
  if(config.offices.some(o=>!CONFIG.offices.includes(o)))throw new Error('The pilot is restricted to FA4528.');
  if(!env.PORTFOLIO_DB)throw new Error('Portfolio D1 binding is missing.');
- const started=now(),runId=crypto.randomUUID(),stats={queries:0,rowsRead:0,rowsWritten:0,sourceRequests:0},db=meter(env.PORTFOLIO_DB,stats);
+ const started=now(),runId=crypto.randomUUID(),stats={queries:0,rowsRead:0,rowsWritten:0,sourceRequests:0,sourceFailures:[]},db=meter(env.PORTFOLIO_DB,stats);
  const lease=await db.prepare('UPDATE ingest_lock SET owner=?,lease_until=? WHERE singleton=1 AND (owner IS NULL OR lease_until<?)').bind(runId,new Date(started+config.leaseMs).toISOString(),stamp(now)).run();
  if(!lease.meta?.changes)return {status:'busy',offices:config.offices};
  let progress,checkpoint,workId,runMode=mode,previousRun=null,status='running',errorMessage=null,touched=0;
@@ -67,7 +67,7 @@ export async function runIngest(env,{mode='nightly',now=Date.now,fetcher=fetch,c
  const ensure=()=>{if(!remaining())throw new YieldRun('Budget reached; checkpoint retained.');};
  const rawResponses=new Map(),deadline=new AbortController(),deadlineTimer=setTimeout(()=>deadline.abort(new Error('Ingestion time budget reached.')),config.maxRuntimeMs);
  const paced=createSourceFetch({interval:config.sourceIntervalMs,fetcher:async(url,options)=>{
-  ensure();stats.sourceRequests++;const response=await fetcher(url,options);
+  ensure();stats.sourceRequests++;const response=await fetcher(url,options);if(!response.ok)stats.sourceFailures.push({status:response.status,path:new URL(url).pathname});
   if(response.ok)try{rawResponses.set(new URL(url).pathname,await response.clone().json());}catch{}
   return response;
  }});
@@ -150,7 +150,7 @@ export async function runIngest(env,{mode='nightly',now=Date.now,fetcher=fetch,c
   }
   status=checkpoint.phase==='done'?'completed':'yielded';
  }catch(error){
-  if(error instanceof YieldRun||deadline.signal.aborted)status='yielded';else{status='failed';errorMessage=error.message||'Ingestion failed.';}
+  if(error instanceof YieldRun||deadline.signal.aborted)status='yielded';else{status='failed';errorMessage=(error.message||'Ingestion failed.')+(stats.sourceFailures.length?' Source HTTP '+stats.sourceFailures.at(-1).status+' at '+stats.sourceFailures.at(-1).path+'.':'');}
  }finally{
   clearTimeout(deadlineTimer);
   try{
