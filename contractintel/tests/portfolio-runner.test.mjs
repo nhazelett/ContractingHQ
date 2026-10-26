@@ -5,6 +5,7 @@ import {createHttpD1,verifyAtomicBatch} from '../portfolio/d1-http.mjs';
 import {dispatchIngest} from '../portfolio/dispatch.mjs';
 import {officeSnapshot} from '../portfolio/read.mjs';
 import {runPackage} from '../portfolio/runner.mjs';
+import {portfolioRoute} from '../portfolio/http.mjs';
 import {sqlite,source,office,fixed} from './fixtures/portfolio-d1.mjs';
 function httpFixture(){
  const {db,sql}=sqlite(),bodies=[];
@@ -33,4 +34,9 @@ test('Failed GitHub dispatch remains retryable; missing or expired credentials n
  const x=sqlite();await assert.rejects(dispatchIngest({PORTFOLIO_DB:x.db}),/CONTRACTINTEL_GITHUB_TOKEN/);
  const env={PORTFOLIO_DB:x.db,GITHUB_DISPATCH_TOKEN:'unit-test-only'};await assert.rejects(dispatchIngest(env,{fetcher:async()=>new Response(null,{status:401}),now:fixed}),/HTTP 401/);assert.equal(x.sql.prepare('SELECT status FROM ingest_dispatches').get().status,'failed');
  const later=()=>fixed()+1;assert.equal((await dispatchIngest(env,{fetcher:async()=>new Response(null,{status:204}),now:later})).status,'dispatched');
+});
+
+test('Public pilot progress exposes counts without raw records, config or credentials',async()=>{
+ const x=sqlite();await seedOffices(x.db,[office]);await runIngest({PORTFOLIO_DB:x.db,OFFICES:[office]},{mode:'backfill',now:fixed,fetcher:source().fetcher,config:{sourceIntervalMs:0,maxSourceRequests:8}});
+ const data=await portfolioRoute(new Request('https://local/api/office/FA4528/progress'),{PORTFOLIO_DB:x.db});assert.equal(data.office,'FA4528');assert.equal(data.status,'yielded');assert.ok(data.awards_prepared>=0);assert.equal(data.checkpoint_json,undefined);assert.equal(data.work_id,undefined);assert.equal(data.config_json,undefined);
 });

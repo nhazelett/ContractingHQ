@@ -17,11 +17,11 @@ on:
       - .github/workflows/contractintel-preview.yml
 permissions:
   contents: read
-concurrency:
-  group: contractintel-portfolio-ingest
-  cancel-in-progress: false
 jobs:
   deploy:
+    concurrency:
+      group: contractintel-code-deployer
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:
@@ -63,6 +63,18 @@ jobs:
             printf '%s' "$DISPATCH_SECRET" | npx --yes wrangler@4.140.0 secret put GITHUB_DISPATCH_TOKEN --config contractintel/worker/wrangler.jsonc
             echo 'Cron dispatch credential installed in Cloudflare Worker secrets.'
           fi
+  pilot:
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    concurrency:
+      group: contractintel-portfolio-ingest
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
       - name: Backfill FA4528 on the runner and verify counts and storage
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}

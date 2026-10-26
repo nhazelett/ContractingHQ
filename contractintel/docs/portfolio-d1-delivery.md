@@ -198,4 +198,8 @@ All existing tabs, office controls, search/status/set-aside filters, date-mode/h
 9. Review `fa4528-report.json` for four-window count equality, fiscal equality, timing samples and table storage. Any difference blocks expansion.
 10. Test a source failure or disabled D1 binding in a local test environment; retain prior complete data and verify live fallback.
 
-The automated suite has 104 passing tests and uses Node SQLite and a minimal DOM fixture. No real-browser/mobile visual result is claimed by these tests.
+The automated suite has 105 passing tests and uses Node SQLite and a minimal DOM fixture. No real-browser/mobile visual result is claimed by these tests.
+
+## Pilot progress
+
+`GET /api/office/FA4528/progress` returns only phase, search position, prepared/discovered award counts and the progress update timestamp. It exposes no source records, configuration or secrets. A progress status is not a completed publication. Worker deployment and long-running pilot jobs use separate concurrency groups; all ingest writers still share the same ingest group and D1 lease.
