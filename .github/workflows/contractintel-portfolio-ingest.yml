@@ -1,0 +1,65 @@
+name: ContractIntel Portfolio ingest
+on:
+  workflow_dispatch:
+    inputs:
+      office:
+        description: Pilot office (FA4528 only)
+        default: FA4528
+        required: true
+        type: string
+      mode:
+        description: Incremental refresh or full backfill
+        default: nightly
+        required: true
+        type: choice
+        options: [nightly, backfill]
+      origin:
+        description: Trigger origin
+        default: manual
+        type: string
+      request_id:
+        description: Cloudflare dispatch correlation ID
+        default: ''
+        type: string
+      verify:
+        description: Independently compare against live USAspending
+        default: true
+        type: boolean
+  schedule:
+    - cron: '0 10 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: contractintel-portfolio-ingest
+  cancel-in-progress: false
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/contractintel
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate the single-office pilot
+        env:
+          PILOT_OFFICE: ${{ inputs.office || 'FA4528' }}
+        run: test "$PILOT_OFFICE" = FA4528
+      - name: Run the unchanged ingestion package through D1 HTTP batches
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
+          RUN_MODE: ${{ inputs.mode || 'nightly' }}
+          RUN_ORIGIN: ${{ github.event_name == 'schedule' && 'backup' || inputs.origin || 'manual' }}
+          PERFORM_VERIFY: ${{ inputs.verify && 'true' || 'false' }}
+        run: node contractintel/portfolio/runner.mjs
+      - name: Preserve pilot evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contractintel-fa4528-verification
+          path: |
+            contractintel/portfolio/fa4528-report.json
+            contractintel/portfolio/fa4528-storage.json
+          if-no-files-found: ignore

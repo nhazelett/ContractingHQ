@@ -1,4 +1,5 @@
-import {runIngest,CONFIG} from './ingest.mjs';
+import {CONFIG} from './ingest.mjs';
+import {dispatchIngest} from './dispatch.mjs';
 import {officeSnapshot,storedAward,storageReport,PortfolioError} from './read.mjs';
 async function authorized(request,secret){
  if(!secret)return false;const value=request.headers.get('X-ContractIntel-Ingest-Secret')||'';
@@ -19,7 +20,7 @@ export async function portfolioRoute(request,env){
   if(request.method!=='POST')throw new PortfolioError('Use POST to trigger ingestion.',405);
   let body;try{body=await request.json();}catch{throw new PortfolioError('Invalid request body.',400);}
   if(Object.keys(body).some(k=>!['office','mode'].includes(k))||body.office!=='FA4528'||!CONFIG.modes.includes(body.mode))throw new PortfolioError('Only FA4528 backfill/nightly is enabled.',400);
-  return runIngest(env,{mode:body.mode});
+  return dispatchIngest(env,{mode:body.mode,origin:'admin'});
  }
  if(request.method!=='GET')throw new PortfolioError('Read-only endpoint.',405);
  if(!env.PORTFOLIO_DB)throw new PortfolioError('Portfolio database is not configured.');

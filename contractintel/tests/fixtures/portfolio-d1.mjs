@@ -4,6 +4,7 @@ export const office={code:'FA4528',name:'5th Contracting Squadron',department:'A
 export const fixed=()=>Date.parse('2026-10-26T01:00:00Z');
 export function sqlite(){
  const sql=new DatabaseSync(':memory:');sql.exec(readFileSync(new URL('../../portfolio/migrations/0001.sql',import.meta.url),'utf8'));
+ sql.exec(readFileSync(new URL('../../portfolio/migrations/0002.sql',import.meta.url),'utf8'));
  const db={prepare(text){const create=params=>({_sql:text,_params:params,bind:(...p)=>create(p),all:async()=>({results:sql.prepare(text).all(...params),meta:{rows_read:1,rows_written:0,size_after:sql.prepare('PRAGMA page_count').get().page_count*sql.prepare('PRAGMA page_size').get().page_size}}),run:async()=>{const r=sql.prepare(text).run(...params);return {results:[],meta:{changes:Number(r.changes),rows_written:Number(r.changes),rows_read:0}};},first:async()=>sql.prepare(text).get(...params)||null});return create([]);},batch:async statements=>{sql.exec('BEGIN');try{const result=[];for(const s of statements)result.push(await s.run());sql.exec('COMMIT');return result;}catch(e){sql.exec('ROLLBACK');throw e;}}};return {db,sql};
 }
 export function source(){

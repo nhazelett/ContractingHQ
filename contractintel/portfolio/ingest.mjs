@@ -2,9 +2,10 @@
 export const CONFIG=Object.freeze({
  offices:['FA4528'],windows:['2007-10-01','2021-10-01','2024-10-01','2025-10-01'],
  awardTypes:['A','B','C','D'],lookbackDays:14,searchBatch:100,historyBatch:200,
- sourceIntervalMs:400,maxRuntimeMs:180000,shutdownReserveMs:15000,leaseMs:240000,
+ sourceIntervalMs:400,maxRuntimeMs:180000,shutdownReserveMs:15000,leaseMs:300000,
  maxSourceRequests:180,sourceRequestReserve:2,maxD1Queries:850,maxPageD1Queries:220,maxAwards:25000,maxCandidates:100000,
- maxFiscalPages:100,stageWriteBatch:20,directorySeedBatch:10,maxBackfillChunks:40,secretReadyAttempts:10,secretWaitMs:2000,maxStorageBytes:268435456,maxRunRowsWritten:100000,
+ maxFiscalPages:100,stageWriteBatch:20,directorySeedBatch:10,maxBackfillChunks:40,secretReadyAttempts:10,secretWaitMs:2000,d1HttpTimeoutMs:60000,d1IntervalMs:300,dispatchTimeoutMs:15000,dispatchLeaseMs:120000,
+ githubRepository:'nhazelett/ContractingHQ',githubWorkflow:'contractintel-portfolio-ingest.yml',githubRef:'codex/contractintel',backupCron:'0 10 * * *',runnerJobMinutes:360,maxStorageBytes:268435456,maxRunRowsWritten:100000,
  millisecondsPerDay:86400000,reconciliationDays:30,expiryWindows:[90,180,365],recompeteDays:365,
  schemaVersion:1,timeZone:'America/New_York',cron:'0 7 * * *',
  modes:['backfill','nightly'],storageProjectionOffices:1432
@@ -76,6 +77,7 @@ export async function runIngest(env,{mode='nightly',now=Date.now,fetcher=fetch,c
   return resolve(url,{OFFICES:env.OFFICES||[],SOURCE_FETCH:paced,SIGNAL:deadline.signal,SUMMARY_ONLY:summary});
  };
  const put=async(kind,key,data)=>db.prepare('INSERT INTO ingest_stage(work_id,record_kind,record_key,data_json) VALUES(?,?,?,?) ON CONFLICT(work_id,record_kind,record_key) DO UPDATE SET data_json=excluded.data_json').bind(workId,kind,key,JSON.stringify(data)).run();
+ const putMany=async entries=>{for(let i=0;i<entries.length;i+=config.stageWriteBatch)await db.batch(entries.slice(i,i+config.stageWriteBatch).map(([kind,key,data])=>db.prepare('INSERT INTO ingest_stage(work_id,record_kind,record_key,data_json) VALUES(?,?,?,?) ON CONFLICT(work_id,record_kind,record_key) DO UPDATE SET data_json=excluded.data_json').bind(workId,kind,key,JSON.stringify(data))));};
  const save=async()=>db.prepare('UPDATE ingest_office_progress SET run_id=?,checkpoint_json=?,updated_at=? WHERE office_dodaac=?').bind(runId,JSON.stringify(checkpoint),stamp(now),config.offices[0]).run();
  try{
   await db.prepare('INSERT INTO ingest_runs(id,mode,started_at,status,config_json,resume_from_run_id) VALUES(?,?,?,?,?,NULL)').bind(runId,mode,stamp(now),'running',JSON.stringify(config)).run();
@@ -111,15 +113,15 @@ export async function runIngest(env,{mode='nightly',now=Date.now,fetcher=fetch,c
    }else if(checkpoint.phase==='discover'){
     const start=config.windows[checkpoint.window],data=await request('awards',{office,start,page:checkpoint.page,cursor:checkpoint.cursor,sort_value:checkpoint.sortValue});
     checkpoint.candidates+=data.candidates;if(checkpoint.candidates>config.maxCandidates)throw new Error('Office candidate budget exceeded.');
-    for(const row of data.rows){await put('window',start+'|'+row.award_id,{award_id:row.award_id,window_start:start});await put('candidate',row.award_id,row);}
+    await putMany(data.rows.flatMap(row=>[['window',start+'|'+row.award_id,{award_id:row.award_id,window_start:start}],['candidate',row.award_id,row]]));
     checkpoint.page++;checkpoint.cursor=data.cursor;checkpoint.sortValue=data.sort_value;
     if(!data.has_next){checkpoint.window++;checkpoint.page=1;checkpoint.cursor=null;checkpoint.sortValue=null;if(checkpoint.window===config.windows.length)checkpoint.phase='hydrate';}
     await save();
    }else if(checkpoint.phase==='hydrate'){
     const next=await db.prepare("SELECT record_key,data_json FROM ingest_stage WHERE work_id=? AND record_kind='candidate' AND record_key>? ORDER BY record_key LIMIT 1").bind(workId,checkpoint.after).first();
     if(!next){checkpoint.phase='fiscal';await save();continue;}
-    const count=await db.prepare("SELECT count(*) n FROM ingest_stage WHERE work_id=? AND record_kind='candidate'").bind(workId).first();
-    if(count.n>config.maxAwards)throw new Error('Office award budget exceeded.');
+    if(checkpoint.awardCount===undefined){const count=await db.prepare("SELECT count(*) n FROM ingest_stage WHERE work_id=? AND record_kind='candidate'").bind(workId).first();checkpoint.awardCount=count.n;}
+    if(checkpoint.awardCount>config.maxAwards)throw new Error('Office award budget exceeded.');
     const id=next.record_key,changed=runMode==='backfill'||await db.prepare("SELECT 1 n FROM ingest_stage WHERE work_id=? AND record_kind='changed' AND record_key=?").bind(workId,id).first();
     const old=!changed?await db.prepare('SELECT record_json,raw_json,source_hash FROM awards WHERE generated_unique_award_id=?').bind(id).first():null;
     let doc;
@@ -150,12 +152,14 @@ export async function runIngest(env,{mode='nightly',now=Date.now,fetcher=fetch,c
   }
   status=checkpoint.phase==='done'?'completed':'yielded';
  }catch(error){
-  if(error instanceof YieldRun||deadline.signal.aborted)status='yielded';else{status='failed';errorMessage=(error.message||'Ingestion failed.')+(stats.sourceFailures.length?' Source HTTP '+stats.sourceFailures.at(-1).status+' at '+stats.sourceFailures.at(-1).path+'.':'');}
+  const committed=checkpoint?.phase==='publish'?await db.prepare("SELECT p.published_run_id FROM office_publications p JOIN ingest_runs r ON r.id=p.published_run_id WHERE p.office_dodaac=? AND p.published_run_id=? AND r.status='completed'").bind(config.offices[0],runId).first().catch(()=>null):null;
+  if(committed){checkpoint.phase='done';status='completed';}
+  else if(error instanceof YieldRun||deadline.signal.aborted)status='yielded';else{status='failed';errorMessage=(error.message||'Ingestion failed.')+(stats.sourceFailures.length?' Source HTTP '+stats.sourceFailures.at(-1).status+' at '+stats.sourceFailures.at(-1).path+'.':'');}
  }finally{
   clearTimeout(deadlineTimer);
   try{
-   if(workId)await db.prepare('UPDATE ingest_office_progress SET status=?,updated_at=? WHERE office_dodaac=? AND work_id=?').bind(status,stamp(now),config.offices[0],workId).run();
-   await db.prepare('UPDATE ingest_runs SET ended_at=?,status=?,offices_touched=?,rows_written=?,rows_read=?,source_requests=?,error_count=?,errors_json=? WHERE id=?').bind(stamp(now),status,touched,stats.rowsWritten,stats.rowsRead,stats.sourceRequests,errorMessage?1:0,JSON.stringify(errorMessage?[errorMessage]:[]),runId).run();
+   if(workId)await db.prepare("UPDATE ingest_office_progress SET status=?,updated_at=? WHERE office_dodaac=? AND work_id=? AND status<>'completed'").bind(status,stamp(now),config.offices[0],workId).run();
+   await db.prepare("UPDATE ingest_runs SET ended_at=?,status=CASE WHEN status='completed' THEN status ELSE ? END,offices_touched=?,rows_written=?,rows_read=?,source_requests=?,error_count=?,errors_json=? WHERE id=?").bind(stamp(now),status,touched,stats.rowsWritten,stats.rowsRead,stats.sourceRequests,errorMessage?1:0,JSON.stringify(errorMessage?[errorMessage]:[]),runId).run();
   }finally{await db.prepare('UPDATE ingest_lock SET owner=NULL,lease_until=NULL WHERE singleton=1 AND owner=?').bind(runId).run();}
  }
  const result={run_id:runId,status,office:config.offices[0],mode:runMode,phase:checkpoint?.phase,...stats,error:errorMessage};

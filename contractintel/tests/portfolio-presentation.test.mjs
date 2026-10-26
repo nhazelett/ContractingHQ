@@ -12,9 +12,9 @@ test('Presentation rebuild preserves all data, API, cache, pacing, parsing and O
   let source=read(file);
   if(['web/format.mjs','web/lifecycle.mjs','web/overview.mjs','web/register.mjs'].includes(file))source=source.replace("import {currentDate} from './calendar.mjs';\n",'').replaceAll('currentDate()',"new Date().toISOString().slice(0,10)");
   if(file==='worker/api.mjs'){
-   source=source.replace("import {portfolioRoute} from '../portfolio/http.mjs';\nimport {runIngest} from '../portfolio/ingest.mjs';\nimport {PortfolioError} from '../portfolio/read.mjs';\n",'');
+   source=source.replace("import {portfolioRoute} from '../portfolio/http.mjs';\nimport {dispatchIngest} from '../portfolio/dispatch.mjs';\nimport {PortfolioError} from '../portfolio/read.mjs';\n",'');
    const begin=source.indexOf(" if(url.pathname.startsWith('/api/office/')"),end=source.indexOf(" if(request.method==='OPTIONS')");source=source.slice(0,begin)+source.slice(end);
-   source=source.replace("export async function scheduled(controller,env){return runIngest({...env,OFFICES:offices},{mode:'nightly'});}\nexport default {fetch:handle,scheduled};","export default {fetch:handle};");
+   source=source.replace("export async function scheduled(controller,env){return dispatchIngest(env,{mode:'nightly',origin:'cron'});}\nexport default {fetch:handle,scheduled};","export default {fetch:handle};");
   }
   assert.equal(createHash('sha256').update(source.trimEnd()+'\n').digest('hex'),hash,file);
  }

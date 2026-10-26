@@ -2,7 +2,7 @@
 
 This pilot adds a stored source before the existing live loader. The live source adapter, request helper, progressive loader, browser cache and evidence normalizer are unchanged. The shared date defaults now use the current calendar date in America/New_York, including DST; monetary/date parsing and classification rules remain unchanged.
 
-## Current pilot result — upstream connection blocked
+## Prior Worker ingestion attempt — superseded by the runner design
 
 The D1 schema, binding, public read path, source switch, Eastern date computations, authenticated endpoints, cron handler and verification tools are deployed. All 99 local/CI tests pass, and deployed assets match the working source. The live browser loader remains available.
 
@@ -14,11 +14,40 @@ Deployment/diagnostic workflow: https://github.com/nhazelett/ContractingHQ/actio
 
 No count comparison, under-two-second completed-office measurement, populated-table storage report, or all-office storage projection is claimed. These require an actual completed backfill; an empty awards table would give a misleading projection. No other office has been ingested.
 
-Proposed exception awaiting user approval under Hard Rule 4: run the same ingestion module in the existing trusted GitHub Actions runner, writing to the same D1 database, with nightly scheduling there. Keep the Cloudflare read path, fallback, page behavior, field mappings and FA4528 allowlist. This requires a transactional D1 REST adapter for the Node runner and a revised trigger arrangement; those changes have not been made. Do not weaken TLS verification or substitute another source to hide the failure.
+The user approved this architecture change after a manual runner probe: run the same ingestion module in the existing trusted GitHub Actions runner, writing to the same D1 database, with nightly scheduling there. Keep the Cloudflare read path, fallback, page behavior, field mappings and FA4528 allowlist. The package now has a transactional D1 HTTP adapter and a Cron-to-workflow dispatch bridge. The original Worker-only failure is retained here as diagnostic history. Do not weaken TLS verification or substitute another source to hide the failure.
+
+## Runner architecture and verified connectivity
+
+The manual-only probe ran once on GitHub Actions: HTTP 200; connect 0.059839 s; TLS 0.106869 s; first byte 0.213990 s; total 0.251508 s. It used no secrets and no retries. Evidence: https://github.com/nhazelett/ContractingHQ/actions/runs/40257381619
+
+Ingest now runs in GitHub Actions because Workers-to-USAspending failed with HTTP 525/timeouts while the runner request succeeded. The website and database remain on Cloudflare. The SAME `portfolio/ingest.mjs` package, CONFIG, original source adapter, original pacing/retry helper, staging, lease, idempotency and publication gate run under Node. `portfolio/d1-http.mjs` preserves prepared parameter binding and sends publication statements in ONE D1 HTTP batch. An execution-failure rollback probe is mandatory before running ingestion; a failed probe prevents ingestion. Unknown HTTP write outcomes are never blindly replayed. A lost publication response is reconciled against the completed publication ID before determining status.
+
+Cloudflare keeps `0 7 * * *` as its PRIMARY Cron Trigger. `portfolio/dispatch.mjs` calls GitHub's workflow_dispatch API with the fixed office, mode and configured trusted ref. It makes no USAspending call. Accepted daily Cron dispatches are deduplicated in `ingest_dispatches` (migration 0002). Dispatch failure is recorded and thrown. An accepted dispatch is not an assertion that ingestion completed; `ingest_runs` and `office_publications` remain the completion evidence.
+
+The registered default-branch workflow is `.github/workflows/contractintel-portfolio-ingest.yml`. It checks out the trusted `codex/contractintel` package. Its 10:00 UTC GitHub schedule is BACKUP only: a current New York date publication with no unfinished work causes a skip. There is no dependence on that backup to make the primary Cron work. A shared Actions concurrency group and D1 lease prevent overlapping ingest writers.
+
+### Secret placement and rotation
+
+| Secret | Repository secret | Cloudflare side |
+| --- | --- | --- |
+| Cloudflare deployment/D1 API token | `CLOUDFLARE_API_TOKEN` (existing `CLOUDFARE_API_TOKEN` spelling remains a compatibility fallback) | Not copied for Portfolio ingestion; only the runner needs it for D1 HTTP writes and deployment |
+| SAM key | `SAM_API_KEY` | Existing Worker secret for Opportunities; Portfolio ingestion never uses SAM |
+| GitHub dispatch token | `CONTRACTINTEL_GITHUB_TOKEN` | Copied at deployment through standard Wrangler secret input to encrypted Worker secret `GITHUB_DISPATCH_TOKEN`; never a Wrangler plaintext var |
+| On-demand endpoint secret | Existing `PORTFOLIO_INGEST_SECRET` Worker secret | Used only to authenticate the administrative endpoint; rotate through Wrangler if needed |
+
+Use a fine-grained GitHub token restricted to `nhazelett/ContractingHQ`, Actions read/write. Store it with GitHub's repository secret UI (Settings → Secrets and variables → Actions), or `gh secret set CONTRACTINTEL_GITHUB_TOKEN --repo nhazelett/ContractingHQ`. Do not commit it, paste it into workflow YAML, or print it. GitHub masks repository secret values; workflow steps do not enable shell tracing. The deployment reads the repository secret in an environment variable and pipes it to `wrangler secret put GITHUB_DISPATCH_TOKEN`. It is stored encrypted on Cloudflare and appears to the Worker only as `env.GITHUB_DISPATCH_TOKEN`. Rotation requires replacing the repository secret and redeploying the bridge. Missing/expired tokens produce explicit dispatch failure, never a false success.
+
+A GitHub token cannot be created or retrieved by the connected repository tooling. Until that repository secret is configured and deployed, the runner can backfill using the existing Cloudflare token, but primary Cron dispatch is not operational. The deployment prints only a configuration status, never token values.
+
+### If the repository moves
+
+Move the entire `contractintel/portfolio` package, its migrations, imported `web` source/date/classification helpers, directory JSON, and both workflow files. Update CONFIG.githubRepository/githubWorkflow/githubRef, the ingest workflow checkout ref, and CI paths/concurrency as appropriate. Register the dispatch workflow on the new default branch. Recreate repository secrets (GitHub does not transfer their values through Git), issue or reauthorize the fine-grained dispatch token for the new repository, and redeploy its encrypted Cloudflare copy. The D1 database and public Worker URLs can stay where they are; no contract-data migration is needed unless the Cloudflare account/database also changes. Test one manual dispatch, then the Cron bridge, before enabling the backup schedule.
 
 ## Files
 
 - `portfolio/migrations/0001.sql`: complete schema and query indexes, in a new separate database.
+- `portfolio/runner.mjs`, `portfolio/d1-http.mjs`, `portfolio/dispatch.mjs`, `portfolio/migrations/0002.sql`: Node package entrypoint, transactional HTTP writes, Cron dispatch bridge and dispatch audit table.
+- `.github/workflows/contractintel-portfolio-ingest.yml`: registered workflow_dispatch target, plus the later backup schedule.
 - `portfolio/ingest.mjs`: one new CONFIG object, resumable staging/publishing, leases, nightly changes and full backfill, fiscal scans, audit records.
 - `portfolio/read.mjs`: office snapshot, lazy stored evidence, NY-derived fields, table storage measurement.
 - `portfolio/http.mjs`: public reads and secret-authenticated administrative POST/status/storage routes.
@@ -50,7 +79,7 @@ Deployment preparation adds the actual new database UUID to this binding, preser
 }
 ```
 
-07:00 UTC is 03:00 Eastern during daylight saving time and 02:00 during standard time. Cron only ingests FA4528. One invocation uses at most three minutes of wall time, with checkpointing before its request/query budgets; subsequent invocations resume. Existing helper timeouts/retries retain their approved exemption.
+07:00 UTC is 03:00 Eastern during daylight saving time and 02:00 during standard time. Cron only ingests FA4528. Each ingestion-package chunk uses at most three minutes of wall time, with checkpointing before its request/query budgets; the runner resumes yielded chunks. The Worker Cron only dispatches the runner. Existing helper timeouts/retries retain their approved exemption.
 
 ## Exact manual setup commands
 
@@ -77,7 +106,7 @@ $pilotHeaders = @{ 'X-ContractIntel-Ingest-Secret' = $env:PORTFOLIO_INGEST_SECRE
 Invoke-RestMethod -Method Post -Uri 'https://kthq-contractintel.nickhazelett.workers.dev/api/admin/portfolio/ingest' -Headers $pilotHeaders -ContentType 'application/json' -Body '{"office":"FA4528","mode":"backfill"}' -TimeoutSec 240
 ```
 
-Repeat only while the response status is `yielded`. A `busy` response means another invocation owns the lease; wait for it to finish. Set mode to `nightly` for changed-award updates. Requests for other offices are rejected. No public GET starts ingestion.
+The endpoint now returns `dispatched` after GitHub accepts the job. Do not repeat that request to resume individual chunks: the runner package handles yielded chunks internally, and a later dispatch resumes a failed/interrupted checkpoint. Inspect GitHub Actions and ingest audit records for completion. Set mode to `nightly` for changed-award updates. Requests for other offices are rejected. No public GET starts ingestion.
 
 ```powershell
 Invoke-RestMethod -Uri 'https://kthq-contractintel.nickhazelett.workers.dev/api/admin/portfolio/status' -Headers $pilotHeaders
@@ -169,4 +198,4 @@ All existing tabs, office controls, search/status/set-aside filters, date-mode/h
 9. Review `fa4528-report.json` for four-window count equality, fiscal equality, timing samples and table storage. Any difference blocks expansion.
 10. Test a source failure or disabled D1 binding in a local test environment; retain prior complete data and verify live fallback.
 
-The automated suite uses Node SQLite and a minimal DOM fixture. No real-browser/mobile visual result is claimed by these tests.
+The automated suite has 104 passing tests and uses Node SQLite and a minimal DOM fixture. No real-browser/mobile visual result is claimed by these tests.

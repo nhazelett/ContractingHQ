@@ -1,5 +1,5 @@
 import {portfolioRoute} from '../portfolio/http.mjs';
-import {runIngest} from '../portfolio/ingest.mjs';
+import {dispatchIngest} from '../portfolio/dispatch.mjs';
 import {PortfolioError} from '../portfolio/read.mjs';
 import offices from './offices.json' with {type:'json'};
 import {opportunityRoute} from '../opportunities/api.mjs';
@@ -38,6 +38,6 @@ export async function handle(request,env={},ctx={}){
   return reply(body,200,{'X-ContractIntel-Cache':'miss'});
  }catch(error){return reply({error:error instanceof ServiceError||error instanceof OpportunityError?error.message:'Data service unavailable. Try again shortly.'},error instanceof ServiceError||error instanceof OpportunityError?error.status:503);}
 }
-export async function scheduled(controller,env){return runIngest({...env,OFFICES:offices},{mode:'nightly'});}
+export async function scheduled(controller,env){return dispatchIngest(env,{mode:'nightly',origin:'cron'});}
 export default {fetch:handle,scheduled};
 
