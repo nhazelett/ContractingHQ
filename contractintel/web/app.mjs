@@ -58,7 +58,7 @@ function renderLoadingNotice(){
  else if(!done)$('freshness').textContent='Ready · '+ready.toLocaleString()+' contracts loaded';
  else if(fiscal.busy)$('freshness').textContent='Loading fiscal-year totals for '+name;
  else $('freshness').textContent='Search complete · '+ready.toLocaleString()+' contracts loaded';
- if(state.fromD1)$('freshness').textContent=freshnessLabel(state.checked)+' · '+ready.toLocaleString()+' contracts';
+ if(state.fromD1&&done&&fiscalDone)$('freshness').textContent=freshnessLabel(state.checked)+' · '+ready.toLocaleString()+' contracts';
  compactLoading();$('progress').hidden=!state.busy&&!fiscal.busy;if(fiscal.busy&&!state.busy)$('progress').removeAttribute('value');
  if(done&&fiscalDone)return;
  const loading=done?fiscal.busy:state.busy&&!state.paused,interrupted=done?Boolean(fiscal.error):!$('error').hidden;

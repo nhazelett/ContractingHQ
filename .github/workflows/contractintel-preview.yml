@@ -60,6 +60,16 @@ jobs:
           echo "::add-mask::$PORTFOLIO_INGEST_SECRET"
           printf '%s' "$PORTFOLIO_INGEST_SECRET" | npx --yes wrangler@4.140.0 secret put PORTFOLIO_INGEST_SECRET --config contractintel/worker/wrangler.jsonc
           BASE=https://kthq-contractintel.nickhazelett.workers.dev
+          SECRET_ATTEMPTS=$(node --input-type=module -e "import {CONFIG} from './contractintel/portfolio/ingest.mjs'; console.log(CONFIG.secretReadyAttempts)")
+          SECRET_WAIT=$(node --input-type=module -e "import {CONFIG} from './contractintel/portfolio/ingest.mjs'; console.log(CONFIG.secretWaitMs/1000)")
+          READY=false
+          for ATTEMPT in $(seq 1 "$SECRET_ATTEMPTS"); do
+            CODE=$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$BASE/api/admin/portfolio/status" -H "X-ContractIntel-Ingest-Secret: $PORTFOLIO_INGEST_SECRET")
+            if [ "$CODE" = 200 ]; then READY=true; break; fi
+            if [ "$CODE" != 401 ]; then echo "Unexpected readiness response: $CODE"; exit 1; fi
+            sleep "$SECRET_WAIT"
+          done
+          if [ "$READY" != true ]; then echo 'Secret propagation has not completed; no ingestion started.'; exit 1; fi
           COMPLETE=false
           CHUNK_BUDGET=$(node --input-type=module -e "import {CONFIG} from './contractintel/portfolio/ingest.mjs'; console.log(CONFIG.maxBackfillChunks)")
           for CHUNK in $(seq 1 "$CHUNK_BUDGET"); do

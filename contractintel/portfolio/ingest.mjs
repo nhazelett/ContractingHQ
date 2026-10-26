@@ -4,7 +4,7 @@ export const CONFIG=Object.freeze({
  awardTypes:['A','B','C','D'],lookbackDays:14,searchBatch:100,historyBatch:200,
  sourceIntervalMs:400,maxRuntimeMs:180000,shutdownReserveMs:15000,leaseMs:240000,
  maxSourceRequests:180,sourceRequestReserve:2,maxD1Queries:850,maxPageD1Queries:220,maxAwards:25000,maxCandidates:100000,
- maxFiscalPages:100,stageWriteBatch:20,directorySeedBatch:10,maxBackfillChunks:40,maxStorageBytes:268435456,maxRunRowsWritten:100000,
+ maxFiscalPages:100,stageWriteBatch:20,directorySeedBatch:10,maxBackfillChunks:40,secretReadyAttempts:10,secretWaitMs:2000,maxStorageBytes:268435456,maxRunRowsWritten:100000,
  millisecondsPerDay:86400000,reconciliationDays:30,expiryWindows:[90,180,365],recompeteDays:365,
  schemaVersion:1,timeZone:'America/New_York',cron:'0 7 * * *',
  modes:['backfill','nightly'],storageProjectionOffices:1432

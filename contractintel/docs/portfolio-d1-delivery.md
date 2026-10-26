@@ -28,7 +28,7 @@ Deployment preparation adds the actual new database UUID to this binding, preser
   "d1_databases": [{
     "binding": "PORTFOLIO_DB",
     "database_name": "kthq-contractintel-portfolio",
-    "database_id": "<UUID returned by creation>",
+    "database_id": "7b24b846-e4ca-4a0b-8958-439567cec44f",
     "migrations_dir": "../portfolio/migrations"
   }],
   "triggers": {"crons": ["0 7 * * *"]},
