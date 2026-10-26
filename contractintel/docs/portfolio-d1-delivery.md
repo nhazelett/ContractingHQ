@@ -2,6 +2,20 @@
 
 This pilot adds a stored source before the existing live loader. The live source adapter, request helper, progressive loader, browser cache and evidence normalizer are unchanged. The shared date defaults now use the current calendar date in America/New_York, including DST; monetary/date parsing and classification rules remain unchanged.
 
+## Current pilot result — upstream connection blocked
+
+The D1 schema, binding, public read path, source switch, Eastern date computations, authenticated endpoints, cron handler and verification tools are deployed. All 99 local/CI tests pass, and deployed assets match the working source. The live browser loader remains available.
+
+Database: `kthq-contractintel-portfolio` (`7b24b846-e4ca-4a0b-8958-439567cec44f`). Only directory labels have been seeded; no office award publication has completed.
+
+The actual FA4528 backfill failed before the first discovery page completed. Run `331ff3a9-7962-4089-be33-d3bf33ea1eac` started 2026-10-26T01:50:25.289Z and ended 2026-10-26T01:52:23.002Z with: `USAspending is temporarily unavailable. Retry shortly. Source HTTP 525 at /api/v2/search/spending_by_award/.` The invocation made four source attempts and retained its checkpoint. A separate request through the unchanged Worker proxy also timed out. An independent Node request using the same source adapter returned HTTP 200, 100 matching first-page candidates, and has-next=true. Those 100 candidates are not a total award count.
+
+Deployment/diagnostic workflow: https://github.com/nhazelett/ContractingHQ/actions/runs/40256069992
+
+No count comparison, under-two-second completed-office measurement, populated-table storage report, or all-office storage projection is claimed. These require an actual completed backfill; an empty awards table would give a misleading projection. No other office has been ingested.
+
+Proposed exception awaiting user approval under Hard Rule 4: run the same ingestion module in the existing trusted GitHub Actions runner, writing to the same D1 database, with nightly scheduling there. Keep the Cloudflare read path, fallback, page behavior, field mappings and FA4528 allowlist. This requires a transactional D1 REST adapter for the Node runner and a revised trigger arrangement; those changes have not been made. Do not weaken TLS verification or substitute another source to hide the failure.
+
 ## Files
 
 - `portfolio/migrations/0001.sql`: complete schema and query indexes, in a new separate database.
