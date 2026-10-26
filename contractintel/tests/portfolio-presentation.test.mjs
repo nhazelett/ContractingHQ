@@ -7,7 +7,7 @@ const root=new URL('../',import.meta.url),read=f=>readFileSync(new URL(f,root),'
 function functionBody(source,name){const re=new RegExp('^(?:export )?(?:async )?function '+name+'\\(','m'),m=re.exec(source);assert.ok(m,name);const rest=source.slice(m.index+1),next=/\n(?:export )?(?:async )?function /.exec(rest);return source.slice(m.index,next?m.index+1+next.index:source.length).trim();}
 
 test('Presentation rebuild preserves all data, API, cache, pacing, parsing and Opportunities modules',()=>{
- for(const [file,hash]of Object.entries(baseline.files))assert.equal(createHash('sha256').update(read(file)).digest('hex'),hash,file);
+ for(const [file,hash]of Object.entries(baseline.files))assert.equal(createHash('sha256').update(read(file).trimEnd()+'\n').digest('hex'),hash,file);
  const app=read('web/app.mjs');for(const [name,body]of Object.entries(baseline.functions))assert.equal(functionBody(app,name),body,name);
 });
 

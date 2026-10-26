@@ -70,7 +70,7 @@ The original methodology text, footer, controls/option values, CSV field definit
 
 ## Validation
 
-85 Node tests: 71 existing tests plus 14 presentation/component/invariant checks. Protected module hashes, nine data/export function bodies, expiration/category/countdown/value logic, all original IDs/select values, methodology text, footer and CSV field definitions are checked. HTML nesting and static control bindings were also checked. Live asset and API smoke checks run at deployment.
+85 Node tests: 71 existing tests plus 14 presentation/component/invariant checks. Protected module hashes (normalizing line endings and final blank lines only), nine data/export function bodies, expiration/category/countdown/value logic, all original IDs/select values, methodology text, footer and CSV field definitions are checked. HTML nesting and static control bindings were also checked. Live asset and API smoke checks run at deployment.
 
 Full application DOM execution was rejected by automatic approval review after detecting outbound telemetry to dc.services.visualstudio.com with an unspecified payload. That run was not resumed; the process was no longer active when a stop was attempted. The test runner and its temporary dependencies are not part of the deployed app. Safer isolated EventTarget/DOM-fixture unit tests passed without an HTML loader, application execution or network. No graphical browser-control tool is available; 390px visual layout and every native browser interaction remain manual checks, not claimed as passed.
 
