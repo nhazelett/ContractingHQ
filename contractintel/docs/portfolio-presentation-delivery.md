@@ -15,9 +15,9 @@ The original methodology text, footer, controls/option values, CSV field definit
 | 7 | Four dataset choices | Advanced → Dataset; active value displayed as a chip. |
 | 8 | Four history windows | Advanced → History; active value displayed as a chip. |
 | 9 | Current/potential end-date basis | Advanced → End dates; active value displayed as a chip. Source values unchanged. |
-| 10 | All four original headline cards and their subsidiary counts | One new 12-month headline; three original cards in More about this office; original 180/90-day card in 90- and 180-day breakdown. |
+| 10 | All four original headline cards and their subsidiary counts | One new 12-month headline; three original cards in the always-visible More about this office section; original 180/90-day card in 90- and 180-day breakdown. |
 | 11 | Next-ten ending-contract list and full-register link | My office → Contracts ending soon; contract number beneath each description; See all ending contracts and All contracts links below list. |
-| 12 | Set-aside mix | How this office buys → Who can bid; full view remains in secondary navigation. |
+| 12 | Set-aside mix | Always-visible How this office buys → Who can bid; full view remains in secondary navigation. |
 | 13 | Net obligations-by-FY chart, current year partial | How this office buys → Money spent by fiscal year; YTD flag retained. |
 | 14 | Fiscal comparison, four totals, independent loading controls | How this office buys → Fiscal-year comparison. Existing auto-start, Pause/Continue/Retry and math unchanged. |
 | 15 | Register search, filters, contract rows and pagination | All contracts; simple rows show contract numbers beneath descriptions, search above, filters in Advanced, pagination below. |
@@ -83,4 +83,4 @@ Full application DOM execution was rejected by automatic approval review after d
 5. Export a filtered dataset with more than 50 results; confirm all matches and original CSV columns are present.
 6. Pause/resume portfolio and fiscal scans independently; inspect partial counts, retry delays, missing-detail retry and Updating previews.
 7. Open contract details, older actions, full transaction and modification histories, source links, methodology and service status. Check the five original methodology sections and footer.
-8. Open More about this office, the 90/180-day breakdown and How this office buys; verify card click-throughs, category drill-down, fiscal totals and YTD chart. Opportunities should remain unchanged.
+8. Review the always-visible More about this office and How this office buys sections, and open the 90/180-day breakdown; verify card click-throughs, category drill-down, fiscal totals and YTD chart. Opportunities should remain unchanged.

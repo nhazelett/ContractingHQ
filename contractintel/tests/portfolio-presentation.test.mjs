@@ -17,9 +17,9 @@ test('Every original control ID, select option value, methodology paragraph and 
  assert.ok(html.includes(baseline.methodology),'verbatim methodology');assert.ok(html.includes('<footer>'+baseline.footer+'</footer>'),'verbatim footer');
 });
 
-test('The new Portfolio surface keeps the office gate, collapsed disclosures, drawers and direct anchors',()=>{
+test('The new Portfolio surface keeps the office gate, visible office sections, drawers and direct anchors',()=>{
  const html=read('web/index.html');for(const id of ['welcome-office-form','welcome-title','office-title','ending-year-count','advanced-drawer','register-options','detailed-layout'])assert.ok(html.includes('id="'+id+'"'),id);
- for(const id of ['office-more','office-buying','ending-breakdown'])assert.match(html,new RegExp('<details id="'+id+'"(?![^>]*\\bopen\\b)[^>]*>'));
+ for(const id of ['office-more','office-buying']){assert.match(html,new RegExp('<section id="'+id+'"[^>]*>'));assert.ok(!html.includes('<details id="'+id+'"'));}assert.match(html,/<details id="ending-breakdown"(?![^>]*\bopen\b)[^>]*>/);
  for(const hash of ['overview','expiring','register','set-asides'])assert.ok(html.includes('href="#'+hash+'"'));
  assert.ok(html.includes('data-office-ready="false"'));assert.ok(!html.includes('role="tabpanel"'),'linked sections use native navigation');
 });
