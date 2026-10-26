@@ -1,0 +1,53 @@
+name: ContractIntel R2 shadow updater
+on:
+  workflow_dispatch:
+    inputs:
+      office:
+        description: Single authorized office
+        default: FA4528
+        type: choice
+        options: [FA4528]
+      mode:
+        description: Refresh changed records or reconcile all records
+        default: nightly
+        type: choice
+        options: [nightly, backfill]
+  push:
+    branches: [codex/contractintel]
+    paths:
+      - contractintel/portfolio/r2/runner.mjs
+      - .github/workflows/contractintel-r2-update.yml
+permissions:
+  contents: read
+concurrency:
+  group: contractintel-portfolio-ingest
+  cancel-in-progress: false
+jobs:
+  shadow-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'push' && github.sha || 'codex/contractintel' }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify resume, publication safety, field preservation and CSV parity
+        run: node --test contractintel/portfolio/r2/ingest.test.mjs contractintel/benchmarks/r2/pilot.test.mjs
+      - name: Refresh the isolated FA4528 R2 copy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
+          PILOT_OFFICE: ${{ inputs.office || 'FA4528' }}
+          RUN_MODE: ${{ inputs.mode || 'nightly' }}
+          WRANGLER_SEND_METRICS: 'false'
+        run: node contractintel/portfolio/r2/runner.mjs
+      - name: Preserve measurements without source records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contractintel-fa4528-r2-update
+          retention-days: 1
+          overwrite: true
+          path: contractintel/portfolio/r2/out/fa4528-r2-update.json
+          if-no-files-found: ignore
