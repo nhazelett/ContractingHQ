@@ -18,3 +18,21 @@ for(const start of CONFIG.windows){
  }
 }
 console.log(JSON.stringify({fa4528_r2_live_smoke:{passed:true,windows:samples}}));
+
+const coverageReply=await fetch(origin+'/api/office/coverage/details');
+assert.equal(coverageReply.status,200);
+const coverage=await coverageReply.json();
+assert.deepEqual(coverage.offices.map(o=>o.office).sort(),Object.keys(CONFIG.r2Offices).sort());
+for(const office of coverage.offices){
+ assert.ok(['stored','importing','verifying','live'].includes(office.status));
+ assert.ok(office.storage&&office.storage.bytes>=0&&office.storage.objects>0,'Live storage measurement for '+office.office);
+ assert.ok(!JSON.stringify(office).includes('raw_json'),'No source records in coverage');
+}
+for(const asset of ['coverage.html','coverage.css','coverage.mjs']){
+ const response=await fetch(origin+'/'+asset);assert.equal(response.status,200,asset);
+ const body=await response.text();assert.ok(body.length>100,asset);
+ if(asset==='coverage.html')assert.ok(body.includes('id="office-cards"'));
+}
+const home=await(await fetch(origin+'/')).text();assert.ok(home.includes('href="./coverage.html"'));
+const forbidden=await fetch(origin+'/api/office/coverage/details?office=FA9999');assert.equal(forbidden.status,400);
+console.log(JSON.stringify({coverage_live_smoke:{passed:true,offices:coverage.offices.map(({office,status,phase,progress,storage,issue})=>({office,status,phase,progress,storage,issue}))}}));
