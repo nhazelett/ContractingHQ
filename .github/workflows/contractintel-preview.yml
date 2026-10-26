@@ -1,0 +1,141 @@
+name: ContractIntel preview update
+on:
+  workflow_dispatch:
+    inputs:
+      refresh_notices:
+        description: Refresh the SAM notice index within its existing request budget
+        type: boolean
+        default: false
+      verify_portfolio:
+        description: Independently compare the published FA4528 pilot against USAspending
+        type: boolean
+        default: false
+  push:
+    branches: [codex/contractintel]
+    paths:
+      - contractintel/web/**
+      - contractintel/worker/**
+      - contractintel/opportunities/**
+      - contractintel/tests/**
+      - contractintel/portfolio/**
+      - .github/workflows/contractintel-preview.yml
+permissions:
+  contents: read
+  actions: read
+jobs:
+  deploy:
+    concurrency:
+      group: contractintel-code-deployer
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      WRANGLER_SEND_METRICS: 'false'
+      CLOUDFLARE_ACCOUNT_ID: a7443e0102de587d778491ab08fd883f
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && 'codex/contractintel' || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate API and dashboard formatting
+        run: |
+          node --test contractintel/tests/*.test.mjs
+          node --check contractintel/web/app.mjs
+      - name: Publish validated opportunity index and update dashboard
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
+          SAM_API_KEY: ${{ secrets.SAM_API_KEY }}
+          FORCE_OPPORTUNITY_REFRESH: ${{ inputs.refresh_notices && '1' || '0' }}
+        run: |
+          node contractintel/opportunities/deploy.mjs prepare
+          node contractintel/opportunities/deploy.mjs refresh
+          node contractintel/opportunities/deploy.mjs warm
+          node contractintel/opportunities/deploy.mjs secret
+          node contractintel/portfolio/deploy.mjs
+          npx --yes wrangler@4.140.0 deploy --config contractintel/worker/wrangler.jsonc
+      - name: Verify live opportunity data, filters, pagination, exports and assets
+        run: node contractintel/opportunities/smoke.mjs
+      - name: Configure the Cron dispatch credential
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
+          DISPATCH_SECRET: ${{ secrets.CONTRACTINTEL_GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "$DISPATCH_SECRET" ]; then
+            echo 'Cron dispatch is awaiting repository secret CONTRACTINTEL_GITHUB_TOKEN. Runner backfill can still proceed.'
+          else
+            printf '%s' "$DISPATCH_SECRET" | npx --yes wrangler@4.140.0 secret put GITHUB_DISPATCH_TOKEN --config contractintel/worker/wrangler.jsonc
+            echo 'Cron dispatch credential installed in Cloudflare Worker secrets.'
+          fi
+  pilot:
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    concurrency:
+      group: contractintel-portfolio-ingest
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && 'codex/contractintel' || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Find a previous independent-source checkpoint
+        id: source_checkpoint
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner, repo} = context.repo;
+            const history = [];
+            for (const workflow_id of ['contractintel-preview.yml', 'contractintel-portfolio-ingest.yml']) {
+              const runs = await github.rest.actions.listWorkflowRuns({owner, repo, workflow_id, branch: 'codex/contractintel', per_page: 20});
+              history.push(...runs.data.workflow_runs);
+            }
+            history.sort((a, b) => b.id - a.id);
+            const ids = [...new Set([context.runId, ...history.map(run => run.id)])];
+            for (const run_id of ids) {
+              const result = await github.rest.actions.listWorkflowRunArtifacts({owner, repo, run_id});
+              if (result.data.artifacts.some(artifact => artifact.name === 'contractintel-fa4528-source' && !artifact.expired)) return String(run_id);
+            }
+            return '';
+          result-encoding: string
+      - name: Restore the source-only comparison checkpoint
+        if: steps.source_checkpoint.outputs.result != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: contractintel-fa4528-source
+          path: contractintel/portfolio
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.source_checkpoint.outputs.result }}
+      - name: Backfill FA4528 on the runner and verify counts and storage
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
+          RUN_MODE: backfill
+          RUN_ORIGIN: deployment
+          PERFORM_VERIFY: 'true'
+          VERIFY_RETAINED: ${{ (inputs.verify_portfolio || contains(github.event.head_commit.message, '[verify-fa4528]')) && 'true' || 'false' }}
+        run: node contractintel/portfolio/runner.mjs
+      - name: Preserve FA4528 verification report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contractintel-fa4528-verification
+          overwrite: true
+          retention-days: 1
+          path: |
+            contractintel/portfolio/fa4528-report.json
+            contractintel/portfolio/fa4528-storage.json
+          if-no-files-found: ignore
+      - name: Preserve source progress after a failed comparison
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contractintel-fa4528-source
+          path: contractintel/portfolio/fa4528-source-checkpoint.json
+          overwrite: true
+          retention-days: 1
+          if-no-files-found: ignore
