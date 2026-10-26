@@ -2,6 +2,14 @@
 
 This pilot adds a stored source before the existing live loader. The live source adapter, request helper, progressive loader, browser cache and evidence normalizer are unchanged. The shared date defaults now use the current calendar date in America/New_York, including DST; monetary/date parsing and classification rules remain unchanged.
 
+## Current pilot result
+
+FA4528 published **4,091 awards** at 2026-10-26T03:48:51Z. Only FA4528 award data is in scope. The first independent comparison stopped on a temporary USAspending failure; a targeted re-check is in progress. No parity or under-two-second claim is made yet.
+
+Measured database size is **44.789 MiB physical**. The 1,432-office linear scenario is **56.117 GB logical before overhead**, not a forecast. Award records dominate; history does not. See [the measured table report](fa4528-storage-report.md) and [machine-readable storage](fa4528-storage-measured.json). No raw JSON was deleted and expansion remains blocked pending parity and storage review.
+
+The latest deployment passed 112 JavaScript tests and 7 Python tests. Primary Cloudflare Cron dispatch still needs repository secret `CONTRACTINTEL_GITHUB_TOKEN` copied to encrypted Worker secret `GITHUB_DISPATCH_TOKEN`. The GitHub backup schedule does not replace that requirement.
+
 ## Prior Worker ingestion attempt — superseded by the runner design
 
 The D1 schema, binding, public read path, source switch, Eastern date computations, authenticated endpoints, cron handler and verification tools are deployed. All 99 local/CI tests pass, and deployed assets match the working source. The live browser loader remains available.
@@ -14,7 +22,7 @@ Deployment/diagnostic workflow: https://github.com/nhazelett/ContractingHQ/actio
 
 No count comparison, under-two-second completed-office measurement, populated-table storage report, or all-office storage projection is claimed. These require an actual completed backfill; an empty awards table would give a misleading projection. No other office has been ingested.
 
-The user approved this architecture change after a manual runner probe: run the same ingestion module in the existing trusted GitHub Actions runner, writing to the same D1 database, with nightly scheduling there. Keep the Cloudflare read path, fallback, page behavior, field mappings and FA4528 allowlist. The package now has a transactional D1 HTTP adapter and a Cron-to-workflow dispatch bridge. The original Worker-only failure is retained here as diagnostic history. Do not weaken TLS verification or substitute another source to hide the failure.
+The user approved this architecture change after a manual runner probe: run the same ingestion module in the existing trusted GitHub Actions runner, writing to the same D1 database, with Cloudflare Cron as the primary dispatcher and a GitHub schedule as backup. Keep the Cloudflare read path, fallback, page behavior, field mappings and FA4528 allowlist. The package now has a transactional D1 HTTP adapter and a Cron-to-workflow dispatch bridge. The original Worker-only failure is retained here as diagnostic history. Do not weaken TLS verification or substitute another source to hide the failure.
 
 ## Runner architecture and verified connectivity
 
@@ -79,7 +87,7 @@ Deployment preparation adds the actual new database UUID to this binding, preser
 }
 ```
 
-07:00 UTC is 03:00 Eastern during daylight saving time and 02:00 during standard time. Cron only ingests FA4528. Each ingestion-package chunk uses at most three minutes of wall time, with checkpointing before its request/query budgets; the runner resumes yielded chunks. The Worker Cron only dispatches the runner. Existing helper timeouts/retries retain their approved exemption.
+07:00 UTC is 03:00 Eastern during daylight saving time and 02:00 during standard time. Cron only dispatches ingestion for FA4528. Each ingestion-package chunk uses at most three minutes of wall time, with checkpointing before its request/query budgets; the runner resumes yielded chunks. The Worker Cron only dispatches the runner. Existing helper timeouts/retries retain their approved exemption.
 
 ## Exact manual setup commands
 
@@ -93,6 +101,7 @@ Add the returned binding UUID to `contractintel/worker/wrangler.jsonc`, then:
 
 ```powershell
 npx --yes wrangler@4.140.0 d1 execute kthq-contractintel-portfolio --remote --file contractintel/portfolio/migrations/0001.sql --config contractintel/worker/wrangler.jsonc
+npx --yes wrangler@4.140.0 d1 execute kthq-contractintel-portfolio --remote --file contractintel/portfolio/migrations/0002.sql --config contractintel/worker/wrangler.jsonc
 node contractintel/portfolio/deploy.mjs
 npx --yes wrangler@4.140.0 deploy --config contractintel/worker/wrangler.jsonc
 npx --yes wrangler@4.140.0 secret put PORTFOLIO_INGEST_SECRET --config contractintel/worker/wrangler.jsonc
@@ -114,7 +123,7 @@ Invoke-RestMethod -Uri 'https://kthq-contractintel.nickhazelett.workers.dev/api/
 node contractintel/portfolio/verify.mjs
 ```
 
-The verifier writes `portfolio/fa4528-report.json`. It independently scans source discovery, award details, initial transaction evidence and prior/current FY transactions. It never uses D1 rows to construct the live-side numbers. It reports mismatches rather than adjusting either result.
+The verifier writes `portfolio/fa4528-report.json`. It independently scans source discovery, every award summary and prior/current FY transactions. It uses the existing summary-only mode because dashboard counts do not depend on transaction-history details; raw/normalized evidence identity is validated separately at publication. It never uses D1 rows to construct the live-side numbers. It reports mismatches rather than adjusting either result.
 
 ## Completeness, costs and storage
 
@@ -198,7 +207,7 @@ All existing tabs, office controls, search/status/set-aside filters, date-mode/h
 9. Review `fa4528-report.json` for four-window count equality, fiscal equality, timing samples and table storage. Any difference blocks expansion.
 10. Test a source failure or disabled D1 binding in a local test environment; retain prior complete data and verify live fallback.
 
-The automated suite has 111 passing tests and uses Node SQLite and a minimal DOM fixture. No real-browser/mobile visual result is claimed by these tests.
+The automated suite has 112 passing JavaScript tests and 7 passing Python tests and uses Node SQLite and a minimal DOM fixture. No real-browser/mobile visual result is claimed by these tests.
 
 ## Pilot progress
 
@@ -213,3 +222,8 @@ Nightly runs copy unchanged published evidence into staging inside D1 with one i
 The independent count comparison uses the existing summary-only award-detail read: requested counts depend on award dates and availability, not modification history. It still fetches every source award summary independently and separately scans fiscal transactions. Stored modification/history identity is protected by publication validation. This removes redundant history requests from count verification without changing pacing or any count rules. Classification uses the New York date at comparison time; the report separately records the fiscal scan cutoff date.
 
 The source-request reserve applies between complete award operations, not between the two requests inside an award read. The hard request cap aborts through the shared source signal and preserves the checkpoint. A regression test covers an odd number of discovery requests at this boundary.
+
+
+Read snapshots use a transactional batch of publication metadata, individual award rows and fiscal totals. The result shape is unchanged. Avoiding a single `json_group_array` scalar prevents a large portfolio from exceeding D1's 2,000,000-byte per-value limit. A regression test serves five large records whose combined JSON exceeds that limit while each source record remains below it.
+
+A completed publication is retained on ordinary code deployments. To explicitly rerun the independent comparison without re-ingesting it, run the preview workflow with `verify_portfolio=true` (or commit a requested verification with `[verify-fa4528]`). `PERFORM_VERIFY=true VERIFY_RETAINED=true RUN_ORIGIN=deployment RUN_MODE=backfill node contractintel/portfolio/runner.mjs` performs the same targeted check with an authenticated local environment. Every stored window is read before the long live comparison so a broken API fails early. Temporary source failures fail verification visibly and do not alter the published office.
