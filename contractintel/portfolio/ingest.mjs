@@ -7,6 +7,7 @@ export const CONFIG=Object.freeze({
  maxFiscalPages:100,stageWriteBatch:20,directorySeedBatch:10,maxBackfillChunks:40,secretReadyAttempts:10,secretWaitMs:2000,d1HttpTimeoutMs:60000,d1IntervalMs:300,dispatchTimeoutMs:15000,dispatchLeaseMs:120000,
  githubRepository:'nhazelett/ContractingHQ',githubWorkflow:'contractintel-portfolio-ingest.yml',githubRef:'codex/contractintel',backupCron:'0 10 * * *',runnerJobMinutes:360,maxStorageBytes:268435456,maxRunRowsWritten:100000,
  millisecondsPerDay:86400000,reconciliationDays:30,expiryWindows:[90,180,365],recompeteDays:365,
+ verificationCheckpointMs:21600000,verificationMaxCheckpointBytes:16777216,
  schemaVersion:1,timeZone:'America/New_York',cron:'0 7 * * *',
  modes:['backfill','nightly'],storageProjectionOffices:1432
 });

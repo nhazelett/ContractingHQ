@@ -91,3 +91,19 @@ test('An odd discovery request count cannot interrupt an award pair at the soft 
  assert.equal(first.status,'yielded');assert.equal(first.sourceRequests,7);assert.ok(first.sourceRequests<=8);
  assert.equal((await runIngest(env,{...options,mode:'nightly'})).status,'completed');
 });
+
+test('Interrupted independent verification resumes source-only award reads without changing live metrics or pacing helpers',async()=>{
+ const x=sqlite();await seedOffices(x.db,[office]);const upstream=source();await runIngest({PORTFOLIO_DB:x.db,OFFICES:[office]},{mode:'backfill',now:fixed,fetcher:upstream.fetcher,config:{sourceIntervalMs:0}});
+ let saved,reads=0;const failing=async(url,options)=>{if(new URL(url).pathname.includes('/awards/')&&++reads===3)return new Response('',{status:500});return upstream.fetcher(url,options);};
+ const options={directory:[office],today:'2026-10-25',now:fixed,publicationKey:'publication-a',onCheckpoint:async work=>{saved=JSON.parse(JSON.stringify(work));},getSnapshot:start=>officeSnapshot(x.db,'FA4528',start,{now:fixed})};
+ await assert.rejects(compareOffice({...options,sourceFetch:failing}),/temporarily unavailable/);assert.equal(saved.awards.length,2);
+ upstream.calls.length=0;const report=await compareOffice({...options,checkpoint:saved,sourceFetch:upstream.fetcher});assert.equal(report.match,true);assert.equal(report.resumed,true);assert.equal(upstream.calls.filter(c=>c.path.includes('/awards/')).length,3);assert.equal(upstream.calls.filter(c=>c.path.includes('spending_by_award')).length,0);assert.equal(report.windows.reduce((n,w)=>n+w.metrics.length,0),96);
+ const reset=JSON.parse(JSON.stringify(saved));upstream.calls.length=0;await compareOffice({...options,publicationKey:'publication-b',checkpoint:reset,sourceFetch:upstream.fetcher});assert.equal(upstream.calls.filter(c=>c.path.includes('/awards/')).length,5);
+});
+test('A partial fiscal month is read again once after resume, without duplicate net obligations',async()=>{
+ const x=sqlite();await seedOffices(x.db,[office]);const upstream=source();await runIngest({PORTFOLIO_DB:x.db,OFFICES:[office]},{mode:'backfill',now:fixed,fetcher:upstream.fetcher,config:{sourceIntervalMs:0}});
+ let saved,months=0;const failing=async(url,options)=>{if(new URL(url).pathname.includes('spending_by_transaction')&&++months===2)return new Response('',{status:500});return upstream.fetcher(url,options);};
+ const options={directory:[office],today:'2026-10-25',now:fixed,onCheckpoint:async work=>{saved=JSON.parse(JSON.stringify(work));},getSnapshot:start=>officeSnapshot(x.db,'FA4528',start,{now:fixed})};
+ await assert.rejects(compareOffice({...options,sourceFetch:failing}));assert.equal(saved.fiscal_index,1);assert.equal(saved.fiscal_rows.length,1);
+ upstream.calls.length=0;const report=await compareOffice({...options,checkpoint:saved,sourceFetch:upstream.fetcher});assert.equal(report.match,true);assert.equal(upstream.calls.filter(c=>c.path.includes('/awards/')).length,0);assert.equal(upstream.calls.filter(c=>c.path.includes('spending_by_transaction')).length,12);
+});
