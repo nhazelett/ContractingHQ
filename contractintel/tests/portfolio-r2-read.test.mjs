@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {runIngest,seedOffices,CONFIG} from '../portfolio/ingest.mjs';
+import {sqlite,source,office,fixed} from './fixtures/portfolio-d1.mjs';
+import {exportOffice} from '../benchmarks/r2/export.mjs';
+import {buildBundle,bytes,compatible,canonical} from '../portfolio/r2/format.mjs';
+import {readR2} from '../portfolio/r2/read.mjs';
+import {officeSnapshot,storedAward} from '../portfolio/read.mjs';
+import {portfolioRoute} from '../portfolio/http.mjs';
+test('Published R2 returns every existing page field and evidence; corruption and missing copies fall back to D1',async()=>{
+ const {db}=sqlite(),upstream=source();await seedOffices(db,[office]);await runIngest({PORTFOLIO_DB:db,OFFICES:[office]},{mode:'backfill',now:fixed,fetcher:upstream.fetcher,config:{sourceIntervalMs:0}});
+ const tables=await exportOffice(db),bundle=await buildBundle(tables,{now:fixed}),objects=new Map(bundle.objects.map(object=>[object.key,object.bytes]));objects.set(CONFIG.r2Pilot.prefix+'/current.json',bytes(bundle.manifest));
+ const bucket={get:async key=>{const body=objects.get(key);return body?{json:async()=>JSON.parse(new TextDecoder().decode(body)),arrayBuffer:async()=>body.slice().buffer}:null;}};
+ for(const start of CONFIG.windows)assert.equal(canonical(compatible(await readR2(bucket,office.code,{start,now:fixed}))),canonical(compatible(await officeSnapshot(db,office.code,start,{now:fixed}))));
+ const id=tables.awards[0].generated_unique_award_id;assert.equal(canonical(compatible(await readR2(bucket,office.code,{id}))),canonical(compatible(await storedAward(db,office.code,id))));
+ await assert.rejects(readR2(bucket,office.code,{id,page:2}),/unavailable/);
+ await assert.rejects(readR2(bucket,'FA4800'),/unavailable/);
+ objects.delete(bundle.manifest.snapshots[CONFIG.windows[1]].key);
+ const fallback=await portfolioRoute(new Request('https://site/api/office/FA4528'),{PORTFOLIO_R2:bucket,PORTFOLIO_DB:db});assert.equal(fallback.source,'d1');
+});

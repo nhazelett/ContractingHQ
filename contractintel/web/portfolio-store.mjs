@@ -4,7 +4,7 @@ export async function tryOfficeSnapshot({office,start,signal,fetcher=fetch,base=
   const url=new URL(base+'/api/office/'+encodeURIComponent(office),origin);url.searchParams.set('start',start);
   const response=await fetcher(url,{cache:'no-store',signal:signal?AbortSignal.any([signal,AbortSignal.timeout(4000)]):AbortSignal.timeout(4000)});
   if(!response.ok)return null;const data=await response.json();
-  if(data.office!==office||data.start!==start||data.source!=='d1'||data.complete!==true||!Array.isArray(data.records)||!Array.isArray(data.fiscal_totals)||data.records.some(r=>!r.award_id?.startsWith('CONT_AWD_'+office)||r.details_pending)||data.fiscal_totals.length!==2||data.fiscal_totals.some(t=>!Array.isArray(t.award_ids)||t.award_ids.length!==t.count))return null;
+  if(data.office!==office||data.start!==start||!['d1','r2'].includes(data.source)||data.complete!==true||!Array.isArray(data.records)||!Array.isArray(data.fiscal_totals)||data.records.some(r=>!r.award_id?.startsWith('CONT_AWD_'+office)||r.details_pending)||data.fiscal_totals.length!==2||data.fiscal_totals.some(t=>!Array.isArray(t.award_ids)||t.award_ids.length!==t.count))return null;
   return data;
  }catch{return null;}
 }
