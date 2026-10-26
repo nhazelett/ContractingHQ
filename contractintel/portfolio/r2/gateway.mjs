@@ -1,14 +1,18 @@
 // Short-lived, authenticated R2 gateway for a GitHub runner. No source fetches,
 // D1 binding, public bucket or scheduled task. Cleanup is limited to tracked,
 // unreferenced objects outside both retained publications and the grace period.
-import {CONFIG} from '../ingest.mjs';
-import {PILOT,bytes,digest,validKey,validateManifest,unpack,limitedBody,PilotError,canonical} from './format.mjs';
-const S=CONFIG.r2Nightly,CURRENT=PILOT.prefix+'/current.json';
-const must=(condition,message,status=409)=>{if(!condition)throw new PilotError(message,status);};
+import {CONFIG,r2Profile} from '../ingest.mjs';
+import {createFormat} from './format.mjs';
+
+
 async function authenticated(request,secret){
- if(!secret)return false;const a=await digest(request.headers.get('Authorization')||''),b=await digest('Bearer '+secret);let difference=0;for(let i=0;i<a.length;i++)difference|=a.charCodeAt(i)^b.charCodeAt(i);return difference===0;
+ if(!secret)return false;const {digest}=createFormat(CONFIG.r2Pilot);const a=await digest(request.headers.get('Authorization')||''),b=await digest('Bearer '+secret);let difference=0;for(let i=0;i<a.length;i++)difference|=a.charCodeAt(i)^b.charCodeAt(i);return difference===0;
 }
-export function createGateway(){return {async fetch(request,env){
+export function createGateway(profile=r2Profile(CONFIG.r2Pilot.office)){
+const {PILOT,bytes,digest,validKey,validateManifest,unpack,limitedBody,PilotError,canonical}=createFormat(profile);
+const S={...CONFIG.r2Nightly,...profile,checkpointKey:profile.prefix+'/checkpoint.json.gz',ledgerKey:profile.prefix+'/budget.json',verificationKey:profile.prefix+'/verification.json.gz'},CURRENT=profile.prefix+'/current.json';
+const must=(condition,message,status=409)=>{if(!condition)throw new PilotError(message,status);};
+return {async fetch(request,env){
  const stats={reads:0,writes:0},reply=(data,status=200,headers={})=>new Response(data instanceof Uint8Array?data:typeof data==='string'?data:JSON.stringify(data),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','X-R2-Reads':String(stats.reads),'X-R2-Writes':String(stats.writes),...headers}});
  const get=async(bucket,key)=>{stats.reads++;return bucket.get(key);},head=async(bucket,key)=>{stats.reads++;return bucket.head(key);};
  const put=async(key,value,options)=>{stats.writes++;return env.TARGET.put(key,value,options);};
@@ -17,8 +21,8 @@ export function createGateway(){return {async fetch(request,env){
   const url=new URL(request.url);if(url.pathname==='/health'&&request.method==='GET')return reply({office:S.office,production:false});
   must(url.pathname==='/object','Unknown gateway endpoint.',404);
   must([...url.searchParams.keys()].every(key=>['key','area'].includes(key)),'Unexpected query.',400);
-  const key=url.searchParams.get('key'),area=url.searchParams.get('area')||'target',isCurrent=key===CURRENT,isCheckpoint=key===S.checkpointKey,isLedger=key===S.ledgerKey;
-  must(['baseline','target'].includes(area)&&(validKey(key)||isCheckpoint||isLedger),'Only owned FA4528 keys are available.',400);
+  const key=url.searchParams.get('key'),area=url.searchParams.get('area')||'target',isCurrent=key===CURRENT,isCheckpoint=key===S.checkpointKey,isLedger=key===S.ledgerKey,isVerification=key===S.verificationKey;
+  must(['baseline','target'].includes(area)&&(validKey(key)||isCheckpoint||isLedger||isVerification),'Only owned '+PILOT.office+' keys are available.',400);
   must(area==='target'||validKey(key),'Baseline controls are not accessible.',400);
   const bucket=area==='baseline'?env.BASELINE:env.TARGET;
   if(request.method==='GET'||request.method==='HEAD'){
@@ -32,7 +36,7 @@ export function createGateway(){return {async fetch(request,env){
    const current=validateManifest(await pointer.json());must(current.previous_manifest,'Previous publication archive required before cleanup.');
    const archived=await get(env.TARGET,current.previous_manifest.key);must(archived,'Previous publication archive is missing.');
    const previous=validateManifest(await unpack(new Uint8Array(await archived.arrayBuffer()),current.previous_manifest.sha256));must(previous.version===current.retained_versions[1],'Previous version identity differs.');
-   const protectedKeys=new Set([CURRENT,current.previous_manifest.key,...current.objects.map(o=>o.key),...previous.objects.map(o=>o.key)]);
+   const protectedKeys=new Set([CURRENT,S.verificationKey,current.previous_manifest.key,...current.objects.map(o=>o.key),...previous.objects.map(o=>o.key)]);
    must(!protectedKeys.has(key),'Current or previous publication object is protected.');
    const ledgerObject=await get(env.TARGET,S.ledgerKey),ledger=await ledgerObject.json();must(ledger.keys[key],'Cleanup refuses untracked objects.');
    const object=await head(env.TARGET,key);
@@ -44,12 +48,13 @@ export function createGateway(){return {async fetch(request,env){
   }
   must(request.method==='PUT'&&area==='target'&&!isLedger,'Gateway method is not allowed.',405);
   must(request.headers.has('If-Match')||request.headers.get('If-None-Match')==='*','Conditional write required.',428);
-  const cap=isCurrent?S.maxManifestBytes:isCheckpoint?S.maxCheckpointBytes:PILOT.maxObjectBytes;
+  const cap=isCurrent?S.maxManifestBytes:(isCheckpoint||isVerification)?S.maxCheckpointBytes:PILOT.maxObjectBytes;
   const body=await limitedBody(request.body,cap),sha=await digest(body);
   must(request.headers.get('X-Object-SHA256')===sha,'Upload checksum mismatch.',400);
-  if(!isCurrent&&!isCheckpoint)must(key.endsWith('-'+sha+'.json.gz'),'Immutable key checksum differs.',400);
+  if(!isCurrent&&!isCheckpoint&&!isVerification)must(key.endsWith('-'+sha+'.json.gz'),'Immutable key checksum differs.',400);
   const existing=await head(env.TARGET,key);
-  if(!isCurrent&&!isCheckpoint&&existing){must(existing.customMetadata?.sha256===sha&&existing.size===body.length,'Immutable evidence differs.');return reply({unchanged:true},200,{ETag:existing.httpEtag||'"'+existing.etag+'"'});}
+  if(!isCurrent&&!isCheckpoint&&!isVerification&&existing){must(existing.customMetadata?.sha256===sha&&existing.size===body.length,'Immutable evidence differs.');return reply({unchanged:true},200,{ETag:existing.httpEtag||'"'+existing.etag+'"'});}
+  if(isVerification){const state=await unpack(body,null,S.maxCheckpointJSONBytes);must(state.office===S.office&&state.version===CONFIG.schemaVersion&&typeof state.publication_key==='string','Invalid independent-source checkpoint.');}
   if(isCheckpoint){const state=await unpack(body,null,S.maxCheckpointJSONBytes);must(state.office===S.office&&state.format_version===S.formatVersion&&typeof state.work_id==='string','Invalid checkpoint.');}
   if(isCurrent){
    const manifest=validateManifest(JSON.parse(new TextDecoder().decode(body))),prior=existing?validateManifest(await (await get(env.TARGET,key)).json()):null;
@@ -69,7 +74,7 @@ export function createGateway(){return {async fetch(request,env){
   must(ledger.office===S.office,'Invalid storage ledger.');
   const reservation=isCurrent?S.maxManifestBytes:isCheckpoint?S.maxCheckpointBytes:body.length;
   if(!ledger.keys[key]){
-   ledger.keys[key]={bytes:reservation,sha:isCurrent||isCheckpoint?null:sha};
+   ledger.keys[key]={bytes:reservation,sha:isCurrent||isCheckpoint||isVerification?null:sha};
    const used=Object.values(ledger.keys).reduce((sum,entry)=>sum+entry.bytes,0)+S.maxLedgerBytes;
    must(used<=S.maxBucketBytes&&Object.keys(ledger.keys).length+1<=S.maxBucketObjects,'Shadow storage guard reached; publication retained.',413);
    const encoded=bytes(ledger);must(encoded.length<=S.maxLedgerBytes,'Storage ledger budget reached.',413);

@@ -1,5 +1,6 @@
 // All NEW ingestion limits live here. Existing source helper internals are intentionally unchanged.
 export const CONFIG=Object.freeze({
+ r2Offices:Object.freeze({FA4528:Object.freeze({bucket:'kthq-contractintel-r2-fa4528-nightly',binding:'PORTFOLIO_R2',readEnabled:true,seedVerifiedPilot:true}),FA4800:Object.freeze({bucket:'kthq-contractintel-r2-fa4800',binding:'PORTFOLIO_R2_FA4800',readEnabled:false,seedVerifiedPilot:false})}),
  offices:['FA4528'],windows:['2007-10-01','2021-10-01','2024-10-01','2025-10-01'],
  awardTypes:['A','B','C','D'],lookbackDays:14,searchBatch:100,historyBatch:200,
  sourceIntervalMs:400,maxRuntimeMs:180000,shutdownReserveMs:15000,leaseMs:300000,
@@ -19,11 +20,13 @@ export const CONFIG=Object.freeze({
   checkpointKey:'pilot/FA4528/checkpoint.json.gz',ledgerKey:'pilot/FA4528/budget.json',
   maxBucketBytes:33554432,maxBucketObjects:160,maxCheckpointBytes:8388608,maxCheckpointJSONBytes:67108864,
   maxUploadBytesPerJob:33554432,maxHTTPRequestsPerJob:1600,maxSourceRequestsPerJob:720,
-  maxChunksPerJob:4,checkpointEveryAwards:10,checkpointEverySearchPages:5,checkpointEveryFiscalPages:5,maxChangedPages:1000,maxCandidates:100000,
+  maxChunksPerJob:4,checkpointEveryAwards:10,backfillCheckpointEveryAwards:50,verificationSaveEvery:50,checkpointEverySearchPages:5,checkpointEveryFiscalPages:5,maxChangedPages:1000,maxCandidates:100000,
   runnerMinutes:30,artifactDays:1,maxAuditRuns:128,retentionGraceMs:86400000,maxManifestBytes:262144,maxLedgerBytes:65536,formatVersion:1}),
  schemaVersion:1,timeZone:'America/New_York',cron:'0 7 * * *',
  modes:['backfill','nightly'],storageProjectionOffices:1432
 });
+export function r2Profile(office){const profile=CONFIG.r2Offices[office];if(!profile)throw new Error('Office is not in the bounded R2 rollout.');return {...CONFIG.r2Pilot,...profile,office,prefix:'pilot/'+office};}
+
 import {resolve,cents,validAwardID} from '../web/source.mjs';
 import {createSourceFetch} from '../web/source-requests.mjs';
 import {incorporatePortfolio} from '../web/portfolio-progress.mjs';

@@ -18,7 +18,9 @@ try{
  await seedOffices(db,JSON.parse(await fs.readFile(new URL('worker/offices.json',root),'utf8')));
  const configPath=new URL('worker/wrangler.jsonc',root),config=JSON.parse(await fs.readFile(configPath,'utf8'));
  config.d1_databases=[...(config.d1_databases||[]).filter(b=>b.binding!=='PORTFOLIO_DB'),{binding:'PORTFOLIO_DB',database_name:name,database_id:id,migrations_dir:'../portfolio/migrations'}];
- config.r2_buckets=[...(config.r2_buckets||[]).filter(b=>b.binding!=='PORTFOLIO_R2'),{binding:'PORTFOLIO_R2',bucket_name:CONFIG.r2Nightly.bucket}];
+ const profiles=Object.values(CONFIG.r2Offices);
+ for(const profile of profiles){try{await cf('/r2/buckets/'+profile.bucket);}catch(error){if(!error.message.includes('HTTP 404'))throw error;await cf('/r2/buckets','POST',{name:profile.bucket});}}
+ config.r2_buckets=[...(config.r2_buckets||[]).filter(b=>!profiles.some(profile=>profile.binding===b.binding)),...profiles.map(profile=>({binding:profile.binding,bucket_name:profile.bucket}))];
  config.triggers={...(config.triggers||{}),crons:[CONFIG.cron]};config.limits={...(config.limits||{}),cpu_ms:30000};
  await fs.writeFile(configPath,JSON.stringify(config,null,2)+'\n');
  console.log(JSON.stringify({portfolio_prepared:true,database_name:name,database_id:id,directory_offices:1432,pilot_offices:CONFIG.offices,cron:CONFIG.cron}));

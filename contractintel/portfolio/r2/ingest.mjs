@@ -1,17 +1,19 @@
 // Resumable FA4528 R2 ingest. Atomic publication; no D1 award writes.
-import {CONFIG,documentFor} from '../ingest.mjs';
+import {CONFIG,documentFor,r2Profile} from '../ingest.mjs';
 import {resolve,validAwardID} from '../../web/source.mjs';
 import {createSourceFetch} from '../../web/source-requests.mjs';
 import {currentDate} from '../../web/calendar.mjs';
 import {fiscalMonths,fiscalTotals,fiscalYear} from '../../web/overview.mjs';
-import {PILOT,bytes,pack,unpack,canonical,checkTables,buildBundle,restoreBundle,validateManifest,digest} from './format.mjs';
+import {createFormat} from './format.mjs';
 
-export const SETTINGS=CONFIG.r2Nightly;
-export const CURRENT=PILOT.prefix+'/current.json';
+export function createOfficeIngest(profile){
+const {PILOT,bytes,pack,unpack,canonical,checkTables,buildBundle,restoreBundle,validateManifest,digest}=createFormat(profile);
+const SETTINGS={...CONFIG.r2Nightly,...profile,checkpointKey:profile.prefix+'/checkpoint.json.gz',ledgerKey:profile.prefix+'/budget.json',verificationKey:profile.prefix+'/verification.json.gz',workerPrefix:'kthq-ci-r2-'+profile.office.toLowerCase()};
+const CURRENT=PILOT.prefix+'/current.json';
 class BudgetReached extends Error {}
 const must=(value,message)=>{if(!value)throw new Error(message);};
 const compare=(a,b)=>a<b?-1:a>b?1:0;
-export async function loadPublication(store){
+async function loadPublication(store){
  const entry=await store.get(CURRENT);if(!entry)return null;
  const manifest=validateManifest(JSON.parse(new TextDecoder().decode(entry.bytes)));
  let lookup;
@@ -29,7 +31,7 @@ async function saveCheckpoint(store,state,etag){
  const result=await store.put(SETTINGS.checkpointKey,object.bytes,{expected:etag,sha:object.sha256});return result.etag;
 }
 
-export function candidateTables(base,state,{now=Date.now,sourceRequests=state.source_requests}={}){
+function candidateTables(base,state,{now=Date.now,sourceRequests=state.source_requests}={}){
  must(state.phase==='publish'&&state.hydrate_index===Object.keys(state.candidates).length,'Award pass is incomplete.');
  must(state.month===state.months.length&&canonical(state.months)===canonical(fiscalMonths(state.today)),'Fiscal month coverage is incomplete.');
  must(CONFIG.windows.every(start=>Array.isArray(state.windows[start])),'A history window is incomplete.');
@@ -63,19 +65,19 @@ export function candidateTables(base,state,{now=Date.now,sourceRequests=state.so
  const fiscal=totals.map(total=>({office_dodaac:SETTINGS.office,fiscal_year:total.year,net_obligation_cents:String(total.cents),distinct_contract_count:total.awards.size,transaction_count:rows.filter(row=>fiscalYear(row.date)===total.year).length,missing_amount_count:total.missing,coverage_start:(total.year-1)+'-10-01',coverage_end:total.year===fiscalYear(state.today)?state.today:total.year+'-09-30',complete:1,award_ids_json:JSON.stringify([...total.awards].sort()),published_run_id:id}));
  const run={id,mode:state.mode,started_at:state.started_at,ended_at:stamp,status:'completed',offices_touched:1,rows_written:0,rows_read:0,source_requests:sourceRequests,error_count:0,errors_json:'[]',config_json:JSON.stringify({backend:'r2-shadow',...CONFIG}),resume_from_run_id:pub.published_run_id};
  const tables={...base,awards,award_windows:windows,award_history_pages:history.sort((a,b)=>compare(a.generated_unique_award_id,b.generated_unique_award_id)||a.page-b.page),fiscal_totals:fiscal,
-  office_publications:[{...pub,published_run_id:id,coverage_end:state.today,award_count:awards.length,published_at:stamp}],ingest_runs:[...base.ingest_runs,run]};
+  office_publications:[{...pub,published_run_id:id,coverage_end:state.today,award_count:awards.length,fiscal_complete:1,published_at:stamp}],ingest_runs:[...base.ingest_runs,run]};
  const lastFull=tables.ingest_runs.filter(row=>row.mode==='backfill'&&row.status==='completed').sort((a,b)=>compare(b.started_at,a.started_at))[0];
  const referenced=new Set([id,lastFull?.id,...awards.map(row=>row.published_run_id),...history.map(row=>row.published_run_id)]);
  tables.ingest_runs=tables.ingest_runs.filter(row=>referenced.has(row.id)).sort((a,b)=>compare(a.id,b.id));
  checkTables(tables);return tables;
 }
 
-export async function publishCandidate(store,base,state,tables,{now=Date.now,beforePublish=async()=>{}}={}){
- const current=await store.get(CURRENT);must(current?.etag===base.etag,'Another publication won; checkpoint retained for review.');
+async function publishCandidate(store,base,state,tables,{now=Date.now,beforePublish=async()=>{}}={}){
+ const current=await store.get(CURRENT);must((current?.etag||null)===base.etag,'Another publication won; checkpoint retained for review.');
  const bundle=await buildBundle(tables,{now,previousLookup:base.lookup});
- const archive=await pack(base.manifest),archiveKey=PILOT.prefix+'/objects/manifest-'+base.manifest.version+'-'+archive.sha256+'.json.gz';
+ if(base.manifest.version){const archive=await pack(base.manifest),archiveKey=PILOT.prefix+'/objects/manifest-'+base.manifest.version+'-'+archive.sha256+'.json.gz';
  if(!await store.head(archiveKey))await store.put(archiveKey,archive.bytes,{expected:null,sha:archive.sha256});
- bundle.manifest.previous_manifest={key:archiveKey,sha256:archive.sha256,compressed_bytes:archive.bytes.length,raw_bytes:archive.rawBytes};
+ bundle.manifest.previous_manifest={key:archiveKey,sha256:archive.sha256,compressed_bytes:archive.bytes.length,raw_bytes:archive.rawBytes};}
  bundle.manifest.retained_versions=[...new Set([bundle.manifest.version,...base.manifest.retained_versions])].slice(0,PILOT.maxStoredVersions);
  let uploaded=0,reused=0;
  for(const object of bundle.objects){
@@ -100,11 +102,15 @@ export async function publishCandidate(store,base,state,tables,{now=Date.now,bef
  return {publication_id:state.work_id,version:bundle.manifest.version,uploaded_objects:uploaded,reused_objects:reused,compressed_bytes:bundle.compressed_bytes,raw_round_trip_match:true};
 }
 
-export async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,now=Date.now,config:overrides={},beforePublish,force=false}={}){
+async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,now=Date.now,config:overrides={},beforePublish,force=false}={}){
  must(CONFIG.modes.includes(mode),'Invalid ingest mode.');
- must(directory.some(office=>office.code===SETTINGS.office),'FA4528 directory entry is missing.');
- const config={...CONFIG,...overrides};must(config.offices.length===1&&config.offices[0]===SETTINGS.office,'R2 pilot only permits FA4528.');
- const base=await loadPublication(store);must(base,'Seed the private R2 shadow from the verified pilot first.');
+ must(directory.some(office=>office.code===SETTINGS.office),'Selected office directory entry is missing.');
+ const config={...CONFIG,offices:[SETTINGS.office],...overrides};must(config.offices.length===1&&config.offices[0]===SETTINGS.office,'Cross-office ingestion is not permitted.');
+ let base=await loadPublication(store);
+ if(!base){
+  const entry=directory.find(row=>row.code===SETTINGS.office);
+  base={etag:null,manifest:{version:null,retained_versions:[],source_publication_id:null},tables:{offices:[{dodaac:entry.code,name:entry.name,reported_name:entry.reported_name||null,department:entry.department||null,parent_dodaac:null,command:entry.command||null,base:entry.base||null,location:entry.location||null,confidence:entry.confidence||null,raw_json:JSON.stringify(entry)}],awards:[],award_windows:[],award_history_pages:[],fiscal_totals:[],ingest_runs:[],office_publications:[{office_dodaac:entry.code,published_run_id:null,coverage_start:CONFIG.windows[0],coverage_end:null,windows_json:JSON.stringify(CONFIG.windows),award_count:0,fiscal_complete:0,schema_version:CONFIG.schemaVersion,published_at:null}]}};
+ }
  let saved=await store.get(SETTINGS.checkpointKey),etag=saved?.etag||null,state=saved?await unpack(saved.bytes,null,SETTINGS.maxCheckpointJSONBytes):null;
  if(state){
   must(state.format_version===SETTINGS.formatVersion&&state.office===SETTINGS.office,'Invalid checkpoint identity.');
@@ -186,7 +192,7 @@ export async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,n
      state.hydrated_since_checkpoint=(state.hydrated_since_checkpoint||0)+1;
     }
     state.hydrate_index++;
-    if(state.hydrated_since_checkpoint>=SETTINGS.checkpointEveryAwards){state.hydrated_since_checkpoint=0;await persist();}
+    if(state.hydrated_since_checkpoint>=(state.mode==='backfill'?SETTINGS.backfillCheckpointEveryAwards:SETTINGS.checkpointEveryAwards)){state.hydrated_since_checkpoint=0;await persist();}
    }else if(state.phase==='fiscal'){
     if(state.month===state.months.length){state.phase='publish';state.publishing_at=new Date(now()).toISOString();await persist();continue;}
     const month=state.months[state.month],data=await request('fiscal',{office:SETTINGS.office,...month,page:state.fiscal_page});
@@ -210,3 +216,7 @@ export async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,n
  const summary={office:SETTINGS.office,mode:state.mode,phase:state.phase,work_id:state.work_id,source_requests:requests.count,total_source_requests:state.source_requests,discovered_awards:Object.keys(state.candidates).length,hydrated_changes:Object.keys(state.documents).length,...result};
  if(error&&result.status==='failed')throw Object.assign(new Error(error.message),{result:summary});return summary;
 }
+
+return {SETTINGS,CURRENT,loadPublication,candidateTables,publishCandidate,runR2Chunk};
+}
+export const {SETTINGS,CURRENT,loadPublication,candidateTables,publishCandidate,runR2Chunk}=createOfficeIngest(r2Profile(CONFIG.r2Pilot.office));

@@ -12,7 +12,7 @@ export function counts(rows,today){
  result.recompete_candidates=expiryRows(active,'potential',0,CONFIG.recompeteDays,today).length;return result;
 }
 export async function compareOffice({office='FA4528',directory,getSnapshot,fetcher=fetch,sourceFetch,onProgress=()=>{},today,checkpoint,onCheckpoint=async()=>{},publicationKey='',now=Date.now}){
- if(!CONFIG.offices.includes(office))throw new Error('Comparison is restricted to FA4528.');
+ if(!CONFIG.offices.includes(office)&&!CONFIG.r2Offices[office])throw new Error('Comparison is restricted to configured offices.');
  const sourceDay=new Date(now()).toISOString().slice(0,10),fiscalToday=today||currentDate(now());
  const reusable=checkpoint?.version===CONFIG.schemaVersion&&checkpoint.office===office&&checkpoint.publication_key===publicationKey&&checkpoint.source_day===sourceDay&&checkpoint.fiscal_through===fiscalToday&&now()-Date.parse(checkpoint.started_at)>=0&&now()-Date.parse(checkpoint.started_at)<CONFIG.verificationCheckpointMs;
  const work=reusable?checkpoint:{version:CONFIG.schemaVersion,office,publication_key:publicationKey,source_day:sourceDay,fiscal_through:fiscalToday,started_at:new Date(now()).toISOString(),windows:[],candidates:[],awards:[],fiscal_rows:[],fiscal_index:0,requests:0};

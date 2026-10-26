@@ -20,7 +20,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: contractintel-r2-shadow-ingest
+  group: contractintel-r2-FA4528
   cancel-in-progress: false
 jobs:
   shadow-update:
@@ -34,7 +34,7 @@ jobs:
         with:
           node-version: '24'
       - name: Verify resume, publication safety, field preservation and CSV parity
-        run: node --test contractintel/portfolio/r2/ingest.test.mjs contractintel/benchmarks/r2/pilot.test.mjs
+        run: node --test contractintel/portfolio/r2/offices.test.mjs contractintel/portfolio/r2/ingest.test.mjs contractintel/benchmarks/r2/pilot.test.mjs
       - name: Refresh the isolated FA4528 R2 copy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}

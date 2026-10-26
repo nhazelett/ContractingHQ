@@ -21,9 +21,9 @@ export async function portfolioRoute(request,env){
 
  if(match){
   if(request.method!=='GET')throw new PortfolioError('Read-only office endpoint.',405);
-  if(match[2]){if([...url.searchParams.keys()].some(k=>!['id','page'].includes(k)))throw new PortfolioError('Unexpected query parameter.',400);const page=Number(url.searchParams.get('page')||1);if(!Number.isSafeInteger(page)||page<1)throw new PortfolioError('Invalid history page.',400);try{return await readR2(env.PORTFOLIO_R2,match[1],{id:url.searchParams.get('id'),page});}catch{}return storedAward(env.PORTFOLIO_DB,match[1],url.searchParams.get('id'),page);}
+  if(match[2]){if([...url.searchParams.keys()].some(k=>!['id','page'].includes(k)))throw new PortfolioError('Unexpected query parameter.',400);const page=Number(url.searchParams.get('page')||1);if(!Number.isSafeInteger(page)||page<1)throw new PortfolioError('Invalid history page.',400);try{return await readR2(env[CONFIG.r2Offices[match[1]]?.binding],match[1],{id:url.searchParams.get('id'),page});}catch{}return storedAward(env.PORTFOLIO_DB,match[1],url.searchParams.get('id'),page);}
   if([...url.searchParams.keys()].some(k=>k!=='start'))throw new PortfolioError('Unexpected query parameter.',400);
-  try{return await readR2(env.PORTFOLIO_R2,match[1],{start:url.searchParams.get('start')||CONFIG.windows[1]});}catch{}return officeSnapshot(env.PORTFOLIO_DB,match[1],url.searchParams.get('start')||CONFIG.windows[1]);
+  try{return await readR2(env[CONFIG.r2Offices[match[1]]?.binding],match[1],{start:url.searchParams.get('start')||CONFIG.windows[1]});}catch{}return officeSnapshot(env.PORTFOLIO_DB,match[1],url.searchParams.get('start')||CONFIG.windows[1]);
  }
  if(!['/api/admin/portfolio/ingest','/api/admin/portfolio/storage','/api/admin/portfolio/status'].includes(url.pathname))throw new PortfolioError('Unknown portfolio route.',404);
  if(!await authorized(request,env.PORTFOLIO_INGEST_SECRET))throw new PortfolioError('Unauthorized.',401);

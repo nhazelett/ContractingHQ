@@ -4,20 +4,23 @@ import {cleanupRetained} from './retention.mjs';
 import fs from 'node:fs/promises';
 import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-import {CONFIG} from '../ingest.mjs';
+import {CONFIG,r2Profile} from '../ingest.mjs';
 import {wait} from '../../web/source-requests.mjs';
-import {counts} from '../compare.mjs';
+import {counts,compareOffice} from '../compare.mjs';
 import {compareCSV} from '../../benchmarks/r2/csv.mjs';
-import {PILOT,bytes,digest,validateManifest,restoreBundle,unpack,canonical,snapshotFromTables} from './format.mjs';
-import {SETTINGS,CURRENT,loadPublication,runR2Chunk} from './ingest.mjs';
+import {createFormat} from './format.mjs';
+import {createOfficeIngest} from './ingest.mjs';
 import {cacheImmutable} from './cache.mjs';
 
+const profile=r2Profile(process.env.PILOT_OFFICE||CONFIG.r2Pilot.office);
+const {PILOT,bytes,pack,digest,validateManifest,restoreBundle,unpack,canonical,snapshotFromTables}=createFormat(profile);
+const {SETTINGS,CURRENT,loadPublication,runR2Chunk}=createOfficeIngest(profile);
 const root=new URL('../../',import.meta.url),output=new URL('./out/',import.meta.url);
 const report={office:SETTINGS.office,started_at:new Date().toISOString(),status:'starting',production_changed:false,d1_requests:0,
  source_requests:0,r2:{http_requests:0,reads:0,writes:0,uploaded_bytes:0},chunks:[],temporary_worker_deleted:null};
 let secret='',workerName=null,cf=null;
 const must=(condition,message)=>{if(!condition)throw new Error(message);};
-const save=async()=>{await fs.mkdir(output,{recursive:true});await fs.writeFile(new URL('fa4528-r2-update.json',output),JSON.stringify(report,null,2)+'\n');};
+const save=async()=>{await fs.mkdir(output,{recursive:true});await fs.writeFile(new URL(SETTINGS.office.toLowerCase()+'-r2-update.json',output),JSON.stringify(report,null,2)+'\n');};
 async function command(args,input=''){
  return new Promise((resolve,reject)=>{
   const child=spawn('npx',['--yes','wrangler@4.140.0',...args],{env:{...process.env,WRANGLER_SEND_METRICS:'false'},stdio:['pipe','pipe','pipe']});let stdout='',stderr='';
@@ -30,7 +33,7 @@ async function main(){
  const configuration=JSON.parse(await fs.readFile(new URL('worker/wrangler.jsonc',root),'utf8')),token=process.env.CLOUDFLARE_API_TOKEN;
  must(token,'Cloudflare repository secret is missing.');
  const mode=process.env.RUN_MODE||'nightly';must(CONFIG.modes.includes(mode),'Invalid ingest mode.');
- must(!process.env.PILOT_OFFICE||process.env.PILOT_OFFICE===SETTINGS.office,'Only FA4528 is authorized.');
+ must(!process.env.PILOT_OFFICE||process.env.PILOT_OFFICE===SETTINGS.office,'Office is outside the configured rollout.');
  cf=async(path,method='GET',body)=>{
   const response=await fetch('https://api.cloudflare.com/client/v4/accounts/'+configuration.account_id+path,{method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),redirect:'error',signal:AbortSignal.timeout(PILOT.httpTimeoutMs)});
   let data;try{data=await response.json();}catch{throw new Error('Unreadable Cloudflare setup response.');}
@@ -43,7 +46,8 @@ async function main(){
  report.bucket=SETTINGS.bucket;report.bucket_public_access=false;
  workerName=SETTINGS.workerPrefix+'-'+(process.env.GITHUB_RUN_ID||Date.now())+'-'+(process.env.GITHUB_RUN_ATTEMPT||'1');
  const directory=new URL('./.run/',import.meta.url);await fs.mkdir(directory,{recursive:true});const configPath=fileURLToPath(new URL('wrangler.json',directory));
- await fs.writeFile(configPath,JSON.stringify({name:workerName,main:'../gateway.mjs',account_id:configuration.account_id,compatibility_date:configuration.compatibility_date,workers_dev:true,preview_urls:false,observability:{enabled:false},limits:{cpu_ms:PILOT.workerCPUMs},r2_buckets:[{binding:'TARGET',bucket_name:SETTINGS.bucket},{binding:'BASELINE',bucket_name:SETTINGS.baselineBucket}]},null,2));
+ await fs.writeFile(new URL('gateway-entry.mjs',directory),"import {createGateway} from '../gateway.mjs';\nexport default createGateway("+JSON.stringify(profile)+");\n");
+ await fs.writeFile(configPath,JSON.stringify({name:workerName,main:'gateway-entry.mjs',account_id:configuration.account_id,compatibility_date:configuration.compatibility_date,workers_dev:true,preview_urls:false,observability:{enabled:false},limits:{cpu_ms:PILOT.workerCPUMs},r2_buckets:[{binding:'TARGET',bucket_name:SETTINGS.bucket},{binding:'BASELINE',bucket_name:SETTINGS.baselineBucket}]},null,2));
  secret=crypto.randomUUID()+crypto.randomUUID();if(process.env.GITHUB_ACTIONS==='true')console.log('::add-mask::'+secret);
  const deployed=await command(['deploy','--config',configPath]),url=(deployed.match(/https:\/\/[a-z0-9.-]+\.workers\.dev/g)||[]).find(value=>new URL(value).hostname.startsWith(workerName+'.'));
  must(url,'The temporary gateway address was not returned.');await command(['secret','put','R2_UPDATE_TOKEN','--config',configPath],secret);
@@ -70,8 +74,8 @@ async function main(){
   async remove(key,expected){return (await call('/object?area='+area+'&key='+encodeURIComponent(key),{method:'DELETE',expected})).json();},
   async put(key,body,options){const response=await call('/object?area='+area+'&key='+encodeURIComponent(key),{method:'PUT',body,...options});return {etag:response.headers.get('ETag')};}
  });
- const store=cacheImmutable(remote('target')),baseline=cacheImmutable(remote('baseline'));
- if(!await store.get(CURRENT)){
+ const store=cacheImmutable(remote('target'),profile),baseline=cacheImmutable(remote('baseline'),profile);
+ if(profile.seedVerifiedPilot&&!await store.get(CURRENT)){
   const pointer=await baseline.get(CURRENT);must(pointer,'The previously verified FA4528 pilot is missing.');
   const manifest=validateManifest(JSON.parse(new TextDecoder().decode(pointer.bytes)));
   // Bootstrap only from the previously verified private R2 copy. No D1 export.
@@ -81,13 +85,13 @@ async function main(){
   const restored=await restoreBundle(manifest,async descriptor=>unpack((await store.get(descriptor.key)).bytes,descriptor.sha256));must(canonical(restored)===canonical(source),'Bootstrap round trip differs.');
   await store.put(CURRENT,pointer.bytes,{expected:null,sha:await digest(pointer.bytes)});report.seeded_from_verified_r2=true;
  }else report.seeded_from_verified_r2=false;
- const before=await loadPublication(store);report.previous_publication_id=before.manifest.source_publication_id;
- report.retention_before=await cleanupRetained(store,before);
+ const before=await loadPublication(store);report.previous_publication_id=before?.manifest.source_publication_id||null;
+ report.retention_before=before?await cleanupRetained(store,before,profile):{deleted:0,protected_or_grace:0};
  const directoryData=JSON.parse(await fs.readFile(new URL('worker/offices.json',root),'utf8'));
  // This fetcher is exclusively for the source adapter. Every source operation
  // is either a GET award read or one of the existing read-only search POSTs.
  const fetcher=async(sourceURL,options={})=>{
-  must(++report.source_requests<=SETTINGS.maxSourceRequestsPerJob,'Job source-request budget reached.');
+  must(report.source_requests<SETTINGS.maxSourceRequestsPerJob,'Job source-request budget reached.');report.source_requests++;
   const parsed=new URL(sourceURL);must(parsed.origin==='https://api.usaspending.gov'&&((options.method||'GET')==='GET'&&parsed.pathname.startsWith('/api/v2/awards/')||options.method==='POST'&&['/api/v2/search/spending_by_award/','/api/v2/search/spending_by_transaction/','/api/v2/transactions/'].includes(parsed.pathname)),'Unexpected source operation refused.');
   return fetch(sourceURL,options);
  };
@@ -100,10 +104,10 @@ async function main(){
   if(['completed','retained'].includes(result.status))break;
  }
  must(result&&['completed','retained'].includes(result.status),'Chunk limit reached; saved progress will resume on the next manual run.');
- const after=await loadPublication(store);report.production_changed=result.status==='completed';report.publication_id=after.manifest.source_publication_id;report.source_published_at=after.manifest.source_published_at;
- report.views=CONFIG.windows.map(start=>{const prior=snapshotFromTables(before.tables,start),current=snapshotFromTables(after.tables,start);return {start,today:current.today,before:counts(prior.records,current.today),after:counts(current.records,current.today),fiscal_totals:current.fiscal_totals.map(({award_ids,...total})=>total)};});
- report.change_summary={new_awards:after.tables.awards.filter(row=>!before.tables.awards.some(old=>old.generated_unique_award_id===row.generated_unique_award_id)).length,removed_awards:before.tables.awards.filter(row=>!after.tables.awards.some(next=>next.generated_unique_award_id===row.generated_unique_award_id)).length,changed_awards:after.tables.awards.filter(row=>{const old=before.tables.awards.find(previous=>previous.generated_unique_award_id===row.generated_unique_award_id);return old&&old.source_hash!==row.source_hash;}).length};
- report.retention_cleanup=await cleanupRetained(store,after);
+ const after=await loadPublication(store);report.production_changed=profile.readEnabled&&result.status==='completed';report.publication_id=after.manifest.source_publication_id;report.source_published_at=after.manifest.source_published_at;
+ report.views=CONFIG.windows.map(start=>{const prior=before?snapshotFromTables(before.tables,start):{records:[]},current=snapshotFromTables(after.tables,start);return {start,today:current.today,before:counts(prior.records,current.today),after:counts(current.records,current.today),fiscal_totals:current.fiscal_totals.map(({award_ids,...total})=>total)};});
+ report.change_summary={new_awards:after.tables.awards.filter(row=>!(before?.tables.awards||[]).some(old=>old.generated_unique_award_id===row.generated_unique_award_id)).length,removed_awards:(before?.tables.awards||[]).filter(row=>!after.tables.awards.some(next=>next.generated_unique_award_id===row.generated_unique_award_id)).length,changed_awards:after.tables.awards.filter(row=>{const old=(before?.tables.awards||[]).find(previous=>previous.generated_unique_award_id===row.generated_unique_award_id);return old&&old.source_hash!==row.source_hash;}).length};
+ report.retention_cleanup=await cleanupRetained(store,after,profile);
  const unchangedBefore=report.r2.writes,replay=await runR2Chunk({store,directory:directoryData,fetcher:async()=>{throw new Error('Same-day replay must not fetch the source.');}});must(replay.status==='retained'&&report.r2.writes===unchangedBefore,'Same-day replay did work.');report.same_day_replay={status:replay.status,source_requests:0,r2_writes:report.r2.writes-unchangedBefore};
  const ledger=await store.get(SETTINGS.ledgerKey),keys=JSON.parse(new TextDecoder().decode(ledger.bytes)).keys;
  report.reserved_storage_bytes=Object.values(keys).reduce((sum,entry)=>sum+entry.bytes,0)+SETTINGS.maxLedgerBytes;
@@ -111,7 +115,15 @@ async function main(){
  report.actual_stored_bytes=Object.entries(keys).filter(([key])=>![CURRENT,SETTINGS.checkpointKey].includes(key)).reduce((sum,[,entry])=>sum+entry.bytes,0)+ledger.bytes.length+pointer.bytes.length+(checkpoint?.bytes.length||0);
  report.stored_objects=Object.keys(keys).length+1;
  report.stored_compressed_publication_bytes=after.manifest.objects.reduce((sum,object)=>sum+object.compressed_bytes,0);
- report.limitations=['Live FA4528 reads R2 first, with D1 and browser live fallback. Primary Cron and the registered backup use R2.','This is an incremental refresh from the previously verified baseline, not another independent 4,091-award source backfill.','Current and previous complete versions are retained. Unreferenced older objects are removed only after the configured grace period; byte/object guards still stop growth.'];
+ report.read_enabled=profile.readEnabled;report.limitations=[profile.readEnabled?'This office is enabled for cached reads.':'Cached reads remain disabled until the independent comparison gate passes.','Independent-source verification, when requested, is reported separately; the source can change during a scan.','Current and previous complete versions are retained. Unreferenced older objects are removed only after the configured grace period; byte/object guards still stop growth.'];
+ if(process.env.PERFORM_VERIFY==='true'){
+  const saved=await store.get(SETTINGS.verificationKey);let pending=saved?await unpack(saved.bytes,null,SETTINGS.maxCheckpointJSONBytes):null,etag=saved?.etag||null,saves=0;
+  const persist=async()=>{if(!pending)return;const packed=await pack(pending);const stored=await store.put(SETTINGS.verificationKey,packed.bytes,{expected:etag,sha:packed.sha256});etag=stored.etag;};
+  try{
+   const comparison=await compareOffice({office:SETTINGS.office,directory:directoryData,publicationKey:after.manifest.source_publication_id,checkpoint:pending,fetcher,getSnapshot:async start=>snapshotFromTables(after.tables,start),onCheckpoint:async state=>{pending=state;if(++saves%SETTINGS.verificationSaveEvery===0)await persist();}});
+   report.independent_comparison=comparison;must(comparison.match,'Independent source comparison did not match; cached reads remain gated.');
+  }finally{await persist();}
+ }
  report.status='passed';
 }
 try{await main();}catch(error){report.status='failed';report.error=error.message;if(error.result)report.failed_chunk=error.result;console.error(error.message);process.exitCode=1;}finally{
