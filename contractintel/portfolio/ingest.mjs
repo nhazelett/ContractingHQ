@@ -95,15 +95,15 @@ export async function runIngest(env,{mode='nightly',now=Date.now,fetcher=fetch,c
    runMode=!published?'backfill':mode;
    if(runMode==='nightly'){const last=await db.prepare("SELECT max(started_at) started_at FROM ingest_runs WHERE mode='backfill' AND status='completed'").first();if(!last.started_at||now()-Date.parse(last.started_at)>config.reconciliationDays*config.millisecondsPerDay)runMode='backfill';}
    const today=currentDate(now());workId=runId;
-   checkpoint={phase:runMode==='nightly'?'changes':'discover',today,window:0,page:1,cursor:null,sortValue:null,after:'',month:0,fiscalPage:1,months:fiscalMonths(today),candidates:0};
+   checkpoint={phase:runMode==='nightly'?'changes':'discover',today,sourceEndUtc:new Date(now()).toISOString().slice(0,10),window:0,page:1,cursor:null,sortValue:null,after:'',month:0,fiscalPage:1,months:fiscalMonths(today),candidates:0};
    await db.prepare('INSERT INTO ingest_office_progress(office_dodaac,run_id,work_id,mode,status,checkpoint_json,started_at,updated_at) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(office_dodaac) DO UPDATE SET run_id=excluded.run_id,work_id=excluded.work_id,mode=excluded.mode,status=excluded.status,checkpoint_json=excluded.checkpoint_json,started_at=excluded.started_at,updated_at=excluded.updated_at').bind(office,runId,workId,runMode,'running',JSON.stringify(checkpoint),stamp(now),stamp(now)).run();
   }
   touched=1;await db.prepare('UPDATE ingest_runs SET mode=? WHERE id=?').bind(runMode,runId).run();
   while(remaining()&&checkpoint.phase!=='done'){
    if(checkpoint.phase==='changes'){
-    const end=checkpoint.today,start=new Date(Date.parse(end+'T00:00:00Z')-config.lookbackDays*config.millisecondsPerDay).toISOString().slice(0,10);
+    const end=checkpoint.sourceEndUtc||checkpoint.today,start=new Date(Date.parse(end+'T00:00:00Z')-config.lookbackDays*config.millisecondsPerDay).toISOString().slice(0,10);
     const body={filters:{award_type_codes:config.awardTypes,keywords:[office],time_period:[{start_date:start,end_date:end,date_type:'last_modified_date'}]},fields:['Award ID','generated_internal_id','End Date'],limit:config.searchBatch,page:checkpoint.page,sort:'End Date',order:'desc'};
-    if(checkpoint.cursor!==null){body.last_record_unique_id=checkpoint.cursor;body.last_record_sort_value=checkpoint.sortValue;}
+    if(checkpoint.cursor!==null){body.last_record_unique_id=Number(checkpoint.cursor);const value=String(checkpoint.sortValue);body.last_record_sort_value=/^-?\d+$/.test(value)?new Date(Number(value)).toISOString().slice(0,10):value;}
     const response=await paced(SOURCE+'/api/v2/search/spending_by_award/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:deadline.signal});
     if(!response.ok)throw new Error('USAspending changed-award discovery failed: '+response.status);
     const data=await response.json();if(!Array.isArray(data.results)||typeof data.page_metadata?.hasNext!=='boolean')throw new Error('Invalid changed-award discovery response.');

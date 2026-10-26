@@ -60,3 +60,14 @@ test('Publication repairs an older staged raw-history mismatch by re-fetching th
  assert.equal((await runIngest(env,options)).status,'yielded');const rows=x.sql.prepare("SELECT * FROM ingest_stage WHERE record_kind='award' ORDER BY record_key").all();assert.equal(rows.length,2);const old=JSON.parse(rows[1].data_json);old.rawHistory=JSON.parse(rows[0].data_json).rawHistory;x.sql.prepare('UPDATE ingest_stage SET data_json=? WHERE work_id=? AND record_kind=? AND record_key=?').run(JSON.stringify(old),rows[1].work_id,rows[1].record_kind,rows[1].record_key);
  assert.equal((await runIngest(env,{...options,config:{sourceIntervalMs:0}})).status,'completed');const evidence=x.sql.prepare('SELECT raw_json FROM award_history_pages WHERE generated_unique_award_id=?').get(upstream.ids[1]);assert.equal(JSON.parse(evidence.raw_json).results[0].id,upstream.ids[1]+'G');assert.equal(upstream.calls.filter(c=>c.path.includes('/awards/'+upstream.ids[1]+'/')).length,2);
 });
+
+test('Nightly changed-award pagination converts timestamp cursors exactly like the live search adapter',async()=>{
+ const x=sqlite();await seedOffices(x.db,[office]);const upstream=source(),env={PORTFOLIO_DB:x.db,OFFICES:[office]};await runIngest(env,{mode:'backfill',now:fixed,fetcher:upstream.fetcher,config:{sourceIntervalMs:0}});let pages=0,observed;
+ const fetcher=async(url,options={})=>{const body=options.body?JSON.parse(options.body):{};
+  if(body.filters?.time_period?.[0]?.date_type==='last_modified_date'){
+   pages++;if(pages===1)return Response.json({results:[],page_metadata:{hasNext:true,last_record_unique_id:55,last_record_sort_value:Date.parse('2026-10-25T00:00:00Z')}});
+   observed=body;return Response.json({results:[],page_metadata:{hasNext:false}});
+  }return upstream.fetcher(url,options);
+ };
+ assert.equal((await runIngest(env,{mode:'nightly',now:fixed,fetcher,config:{sourceIntervalMs:0}})).status,'completed');assert.equal(pages,2);assert.equal(observed.last_record_sort_value,'2026-10-25');assert.equal(observed.last_record_unique_id,55);
+});
