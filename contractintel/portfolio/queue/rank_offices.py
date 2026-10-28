@@ -92,7 +92,7 @@ def generate(config, directory, output):
                 return response
             except urllib.error.HTTPError as error:
                 if error.code not in (429, 500, 502, 503, 504) or attempt + 1 == config["rankingRetryAttempts"]:
-                    raise RankingError("Export HTTP " + str(error.code)) from None
+                    raise RankingError("Export HTTP " + str(error.code) + ": " + error.read(config["rankingMaxErrorBytes"]).decode("utf-8", errors="replace")) from None
             except urllib.error.URLError:
                 if attempt + 1 == config["rankingRetryAttempts"]:
                     raise RankingError("Export connection failed.") from None
@@ -105,7 +105,7 @@ def generate(config, directory, output):
             if len(data) > config["rankingMaxJSONBytes"]:
                 raise RankingError("Export metadata limit reached.")
             return json.loads(data)
-    body = {"filters": {"agencies": [], "prime_award_types": ["A","B","C","D"],
+    body = {"filters": {"agency": "all", "prime_award_types": ["A","B","C","D"],
                        "date_type": "action_date", "date_range": {"start_date": config["startDate"],"end_date": config["endDate"]}},
             "columns": ["award_id_piid","federal_action_obligation","action_date"], "file_format":"csv"}
     job = get_json("https://api.usaspending.gov/api/v2/bulk_download/awards/", body)
