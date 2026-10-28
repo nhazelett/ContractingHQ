@@ -26,7 +26,7 @@ Migration 0005 adds ranking provenance and one rollout job per directory office.
 Ranking and all 150 enqueues commit atomically. Repeated ranking submissions
 cannot reset importing, verifying, ready, or stopped work. Queued seed priorities
 follow ascending seed_rank, therefore descending FY25 net obligations.
-The demand enqueue helper validates the directory in SQL, skips published
+An unpublished office read now invokes the demand enqueue helper before returning the existing live-fallback response. Queue failures are isolated so live loading still works.\nThe demand enqueue helper validates the directory in SQL, skips published
 offices, deduplicates requests, and puts demand-only offices after the seed cohort.
 
 Selection resumes an existing checkpoint before starting another office, blocks
@@ -43,4 +43,4 @@ The workflow starts on a push of its ranking files and also supports workflow_di
 Its summary lists the ranked seed offices; a seven-day artifact includes the full
 ranking and queue receipt. D1 retains the ranking and jobs durably.
 Tests: Python unittest test_ranking.py and Node automatic-queue.test.mjs.
-No source API/browser loader/parsing/pacing/CSV behavior is changed.
+The existing source fetch, parsing, pacing, session cache, and CSV code is unchanged. The only read-path addition is best-effort queueing after an unpublished office miss.

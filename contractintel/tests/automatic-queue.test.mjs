@@ -2,15 +2,16 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {DatabaseSync} from 'node:sqlite';
+import {portfolioRoute} from '../portfolio/http.mjs';
 import {seedAutomaticQueue,validateRanking,enqueueDemand,nextAutomaticJob} from '../portfolio/queue/automatic.mjs';
 const directory=Array.from({length:151},(_,i)=>({code:'A'+String(i).padStart(5,'0'),name:'Office '+i}));
 function ranking(){const rows=directory.map((o,i)=>({rank:i+1,office:o.code,name:o.name,fy_obligations_cents:String(100000-i),transaction_count:1}));return {fiscal_year:2025,start_date:'2024-10-01',end_date:'2025-09-30',basis:'PIID first six characters; net FY transaction obligations',source:{sha256:'a'.repeat(64)},ranking:rows,seed:rows.slice(0,150)};}
 async function database(){
  const sqlite=new DatabaseSync(':memory:');
- sqlite.exec('CREATE TABLE offices(dodaac TEXT PRIMARY KEY); CREATE TABLE office_publications(office_dodaac TEXT PRIMARY KEY);');
+ sqlite.exec('CREATE TABLE offices(dodaac TEXT PRIMARY KEY); CREATE TABLE ingest_runs(id TEXT PRIMARY KEY,status TEXT); CREATE TABLE office_publications(office_dodaac TEXT PRIMARY KEY,published_run_id TEXT);');
  for(const o of directory)sqlite.prepare('INSERT INTO offices VALUES(?)').run(o.code);
  sqlite.exec(await fs.readFile(new URL('../portfolio/migrations/0005.sql',import.meta.url),'utf8'));
- const prepare=sql=>{const wrap=params=>({sql,params,bind:(...args)=>wrap(args),run:async()=>({meta:{changes:sqlite.prepare(sql).run(...params).changes}})});return wrap([]);};
+ const prepare=sql=>{const wrap=params=>({sql,params,bind:(...args)=>wrap(args),first:async()=>sqlite.prepare(sql).get(...params)||null,all:async()=>({results:sqlite.prepare(sql).all(...params)}),run:async()=>({meta:{changes:sqlite.prepare(sql).run(...params).changes}})});return wrap([]);};
  return {sqlite,prepare,batch:async stmts=>{sqlite.exec('BEGIN');try{for(const s of stmts)sqlite.prepare(s.sql).run(...s.params);sqlite.exec('COMMIT');}catch(e){sqlite.exec('ROLLBACK');throw e;}}};
 }
 test('Seed exactly 150 in ranking order; reruns preserve completed and in-flight work',async()=>{
@@ -44,4 +45,25 @@ test('Selection is gated, resumes before new offices, and refuses uncertain leas
  const gates={fa4800Verified:true,costsReviewed:true,storageReady:true};
  assert.equal(nextAutomaticJob(rows,gates).office,'A00001');
  assert.equal(nextAutomaticJob([{...rows[0],lease_id:'uncertain'}],gates).decision,'busy_or_reconciliation_required');
+});
+
+test('Re-ranking keeps exactly 150 seeds and preserves out-of-cohort demand',async()=>{
+ const db=await database(),doc=ranking();await seedAutomaticQueue(db,doc,directory);
+ await enqueueDemand(db,'A00149');
+ const next=ranking();next.ranking[150].fy_obligations_cents='100001';
+ next.ranking.sort((a,b)=>Number(BigInt(b.fy_obligations_cents)-BigInt(a.fy_obligations_cents)));
+ next.ranking.forEach((r,i)=>r.rank=i+1);next.seed=next.ranking.slice(0,150);
+ await seedAutomaticQueue(db,next,directory);
+ assert.equal(db.sqlite.prepare("SELECT count(*) n FROM portfolio_rollout_jobs WHERE origin='seed'").get().n,150);
+ assert.equal(db.sqlite.prepare("SELECT origin FROM portfolio_rollout_jobs WHERE office_dodaac='A00149'").get().origin,'demand');
+ db.sqlite.close();
+});
+test('Office read miss queues demand while preserving the live-fallback 404',async()=>{
+ const db=await database();
+ const request=new Request('https://example.test/api/office/A00150?start=2021-10-01');
+ await assert.rejects(portfolioRoute(request,{PORTFOLIO_DB:db}),error=>error.status===404);
+ assert.equal(db.sqlite.prepare("SELECT origin FROM portfolio_rollout_jobs WHERE office_dodaac='A00150'").get().origin,'demand');
+ db.sqlite.exec('DROP TABLE portfolio_rollout_jobs');
+ await assert.rejects(portfolioRoute(request,{PORTFOLIO_DB:db}),error=>error.status===404);
+ db.sqlite.close();
 });

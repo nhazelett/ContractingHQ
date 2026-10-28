@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS portfolio_rollout_jobs (
  seed_rank INTEGER,
  ranking_id TEXT REFERENCES portfolio_seed_rankings(ranking_id),
  priority INTEGER NOT NULL,
+ demand_requested INTEGER NOT NULL DEFAULT 0 CHECK(demand_requested IN (0,1)),
  status TEXT NOT NULL DEFAULT 'queued' CHECK(status IN ('queued','importing','verifying','ready','stopped')),
  checkpoint_ref TEXT,
  attempts INTEGER NOT NULL DEFAULT 0,

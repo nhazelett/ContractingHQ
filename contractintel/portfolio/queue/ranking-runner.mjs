@@ -4,7 +4,7 @@ import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {CONFIG} from '../ingest.mjs';
 import {createHttpD1} from '../d1-http.mjs';
-import {seedAutomaticQueue} from './automatic.mjs';
+import {seedAutomaticQueue,ensureRolloutCompatibility} from './automatic.mjs';
 const root=new URL('../../',import.meta.url),out=new URL('./out/',import.meta.url);
 await fs.mkdir(out,{recursive:true});
 await fs.writeFile(new URL('config.json',out),JSON.stringify(CONFIG.rollout));
@@ -22,6 +22,7 @@ if(process.env.GITHUB_ACTIONS==='true')console.log('::add-mask::'+token);
 const db=createHttpD1({account:config.account_id,database:binding.database_id,token});
 const migration=await fs.readFile(new URL('portfolio/migrations/0005.sql',root),'utf8');
 await db.prepare(migration).run();
+await ensureRolloutCompatibility(db);
 const result=await seedAutomaticQueue(db,document,directory);
 await fs.writeFile(new URL('queue-summary.json',out),JSON.stringify(result,null,2)+'\n');
 if(process.env.GITHUB_STEP_SUMMARY){

@@ -2,6 +2,10 @@ import {CONFIG} from '../ingest.mjs';
 const cfg=CONFIG.rollout;
 const check=(ok,message)=>{if(!ok)throw new Error(message);};
 const digest=async value=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(value))))).map(b=>b.toString(16).padStart(2,'0')).join('');
+export async function ensureRolloutCompatibility(db){
+ const columns=await db.prepare('PRAGMA table_info(portfolio_rollout_jobs)').all();
+ if(!columns.results.some(c=>c.name==='demand_requested'))try{await db.prepare('ALTER TABLE portfolio_rollout_jobs ADD COLUMN demand_requested INTEGER NOT NULL DEFAULT 0 CHECK(demand_requested IN (0,1))').run();}catch(error){const refreshed=await db.prepare('PRAGMA table_info(portfolio_rollout_jobs)').all();if(!refreshed.results.some(c=>c.name==='demand_requested'))throw error;}
+}
 export async function validateRanking(document,directory){
  check(document?.fiscal_year===cfg.fiscalYear&&document.start_date===cfg.startDate&&document.end_date===cfg.endDate,'Ranking fiscal window differs.');
  check(document.basis==='PIID first six characters; net FY transaction obligations','Ranking must use PIID-prefix net obligations.');
@@ -22,15 +26,18 @@ export async function validateRanking(document,directory){
 export async function seedAutomaticQueue(db,document,directory,{now=Date.now()}={}){
  const identity=await validateRanking(document,directory),stamp=new Date(now).toISOString();
  // Existing ranking is immutable. All offices are enqueued atomically, in ranked order.
+ const members=JSON.stringify(document.seed.map(r=>r.office));
  const statements=[db.prepare('INSERT INTO portfolio_seed_rankings(ranking_id,fiscal_year,source_sha256,source_json,directory_sha256,ranking_json,created_at) VALUES(?,?,?,?,?,?,?) ON CONFLICT(ranking_id) DO NOTHING').bind(identity.ranking_id,cfg.fiscalYear,document.source.sha256,JSON.stringify(document.source),identity.directory_sha256,JSON.stringify(document.ranking),stamp)];
- for(const row of document.seed)statements.push(db.prepare("INSERT INTO portfolio_rollout_jobs(office_dodaac,origin,seed_rank,ranking_id,priority,status,requested_at,updated_at) VALUES(?,'seed',?,?,?,'queued',?,?) ON CONFLICT(office_dodaac) DO UPDATE SET origin='seed',seed_rank=excluded.seed_rank,ranking_id=excluded.ranking_id,priority=excluded.priority WHERE portfolio_rollout_jobs.status='queued'").bind(row.office,row.rank,identity.ranking_id,row.rank,stamp,stamp));
+ statements.push(db.prepare("DELETE FROM portfolio_rollout_jobs WHERE origin='seed' AND demand_requested=0 AND status='queued' AND office_dodaac NOT IN (SELECT value FROM json_each(?))").bind(members));
+ statements.push(db.prepare("UPDATE portfolio_rollout_jobs SET origin='demand',seed_rank=NULL,ranking_id=NULL,priority=? WHERE origin='seed' AND demand_requested=1 AND status='queued' AND office_dodaac NOT IN (SELECT value FROM json_each(?))").bind(cfg.seedCount+1,members));
+ statements.push(db.prepare("INSERT INTO portfolio_rollout_jobs(office_dodaac,origin,seed_rank,ranking_id,priority,status,requested_at,updated_at) SELECT json_extract(value,'$.office'),'seed',json_extract(value,'$.rank'),?,json_extract(value,'$.rank'),'queued',?,? FROM json_each(?) WHERE 1 ON CONFLICT(office_dodaac) DO UPDATE SET origin='seed',seed_rank=excluded.seed_rank,ranking_id=excluded.ranking_id,priority=excluded.priority WHERE portfolio_rollout_jobs.status='queued'").bind(identity.ranking_id,stamp,stamp,JSON.stringify(document.seed)));
  await db.batch(statements);
  return {...identity,seed_offices:document.seed.length,execution_enabled:false};
 }
 export async function enqueueDemand(db,office,{now=Date.now()}={}){
  const stamp=new Date(now).toISOString();
  // The SELECT both validates the directory and avoids requeueing published offices.
- return db.prepare("INSERT INTO portfolio_rollout_jobs(office_dodaac,origin,priority,status,requested_at,updated_at) SELECT dodaac,'demand',?,'queued',?,? FROM offices WHERE dodaac=? AND NOT EXISTS(SELECT 1 FROM office_publications WHERE office_dodaac=?) ON CONFLICT(office_dodaac) DO NOTHING").bind(cfg.seedCount+1,stamp,stamp,office,office).run();
+ return db.prepare("INSERT INTO portfolio_rollout_jobs(office_dodaac,origin,priority,demand_requested,status,requested_at,updated_at) SELECT dodaac,'demand',?,1,'queued',?,? FROM offices WHERE dodaac=? AND NOT EXISTS(SELECT 1 FROM office_publications WHERE office_dodaac=?) ON CONFLICT(office_dodaac) DO UPDATE SET demand_requested=1").bind(cfg.seedCount+1,stamp,stamp,office,office).run();
 }
 export function nextAutomaticJob(rows,{fa4800Verified=false,costsReviewed=false,storageReady=false,now=Date.now()}={}){
  if(!fa4800Verified)return {decision:'awaiting_fa4800_validation'};
