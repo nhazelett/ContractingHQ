@@ -1,0 +1,40 @@
+name: ContractIntel read-only cost audit
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/contractintel]
+    paths: [.github/workflows/contractintel-cost-audit.yml]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: contractintel-cost-audit
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/contractintel
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Test complete-history accounting
+        run: node --test contractintel/tests/fa4800-metrics.test.mjs
+      - name: Audit job history and D1 table sizes without source calls or writes
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
+          COST_AUDIT_ONLY: 'true'
+        run: node contractintel/portfolio/fa4800-metrics.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: contractintel-cost-and-storage
+          retention-days: 7
+          path: |
+            contractintel/portfolio/r2/out/fa4800-cost.json
+            contractintel/portfolio/r2/out/d1-storage-audit.json
+          if-no-files-found: ignore

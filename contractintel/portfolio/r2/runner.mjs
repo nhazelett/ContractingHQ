@@ -134,7 +134,7 @@ async function main(){
    let comparison;
    if(process.env.PERFORM_VERIFY==='true'||!existingD1){
     const saved=await store.get(SETTINGS.verificationKey);let pending=saved?await unpack(saved.bytes,null,SETTINGS.maxCheckpointJSONBytes):null,etag=saved?.etag||null,saves=0;
-    const persist=async()=>{if(!pending)return;const packed=await pack(pending);const summary={office:SETTINGS.office,format_version:SETTINGS.formatVersion,work_id:state.work_id,...progressMetadata(pending,true)};const saved=await store.put(SETTINGS.verificationKey,packed.bytes,{expected:etag,sha:packed.sha256,summary});etag=saved.etag;};
+    const persist=async()=>{if(!pending)return;report.verification_progress={verified_awards:pending.awards?.length??0,discovered_awards:pending.candidates?.length??0,completed_windows:pending.windows?.length??0,fiscal_months_completed:pending.fiscal_index??0,logical_requests:pending.requests??0,source_day:pending.source_day,started_at:pending.started_at};console.log(JSON.stringify({independent_verification_progress:report.verification_progress}));const packed=await pack(pending);const summary={office:SETTINGS.office,format_version:SETTINGS.formatVersion,work_id:state.work_id,...progressMetadata(pending,true)};const saved=await store.put(SETTINGS.verificationKey,packed.bytes,{expected:etag,sha:packed.sha256,summary});etag=saved.etag;};
     try{
      must(!pending||pending.requests<SETTINGS.maxVerificationRequests,'Independent verification request budget reached; review required.');
      comparison=await compareOffice({office:SETTINGS.office,automaticOffice,directory:directoryData,publicationKey:state.work_id,checkpoint:pending,fetcher,getSnapshot:async start=>snapshotFromTables(tables,start),onCheckpoint:async value=>{pending=value;must(pending.requests<=SETTINGS.maxVerificationRequests,'Independent verification request budget reached; review required.');if(++saves%SETTINGS.verificationSaveEvery===0)await persist();}});
@@ -187,4 +187,5 @@ try{await main();}catch(error){report.status='failed';report.error=error.message
  if(workerName&&cf)try{const response=await cf('/workers/scripts/'+workerName,'DELETE');must(response.ok||response.status===404,'Temporary gateway cleanup failed.');report.temporary_worker_deleted=true;}catch(error){report.temporary_worker_deleted=false;report.cleanup_error=error.message;process.exitCode=1;}
  report.finished_at=new Date().toISOString();await save();console.log(JSON.stringify({r2_update_report:report}));
 }
+
 
