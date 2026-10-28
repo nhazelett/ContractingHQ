@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-10-27T13:09:13.333Z",
-  "since": "2025-05-05",
+  "generatedAt": "2026-10-28T13:58:44.579Z",
+  "since": "2025-05-06",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,12 +14,12 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 152,
+    "total": 149,
     "latestPublicationDate": "2026-10-19",
     "openCommentWindows": 18,
     "rules": 54,
     "byTone": {
-      "monitor": 96,
+      "monitor": 93,
       "active": 1,
       "watch": 25,
       "action": 30
@@ -5381,108 +5381,6 @@ window.KTHQ_FEDREG_DATA = {
       "htmlUrl": "https://www.federalregister.gov/documents/2025/05/12/2025-08022/federal-acquisition-regulation-list-of-domestically-nonavailable-articles",
       "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-05-12/pdf/2025-08022.pdf",
       "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2025-07748",
-      "documentNumber": "2025-07748",
-      "title": "Information Collection Requirement; Defense Federal Acquisition Regulation Supplement (DFARS) Part 215, Only One Offer",
-      "shortTitle": "Information Collection Requirement; Defense Federal Acquisition Regulation Supplement (DFARS) Part 215, Only One Offer",
-      "system": "DFARS",
-      "stage": "Information collection",
-      "topic": "Clauses / reps",
-      "actionLevel": "Monitor",
-      "actionTone": "monitor",
-      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
-      "nextSteps": [
-        "Identify the cited provision, clause, form, or system",
-        "Comment only if your office has burden data or a process concern",
-        "No template change unless a later rule follows"
-      ],
-      "type": "Notice",
-      "publicationDate": "2025-05-05",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-07-07",
-      "datesText": "DoD will consider all comments received by July 7, 2025.",
-      "actionText": "Notice and request for comments regarding a proposed extension of an approved information collection requirement.",
-      "summary": "In compliance with the Paperwork Reduction Act of 1995, DoD announces the proposed extension of a public information collection requirement and seeks public comment on the provisions thereof. DoD invites comments on: whether the proposed collection of information is necessary for the proper performance of the functions of DoD, including whether the information will have practical utility; the accuracy of DoD's estimate of the burden of the proposed information collection; ways to enhance the quality, utility, and...",
-      "citation": "90 FR 18970",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Defense Department",
-        "Defense Acquisition Regulations System"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/05/05/2025-07748/information-collection-requirement-defense-federal-acquisition-regulation-supplement-dfars-part-215",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-05-05/pdf/2025-07748.pdf",
-      "sourceQuery": "DFARS / DARS agency feed"
-    },
-    {
-      "id": "2025-07747",
-      "documentNumber": "2025-07747",
-      "title": "Information Collection Requirement; Defense Federal Acquisition Regulation Supplement (DFARS) Part 242, Contract Administration and Related DFARS Clause",
-      "shortTitle": "Information Collection Requirement; Defense Federal Acquisition Regulation Supplement (DFARS) Part 242, Contract Administration and Related DFARS Clause",
-      "system": "DFARS",
-      "stage": "Information collection",
-      "topic": "Clauses / reps",
-      "actionLevel": "Monitor",
-      "actionTone": "monitor",
-      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
-      "nextSteps": [
-        "Identify the cited provision, clause, form, or system",
-        "Comment only if your office has burden data or a process concern",
-        "No template change unless a later rule follows"
-      ],
-      "type": "Notice",
-      "publicationDate": "2025-05-05",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-07-07",
-      "datesText": "DoD will consider all comments received by July 7, 2025.",
-      "actionText": "Notice and request for comments regarding a proposed extension of an approved information collection requirement.",
-      "summary": "In compliance with the Paperwork Reduction Act of 1995, DoD announces the proposed extension of a public information collection requirement and seeks public comment on the provisions thereof. DoD invites comments on: whether the proposed collection of information is necessary for the proper performance of the functions of DoD, including whether the information will have practical utility; the accuracy of DoD's estimate of the burden of the proposed information collection; ways to enhance the quality, utility, and...",
-      "citation": "90 FR 18970",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Defense Department",
-        "Defense Acquisition Regulations System"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/05/05/2025-07747/information-collection-requirement-defense-federal-acquisition-regulation-supplement-dfars-part-242",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-05-05/pdf/2025-07747.pdf",
-      "sourceQuery": "DFARS / DARS agency feed"
-    },
-    {
-      "id": "2025-07746",
-      "documentNumber": "2025-07746",
-      "title": "Information Collection Requirement; DFARS Part 232, Contract Financing, and the Clause at 252.232-7002, Progress Payments for Foreign Military Sales Acquisition",
-      "shortTitle": "Information Collection Requirement; DFARS Part 232, Contract Financing, and the Clause at 252.232-7002, Progress Payments for Foreign Military Sales Acquisition",
-      "system": "DFARS",
-      "stage": "Information collection",
-      "topic": "Payments",
-      "actionLevel": "Monitor",
-      "actionTone": "monitor",
-      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
-      "nextSteps": [
-        "Identify the cited provision, clause, form, or system",
-        "Comment only if your office has burden data or a process concern",
-        "No template change unless a later rule follows"
-      ],
-      "type": "Notice",
-      "publicationDate": "2025-05-05",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-06-04",
-      "datesText": "Consideration will be given to all comments received by June 4, 2025.",
-      "actionText": "Notice.",
-      "summary": "The Defense Acquisition Regulations System has submitted to OMB for clearance the following proposal for collection of information under the provisions of the Paperwork Reduction Act.",
-      "citation": "90 FR 18969",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Defense Department",
-        "Defense Acquisition Regulations System"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/05/05/2025-07746/information-collection-requirement-dfars-part-232-contract-financing-and-the-clause-at-252232-7002",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-05-05/pdf/2025-07746.pdf",
-      "sourceQuery": "DFARS / DARS agency feed"
     }
   ]
 };
