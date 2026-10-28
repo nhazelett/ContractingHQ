@@ -2,9 +2,9 @@ import {officeEnabled} from './admission.mjs';
 // Published R2 reads only. Missing or damaged copies fall back through the caller.
 import {CONFIG,r2Profile} from '../ingest.mjs';
 import {createFormat,PILOT,validateManifest,unpack,refreshSnapshot,PilotError} from './format.mjs';
-export async function readR2(bucket,office,{start=CONFIG.windows[1],id,page=1,now=Date.now,d1Publication}={}){
- if(!bucket||!await officeEnabled(office,bucket))throw new PilotError('R2 office unavailable.',404);
- const {PILOT,validateManifest,unpack,refreshSnapshot}=createFormat(r2Profile(office));
+export async function readR2(bucket,office,{start=CONFIG.windows[1],id,page=1,now=Date.now,d1Publication,profile}={}){
+ if(!bucket||!await officeEnabled(office,bucket,profile))throw new PilotError('R2 office unavailable.',404);
+ const {PILOT,validateManifest,unpack,refreshSnapshot}=createFormat(profile||r2Profile(office));
  const pointer=await bucket.get(PILOT.prefix+'/current.json');if(!pointer)throw new PilotError('R2 publication unavailable.',404);
  const manifest=validateManifest(await pointer.json());
  if(d1Publication!==undefined&&(!d1Publication||manifest.d1_publication_version!==d1Publication.published_run_id||manifest.source_publication_id!==d1Publication.published_run_id))throw new PilotError('R2 cache does not match authoritative D1; use D1.',404);
@@ -21,3 +21,4 @@ export async function readR2(bucket,office,{start=CONFIG.windows[1],id,page=1,no
  if(payload.office!==office||payload.start!==start||payload.publication_id!==manifest.source_publication_id||payload.published_at!==manifest.source_published_at||payload.complete!==true||!Array.isArray(payload.records)||payload.fiscal_totals?.length!==2)throw new PilotError('Invalid R2 snapshot.');
  return refreshSnapshot(payload,now);
 }
+

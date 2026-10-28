@@ -1,6 +1,6 @@
 // All NEW ingestion limits live here. Existing source helper internals are intentionally unchanged.
 export const CONFIG=Object.freeze({
- rollout:Object.freeze({seedCount:150,fiscalYear:2025,startDate:'2024-10-01',endDate:'2025-09-30',rankingMaxRequests:90,rankingPollMs:15000,rankingTimeoutMs:1200000,rankingHTTPTimeoutMs:60000,rankingRetryAttempts:5,rankingRetryBaseMs:1000,rankingRetryMaxMs:30000,rankingRetryJitterMs:1000,rankingMaxDownloadBytes:1073741824,rankingMaxExpandedBytes:8589934592,rankingMaxCSVFiles:16,rankingMaxRows:30000000,rankingReadBytes:1048576,rankingMaxJSONBytes:1048576,rankingMaxErrorBytes:4096,rankingMaxFieldBytes:1048576,artifactDays:7,queueLeaseMs:2100000,queueMaxAttempts:64,queueRetryMs:300000,queueWriteBatch:25,rankingWorkflow:'contractintel-office-ranking.yml'}),
+ rollout:Object.freeze({workflow:'contractintel-rollout.yml',sharedBucket:'kthq-contractintel-portfolio-cache',sharedBinding:'PORTFOLIO_R2_SHARED',maxControllerBatches:64,d1PublicationReserveBytes:134217728,seedCount:150,fiscalYear:2025,startDate:'2024-10-01',endDate:'2025-09-30',rankingMaxRequests:90,rankingPollMs:15000,rankingTimeoutMs:1200000,rankingHTTPTimeoutMs:60000,rankingRetryAttempts:5,rankingRetryBaseMs:1000,rankingRetryMaxMs:30000,rankingRetryJitterMs:1000,rankingMaxDownloadBytes:1073741824,rankingMaxExpandedBytes:8589934592,rankingMaxCSVFiles:16,rankingMaxRows:30000000,rankingReadBytes:1048576,rankingMaxJSONBytes:1048576,rankingMaxErrorBytes:4096,rankingMaxFieldBytes:1048576,artifactDays:7,queueLeaseMs:2100000,queueMaxAttempts:64,queueRetryMs:300000,queueWriteBatch:25,rankingWorkflow:'contractintel-office-ranking.yml'}),
  queue:Object.freeze({executionEnabled:false,maxGroupOffices:5,maxOffices:1432,maxGroups:300,maxStateBytes:1048576,maxRequestBytes:16384,maxCheckpointRefLength:256,maxAttempts:64,retryDelayMs:300000,leaseGraceMs:300000,maxDailySourceRequests:2160,maxDailyRuntimeMs:5400000,maxTotalStorageBytes:268435456,maxStorageMeasurementAgeMs:300000,retainedBudgetDays:8}),
  metrics:Object.freeze({maxRuns:100,maxAttemptsPerRun:5,maxJobsPerAttempt:5,maxLogBytes:4194304}),
  access:Object.freeze({jwksCacheMs:300000,clockSkewSeconds:30,maxTokenBytes:16384,maxJwksBytes:65536,maxKeys:32,timeoutMs:10000}),
@@ -232,4 +232,5 @@ async function publishOffice(db,{workId,office,runId,checkpoint,config,now}){
  // D1 batch is a transaction: readers see the old complete publication or the new complete one.
  await db.batch(statements);
 }
+
 

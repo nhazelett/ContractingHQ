@@ -1,3 +1,4 @@
+import {automaticProfile} from '../queue/profile.mjs';
 import {queueSummary} from '../queue/store.mjs';
 import {CONFIG,r2Profile} from '../ingest.mjs';
 import {storedCoverage} from './coverage.mjs';
@@ -6,7 +7,7 @@ import {readProgress} from './progress.mjs';
 export async function coverageDashboard(env){
  const coverage=await storedCoverage(env),offices=[];
  for(const entry of coverage.offices){
-  const profile=r2Profile(entry.office),bucket=env[profile.binding],prefix=profile.prefix+'/';
+  const profile=CONFIG.r2Offices[entry.office]?r2Profile(entry.office):automaticProfile(entry.office,env.OFFICES||[]),bucket=env[profile.binding],prefix=profile.prefix+'/';
   const row={...entry,phase:null,progress:null,storage:null,updated_at:null,publication_awards:null,issue:null,
    limits:{bytes:CONFIG.r2Nightly.maxBucketBytes,objects:CONFIG.r2Nightly.maxBucketObjects},
    workflow_url:'https://github.com/'+CONFIG.githubRepository+'/actions/workflows/'+(profile.workflow||CONFIG.r2Nightly.githubWorkflow)};
@@ -33,3 +34,4 @@ export async function coverageDashboard(env){
  return {queue,offices,default_status:'live',directory_count:env.OFFICES?.length||null,generated_at:new Date().toISOString(),
   note:'Saved progress is not a heartbeat. A batch may be running, waiting, or stopped; its workflow has the current execution status. Storage is measured, not a billing estimate.'};
 }
+

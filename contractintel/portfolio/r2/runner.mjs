@@ -20,7 +20,9 @@ import {createFormat} from './format.mjs';
 import {createOfficeIngest} from './ingest.mjs';
 import {cacheImmutable} from './cache.mjs';
 
-const profile=r2Profile(process.env.PILOT_OFFICE||CONFIG.r2Pilot.office);
+import {automaticProfile} from '../queue/profile.mjs';
+const automaticOffice=process.env.AUTOMATIC_OFFICE;
+const profile=automaticOffice?automaticProfile(automaticOffice,JSON.parse(await fs.readFile(new URL('../../worker/offices.json',import.meta.url),'utf8'))):r2Profile(process.env.PILOT_OFFICE||CONFIG.r2Pilot.office);
 const {PILOT,bytes,pack,digest,validateManifest,restoreBundle,unpack,canonical,snapshotFromTables}=createFormat(profile);
 const {SETTINGS,CURRENT,loadPublication,runR2Chunk,publishCandidate}=createOfficeIngest(profile);
 const root=new URL('../../',import.meta.url),output=new URL('./out/',import.meta.url);
@@ -44,6 +46,7 @@ async function main(){
  const db=createHttpD1({account:configuration.account_id,database,token,fetcher:async(...args)=>{must(report.d1_requests<CONFIG.authority.maxHTTPRequestsPerJob,'D1 job budget reached; saved staging will resume.');report.d1_requests++;return fetch(...args);}});
  await db.prepare(await fs.readFile(new URL('portfolio/migrations/0004.sql',root),'utf8')).run();
 
+ if(automaticOffice){const claim=await db.prepare('SELECT c.lease_id,j.office_dodaac,j.lease_until FROM portfolio_rollout_control c JOIN portfolio_rollout_jobs j ON j.lease_id=c.lease_id WHERE c.singleton=1').first();must(claim?.lease_id===process.env.ROLLOUT_CLAIM_ID&&claim.office_dodaac===automaticOffice&&Date.parse(claim.lease_until)>Date.now(),'Automatic office requires a current durable queue claim.');}
  const mode=process.env.RUN_MODE||'nightly';must(CONFIG.modes.includes(mode),'Invalid ingest mode.');
  must(!process.env.PILOT_OFFICE||process.env.PILOT_OFFICE===SETTINGS.office,'Office is outside the configured rollout.');
  cf=async(path,method='GET',body)=>{
@@ -134,7 +137,7 @@ async function main(){
     const persist=async()=>{if(!pending)return;const packed=await pack(pending);const summary={office:SETTINGS.office,format_version:SETTINGS.formatVersion,work_id:state.work_id,...progressMetadata(pending,true)};const saved=await store.put(SETTINGS.verificationKey,packed.bytes,{expected:etag,sha:packed.sha256,summary});etag=saved.etag;};
     try{
      must(!pending||pending.requests<SETTINGS.maxVerificationRequests,'Independent verification request budget reached; review required.');
-     comparison=await compareOffice({office:SETTINGS.office,directory:directoryData,publicationKey:state.work_id,checkpoint:pending,fetcher,getSnapshot:async start=>snapshotFromTables(tables,start),onCheckpoint:async value=>{pending=value;must(pending.requests<=SETTINGS.maxVerificationRequests,'Independent verification request budget reached; review required.');if(++saves%SETTINGS.verificationSaveEvery===0)await persist();}});
+     comparison=await compareOffice({office:SETTINGS.office,automaticOffice,directory:directoryData,publicationKey:state.work_id,checkpoint:pending,fetcher,getSnapshot:async start=>snapshotFromTables(tables,start),onCheckpoint:async value=>{pending=value;must(pending.requests<=SETTINGS.maxVerificationRequests,'Independent verification request budget reached; review required.');if(++saves%SETTINGS.verificationSaveEvery===0)await persist();}});
     }finally{await persist();}
     report.independent_comparison=comparison;must(comparison.match,'Independent source comparison did not match; D1 publication retained.');
    }else comparison={match:true,kind:'incremental_source_and_full_payload_validation',checks:report.application_checks,publication_id:state.work_id};
@@ -184,3 +187,4 @@ try{await main();}catch(error){report.status='failed';report.error=error.message
  if(workerName&&cf)try{const response=await cf('/workers/scripts/'+workerName,'DELETE');must(response.ok||response.status===404,'Temporary gateway cleanup failed.');report.temporary_worker_deleted=true;}catch(error){report.temporary_worker_deleted=false;report.cleanup_error=error.message;process.exitCode=1;}
  report.finished_at=new Date().toISOString();await save();console.log(JSON.stringify({r2_update_report:report}));
 }
+

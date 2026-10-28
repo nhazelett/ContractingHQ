@@ -11,8 +11,8 @@ export function counts(rows,today){
  for(const basis of ['current','potential'])for(const days of CONFIG.expiryWindows){result[basis+'_ending_'+days]=expiryRows(rows,basis,0,days,today).length;result[basis+'_active_ending_'+days]=expiryRows(active,basis,0,days,today).length;}
  result.recompete_candidates=expiryRows(active,'potential',0,CONFIG.recompeteDays,today).length;return result;
 }
-export async function compareOffice({office='FA4528',directory,getSnapshot,fetcher=fetch,sourceFetch,onProgress=()=>{},today,checkpoint,onCheckpoint=async()=>{},publicationKey='',now=Date.now}){
- if(!CONFIG.offices.includes(office)&&!CONFIG.r2Offices[office])throw new Error('Comparison is restricted to configured offices.');
+export async function compareOffice({office='FA4528',directory,getSnapshot,fetcher=fetch,sourceFetch,onProgress=()=>{},today,checkpoint,onCheckpoint=async()=>{},publicationKey='',automaticOffice=null,now=Date.now}){
+ if(!CONFIG.offices.includes(office)&&!CONFIG.r2Offices[office]&&!(automaticOffice===office&&/^[A-Z0-9]{6}$/.test(office)&&directory.some(row=>row.code===office)))throw new Error('Comparison is restricted to configured offices.');
  const sourceDay=new Date(now()).toISOString().slice(0,10),fiscalToday=today||currentDate(now());
  const reusable=checkpoint?.version===CONFIG.schemaVersion&&checkpoint.office===office&&checkpoint.publication_key===publicationKey&&checkpoint.source_day===sourceDay&&checkpoint.fiscal_through===fiscalToday&&now()-Date.parse(checkpoint.started_at)>=0&&now()-Date.parse(checkpoint.started_at)<CONFIG.verificationCheckpointMs;
  const work=reusable?checkpoint:{version:CONFIG.schemaVersion,office,publication_key:publicationKey,source_day:sourceDay,fiscal_through:fiscalToday,started_at:new Date(now()).toISOString(),windows:[],candidates:[],awards:[],fiscal_rows:[],fiscal_index:0,requests:0};
@@ -47,3 +47,4 @@ export async function compareOffice({office='FA4528',directory,getSnapshot,fetch
   return {office,today,fiscal_through:fiscalToday,time_zone:CONFIG.timeZone,match:mismatches.length===0,source_calls_at_adapter:work.requests,source_started_at:work.started_at,source_finished_at:new Date(now()).toISOString(),resumed:!!reusable,windows:results,mismatches,note:'Active/upcoming includes date-review records; current_contracts subtracts date review. Expiring counts use existing evidence exclusions. The independent source scan can resume from source-only checkpoints for the same publication/day within its configured lifetime. No D1 rows construct live metrics. Live data may change during the scan.'};
  }catch(error){await save();throw error;}
 }
+
