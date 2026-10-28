@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {sqlite,source,office,fixed} from './fixtures/portfolio-d1.mjs';
 import {runIngest,seedOffices,CONFIG,r2Profile} from '../portfolio/ingest.mjs';
-import {recordValidation,publishD1} from '../portfolio/publication-d1.mjs';
+import {recordValidation,publishD1,resumeValidatedCandidate} from '../portfolio/publication-d1.mjs';
 import {publication,officeSnapshot} from '../portfolio/read.mjs';
 import {exportOffice} from '../benchmarks/r2/export.mjs';
 import {createFormat} from '../portfolio/r2/format.mjs';
@@ -86,4 +86,48 @@ test('Large checkpoints use authenticated summaries without decompression inside
   const response=await createGateway(profile).fetch(new Request('https://gateway/object?key='+encodeURIComponent(profile.prefix+'/checkpoint.json.gz'),{method:'PUT',headers:{Authorization:'Bearer fixture','If-None-Match':'*','X-Object-SHA256':packed.sha256,'X-Checkpoint-Summary':JSON.stringify(summary)},body:packed.bytes}),{TARGET:bucket,R2_UPDATE_TOKEN:'fixture'});
   assert.equal(response.status,200);assert.equal(objects.get(profile.prefix+'/checkpoint.json.gz').customMetadata.progress,summary.progress);
  }finally{globalThis.DecompressionStream=original;}
+});
+
+test('A validated candidate resumes config drift without changing its receipt or accepting altered data',async()=>{
+ const tables=await candidate(),x=target(),id=tables.office_publications[0].published_run_id;
+ const receipt=await recordValidation(x.db,tables,profile,{match:true});
+ const original=tables.ingest_runs.find(run=>run.id===id);
+ await x.db.prepare('INSERT INTO ingest_stage VALUES(?,?,?,?)').bind('authority:'+id,'ingest_runs',JSON.stringify([id]),JSON.stringify(original)).run();
+ const changed=structuredClone(tables);changed.ingest_runs.find(run=>run.id===id).config_json='{"metrics":"updated"}';
+ await assert.rejects(publishD1(x.db,changed,profile),/identity differs/);
+ const restored=await resumeValidatedCandidate(x.db,changed,profile);
+ assert.equal(format.canonical(restored),format.canonical(tables));
+ assert.equal((await publishD1(x.db,restored,profile)).version,id);
+ assert.equal(x.sql.prepare('SELECT content_sha256 FROM portfolio_publication_receipts').get().content_sha256,receipt.content_sha256);
+ // Recovery also works after atomic publication removed the staging rows.
+ assert.equal(format.canonical(await resumeValidatedCandidate(x.db,changed,profile)),format.canonical(tables));
+ const corrupt=structuredClone(changed);corrupt.awards[0].description='altered';
+ await assert.rejects(resumeValidatedCandidate(x.db,corrupt,profile),/identity differs/);
+ const wrongOffice={...profile,office:'FA4800'};
+ await assert.rejects(resumeValidatedCandidate(x.db,changed,wrongOffice));
+ x.sql.close();
+});
+test('Receipt metadata recovery refuses missing or corrupted saved metadata',async()=>{
+ const tables=await candidate(),x=target(),id=tables.office_publications[0].published_run_id;
+ assert.equal(await resumeValidatedCandidate(x.db,tables,profile),tables);
+ await recordValidation(x.db,tables,profile,{match:true});
+ assert.equal(await resumeValidatedCandidate(x.db,tables,profile),tables);
+ const changed=structuredClone(tables);changed.ingest_runs.find(run=>run.id===id).config_json='{}';
+ await assert.rejects(resumeValidatedCandidate(x.db,changed,profile),/metadata is unavailable/);
+ const original={...tables.ingest_runs.find(run=>run.id===id),config_json:'{"corrupt":true}'};
+ await x.db.prepare('INSERT INTO ingest_stage VALUES(?,?,?,?)').bind('authority:'+id,'ingest_runs',JSON.stringify([id]),JSON.stringify(original)).run();
+ await assert.rejects(resumeValidatedCandidate(x.db,changed,profile),/identity differs/);
+ assert.equal(await publication(x.db,profile.office),null);x.sql.close();
+});
+test('Prepared checkpoints retain their original config metadata across resumes',async()=>{
+ const {createOfficeIngest}=await import('../portfolio/r2/ingest.mjs'),engine=createOfficeIngest(profile),upstream=source(),objects=new Map();let rev=0,prepared;
+ const store={get:async key=>objects.get(key)||null,put:async(key,bytes,{expected,sha})=>{assert.equal(objects.get(key)?.etag||null,expected);const value={bytes,etag:String(++rev),sha};objects.set(key,value);return value;}};
+ const run=()=>engine.runR2Chunk({store,directory:[office],fetcher:upstream.fetcher,now:fixed,config:{sourceIntervalMs:0},prepareOnly:true,onPrepared:async value=>prepared=value});
+ await run();
+ assert.equal(prepared.state.candidate_config_json,prepared.tables.ingest_runs.find(r=>r.id===prepared.state.work_id).config_json);
+ prepared.state.candidate_config_json='{"backend":"original-config"}';
+ const packed=await format.pack(prepared.state);
+ const key=engine.SETTINGS.checkpointKey;objects.set(key,{bytes:packed.bytes,etag:String(++rev),sha:packed.sha256});
+ await run();
+ assert.equal(prepared.tables.ingest_runs.find(r=>r.id===prepared.state.work_id).config_json,'{"backend":"original-config"}');
 });

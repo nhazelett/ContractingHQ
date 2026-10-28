@@ -64,7 +64,7 @@ function candidateTables(base,state,{now=Date.now,sourceRequests=state.source_re
  const windows=Object.entries(state.windows).flatMap(([window_start,ids])=>ids.map(generated_unique_award_id=>({generated_unique_award_id,window_start}))).sort((a,b)=>compare(a.generated_unique_award_id,b.generated_unique_award_id)||compare(a.window_start,b.window_start));
  const rows=Object.keys(state.fiscal_pages).sort(compare).flatMap(key=>state.fiscal_pages[key].rows),totals=fiscalTotals(rows,state.today);
  const fiscal=totals.map(total=>({office_dodaac:SETTINGS.office,fiscal_year:total.year,net_obligation_cents:String(total.cents),distinct_contract_count:total.awards.size,transaction_count:rows.filter(row=>fiscalYear(row.date)===total.year).length,missing_amount_count:total.missing,coverage_start:(total.year-1)+'-10-01',coverage_end:total.year===fiscalYear(state.today)?state.today:total.year+'-09-30',complete:1,award_ids_json:JSON.stringify([...total.awards].sort()),published_run_id:id}));
- const run={id,mode:state.mode,started_at:state.started_at,ended_at:stamp,status:'completed',offices_touched:1,rows_written:0,rows_read:0,source_requests:sourceRequests,error_count:0,errors_json:'[]',config_json:JSON.stringify({backend:'r2-shadow',...CONFIG}),resume_from_run_id:pub.published_run_id};
+ const run={id,mode:state.mode,started_at:state.started_at,ended_at:stamp,status:'completed',offices_touched:1,rows_written:0,rows_read:0,source_requests:sourceRequests,error_count:0,errors_json:'[]',config_json:state.candidate_config_json||JSON.stringify({backend:'r2-shadow',...CONFIG}),resume_from_run_id:pub.published_run_id};
  const tables={...base,awards,award_windows:windows,award_history_pages:history.sort((a,b)=>compare(a.generated_unique_award_id,b.generated_unique_award_id)||a.page-b.page),fiscal_totals:fiscal,
   office_publications:[{...pub,published_run_id:id,coverage_end:state.today,award_count:awards.length,fiscal_complete:1,published_at:stamp}],ingest_runs:[...base.ingest_runs,run]};
  const lastFull=tables.ingest_runs.filter(row=>row.mode==='backfill'&&row.status==='completed').sort((a,b)=>compare(b.started_at,a.started_at))[0];
@@ -205,6 +205,7 @@ async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,now=Date
     if(state.fiscal_pages_since_checkpoint>=SETTINGS.checkpointEveryFiscalPages||state.month===state.months.length){state.fiscal_pages_since_checkpoint=0;await persist();}
    }else throw new Error('Unknown checkpoint phase.');
   }
+  if(!state.candidate_config_json){state.candidate_config_json=JSON.stringify({backend:'r2-shadow',...CONFIG});await persist();}
   ensure();const tables=candidateTables(base.tables,state,{now});
   if(prepareOnly){await onPrepared?.({tables,state,base});state.status='prepared';result={status:'prepared'};}
   else{const published=await publishCandidate(store,base,state,tables,{now,beforePublish:async candidate=>{ensure();await beforePublish?.(candidate);ensure();}});state.status='completed';state.phase='done';result={status:'completed',...published};}

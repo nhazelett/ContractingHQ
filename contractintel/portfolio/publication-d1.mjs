@@ -7,6 +7,22 @@ const TABLES=['offices','ingest_runs','awards','award_windows','award_history_pa
 const PRIMARY={offices:['dodaac'],ingest_runs:['id'],awards:['generated_unique_award_id'],award_windows:['generated_unique_award_id','window_start'],award_history_pages:['generated_unique_award_id','page'],fiscal_totals:['office_dodaac','fiscal_year'],office_publications:['office_dodaac']};
 const must=(value,message)=>{if(!value)throw new Error(message);};
 const key=(table,row)=>JSON.stringify(PRIMARY[table].map(name=>row[name]));
+
+// Resume operational config drift only when the complete candidate still
+// matches the immutable validation receipt. Never replace a receipt hash.
+export async function resumeValidatedCandidate(db,tables,profile){
+ const {checkTables,canonical,digest}=createFormat(profile),pub=checkTables(tables);
+ const receipt=await db.prepare('SELECT * FROM portfolio_publication_receipts WHERE publication_id=?').bind(pub.published_run_id).first();
+ if(!receipt)return tables;
+ must(receipt.office_dodaac===profile.office,'D1 validation receipt identity differs.');
+ if(await digest(canonical(tables))===receipt.content_sha256)return tables;
+ const staged=await db.prepare("SELECT data_json FROM ingest_stage WHERE work_id=? AND record_kind='ingest_runs' AND record_key=?").bind('authority:'+pub.published_run_id,JSON.stringify([pub.published_run_id])).first();
+ const original=staged?JSON.parse(staged.data_json):await db.prepare('SELECT * FROM ingest_runs WHERE id=?').bind(pub.published_run_id).first();
+ must(original?.id===pub.published_run_id&&typeof original.config_json==='string','Validated candidate metadata is unavailable; publication retained.');
+ const restored={...tables,ingest_runs:tables.ingest_runs.map(run=>run.id===pub.published_run_id?{...run,config_json:original.config_json}:run)};
+ await receiptFor(db,restored,profile);
+ return restored;
+}
 export async function receiptFor(db,tables,profile){
  const {checkTables,canonical,digest}=createFormat(profile),pub=checkTables(tables),hash=await digest(canonical(tables));
  const row=await db.prepare('SELECT * FROM portfolio_publication_receipts WHERE publication_id=?').bind(pub.published_run_id).first();

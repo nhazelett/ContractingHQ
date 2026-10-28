@@ -1,7 +1,7 @@
 import {createHttpD1} from '../d1-http.mjs';
 import {publication} from '../read.mjs';
 import {exportOffice} from '../../benchmarks/r2/export.mjs';
-import {receiptFor,recordValidation,publishD1} from '../publication-d1.mjs';
+import {receiptFor,recordValidation,publishD1,resumeValidatedCandidate} from '../publication-d1.mjs';
 import {progressMetadata} from './progress.mjs';
 import {retryGateway} from './retry.mjs';
 import {continuationDecision} from './cohort-policy.mjs';
@@ -127,7 +127,8 @@ async function main(){
  must(result&&['prepared','completed','retained'].includes(result.status),'Chunk limit reached; saved progress will resume on the next run.');
  if(!candidate&&before&&!existingD1)candidate={tables:before.tables,state:{work_id:before.manifest.source_publication_id},base:before};
  if(candidate){
-  const {tables,state,base}=candidate;
+  const {state,base}=candidate;
+  const tables=await resumeValidatedCandidate(db,candidate.tables,profile);
   await checkApplication({tables,restored:tables});
   let receipt=(await receiptFor(db,tables,profile)).row;
   if(!receipt){
