@@ -1,0 +1,47 @@
+name: ContractIntel top 150 office ranking
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/contractintel]
+    paths:
+      - .github/workflows/contractintel-office-ranking.yml
+      - contractintel/portfolio/queue/rank_offices.py
+      - contractintel/portfolio/queue/ranking-runner.mjs
+permissions:
+  contents: read
+concurrency:
+  group: contractintel-office-ranking
+  cancel-in-progress: false
+jobs:
+  ranking:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/contractintel
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test exact ranking and idempotent automatic queue
+        run: |
+          python -m unittest discover -s contractintel/portfolio/queue -p "test_ranking.py"
+          node --test contractintel/tests/automatic-queue.test.mjs
+      - name: Rank FY25 transaction obligations and prepare durable top 150 queue
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
+          PYTHON: python
+        run: node contractintel/portfolio/queue/ranking-runner.mjs
+      - name: Save ranking and queue receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contractintel-top-150-ranking
+          retention-days: 7
+          path: |
+            contractintel/portfolio/queue/out/office-ranking.json
+            contractintel/portfolio/queue/out/queue-summary.json
+          if-no-files-found: ignore
