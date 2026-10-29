@@ -64,7 +64,8 @@ export async function finishAutomaticBatch(db,claim,report,{now=Date.now()}={}){
  const stored=status==='ready'?report.reserved_storage_bytes:claim.r2_reserved_bytes;
  fail(Number.isSafeInteger(stored)&&stored>=0&&stored<=CONFIG.capacity.perOfficeR2Bytes,'Measured office storage is missing or exceeds its reservation.');
  const nextRefresh=status==='ready'?new Date(now+CONFIG.capacity.maintenanceEveryMs).toISOString():null;
- const delay=status==='stopped'?null:new Date(now+(report.source_failures?.length?cfg.queueRetryMs:0)).toISOString();
+ const transient=report.source_failures?.length||report.source_network_errors||/^R2 gateway (network failure:|HTTP (429|500|502|503|504))|^USAspending (did not respond in time\.|returned an unreadable response\.)/.test(report.error||'');
+ const delay=status==='stopped'?null:new Date(now+(transient?cfg.queueRetryMs:0)).toISOString();
  await db.batch([
   db.prepare("INSERT INTO portfolio_rollout_assertions(id,valid) SELECT ?,coalesce((SELECT CASE WHEN c.lease_id=? AND j.lease_id=? THEN 1 ELSE 0 END FROM portfolio_rollout_control c JOIN portfolio_rollout_jobs j ON j.office_dodaac=? WHERE c.singleton=1),0)").bind(claim.id,claim.id,claim.id,claim.office),
   db.prepare('UPDATE portfolio_rollout_days SET source_requests=source_requests+?,runtime_ms=runtime_ms+? WHERE day=?').bind(requests-claim.reserved_requests,runtime-claim.reserved_runtime_ms,claim.day),

@@ -148,3 +148,37 @@ test('A missing storage measurement cannot mark an automatic office ready',async
  assert.equal(db.sqlite.prepare('SELECT lease_id FROM portfolio_rollout_control').get().lease_id,claim.id);
  db.sqlite.close();
 });
+
+test('Exhausted gateway network retries save progress and wait before the same office resumes',async()=>{
+ const db=await fixture();db.approve();const {claim}=await reserveAutomaticBatch(db,{now});
+ await finishAutomaticBatch(db,claim,{office:claim.office,status:'yielded',source_requests:81,error:'R2 gateway network failure: fetch failed',chunks:[]},{now:now+1000});
+ assert.equal(db.sqlite.prepare('SELECT paused FROM portfolio_rollout_control').get().paused,0);
+ assert.equal((await reserveAutomaticBatch(db,{now:now+2000})).decision,'retry_wait');
+ const later=await reserveAutomaticBatch(db,{now:now+1001+CONFIG.rollout.queueRetryMs});
+ assert.equal(later.claim.office,claim.office);db.sqlite.close();
+});
+test('Legacy network stop recovery preserves checkpoint, usage, attempts and storage reservations',async()=>{
+ const {recoverStoppedNetworkOffice}=await import('../portfolio/queue/recover-network.mjs');
+ const db=await fixture();db.approve();const {claim}=await reserveAutomaticBatch(db,{now});
+ await finishAutomaticBatch(db,claim,{office:claim.office,status:'failed',source_requests:81,error:'fetch failed'},{now:now+1000});
+ const budget=db.sqlite.prepare('SELECT * FROM portfolio_rollout_days').get(),reserved=db.sqlite.prepare('SELECT reserved_r2_bytes FROM portfolio_rollout_control').get().reserved_r2_bytes;
+ const result=await recoverStoppedNetworkOffice(db,{office:claim.office,now:now+2000});
+ assert.equal(result.recovered,true);assert.equal(result.checkpoint_ref,'pilot/'+claim.office+'/checkpoint.json.gz');
+ assert.equal(db.sqlite.prepare('SELECT attempts FROM portfolio_rollout_jobs WHERE office_dodaac=?').get(claim.office).attempts,1);
+ assert.equal(db.sqlite.prepare('SELECT reserved_r2_bytes FROM portfolio_rollout_control').get().reserved_r2_bytes,reserved);
+ assert.deepEqual(db.sqlite.prepare('SELECT * FROM portfolio_rollout_days').get(),budget);
+ assert.equal((await recoverStoppedNetworkOffice(db,{office:claim.office,now:now+3000})).recovered,false);
+ const next=await reserveAutomaticBatch(db,{now:now+4000});assert.equal(next.claim.office,claim.office);
+ assert.equal(db.sqlite.prepare('SELECT count(*) n FROM portfolio_rollout_recoveries').get().n,1);db.sqlite.close();
+});
+test('Network recovery cannot release a live claim or bypass validation and other stopped work',async()=>{
+ const {recoverStoppedNetworkOffice}=await import('../portfolio/queue/recover-network.mjs');
+ const db=await fixture();db.approve();const {claim}=await reserveAutomaticBatch(db,{now});
+ await assert.rejects(recoverStoppedNetworkOffice(db,{office:claim.office}),/lease/);
+ await finishAutomaticBatch(db,claim,{office:claim.office,status:'failed',source_requests:1,error:'checksum differs'},{now:now+1000});
+ await assert.rejects(recoverStoppedNetworkOffice(db,{office:claim.office}),/reviewed network failure/);
+ db.sqlite.prepare("UPDATE portfolio_rollout_jobs SET last_error='fetch failed' WHERE office_dodaac=?").run(claim.office);
+ db.sqlite.prepare("UPDATE portfolio_rollout_jobs SET status='stopped',last_error='validation failed' WHERE office_dodaac<>?").run(claim.office);
+ await assert.rejects(recoverStoppedNetworkOffice(db,{office:claim.office}),/Other stopped work/);
+ assert.equal(db.sqlite.prepare('SELECT paused FROM portfolio_rollout_control').get().paused,1);db.sqlite.close();
+});
