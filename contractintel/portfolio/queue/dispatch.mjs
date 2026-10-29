@@ -11,6 +11,7 @@ export async function dispatchAutomaticQueue(env,{now=Date.now,fetcher=fetch}={}
  const review=JSON.parse(control.review_json);
  const pub=await db.prepare("SELECT p.published_run_id FROM office_publications p JOIN portfolio_publication_receipts r ON r.publication_id=p.published_run_id WHERE p.office_dodaac='FA4800' AND r.status='published'").first();
  if(!pub||pub.published_run_id!==review.fa4800_publication_version)return {status:'awaiting_fa4800_validation'};
+ if(review.capacity_version!==CONFIG.capacity.version||review.costs_reviewed!==true)return {status:'awaiting_cost_review'};
  const key='rollout|'+currentDate(now()),id=crypto.randomUUID(),stamp=new Date(now()).toISOString();
  const reservation=await db.prepare("INSERT INTO ingest_dispatches(dispatch_key,request_id,started_at,lease_until,status) VALUES(?,?,?,?,'dispatching') ON CONFLICT(dispatch_key) DO UPDATE SET request_id=excluded.request_id,started_at=excluded.started_at,lease_until=excluded.lease_until,status=excluded.status WHERE ingest_dispatches.status<>'accepted' AND ingest_dispatches.lease_until<?").bind(key,id,stamp,new Date(now()+CONFIG.dispatchLeaseMs).toISOString(),stamp).run();
  if(!reservation.meta?.changes)return {status:'already_dispatched'};

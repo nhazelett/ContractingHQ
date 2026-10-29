@@ -47,7 +47,7 @@ export function nextAutomaticJob(rows,{fa4800Verified=false,costsReviewed=false,
  const pending=rows.filter(r=>['queued','importing','verifying'].includes(r.status)&&r.attempts<cfg.queueMaxAttempts);
  const continuations=pending.filter(r=>r.checkpoint_ref);
  const list=continuations.length?continuations:pending;
- list.sort((a,b)=>a.priority-b.priority||a.office_dodaac.localeCompare(b.office_dodaac));
+ list.sort((a,b)=>(b.maintenance||0)-(a.maintenance||0)||a.priority-b.priority||a.office_dodaac.localeCompare(b.office_dodaac));
  const job=list[0];
  if(!job)return {decision:'idle'};
  if(job.not_before&&Date.parse(job.not_before)>now)return {decision:'retry_wait'};

@@ -1,3 +1,4 @@
+import {ensureMaintenanceSchema} from './queue/maintenance.mjs';
 import {ensureRolloutCompatibility} from './queue/automatic.mjs';
 import {prepareCoverageAccess} from './access-deploy.mjs';
 // Trusted deployment preparation; credentials are never included in reports or source.
@@ -18,6 +19,7 @@ try{
  const sql=(await Promise.all(['0001.sql','0002.sql','0003.sql','0004.sql','0005.sql','0006.sql'].map(file=>fs.readFile(new URL('portfolio/migrations/'+file,root),'utf8')))).join('\n');const result=await cf('/d1/database/'+id+'/query','POST',{sql});if(result.some(r=>!r.success))throw new Error('Portfolio migration failed.');
  const db=createD1Adapter(async(sql,params=[])=>{const result=await cf('/d1/database/'+id+'/query','POST',{sql,params});if(result.some(r=>!r.success))throw new Error('Portfolio seed failed.');return result[0];});
  await ensureRolloutCompatibility(db);
+ await ensureMaintenanceSchema(db);
  await seedOffices(db,JSON.parse(await fs.readFile(new URL('worker/offices.json',root),'utf8')));
  const configPath=new URL('worker/wrangler.jsonc',root),config=JSON.parse(await fs.readFile(configPath,'utf8'));
  config.d1_databases=[...(config.d1_databases||[]).filter(b=>b.binding!=='PORTFOLIO_DB'),{binding:'PORTFOLIO_DB',database_name:name,database_id:id,migrations_dir:'../portfolio/migrations'}];

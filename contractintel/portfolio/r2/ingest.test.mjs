@@ -181,3 +181,14 @@ test('Retention protects current/previous objects and only deletes old unreferen
  assert.ok(!(await (await x.target.get(SETTINGS.ledgerKey)).json()).keys[obsolete]);
  const stored=await loadPublication(x.store);assert.equal(stored.tables.awards.length,x.tables.awards.length);
 });
+
+test('A prepared checkpoint published through D1 starts a real refresh on the next day',async()=>{
+ const {createOfficeIngest}=await import('./ingest.mjs'),{r2Profile}=await import('../ingest.mjs');
+ const engine=createOfficeIngest(r2Profile('FA4528')),x=gatewayStore(),upstream=source();let candidate;
+ const args={store:x.store,directory:[office],now:fixed,fetcher:upstream.fetcher,config,prepareOnly:true,onPrepared:async value=>candidate=value};
+ await engine.runR2Chunk(args);
+ await engine.publishCandidate(x.store,candidate.base,candidate.state,candidate.tables,{now:fixed,d1PublicationVersion:candidate.state.work_id});
+ const original=candidate.state.work_id,count=upstream.calls.length;
+ const result=await engine.runR2Chunk({...args,now:()=>fixed()+CONFIG.millisecondsPerDay});
+ assert.equal(result.status,'prepared');assert.ok(upstream.calls.length>count);assert.notEqual(candidate.state.work_id,original);
+});

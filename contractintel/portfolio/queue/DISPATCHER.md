@@ -82,3 +82,6 @@ comparison -> native D1 -> shared R2 -> served snapshot fixture.
 Before activation, verify the live controller reports awaiting_fa4800_and_cost_review
 and has made no new-office source requests. Confirm both original pilot workflows and
 page live loading remain functional. Then review actual FA4800 metrics/capacity.
+
+## October 28 capacity/maintenance update
+The limits and pending items above describe the original preparation release. See CAPACITY-REVIEW.md for the current activation measurements, separate capacity limits, daily maintenance and partition stop.

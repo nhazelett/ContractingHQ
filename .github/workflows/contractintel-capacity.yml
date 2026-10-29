@@ -1,0 +1,37 @@
+name: ContractIntel measured capacity activation
+on:
+  push:
+    branches: [codex/contractintel]
+    paths: [.github/workflows/contractintel-capacity.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: contractintel-capacity-activation
+  cancel-in-progress: false
+jobs:
+  activate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Test capacity, maintenance and publication controls
+        run: node --test contractintel/tests/capacity-maintenance.test.mjs contractintel/tests/automatic-dispatch.test.mjs contractintel/tests/d1-authority.test.mjs
+      - name: Measure all managed storage and activate the approved ranked queue
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
+          DISPATCH_SECRET: ${{ secrets.CONTRACTINTEL_GITHUB_TOKEN }}
+          WRANGLER_SEND_METRICS: 'false'
+        run: node contractintel/portfolio/queue/activate.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: contractintel-capacity-review
+          retention-days: 7
+          path: contractintel/portfolio/queue/.audit/capacity-review.json
+          if-no-files-found: ignore

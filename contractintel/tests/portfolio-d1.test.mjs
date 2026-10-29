@@ -84,3 +84,15 @@ test('A portfolio larger than D1 single-value limit serves complete individual r
  const snapshot=await officeSnapshot(db,'FA4528',CONFIG.windows[0],{now:fixed});
  assert.equal(snapshot.records.length,5);assert.ok(snapshot.records.every(r=>r.description.length===450000));assert.equal(snapshot.fiscal_totals.length,2);assert.ok(snapshot.fiscal_totals.every(t=>Array.isArray(t.award_ids)));assert.equal(snapshot.publication_id,sql.prepare('SELECT published_run_id FROM office_publications').get().published_run_id);
 });
+
+test('Storage projection divides aggregate payload by the measured number of offices',async()=>{
+ const x=await setup();await runIngest(x.env,{...opts(),fetcher:x.upstream.fetcher});
+ const one=await storageReport(x.db);
+ await seedOffices(x.db,[{...office,code:'N00024'}]);
+ x.sql.exec("INSERT INTO office_publications SELECT 'N00024',published_run_id,coverage_start,coverage_end,windows_json,award_count,fiscal_complete,schema_version,published_at FROM office_publications WHERE office_dodaac='FA4528'");
+ const two=await storageReport(x.db);
+ assert.equal(two.projection.measured_offices,2);
+ assert.equal(two.projection.measured_payload_bytes,one.projection.measured_payload_bytes);
+ assert.equal(two.projection.one_office_payload_bytes,one.projection.one_office_payload_bytes/2);
+ x.sql.close();
+});

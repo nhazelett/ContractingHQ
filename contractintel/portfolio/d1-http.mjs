@@ -5,7 +5,7 @@ export function createHttpD1({account,database,token,fetcher=fetch,interval=CONF
  const endpoint='https://api.cloudflare.com/client/v4/accounts/'+account+'/d1/database/'+database+'/query';let queue=Promise.resolve(),next=0;
  const execute=async body=>{
   const turn=queue.then(async()=>{const delay=Math.max(0,next-now());if(delay)await sleep(delay);next=now()+interval;});queue=turn.catch(()=>{});await turn;
-  let response;try{response=await fetcher(endpoint,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body),redirect:'error',signal:AbortSignal.timeout(CONFIG.d1HttpTimeoutMs)});}catch{throw new Error('D1 HTTP connection failed; write outcome may be unknown. No automatic write replay.');}
+  let response;try{response=await fetcher(endpoint,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body),redirect:'error',signal:AbortSignal.timeout(CONFIG.d1HttpTimeoutMs)});}catch(error){if(error.message==='D1 job budget reached; saved staging will resume.')throw error;throw new Error('D1 HTTP connection failed; write outcome may be unknown. No automatic write replay.');}
   let data;try{data=await response.json();}catch{throw new Error('D1 HTTP returned an unreadable response; no automatic write replay.');}
   if(!response.ok||!data.success||!Array.isArray(data.result)||data.result.some(r=>!r.success))throw new Error('D1 HTTP query failed: '+response.status+'; codes '+(data.errors||[]).map(e=>e.code).join(','));
   return data.result;

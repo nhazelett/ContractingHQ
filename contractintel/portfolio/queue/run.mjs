@@ -23,7 +23,7 @@ console.log(JSON.stringify({automatic_queue:result.decision,office:result.claim?
 if(result.decision==='reserved'){
  const claim=result.claim;
  const exit=await new Promise((resolve,reject)=>{
-  const child=spawn(process.execPath,[fileURLToPath(new URL('../r2/runner.mjs',import.meta.url))],{stdio:'inherit',shell:false,env:{...process.env,AUTOMATIC_OFFICE:claim.office,PILOT_OFFICE:claim.office,ROLLOUT_CLAIM_ID:claim.id,RUN_MODE:'nightly',PERFORM_VERIFY:'true',AUTO_RESUME:'true',COHORT_BATCH:'1'}});
+  const child=spawn(process.execPath,[fileURLToPath(new URL('../r2/runner.mjs',import.meta.url))],{stdio:'inherit',shell:false,env:{...process.env,AUTOMATIC_OFFICE:claim.office,PILOT_OFFICE:claim.office,ROLLOUT_CLAIM_ID:claim.id,RUN_MODE:'nightly',PERFORM_VERIFY:claim.maintenance?'false':'true',AUTO_RESUME:'true',COHORT_BATCH:'1'}});
   child.on('error',()=>reject(new Error('Automatic ingest could not start; reconcile its reserved claim.')));
   child.on('close',resolve);
  });

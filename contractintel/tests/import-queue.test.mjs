@@ -51,7 +51,7 @@ test('One office resumes across batches, then verifies before another begins',as
 });
 test('Daily budgets reserve worst-case work before a batch and reset on the New York day',async()=>{
  let {state}=await group(['FA0001']);
- for(let i=0;i<3;i++){const batch=reserve(state,{claimId:'batch-'+i});assert.equal(batch.decision,'reserved');state=finishBatch(batch.state,batch.claim.id,usage({source_requests:POLICY.batchSourceRequests,runtime_ms:POLICY.batchRuntimeMs,status:'yielded',checkpoint:{phase:'import',ref:'saved'}}),{now});}
+ for(let i=0;i<Math.floor(Math.min(POLICY.maxDailySourceRequests/POLICY.batchSourceRequests,POLICY.maxDailyRuntimeMs/POLICY.batchRuntimeMs));i++){const batch=reserve(state,{claimId:'batch-'+i});assert.equal(batch.decision,'reserved');state=finishBatch(batch.state,batch.claim.id,usage({source_requests:POLICY.batchSourceRequests,runtime_ms:POLICY.batchRuntimeMs,status:'yielded',checkpoint:{phase:'import',ref:'saved'}}),{now});}
  const boundary=Date.parse('2026-10-27T03:50:00Z');assert.equal(reserve(state,{now:boundary,storage:{...storage,measured_at:boundary}}).decision,'day_boundary_wait');
  assert.equal(state.budgets[0].day,'2026-10-26');assert.equal(reserve(state).decision,'daily_limit');
  const later=Date.parse('2026-10-27T04:01:00Z');assert.equal(reserve(state,{now:later,storage:{...storage,measured_at:later}}).decision,'reserved');

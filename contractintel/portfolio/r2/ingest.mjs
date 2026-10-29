@@ -117,8 +117,8 @@ async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,now=Date
   must(state.format_version===SETTINGS.formatVersion&&state.office===SETTINGS.office,'Invalid checkpoint identity.');
   if(state.work_id===base.manifest.source_publication_id&&state.status!=='completed'){
    // Publication succeeded but checkpoint acknowledgement may have been lost.
-   if(state.status!=='completed'){state.status='completed';state.phase='done';await saveCheckpoint(store,state,etag);}
-   return {status:'retained',office:SETTINGS.office,publication_id:state.work_id,source_requests:0};
+   if(state.status!=='completed'){state.status='completed';state.phase='done';etag=await saveCheckpoint(store,state,etag);}
+   if(!force&&mode==='nightly'&&currentDate(Date.parse(base.manifest.source_published_at))===currentDate(now()))return {status:'retained',office:SETTINGS.office,publication_id:state.work_id,source_requests:0};
   }
   if(state.status==='completed'){
    if(!force&&mode==='nightly'&&currentDate(Date.parse(base.manifest.source_published_at))===currentDate(now()))return {status:'retained',office:SETTINGS.office,publication_id:state.work_id,source_requests:0};

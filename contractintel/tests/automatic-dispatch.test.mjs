@@ -16,7 +16,7 @@ async function fixture(){
  const db={prepare,sqlite,batch:async statements=>{sqlite.exec('BEGIN');try{const result=statements.map(s=>({meta:{changes:sqlite.prepare(s.sql).run(...s.params).changes}}));sqlite.exec('COMMIT');return result;}catch(error){sqlite.exec('ROLLBACK');throw error;}}};
  db.approve=()=>{
   sqlite.exec("INSERT INTO office_publications VALUES('FA4800','verified'); INSERT INTO portfolio_publication_receipts VALUES('verified','FA4800','published','{\"match\":true}');");
-  sqlite.prepare('UPDATE portfolio_rollout_control SET review_json=?').run(JSON.stringify({fa4800_publication_version:'verified',costs_reviewed:true,baseline_r2_bytes:1000}));
+  sqlite.prepare('UPDATE portfolio_rollout_control SET review_json=?').run(JSON.stringify({capacity_version:CONFIG.capacity.version,fa4800_publication_version:'verified',costs_reviewed:true,baseline_r2_bytes:1000}));
  };
  return db;
 }
@@ -44,13 +44,13 @@ test('Yield refunds unused budget, preserves checkpoint and resumes the same off
  assert.equal(db.sqlite.prepare('SELECT source_requests FROM portfolio_rollout_days').get().source_requests,50);
  const next=await reserveAutomaticBatch(db,{now:now+2000});
  assert.equal(next.claim.office,claim.office);
- assert.equal(db.sqlite.prepare('SELECT reserved_r2_bytes FROM portfolio_rollout_control').get().reserved_r2_bytes,CONFIG.r2Nightly.maxBucketBytes);
+ assert.equal(db.sqlite.prepare('SELECT reserved_r2_bytes FROM portfolio_rollout_control').get().reserved_r2_bytes,CONFIG.capacity.perOfficeR2Bytes);
  await assert.rejects(finishAutomaticBatch(db,claim,{office:claim.office,status:'yielded',source_requests:1},{now:now+3000}));
  db.sqlite.close();
 });
 test('Ready needs admitted cache and matching D1 version; failed publication cannot advance queue',async()=>{
  const db=await fixture();db.approve();const {claim}=await reserveAutomaticBatch(db,{now});
- const report={office:claim.office,status:'passed',source_requests:25,d1_publication_version:'new',read_enabled:true};
+ const report={office:claim.office,status:'passed',source_requests:25,d1_publication_version:'new',read_enabled:true,reserved_storage_bytes:1000};
  await assert.rejects(finishAutomaticBatch(db,claim,report,{now:now+1000}));
  db.sqlite.prepare('INSERT INTO office_publications VALUES(?,?)').run(claim.office,'new');
  db.sqlite.prepare('INSERT INTO portfolio_publication_receipts VALUES(?,?,?,?)').run('new',claim.office,'published','{"match":true}');
@@ -63,7 +63,7 @@ test('Daily work and storage caps stop a new reservation; terminal failures paus
  db.sqlite.prepare('INSERT INTO portfolio_rollout_days VALUES(?,?,?)').run('2026-10-28',CONFIG.queue.maxDailySourceRequests,0);
  assert.equal((await reserveAutomaticBatch(db,{now})).decision,'daily_limit');
  db.sqlite.exec('DELETE FROM portfolio_rollout_days');
- db.sqlite.prepare('UPDATE portfolio_rollout_control SET reserved_r2_bytes=?').run(CONFIG.queue.maxTotalStorageBytes);
+ db.sqlite.prepare('UPDATE portfolio_rollout_control SET reserved_r2_bytes=?').run(CONFIG.capacity.maxR2Bytes);
  assert.equal((await reserveAutomaticBatch(db,{now})).decision,'r2_storage_limit');
  db.sqlite.exec('UPDATE portfolio_rollout_control SET reserved_r2_bytes=0');
  const {claim}=await reserveAutomaticBatch(db,{now});
@@ -118,4 +118,33 @@ test('A queued non-pilot office uses the original source package, publishes D1 f
  assert.equal(snapshot.source,'r2');assert.ok(snapshot.records.length>0);assert.ok(snapshot.records.every(r=>r.piid.startsWith('N00024')));
  assert.ok([...objects.keys()].every(key=>key.startsWith('pilot/N00024/')));
  x.sql.close();
+});
+
+test('Completed office reservation settles to measured bytes and refreshes daily without losing its publication',async()=>{
+ const db=await fixture();db.approve();
+ const {claim}=await reserveAutomaticBatch(db,{now});
+ db.sqlite.prepare('INSERT INTO office_publications VALUES(?,?)').run(claim.office,'version-one');
+ db.sqlite.prepare('INSERT INTO portfolio_publication_receipts VALUES(?,?,?,?)').run('version-one',claim.office,'published','{"match":true}');
+ await finishAutomaticBatch(db,claim,{office:claim.office,status:'passed',source_requests:40,d1_publication_version:'version-one',read_enabled:true,reserved_storage_bytes:12345},{now:now+1000});
+ assert.equal(db.sqlite.prepare('SELECT reserved_r2_bytes FROM portfolio_rollout_control').get().reserved_r2_bytes,12345);
+ const ready=db.sqlite.prepare('SELECT * FROM portfolio_rollout_jobs WHERE office_dodaac=?').get(claim.office);
+ assert.equal(ready.storage_reserved_bytes,12345);
+ assert.equal(Date.parse(ready.next_refresh_at),now+1000+CONFIG.capacity.maintenanceEveryMs);
+ const later=now+1001+CONFIG.capacity.maintenanceEveryMs;
+ const refresh=await reserveAutomaticBatch(db,{now:later});
+ assert.equal(refresh.claim.office,claim.office);
+ assert.equal(refresh.claim.maintenance,true);
+ assert.equal(refresh.claim.r2_reserved_bytes,CONFIG.capacity.perOfficeR2Bytes);
+ await finishAutomaticBatch(db,refresh.claim,{office:claim.office,status:'yielded',source_requests:5,chunks:[{status:'yielded'}]},{now:later+1000});
+ assert.equal(db.sqlite.prepare('SELECT publication_version FROM portfolio_rollout_jobs WHERE office_dodaac=?').get(claim.office).publication_version,'version-one');
+ assert.equal(db.sqlite.prepare('SELECT published_run_id FROM office_publications WHERE office_dodaac=?').get(claim.office).published_run_id,'version-one');
+ db.sqlite.close();
+});
+test('A missing storage measurement cannot mark an automatic office ready',async()=>{
+ const db=await fixture();db.approve();const {claim}=await reserveAutomaticBatch(db,{now});
+ db.sqlite.prepare('INSERT INTO office_publications VALUES(?,?)').run(claim.office,'v2');
+ db.sqlite.prepare('INSERT INTO portfolio_publication_receipts VALUES(?,?,?,?)').run('v2',claim.office,'published','{"match":true}');
+ await assert.rejects(finishAutomaticBatch(db,claim,{office:claim.office,status:'passed',source_requests:1,d1_publication_version:'v2',read_enabled:true},{now:now+1000}),/storage/);
+ assert.equal(db.sqlite.prepare('SELECT lease_id FROM portfolio_rollout_control').get().lease_id,claim.id);
+ db.sqlite.close();
 });

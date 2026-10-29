@@ -39,6 +39,7 @@ export async function storageReport(db){
  const history=await db.prepare('SELECT coalesce(sum(length(CAST(actions_json AS BLOB))),0) normalized_action_bytes,coalesce(sum(length(CAST(raw_json AS BLOB))),0) raw_page_bytes FROM award_history_pages').first();
  const probe=await db.prepare('SELECT 1 AS storage_probe').all();
  const fixed=sizes.filter(t=>t.table==='offices').reduce((n,t)=>n+t.logical_bytes,0),variable=sizes.filter(t=>['awards','award_windows','award_history_pages','fiscal_totals'].includes(t.table)).reduce((n,t)=>n+t.logical_bytes,0);
+ const officeCount=sizes.find(t=>t.table==='office_publications')?.rows||0,average=officeCount?variable/officeCount:null;
  return {physical_bytes:probe.meta?.size_after??null,table_sizes:sizes,history,
- projection:{offices:CONFIG.storageProjectionOffices,fixed_directory_bytes:fixed,one_office_payload_bytes:variable,total_logical_bytes:fixed+variable*CONFIG.storageProjectionOffices,warning:'Linear FA4528-only extrapolation, not a forecast: office award counts and history depths vary. Logical table bytes exclude SQLite/index overhead. Physical total includes overhead and unused pages.'}};
+ projection:{offices:CONFIG.storageProjectionOffices,fixed_directory_bytes:fixed,measured_offices:officeCount,measured_payload_bytes:variable,one_office_payload_bytes:average,total_logical_bytes:average===null?null:fixed+average*CONFIG.storageProjectionOffices,warning:'Linear average of the measured published offices, not a forecast. Office award counts and history depths vary. Logical table bytes exclude SQLite/index overhead. Physical total includes overhead and unused pages.'}};
 }
