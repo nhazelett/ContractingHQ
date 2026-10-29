@@ -1,0 +1,163 @@
+{
+  "capacity_version": 1,
+  "fa4800_publication_version": "90245098-ed8a-43e2-995b-d9c9e817de19",
+  "costs_reviewed": true,
+  "reviewed_at": "2026-10-29T00:05:32.263Z",
+  "baseline_r2_bytes": 26568413,
+  "buckets": [
+    {
+      "bucket": "kthq-contractintel-r2-fa4528-nightly",
+      "bytes": 4916246,
+      "objects": 56,
+      "complete": true
+    },
+    {
+      "bucket": "kthq-contractintel-r2-fa4800",
+      "bytes": 16975418,
+      "objects": 91,
+      "complete": true
+    },
+    {
+      "bucket": "kthq-contractintel-r2-fa4528-pilot",
+      "bytes": 4676749,
+      "objects": 53,
+      "complete": true
+    },
+    {
+      "bucket": "kthq-contractintel-portfolio-cache",
+      "bytes": 0,
+      "objects": 0,
+      "complete": true
+    }
+  ],
+  "d1_physical_bytes": 142479360,
+  "d1_table_sizes": [
+    {
+      "table": "award_history_pages",
+      "rows": 12059,
+      "logical_bytes": 23334885
+    },
+    {
+      "table": "award_windows",
+      "rows": 17325,
+      "logical_bytes": 924096
+    },
+    {
+      "table": "awards",
+      "rows": 12059,
+      "logical_bytes": 94954099
+    },
+    {
+      "table": "fiscal_totals",
+      "rows": 4,
+      "logical_bytes": 26129
+    },
+    {
+      "table": "ingest_dispatches",
+      "rows": 2,
+      "logical_bytes": 210
+    },
+    {
+      "table": "ingest_lock",
+      "rows": 1,
+      "logical_bytes": 1
+    },
+    {
+      "table": "ingest_office_progress",
+      "rows": 1,
+      "logical_bytes": 951
+    },
+    {
+      "table": "ingest_runs",
+      "rows": 83,
+      "logical_bytes": 124311
+    },
+    {
+      "table": "ingest_stage",
+      "rows": 0,
+      "logical_bytes": 0
+    },
+    {
+      "table": "office_publications",
+      "rows": 2,
+      "logical_bytes": 290
+    },
+    {
+      "table": "offices",
+      "rows": 1432,
+      "logical_bytes": 413626
+    },
+    {
+      "table": "portfolio_import_queue",
+      "rows": 0,
+      "logical_bytes": 0
+    },
+    {
+      "table": "portfolio_publication_assertions",
+      "rows": 0,
+      "logical_bytes": 0
+    },
+    {
+      "table": "portfolio_publication_receipts",
+      "rows": 3,
+      "logical_bytes": 9372
+    },
+    {
+      "table": "portfolio_rollout_assertions",
+      "rows": 0,
+      "logical_bytes": 0
+    },
+    {
+      "table": "portfolio_rollout_control",
+      "rows": 1,
+      "logical_bytes": 3
+    },
+    {
+      "table": "portfolio_rollout_days",
+      "rows": 0,
+      "logical_bytes": 0
+    },
+    {
+      "table": "portfolio_rollout_jobs",
+      "rows": 150,
+      "logical_bytes": 20484
+    },
+    {
+      "table": "portfolio_seed_rankings",
+      "rows": 1,
+      "logical_bytes": 188750
+    }
+  ],
+  "partition": {
+    "strategy": "Keep current published offices in the existing database; place new offices in another D1 database at the threshold.",
+    "trigger_bytes": 6442450944,
+    "hard_guard_bytes": 8589934592,
+    "staging_reserve_bytes": 536870912,
+    "current_bytes": 142479360,
+    "automatic_shard_creation": false,
+    "requirements": [
+      "Durable office-to-database mapping in the control database",
+      "Apply the same schema and publication gate in each shard",
+      "Route office reads and ingest through the mapping; retain live fallback",
+      "Validate a new shard before assigning an office; never silently move existing publications"
+    ],
+    "note": "The queue stops new offices at the threshold. Additional database provisioning and read routing must be implemented before crossing it."
+  },
+  "limits": {
+    "version": 1,
+    "maxD1Bytes": 8589934592,
+    "partitionAtBytes": 6442450944,
+    "d1PublicationReserveBytes": 536870912,
+    "maxR2Bytes": 8589934592,
+    "perOfficeR2Bytes": 268435456,
+    "pilotR2HeadroomBytes": 100663296,
+    "maintenanceEveryMs": 86400000,
+    "maxDailySourceRequests": 72000,
+    "maxDailyRuntimeMs": 72000000
+  },
+  "source_costs_per_1000_awards": {
+    "source_requests_reported": 4065.386546184739,
+    "source_job_minutes": 37.63088395247658,
+    "compressed_bytes": 1088834.964859438
+  }
+}
