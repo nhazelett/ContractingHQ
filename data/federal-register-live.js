@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-10-29T14:13:09.780Z",
-  "since": "2025-05-07",
+  "generatedAt": "2026-10-30T14:04:25.796Z",
+  "since": "2025-05-08",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,18 +14,52 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 149,
-    "latestPublicationDate": "2026-10-19",
-    "openCommentWindows": 18,
+    "total": 150,
+    "latestPublicationDate": "2026-10-30",
+    "openCommentWindows": 19,
     "rules": 54,
     "byTone": {
-      "monitor": 93,
+      "monitor": 94,
       "active": 1,
       "watch": 25,
       "action": 30
     }
   },
   "items": [
+    {
+      "id": "2026-22183",
+      "documentNumber": "2026-22183",
+      "title": "Information Collection Requirement; Defense Federal Acquisition Regulation Supplement (DFARS) Appendix I",
+      "shortTitle": "Information Collection Requirement; Defense Federal Acquisition Regulation Supplement (DFARS) Appendix I",
+      "system": "DFARS",
+      "stage": "Information collection",
+      "topic": "Clauses / reps",
+      "actionLevel": "Monitor",
+      "actionTone": "monitor",
+      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
+      "nextSteps": [
+        "Identify the cited provision, clause, form, or system",
+        "Comment only if your office has burden data or a process concern",
+        "No template change unless a later rule follows"
+      ],
+      "type": "Notice",
+      "publicationDate": "2026-10-30",
+      "effectiveDate": "",
+      "commentsCloseDate": "2026-11-30",
+      "datesText": "Consideration will be given to all comments received by November 30, 2026.",
+      "actionText": "Notice.",
+      "summary": "The Defense Acquisition Regulations System has submitted to OMB for clearance the following proposal for collection of information under the provisions of the Paperwork Reduction Act.",
+      "citation": "91 FR 68498",
+      "regulationIds": [],
+      "cfrReferences": "",
+      "agencies": [
+        "Defense Department",
+        "Defense Acquisition Regulations System"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/10/30/2026-22183/information-collection-requirement-defense-federal-acquisition-regulation-supplement-dfars-appendix",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-10-30/pdf/2026-22183.pdf",
+      "sourceQuery": "DFARS / DARS agency feed"
+    },
     {
       "id": "2026-21327",
       "documentNumber": "2026-21327",
