@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-10-30T15:02:37.524738+00:00",
+  "generatedAt": "2026-10-31T14:31:17.967697+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -8884,6 +8884,16 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
   ],
   "announcements": [
     {
+      "id": "92debf7a88a41605",
+      "title": "FAR Overhaul | FAR Companion Guide | Version 3.0",
+      "url": "https://www.acquisition.gov/content/far-overhaul-far-companion-guide-version-3.0",
+      "date": "2026-10-30",
+      "dateLabel": "Oct 30, 2026",
+      "source": "Acquisition.gov",
+      "type": "Official announcement",
+      "summary": "FAR Overhaul | FAR Companion Guide | Version 3.0 Anonymous (not verified) Fri, 10/30/2026 - 14:57 The Federal Acquisition Regulatory Council has released an update to the FAR Companion as part of the ongoing Revolutionary FAR Overhaul (RFO) Initiative, in accordance with..."
+    },
+    {
       "id": "a9e06d65db50df9e",
       "title": "FAR Overhaul Updates for Parts 16 and 52 - Implementation of E.O. 14402, Promoting Efficiency, Accountability, and Performance in Federal Contracting",
       "url": "https://www.acquisition.gov/content/far-overhaul-updates-parts-16-and-52-implementation-e.o.-14402-promoting-efficiency-accountability-and-performance-federal-contracting",
@@ -8962,16 +8972,6 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "source": "Acquisition.gov",
       "type": "Official announcement",
       "summary": "FAR Updates to Align with eSRS Decommissioning Anonymous (not verified) Fri, 02/20/2026 - 12:00 GSA will decommission the Electronic Subcontracting Reporting System (eSRS.gov) on February 20, 2026, moving subcontracting reporting to SAM.gov, as part of the ongoing effort to..."
-    },
-    {
-      "id": "b08fb0a60800a558",
-      "title": "RFO in PDF & New RFO Course Now Available",
-      "url": "https://www.acquisition.gov/content/rfo-pdf-new-rfo-course-now-available",
-      "date": "2025-12-18",
-      "dateLabel": "Dec 18, 2025",
-      "source": "Acquisition.gov",
-      "type": "Official announcement",
-      "summary": "RFO in PDF & New RFO Course Now Available Anonymous (not verified) Thu, 12/18/2025 - 10:00 The Federal Acquisition Regulatory Council has released a full PDF of all updated model deviations as part of the ongoing Revolutionary FAR Overhaul (RFO) Initiative, in accordance with..."
     }
   ],
   "federalRegister": [
