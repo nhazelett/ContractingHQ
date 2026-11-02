@@ -6,8 +6,9 @@
   const themeToggle = document.getElementById('theme-toggle');
   const motionToggle = document.getElementById('leaves-toggle');
   const canvas = document.getElementById('harvest-leaves');
-  const hero = document.getElementById('home');
-  if (!canvas || !hero || !motionToggle) return;
+  const hero = document.getElementById('home') || document.getElementById('trainingSeason');
+  const isTraining = hero?.id === 'trainingSeason';
+  if (!canvas || !hero) return;
   let disposed = false;
   let resizeObserver;
   let visibilityObserver;
@@ -28,11 +29,11 @@
     document.querySelectorAll('.seasonal').forEach(el => { el.hidden = !seasonal; });
     themeToggle.textContent = seasonal ? 'Standard colors' : 'Thanksgiving colors';
     themeToggle.setAttribute('aria-pressed', String(seasonal));
-    motionToggle.hidden = !seasonal;
+    if (motionToggle) motionToggle.hidden = !seasonal;
     resize();
     syncMotion();
   });
-  motionToggle.addEventListener('click', () => { paused = !paused; syncMotion(); });
+  motionToggle?.addEventListener('click', () => { paused = !paused; syncMotion(); });
   function onMotionPreference() { paused = reducedMotion.matches; syncMotion(); }
   reducedMotion.addEventListener('change', onMotionPreference);
   document.addEventListener('visibilitychange', syncMotion);
@@ -54,14 +55,17 @@
     if (!ctx) return;
     width = hero.clientWidth;
     height = hero.clientHeight;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
     canvas.width = Math.round(width*dpr);
     canvas.height = Math.round(height*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
-    leaves = Array.from({ length: width < 680 ? 11 : 23 }, () => makeLeaf(true));
+    leaves = Array.from({ length: isTraining ? (width < 680 ? 6 : 12) : (width < 680 ? 11 : 23) }, () => makeLeaf(true));
   }
+  let lastDraw = 0;
   function draw(now) {
     if (disposed || !hero.isConnected) return;
+    if (now - lastDraw < 1000 / 24) { frame = requestAnimationFrame(draw); return; }
+    lastDraw = now;
     const dt = Math.min((now-previous)/1000 || 0, .05);
     previous = now;
     ctx.clearRect(0,0,width,height);
@@ -95,25 +99,27 @@
     frame = 0;
     const allowed = seasonal && !paused && !reducedMotion.matches;
     canvas.hidden = !allowed;
+    if (motionToggle) {
     motionToggle.disabled = reducedMotion.matches || !ctx;
     motionToggle.textContent = reducedMotion.matches ? 'Motion off' : paused ? 'Resume leaves' : 'Pause leaves';
     motionToggle.setAttribute('aria-pressed', String(allowed));
     motionToggle.setAttribute('aria-label', reducedMotion.matches ? 'Animation disabled by your reduced motion preference' : paused ? 'Resume falling leaves' : 'Pause falling leaves');
+    }
     if (ctx && allowed && visible && !document.hidden) { previous = 0; frame = requestAnimationFrame(draw); }
   }
   const artScene = document.querySelector('.harvest-scene');
   const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
-  artScene.addEventListener('pointermove', event => {
+  artScene?.addEventListener('pointermove', event => {
     if (reducedMotion.matches || paused || !finePointer.matches) return;
     const bounds = artScene.getBoundingClientRect();
     artScene.style.setProperty('--art-turn', ((event.clientX - bounds.left) / bounds.width - .5) * 5 + 'deg');
     artScene.style.setProperty('--art-rise', ((event.clientY - bounds.top) / bounds.height - .5) * -4 + 'deg');
   }, {passive:true});
-  artScene.addEventListener('pointerleave', () => {
+  artScene?.addEventListener('pointerleave', () => {
     artScene.style.setProperty('--art-turn', '0deg');
     artScene.style.setProperty('--art-rise', '0deg');
   });
-  hero.addEventListener('pointermove', event => { wind = (event.clientX/Math.max(width,1)-.5)*2; }, {passive:true});
+  if (!isTraining) hero.addEventListener('pointermove', event => { wind = (event.clientX/Math.max(width,1)-.5)*2; }, {passive:true});
   hero.addEventListener('pointerleave', () => { wind = 0; });
   if ('ResizeObserver' in window) { resizeObserver = new ResizeObserver(resize); resizeObserver.observe(hero); }
   else window.addEventListener('resize',resize,{passive:true});
