@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-11-02T17:21:49.226Z",
+  "generatedAt": "2026-11-03T15:26:01.390Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -8,10 +8,10 @@ window.KTHQ_GAO_DATA = {
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
     "total": 19,
-    "latestDecisionDate": "2026-10-27",
+    "latestDecisionDate": "2026-10-29",
     "sustained": 0,
     "denied": 9,
-    "dismissed": 3,
+    "dismissed": 4,
     "mixed": 6,
     "unclassified": 0,
     "sourceStatus": {
@@ -36,6 +36,33 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424708",
+      "caseName": "Priority 1 Air Rescue Operations (Arizona), LP",
+      "title": "Priority 1 Air Rescue Operations (Arizona), LP",
+      "bNumbers": [
+        "B-424708"
+      ],
+      "bNumberText": "B-424708",
+      "link": "https://www.gao.gov/products/b-424708",
+      "publicationDate": "2026-11-03",
+      "decisionDate": "2026-10-29",
+      "displayDate": "Oct 29, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Priority 1 Air Rescue Operations (Arizona), LP, a small business of Mesa, Arizona, protests the terms of request for proposals (RFP) No....",
+      "highlights": "",
+      "digest": "Protest challenging combination of requirements for flight simulator and hoist training devices into a single solicitation as unduly restrictive of competition is denied where the record shows that the combination of requirements is reasonably necessary to meet the agency's legitimate needs.",
+      "tags": [
+        "Solicitation terms",
+        "Small business"
+      ],
+      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424642.3",
       "caseName": "SAVE THE AMERICAN COMMUNITIES LLC--Reconsideration",
@@ -279,6 +306,33 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-424641,B-424641.2",
+      "caseName": "Michael Baker-International Stantec JV",
+      "title": "Michael Baker-International Stantec JV",
+      "bNumbers": [
+        "B-424641",
+        "B-424641.2"
+      ],
+      "bNumberText": "B-424641, B-424641.2",
+      "link": "https://www.gao.gov/products/b-424641%2Cb-424641.2",
+      "publicationDate": "2026-11-03",
+      "decisionDate": "2026-10-16",
+      "displayDate": "Oct 16, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We sustain the protest in part and deny it in part.",
+      "officialSynopsis": "Michael Baker-International Stantec JV (MBIS), of Moon Township, Pennsylvania, protests its elimination from consideration under synopsis No....",
+      "highlights": "",
+      "digest": "Protest challenging the agency's evaluation of qualification statements submitted in a procurement for architect-engineering services is sustained where the experience criterion was not evaluated consistent with the terms of the synopsis.",
+      "tags": [
+        "Evaluation"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
       "id": "B-424785",
       "caseName": "Casey & Company LLC",
       "title": "Casey & Company LLC",
@@ -307,26 +361,27 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424245.3,B-424245.2",
-      "caseName": "Cashel Strategic, LLC--Reconsideration",
-      "title": "Cashel Strategic, LLC--Reconsideration",
+      "id": "B-424607.2",
+      "caseName": "Sterling Readiness Rounds, LLC--Reconsideration",
+      "title": "Sterling Readiness Rounds, LLC--Reconsideration",
       "bNumbers": [
-        "B-424245.3",
-        "B-424245.2"
+        "B-424607.2"
       ],
-      "bNumberText": "B-424245.3, B-424245.2",
-      "link": "https://www.gao.gov/products/b-424245.3",
-      "publicationDate": "2026-10-13",
-      "decisionDate": "2026-10-13",
-      "displayDate": "Oct 13, 2026",
-      "outcome": "reconsideration",
-      "outcomeLabel": "Reconsideration",
+      "bNumberText": "B-424607.2",
+      "link": "https://www.gao.gov/products/b-424607.2",
+      "publicationDate": "2026-10-14",
+      "decisionDate": "2026-10-14",
+      "displayDate": "Oct 14, 2026",
+      "outcome": "dismissed",
+      "outcomeLabel": "Dismissed",
       "outcomeSource": "Inferred from GAO RSS",
       "decisionLine": "",
-      "officialSynopsis": "Cashel Strategic, LLC, of Sheridan, Wyoming, requests reconsideration of our decision, Cashel Strategic, LLC, B-424245.2, July 24, 2026 (unpublished...",
+      "officialSynopsis": "Sterling Readiness Rounds, LLC, a small business of Lawrence, Kansas, requests that we reconsider our decision dismissing its protest alleging that...",
       "highlights": "",
       "digest": "",
-      "tags": [],
+      "tags": [
+        "Small business"
+      ],
       "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
       "sourceStatus": "rss",
       "sourceStatusLabel": "RSS fallback"
@@ -385,32 +440,6 @@ window.KTHQ_GAO_DATA = {
         "Solicitation terms"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424607.2",
-      "caseName": "Sterling Readiness Rounds, LLC--Reconsideration",
-      "title": "Sterling Readiness Rounds, LLC--Reconsideration",
-      "bNumbers": [
-        "B-424607.2"
-      ],
-      "bNumberText": "B-424607.2",
-      "link": "https://www.gao.gov/products/b-424607.2",
-      "publicationDate": "2026-10-14",
-      "decisionDate": "2026-10-13",
-      "displayDate": "Oct 13, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the request.",
-      "officialSynopsis": "Sterling Readiness Rounds, LLC, a small business of Lawrence, Kansas, requests that we reconsider our decision dismissing its protest alleging that...",
-      "highlights": "",
-      "digest": "Request for reconsideration of decision dismissing a protest for failure to submit comments on the agency report is denied where the requester does not show that our prior decision contains errors of fact or law or information not previously considered.",
-      "tags": [
-        "Small business"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -497,38 +526,6 @@ window.KTHQ_GAO_DATA = {
         "Solicitation terms",
         "Price / cost",
         "Orders / IDIQ"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424214.3,B-424214.4,B-424214.5,B-424214.7",
-      "caseName": "Secise, LLC; Don Selvy Enterprises, Inc.",
-      "title": "Secise, LLC; Don Selvy Enterprises, Inc.",
-      "bNumbers": [
-        "B-424214.3",
-        "B-424214.4",
-        "B-424214.5",
-        "B-424214.7"
-      ],
-      "bNumberText": "B-424214.3, B-424214.4, B-424214.5, B-424214.7",
-      "link": "https://www.gao.gov/products/b-424214.3%2Cb-424214.4%2Cb-424214.5%2Cb-424214.7",
-      "publicationDate": "2026-10-13",
-      "decisionDate": "2026-09-09",
-      "displayDate": "Sep 9, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Secise, LLC, a small business of Bel Air, Maryland, and Don Selvy Enterprises, Inc., also a small business of Bel Air, Maryland, protest the issuance...",
-      "highlights": "",
-      "digest": "1. Protest challenging the agency's evaluation of technical proposals and tradeoff decision is denied where the evaluation was reasonable and consistent with the terms of the solicitation. 2. Protest that the agency improperly assessed the awardee's past performance confidence as substantial is denied where the evaluation was reasonable and consistent with the terms of the solicitation. 3. Protest alleging that the agency improperly allowed the awardee to lower its proposed cost during discussions is denied where the protester has not demonstrated a reasonable possibility of competitive prejudice.",
-      "tags": [
-        "Evaluation",
-        "Discussions / FPR",
-        "Solicitation terms",
-        "Price / cost"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
