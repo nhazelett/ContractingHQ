@@ -15,6 +15,16 @@ async function candidate(){
  const tables=await exportOffice(x.db);x.sql.close();return tables;
 }
 function target(){const x=sqlite();x.sql.exec(readFileSync(new URL('../portfolio/migrations/0004.sql',import.meta.url),'utf8'));return x;}
+test('A validation receipt cannot authorize mass removal from the authoritative database',async()=>{
+ const old=await candidate(),next=await candidate(),x=target();
+ await recordValidation(x.db,old,profile,{match:true});await publishD1(x.db,old,profile);
+ next.awards=[];next.award_windows=[];next.award_history_pages=[];next.office_publications[0].award_count=0;
+ await recordValidation(x.db,next,profile,{match:true});
+ await assert.rejects(publishD1(x.db,next,profile),/Publication removal guard/);
+ assert.equal((await publication(x.db,'FA4528')).published_run_id,old.office_publications[0].published_run_id);
+ assert.equal(format.canonical(await exportOffice(x.db)),format.canonical(old));
+ assert.equal(x.sql.prepare('SELECT count(*) n FROM ingest_stage').get().n,0);x.sql.close();
+});
 test('D1 receives every award, raw field, evidence page, window and fiscal total before R2 is generated',async()=>{
  const tables=await candidate(),x=target();
  await assert.rejects(publishD1(x.db,tables,profile),/receipt/);

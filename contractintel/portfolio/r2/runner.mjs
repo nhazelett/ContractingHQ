@@ -7,6 +7,7 @@ import {retryGateway} from './retry.mjs';
 import {continuationDecision} from './cohort-policy.mjs';
 import {validAdmission} from './admission.mjs';
 import {cleanupRetained} from './retention.mjs';
+import {assertResumableDiscovery} from '../publication-safety.mjs';
 // GitHub Actions entry point for the FA4528-only R2 shadow updater.
 // D1 is authoritative; R2 is generated only from a validated D1 publication.
 import fs from 'node:fs/promises';
@@ -97,6 +98,12 @@ async function main(){
  if(process.env.REQUIRE_ADMISSION==='true'&&!profile.readEnabled){const admission=await store.get(SETTINGS.admissionKey);if(!admission||!validAdmission(JSON.parse(new TextDecoder().decode(admission.bytes)),SETTINGS.office)){report.status='not_admitted';return;}report.admission_present=true;}
  report.seeded_from_verified_r2=false;
  let before=await loadPublication(store);report.previous_publication_id=before?.manifest.source_publication_id||null;
+ // Reject unsafe saved work before cleanup or an authority-cache repair can
+ // rotate the retained copy. Do not discard or silently migrate checkpoints.
+ const pendingEntry=await store.get(SETTINGS.checkpointKey);
+ if(pendingEntry){const pending=await unpack(pendingEntry.bytes,null,SETTINGS.maxCheckpointJSONBytes);
+  if(pending.status!=='completed'&&pending.work_id!==before?.manifest.source_publication_id)assertResumableDiscovery(pending,CONFIG.windows);
+ }
  report.retention_before=before?await cleanupRetained(store,before,profile):{deleted:0,protected_or_grace:0};
  const directoryData=JSON.parse(await fs.readFile(new URL('worker/offices.json',root),'utf8'));
  // This fetcher is exclusively for the source adapter. Every source operation
@@ -188,5 +195,3 @@ try{await main();}catch(error){report.status='failed';report.error=error.message
  if(workerName&&cf)try{const response=await cf('/workers/scripts/'+workerName,'DELETE');must(response.ok||response.status===404,'Temporary gateway cleanup failed.');report.temporary_worker_deleted=true;}catch(error){report.temporary_worker_deleted=false;report.cleanup_error=error.message;process.exitCode=1;}
  report.finished_at=new Date().toISOString();await save();console.log(JSON.stringify({r2_update_report:report}));
 }
-
-
