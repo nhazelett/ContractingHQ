@@ -2488,6 +2488,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'udm-exercises.html',
     'capstone-inject-builder.html',
     'pick-the-path.html',
+    'contract-file-checklist.html',
     'why-behind-the-buy.html',
     'subcontracting-trap.html',
     'set-asides.html',
