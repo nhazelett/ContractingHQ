@@ -7,7 +7,7 @@ import {exportOffice} from '../../benchmarks/r2/export.mjs';
 import {compareCSV} from '../../benchmarks/r2/csv.mjs';
 import {PILOT,buildBundle,bytes,digest,canonical,compatible,pack,unpack,snapshotFromTables} from './format.mjs';
 import {createGateway} from './gateway.mjs';
-import {CURRENT,SETTINGS,runR2Chunk,loadPublication} from './ingest.mjs';
+import {CURRENT,SETTINGS,runR2Chunk,loadPublication,publishCandidate} from './ingest.mjs';
 import {cacheImmutable} from './cache.mjs';
 
 const config={sourceIntervalMs:0};
@@ -44,6 +44,44 @@ async function fixture(){
  return {...cloud,upstream,db,sql,tables,bundle};
 }
 const ingest=x=>({store:x.store,directory:[office],now:fixed,fetcher:x.upstream.fetcher,config});
+
+test('Legacy pending checkpoints are retained without source calls or publication',async()=>{
+ const x=await fixture(),pointer=(await x.store.get(CURRENT)).bytes;
+ await runR2Chunk({...ingest(x),config:{...config,maxSourceRequests:4,sourceRequestReserve:2}});
+ const cp=await x.store.get(SETTINGS.checkpointKey),state=await unpack(cp.bytes);delete state.discovery_version;delete state.discovery_windows;
+ const encoded=await pack(state);await x.store.put(SETTINGS.checkpointKey,encoded.bytes,{expected:cp.etag,sha:encoded.sha256});
+ const calls=x.upstream.calls.length,writes=x.calls.filter(call=>call.method==='PUT').length;
+ await assert.rejects(runR2Chunk(ingest(x)),/Legacy checkpoint lacks discovery/);
+ assert.equal(x.upstream.calls.length,calls);assert.equal(x.calls.filter(call=>call.method==='PUT').length,writes);
+ assert.deepEqual((await x.store.get(CURRENT)).bytes,pointer);assert.deepEqual((await x.store.get(SETTINGS.checkpointKey)).bytes,encoded.bytes);
+});
+
+test('Missing terminal-page evidence blocks a prepared checkpoint without source work',async()=>{
+ const x=await fixture(),pointer=(await x.store.get(CURRENT)).bytes;
+ await runR2Chunk({...ingest(x),prepareOnly:true});
+ const cp=await x.store.get(SETTINGS.checkpointKey),state=await unpack(cp.bytes);state.discovery_windows[CONFIG.windows[0]].complete=false;
+ const encoded=await pack(state);await x.store.put(SETTINGS.checkpointKey,encoded.bytes,{expected:cp.etag,sha:encoded.sha256});
+ await assert.rejects(runR2Chunk({...ingest(x),fetcher:async()=>{throw Error('must not fetch');}}),/Discovery window .* incomplete/);
+ assert.deepEqual((await x.store.get(CURRENT)).bytes,pointer);
+});
+
+test('An emptied history window cannot publish even when other windows retain most awards',async()=>{
+ const x=await fixture(),pointer=(await x.store.get(CURRENT)).bytes;
+ const fetcher=async(url,options)=>{const response=await x.upstream.fetcher(url,options);
+  if(url.includes('spending_by_award')&&JSON.parse(options.body).filters.time_period[0].start_date===CONFIG.windows[0])return Response.json({results:[],page_metadata:{hasNext:false}});
+  return response;
+ };
+ await assert.rejects(runR2Chunk({...ingest(x),fetcher}),/Publication removal guard: window 2007-10-01/);
+ assert.deepEqual((await x.store.get(CURRENT)).bytes,pointer);
+});
+
+test('Direct cache promotion requires the checked baseline and rejects loss before object writes',async()=>{
+ const x=await fixture(),base=await loadPublication(x.store),writes=x.calls.filter(call=>call.method==='PUT').length;
+ await assert.rejects(publishCandidate(x.store,{...base,tables:undefined},{work_id:'candidate'},base.tables),/baseline tables are required/);
+ const empty=structuredClone(base.tables);empty.awards=[];empty.award_windows=[];empty.award_history_pages=[];empty.office_publications[0].award_count=0;
+ await assert.rejects(publishCandidate(x.store,base,{work_id:'candidate'},empty),/Publication removal guard/);
+ assert.equal(x.calls.filter(call=>call.method==='PUT').length,writes);
+});
 
 test('A real nightly pass reuses unchanged raw evidence and matches a fresh live-path backfill, including every CSV',async()=>{
  const x=await fixture(),before=x.upstream.calls.length;
@@ -88,7 +126,7 @@ test('Concurrent pointer changes, incomplete fiscal pages, and the two-version g
  const y=await fixture();await runR2Chunk({...ingest(y),config:{...config,maxSourceRequests:4,sourceRequestReserve:2}});
  const cp=await y.store.get(SETTINGS.checkpointKey),state=await unpack(cp.bytes);state.phase='publish';state.hydrate_index=Object.keys(state.candidates).length;
  const encoded=await pack(state);await y.store.put(SETTINGS.checkpointKey,encoded.bytes,{expected:cp.etag,sha:encoded.sha256});
- await assert.rejects(runR2Chunk(ingest(y)),/coverage is incomplete/);
+ await assert.rejects(runR2Chunk(ingest(y)),/Discovery completion evidence is missing/);
  const head=await y.store.get(CURRENT);await assert.rejects(y.store.put(CURRENT,head.bytes,{expected:'"obsolete"',sha:await digest(head.bytes)}),/conditional/);
 });
 

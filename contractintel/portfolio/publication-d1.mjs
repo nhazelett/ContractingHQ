@@ -3,6 +3,7 @@ import {CONFIG} from './ingest.mjs';
 import {createFormat} from './r2/format.mjs';
 import {publication} from './read.mjs';
 import {exportOffice} from '../benchmarks/r2/export.mjs';
+import {assertSafeRemoval,publishedMembership} from './publication-safety.mjs';
 const TABLES=['offices','ingest_runs','awards','award_windows','award_history_pages','fiscal_totals','office_publications'];
 const PRIMARY={offices:['dodaac'],ingest_runs:['id'],awards:['generated_unique_award_id'],award_windows:['generated_unique_award_id','window_start'],award_history_pages:['generated_unique_award_id','page'],fiscal_totals:['office_dodaac','fiscal_year'],office_publications:['office_dodaac']};
 const must=(value,message)=>{if(!value)throw new Error(message);};
@@ -44,6 +45,7 @@ export async function publishD1(db,tables,profile,{now=Date.now}={}){
  if(existing?.published_run_id===pub.published_run_id){
   const restored=await exportOffice(db,{profile});must(canonical(restored)===canonical(tables),'Published D1 fields differ from the validated candidate.');return {tables:restored,version:pub.published_run_id,reconciled:true};
  }
+ assertSafeRemoval(await publishedMembership(db,profile.office),tables,{windows:CONFIG.windows,limits:CONFIG.publicationSafety});
  checkTables(tables);const work='authority:'+pub.published_run_id,schemas={};
  for(const table of TABLES){
   schemas[table]=(await db.prepare('PRAGMA table_info('+table+')').all()).results;

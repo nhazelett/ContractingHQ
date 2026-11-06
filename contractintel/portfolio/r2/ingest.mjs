@@ -6,6 +6,7 @@ import {createSourceFetch} from '../../web/source-requests.mjs';
 import {currentDate} from '../../web/calendar.mjs';
 import {fiscalMonths,fiscalTotals,fiscalYear} from '../../web/overview.mjs';
 import {createFormat} from './format.mjs';
+import {assertSafeRemoval,assertDiscoveryComplete,assertResumableDiscovery} from '../publication-safety.mjs';
 
 export function createOfficeIngest(profile){
 const {PILOT,bytes,pack,unpack,canonical,checkTables,buildBundle,restoreBundle,validateManifest,digest}=createFormat(profile);
@@ -35,6 +36,7 @@ async function saveCheckpoint(store,state,etag){
 function candidateTables(base,state,{now=Date.now,sourceRequests=state.source_requests}={}){
  must(state.phase==='publish'&&state.hydrate_index===Object.keys(state.candidates).length,'Award pass is incomplete.');
  must(state.month===state.months.length&&canonical(state.months)===canonical(fiscalMonths(state.today)),'Fiscal month coverage is incomplete.');
+ assertDiscoveryComplete(state,CONFIG.windows);
  must(CONFIG.windows.every(start=>Array.isArray(state.windows[start])),'A history window is incomplete.');
  const windowIDs=new Set(Object.values(state.windows).flat());
  must(windowIDs.size===Object.keys(state.candidates).length&&Object.keys(state.candidates).every(id=>windowIDs.has(id)),'Window membership differs from discovered awards.');
@@ -70,10 +72,13 @@ function candidateTables(base,state,{now=Date.now,sourceRequests=state.source_re
  const lastFull=tables.ingest_runs.filter(row=>row.mode==='backfill'&&row.status==='completed').sort((a,b)=>compare(b.started_at,a.started_at))[0];
  const referenced=new Set([id,lastFull?.id,...awards.map(row=>row.published_run_id),...history.map(row=>row.published_run_id)]);
  tables.ingest_runs=tables.ingest_runs.filter(row=>referenced.has(row.id)).sort((a,b)=>compare(a.id,b.id));
- checkTables(tables);return tables;
+ checkTables(tables);assertSafeRemoval(base,tables,{windows:CONFIG.windows,limits:CONFIG.publicationSafety});return tables;
 }
 
 async function publishCandidate(store,base,state,tables,{now=Date.now,beforePublish=async()=>{},d1PublicationVersion=null}={}){
+ // Protect direct cache repair/promotion callers too, before staging any objects.
+ must(base.tables||!base.etag&&!base.manifest.version,'Existing R2 publication baseline tables are required for the removal guard.');
+ if(base.tables)assertSafeRemoval(base.tables,tables,{windows:CONFIG.windows,limits:CONFIG.publicationSafety});
  const current=await store.get(CURRENT);must((current?.etag||null)===base.etag,'Another publication won; checkpoint retained for review.');
  const bundle=await buildBundle(tables,{now,previousLookup:base.lookup,d1PublicationVersion});
  if(base.manifest.version){const archive=await pack(base.manifest),archiveKey=PILOT.prefix+'/objects/manifest-'+base.manifest.version+'-'+archive.sha256+'.json.gz';
@@ -124,7 +129,10 @@ async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,now=Date
    if(!force&&mode==='nightly'&&currentDate(Date.parse(base.manifest.source_published_at))===currentDate(now()))return {status:'retained',office:SETTINGS.office,publication_id:state.work_id,source_requests:0};
    state=null;
   }
-  else must(state.base_version===base.manifest.version,'Published data changed under a pending checkpoint; stopped for review.');
+  else{
+   must(state.base_version===base.manifest.version,'Published data changed under a pending checkpoint; stopped for review.');
+   assertResumableDiscovery(state,CONFIG.windows);
+  }
  }
  const started=now(),today=currentDate(started),requests={count:0,failures:[]},deadline=new AbortController();
  if(!state){
@@ -132,7 +140,7 @@ async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,now=Date
   const reconcile=mode==='backfill'||!lastFull||started-Date.parse(lastFull.started_at)>config.reconciliationDays*config.millisecondsPerDay;
   state={format_version:SETTINGS.formatVersion,office:SETTINGS.office,work_id:crypto.randomUUID(),base_version:base.manifest.version,
    mode:reconcile?'backfill':mode,started_at:new Date(started).toISOString(),today,source_end_utc:new Date(started).toISOString().slice(0,10),
-   phase:reconcile?'discover':'changes',status:'running',page:1,cursor:null,sort_value:null,window:0,candidates:{},windows:{},changed:{},documents:{},
+   phase:reconcile?'discover':'changes',status:'running',page:1,cursor:null,sort_value:null,window:0,candidates:{},windows:{},changed:{},documents:{},discovery_version:1,discovery_windows:{},
    hydrate_index:0,month:0,fiscal_page:1,months:fiscalMonths(today),fiscal_pages:{},source_requests:0,attempts:[]};
   etag=await saveCheckpoint(store,state,etag);
  }
@@ -170,10 +178,13 @@ async function runR2Chunk({store,directory,mode='nightly',fetcher=fetch,now=Date
     state.search_pages_since_checkpoint=(state.search_pages_since_checkpoint||0)+1;
     if(state.search_pages_since_checkpoint>=SETTINGS.checkpointEverySearchPages||state.phase==='discover'){state.search_pages_since_checkpoint=0;await persist();}
    }else if(state.phase==='discover'){
+    const progress=state.discovery_windows[config.windows[state.window]];
+    must(state.page===(progress?.pages||0)+1&&!progress?.complete,'Discovery page sequence is incomplete.');
     const start=config.windows[state.window],data=await request('awards',{office:SETTINGS.office,start,page:state.page,cursor:state.cursor,sort_value:state.sort_value});
     state.candidate_scans=(state.candidate_scans||0)+data.candidates;must(state.candidate_scans<=SETTINGS.maxCandidates,'Discovery candidate limit reached.');
     const ids=new Set(state.windows[start]||[]);for(const row of data.rows){must(row.award_id.startsWith('CONT_AWD_'+SETTINGS.office),'Discovered award identity conflicts with its office.');ids.add(row.award_id);state.candidates[row.award_id]=row;}
     state.windows[start]=[...ids].sort(compare);must(Object.keys(state.candidates).length<=config.maxAwards,'Office award limit reached.');
+    state.discovery_windows[start]={pages:state.page,unique_awards:ids.size,complete:!data.has_next};
     state.page++;state.cursor=data.cursor;state.sort_value=data.sort_value;
     if(!data.has_next){state.window++;state.page=1;state.cursor=null;state.sort_value=null;if(state.window===config.windows.length)state.phase='hydrate';}
     state.search_pages_since_checkpoint=(state.search_pages_since_checkpoint||0)+1;

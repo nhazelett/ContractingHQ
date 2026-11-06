@@ -7,6 +7,7 @@ export const CONFIG=Object.freeze({
  access:Object.freeze({jwksCacheMs:300000,clockSkewSeconds:30,maxTokenBytes:16384,maxJwksBytes:65536,maxKeys:32,timeoutMs:10000}),
  authority:Object.freeze({stageBatchRows:20,stageIndexBatchRows:1000,maxStageRows:200000,readBatchRows:100,maxStageRowBytes:1500000,maxHTTPRequestsPerJob:1800,storageCheckEveryBatches:10,maxReceiptBytes:262144,legacyCheckpointJSONBytes:1048576,retryAttempts:5,retryBaseMs:1000,retryMaxMs:30000,retryJitterMs:1000,seedOfficeCount:150}),
  coverage:Object.freeze({listLimit:161,progressMetadataBytes:1024}),
+ publicationSafety:Object.freeze({maxRemovedAwards:100,maxRemovedFraction:0.05,minRemovedForFraction:10}),
  r2Offices:Object.freeze({FA4528:Object.freeze({bucket:'kthq-contractintel-r2-fa4528-nightly',binding:'PORTFOLIO_R2',readEnabled:true,seedVerifiedPilot:true}),FA4800:Object.freeze({bucket:'kthq-contractintel-r2-fa4800',binding:'PORTFOLIO_R2_FA4800',workflow:'contractintel-r2-cohort.yml',verifyInput:true,admitOnVerified:true,maxAuditRuns:264,maxCheckpointJSONBytes:134217728,readEnabled:false,seedVerifiedPilot:false})}),
  offices:['FA4528'],windows:['2007-10-01','2021-10-01','2024-10-01','2025-10-01'],
  awardTypes:['A','B','C','D'],lookbackDays:14,searchBatch:100,historyBatch:200,
@@ -41,6 +42,7 @@ import {lifecycle} from '../web/lifecycle.mjs';
 import {daysRemaining} from '../web/format.mjs';
 import {fiscalMonths,fiscalYear,fiscalTotals} from '../web/overview.mjs';
 import {currentDate} from '../web/calendar.mjs';
+import {assertSafeRemoval,publishedMembership,assertDiscoveryComplete} from './publication-safety.mjs';
 const SOURCE='https://api.usaspending.gov';
 const stamp=now=>new Date(now()).toISOString();
 const parse=JSON.parse;
@@ -114,12 +116,14 @@ export async function runIngest(env,{mode='nightly',now=Date.now,fetcher=fetch,c
   previousRun=progress?.run_id||null;
   await db.prepare('UPDATE ingest_runs SET resume_from_run_id=? WHERE id=?').bind(previousRun,runId).run();
   const published=await db.prepare('SELECT p.*,r.mode FROM office_publications p JOIN ingest_runs r ON r.id=p.published_run_id WHERE office_dodaac=?').bind(office).first();
-  if(progress){checkpoint=parse(progress.checkpoint_json);workId=progress.work_id;runMode=progress.mode;}
+  if(progress){checkpoint=parse(progress.checkpoint_json);workId=progress.work_id;runMode=progress.mode;
+   if(checkpoint.discovery_version!==1)throw new Error('Legacy checkpoint lacks discovery completion evidence; preserve it and restart discovery before publication.');
+  }
   else{
    runMode=!published?'backfill':mode;
    if(runMode==='nightly'){const last=await db.prepare("SELECT max(started_at) started_at FROM ingest_runs WHERE mode='backfill' AND status='completed'").first();if(!last.started_at||now()-Date.parse(last.started_at)>config.reconciliationDays*config.millisecondsPerDay)runMode='backfill';}
    const today=currentDate(now());workId=runId;
-   checkpoint={phase:runMode==='nightly'?'changes':'discover',today,sourceEndUtc:new Date(now()).toISOString().slice(0,10),window:0,page:1,cursor:null,sortValue:null,after:'',month:0,fiscalPage:1,months:fiscalMonths(today),candidates:0};
+   checkpoint={phase:runMode==='nightly'?'changes':'discover',today,sourceEndUtc:new Date(now()).toISOString().slice(0,10),window:0,page:1,cursor:null,sortValue:null,after:'',month:0,fiscalPage:1,months:fiscalMonths(today),candidates:0,discovery_version:1,discovery_windows:{}};
    await db.prepare('INSERT INTO ingest_office_progress(office_dodaac,run_id,work_id,mode,status,checkpoint_json,started_at,updated_at) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(office_dodaac) DO UPDATE SET run_id=excluded.run_id,work_id=excluded.work_id,mode=excluded.mode,status=excluded.status,checkpoint_json=excluded.checkpoint_json,started_at=excluded.started_at,updated_at=excluded.updated_at').bind(office,runId,workId,runMode,'running',JSON.stringify(checkpoint),stamp(now),stamp(now)).run();
   }
   touched=1;await db.prepare('UPDATE ingest_runs SET mode=? WHERE id=?').bind(runMode,runId).run();
@@ -136,9 +140,13 @@ export async function runIngest(env,{mode='nightly',now=Date.now,fetcher=fetch,c
     if(!data.page_metadata.hasNext){checkpoint.phase='discover';checkpoint.page=1;checkpoint.cursor=null;checkpoint.sortValue=null;}
     await save();
    }else if(checkpoint.phase==='discover'){
+    const progress=checkpoint.discovery_windows[config.windows[checkpoint.window]];
+    if(checkpoint.page!==(progress?.pages||0)+1||progress?.complete)throw new Error('Discovery page sequence is incomplete.');
     const start=config.windows[checkpoint.window],data=await request('awards',{office,start,page:checkpoint.page,cursor:checkpoint.cursor,sort_value:checkpoint.sortValue});
     checkpoint.candidates+=data.candidates;if(checkpoint.candidates>config.maxCandidates)throw new Error('Office candidate budget exceeded.');
     await putMany(data.rows.flatMap(row=>[['window',start+'|'+row.award_id,{award_id:row.award_id,window_start:start}],['candidate',row.award_id,row]]));
+    const unique=data.has_next?null:(await db.prepare("SELECT count(*) n FROM ingest_stage WHERE work_id=? AND record_kind='window' AND record_key LIKE ?").bind(workId,start+'|%').first()).n;
+    checkpoint.discovery_windows[start]={pages:checkpoint.page,unique_awards:unique,complete:!data.has_next};
     checkpoint.page++;checkpoint.cursor=data.cursor;checkpoint.sortValue=data.sort_value;
     if(!data.has_next){checkpoint.window++;checkpoint.page=1;checkpoint.cursor=null;checkpoint.sortValue=null;if(checkpoint.window===config.windows.length)checkpoint.phase='hydrate';}
     await save();
@@ -209,9 +217,18 @@ export async function runIngest(env,{mode='nightly',now=Date.now,fetcher=fetch,c
  if(errorMessage)throw Object.assign(new Error(errorMessage),{result});return result;
 }
 async function publishOffice(db,{workId,office,runId,checkpoint,config,now}){
+ const priorPublication=await db.prepare('SELECT published_run_id FROM office_publications WHERE office_dodaac=?').bind(office).first();
+ const previous=await publishedMembership(db,office);
+ const next={awards:(await db.prepare("SELECT record_key AS generated_unique_award_id FROM ingest_stage WHERE work_id=? AND record_kind='award'").bind(workId).all()).results,
+  award_windows:(await db.prepare("SELECT json_extract(data_json,'$.award_id') AS generated_unique_award_id,json_extract(data_json,'$.window_start') AS window_start FROM ingest_stage WHERE work_id=? AND record_kind='window'").bind(workId).all()).results};
+ const windows=Object.fromEntries(config.windows.map(start=>[start,next.award_windows.filter(row=>row.window_start===start).map(row=>row.generated_unique_award_id)]));
+ assertDiscoveryComplete({...checkpoint,windows,sort_value:checkpoint.sortValue},config.windows);
+ assertSafeRemoval(previous,next,{windows:CONFIG.windows,limits:CONFIG.publicationSafety});
  const staged=await db.prepare("SELECT data_json FROM ingest_stage WHERE work_id=? AND record_kind='award' LIMIT 1").bind(workId).first();
  const columns=staged?Object.keys(parse(staged.data_json).db):[];
- const statements=[];
+ // Fail the entire D1 batch if another writer changed the checked publication.
+ // json() deliberately raises on the false branch without requiring a schema change.
+ const statements=[db.prepare("SELECT CASE WHEN coalesce((SELECT published_run_id FROM office_publications WHERE office_dodaac=?),'')=? THEN 1 ELSE json('Publication changed during validation') END AS publication_unchanged").bind(office,priorPublication?.published_run_id||'')];
  if(columns.length){
   const jsonCols=['record_json','raw_json','source_hash'],expressions=columns.map(c=>"json_extract(data_json,'$.db."+c+"')").concat(["json_extract(data_json,'$.record')","json_extract(data_json,'$.raw')","json_extract(data_json,'$.source_hash')",'?']);
   statements.push(db.prepare('INSERT INTO awards('+columns.concat(jsonCols,'published_run_id').join(',')+') SELECT '+expressions.join(',')+" FROM ingest_stage WHERE work_id=? AND record_kind='award' ON CONFLICT(generated_unique_award_id) DO UPDATE SET "+columns.filter(c=>c!=='generated_unique_award_id').concat(jsonCols,'published_run_id').map(c=>c+'=excluded.'+c).join(',')+' WHERE awards.source_hash<>excluded.source_hash').bind(runId,workId));
@@ -233,6 +250,3 @@ async function publishOffice(db,{workId,office,runId,checkpoint,config,now}){
  // D1 batch is a transaction: readers see the old complete publication or the new complete one.
  await db.batch(statements);
 }
-
-
-
