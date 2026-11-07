@@ -29,14 +29,30 @@ jobs:
           PILOT_OFFICE: ${{ matrix.office }}
         run: |
           node --input-type=module -e "import fs from 'node:fs';import {CONFIG} from './contractintel/portfolio/ingest.mjs';fs.appendFileSync(process.env.GITHUB_OUTPUT,'enabled='+String(CONFIG.r2Offices[process.env.PILOT_OFFICE]?.readEnabled===true)+'\n');"
+      - name: Note a skipped office
+        if: steps.gate.outputs.enabled != 'true'
+        run: echo "::notice::${{ matrix.office }} is not read-enabled, so this backup job did no work."
       - name: Resume or refresh the verified office
         if: steps.gate.outputs.enabled == 'true'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFARE_API_TOKEN }}
           PILOT_OFFICE: ${{ matrix.office }}
           RUN_MODE: nightly
+          # A budget stop or transient source/gateway error saves the checkpoint and
+          # exits 0 as 'yielded'; the next run resumes it. Terminal errors still fail.
+          AUTO_RESUME: 'true'
+          COHORT_BATCH: '1'
           WRANGLER_SEND_METRICS: 'false'
         run: node contractintel/portfolio/r2/runner.mjs
+      - name: Flag a yielded refresh
+        if: steps.gate.outputs.enabled == 'true'
+        env:
+          OFFICE: ${{ matrix.office }}
+        run: |
+          file="contractintel/portfolio/r2/out/${OFFICE,,}-r2-update.json"
+          if [ -f "$file" ] && [ "$(node -p "require('./$file').status")" = yielded ]; then
+            echo "::warning::$OFFICE refresh stopped at a job budget and saved its progress; the next run resumes it."
+          fi
       - name: Save office measurements
         if: always()
         uses: actions/upload-artifact@v4
