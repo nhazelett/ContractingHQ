@@ -2517,14 +2517,10 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     // Keep its pages in the same persistent player session as the root pages.
     var workingTheoryPages = [
       '', 'index.html', 'shelf.html', 'mentors.html', 'mentor.html', 'piece-template.html',
-      'leadership-for-people-who-just-got-handed-it.html', 'stop-controlling-people.html',
-      'nobody-dropped-the-hammer.html', 'blame.html',
-      'i-told-him-twice.html', 'the-pause.html', 'everything-is-priority-one.html',
-      'same-speech-every-monday.html', 'nobody-told-me.html', 'the-conversation.html',
-      'when-you-have-to-drop-the-hammer.html', 'the-squadron-that-became-a-family.html',
-      'the-new-rule-after-one-mistake.html', 'fit-vs-failure.html', 'were-not-curing-cancer.html',
-      'creativity.html', 'make-rank-because-of-the-work.html', 'staying-late-proves-nothing.html',
-      'what-the-leadership-shelf-really-is.html'
+      'what-ive-learned-over-the-years.html', 'leadership-for-people-who-just-got-handed-it.html',
+      'stop-controlling-people.html', 'nobody-dropped-the-hammer.html', 'blame.html',
+      'everything-is-priority-one.html', 'the-new-rule-after-one-mistake.html',
+      'were-not-curing-cancer.html', 'creativity.html', 'make-rank-because-of-the-work.html'
     ];
     if (url.pathname.indexOf('/working-theory/') === 0 &&
         workingTheoryPages.indexOf(url.pathname.slice('/working-theory/'.length)) > -1) return true;
