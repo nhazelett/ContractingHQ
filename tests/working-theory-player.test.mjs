@@ -79,3 +79,16 @@ test('a failed section stylesheet rejects so soft navigation can fall back to a 
   await assert.rejects(ready, /Section stylesheet failed to load/);
   assert.equal(removed, false);
 });
+
+test('page swaps carry the incoming essay topic and clear it when leaving the section', () => {
+  const swap = source.match(/      document.body.className = doc.body.className[^]*?      document.body.innerHTML = doc.body.innerHTML;/)[0];
+  for (const topic of ['blame', 'creativity', null]) {
+    const attrs = { 'data-topic': 'previous-essay' };
+    const document = { body: { setAttribute(k, v) { attrs[k] = v; }, removeAttribute(k) { delete attrs[k]; } } };
+    const doc = { body: { className: 'wt-page wt-essay', innerHTML: '<main>Incoming page</main>', hasAttribute: () => topic !== null, getAttribute: () => topic } };
+    vm.runInNewContext(swap, { document, doc });
+    assert.equal(attrs['data-topic'], topic === null ? undefined : topic);
+    assert.equal(document.body.innerHTML, doc.body.innerHTML);
+    assert.equal(document.body.className, doc.body.className);
+  }
+});

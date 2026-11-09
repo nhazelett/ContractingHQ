@@ -2757,6 +2757,12 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
 
       await updateSoftHead(doc);
       document.body.className = doc.body.className || '';
+      // Mentor panels and submission forms must follow the incoming essay topic.
+      if (doc.body.hasAttribute('data-topic')) {
+        document.body.setAttribute('data-topic', doc.body.getAttribute('data-topic'));
+      } else {
+        document.body.removeAttribute('data-topic');
+      }
       document.body.innerHTML = doc.body.innerHTML;
       if (push) window.history.pushState({ kthqSoftNav: true }, '', url.href);
 
