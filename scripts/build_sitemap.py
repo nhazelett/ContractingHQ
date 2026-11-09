@@ -1,4 +1,4 @@
-"""Regenerate sitemap.xml for published root pages and public builder indexes."""
+"""Regenerate sitemap.xml for published root, builder, and leadership pages."""
 from html.parser import HTMLParser
 from pathlib import Path
 import subprocess
@@ -24,6 +24,7 @@ def build():
     ET.register_namespace('', namespace)
     root = ET.Element(f'{{{namespace}}}urlset')
     pages = list(ROOT.glob('*.html'))
+    pages.extend((ROOT / 'working-theory').glob('*.html'))
     pages.extend(ROOT / folder / 'index.html' for folder in BUILDERS
                  if (ROOT / folder / 'index.html').is_file())
     for page in sorted(pages):

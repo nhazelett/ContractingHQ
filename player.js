@@ -649,6 +649,7 @@
   // ── DETECT PAGE / PLATFORM ───────────────────────────────────────
   var path = window.location.pathname;
   function isHomePath(value) {
+    if (value.indexOf('/working-theory/') === 0) return false;
     return value === '/' || value.endsWith('/index.html') || value.endsWith('/');
   }
   var isHome = isHomePath(path);
@@ -2512,6 +2513,21 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   }
 
   function isSoftPage(url) {
+    // Working Theory uses a directory index plus single-file essay pages.
+    // Keep its pages in the same persistent player session as the root pages.
+    var workingTheoryPages = [
+      '', 'index.html', 'shelf.html', 'mentors.html', 'mentor.html', 'piece-template.html',
+      'leadership-for-people-who-just-got-handed-it.html', 'stop-controlling-people.html',
+      'nobody-dropped-the-hammer.html', 'does-a-protest-mean-you-made-a-mistake.html',
+      'i-told-him-twice.html', 'the-pause.html', 'everything-is-priority-one.html',
+      'same-speech-every-monday.html', 'nobody-told-me.html', 'the-conversation.html',
+      'when-you-have-to-drop-the-hammer.html', 'the-squadron-that-became-a-family.html',
+      'the-new-rule-after-one-mistake.html', 'fit-vs-failure.html', 'were-not-curing-cancer.html',
+      'creativity.html', 'make-chief-because-of-the-work.html', 'staying-late-proves-nothing.html',
+      'what-the-leadership-shelf-really-is.html'
+    ];
+    if (url.pathname.indexOf('/working-theory/') === 0 &&
+        workingTheoryPages.indexOf(url.pathname.slice('/working-theory/'.length)) > -1) return true;
     return isRootLevelSoftPage(url) && SOFT_NAV_PAGES.indexOf(softPageName(url)) > -1;
   }
 
@@ -2530,7 +2546,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   function markCurrentSoftHead() {
     if (softHeadMarked) return;
     softHeadMarked = true;
-    document.querySelectorAll('head style, head meta[name="description"], head meta[name="kthq-radio-mode"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]').forEach(function (node) {
+    document.querySelectorAll('head style, head meta[name="description"], head meta[name="robots"], head meta[name="kthq-radio-mode"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]').forEach(function (node) {
       if (node.id === 'cfm-player-styles') return;
       node.setAttribute('data-kthq-soft-head', 'true');
     });
@@ -2541,7 +2557,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     document.querySelectorAll('[data-kthq-soft-head]').forEach(function (node) {
       if (node.parentNode) node.parentNode.removeChild(node);
     });
-    doc.querySelectorAll('head style, head meta[name="description"], head meta[name="kthq-radio-mode"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]').forEach(function (node) {
+    doc.querySelectorAll('head style, head meta[name="description"], head meta[name="robots"], head meta[name="kthq-radio-mode"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]').forEach(function (node) {
       var clone = node.cloneNode(true);
       clone.setAttribute('data-kthq-soft-head', 'true');
       document.head.appendChild(clone);
