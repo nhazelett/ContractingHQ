@@ -2518,7 +2518,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     var workingTheoryPages = [
       '', 'index.html', 'shelf.html', 'mentors.html', 'mentor.html', 'piece-template.html',
       'leadership-for-people-who-just-got-handed-it.html', 'stop-controlling-people.html',
-      'nobody-dropped-the-hammer.html', 'does-a-protest-mean-you-made-a-mistake.html',
+      'nobody-dropped-the-hammer.html', 'blame.html',
       'i-told-him-twice.html', 'the-pause.html', 'everything-is-priority-one.html',
       'same-speech-every-monday.html', 'nobody-told-me.html', 'the-conversation.html',
       'when-you-have-to-drop-the-hammer.html', 'the-squadron-that-became-a-family.html',
