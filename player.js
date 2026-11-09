@@ -2542,21 +2542,31 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
   function markCurrentSoftHead() {
     if (softHeadMarked) return;
     softHeadMarked = true;
-    document.querySelectorAll('head style, head meta[name="description"], head meta[name="robots"], head meta[name="kthq-radio-mode"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]').forEach(function (node) {
+    document.querySelectorAll('head style, head meta[name="description"], head meta[name="robots"], head meta[name="kthq-radio-mode"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"], head link[rel="stylesheet"][href^="/working-theory/"]').forEach(function (node) {
       if (node.id === 'cfm-player-styles') return;
       node.setAttribute('data-kthq-soft-head', 'true');
     });
   }
 
-  function updateSoftHead(doc) {
+  async function updateSoftHead(doc) {
     document.title = doc.title || document.title;
-    document.querySelectorAll('[data-kthq-soft-head]').forEach(function (node) {
-      if (node.parentNode) node.parentNode.removeChild(node);
-    });
-    doc.querySelectorAll('head style, head meta[name="description"], head meta[name="robots"], head meta[name="kthq-radio-mode"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"]').forEach(function (node) {
+    var previous = Array.prototype.slice.call(document.querySelectorAll('[data-kthq-soft-head]'));
+    var stylesReady = [];
+    doc.querySelectorAll('head style, head meta[name="description"], head meta[name="robots"], head meta[name="kthq-radio-mode"], head meta[property^="og:"], head meta[name^="twitter:"], head link[rel="canonical"], head link[rel="stylesheet"][href^="/working-theory/"]').forEach(function (node) {
       var clone = node.cloneNode(true);
       clone.setAttribute('data-kthq-soft-head', 'true');
+      if (clone.tagName === 'LINK' && clone.rel === 'stylesheet') {
+        stylesReady.push(new Promise(function (resolve, reject) {
+          clone.onload = resolve;
+          clone.onerror = function () { reject(new Error('Section stylesheet failed to load')); };
+        }));
+      }
       document.head.appendChild(clone);
+    });
+    // Keep the old page styled until the incoming stylesheet is ready.
+    await Promise.all(stylesReady);
+    previous.forEach(function (node) {
+      if (node.parentNode) node.parentNode.removeChild(node);
     });
   }
 
@@ -2745,7 +2755,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
         if (script.parentNode) script.parentNode.removeChild(script);
       });
 
-      updateSoftHead(doc);
+      await updateSoftHead(doc);
       document.body.className = doc.body.className || '';
       document.body.innerHTML = doc.body.innerHTML;
       if (push) window.history.pushState({ kthqSoftNav: true }, '', url.href);
