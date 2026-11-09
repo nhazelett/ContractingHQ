@@ -2523,7 +2523,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       'same-speech-every-monday.html', 'nobody-told-me.html', 'the-conversation.html',
       'when-you-have-to-drop-the-hammer.html', 'the-squadron-that-became-a-family.html',
       'the-new-rule-after-one-mistake.html', 'fit-vs-failure.html', 'were-not-curing-cancer.html',
-      'creativity.html', 'make-chief-because-of-the-work.html', 'staying-late-proves-nothing.html',
+      'creativity.html', 'make-rank-because-of-the-work.html', 'staying-late-proves-nothing.html',
       'what-the-leadership-shelf-really-is.html'
     ];
     if (url.pathname.indexOf('/working-theory/') === 0 &&
