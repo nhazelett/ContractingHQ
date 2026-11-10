@@ -23,7 +23,7 @@
   var VOL_BASE = 0.22;
   var VOL_DUCK = 0.22;
 
-  var AUDIO_DIR = 'audio/ollie/';
+  var AUDIO_DIR = 'https://music.kthq.org/audio/ollie/';
   var TRACKS = [
     'axolotl-01.mp3',
     'axolotl-02.mp3',

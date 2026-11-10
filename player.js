@@ -392,7 +392,7 @@
 
   function trackUrl(idx) {
     if (!TRACKS[idx] || !TRACKS[idx].file) return '';
-    return new URL(TRACKS[idx].file, window.location.origin + '/').href;
+    return new URL(TRACKS[idx].file, 'https://music.kthq.org/').href;
   }
 
   function loadTrack(idx, autoplay) {
