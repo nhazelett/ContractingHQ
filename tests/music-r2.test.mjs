@@ -5,6 +5,12 @@ import vm from 'node:vm';
 const root = new URL('../', import.meta.url);
 const read = path => readFileSync(new URL(path, root), 'utf8');
 
+test('public entry pages request the R2 player version instead of cached legacy scripts', () => {
+  for (const file of ['index.html', 'working-theory/index.html', 'working-theory/shelf.html', 'contingency-contracting.html']) {
+    assert.match(read(file), /src=["'][^"']*player\.js\?v=20261110-r2["']/, file);
+  }
+});
+
 test('ContractingFM resolves old playlist paths and escaped filenames on the music host', () => {
   const code = read('player.js').match(/function trackUrl\(idx\) \{[\s\S]*?\n  \}/)[0];
   const paths = ['audio/track-01.mp3', "audio/You Can't Buy Back Time.mp3", 'audio/cco/Good Enough _ Not Enough.mp3', 'Comparison is the Thief of Joy.mp3'];

@@ -18,4 +18,6 @@ The bucket's browser access configuration is in `scripts/music-r2-cors.json`. Ap
 
 The originals are retained. To restore Pages delivery, remove the music exclusions in `_config.yml`, restore the previous player/page audio URLs, and publish together. Verify playback after the completed deployment. Leave R2 copies available during rollback so cached pages continue to work.
 
+Player script tags use `?v=20261110-r2` so refreshed pages load the R2 version even when a browser cached the legacy player. Keep this version when adding pages. Bump the script version across public HTML when a future player change needs immediate cache invalidation.
+
 After migration, refresh pages opened before the update so they load the R2 player. Old direct `kthq.org/audio/...` download URLs are no longer published by Pages; the matching R2 URL has the same path under `music.kthq.org`.
