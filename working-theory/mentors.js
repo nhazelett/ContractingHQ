@@ -21,6 +21,8 @@
     if (!response.ok) throw new Error(data.error || 'The request could not be completed.');
     return data;
   }
+  var topicTitles = {"what-ive-learned-over-the-years": "What I’ve learned over the years that you can learn right now", "leadership-for-people-who-just-got-handed-it": "Leadership for People Who Just Got Handed It", "stop-controlling-people": "Stop Controlling People, Change the Culture", "nobody-dropped-the-hammer": "Dropping the Hammer", "blame": "Blame", "everything-is-priority-one": "Everything Is Priority One", "the-new-rule-after-one-mistake": "The New Rule After One Mistake", "were-not-curing-cancer": "We’re Not Curing Cancer", "creativity": "Why the Air Force Is Bad at Creativity", "make-rank-because-of-the-work": "Make Rank Because of the Work"};
+  function headerExtras() { return Array.from(document.querySelectorAll('.wt-header .wt-lede, .wt-header .wt-meta')); }
   // Every contribution is rendered as text. No HTML or markdown interpreter.
   function showTake(take, button) {
     var viewUrl = new URL(location.href);
@@ -28,6 +30,12 @@
     history.replaceState(history.state, '', viewUrl);
     document.getElementById('nick-piece').hidden = true;
     document.getElementById('mentor-piece').hidden = false;
+    var piece = document.getElementById('mentor-piece');
+    var label = document.getElementById('mentor-take-label');
+    if (!label) { label = node('p', undefined, 'wt-kicker'); label.id = 'mentor-take-label'; piece.insertBefore(label, document.getElementById('mentor-take-name')); }
+    var titleEl = document.getElementById('topic-title');
+    label.textContent = 'A mentor’s take on “' + (titleEl ? titleEl.textContent : (topicTitles[take.topicSlug] || 'this piece')) + '”';
+    headerExtras().forEach(function (el) { el.hidden = true; });
     document.getElementById('mentor-take-name').textContent = take.mentor.name;
     document.getElementById('mentor-take-role').textContent = [take.mentor.rank, take.mentor.role].filter(Boolean).join(' · ');
     document.getElementById('mentor-take-philosophy').textContent = take.mentor.philosophy;
@@ -37,6 +45,7 @@
     document.getElementById('back-to-nick').onclick = function () {
       document.getElementById('nick-piece').hidden = false;
       document.getElementById('mentor-piece').hidden = true;
+      headerExtras().forEach(function (el) { el.hidden = false; });
       var originalUrl = new URL(location.href); originalUrl.searchParams.delete('mentor');
       history.replaceState(history.state, '', originalUrl);
       button.focus();
@@ -126,7 +135,7 @@
     if (id === 'nick') {
       document.getElementById('profile-name').textContent = 'Nick Hazelett';
       var own = document.getElementById('profile-content');
-      own.replaceChildren(node('p', 'KTHQ · Contracting', 'wt-note'), node('h2', 'About'), node('p', 'Nick’s bio goes here.', 'wt-note'), node('h2', 'Leadership philosophy'), node('p', 'Nick’s philosophy goes here, in his words.', 'wt-note'));
+      own.replaceChildren(node('p', 'KTHQ · Contracting', 'wt-note'));
       var essays = node('a', 'Nick’s pieces'); essays.href = '/working-theory/'; own.append(essays);
       return;
     }
@@ -144,7 +153,7 @@
         var takes = await api('/mentors/' + encodeURIComponent(id) + '/takes' + (cursor ? '?cursor=' + encodeURIComponent(cursor) : ''));
         takes.takes.forEach(function (take) {
           var li = node('li');
-          var link = node('a', take.topicSlug.replace(/-/g, ' '));
+          var link = node('a', topicTitles[take.topicSlug] || take.topicSlug.replace(/-/g, ' '));
           link.href = '/working-theory/' + encodeURIComponent(take.topicSlug) + '.html?mentor=' + encodeURIComponent(mentor.id);
           li.append(link); list.append(li);
         });
@@ -182,7 +191,7 @@
     }
     function addQueueCard(record, kind, token) {
       var card = node('article', undefined, 'wt-box');
-      card.append(node('h2', kind === 'mentor' ? record.name : record.mentor.name + ' · ' + record.topicSlug));
+      card.append(node('h2', kind === 'mentor' ? record.name : record.mentor.name + ' · ' + (topicTitles[record.topicSlug] || record.topicSlug)));
       var fields = kind === 'mentor' ? ['rank', 'field', 'role', 'email', 'bio', 'philosophy'] : ['body'];
       fields.forEach(function (key) { card.append(node('p', key + ': ' + record[key], 'wt-plain')); });
       ['approve', 'reject'].forEach(function (action) {

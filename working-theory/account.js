@@ -51,9 +51,9 @@
       var button = event.target.querySelector('button'); button.disabled = true;
       // Only the chosen forum pseudonym goes into account metadata. The mentor
       // real name is submitted separately to the private Worker application.
-      var result = await account.client.auth.signUp({ email: fields.email.value.trim(), password: fields.password.value, options: { emailRedirectTo: 'https://forum.kthq.org/', data: { username: fields.username.value.trim(), display_name: fields.display.value.trim() || fields.username.value.trim() } } });
+      var result = await account.client.auth.signUp({ email: fields.email.value.trim(), password: fields.password.value, options: { emailRedirectTo: 'https://kthq.org/working-theory/mentors.html', data: { username: fields.username.value.trim(), display_name: fields.display.value.trim() || fields.username.value.trim() } } });
       fields.password.value = ''; fields.confirm.value = '';
-      document.getElementById('account-message').textContent = result.error ? result.error.message : 'Check your email to verify the account, then sign in here or on the forum with the same email and password.';
+      document.getElementById('account-message').textContent = result.error ? result.error.message : 'Check your email to verify the account, then come back to this page and sign in with the same email and password.';
       button.disabled = false;
       await account.refresh();
     });
