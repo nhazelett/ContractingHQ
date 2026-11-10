@@ -23,6 +23,9 @@
   }
   var topicTitles = {"what-ive-learned-over-the-years": "What I’ve learned over the years that you can learn right now", "leadership-for-people-who-just-got-handed-it": "Leadership for People Who Just Got Handed It", "stop-controlling-people": "Stop Controlling People, Change the Culture", "nobody-dropped-the-hammer": "Dropping the Hammer", "blame": "Blame", "everything-is-priority-one": "Everything Is Priority One", "the-new-rule-after-one-mistake": "The New Rule After One Mistake", "were-not-curing-cancer": "We’re Not Curing Cancer", "creativity": "Why the Air Force Is Bad at Creativity", "make-rank-because-of-the-work": "Make Rank Because of the Work"};
   function headerExtras() { return Array.from(document.querySelectorAll('.wt-header .wt-lede, .wt-header .wt-meta')); }
+  function markVoice(id) {
+    document.querySelectorAll('#wt-voices .wt-voice').forEach(function (el) { el.setAttribute('aria-pressed', String(el.dataset.voice === id)); });
+  }
   // Every contribution is rendered as text. No HTML or markdown interpreter.
   function showTake(take, button) {
     var viewUrl = new URL(location.href);
@@ -42,13 +45,15 @@
     document.getElementById('mentor-take-body').textContent = take.body;
     document.getElementById('mentor-profile-link').href = '/working-theory/mentor.html?id=' + encodeURIComponent(take.mentor.id);
     document.getElementById('mentor-take-name').focus();
+    markVoice(take.mentor.id);
     document.getElementById('back-to-nick').onclick = function () {
       document.getElementById('nick-piece').hidden = false;
       document.getElementById('mentor-piece').hidden = true;
       headerExtras().forEach(function (el) { el.hidden = false; });
       var originalUrl = new URL(location.href); originalUrl.searchParams.delete('mentor');
       history.replaceState(history.state, '', originalUrl);
-      button.focus();
+      markVoice('');
+      if (button && button.isConnected) button.focus();
     };
   }
   async function loadTakes() {
@@ -64,16 +69,43 @@
         cursor = data.cursor || '';
       } while (cursor);
       var seen = new Set();
-      allTakes.sort(function (a, b) { return b.createdAt.localeCompare(a.createdAt); }).forEach(function (take) {
-          if (seen.has(take.mentor.id)) return;
-          seen.add(take.mentor.id);
-          var button = node('button', undefined, 'wt-take');
-          button.type = 'button';
-          button.append(node('strong', take.mentor.name), node('span', [take.mentor.rank, take.mentor.role].filter(Boolean).join(' · ')), node('span', take.mentor.philosophy));
-          button.addEventListener('click', function () { showTake(take, button); });
-          cards.append(button);
-          if (new URLSearchParams(location.search).get('mentor') === take.mentor.id) showTake(take, button);
-        });
+      var voices = allTakes.sort(function (a, b) { return b.createdAt.localeCompare(a.createdAt); }).filter(function (take) {
+        if (seen.has(take.mentor.id)) return false;
+        seen.add(take.mentor.id); return true;
+      });
+      var stale = document.getElementById('wt-voices');
+      if (stale) stale.remove();
+      document.body.classList.remove('wt-has-voices');
+      if (!voices.length) return;
+      // With more than one voice, every voice sits in one picker above the piece.
+      var layout = document.querySelector('.wt-layout');
+      var picker = node('section', undefined, 'wt-voices');
+      picker.id = 'wt-voices';
+      picker.setAttribute('aria-labelledby', 'wt-voices-heading');
+      var heading = node('h2', 'Select a mentor'); heading.id = 'wt-voices-heading';
+      var row = node('div', undefined, 'wt-voices-row');
+      picker.append(heading, row);
+      var original = node('button', undefined, 'wt-take wt-voice');
+      original.type = 'button'; original.dataset.voice = '';
+      original.append(node('strong', 'KTHQ'), node('span', 'Original piece'));
+      original.addEventListener('click', function () {
+        if (!document.getElementById('mentor-piece').hidden) document.getElementById('back-to-nick').click();
+        original.focus();
+      });
+      row.append(original);
+      var wanted = new URLSearchParams(location.search).get('mentor');
+      var opened = false;
+      voices.forEach(function (take) {
+        var button = node('button', undefined, 'wt-take wt-voice');
+        button.type = 'button'; button.dataset.voice = take.mentor.id;
+        button.append(node('strong', take.mentor.name), node('span', [take.mentor.rank, take.mentor.role].filter(Boolean).join(' · ')));
+        button.addEventListener('click', function () { showTake(take, button); });
+        row.append(button);
+        if (wanted === take.mentor.id) { opened = true; setTimeout(function () { showTake(take, button); }, 0); }
+      });
+      layout.parentNode.insertBefore(picker, layout);
+      document.body.classList.add('wt-has-voices');
+      if (!opened) markVoice('');
     } catch (error) {
       document.getElementById('rail-status').textContent = 'Mentor takes could not be loaded. The piece is still available.';
     }
