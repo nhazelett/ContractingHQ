@@ -169,7 +169,7 @@ async function route(request, env) {
       await env.mentors.put('mentor:' + id, JSON.stringify(record));
 
     }
-    return { ok: true, message: 'If eligible, your application is now in Nick’s queue. An existing pending or approved profile is kept as submitted.' };
+    return { ok: true, message: 'If eligible, your application is now in the review queue. An existing pending or approved profile is kept as submitted.' };
   }
   if (path === '/takes/submit' && request.method === 'POST') {
     const data = await body(request);
@@ -184,7 +184,7 @@ async function route(request, env) {
     const takeId = crypto.randomUUID();
     const record = { id: takeId, topicSlug: slug, mentorId: id, body: content, status: 'pending', createdAt: new Date().toISOString() };
     await env.takes.put('take:' + slug + ':' + takeId, JSON.stringify(record));
-    return { ok: true, message: 'Your take is in Nick’s review queue. It is not public until approved.' };
+    return { ok: true, message: 'Your take is in the review queue. It is not public until approved.' };
   }
   if (path === '/takes/confirm') fail(410, 'Takes now use a verified KTHQ account instead of email confirmation links.');
   const topicMatch = path.match(/^\/topics\/([a-z0-9-]+)\/takes$/);

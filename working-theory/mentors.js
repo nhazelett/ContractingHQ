@@ -75,7 +75,7 @@
           if (new URLSearchParams(location.search).get('mentor') === take.mentor.id) showTake(take, button);
         });
     } catch (error) {
-      document.getElementById('rail-status').textContent = 'Mentor takes could not be loaded. Nick’s piece is still available.';
+      document.getElementById('rail-status').textContent = 'Mentor takes could not be loaded. The piece is still available.';
     }
   }
   var forms = Array.from(document.querySelectorAll('form[data-route]'));
@@ -84,7 +84,7 @@
     return ready && !form.dataset.template && (form.dataset.route !== '/takes/submit' || (config.publishedTopics || []).includes(topic));
   });
   if (enabledForms.length) {
-    document.querySelectorAll('[data-form-availability]').forEach(function (el) { el.textContent = 'Sign in with your KTHQ account before contributing. Submissions need Nick’s approval.'; });
+    document.querySelectorAll('[data-form-availability]').forEach(function (el) { el.textContent = 'Sign in with your KTHQ account before contributing. Submissions are reviewed before they appear.'; });
     window.KTHQ_initMentorTurnstile = function () {
       enabledForms.forEach(function (form) {
         if (!form.isConnected) return;
@@ -132,13 +132,7 @@
     if (!document.getElementById('profile-content')) return;
     var id = new URLSearchParams(location.search).get('id');
     if (!id) return;
-    if (id === 'nick') {
-      document.getElementById('profile-name').textContent = 'Nick Hazelett';
-      var own = document.getElementById('profile-content');
-      own.replaceChildren(node('p', 'KTHQ · Contracting', 'wt-note'));
-      var essays = node('a', 'Nick’s pieces'); essays.href = '/working-theory/'; own.append(essays);
-      return;
-    }
+    if (id === 'nick') { location.replace('/working-theory/'); return; }
     if (!base) return;
     try {
       var data = await api('/mentors/' + encodeURIComponent(id));

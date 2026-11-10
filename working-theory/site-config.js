@@ -15,5 +15,5 @@ window.KTHQ_WORKING_THEORY = Object.freeze({
     'were-not-curing-cancer',
     'creativity',
     'make-rank-because-of-the-work'
-  ] // Add a topic slug only after Nick approves its essay. Keep in step with PUBLISHED_TOPICS in the worker.
+  ] // Add a topic slug only after its essay is published. Keep in step with PUBLISHED_TOPICS in the worker.
 });
