@@ -41,7 +41,7 @@ def build():
         if not date:
             raise RuntimeError(f'No git commit date for {relative}')
         node = ET.SubElement(root, 'url')
-        ET.SubElement(node, 'loc').text = 'https://kthq.org/' + relative
+        ET.SubElement(node, 'loc').text = location
         ET.SubElement(node, 'lastmod').text = date
     ET.indent(root, space='  ')
     (ROOT / 'sitemap.xml').write_bytes(
