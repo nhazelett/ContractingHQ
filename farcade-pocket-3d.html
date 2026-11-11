@@ -94,6 +94,22 @@ footer{text-align:center;font-size:10px;color:#8aa6bf;padding:12px 18px 25px}
   const camera=new THREE.PerspectiveCamera(32,1,.05,100);
   const root=new THREE.Group();scene.add(root);
   const device=new THREE.Group();device.name='KT_POCKET';root.add(device);
+  // Baked alpha contact shadow: extremely cheap, grounded, no blur render pass.
+  const shadowCanvas=document.createElement('canvas');
+  shadowCanvas.width=128;shadowCanvas.height=128;
+  const sc=shadowCanvas.getContext('2d');
+  const grad=sc.createRadialGradient(64,64,5,64,64,61);
+  grad.addColorStop(0,'rgba(0,5,16,.53)');
+  grad.addColorStop(.38,'rgba(0,7,21,.32)');
+  grad.addColorStop(.76,'rgba(0,8,20,.08)');
+  grad.addColorStop(1,'rgba(0,8,20,0)');
+  sc.fillStyle=grad;sc.fillRect(0,0,128,128);
+  const shadowMap=new THREE.CanvasTexture(shadowCanvas);
+  const shadow=new THREE.Mesh(new THREE.PlaneGeometry(5.6,2.45),
+    new THREE.MeshBasicMaterial({map:shadowMap,transparent:true,depthWrite:false,opacity:.85}));
+  shadow.rotation.x=-Math.PI/2;
+  shadow.position.set(0,-3.55,-.08);shadow.name='GROUND_CONTACT_SHADOW';
+  scene.add(shadow);
   function material(color,rough=.45,metal=.03,coat=.3){return new THREE.MeshPhysicalMaterial({
     color,roughness:rough,metalness:metal,clearcoat:coat,clearcoatRoughness:.22,
     envMapIntensity:1.0
@@ -170,15 +186,15 @@ footer{text-align:center;font-size:10px;color:#8aa6bf;padding:12px 18px 25px}
   const displayCanvas=document.createElement('canvas');
   displayCanvas.width=320;displayCanvas.height=288;
   const ctx=displayCanvas.getContext('2d');ctx.imageSmoothingEnabled=false;
-  ctx.fillStyle='#071b24';ctx.fillRect(0,0,320,288);
+  ctx.fillStyle='#0b1220';ctx.fillRect(0,0,320,288);
   for(let y=0;y<288;y+=16){ctx.fillStyle=y%32===0?'#143343':'#0c2735';ctx.fillRect(0,y,320,1)}
   for(let x=0;x<320;x+=16){ctx.fillStyle=x%32===0?'#123d47':'#102b3b';ctx.fillRect(x,0,1,288)}
-  ctx.fillStyle='#50e7eb';ctx.fillRect(18,17,284,5);ctx.fillRect(18,265,284,5);
+  ctx.fillStyle='#4a9eff';ctx.fillRect(18,17,284,5);ctx.fillRect(18,265,284,5);
   ctx.fillStyle='#c9a227';ctx.fillRect(19,49,45,13);ctx.fillRect(256,49,45,13);
   ctx.font='bold 25px monospace';ctx.textAlign='center';ctx.fillStyle='#c8d4e0';ctx.fillText('KT-POCKET',160,102);
   ctx.font='bold 17px monospace';ctx.fillStyle='#c9a227';ctx.fillText('FAR-CADE',160,135);
-  ctx.fillStyle='#57e4ec';ctx.fillRect(55,161,210,46);
-  ctx.fillStyle='#102234';ctx.font='bold 14px monospace';ctx.fillText('SCREEN ATTACHED',160,190);
+  ctx.fillStyle='#4a9eff';ctx.fillRect(55,161,210,46);
+  ctx.fillStyle='#0b1220';ctx.font='bold 14px monospace';ctx.fillText('SCREEN ATTACHED',160,190);
   ctx.fillStyle='#c8d4e0';ctx.font='bold 11px monospace';ctx.fillText('320 x 288 / STAGE 01 TEST',160,245);
   const tex=new THREE.CanvasTexture(displayCanvas);
   tex.colorSpace=THREE.SRGBColorSpace;
@@ -234,6 +250,23 @@ footer{text-align:center;font-size:10px;color:#8aa6bf;padding:12px 18px 25px}
   const bt=new THREE.CanvasTexture(badge);bt.colorSpace=THREE.SRGBColorSpace;
   const label=new THREE.Mesh(new THREE.PlaneGeometry(1.65,.36),new THREE.MeshBasicMaterial({map:bt,transparent:true,depthWrite:false}));
   label.position.set(-.05,-.17,.275);device.add(label);
+  // Clear printed legends, separate from colored controls and their reflective materials.
+  function legendText(value,x,y,w=.36,h=.18){
+    const textureCanvas=document.createElement('canvas');
+    textureCanvas.width=256;textureCanvas.height=96;
+    const g=textureCanvas.getContext('2d');
+    g.fillStyle='#c8d4e0';g.font='800 43px Arial';
+    g.textAlign='center';g.textBaseline='middle';g.fillText(value,128,50);
+    const texture=new THREE.CanvasTexture(textureCanvas);
+    texture.colorSpace=THREE.SRGBColorSpace;
+    const printed=new THREE.Mesh(new THREE.PlaneGeometry(w,h),
+      new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false}));
+    printed.position.set(x,y,.278);device.add(printed);
+  }
+  legendText('A',1.27,-.64,.23,.16);
+  legendText('B',.62,-2.30,.23,.16);
+  legendText('SELECT',-.40,-2.81,.49,.14);
+  legendText('START',.48,-2.81,.49,.14);
   // Bounding-box camera fit; same geometry is used in rotated verification.
   const box3=new THREE.Box3().setFromObject(device),sphere=box3.getBoundingSphere(new THREE.Sphere());
   const center=sphere.center.clone();
