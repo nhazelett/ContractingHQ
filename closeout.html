@@ -958,8 +958,9 @@ function addRing(x,y,r,to,dur,c){const q=shockwaves.get();q.x=x;q.y=y;q.r=r;q.to
 function addSpark(x,y,a,n,c){for(let i=0;i<(RM?Math.min(2,n):n);i++){const q=sparks.get(),ang=a+rng(-.8,.8),v=rng(70,160);q.x=x;q.y=y;q.vx=Math.cos(ang)*v;q.vy=Math.sin(ang)*v;q.t=0;q.dur=rng(.12,.26);q.c=c;}}
 function addDecal(x,y,r,c,stamp){const q=decals.get();q.x=x;q.y=y;q.r=r;q.c=c;q.t=0;q.dur=.7;q.stamp=!!stamp;}
 function addDeath(e,c){const count=e.boss?10:6+floor(rnd()*5);for(let i=0;i<(RM?2:count);i++){const q=shreds.get(),a=i*6.283/count+rng(-.2,.2),v=rng(50,130);q.x=e.x;q.y=e.y;q.vx=Math.cos(a)*v;q.vy=Math.sin(a)*v-25;q.t=0;q.dur=rng(.3,.6);q.rot=a;q.spin=rng(-8,8);q.c=c;}addDecal(e.x,e.y,e.r*.6,c,false);if(e.boss){const q=bossDeaths.get();q.x=e.x;q.y=e.y;q.t=0;q.stage=0;q.c=c;addRing(e.x,e.y,5,45,.3,c);}}
-function muzzle(fam){if(G.state!=='play')return;const q=muzzleFlashes.get();q.x=P.x+P.fx*18;q.y=P.y+P.fy*18;q.a=Math.atan2(P.fy,P.fx);q.c=fam==='jna'||fam==='po'?C.pink:C.cyan;q.t=0;P.recoilT=.085;}
-function newTrail(p){const q=trails.get();q.owner=p;q.uid=p.uid;q.head=1;q.count=1;q.fade=.22;q.w=p.r*.6;q.c=p.spr==='p_po'?C.pink:C.cyan;q.xy[0]=p.x;q.xy[1]=p.y;p.trail=q;}
+function muzzle(fam){if(G.state!=='play')return;
+ if(RM){P.recoilT=0;return;}const q=muzzleFlashes.get();q.x=P.x+P.fx*18;q.y=P.y+P.fy*18;q.a=Math.atan2(P.fy,P.fx);q.c=fam==='jna'||fam==='po'?C.pink:C.cyan;q.t=0;P.recoilT=.085;}
+function newTrail(p){const q=trails.get();q.owner=p;q.uid=p.uid;q.head=1;q.count=1;q.fade=.22;q.w=p.r*.6;q.c=p.spr==='p_po'?C.pink:(p.spr==='p_a8'?C.dim:C.cyan);q.xy[0]=p.x;q.xy[1]=p.y;p.trail=q;}
 function sampleTrail(p){const q=p.trail;if(!q||q.owner!==p||q.uid!==p.uid)return;const j=q.head*2;q.xy[j]=p.x;q.xy[j+1]=p.y;q.head=(q.head+1)%TRAIL_POINTS;q.count=Math.min(TRAIL_POINTS,q.count+1);q.fade=.22;}
 function updCombatFx(dt){
  for(let i=0;i<trails.n;i++){const q=trails.items[i];if(q.active&&(!q.owner||!q.owner.active||q.owner.uid!==q.uid)){q.fade-=dt;if(q.fade<=0)trails.release(q);}}
@@ -1285,7 +1286,7 @@ const G={
 const P={x:0,y:0,r:13,hp:100,maxhp:100,level:1,xp:0,xpNext:14,boostT:0,moving:false,
   fx:1,fy:0,mvx:0,mvy:0,iframe:0,hurtT:0,regenT:0,
   weapons:[],passives:[],orbA:0};
-const boltSegs=[]; for(let i=0;i<48;i++)boltSegs.push({ttl:0,x1:0,y1:0,x2:0,y2:0});
+const boltSegs=[]; for(let i=0;i<48;i++)boltSegs.push({ttl:0,x1:0,y1:0,x2:0,y2:0,bend:0,branch:0});
 const novas=[]; for(let i=0;i<5;i++)novas.push({active:false,x:0,y:0,r:0,rmax:0,dmg:0,uid:0});
 const chests=[]; for(let i=0;i<3;i++)chests.push({active:false,x:0,y:0});
 
@@ -1326,19 +1327,65 @@ const _n2=[null,null];
 function spawnProj(x,y,vx,vy,dmg,pierce,spr,r,life,homing){
   const p=projs.get(); p.x=x;p.y=y;p.vx=vx;p.vy=vy;p.dmg=dmg;p.pierce=pierce;p.spr=spr;
   p.r=r;p.life=life;p.homing=homing||0;p.target=null;p.hostile=false;p.h1=0;p.h2=0;p.h3=0;p.h4=0;
-  p.split=0;p.minis=0;p.uid=projectileUid++;p.trail=null;newTrail(p);
+  p.split=0;p.minis=0;p.helix=0;p.smokeT=0;p.uid=projectileUid++;p.trail=null;newTrail(p);
   return p; }
 function spawnHostile(x,y,vx,vy,dmg){
   const p=projs.get(); p.x=x;p.y=y;p.vx=vx;p.vy=vy;p.dmg=dmg;p.pierce=0;p.spr='p_enemy';
   p.r=6;p.life=4;p.homing=0;p.target=null;p.hostile=true;p.h1=0;p.h2=0;p.h3=0;p.h4=0;p.uid=projectileUid++;p.trail=null; }
 
+/* Delayed visual combat events use their own bounded pools. */
+const debStrikes=makePool(20,()=>({active:false,target:null,uid:0,x:0,y:0,t:0,dmg:0}));
+const echoes=makePool(16,()=>({active:false,x:0,y:0,t:0,flip:false}));
+const slashes=makePool(36,()=>({active:false,x:0,y:0,t:0,a:0}));
+const miniLaunches=makePool(72,()=>({active:false,x:0,y:0,a:0,wait:0,dmg:0,uid:0}));
+const missileSmoke=makePool(RM?8:140,()=>({active:false,x:0,y:0,t:0,dur:0,r:0}));
+const TAPE_DASH=[9,7], NO_DASH=[];
+const companions=[{x:0,y:0,vx:0,vy:0,angle:0,flash:0,ready:false},
+{x:0,y:0,vx:0,vy:0,angle:0,flash:0,ready:false},
+{x:0,y:0,vx:0,vy:0,angle:0,flash:0,ready:false}];
+function updateDelayedEvents(dt){
+ for(let i=0;i<debStrikes.n;i++){const d=debStrikes.items[i];if(!d.active)continue;
+ d.t+=dt;if(d.target&&d.target.active&&d.target.uid===d.uid){d.x=d.target.x;d.y=d.target.y;}
+ if(d.t<.30)continue;
+ let e=d.target;
+ if(!e||!e.active||e.uid!==d.uid)e=nearest(d.x,d.y,500,0);
+ const x=e?e.x:d.x,y=e?e.y:d.y;
+ addBolt(x-16,y-340,x,y);addBolt(x+10,y-170,x,y);
+ addRing(x,y,4,42,.24,C.gold);addDecal(x,y,17,'#713528',false);addSpark(x,y,1.57,RM?2:10,C.gold);
+ if(e)damageEnemy(e,d.dmg,true,x,y-200);
+ debStrikes.release(d);
+ }
+ for(let i=0;i<miniLaunches.n;i++){const m=miniLaunches.items[i];if(!m.active)continue;
+ m.wait-=dt;if(m.wait>0)continue;
+ const p=spawnProj(m.x,m.y,Math.cos(m.a)*160,Math.sin(m.a)*160,m.dmg,1,'p_a8',4,1.6,5);
+ p.spin=320;p.minis=0;p.h1=m.uid;miniLaunches.release(m);}
+ for(let i=0;i<missileSmoke.n;i++){const m=missileSmoke.items[i];if(m.active&&(m.t+=dt)>=m.dur)missileSmoke.release(m);}
+ for(let i=0;i<echoes.n;i++){const e=echoes.items[i];if(e.active&&(e.t+=dt)>.4)echoes.release(e);}
+ for(let i=0;i<slashes.n;i++){const e=slashes.items[i];if(e.active&&(e.t+=dt)>.22)slashes.release(e);}
+}
+function drawDelayedEvents(){
+ for(let i=0;i<missileSmoke.n;i++){const m=missileSmoke.items[i];if(!m.active)continue;
+   const t=m.t/m.dur;ctx.globalAlpha=(1-t)*.22;ctx.fillStyle=C.dim;ctx.beginPath();ctx.arc(m.x,m.y,m.r*(1+t*2),0,7);ctx.fill();}
+ ctx.globalAlpha=1;
+ for(let i=0;i<debStrikes.n;i++){const d=debStrikes.items[i];if(!d.active)continue;
+ const t=easeInOutSine(d.t/.30),r=36*(1-t)+10;
+ ctx.globalAlpha=.25+.65*t;ctx.strokeStyle=C.gold;ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(d.x,d.y,r,0,7);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(d.x-r-8,d.y);ctx.lineTo(d.x-r+5,d.y);
+ ctx.moveTo(d.x+r-5,d.y);ctx.lineTo(d.x+r+8,d.y);ctx.stroke();}
+ for(let i=0;i<slashes.n;i++){const e=slashes.items[i];if(!e.active)continue;
+ const a=1-e.t/.22;ctx.globalAlpha=a;ctx.strokeStyle=C.red;ctx.lineWidth=4*a;
+ ctx.beginPath();ctx.moveTo(e.x-22,e.y+15);ctx.lineTo(e.x+22,e.y-15);ctx.stroke();}
+ for(let i=0;i<echoes.n;i++){const e=echoes.items[i];if(!e.active)continue;
+ ctx.globalAlpha=.42*(1-easeOutCubic(e.t/.4));blitA('pl_'+G.charId,e.x,e.y,1,e.flip,0);}
+ ctx.globalAlpha=1;
+}
 /* =============== WEAPON FIRE IMPLEMENTATIONS =============== */
 function fireGPC(w,pow,asEcho){ const L=w.lvl-1,D=WEAPONS.gpc;
   if(w.evolved){ // SF-44: fan storm
     const t=nearest(P.x,P.y,520,0); const base=t?Math.atan2(t.y-P.y,t.x-P.x):Math.atan2(P.fy,P.fx);
     const E=EVOS.sf44;
-    for(let i=0;i<E.n;i++){ const a=base+(i/(E.n-1)-.5)*E.arc;
-      spawnProj(P.x,P.y,Math.cos(a)*E.spd,Math.sin(a)*E.spd,E.dmg*statDmg()*pow,1,asEcho?'p_opt':'p_sf44',5,1.2,0); }
+    // Nine forms release over three update frames.
+    w.fanBase=base;w.fanRemain=E.n;w.fanIndex=0;w.fanPow=pow;w.fanEcho=!!asEcho;
     if(!asEcho)AU.shoot('gpc'); return; }
   nearest2(P.x,P.y,560,_n2);
   const n=D.shots[L];
@@ -1354,26 +1401,55 @@ function firePO(w,pow,asEcho){ const L=w.lvl-1,D=WEAPONS.po;
   spawnProj(P.x,P.y,Math.cos(a)*D.spd,Math.sin(a)*D.spd,D.dmg[L]*statDmg()*pow,D.pierce[L]+1,asEcho?'p_opt':'p_po',9,2.2,0);
   if(!asEcho)AU.shoot('po');
 }
-function fireBPA(w,pow,asEcho){ const L=w.lvl-1,D=WEAPONS.bpa;
-  let t=nearest(P.x,P.y,D.range,0); if(!t)return;
-  let px=P.x,py=P.y,hits=0,lastUid=0;
-  const maxArcs=D.arcs[L];
-  while(t&&hits<maxArcs){
-    addBolt(px,py,t.x,t.y);
-    damageEnemy(t,D.dmg[L]*statDmg()*pow,false);
-    lastUid=t.uid; px=t.x;py=t.y;hits++;
-    t=nearest(px,py,D.arcRange,lastUid);
-  }
-  if(hits&&!asEcho)AU.shoot('bpa');
+const chainHops=makePool(32,()=>({active:false,x:0,y:0,wait:0,left:0,last:0,dmg:0,range:0}));
+function fireBPA(w,pow,asEcho){const L=w.lvl-1,D=WEAPONS.bpa;
+  if(!nearest(P.x,P.y,D.range,0))return;
+  const h=chainHops.get();h.x=P.x;h.y=P.y;h.wait=0;h.left=D.arcs[L];h.last=0;
+  h.dmg=D.dmg[L]*statDmg()*pow;h.range=D.range;if(!asEcho)AU.shoot('bpa');
 }
-function addBolt(x1,y1,x2,y2){ for(let i=0;i<boltSegs.length;i++){const b=boltSegs[i];
-  if(b.ttl<=0){b.ttl=.14;b.x1=x1;b.y1=y1;b.x2=x2;b.y2=y2;return;} } }
+function updChainHops(dt){
+  for(let i=0;i<chainHops.n;i++){const h=chainHops.items[i];if(!h.active)continue;
+    h.wait-=dt;if(h.wait>0)continue;
+    const e=nearest(h.x,h.y,h.range,h.last);if(!e){chainHops.release(h);continue;}
+    const fromX=h.x,fromY=h.y;
+    addBolt(fromX,fromY,e.x,e.y);addSpark(e.x,e.y,Math.atan2(e.y-fromY,e.x-fromX),3,C.cyan);addRing(e.x,e.y,2,17,.19,C.cyan);
+    h.last=e.uid;h.x=e.x;h.y=e.y;h.range=WEAPONS.bpa.arcRange;
+    damageEnemy(e,h.dmg,false,fromX,fromY);h.left--;
+    if(h.left<=0)chainHops.release(h);else h.wait+=.04;
+  }
+}
+function addBolt(x1,y1,x2,y2){for(let i=0;i<boltSegs.length;i++){const b=boltSegs[i];
+  if(b.ttl<=0){b.ttl=.25;b.x1=x1;b.y1=y1;b.x2=x2;b.y2=y2;b.bend=rng(-16,16);b.branch=rng(-12,12);return;}}}
+/* Sample fixed directions only when acquiring a cluster, not on every render frame. */
+function pickBeamCluster(len,wid,exclude){
+  let best=-1,bestAngle=0;
+  const es=enemies.items;
+  for(let k=0;k<16;k++){
+    const a=k*Math.PI/8,fx=Math.cos(a),fy=Math.sin(a);
+    if(exclude!==null&&Math.abs((a-exclude+Math.PI*3)%(Math.PI*2)-Math.PI)<Math.PI*40/180)continue;
+    let score=0;
+    for(let i=0;i<es.length;i++){const e=es[i];if(!e.active)continue;
+      const dx=e.x-P.x,dy=e.y-P.y,t=dx*fx+dy*fy;
+      if(t<0||t>len)continue;
+      const perp=Math.abs(dx*fy-dy*fx);
+      if(perp<wid*.5+e.r+12)score+=e.boss?4:1;
+    }
+    if(score>best){best=score;bestAngle=a;}
+  }
+  if(best<=0&&exclude===null){const e=nearest(P.x,P.y,len,0);if(e)return Math.atan2(e.y-P.y,e.x-P.x);}
+  return bestAngle;
+}
 function fireJNA(w,pow,asEcho){ const L=w.lvl-1,D=WEAPONS.jna;
-  w.beamT=D.dur[L]; w.tickT=0; w.beamPow=pow; if(!asEcho)AU.shoot('jna');
+  w.beamElapsed=0;w.beamT=D.dur[L]+.43;w.tickT=0;w.beamPow=pow;
+  const a=pickBeamCluster(D.len[L],D.wid[L],null);
+  if(w.beamA===undefined)w.beamA=a;
+  w.beamTarget=a;w.aimRefresh=.20;
+  if(!asEcho)AU.shoot('jna');
 }
 function fireA8(w,pow,asEcho){ const L=w.lvl-1,D=WEAPONS.a8;
-  for(let i=0;i<D.n[L];i++){ const a=rng(0,Math.PI*2);
-    const p=spawnProj(P.x,P.y,Math.cos(a)*D.spd*.5,Math.sin(a)*D.spd*.5,D.dmg[L]*statDmg()*pow,1,asEcho?'p_opt':'p_a8',6,3.5,4);
+  for(let i=0;i<D.n[L];i++){
+    const spread=(i-(D.n[L]-1)/2)*.26,launch=Math.atan2(P.fy,P.fx)+spread;
+    const p=spawnProj(P.x-P.fx*14+Math.cos(launch+Math.PI/2)*i*3,P.y-P.fy*14+Math.sin(launch+Math.PI/2)*i*3,Math.cos(launch)*D.spd*.5,Math.sin(launch)*D.spd*.5,D.dmg[L]*statDmg()*pow,1,asEcho?'p_opt':'p_a8',6,3.5,4);
     p.spin=D.spd; if(w.evolved)p.minis=EVOS.mentorp.minis; }
   if(!asEcho)AU.shoot('a8');
 }
@@ -1391,6 +1467,8 @@ function fireOPT(w){ const L=w.lvl-1,D=WEAPONS.opt;
   const n=E?E.copies:D.echo[L], powr=E?E.pow:D.pow[L];
   for(let i=0;i<n;i++){ const o=P.weapons[floor(rnd()*P.weapons.length)];
     const w2=(o.id==='opt'||o.id==='cure'||o.id==='cor')?pool:o;
+    const echo=echoes.get();echo.x=P.x+P.fy*(i%2?26:-26);echo.y=P.y-P.fx*(i%2?26:-26);
+    echo.t=0;echo.flip=P.fx<0;
     FIRE[w2.id](w2,powr,true); }
   AU.shoot('opt');
 }
@@ -1398,7 +1476,7 @@ function fireR2(w,pow,asEcho){ const L=w.lvl-1,D=WEAPONS.r2;
   const t=nearest(P.x,P.y,560,0); if(!t)return;
   const a=Math.atan2(t.y-P.y,t.x-P.x);
   const p=spawnProj(P.x,P.y,Math.cos(a)*D.spd,Math.sin(a)*D.spd,D.dmg[L]*statDmg()*pow,1,asEcho?'p_opt':'p_gpc',5,1.6,0);
-  p.split=w.evolved?EVOS.tsbsa.gens:1;
+  p.split=w.evolved?EVOS.tsbsa.gens:1;p.helix=1;
   if(!asEcho)AU.shoot('gpc');
 }
 function fireRA(w,pow,asEcho){ const L=w.lvl-1,D=WEAPONS.ra;
@@ -1410,22 +1488,17 @@ function fireRA(w,pow,asEcho){ const L=w.lvl-1,D=WEAPONS.ra;
     v.burst=D.dmg[L]*statDmg()*pow; v.dps=E?E.dps*statDmg():0; v.tick=0;
     if(!asEcho)AU.shoot('ss'); return; }
 }
-function fireDEB(w,pow,asEcho){ const L=w.lvl-1,D=WEAPONS.deb;
-  const n=w.evolved?EVOS.susdeb.n:1, arr=enemies.items;
-  for(let k=0;k<n;k++){ let best=null,bh=-1;
-    for(let i=0;i<arr.length;i++){ const e=arr[i];
-      if(!e.active||e.smiteMark===G.t)continue;
-      if(e.maxhp>bh){bh=e.maxhp;best=e;} }
-    if(!best)return;
-    best.smiteMark=G.t;
-    addBolt(best.x+rng(-30,30),best.y-340,best.x,best.y);
-    addBolt(best.x+rng(-12,12),best.y-170,best.x,best.y);
-    damageEnemy(best,D.dmg[L]*statDmg()*pow,true);
-    const np=RM?3:8;
-    for(let i=0;i<np;i++){ const pt=parts.get(),a2=rng(0,7),sp2=rng(60,200);
-      pt.x=best.x;pt.y=best.y;pt.vx=Math.cos(a2)*sp2;pt.vy=Math.sin(a2)*sp2;
-      pt.life=pt.maxlife=.35;pt.spr='pt_gold';pt.sc=1.2; } }
-  if(!asEcho)AU.shoot('po');
+function fireDEB(w,pow,asEcho){const L=w.lvl-1,D=WEAPONS.deb;
+ const n=w.evolved?EVOS.susdeb.n:1,arr=enemies.items;
+ for(let k=0;k<n;k++){let best=null,bh=-1;
+   for(let i=0;i<arr.length;i++){const e=arr[i];if(!e.active||e.smiteMark===G.t)continue;
+     if(e.maxhp>bh){bh=e.maxhp;best=e;}}
+   if(!best)return;
+   best.smiteMark=G.t;
+   const d=debStrikes.get();d.target=best;d.uid=best.uid;d.x=best.x;d.y=best.y;
+   d.t=0;d.dmg=D.dmg[L]*statDmg()*pow;
+ }
+ if(!asEcho)AU.shoot('po');
 }
 const FIRE={gpc:fireGPC,po:firePO,bpa:fireBPA,jna:fireJNA,a8:fireA8,ss:fireSS,opt:fireOPT,
   r2:fireR2,ra:fireRA,deb:fireDEB,
@@ -1440,9 +1513,10 @@ function updVortices(dt){
     if(v.dps>0){ v.tick-=dt;
       if(v.tick<=0){ v.tick=.25;
         GRID.query(v.x,v.y,v.r,(e)=>{ damageEnemy(e,v.dps*.25,false); return false; }); } }
-    if(v.t>=v.dur){ v.active=false;
-      GRID.query(v.x,v.y,v.r*.7,(e)=>{ damageEnemy(e,v.burst,true); return false; });
-      G.shake=max(G.shake,RM?0:4); }
+    if(v.t>=v.dur){v.active=false;
+      addRing(v.x,v.y,8,v.r*.85,.35,C.gold);addSpark(v.x,v.y,0,RM?2:16,C.gold);
+      GRID.query(v.x,v.y,v.r*.7,(e)=>{damageEnemy(e,v.burst,true);return false;});
+      G.shake=max(G.shake,RM?0:4);}
   }
 }
 
@@ -1450,52 +1524,86 @@ function updVortices(dt){
 function updWeapons(dt){
   const cdm=statCd();
   for(let i=0;i<P.weapons.length;i++){ const w=P.weapons[i],D=WEAPONS[w.id],L=w.lvl-1;
-    // CLASS J&A: twin beams sweep continuously
-    if(w.id==='jna'&&w.evolved){ const E=EVOS.classjna;
-      w.sweepA=(w.sweepA||0)+E.spin*dt; w.tickT-=dt;
-      if(w.tickT<=0){ w.tickT=.15;
-        beamDamageDir(Math.cos(w.sweepA),Math.sin(w.sweepA),E.len,E.wid,E.dmg*statDmg());
-        beamDamageDir(-Math.cos(w.sweepA),-Math.sin(w.sweepA),E.len,E.wid,E.dmg*statDmg()); }
-      continue; }
-    // J&A active beam ticks
-    if(w.id==='jna'&&w.beamT>0){ w.beamT-=dt; w.tickT-=dt;
-      if(w.tickT<=0){ w.tickT=.15; beamDamage(D.len[L],D.wid[L],D.dmg[L]*statDmg()*(w.beamPow||1)); } }
+    // Complete a three-frame SF-44 fan without modifying damage or projectile count.
+    if(w.id==='gpc'&&w.fanRemain>0){
+      const E=EVOS.sf44;
+      for(let k=0;k<3&&w.fanRemain>0;k++){
+        const idx=w.fanIndex++,a=w.fanBase+(idx/(E.n-1)-.5)*E.arc;
+        spawnProj(P.x,P.y,Math.cos(a)*E.spd,Math.sin(a)*E.spd,E.dmg*statDmg()*(w.fanPow||1),1,w.fanEcho?'p_opt':'p_sf44',5,1.2,0);
+        w.fanRemain--;
+      }
+    }
+    // J&A targeting is independent of player movement, shared by collision and rendering.
+    if(w.id==='jna'&&w.evolved){const E=EVOS.classjna;
+      if(w.beamA===undefined)w.beamA=pickBeamCluster(E.len,E.wid,null);
+      if(w.beamB===undefined){w.beamB=pickBeamCluster(E.len,E.wid,w.beamA);w.aimRefresh=0;}
+      w.aimRefresh-=dt;
+      if(w.aimRefresh<=0){w.aimRefresh=.22;
+        w.targetA=pickBeamCluster(E.len,E.wid,null);
+        w.targetB=pickBeamCluster(E.len,E.wid,w.targetA);}
+      const nextA=lerpAngleTurn(w.beamA,w.targetA===undefined?w.beamA:w.targetA,1.8*dt);
+      const nextB=lerpAngleTurn(w.beamB,w.targetB===undefined?w.beamB:w.targetB,1.8*dt);
+      const gap=(nextB-nextA+Math.PI*3)%(Math.PI*2)-Math.PI;
+      // Hold both turns for a frame rather than snap beams through each other.
+      if(Math.abs(gap)>=Math.PI*40/180){w.beamA=nextA;w.beamB=nextB;}
+      w.tickT-=dt;if(w.tickT<=0){w.tickT+=.15;
+        beamDamageDir(Math.cos(w.beamA),Math.sin(w.beamA),E.len,E.wid,E.dmg*statDmg());
+        beamDamageDir(Math.cos(w.beamB),Math.sin(w.beamB),E.len,E.wid,E.dmg*statDmg());}
+      continue;}
+    if(w.id==='jna'&&w.beamT>0){
+      w.beamElapsed=(w.beamElapsed||0)+dt;w.beamT-=dt;w.aimRefresh-=dt;
+      if(w.aimRefresh<=0){w.aimRefresh=.22;w.beamTarget=pickBeamCluster(D.len[L],D.wid[L],null);}
+      w.beamA=lerpAngleTurn(w.beamA===undefined?w.beamTarget:w.beamA,w.beamTarget,1.8*dt);
+      // Keep the original full-width damage window and cooldown DPS.
+      if(w.beamElapsed>=.28&&w.beamElapsed<.28+D.dur[L]){
+        w.tickT-=dt;if(w.tickT<=0){w.tickT+=.15;
+          beamDamageDir(Math.cos(w.beamA),Math.sin(w.beamA),D.len[L],D.wid[L],D.dmg[L]*statDmg()*(w.beamPow||1));}}
+    }
     // CURE aura (T4D when evolved: bigger + executes)
-    if(w.id==='cure'){ w.t-=dt;
-      if(w.t<=0){ w.t=D.cd[L];
+    if(w.id==='cure'){w.t-=dt;w.pulse=Math.max(0,(w.pulse||0)-dt);
+      if(w.t<=0){w.t=D.cd[L];w.pulse=RM?0:.18;
         const E=w.evolved?EVOS.t4d:null;
         const rad=D.rad[L]*(E?E.radmul:1), dmg=(E?E.dmg:D.dmg[L])*statDmg();
         GRID.query(P.x,P.y,rad,(e)=>{
-          if(E&&!e.boss&&e.hp<e.maxhp*E.execpct){ damageEnemy(e,e.hp+1,true); spawnText(e.x,e.y-14,'DEFAULT.',C.red); }
+          if(E&&!e.boss&&e.hp<e.maxhp*E.execpct){const slash=slashes.get();slash.x=e.x;slash.y=e.y;slash.t=0;addDecal(e.x,e.y,16,C.red,true);damageEnemy(e,e.hp+1,true);spawnText(e.x,e.y-14,'DEFAULT.',C.red); }
           else damageEnemy(e,dmg,false);
           return false; }); }
       continue; }
-    // COR companions orbit and fire independently
-    if(w.id==='cor'){ const E=w.evolved?EVOS.mft:null, nc=E?E.n:1;
-      w.corA=(w.corA||0)+1.3*dt; w.t-=dt;
-      if(w.t<=0){ w.t=D.cd[L]*cdm;
-        for(let k=0;k<nc;k++){ const a=w.corA+k*Math.PI*2/nc;
-          const cxp=P.x+Math.cos(a)*88, cyp=P.y+Math.sin(a)*88;
-          const t2=nearest(cxp,cyp,480,0); if(!t2)continue;
-          const aa=Math.atan2(t2.y-cyp,t2.x-cxp);
-          spawnProj(cxp,cyp,Math.cos(aa)*420,Math.sin(aa)*420,D.dmg[L]*statDmg(),1,'p_sf44',4,1.2,0); }
-        AU.shoot('gpc'); }
-      continue; }
+    // COR and MFT: spring-lag followers retain independent firing cadence.
+    if(w.id==='cor'){const E=w.evolved?EVOS.mft:null,nc=E?E.n:1;
+      w.corA=(w.corA||0)+.65*dt;w.t-=dt;
+      for(let k=0;k<nc;k++){const a=w.corA+k*Math.PI*2/nc;
+        const q=companions[k],tx=P.x+Math.cos(a)*88,ty=P.y+Math.sin(a)*88;
+        if(!q.ready){q.x=tx;q.y=ty;q.vx=0;q.vy=0;q.ready=true;}
+        q.vx=(q.vx+(tx-q.x)*22*dt)*.83;q.vy=(q.vy+(ty-q.y)*22*dt)*.83;
+        q.x+=q.vx*dt;q.y+=q.vy*dt;q.flash=Math.max(0,q.flash-dt);
+      }
+      if(w.t<=0){w.t=D.cd[L]*cdm;
+        for(let k=0;k<nc;k++){const q=companions[k],t2=nearest(q.x,q.y,480,0);if(!t2)continue;
+          q.angle=Math.atan2(t2.y-q.y,t2.x-q.x);q.flash=.1;
+          spawnProj(q.x,q.y,Math.cos(q.angle)*420,Math.sin(q.angle)*420,D.dmg[L]*statDmg(),1,'p_sf44',4,1.2,0);}
+        AU.shoot('gpc');}
+      continue;}
     // INDUSTRY DAY: continuous pulses
     if(w.id==='ss'&&w.evolved){ const E=EVOS.industry; w.t-=dt;
       if(w.t<=0){ w.t=E.period;
         for(let k=0;k<novas.length;k++){ const nv=novas[k]; if(!nv.active){
           nv.active=true;nv.x=P.x;nv.y=P.y;nv.r=20;nv.rmax=E.rmax;nv.dmg=E.dmg*statDmg();nv.uid=UID++; break; } } }
       continue; }
-    // GWAC: arcs to everything on screen
-    if(w.id==='bpa'&&w.evolved){ const E=EVOS.gwac; w.t-=dt;
-      if(w.t<=0){ w.t=E.cd*cdm;
-        const arr=enemies.items; let drawn=0;
-        for(let k=0;k<arr.length;k++){ const e=arr[k]; if(!e.active)continue;
-          damageEnemy(e,E.dmg*statDmg(),false);
-          if(drawn<10){ addBolt(P.x,P.y,e.x,e.y); drawn++; } }
-        if(drawn)AU.shoot('bpa'); }
-      continue; }
+    // GWAC expands across the field, dealing its original damage once per enemy.
+    if(w.id==='bpa'&&w.evolved){const E=EVOS.gwac;w.t-=dt;
+      if(w.gwacActive){w.gwacR+=2400*dt;
+        const arr=enemies.items;
+        for(let k=0;k<arr.length;k++){const e=arr[k];if(!e.active||e.gwacId===w.gwacId)continue;
+          const dx=e.x-w.gwacX,dy=e.y-w.gwacY;
+          if(dx*dx+dy*dy<=(w.gwacR+e.r)*(w.gwacR+e.r)){
+            e.gwacId=w.gwacId;damageEnemy(e,E.dmg*statDmg(),false,w.gwacX,w.gwacY);
+            if(!RM&&rnd()<.08)addSpark(e.x,e.y,Math.atan2(dy,dx),2,C.cyan);
+          }}
+        if(w.gwacR>=w.gwacMax)w.gwacActive=false;}
+      if(w.t<=0){w.t=E.cd*cdm;w.gwacX=P.x;w.gwacY=P.y;w.gwacR=0;
+        w.gwacMax=spawnRadius()*2.4;w.gwacId=UID++;w.gwacActive=true;AU.shoot('bpa');}
+      continue;}
     // IDIQ orbs handled below; PO evolved doesn't fire
     if(w.id==='po'&&w.evolved)continue;
     if(w.id==='gpc'&&w.evolved){ w.t-=dt;
@@ -1503,14 +1611,15 @@ function updWeapons(dt){
     w.t-=dt;
     if(w.t<=0){ w.t=D.cd[L]*cdm; FIRE[w.id](w,1,false); }
   }
-  updVortices(dt);
+  updVortices(dt);updChainHops(dt);updateDelayedEvents(dt);
   // IDIQ orbs
   const po=getWpn('po');
   if(po&&po.evolved){ const E=EVOS.idiq; P.orbA+=E.ospd*dt;
     for(let k=0;k<E.orbs;k++){ const a=P.orbA+k*Math.PI*2/E.orbs;
-      const ox=P.x+Math.cos(a)*E.orad, oy=P.y+Math.sin(a)*E.orad;
+      const radius=E.orad*(1+.07*Math.sin(G.t*1.8));
+      const ox=P.x+Math.cos(a)*radius, oy=P.y+Math.sin(a)*radius;
       GRID.query(ox,oy,16,(e)=>{ if(G.t>=e.orbT){ e.orbT=G.t+E.hitcd;
-        damageEnemy(e,E.dmg*statDmg(),false); } return false; }); } }
+        damageEnemy(e,E.dmg*statDmg(),false);addSpark(e.x,e.y,a,3,C.gold); } return false; }); } }
 }
 function beamDamageDir(fx,fy,len,wid,dmg){
   const hw=wid/2, cx=P.x+fx*len/2, cy=P.y+fy*len/2;
@@ -1518,25 +1627,16 @@ function beamDamageDir(fx,fy,len,wid,dmg){
     const rx=e.x-P.x, ry=e.y-P.y;
     const t=rx*fx+ry*fy; if(t<0||t>len)return false;
     const perp=Math.abs(rx*fy-ry*fx);
-    if(perp<hw+e.r)damageEnemy(e,dmg,false);
+    if(perp<hw+e.r){damageEnemy(e,dmg,false);if(!RM&&G.t>=e.beamT){e.beamT=G.t+.12;addSpark(e.x,e.y,Math.atan2(fy,fx),2,C.pink);}}
     return false; });
 }
-function beamDamage(len,wid,dmg){
-  const fx=P.fx,fy=P.fy, hw=wid/2;
-  const cx=P.x+fx*len/2, cy=P.y+fy*len/2;
-  GRID.query(cx,cy,len/2+40,(e)=>{
-    const rx=e.x-P.x, ry=e.y-P.y;
-    const t=rx*fx+ry*fy; if(t<0||t>len)return false;
-    const perp=Math.abs(rx*fy-ry*fx);
-    if(perp<hw+e.r)damageEnemy(e,dmg,false);
-    return false; });
-}
+/* Legacy beamDamage removed: damage and graphics now use identical aim angles. */
 
 /* =============== DAMAGE / DEATH =============== */
-function damageEnemy(e,dmg,big){
+function damageEnemy(e,dmg,big,hitX,hitY){
   if(!e.active)return;
   e.hp-=dmg; e.flash=.08;e.squashT=STEP*2;
-  if(!e.boss){const dx=e.x-P.x,dy=e.y-P.y,d=hyp(dx,dy)||1,force=(big?140:55)*(e.r>20||e.maxhp>400?.35:1);e.knockX=dx/d*force;e.knockY=dy/d*force;e.knockT=.11;}
+  if(!e.boss){const dx=e.x-(hitX===undefined?P.x:hitX),dy=e.y-(hitY===undefined?P.y:hitY),d=hyp(dx,dy)||1,force=(big?140:55)*(e.r>20||e.maxhp>400?.35:1);e.knockX=dx/d*force;e.knockY=dy/d*force;e.knockT=.11;}
   if(big){addRing(e.x,e.y,3,25,.2,C.gold);addSpark(e.x,e.y,Math.atan2(e.y-P.y,e.x-P.x),4,C.gold);}
   spawnDnum(e.x,e.y-e.r,floor(dmg),big?C.gold:'#fff',big);
   AU.hit();
@@ -1606,7 +1706,7 @@ function spawnEnemy(typeId,bossFlag,nearAngle){
   e.spd=D.spd*spdMul(m)*rng(.9,1.1);
   e.dmg=D.dmg*dmgMul(m);
   e.r=D.r; e.val=D.val; e.xp=D.xp; e.t=0; e.zig=rng(0,7); e.buffT=0; e.flash=0;
-  e.novaUid=0; e.orbT=0; e.slowT=0; e.shootT=rng(1,2.5); e.boss=!!bossFlag; e.hitT=0;e.knockX=0;e.knockY=0;e.knockT=0;e.squashT=0;
+  e.novaUid=0; e.orbT=0; e.beamT=0;e.gwacId=0; e.slowT=0; e.shootT=rng(1,2.5); e.boss=!!bossFlag; e.hitT=0;e.knockX=0;e.knockY=0;e.knockT=0;e.squashT=0;
   if(!G.introSeen[typeId]){ G.introSeen[typeId]=1; showNameplate(typeId); }
   return e;
 }
@@ -1912,6 +2012,8 @@ function updProjs(dt){
         const spd=min(hyp(p.vx,p.vy)+260*dt,p.spin||420);
         p.vx=Math.cos(na)*spd; p.vy=Math.sin(na)*spd; } }
     p.x+=p.vx*dt; p.y+=p.vy*dt;if(!p.hostile)sampleTrail(p);
+    if(!RM&&p.spr==='p_a8'){p.smokeT-=dt;if(p.smokeT<=0){p.smokeT=.075;
+      const sm=missileSmoke.get();sm.x=p.x;sm.y=p.y;sm.t=0;sm.dur=.42;sm.r=rng(3,6);}}
     if(p.hostile){ const dx=P.x-p.x,dy=P.y-p.y;
       if(dx*dx+dy*dy<(P.r+p.r)*(P.r+p.r)){ hurtPlayer(p.dmg); projs.release(p); }
       continue; }
@@ -1920,14 +2022,14 @@ function updProjs(dt){
     GRID.query(p.x,p.y,p.r+4,(e)=>{
       if(projHit(p,e.uid))return false;
       projMark(p,e.uid);
-      damageEnemy(e,p.dmg,p.spr==='p_po');if(p.spr==='p_po')addDecal(e.x,e.y,11,C.pink,true);addSpark(e.x,e.y,Math.atan2(p.vy,p.vx),3,C.cyan);
+      damageEnemy(e,p.dmg,p.spr==='p_po',p.x-p.vx*dt,p.y-p.vy*dt);if(p.spr==='p_po')addDecal(e.x,e.y,11,C.pink,true);if(p.spr==='p_a8')addRing(p.x,p.y,3,25,.2,C.gold);addSpark(e.x,e.y,Math.atan2(p.vy,p.vx),3,C.cyan);
       if(p.split>0){ const base=Math.atan2(p.vy,p.vx),sp2=hyp(p.vx,p.vy);
         for(let k=-1;k<=1;k+=2){ const a2=base+k*.5;
           const c2=spawnProj(p.x,p.y,Math.cos(a2)*sp2,Math.sin(a2)*sp2,p.dmg*.7,1,p.spr,4,1.1,0);
-          c2.split=p.split-1; c2.h1=e.uid; } }
-      if(p.minis>0){ for(let k=0;k<p.minis;k++){ const a2=rng(0,7);
-          const c2=spawnProj(p.x,p.y,Math.cos(a2)*160,Math.sin(a2)*160,p.dmg*EVOS.mentorp.minidmg,1,'p_a8',4,1.6,5);
-          c2.spin=320; c2.minis=0; c2.h1=e.uid; } }
+          c2.split=p.split-1;c2.helix=1;c2.h1=e.uid; } }
+      if(p.minis>0){for(let k=0;k<p.minis;k++){const m=miniLaunches.get();
+        m.x=p.x;m.y=p.y;m.a=rng(0,7);m.wait=k*.06;
+        m.dmg=p.dmg*EVOS.mentorp.minidmg;m.uid=e.uid;}}
       p.pierce--;
       if(p.pierce<=0){ projs.release(p); used=true; return true; }
       return false; });
@@ -1939,7 +2041,7 @@ function updNovas(dt){
     n.r+=260*dt;
     GRID.query(n.x,n.y,n.r,(e,dx,dy)=>{
       const d=hyp(dx,dy);
-      if(d>n.r-34&&e.novaUid!==n.uid){ e.novaUid=n.uid; damageEnemy(e,n.dmg,false); }
+      if(d>n.r-34&&e.novaUid!==n.uid){ e.novaUid=n.uid; damageEnemy(e,n.dmg,false);if(!e.boss){e.knockX=dx/(d||1)*70;e.knockY=dy/(d||1)*70;e.knockT=.12;} }
       return false; });
     if(n.r>=n.rmax)n.active=false;
   }
@@ -1980,6 +2082,23 @@ function update(dt){
   updFx(dt);
 }
 
+/* Layered J&A energy, entirely procedural. No movement-facing beam steering. */
+function drawEnergyBeam(a,len,wid,amount,time,telegraph){
+  if(amount<=0)return;
+  ctx.save();ctx.translate(P.x,P.y);ctx.rotate(a);
+  ctx.globalCompositeOperation='lighter';
+  if(telegraph){ctx.globalAlpha=RM?.4:.35+.2*Math.sin(time*38);ctx.strokeStyle=C.pink;
+    ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(len,0);ctx.stroke();
+  }else{
+    ctx.globalAlpha=.12*amount;ctx.fillStyle=C.pink;ctx.fillRect(0,-wid*1.45*amount,len,wid*2.9*amount);
+    ctx.globalAlpha=.48*amount;ctx.fillStyle=C.pink;ctx.fillRect(0,-wid*.6*amount,len,wid*1.2*amount);
+    ctx.globalAlpha=.92*amount;ctx.fillStyle='#fff5fd';ctx.fillRect(0,-wid*.13*amount,len,wid*.26*amount);
+    if(!RM){ctx.globalAlpha=.28*amount;ctx.fillStyle=C.cyan;
+      for(let k=0;k<12;k++){const x=(k*57+time*180)%len;ctx.fillRect(x,-wid*.34*amount,14,2);}}
+    ctx.globalAlpha=.7*amount;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(0,0,wid*.46*amount,0,7);ctx.fill();
+  }
+  ctx.restore();
+}
 /* =============== RENDER =============== */
 const cv=$('cv'), ctx=cv.getContext('2d');
 let DPR=1, ZOOM=1, VW=0, VH=0;
@@ -2057,44 +2176,73 @@ function render(){
     blitA(p.kind,p.x,p.y+Math.sin(p.t*3)*3,1,false,0); }
   // --- cure aura ring ---
   const cure=getWpn('cure');
-  if(cure){ const rad=WEAPONS.cure.rad[cure.lvl-1];
-    ctx.strokeStyle='rgba(255,210,63,0.25)'; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.arc(P.x,P.y,rad,0,7); ctx.stroke();
-    ctx.fillStyle='rgba(255,210,63,0.04)'; ctx.fill(); }
-  // --- J&A beam ---
+  if(cure){const E=cure.evolved?EVOS.t4d:null;
+    const rad=WEAPONS.cure.rad[cure.lvl-1]*(E?E.radmul:1);
+    ctx.save();ctx.translate(P.x,P.y);ctx.rotate(G.t*.22);
+    ctx.setLineDash(TAPE_DASH);ctx.strokeStyle=C.red;ctx.globalAlpha=.48;
+    ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,0,rad,0,7);ctx.stroke();ctx.setLineDash(NO_DASH);
+    ctx.fillStyle=C.red;ctx.globalAlpha=.045;ctx.fill();
+    if(cure.pulse>0){ctx.globalAlpha=.18*(cure.pulse/.18);
+      ctx.beginPath();ctx.arc(0,0,rad*.75,0,7);ctx.fill();}
+    ctx.restore();}
+  // --- J&A beam: shared angle drives both visible energy and hit detection ---
   const jna=getWpn('jna');
-  if(jna&&jna.beamT>0){ const L=jna.lvl-1,len=WEAPONS.jna.len[L],wid=WEAPONS.jna.wid[L];
-    ctx.save(); ctx.translate(P.x,P.y); ctx.rotate(Math.atan2(P.fy,P.fx));
-    ctx.globalCompositeOperation='lighter';
-    ctx.fillStyle='rgba(255,45,149,0.16)'; ctx.fillRect(0,-wid,len,wid*2);
-    ctx.fillStyle='rgba(255,45,149,0.55)'; ctx.fillRect(0,-wid/2,len,wid);
-    ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.fillRect(0,-wid*.14,len,wid*.28);
-    ctx.restore(); }
+  if(jna){
+    if(jna.evolved){
+      const E=EVOS.classjna;
+      if(jna.beamA!==undefined){drawEnergyBeam(jna.beamA,E.len,E.wid,1,G.t);drawEnergyBeam(jna.beamB,E.len,E.wid,1,G.t+.4);}
+    }else if(jna.beamT>0){
+      const L=jna.lvl-1,D=WEAPONS.jna,t=jna.beamElapsed||0;
+      let width=0,telegraph=false;
+      if(t<.2){telegraph=true;width=.06;}
+      else if(t<.28){width=easeOutBack((t-.2)/.08);}
+      else if(t<.28+D.dur[L])width=1;
+      else width=1-easeInOutSine((t-.28-D.dur[L])/.15);
+      drawEnergyBeam(jna.beamA===undefined?0:jna.beamA,D.len[L],D.wid[L],Math.max(0,width),G.t,telegraph);
+    }
+  }
   // --- vortices ---
   for(let i=0;i<vortices.length;i++){ const v=vortices[i]; if(!v.active)continue;
+    if(!RM){ctx.globalCompositeOperation='lighter';ctx.fillStyle=C.gold;
+      for(let k=0;k<16;k++){const a=k*.3927+v.t*8,r=v.r*(1-((v.t*.8+k/16)%1));
+        ctx.globalAlpha=.5*(1-v.t/v.dur);ctx.fillRect(v.x+Math.cos(a)*r,v.y+Math.sin(a)*r,3,3);}
+      ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';}
     const sw=v.t*6;
     ctx.strokeStyle='rgba(255,210,63,0.5)'; ctx.lineWidth=3;
     ctx.beginPath(); ctx.arc(v.x,v.y,v.r*(1-v.t/v.dur*.4),sw,sw+4.6); ctx.stroke();
     ctx.strokeStyle='rgba(255,210,63,0.25)'; ctx.lineWidth=2;
     ctx.beginPath(); ctx.arc(v.x,v.y,v.r*.55,-sw,-sw+4.2); ctx.stroke(); }
+  const gw=getWpn('bpa');if(gw&&gw.evolved&&gw.gwacActive){ctx.strokeStyle=C.cyan;ctx.lineWidth=4;ctx.globalAlpha=.7;ctx.beginPath();ctx.arc(gw.gwacX,gw.gwacY,gw.gwacR,0,7);ctx.stroke();ctx.globalAlpha=1;}
   // --- COR companions ---
   const corW=getWpn('cor');
-  if(corW){ const nc=corW.evolved?EVOS.mft.n:1;
-    for(let k=0;k<nc;k++){ const a=(corW.corA||0)+k*Math.PI*2/nc;
-      blitA('pl_civ',P.x+Math.cos(a)*88,P.y+Math.sin(a)*88,.7,Math.cos(a)<0,floor(G.t*6)%2); } }
+  if(corW){const nc=corW.evolved?EVOS.mft.n:1;
+    for(let k=0;k<nc;k++){const q=companions[k];if(!q.ready)continue;
+      blitA('pl_civ',q.x,q.y,.7,Math.cos(q.angle)<0,floor(G.t*6)%2);
+      if(q.flash>0){ctx.globalAlpha=q.flash/.1;ctx.fillStyle=C.cyan;
+        ctx.beginPath();ctx.arc(q.x+Math.cos(q.angle)*17,q.y+Math.sin(q.angle)*17,4,0,7);ctx.fill();ctx.globalAlpha=1;}
+    }}
   // --- novas ---
   for(let i=0;i<novas.length;i++){ const n=novas[i]; if(!n.active)continue;
     ctx.strokeStyle='rgba(25,227,255,0.7)'; ctx.lineWidth=5;
     ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,7); ctx.stroke();
     ctx.strokeStyle='rgba(25,227,255,0.2)'; ctx.lineWidth=14;
-    ctx.beginPath(); ctx.arc(n.x,n.y,max(2,n.r-10),0,7); ctx.stroke(); }
-  // --- bolts ---
-  ctx.strokeStyle=C.cyan; ctx.lineWidth=2.5; ctx.shadowColor=C.cyan; ctx.shadowBlur=14;
-  ctx.beginPath();
-  for(let i=0;i<boltSegs.length;i++){ const b=boltSegs[i]; if(b.ttl<=0)continue;
-    const mx=(b.x1+b.x2)/2+rng(-9,9), my=(b.y1+b.y2)/2+rng(-9,9);
-    ctx.moveTo(b.x1,b.y1); ctx.lineTo(mx,my); ctx.lineTo(b.x2,b.y2); }
-  ctx.stroke(); ctx.shadowBlur=0;
+    ctx.beginPath(); ctx.arc(n.x,n.y,max(2,n.r-10),0,7); ctx.stroke();
+    ctx.strokeStyle='rgba(255,255,255,.28)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(n.x,n.y,max(2,n.r-17),0,7);ctx.stroke(); }
+  // --- stable multi-segment bolts and brief branches ---
+  ctx.globalCompositeOperation='lighter';ctx.lineWidth=2.5;ctx.lineCap='round';
+  for(let i=0;i<boltSegs.length;i++){const b=boltSegs[i];if(b.ttl<=0)continue;
+    const dx=b.x2-b.x1,dy=b.y2-b.y1,d=hyp(dx,dy)||1,nx=-dy/d,ny=dx/d;
+    ctx.globalAlpha=clamp(b.ttl/.25,0,1);ctx.strokeStyle=C.cyan;
+    ctx.beginPath();ctx.moveTo(b.x1,b.y1);
+    ctx.lineTo(b.x1+dx*.25+nx*b.bend,b.y1+dy*.25+ny*b.bend);
+    ctx.lineTo(b.x1+dx*.5-nx*b.bend*.65,b.y1+dy*.5-ny*b.bend*.65);
+    ctx.lineTo(b.x1+dx*.75+nx*b.bend*.4,b.y1+dy*.75+ny*b.bend*.4);
+    ctx.lineTo(b.x2,b.y2);ctx.stroke();
+    ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(b.x1+dx*.5-nx*b.bend*.65,b.y1+dy*.5-ny*b.bend*.65);
+    ctx.lineTo(b.x1+dx*.63+nx*b.branch,b.y1+dy*.63+ny*b.branch);ctx.stroke();ctx.lineWidth=2.5;
+  }
+  ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
+  drawDelayedEvents();
   // --- enemies ---
   const ea=enemies.items;
   for(let i=0;i<ea.length;i++){ const e=ea[i]; if(!e.active)continue;
@@ -2112,7 +2260,12 @@ function render(){
       ctx.moveTo(e.x,e.y);
       ctx.lineTo(e.x+Math.cos(e.t*rate*4)*e.r*.36,e.y+Math.sin(e.t*rate*4)*e.r*.36);
       ctx.stroke(); }
-    if(e.flash>0){ ctx.globalAlpha=.65; ctx.globalCompositeOperation='lighter';
+    if(cure){
+      const ce=cure.evolved?EVOS.t4d:null,rad=WEAPONS.cure.rad[cure.lvl-1]*(ce?ce.radmul:1);
+      const cx=e.x-P.x,cy=e.y-P.y;
+      if(cx*cx+cy*cy<rad*rad){ctx.fillStyle='rgba(255,55,75,.09)';ctx.beginPath();ctx.arc(e.x,ey,e.r,0,7);ctx.fill();}
+    }
+    if(e.flash>0&&!RM){ ctx.globalAlpha=.65; ctx.globalCompositeOperation='lighter';
       blitA(ETYPES[T].spr,e.x,ey,1,flip,fr); ctx.globalCompositeOperation='source-over'; ctx.globalAlpha=1; }
     if(e.boss){ // boss hp bar
       const w=80; ctx.fillStyle='rgba(0,0,0,.6)'; ctx.fillRect(e.x-w/2,e.y-e.r-26,w,7);
@@ -2122,7 +2275,9 @@ function render(){
   const po=getWpn('po');
   if(po&&po.evolved){ const E=EVOS.idiq;
     for(let k=0;k<E.orbs;k++){ const a=P.orbA+k*Math.PI*2/E.orbs;
-      blitA('orb',P.x+Math.cos(a)*E.orad,P.y+Math.sin(a)*E.orad,1,false,0); } }
+      const rad=E.orad*(1+.07*Math.sin(G.t*1.8));
+      ctx.strokeStyle='rgba(255,210,63,.22)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(P.x,P.y,rad,a-.35,a);ctx.stroke();
+      blitA('orb',P.x+Math.cos(a)*rad,P.y+Math.sin(a)*rad,1,false,0); } }
   // --- projectiles ---
   const pra=projs.items;
   ctx.globalCompositeOperation='lighter';
@@ -2130,7 +2285,13 @@ function render(){
     const gc=GLOWK[p.spr]; if(gc){ glowAt(gc,p.x,p.y,22); glowAt(gc,p.x-p.vx*.035,p.y-p.vy*.035,15); } }
   ctx.globalCompositeOperation='source-over';
   for(let i=0;i<pra.length;i++){ const p=pra[i]; if(!p.active)continue;
-    if(p.spr==='p_a8')blitR(p.spr,p.x,p.y,1,Math.atan2(p.vy,p.vx));
+    if(p.helix){
+      const ang=Math.atan2(p.vy,p.vx),wave=Math.sin(G.t*18+p.uid)*7;
+      const dx=Math.cos(ang+Math.PI/2)*wave,dy=Math.sin(ang+Math.PI/2)*wave;
+      blitR(p.spr,p.x+dx,p.y+dy,.7,G.t*10);
+      blitR(p.spr,p.x-dx,p.y-dy,.7,-G.t*10);
+    }else if(p.spr==='p_a8')blitR(p.spr,p.x,p.y,1,Math.atan2(p.vy,p.vx));
+    else if(p.spr==='p_gpc'||p.spr==='p_sf44'||p.spr==='p_po'||p.spr==='p_opt')blitR(p.spr,p.x,p.y,1,G.t*10+p.uid);
     else blitA(p.spr,p.x,p.y,1,p.vx<0,0); }
   drawCombatFx();
   // --- particles ---
@@ -2283,7 +2444,7 @@ document.addEventListener('visibilitychange',()=>{ if(document.hidden&&G.state==
 function startRun(){
   AU.init();
   // reset
-  enemies.clear();projs.clear();parts.clear();gems.clear();dnums.clear();trails.clear();shockwaves.clear();sparks.clear();decals.clear();shreds.clear();bossDeaths.clear();muzzleFlashes.clear();
+  enemies.clear();projs.clear();parts.clear();gems.clear();dnums.clear();trails.clear();shockwaves.clear();sparks.clear();decals.clear();shreds.clear();bossDeaths.clear();muzzleFlashes.clear();chainHops.clear();debStrikes.clear();echoes.clear();slashes.clear();miniLaunches.clear();missileSmoke.clear();for(let i=0;i<3;i++)companions[i].ready=false;
   for(let i=0;i<novas.length;i++)novas[i].active=false;
   for(let i=0;i<chests.length;i++)chests[i].active=false;
   for(let i=0;i<picks.length;i++)picks[i].active=false;
@@ -2597,7 +2758,11 @@ function frame(now){
 
 /* =============== BOOT =============== */
 function boot(){
-  buildSprites(); buildFloors(); resize();
+  buildSprites();
+  // Warm all palette and sprite halos before the first gameplay frame.
+  for(const k in C)if(/^#[0-9a-fA-F]{6}$/.test(C[k]))glowOf(C[k]);
+  for(const k in GLOWK)glowOf(GLOWK[k]);
+  buildFloors(); resize();
   $('fpsbox').style.display=DEBUG?'block':'none';
   hudEl.hp=$('hpbar').querySelector('i'); hudEl.xp=$('xpbar').querySelector('i');
   hudEl.month=$('monthbox'); hudEl.lvl=$('lvltag'); hudEl.dol=$('dollarbox');
