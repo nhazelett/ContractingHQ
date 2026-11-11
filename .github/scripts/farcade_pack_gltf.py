@@ -106,24 +106,6 @@ def pack(source: pathlib.Path, dest: pathlib.Path) -> None:
     print(f"Textures optimized: {before_images:,} -> {after_images:,} bytes "
           f"({max_texture}px maximum dimension)", flush=True)
 
-
-        uri = item.pop("uri", None)
-        if uri is None:
-            continue
-        data = resource(uri, root)
-        pad4(merged)
-        at = len(merged)
-        merged.extend(data)
-        idx = len(obj.setdefault("bufferViews", []))
-        obj["bufferViews"].append({"buffer": 0, "byteOffset": at, "byteLength": len(data)})
-        item["bufferView"] = idx
-        mime = mimetypes.guess_type(urllib.parse.urlparse(uri).path)[0]
-        if uri.startswith("data:"):
-            mime = uri.split(";", 1)[0].partition(":")[2]
-        if mime not in ("image/png", "image/jpeg", "image/webp", "image/ktx2"):
-            raise ValueError(f"Unsupported texture MIME type for {uri}: {mime}")
-        item["mimeType"] = mime
-
     pad4(merged)
     obj["buffers"] = [{"byteLength": len(merged)}]
     json_data = json.dumps(obj, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
