@@ -97,3 +97,29 @@ jobs:
           fi
           git commit -m "Import Wikiti textured Game Boy Color GLB for FARCADE"
           git push origin HEAD:refs/heads/design/farcade-premium-handheld-2026
+
+      - name: Publish separate KTHQ GLB beta without touching live FARCADE
+        run: |
+          set -euo pipefail
+          cp assets/farcade/models/farcade-professional-source.glb /tmp/farcade-professional-source.glb
+          git fetch origin main
+          git checkout -B main origin/main
+          mkdir -p assets/farcade/models
+          cp /tmp/farcade-professional-source.glb assets/farcade/models/farcade-professional-source.glb
+          git show origin/design/farcade-premium-handheld-2026:farcade-interactive-lab.html > farcade-glb-beta.html
+          cat > assets/farcade/models/ATTRIBUTION.md <<'EOF'
+          Game Boy Color by Wikiti (CC BY)
+          https://sketchfab.com/3d-models/game-boy-color-03c6fe28d45244d2acd55486e3cfee19
+          Source: Sketchfab official Download API.
+          Repacked to GLB for FARCADE. Attribution and original license required.
+          Not an official Nintendo product.
+          EOF
+          git add assets/farcade/models/farcade-professional-source.glb assets/farcade/models/ATTRIBUTION.md farcade-glb-beta.html
+          if git diff --cached --quiet; then
+            echo "Published beta already current."
+            exit 0
+          fi
+          git commit -m "Publish unlisted professional GLB FARCADE beta"
+          git push origin HEAD:refs/heads/main
+          echo "FARCADE GLB beta published: https://kthq.org/farcade-glb-beta.html"
+
