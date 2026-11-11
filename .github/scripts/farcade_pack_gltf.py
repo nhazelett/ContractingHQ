@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Pack Sketchfab's officially downloaded glTF + local textures as one GLB.
 
-No third-party Python packages. Keeps original PBR materials and geometry.
+Uses Pillow to downscale and optimize image textures while preserving PBR\nmaterial assignments and original mesh geometry.
 All external buffers and images are embedded, with four-byte alignment.
 """
 from __future__ import annotations
@@ -9,6 +9,9 @@ from __future__ import annotations
 import base64
 import json
 import mimetypes
+import io
+import os
+from PIL import Image
 import pathlib
 import struct
 import sys
@@ -59,7 +62,51 @@ def pack(source: pathlib.Path, dest: pathlib.Path) -> None:
         view["byteOffset"] = view.get("byteOffset", 0) + offsets[which]
         view["buffer"] = 0
 
+    max_texture = max(256, min(2048, int(os.environ.get("FARCADE_TEXTURE_MAX", "1024"))))
+    quality = max(65, min(94, int(os.environ.get("FARCADE_JPEG_QUALITY", "85"))))
+    before_images = 0
+    after_images = 0
     for item in obj.get("images", []):
+        uri = item.pop("uri", None)
+        if uri is None:
+            continue
+        data = resource(uri, root)
+        before_images += len(data)
+        mime = mimetypes.guess_type(urllib.parse.urlparse(uri).path)[0]
+        if uri.startswith("data:"):
+            mime = uri.split(";", 1)[0].partition(":")[2]
+        if mime not in ("image/png", "image/jpeg", "image/webp"):
+            raise ValueError(f"Unsupported texture MIME type for {uri}: {mime}")
+        image = Image.open(io.BytesIO(data))
+        image.load()
+        original_size = image.size
+        image.thumbnail((max_texture, max_texture), Image.Resampling.LANCZOS)
+        output = io.BytesIO()
+        # JPEG is substantially smaller for photo-derived color maps, while
+        # PNG preserves alpha and normal/roughness/metallic texture fidelity.
+        if mime == "image/jpeg" and image.mode not in ("RGBA", "LA", "P"):
+            image.convert("RGB").save(output, format="JPEG", quality=quality,
+                                      optimize=True, progressive=True, subsampling=0)
+            mime = "image/jpeg"
+        else:
+            image.save(output, format="PNG", optimize=True, compress_level=9)
+            mime = "image/png"
+        data = output.getvalue()
+        after_images += len(data)
+        print(f"Texture {uri[:65]}: {original_size} -> {image.size}, "
+              f"{len(data):,} bytes", flush=True)
+        pad4(merged)
+        at = len(merged)
+        merged.extend(data)
+        idx = len(obj.setdefault("bufferViews", []))
+        obj["bufferViews"].append({"buffer": 0, "byteOffset": at, "byteLength": len(data)})
+        item["bufferView"] = idx
+        item["mimeType"] = mime
+
+    print(f"Textures optimized: {before_images:,} -> {after_images:,} bytes "
+          f"({max_texture}px maximum dimension)", flush=True)
+
+
         uri = item.pop("uri", None)
         if uri is None:
             continue
