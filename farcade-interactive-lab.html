@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>FARCADE 3D Interactive Beta | KTHQ</title>
+<meta name="description" content="Experimental interactive 3D FARCADE built around a professionally textured Game Boy Color model.">
+<style>
+:root{color-scheme:dark;--bg:#090e10;--surface:#132020;--line:#37534c;--ink:#eef4e7;--dim:#aec4b8;--lime:#b7efba}
+*{box-sizing:border-box}
+html{min-height:100%}body{margin:0;background:radial-gradient(ellipse at 49% 34%,#1a3b3b 0%,#090e10 64%);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:var(--ink)}
+button,a{font:inherit}button{cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+nav{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:20px clamp(16px,4vw,56px);border-bottom:1px solid #31403c}
+.brand{text-decoration:none;color:var(--ink);font-size:20px;letter-spacing:-.06em;font-weight:850}
+.brand span{font-size:11px;color:var(--lime);letter-spacing:.14em;border-left:1px solid #53665d;margin-left:14px;padding-left:15px}
+.back{font-size:12px;color:var(--ink);text-decoration:none;border:1px solid #61786b;border-radius:99px;padding:9px 15px}
+main{max-width:1380px;margin:auto;padding:clamp(16px,3vw,36px)}
+.eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--lime);font-weight:750}
+h1{font-size:clamp(30px,4.2vw,56px);letter-spacing:-.06em;line-height:1.1;margin:10px 0 8px}
+.intro{color:var(--dim);font-size:14px;line-height:1.6;max-width:750px;margin:0 0 22px}
+.layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(295px,.75fr);gap:20px;align-items:stretch}
+.model{position:relative;border:1px solid #34534e;border-radius:20px;overflow:hidden;background:#0c1416;min-height:560px;isolation:isolate}
+.model iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.model::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 75%,rgba(0,0,0,.15));z-index:1}
+.overlay{position:absolute;z-index:3;inset:0;display:flex;align-items:center;justify-content:flex-end;pointer-events:none;padding:4%}
+.overlay.off{background:linear-gradient(90deg,transparent 34%,rgba(0,10,12,.6) 87%)}
+.power-panel{width:min(42%,245px);padding:19px;border:1px solid #b0d5c3;background:rgba(6,22,23,.89);border-radius:16px;pointer-events:auto;box-shadow:0 18px 50px rgba(0,0,0,.3)}
+.power-panel small{display:block;color:#bde7c7;font-size:10px;letter-spacing:.18em;line-height:1.6}
+.power-panel h2{font-size:22px;letter-spacing:-.035em;margin:9px 0}
+.power-panel p{color:#b7c8c1;line-height:1.55;font-size:12px;margin:0 0 14px}
+.action{border:1px solid #c6f9c7;background:#b4eab9;color:#10241b;border-radius:10px;padding:13px 16px;font-weight:850}
+.action[disabled]{opacity:.48;cursor:default}
+.tiny{position:absolute;bottom:12px;left:16px;z-index:2;font-size:10px;letter-spacing:.14em;color:#c2e4cf;background:rgba(8,20,19,.77);padding:8px 10px;border-radius:6px}
+.side{border:1px solid #37564c;border-radius:20px;background:rgba(12,28,26,.89);padding:23px;display:flex;flex-direction:column;gap:15px;min-width:0}
+.side h2{font-size:20px;letter-spacing:-.035em;margin:0}
+.status{font-size:12px;color:#b7cfba;line-height:1.5;min-height:20px}
+.screen-shell{border:5px solid #090f13;border-radius:10px;background:#080f10;box-shadow:inset 0 0 0 2px #405750}
+#preview{display:block;width:100%;height:auto;aspect-ratio:4/3;image-rendering:pixelated;image-rendering:crisp-edges}
+.headline{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.headline strong{letter-spacing:.04em;font-size:14px}
+.headline small{color:var(--lime);font-size:11px}
+.description{color:var(--dim);font-size:12px;line-height:1.58;min-height:56px;margin:0}
+.controls{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:8px}
+.controls button{min-height:45px;border-radius:9px;background:#1a3430;color:#e5f5e4;border:1px solid #517469;font-size:12px;font-weight:800}
+.controls button:hover:not([disabled]){background:#285044}
+.controls button[disabled]{opacity:.45;cursor:default}
+.game-list{display:flex;flex-wrap:wrap;gap:7px}
+.game-list button{border:1px solid #425f53;border-radius:8px;background:transparent;color:#b9cbbf;font-size:10px;padding:8px;flex-grow:1}
+.game-list button.active{background:#c6f4c0;color:#11281c;font-weight:800}
+.game-list button[disabled]{opacity:.48}
+.launch{width:100%;border:0;border-radius:11px;background:#b9f2bc;color:#0b2619;font-weight:850;min-height:48px}
+.launch[disabled]{opacity:.42;cursor:default}
+.hint{color:#8ca99e;font-size:11px;line-height:1.55}
+.credit{color:#819b91;font-size:11px;line-height:1.6;margin:20px 0}
+.credit a{color:#c1ecc9}
+#takeover{position:fixed;z-index:30;inset:0;background:#091111;display:none}
+#takeover.open{display:block}
+#takeover iframe{display:block;width:100%;height:100%;border:0}
+#exit{position:fixed;z-index:32;top:12px;right:15px;border:1px solid #a5e6b4;border-radius:10px;background:#16312a;color:white;padding:10px 13px;font-size:12px;font-weight:750}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.model{min-height:520px}.side{padding:18px}.power-panel{width:min(42%,230px)}}
+@media(max-width:500px){.model{min-height:410px}.power-panel{width:55%;padding:12px}.power-panel h2{font-size:16px}.power-panel p{font-size:11px}.action{padding:11px 9px;font-size:12px}.brand span{font-size:9px;padding-left:8px;margin-left:8px}nav{padding:16px}.back{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+<script defer src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
+</head>
+<body>
+<nav><a href="index.html" class="brand">KTHQ <span>FARCADE BETA</span></a><a href="farcade-arcade.html" class="back">Original FARCADE</a></nav>
+<main>
+<div class="eyebrow">Interactive experiment / Professional model by Wikiti</div>
+<h1>The arcade is powering up.</h1>
+<p class="intro">This beta keeps the professionally textured handheld you approved, adds an intentional side-switch power-on sequence, and connects 8-bit game selection to the existing KTHQ games.</p>
+<div class="layout">
+<section class="model" aria-label="Professionally textured 3D handheld">
+<iframe id="viewer" title="Interactive Game Boy Color 3D model by Wikiti" allow="autoplay; fullscreen; xr-spatial-tracking" allowfullscreen></iframe>
+<div class="tiny" id="viewLabel">3D MODEL / POWER OFF</div>
+<div class="overlay off" id="powerOverlay">
+  <div class="power-panel" id="powerPanel">
+    <small>01 / POWER THE HANDHELD</small>
+    <h2>Slide to power on.</h2>
+    <p>Click the right-hand side of the model, or press the switch below.</p>
+    <button id="power" class="action" type="button" disabled>LOADING MODEL…</button>
+  </div>
+</div>
+</section>
+<aside class="side">
+  <div class="eyebrow">8-bit cartridge selection</div>
+  <h2 id="screenHeading">Screen offline</h2>
+  <div class="screen-shell"><canvas id="preview" width="256" height="192" role="img" aria-label="FARCADE eight-bit game display"></canvas></div>
+  <div class="headline"><strong id="gameName">FARCADE</strong><small id="gameCount">OFFLINE</small></div>
+  <p class="description" id="desc">The cartridge menu unlocks after the console is switched on.</p>
+  <div class="controls"><button id="prev" disabled type="button" aria-label="Previous game">◀ PREV</button><button id="next" disabled type="button" aria-label="Next game">NEXT ▶</button><button id="select" disabled type="button">A / SELECT</button></div>
+  <div class="game-list" id="cartridges" aria-label="Available cartridges"></div>
+  <button id="launch" class="launch" disabled type="button">POWER ON TO PLAY</button>
+  <div id="status" class="status" role="status">Connecting to professional 3D model…</div>
+  <p class="hint">Keyboard: <b>P</b> powers on · <b>← →</b> browse · <b>Enter</b> selects · <b>Escape</b> closes the game. Touch and mouse controls also work.</p>
+</aside>
+</div>
+<p class="credit">3D model: <a href="https://sketchfab.com/3d-models/game-boy-color-03c6fe28d45244d2acd55486e3cfee19" target="_blank" rel="noopener">Game Boy Color by Wikiti</a> (CC BY). FARCADE game artwork and interaction layer by KTHQ. This beta uses Sketchfab's hosted model viewer, not a KTHQ-hosted GLB. It is not affiliated with Nintendo or the U.S. government.</p>
+</main>
+<div id="takeover" aria-hidden="true"><button id="exit" type="button">✕ Back to FARCADE</button><iframe id="gameFrame" title="FARCADE game" allow="autoplay; fullscreen; gamepad"></iframe></div>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const GAME=[
+ {name:'PART LOCK',href:'far-cade.html',desc:'Identify the correct FAR part before the timer runs out.',bg:'#122e3b',a:'#bbf5ad'},
+ {name:'FAR JEOPARDY',href:'jeopardy.html',desc:'Choose your category and dominate the acquisition trivia board.',bg:'#102d72',a:'#f9df84'},
+ {name:'CLOSEOUT',href:'closeout.html',desc:'Survive the fiscal year in a contracting-themed horde survival game.',bg:'#133d32',a:'#ff91aa'},
+ {name:'THRESHOLD',href:'',desc:'An acquisition lifecycle endless runner. Coming soon.',bg:'#32234f',a:'#ffd18a'},
+ {name:'CLAUSE CRASH',href:'',desc:'Match clauses in an arcade falling-block puzzle. Coming soon.',bg:'#1c3a5c',a:'#8ee8f1'},
+ {name:'OPEN SLOT',href:'contact.html',desc:'Have a game idea? Suggest the next FARCADE title.',bg:'#382d4f',a:'#d5f5a6'}
+];
+const canvas=$('preview'),ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;
+const overlay=$('powerOverlay'),btn=$('power'),status=$('status'),viewer=$('viewer');
+const list=$('cartridges'),gameFrame=$('gameFrame'),takeover=$('takeover');
+let selected=0,powered=false,booting=false,viewerReady=false,api=null,screenMaterial=null,screenUid=null,textureBusy=false,dirty=false;
+let baseCamera=null;
+function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h)}
+function txt(s,x,y,size,c){ctx.textAlign='center';ctx.fillStyle=c;ctx.font='bold '+size+'px monospace';ctx.fillText(s,x,y)}
+function paint(){
+ const g=GAME[selected],a=g.a;rect(0,0,256,192,'#071917');
+ if(!powered){rect(10,10,236,172,'#06110f');txt('POWER OFF',128,95,19,'#365d54');canvas.setAttribute('aria-label','FARCADE powered off');return}
+ rect(0,0,256,21,'#102f2c');txt('FARCADE / GAMES',103,15,12,'#d2fae1');txt((selected+1)+'/6',232,15,12,'#ffe0ae');
+ rect(8,27,240,128,g.bg);
+ for(let n=0;n<30;n++)rect(10+(n*37)%233,31+(n*23)%114,2,2,'#65868c');
+ if(selected===0){txt('PART LOCK',128,51,19,a);rect(32,64,192,59,'#112d31');txt('WHICH FAR PART?',128,85,13,'#f4f0d7');txt('17   12   6',128,109,16,'#ffd398')}
+ if(selected===1){txt('FAR JEOPARDY',128,47,17,a);for(let r=0;r<3;r++)for(let c=0;c<5;c++){rect(18+c*44,53+r*30,42,27,'#254bb2');txt('$'+((r+1)*100),39+c*44,71+r*30,12,'#ffe889')}}
+ if(selected===2){txt('CLOSEOUT',128,48,19,a);rect(120,77,18,35,'#e2d9bc');rect(123,66,12,13,'#f2d0aa');for(let n=0;n<14;n++){let x=13+(n*57)%227,y=58+(n*21)%92;if(x>110&&x<150&&y>64&&y<124)continue;rect(x,y,8,8,'#fa84a5')}txt('SURVIVE THE FY',128,145,12,'#ffe5a0')}
+ if(selected===3){txt('THRESHOLD',128,48,19,a);rect(8,117,240,39,'#5d488e');rect(58,90,23,27,'#d2efd3');rect(63,80,13,12,'#eac4a3');rect(182,98,26,19,'#ff8f99');txt('JUMP THE HURDLES',128,70,11,'#f5f1db')}
+ if(selected===4){txt('CLAUSE CRASH',128,47,18,a);rect(68,52,120,102,'#07151b');for(let r=0;r<6;r++)for(let c=0;c<8;c++)if((r+c*3)%5<3)rect(73+c*14,142-r*14,13,13,['#b0f7a0','#ffe487','#ff9abd'][c%3])}
+ if(selected===5){txt('MYSTERY SLOT',128,50,18,a);txt('?',128,129,69,'#f2d38b');txt('YOUR IDEA HERE',128,146,12,'#e3f8c2')}
+ rect(0,159,256,33,'#0b2320');txt(g.name,128,175,12,'#faf9dc');txt(g.href?'A  SELECT     ◀ ▶  BROWSE':'COMING SOON / SUGGEST',128,187,9,'#bce4c4');
+ canvas.setAttribute('aria-label',g.name+' eight-bit game screen');
+}
+function renderMenu(){
+ paint();const g=GAME[selected];
+ $('screenHeading').textContent=powered?'Choose a cartridge':'Screen offline';
+ $('gameName').textContent=powered?g.name:'FARCADE';
+ $('gameCount').textContent=powered?(selected+1)+' / '+GAME.length:'OFFLINE';
+ $('desc').textContent=powered?g.desc:'The cartridge menu unlocks after the console is switched on.';
+ $('launch').textContent=!powered?'POWER ON TO PLAY':!g.href?'COMING SOON':selected===5?'SUGGEST A GAME':'▶ PLAY '+g.name;
+ $('launch').disabled=!powered||!g.href;
+ ['prev','next','select'].forEach(id=>$(id).disabled=!powered||booting);
+ [...list.children].forEach((b,i)=>{b.disabled=!powered;b.classList.toggle('active',i===selected)});
+ refreshTexture();
+}
+GAME.forEach((g,i)=>{const b=document.createElement('button');b.type='button';b.textContent=(i+1)+' '+g.name;b.disabled=true;b.addEventListener('click',()=>{if(!powered||booting)return;selected=i;renderMenu()});list.append(b)});
+function refreshTexture(){
+ if(!api||!screenMaterial||!screenUid||textureBusy)return;
+ textureBusy=true;
+ api.updateTexture(canvas.toDataURL('image/png'),screenUid,function(err){
+   textureBusy=false;if(err){status.textContent='3D screen texture update unavailable; the adjacent arcade screen still works.'}
+   if(dirty){dirty=false;refreshTexture()}
+ });
+}
+function requestTexture(){if(textureBusy){dirty=true;return}refreshTexture()}
+function navigate(dir){if(!powered||booting)return;selected=(selected+dir+GAME.length)%GAME.length;renderMenu();requestTexture()}
+function launch(){
+ if(!powered||booting)return;const g=GAME[selected];if(!g.href)return;
+ if(selected===5){location.href=g.href;return}
+ gameFrame.src=g.href;takeover.classList.add('open');takeover.setAttribute('aria-hidden','false');$('exit').focus();
+}
+function closeGame(){gameFrame.src='about:blank';takeover.classList.remove('open');takeover.setAttribute('aria-hidden','true');$('launch').focus()}
+$('prev').addEventListener('click',()=>navigate(-1));$('next').addEventListener('click',()=>navigate(1));
+$('select').addEventListener('click',launch);$('launch').addEventListener('click',launch);
+$('exit').addEventListener('click',closeGame);
+window.addEventListener('message',e=>{if(e.source===gameFrame.contentWindow&&e.data&&e.data.farcade==='exit')closeGame()});
+window.addEventListener('keydown',e=>{
+ if(e.metaKey||e.ctrlKey||e.altKey||['INPUT','TEXTAREA'].includes(document.activeElement?.tagName))return;
+ if(takeover.classList.contains('open')){if(e.key==='Escape')closeGame();return}
+ if(e.key.toLowerCase()==='p'&&!powered){e.preventDefault();power();return}
+ if(!powered||booting)return;
+ if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a'){e.preventDefault();navigate(-1)}
+ else if(e.key==='ArrowRight'||e.key.toLowerCase()==='d'){e.preventDefault();navigate(1)}
+ else if(e.key==='Enter'&&!['BUTTON','A'].includes(document.activeElement?.tagName)){e.preventDefault();launch()}
+});
+function power(){
+ if(powered||booting)return;
+ powered=true;booting=true;
+ btn.textContent='POWERING ON…';btn.disabled=true;
+ $('viewLabel').textContent='BOOTING / FARCADE 3D';
+ status.textContent='Switch activated. Booting the arcade…';
+ renderMenu();paint();
+ if(api){
+   const end=()=>finishPower();
+   // Camera coordinates are approximate because the Sketchfab-hosted model has its own transform.
+   if(baseCamera){
+     const p=baseCamera.position,t=baseCamera.target;
+     api.setCameraLookAt(p,t,1.35,function(err){if(err)status.textContent='Camera movement unavailable; games will still work.'});
+   }
+   setTimeout(end,1400);
+ }else setTimeout(finishPower,300);
+}
+function finishPower(){booting=false;overlay.style.display='none';$('viewLabel').textContent='POWERED ON / CARTRIDGE READY';status.textContent='Console powered on. Browse games and press Play.';renderMenu()}
+btn.addEventListener('click',power);
+function connectViewer(){
+ if(typeof window.Sketchfab!=='function'){btn.disabled=false;btn.textContent='POWER ON (2D FALLBACK)';status.textContent='3D viewer unavailable; the arcade controls still work.';return}
+ const client=new window.Sketchfab('1.12.1',viewer);
+ client.init('03c6fe28d45244d2acd55486e3cfee19',{
+   autostart:1,camera:0,ui_infos:0,ui_controls:0,ui_annotations:0,ui_help:0,ui_settings:0,ui_stop:0,
+   scrollwheel:0,dof_circle:0,
+   success:function(a){
+     api=a;api.start(function(){});
+     api.addEventListener('viewerready',function(){
+       viewerReady=true;btn.disabled=false;btn.textContent='SLIDE POWER →';
+       status.textContent='3D console ready. Click the side of the model or the switch button.';
+       api.getCameraLookAt(function(err,c){if(!err&&c)baseCamera=c});
+       api.setUserInteraction(false,function(){});
+       api.getMaterialList(function(err,mats){
+         if(err||!Array.isArray(mats))return;
+         const screen=mats.find(m=>/^(glass|screen|lcd)(\b|$)/i.test(m.name||''));
+         if(!screen){status.textContent='3D screen material not identifiable. Separate live 8-bit preview is available.';return}
+         screenMaterial=screen;
+         api.addTexture(canvas.toDataURL('image/png'),function(error,uid){
+           if(error||!uid){screenMaterial=null;return}
+           screenUid=uid;
+           try{
+             const channel=screenMaterial.channels.AlbedoPBR||screenMaterial.channels.DiffuseColor;
+             if(!channel){screenMaterial=null;return}
+             channel.enable=true;channel.color=[1,1,1];
+             channel.texture={uid:uid};
+             if(screenMaterial.channels.EmitColor){screenMaterial.channels.EmitColor.enable=true;screenMaterial.channels.EmitColor.color=[.8,.8,.8];screenMaterial.channels.EmitColor.texture={uid:uid};screenMaterial.channels.EmitColor.factor=.65}
+             api.setMaterial(screenMaterial,function(){status.textContent='3D LCD texture applied. Power on to browse.'});
+           }catch(e){screenMaterial=null;status.textContent='Model LCD override unavailable. Separate preview remains functional.'}
+         });
+       });
+       api.addEventListener('click',function(info){if(!powered&&info&&info.position3D)power()},{pick:'fast'});
+     });
+   },
+   error:function(){btn.disabled=false;btn.textContent='POWER ON (2D FALLBACK)';status.textContent='Sketchfab is unavailable. You can still browse and launch games.'}
+ });
+}
+renderMenu();
+const timer=setInterval(()=>{if(window.Sketchfab||document.readyState==='complete'){clearInterval(timer);connectViewer()}},150);
+setTimeout(()=>{if(!api&&!viewerReady&&btn.disabled){btn.disabled=false;btn.textContent='POWER ON (2D FALLBACK)';status.textContent='3D model connection is taking longer than expected. You can use the arcade.'}},11000);
+})();
+</script>
+</body>
+</html>
