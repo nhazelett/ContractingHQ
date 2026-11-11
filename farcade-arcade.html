@@ -1085,9 +1085,10 @@ body::after{top:52%;width:min(96vw,850px);height:min(83vw,730px);filter:blur(55p
  renderer.toneMapping=THREE.ACESFilmicToneMapping;
  renderer.toneMappingExposure=1.37;
  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
- renderer.domElement.setAttribute('aria-label','3D handheld. Click its power switch to begin; use arrow keys and Enter to navigate.');
+ renderer.domElement.setAttribute('aria-label','3D handheld. Click the side-mounted power switch or press P to begin; use arrows and Enter to navigate.');
  renderer.domElement.tabIndex=0;
  stage.insertBefore(renderer.domElement,stage.firstChild);
+ renderer.domElement.title='Click the side-mounted power switch (or press P) to start FARCADE';
  const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-3.6,3.6,5.45,-5.45,.1,100);
  const overviewPos=new THREE.Vector3(1.8,.1,17),overviewLook=new THREE.Vector3(0,0,0);
  const closePos=new THREE.Vector3(8.4,5.3,11),closeLook=new THREE.Vector3(2.45,3.1,0);
@@ -1242,6 +1243,8 @@ body::after{top:52%;width:min(96vw,850px);height:min(83vw,730px);filter:blur(55p
    stage.dataset.off='false';
  }
  function tick(time){
+   // Keyboard accessibility: pressing P must also trigger the camera reveal.
+   if(stage.dataset.intro==='true' && screen.dataset.state!=='off' && !revealing && !revealed)reveal();
    if(revealing){
      const t=Math.min(1,(time-revealStart)/revealDuration);
      const ease=t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
