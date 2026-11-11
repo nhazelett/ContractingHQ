@@ -1089,7 +1089,9 @@ body::after{top:52%;width:min(96vw,850px);height:min(83vw,730px);filter:blur(55p
  renderer.domElement.tabIndex=0;
  stage.insertBefore(renderer.domElement,stage.firstChild);
  const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-3.6,3.6,5.45,-5.45,.1,100);
- camera.position.set(0,.05,17);camera.lookAt(0,0,0);
+ const overviewPos=new THREE.Vector3(1.8,.1,17),overviewLook=new THREE.Vector3(0,0,0);
+ const closePos=new THREE.Vector3(8.4,5.3,11),closeLook=new THREE.Vector3(2.45,3.1,0);
+ camera.position.copy(closePos);camera.lookAt(closeLook);camera.zoom=2.55;camera.updateProjectionMatrix();
  scene.add(new THREE.HemisphereLight(0xeaf6f0,0x25372d,2.65));
  function lamp(color,power,x,y,z){
    const light=new THREE.DirectionalLight(color,power);light.position.set(x,y,z);scene.add(light);
@@ -1160,10 +1162,17 @@ body::after{top:52%;width:min(96vw,850px);height:min(83vw,730px);filter:blur(55p
    invisibleHit(x,y,.74,.4,key);
  }
  pill(-.48,-3.13,'select');pill(.59,-3.13,'start');
- // A recessed, illuminated power key at top-right of the front shell.
- disk(.31,.1,rim,1.85,3.55,.34);
- const p=disk(.235,.14,gray,1.85,3.55,.45);target(p,'power');
- invisibleHit(1.85,3.55,.51,.51,'power');
+ // Actual side-mounted power slider, facing the introductory camera.
+ const track=new THREE.Mesh(new THREE.BoxGeometry(.13,.94,.42),rim);
+ track.position.set(2.58,3.05,-.03);root.add(track);
+ const slot=new THREE.Mesh(new THREE.BoxGeometry(.15,.65,.25),dark);
+ slot.position.set(2.665,3.05,-.03);root.add(slot);
+ const slider=new THREE.Mesh(new THREE.BoxGeometry(.25,.3,.38),gray);
+ slider.position.set(2.74,2.86,-.03);root.add(slider);
+ const grip=new THREE.Mesh(new THREE.BoxGeometry(.27,.09,.42),side);
+ grip.position.set(2.89,2.86,-.03);root.add(grip);
+ const powerHit=new THREE.Mesh(new THREE.BoxGeometry(.47,1.02,.7),new THREE.MeshBasicMaterial({visible:false}));
+ powerHit.position.set(2.79,3.05,-.03);root.add(powerHit);target(powerHit,'power');
  // Back speaker perforations physically recessed beneath the last row.
  const speaker=material(0x4c6254,.8,.05);
  for(let i=0;i<6;i++)for(let j=0;j<2;j++){
@@ -1175,7 +1184,7 @@ body::after{top:52%;width:min(96vw,850px);height:min(83vw,730px);filter:blur(55p
  block(1.42,.18,.06,.01,engrave,0,3.55,.39,.012);
  // Place existing fully functional screen UI in front of the 3D screen plane.
  display.appendChild(screen);
- stage.dataset.off='true';
+ stage.dataset.off='true';stage.dataset.intro='true';
  document.body.classList.add('three-active');
  let width=0,height=0;
  function resize(){
@@ -1202,6 +1211,7 @@ body::after{top:52%;width:min(96vw,850px);height:min(83vw,730px);filter:blur(55p
    return ray.intersectObjects(targets,false)[0];
  }
  function dispatch(key){
+   if(stage.dataset.intro==='true' && key!=='power')return;
    const btn=device.querySelector('[data-btn="'+key+'"]');
    if(btn)btn.click();
  }
@@ -1216,28 +1226,32 @@ body::after{top:52%;width:min(96vw,850px);height:min(83vw,730px);filter:blur(55p
  },{passive:false});
  renderer.domElement.addEventListener('pointerup',e=>{
    if(!pressed)return;
-   const key=pressed;pressed=null;dispatch(key);
+   const key=pressed;pressed=null;
+   if(key==='power' && stage.dataset.intro==='true')reveal();
+   dispatch(key);
  });
  renderer.domElement.addEventListener('pointercancel',()=>{pressed=null});
- let mx=0,my=0,targetX=0,targetY=0;
+ // No idle rotation. The sole cinematic camera move is the switch-to-console reveal.
  const reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
- stage.addEventListener('pointermove',e=>{
-   if(reduce||e.pointerType!=='mouse')return;
-   const r=stage.getBoundingClientRect();
-   targetY=Math.max(-.075,Math.min(.075,((e.clientX-r.left)/r.width-.5)*.15));
-   targetX=Math.max(-.055,Math.min(.055,-((e.clientY-r.top)/r.height-.5)*.11));
- },{passive:true});
- stage.addEventListener('pointerleave',()=>{targetX=targetY=0});
- let last=0;
+ const lookTarget=closeLook.clone();
+ let revealStart=0,revealDuration=reduce?1:1550,revealing=false,revealed=false;
+ function reveal(){
+   if(revealed||revealing)return;
+   revealing=true;revealStart=performance.now();
+   slider.position.y=3.24;grip.position.y=3.24;
+   stage.dataset.off='false';
+ }
  function tick(time){
-   if(!document.hidden){
-     if(!reduce){
-       mx+=(targetX-mx)*.08;my+=(targetY-my)*.08;
-       root.rotation.x=mx;root.rotation.y=my;
-       display.style.transform='translate(-50%,-50%) perspective(800px) rotateX('+(mx*180/Math.PI).toFixed(2)+'deg) rotateY('+(my*180/Math.PI).toFixed(2)+'deg)';
-     }
-     renderer.render(scene,camera);
+   if(revealing){
+     const t=Math.min(1,(time-revealStart)/revealDuration);
+     const ease=t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+     camera.position.copy(closePos).lerp(overviewPos,ease);
+     lookTarget.copy(closeLook).lerp(overviewLook,ease);
+     camera.lookAt(lookTarget);
+     camera.zoom=2.55+(1-2.55)*ease;camera.updateProjectionMatrix();
+     if(t>=1){revealing=false;revealed=true;stage.dataset.intro='false';display.style.opacity='1';}
    }
+   if(!document.hidden)renderer.render(scene,camera);
    requestAnimationFrame(tick);
  }
  requestAnimationFrame(tick);
