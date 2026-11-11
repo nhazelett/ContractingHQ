@@ -115,8 +115,26 @@ footer{text-align:center;font-size:10px;color:#817d96;padding:12px 18px 25px}
   part(device,3.78,6.45,.42,.018,shell,0,.04,.17,.045);
   // Deep bezel rim, dark glass under a properly attached LCD.
   const bezel=new THREE.Group();bezel.name='SCREEN_BEZEL';device.add(bezel);
-  part(bezel,3.49,3.00,.23,.12,rim,0,1.14,.23,.07);
-  part(bezel,3.16,2.68,.12,.06,glass,0,1.15,.37,.035);
+  // True physical bezel frame with a cut-out, not an opaque slab behind an overlay.
+  // Screen and backing live BEHIND the frame face in the same bezel group.
+  const outer=rounded(3.49,3.00,.23);
+  const inner=new THREE.Path(), ix=-1.50,iy=-1.27,iw=3.00,ih=2.54,ir=.09;
+  inner.moveTo(ix+ir,iy);
+  inner.lineTo(ix,iy+ir);inner.lineTo(ix,iy+ih-ir);
+  inner.quadraticCurveTo(ix,iy+ih,ix+ir,iy+ih);
+  inner.lineTo(ix+iw-ir,iy+ih);
+  inner.quadraticCurveTo(ix+iw,iy+ih,ix+iw,iy+ih-ir);
+  inner.lineTo(ix+iw,iy+ir);
+  inner.quadraticCurveTo(ix+iw,iy,ix+iw-ir,iy);
+  inner.lineTo(ix+ir,iy);
+  outer.holes.push(inner);
+  const bezelGeometry=new THREE.ExtrudeGeometry(outer,{
+    depth:.13,bevelEnabled:true,bevelSegments:5,bevelThickness:.04,
+    bevelSize:.04,curveSegments:16
+  });
+  const frameMesh=new THREE.Mesh(bezelGeometry,rim);
+  frameMesh.name='SCREEN_FRAME';frameMesh.position.set(0,1.14,.29);bezel.add(frameMesh);
+  part(bezel,3.12,2.64,.10,.03,glass,0,1.15,.25,.02);
   const displayCanvas=document.createElement('canvas');
   displayCanvas.width=320;displayCanvas.height=288;
   const ctx=displayCanvas.getContext('2d');ctx.imageSmoothingEnabled=false;
@@ -134,7 +152,7 @@ footer{text-align:center;font-size:10px;color:#817d96;padding:12px 18px 25px}
   tex.colorSpace=THREE.SRGBColorSpace;
   tex.magFilter=THREE.NearestFilter;tex.minFilter=THREE.NearestFilter;tex.generateMipmaps=false;
   const lcd=new THREE.Mesh(new THREE.PlaneGeometry(2.94,2.48),new THREE.MeshBasicMaterial({map:tex,toneMapped:false,side:THREE.DoubleSide,depthWrite:true}));
-  lcd.name='LCD_SCREEN';lcd.position.set(0,1.15,.515);bezel.add(lcd);
+  lcd.name='LCD_SCREEN';lcd.position.set(0,1.15,.37);bezel.add(lcd);
   // Physical controls: seated cross and two high-polish buttons.
   cylinder(device,.78,.09,recess,-1.04,-1.42,.32);
   cylinder(device,.69,.045,rim,-1.04,-1.42,.40);
@@ -176,9 +194,11 @@ footer{text-align:center;font-size:10px;color:#817d96;padding:12px 18px 25px}
   function fit(){
     const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;
     camera.aspect=w/h;
-    const half=Math.atan((32*Math.PI/180)/2);
-    const dist=Math.max(sphere.radius/Math.sin(half),sphere.radius/(Math.sin(half)*camera.aspect))*1.04;
-    camera.position.set(center.x+dist*.14,center.y+dist*.04,center.z+dist);
+    const tan=Math.tan((32*Math.PI/180)/2);
+    // Target ~70% of viewport height; width constraint protects small screens.
+    // Rotation changes visible silhouette, so reserve a small margin.
+    const dist=Math.max(7.3/(2*tan*.70),4.9/(2*tan*camera.aspect*.86));
+    camera.position.set(center.x+dist*.11,center.y+dist*.035,center.z+dist);
     camera.lookAt(center);
     camera.updateProjectionMatrix();
     renderer.setSize(w,h,false);
