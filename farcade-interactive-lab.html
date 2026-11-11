@@ -150,16 +150,6 @@ function renderMenu(){
  refreshTexture();
 }
 GAME.forEach((g,i)=>{const b=document.createElement('button');b.type='button';b.textContent=(i+1)+' '+g.name;b.disabled=true;b.addEventListener('click',()=>{if(!powered||booting)return;selected=i;renderMenu()});list.append(b)});
-function refreshTexture(){
- if(!api||!screenMaterial||!screenUid)return;
- if(textureBusy){dirty=true;return;}
- textureBusy=true;
- api.updateTexture(canvas.toDataURL('image/png'),screenUid,function(err){
-   textureBusy=false;if(err){status.textContent='3D screen texture update unavailable; the adjacent arcade screen still works.'}
-   if(dirty){dirty=false;refreshTexture()}
- });
-}
-function requestTexture(){if(textureBusy){dirty=true;return}refreshTexture()}
 function navigate(dir){if(!powered||booting)return;selected=(selected+dir+GAME.length)%GAME.length;renderMenu();requestTexture()}
 function launch(){
  if(!powered||booting)return;const g=GAME[selected];if(!g.href)return;
