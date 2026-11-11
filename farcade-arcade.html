@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FAR-CADE | The Contracting Arcade — KTHQ</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAR-CADE | The Contracting Arcade | KTHQ</title>
 <meta name="description" content="The contracting arcade. Free play, no quarters, no login. Games that make the FAR stick.">
+<link rel="canonical" href="https://kthq.org/farcade-arcade.html">
+<meta property="og:type" content="website"><meta property="og:site_name" content="ContractingHQ"><meta property="og:title" content="FAR-CADE | The Contracting Arcade | KTHQ"><meta property="og:description" content="The contracting arcade. Free play, no quarters, no login. Games that make the FAR stick."><meta property="og:url" content="https://kthq.org/farcade-arcade.html">
+<meta property="og:image" content="https://kthq.org/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary"><meta name="twitter:site" content="@ContractingHQ"><meta name="twitter:title" content="FAR-CADE | The Contracting Arcade | KTHQ"><meta name="twitter:description" content="The contracting arcade. Free play, no quarters, no login. Games that make the FAR stick."><meta name="twitter:image" content="https://kthq.org/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -12,272 +16,560 @@
 :root{
   --void:#0a0118; --panel:#140a2e; --pink:#ff2d95; --cyan:#19e3ff;
   --gold:#ffd23f; --ink:#f4f0ff; --dim:#9a8fc0;
+  --shell:#2b1d5c; --shell-hi:#3d2b7a; --shell-lo:#1c1240;
+  --glass:#07030f; --lcd:#0d0625;
+  --w:min(94vw,56vh,400px);
 }
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
 body{
-  background:var(--void);color:var(--ink);font-family:'Inter',sans-serif;
-  overflow-x:hidden;min-height:100vh;position:relative;
-}
-/* CRT scanlines over everything */
-body::after{
-  content:'';position:fixed;inset:0;pointer-events:none;z-index:90;
-  background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);
+  background:var(--void);color:var(--ink);font-family:'Inter',system-ui,sans-serif;
+  display:flex;flex-direction:column;align-items:center;
+  padding:16px 0 32px;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% 0%,rgba(255,45,149,.16),transparent 70%),
+    radial-gradient(ellipse 70% 40% at 50% 100%,rgba(25,227,255,.10),transparent 70%);
+  background-attachment:fixed;
 }
 .px{font-family:'Press Start 2P',monospace;line-height:1.5}
 .crt{font-family:'VT323',monospace}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+a{color:var(--cyan)}
 
-/* ---------- synthwave floor ---------- */
-#floor{
-  position:fixed;left:-25%;right:-25%;bottom:-12vh;height:46vh;z-index:0;pointer-events:none;
-  background:
-    linear-gradient(transparent 0%,rgba(255,45,149,.16) 100%),
-    repeating-linear-gradient(90deg,rgba(25,227,255,.35) 0 2px,transparent 2px 110px),
-    repeating-linear-gradient(0deg,rgba(255,45,149,.4) 0 2px,transparent 2px 46px);
-  transform:perspective(420px) rotateX(62deg);
-  mask-image:linear-gradient(transparent 0%,black 45%);
-  -webkit-mask-image:linear-gradient(transparent 0%,black 45%);
-  animation:floorscroll 2.4s linear infinite;
+/* ---------- handheld ---------- */
+.device{
+  width:var(--w);font-size:calc(var(--w)/40);
+  background:linear-gradient(160deg,var(--shell-hi),var(--shell) 45%,var(--shell-lo));
+  border-radius:3em 3em 7em 3em;
+  padding:2.2em 3em 3em;
+  box-shadow:
+    inset 0 .3em 0 rgba(255,255,255,.12),
+    inset 0 -.6em 0 rgba(0,0,0,.35),
+    0 2em 4em rgba(0,0,0,.6),
+    0 0 6em rgba(255,45,149,.12);
+  position:relative;user-select:none;-webkit-user-select:none;
 }
-@keyframes floorscroll{from{background-position:0 0,0 0,0 0}to{background-position:0 0,0 0,0 46px}}
-#glowsun{
-  position:fixed;left:50%;bottom:8vh;width:60vmin;height:60vmin;z-index:0;pointer-events:none;
-  transform:translateX(-50%);border-radius:50%;
-  background:radial-gradient(circle,rgba(255,45,149,.22),rgba(139,92,246,.10) 45%,transparent 70%);
+.toprow{display:flex;justify-content:space-between;align-items:center;height:3.6em;margin-bottom:1em}
+.brand{font-size:1.15em;letter-spacing:.08em;color:var(--ink);opacity:.9}
+.brand b{color:var(--pink);font-weight:400}
+.power{
+  display:flex;align-items:center;gap:.8em;font-size:.85em;color:var(--dim);letter-spacing:.1em;
+  padding:.6em .4em;
 }
+.power i{
+  display:block;width:3.4em;height:3.4em;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#5a4a9a,#231650);
+  box-shadow:0 .35em 0 #0f0828,inset 0 .15em 0 rgba(255,255,255,.2);
+  position:relative;
+}
+.power i::after{content:"";position:absolute;inset:30%;border:.22em solid var(--dim);border-top-color:transparent;border-radius:50%}
+.power i::before{content:"";position:absolute;left:50%;top:22%;width:.22em;height:32%;margin-left:-.11em;background:var(--dim)}
+.power:active i{transform:translateY(.25em);box-shadow:0 .1em 0 #0f0828}
 
-main{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 20px 60px}
+.bezel{
+  background:var(--glass);border-radius:1.4em 1.4em 4em 1.4em;
+  padding:2.2em 2em 1.2em;
+  box-shadow:inset 0 0 0 .15em #1a1036,inset 0 .4em 1em rgba(0,0,0,.8);
+}
+.screen{
+  width:30em;height:22.5em;margin:0 auto;position:relative;overflow:hidden;
+  background:#040109;border-radius:.4em;
+  transition:background .25s;
+}
+.device.on .screen{background:var(--lcd);box-shadow:0 0 2.4em rgba(25,227,255,.18)}
+.screen::after{ /* scanlines */
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:5;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);
+}
+.bezelrow{display:flex;align-items:center;justify-content:space-between;margin-top:.9em;padding:0 .4em}
+.led{display:flex;align-items:center;gap:.7em;font-size:.75em;color:#5e548a;letter-spacing:.1em}
+.led i{width:1em;height:1em;border-radius:50%;background:#2a1d4a;display:block}
+.device.on .led i{background:var(--pink);box-shadow:0 0 .8em var(--pink)}
+.model{font-size:.75em;color:#5e548a;letter-spacing:.12em}
 
-/* ---------- marquee hero ---------- */
-#marquee{
-  margin:34px auto 10px;max-width:880px;position:relative;
-  border:6px solid #1d0f3f;border-radius:18px;
-  background:linear-gradient(180deg,#1a0b38,#0d0524);
-  padding:clamp(26px,5vw,52px) 20px;text-align:center;
-  box-shadow:0 0 60px rgba(255,45,149,.25),inset 0 0 40px rgba(0,0,0,.6);
+/* ---------- controls ---------- */
+.controls{display:flex;justify-content:space-between;align-items:center;margin-top:3em;height:15em}
+.dpad{position:relative;width:13em;height:13em}
+.dpad button{position:absolute;background:#120a2a;box-shadow:0 .4em 0 #07030f}
+.dpad button:active,.dpad button.hit{background:#1d1240;transform:translateY(.2em);box-shadow:0 .2em 0 #07030f}
+.dpad .u,.dpad .d{left:4.4em;width:4.2em;height:4.6em}
+.dpad .l,.dpad .r{top:4.4em;height:4.2em;width:4.6em}
+.dpad .u{top:0;border-radius:.8em .8em 0 0}
+.dpad .d{bottom:0;border-radius:0 0 .8em .8em}
+.dpad .l{left:0;border-radius:.8em 0 0 .8em}
+.dpad .r{right:0;border-radius:0 .8em .8em 0}
+.dpad .hub{position:absolute;left:4.4em;top:4.4em;width:4.2em;height:4.2em;background:#120a2a;box-shadow:0 .4em 0 #07030f}
+.dpad button::after{content:"";position:absolute;left:50%;top:50%;border:.7em solid transparent;transform:translate(-50%,-50%)}
+.dpad .u::after{border-bottom-color:#3a2c6e;margin-top:-.4em}
+.dpad .d::after{border-top-color:#3a2c6e;margin-top:.4em}
+.dpad .l::after{border-right-color:#3a2c6e;margin-left:-.4em}
+.dpad .r::after{border-left-color:#3a2c6e;margin-left:.4em}
+
+.ab{position:relative;width:14em;height:11em}
+.ab button{
+  position:absolute;width:6em;height:6em;border-radius:50%;
+  font-family:'Press Start 2P',monospace;font-size:1em;color:rgba(10,1,24,.75);
 }
-/* chasing bulbs */
-#marquee .bulbs{position:absolute;inset:-3px;border-radius:16px;pointer-events:none;
-  background-image:radial-gradient(circle 4px,var(--gold) 40%,transparent 45%);
-  background-size:34px 34px;background-position:8px -13px;background-repeat:repeat-x;}
-#marquee .bulbs.bottom{background-position:25px calc(100% + 13px)}
-#marquee .bulbs.b2{animation:chase 1s steps(2) infinite}
-@keyframes chase{to{filter:brightness(.25)}}
-#marquee .bulbs.b1{animation:chase 1s steps(2) .5s infinite}
-#logo{
-  font-size:clamp(30px,7.5vw,76px);color:var(--pink);letter-spacing:.04em;
-  text-shadow:0 0 8px var(--pink),0 0 28px var(--pink),0 0 70px rgba(255,45,149,.8);
-  animation:flicker 4s linear infinite;
+.ab .a{right:0;top:0;background:radial-gradient(circle at 35% 30%,#ffe98a,var(--gold));box-shadow:0 .5em 0 #8a6d0c}
+.ab .b{left:0;bottom:0;background:radial-gradient(circle at 35% 30%,#8cf2ff,var(--cyan));box-shadow:0 .5em 0 #0b7486}
+.ab button:active,.ab button.hit{transform:translateY(.3em);box-shadow:0 .2em 0 #07030f}
+.ab button span{font-size:1.5em}
+
+.pills{display:flex;justify-content:center;gap:3em;margin-top:1.6em}
+.pills button{display:flex;flex-direction:column;align-items:center;gap:.8em;font-size:.75em;color:var(--dim);letter-spacing:.1em;padding:.4em}
+.pills i{display:block;width:7em;height:1.9em;border-radius:1em;background:#120a2a;box-shadow:0 .35em 0 #07030f;transform:rotate(-18deg)}
+.pills button:active i,.pills button.hit i{transform:rotate(-18deg) translateY(.2em);box-shadow:0 .1em 0 #07030f}
+.grill{position:absolute;right:3.4em;bottom:3.2em;display:grid;grid-template-columns:repeat(4,.7em);gap:.7em;transform:rotate(-18deg)}
+.grill i{width:.7em;height:.7em;border-radius:50%;background:#150c30;box-shadow:inset 0 .1em 0 #000}
+
+/* ---------- screen views ---------- */
+.view{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;padding:1.2em 1.4em;text-align:center}
+.screen[data-state="off"] .v-off,
+.screen[data-state="boot"] .v-boot,
+.screen[data-state="title"] .v-title,
+.screen[data-state="menu"] .v-menu,
+.screen[data-state="detail"] .v-detail,
+.screen[data-state="launch"] .v-launch{display:flex}
+
+.v-off{justify-content:center}
+.v-off span{font-size:1.1em;color:#3a2c6e;animation:blink 1.4s steps(1) infinite}
+
+.v-boot{justify-content:center;gap:1.6em}
+.v-boot .pct{font-size:1.3em;color:var(--cyan)}
+.bar{width:20em;height:1.6em;border:.2em solid var(--cyan);padding:.2em}
+.bar i{display:block;height:100%;width:0;background:var(--pink)}
+
+.v-title{justify-content:center;gap:1.1em}
+.logo{font-size:3em;color:var(--pink);text-shadow:.12em .12em 0 #6b0f3d,0 0 1em rgba(255,45,149,.6);animation:drop .6s cubic-bezier(.3,1.6,.5,1) both}
+.logo b{color:var(--cyan);font-weight:400;text-shadow:.12em .12em 0 #0b5a68,0 0 1em rgba(25,227,255,.6)}
+.sub{font-size:1.15em;color:var(--gold);letter-spacing:.3em}
+.free{font-size:1.9em;color:var(--dim)}
+.start{font-size:1.15em;color:var(--ink);animation:blink 1s steps(1) infinite;margin-top:.6em}
+
+.hud{width:100%;display:flex;justify-content:space-between;font-size:1em;color:var(--dim)}
+.hud b{color:var(--gold);font-weight:400}
+.hint{margin-top:auto;font-size:1.9em;color:var(--dim);width:100%;display:flex;justify-content:space-between}
+.hint b{color:var(--ink);font-weight:400}
+
+.stage{flex:1;width:100%;display:flex;align-items:center;justify-content:space-between}
+.arrow{font-size:1.6em;color:var(--cyan);animation:nudge .8s ease-in-out infinite alternate}
+.arrow.r{animation-name:nudgeR}
+.cart{
+  --neon:var(--pink);
+  width:13em;height:10.5em;background:#2a2244;border-radius:.6em .6em .3em .3em;
+  padding:.9em .9em 0;position:relative;
+  box-shadow:inset 0 .25em 0 rgba(255,255,255,.12),0 0 1.6em color-mix(in srgb,var(--neon) 45%,transparent);
 }
-#logo .c{color:var(--cyan);text-shadow:0 0 8px var(--cyan),0 0 28px var(--cyan),0 0 70px rgba(25,227,255,.8)}
-@keyframes flicker{0%,93%,95%,100%{opacity:1}94%{opacity:.45}}
-#subtitle{margin-top:18px;font-size:clamp(11px,2vw,16px);color:var(--gold);letter-spacing:.18em}
-#freeplay{margin-top:22px;font-size:clamp(20px,3.4vw,30px);color:var(--cyan)}
-#insert{margin-top:18px;font-size:clamp(10px,1.7vw,13px);color:var(--ink);animation:blink 1.1s steps(1) infinite}
+.cart::before{content:"";position:absolute;left:1.6em;right:1.6em;bottom:-.9em;height:.9em;background:#16102b;
+  background-image:repeating-linear-gradient(90deg,var(--gold) 0 .45em,transparent .45em .9em)}
+.cart .label{
+  height:7.6em;border:.2em solid var(--neon);background:#0a0118;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5em;
+}
+.cart .label .art{font-size:1.75em;line-height:1;color:var(--neon)}
+.cart .label .no{font-size:.8em;color:var(--dim)}
+.cart.soon{filter:saturate(.35) brightness(.75)}
+.cart.in{animation:slideIn .18s ease-out}
+.cart.inL{animation:slideInL .18s ease-out}
+.gname{font-size:1.35em;color:var(--ink);margin-top:1.3em}
+.gstat{font-size:.85em;margin-top:.9em}
+.gstat.play{color:var(--gold)} .gstat.soon{color:var(--dim)} .gstat.idea{color:var(--cyan)}
+
+.v-detail{align-items:stretch;text-align:left}
+.dname{font-size:1.35em;color:var(--neon,var(--pink));padding-bottom:.6em;border-bottom:.15em dashed #3a2c6e}
+.dtag{font-size:2.15em;line-height:1.05;color:var(--ink);margin-top:.35em}
+.go{
+  display:block;margin-top:auto;align-self:center;font-size:1.15em;text-decoration:none;
+  color:var(--void);background:var(--gold);padding:.8em 1.2em;box-shadow:.3em .3em 0 #8a6d0c;
+}
+.go.soon{background:#2a1d4a;color:var(--dim);box-shadow:none}
+.v-detail .hint{margin-top:.5em}
+
+.v-launch{justify-content:center;gap:1.2em}
+.v-launch .ln{font-size:1.5em;color:var(--neon,var(--pink))}
+.v-launch .ll{font-size:1em;color:var(--dim);animation:blink .5s steps(1) infinite}
+
+/* ---------- game takeover ---------- */
+body.playing{overflow:hidden}
+body.playing .below{opacity:0;transition:opacity .2s}
+.device{will-change:transform}
+#takeover{position:fixed;inset:0;z-index:50;background:var(--void);display:none;opacity:0;transition:opacity .22s}
+#takeover.show{display:block}
+#takeover.in{opacity:1}
+#takeover iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--void)}
+#offsite{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px;text-align:center}
+#offsite h2{font-size:clamp(18px,5vw,30px);color:var(--neon,var(--pink))}
+#offsite p{font-family:'VT323',monospace;font-size:24px;line-height:1.15;color:var(--ink);max-width:30em}
+#offsite a{font-size:13px;text-decoration:none;color:var(--void);background:var(--gold);padding:14px 18px;box-shadow:4px 4px 0 #8a6d0c}
+#offsite button{font-size:11px;color:var(--dim);padding:10px}
+
 @keyframes blink{50%{opacity:0}}
+@keyframes drop{from{transform:translateY(-6em);opacity:0}}
+@keyframes nudge{to{transform:translateX(-.3em)}}
+@keyframes nudgeR{to{transform:translateX(.3em)}}
+@keyframes slideIn{from{transform:translateX(3em);opacity:0}}
+@keyframes slideInL{from{transform:translateX(-3em);opacity:0}}
 
-/* ---------- ticker ---------- */
-#tickerWrap{
-  margin:26px auto 40px;max-width:880px;overflow:hidden;
-  border-top:2px solid rgba(25,227,255,.4);border-bottom:2px solid rgba(25,227,255,.4);
-  background:rgba(13,5,36,.8);
-}
-#ticker{display:inline-block;white-space:nowrap;padding:9px 0;
-  font-family:'VT323',monospace;font-size:clamp(18px,2.6vw,24px);color:var(--cyan);
-  animation:scroll 26s linear infinite}
-#ticker b{color:var(--gold);font-weight:400}
-#ticker i{color:var(--pink);font-style:normal}
-@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-/* ---------- cabinet grid ---------- */
-#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:30px;margin-top:8px}
-.cab{
-  position:relative;display:block;text-decoration:none;color:inherit;
-  filter:drop-shadow(0 14px 24px rgba(0,0,0,.55));
-  transition:transform .22s ease;
-}
-a.cab:hover,a.cab:focus-visible{transform:translateY(-8px)}
-a.cab:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
-/* cabinet body */
-.cab .shell{
-  background:linear-gradient(180deg,#241247,#120829 70%);
-  border:3px solid #2d1a55;border-radius:14px 14px 8px 8px;overflow:hidden;
-}
-.cab .top{
-  padding:13px 10px 11px;text-align:center;font-size:clamp(13px,1.6vw,16px);
-  border-bottom:3px solid #2d1a55;letter-spacing:.05em;
-}
-.cab[data-neon="pink"] .top{color:var(--pink);text-shadow:0 0 6px var(--pink),0 0 20px rgba(255,45,149,.9);background:#1c0d3b}
-.cab[data-neon="cyan"] .top{color:var(--cyan);text-shadow:0 0 6px var(--cyan),0 0 20px rgba(25,227,255,.9);background:#0e1535}
-.cab[data-neon="gold"] .top{color:var(--gold);text-shadow:0 0 6px var(--gold),0 0 20px rgba(255,210,63,.9);background:#221a08}
-.cab .screen{
-  margin:14px 14px 0;border:3px solid #000;border-radius:8px;height:158px;position:relative;
-  background:radial-gradient(120% 100% at 50% 0%,#0e0b2e,#050214);overflow:hidden;
-}
-.cab .screen::after{content:'';position:absolute;inset:0;
-  background:repeating-linear-gradient(0deg,rgba(255,255,255,.04) 0 1px,transparent 1px 3px)}
-.cab .scr-art{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-family:'VT323',monospace;text-align:center}
-.cab .deck{display:flex;align-items:center;justify-content:center;gap:18px;padding:16px 0 18px}
-.stick{width:14px;height:14px;border-radius:50%;background:var(--pink);box-shadow:0 0 10px var(--pink);position:relative}
-.stick::before{content:'';position:absolute;left:5px;top:12px;width:4px;height:14px;background:#3a2a66;border-radius:2px}
-.btn{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 -3px 0 rgba(0,0,0,.5)}
-.btn.b1{background:var(--cyan)}.btn.b2{background:var(--gold)}.btn.b3{background:#8b5cf6}
-.cab .info{padding:0 16px 18px;text-align:center}
-.cab .name{font-size:clamp(15px,2vw,19px);margin-bottom:9px}
-.cab .tag{font-family:'VT323',monospace;font-size:19px;color:var(--dim);line-height:1.25}
-.cab .status{
-  margin:13px auto 0;display:inline-block;padding:7px 16px;border-radius:4px;
-  font-size:clamp(9px,1.2vw,11px);letter-spacing:.1em;
-}
-.status.play{background:var(--pink);color:#fff;box-shadow:0 0 16px rgba(255,45,149,.8);animation:blink 1.6s steps(1) infinite}
-.status.soon{border:2px dashed rgba(154,143,192,.55);color:var(--dim)}
-.status.idea{border:2px solid var(--cyan);color:var(--cyan)}
-/* screen art bits */
-.art-term{color:var(--ink);font-size:22px;line-height:1.2;padding:0 12px}
-.art-term .hl{color:var(--gold)}
-.art-board{display:grid;grid-template-columns:repeat(3,46px);gap:5px}
-.art-board span{background:#101a4a;border:1px solid var(--cyan);color:var(--gold);font-family:'VT323',monospace;font-size:18px;display:flex;align-items:center;justify-content:center;height:30px}
-.art-soon{color:var(--dim);font-size:24px;letter-spacing:.1em}
-.art-soon b{display:block;color:var(--cyan);font-weight:400;font-size:40px;animation:blink 1.4s steps(1) infinite}
-.art-idea{color:var(--cyan);font-size:23px;line-height:1.3}
-
-/* section label */
-.sect{margin:50px 0 24px;text-align:center;font-size:clamp(13px,2vw,18px);color:var(--gold);
-  text-shadow:0 0 14px rgba(255,210,63,.7)}
-.sect small{display:block;margin-top:10px;font-family:'VT323',monospace;font-size:20px;color:var(--dim);letter-spacing:.06em}
-
-/* footer */
-footer{position:relative;z-index:1;margin-top:70px;padding:22px 16px 26px;text-align:center;
-  border-top:2px solid rgba(25,227,255,.3);background:rgba(10,1,24,.9)}
-footer .crt{font-size:20px;color:var(--dim)}
-footer a{color:var(--cyan);text-decoration:none}
-footer .legal{margin-top:8px;font-family:'VT323',monospace;font-size:16px;color:#5e548a}
-
-@media(max-width:640px){
-  #grid{grid-template-columns:1fr;gap:24px}
-  .cab .screen{height:150px}
-}
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none!important;transition:none!important}
-}
+/* ---------- below the device ---------- */
+.below{width:min(94vw,520px);margin-top:22px;text-align:center}
+.keys{font-family:'VT323',monospace;font-size:19px;color:var(--dim);line-height:1.3}
+.keys b{color:var(--ink);font-weight:400}
+@media (hover:none){.keys{display:none}}
+details{margin-top:14px;text-align:left;background:var(--panel);border:1px solid #2a1d4a;border-radius:8px}
+summary{cursor:pointer;padding:12px 16px;font-size:14px;color:var(--ink)}
+details ul{list-style:none;padding:0 16px 12px}
+details li{padding:10px 0;border-top:1px solid #2a1d4a;font-size:14px;line-height:1.45;color:var(--dim)}
+details li a,details li strong{font-weight:600;color:var(--cyan)}
+details li strong{color:var(--ink)}
+.legal{margin-top:16px;font-family:'VT323',monospace;font-size:15px;color:#5e548a;line-height:1.3}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
-  <!-- SEO -->
-  <link rel="canonical" href="https://kthq.org/farcade-arcade.html">
-  <meta property="og:type" content="website"><meta property="og:site_name" content="ContractingHQ"><meta property="og:title" content="FAR-CADE | The Contracting Arcade — KTHQ"><meta property="og:description" content="The contracting arcade. Free play, no quarters, no login. Games that make the FAR stick."><meta property="og:url" content="https://kthq.org/farcade-arcade.html"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@ContractingHQ"><meta name="twitter:title" content="FAR-CADE | The Contracting Arcade — KTHQ"><meta name="twitter:description" content="The contracting arcade. Free play, no quarters, no login. Games that make the FAR stick.">
-  <meta property="og:image" content="https://kthq.org/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:image" content="https://kthq.org/og-image.png">
 </head>
 <body>
-<div id="floor" aria-hidden="true"></div>
-<div id="glowsun" aria-hidden="true"></div>
-<main>
 
-  <header id="marquee">
-    <div class="bulbs b1" aria-hidden="true"></div>
-    <div class="bulbs bottom b2" aria-hidden="true"></div>
-    <h1 id="logo" class="px">FAR-<span class="c">CADE</span></h1>
-    <div id="subtitle" class="px">THE CONTRACTING ARCADE</div>
-    <div id="freeplay" class="crt">★ FREE PLAY ★ NO QUARTERS ★ NO LOGIN ★</div>
-    <div id="insert" class="px">PRESS ANY GAME TO START</div>
-  </header>
-
-  <div id="tickerWrap"><div id="ticker">
-    HIGH SCORE: <b>THE TAXPAYER</b> &nbsp;···&nbsp; NEW CHALLENGER: <i>FAR 2.101</i> &nbsp;···&nbsp; RULE OF TWO HAS ENTERED THE CHAT &nbsp;···&nbsp; COMBO x4: <b>FULL AND OPEN</b> &nbsp;···&nbsp; GAME TIP: OPTIONS LIVE IN PART 17 &nbsp;···&nbsp; CONTINUE? YOUR PALT IS RUNNING &nbsp;···&nbsp;
-    HIGH SCORE: <b>THE TAXPAYER</b> &nbsp;···&nbsp; NEW CHALLENGER: <i>FAR 2.101</i> &nbsp;···&nbsp; RULE OF TWO HAS ENTERED THE CHAT &nbsp;···&nbsp; COMBO x4: <b>FULL AND OPEN</b> &nbsp;···&nbsp; GAME TIP: OPTIONS LIVE IN PART 17 &nbsp;···&nbsp; CONTINUE? YOUR PALT IS RUNNING &nbsp;···&nbsp;
-  </div></div>
-
-  <h2 class="sect px">SELECT YOUR GAME<small>survive the reg · climb the scoreboard · learn it for keeps</small></h2>
-
-  <div id="grid">
-
-    <a class="cab" data-neon="pink" href="far-cade.html">
-      <div class="shell">
-        <div class="top px">PART LOCK</div>
-        <div class="screen"><div class="scr-art art-term"><div>OPTIONS TO<br>EXTEND THE TERM<br><span class="hl">▸ PART 17 ◂</span></div></div></div>
-        <div class="deck"><div class="stick"></div><div class="btn b1"></div><div class="btn b2"></div></div>
-        <div class="info">
-          <div class="name px">PART LOCK</div>
-          <div class="tag">See the term. Lock the FAR part before the timer burns. Streaks, heat multipliers, and an After Action Report on everything you missed.</div>
-          <span class="status play px">▶ INSERT JUDGMENT</span>
-        </div>
-      </div>
-    </a>
-
-    <a class="cab" data-neon="cyan" href="jeopardy.html">
-      <div class="shell">
-        <div class="top px">FAR JEOPARDY</div>
-        <div class="screen"><div class="scr-art"><div class="art-board">
-          <span>100</span><span>200</span><span>300</span>
-          <span>100</span><span>200</span><span>300</span>
-          <span>100</span><span>200</span><span>300</span>
-        </div></div></div>
-        <div class="deck"><div class="stick"></div><div class="btn b3"></div><div class="btn b2"></div></div>
-        <div class="info">
-          <div class="name px">FAR JEOPARDY</div>
-          <div class="tag">The classic board, contracting edition. Pick a category, phrase it as a question, flex on your whole flight.</div>
-          <span class="status play px">▶ TAKE THE BOARD</span>
-        </div>
-      </div>
-    </a>
-
-    <a class="cab" data-neon="gold" href="closeout.html">
-      <div class="shell">
-        <div class="top px">CLOSEOUT</div>
-        <div class="screen"><div class="scr-art art-term"><div>SURVIVE THE<br>FISCAL YEAR<br><span class="hl">▸ OCT 1 — SEP 30 ◂</span></div></div></div>
-        <div class="deck"><div class="stick"></div><div class="btn b2"></div><div class="btn b1"></div></div>
-        <div class="info">
-          <div class="name px">CLOSEOUT</div>
-          <div class="tag">Horde survival, contracting edition. Your tools fire themselves — you just have to live until Sept 30. Level up, evolve your warrant, beat the year.</div>
-          <span class="status play px">▶ START THE FY</span>
-        </div>
-      </div>
-    </a>
-
-    <div class="cab" data-neon="gold">
-      <div class="shell">
-        <div class="top px">THRESHOLD</div>
-        <div class="screen"><div class="scr-art art-soon"><div>LOADING<b>···</b>dodge the protests<br>beat the PALT</div></div></div>
-        <div class="deck"><div class="stick"></div><div class="btn b1"></div><div class="btn b3"></div></div>
-        <div class="info">
-          <div class="name px">THRESHOLD</div>
-          <div class="tag">An endless runner through the acquisition lifecycle. Jump the hurdles, duck the protests, don't blow the threshold.</div>
-          <span class="status soon px">COMING SOON</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="cab" data-neon="cyan">
-      <div class="shell">
-        <div class="top px">CLAUSE CRASH</div>
-        <div class="screen"><div class="scr-art art-soon"><div>LOADING<b>···</b>match the clause<br>before the stack falls</div></div></div>
-        <div class="deck"><div class="stick"></div><div class="btn b2"></div><div class="btn b1"></div></div>
-        <div class="info">
-          <div class="name px">CLAUSE CRASH</div>
-          <div class="tag">Falling-block clause matching. Pair the 52.2XX with its prescription before the solicitation stacks out.</div>
-          <span class="status soon px">COMING SOON</span>
-        </div>
-      </div>
-    </div>
-
-    <a class="cab" data-neon="pink" href="https://kthq.org/contact.html">
-      <div class="shell">
-        <div class="top px">YOUR GAME?</div>
-        <div class="screen"><div class="scr-art art-idea"><div>GOT A GAME IDEA?<br>THIS CABINET IS<br>RESERVED FOR IT</div></div></div>
-        <div class="deck"><div class="stick"></div><div class="btn b1"></div><div class="btn b2"></div><div class="btn b3"></div></div>
-        <div class="info">
-          <div class="name px">OPEN CABINET</div>
-          <div class="tag">The arcade grows when the field speaks up. Pitch a game and we'll build it.</div>
-          <span class="status idea px">✉ SUGGEST A GAME</span>
-        </div>
-      </div>
-    </a>
-
+<div class="device" id="device">
+  <div class="toprow">
+    <div class="brand px">FAR-<b>CADE</b></div>
+    <button class="power px" data-btn="power" aria-label="Power">POWER<i></i></button>
   </div>
 
-  <footer>
-    <div class="crt">FAR-CADE is part of <a href="https://kthq.org">KTHQ // ContractingHQ</a> — built by practitioners, for practitioners.</div>
-    <div class="legal">NOT AFFILIATED WITH THE U.S. AIR FORCE, DOD, OR ANY GOVERNMENT AGENCY · FOR EDUCATIONAL PURPOSES ONLY · © 2026 CONTRACTINGHQ</div>
-  </footer>
-</main>
+  <div class="bezel">
+    <div class="screen" id="screen" data-state="off" aria-live="polite">
+
+      <div class="view v-off"><span class="px">PRESS POWER</span></div>
+
+      <div class="view v-boot">
+        <div class="pct px" id="pct">LOADING...0%</div>
+        <div class="bar"><i id="bar"></i></div>
+      </div>
+
+      <div class="view v-title">
+        <div class="logo px" id="logo">FAR-<b>CADE</b></div>
+        <div class="sub px">POCKET</div>
+        <div class="free crt">FREE PLAY · NO QUARTERS · NO LOGIN</div>
+        <div class="start px">PRESS START</div>
+      </div>
+
+      <div class="view v-menu">
+        <div class="hud px"><span>SELECT GAME</span><b id="count">1/6</b></div>
+        <div class="stage">
+          <span class="arrow px">◀</span>
+          <div class="cart" id="cart"><div class="label"><div class="art px" id="cartArt"></div><div class="no px" id="cartNo"></div></div></div>
+          <span class="arrow r px">▶</span>
+        </div>
+        <div class="gname px" id="gname"></div>
+        <div class="gstat px" id="gstat"></div>
+        <div class="hint crt"><span><b>◀ ▶</b> MOVE</span><span><b>A</b> OPEN</span></div>
+      </div>
+
+      <div class="view v-detail" id="detail">
+        <div class="dname px" id="dname"></div>
+        <div class="dtag crt" id="dtag"></div>
+        <a class="go px" id="go" href="#"></a>
+        <div class="hint crt"><span><b>B</b> BACK</span><span id="dhint"></span></div>
+      </div>
+
+      <div class="view v-launch" id="launchView">
+        <div class="ln px" id="lname"></div>
+        <div class="ll px">LOADING CART...</div>
+      </div>
+
+    </div>
+    <div class="bezelrow">
+      <div class="led px"><i></i>PWR</div>
+      <div class="model px">KT-POCKET</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="dpad">
+      <button class="u" data-btn="up" aria-label="Up"></button>
+      <button class="l" data-btn="left" aria-label="Left"></button>
+      <div class="hub"></div>
+      <button class="r" data-btn="right" aria-label="Right"></button>
+      <button class="d" data-btn="down" aria-label="Down"></button>
+    </div>
+    <div class="ab">
+      <button class="b" data-btn="b" aria-label="B, back"><span>B</span></button>
+      <button class="a" data-btn="a" aria-label="A, select"><span>A</span></button>
+    </div>
+  </div>
+  <div class="pills">
+    <button class="px" data-btn="select" aria-label="Select, toggle sound"><i></i>SELECT</button>
+    <button class="px" data-btn="start" aria-label="Start"><i></i>START</button>
+  </div>
+  <div class="grill" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+</div>
+
+<div class="below">
+  <p class="keys"><b>ARROWS / WASD</b> move · <b>ENTER / Z</b> is A · <b>BACKSPACE / X</b> is B · <b>SPACE</b> start · <b>SHIFT</b> sound · or tap the buttons</p>
+  <details>
+    <summary>All games as a plain list</summary>
+    <ul id="plain"></ul>
+  </details>
+  <p class="legal">FAR-CADE IS PART OF KTHQ // CONTRACTINGHQ · NOT AFFILIATED WITH THE U.S. AIR FORCE, DOD, OR ANY GOVERNMENT AGENCY · FOR EDUCATIONAL PURPOSES ONLY</p>
+</div>
+
+<div id="takeover" aria-hidden="true">
+  <iframe id="frame" title="Game" allow="autoplay; fullscreen; gamepad"></iframe>
+  <div id="offsite">
+    <h2 class="px" id="oname"></h2>
+    <p id="otag"></p>
+    <a class="px" id="olink" target="_blank" rel="noopener">▶ PLAY ON KTHQ.ORG</a>
+    <button class="px" id="oback">◀ BACK TO FAR-CADE</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  // If a game's own "back to arcade" link loads this page inside the game frame,
+  // hand control back to the outer handheld so it zooms out.
+  if(window.parent!==window){ try{ window.parent.postMessage({farcade:'exit'},'*'); }catch(e){} }
+
+  // On kthq.org the games open in place. Anywhere else they open the live site.
+  var onSite = /(^|\.)kthq\.org$/i.test(location.hostname) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var BASE = onSite ? '' : 'https://kthq.org/';
+
+  var GAMES = [
+    {id:'part-lock', name:'PART LOCK', art:'P.17', neon:'var(--pink)', href:'far-cade.html', status:'play', cta:'▶ INSERT JUDGMENT',
+     tag:'See the term. Lock the FAR part before the timer burns. Streaks, heat multipliers, and an After Action Report on what you missed.'},
+    {id:'far-jeopardy', name:'FAR JEOPARDY', art:'$300', neon:'var(--cyan)', href:'jeopardy.html', status:'play', cta:'▶ TAKE THE BOARD',
+     tag:'The classic board, contracting edition. Pick a category, phrase it as a question, flex on your whole flight.'},
+    {id:'closeout', name:'CLOSEOUT', art:'FY', neon:'var(--gold)', href:'closeout.html', status:'play', cta:'▶ START THE FY',
+     tag:'Horde survival. Your tools fire themselves. Live until Sept 30, level up, evolve your warrant, beat the year.'},
+    {name:'THRESHOLD', art:'···', neon:'var(--gold)', href:'', status:'soon', cta:'COMING SOON',
+     tag:'An endless runner through the acquisition lifecycle. Jump the hurdles, duck the protests, don\'t blow the threshold.'},
+    {name:'CLAUSE CRASH', art:'···', neon:'var(--cyan)', href:'', status:'soon', cta:'COMING SOON',
+     tag:'Falling-block clause matching. Pair the 52.2XX with its prescription before the solicitation stacks out.'},
+    {name:'OPEN SLOT', art:'?', neon:'var(--pink)', href:'contact.html', status:'idea', cta:'✉ SUGGEST A GAME',
+     tag:'This slot is reserved. The arcade grows when the field speaks up. Pitch a game and it gets built.'}
+  ];
+
+  var $ = function(id){return document.getElementById(id)};
+  var device=$('device'), screen=$('screen'), cart=$('cart'), go=$('go');
+  var state='off', idx=0, sound=true, ac=null, bootTimer=null;
+  var takeover=$('takeover'), frame=$('frame'), offsite=$('offsite');
+  var playing=false, pushed=false, zoomTimer=null;
+  var reduced=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* ----- sound: tiny square-wave blips ----- */
+  function beep(freq,dur,when){
+    if(!sound) return;
+    try{
+      if(!ac){ var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return; ac=new AC(); }
+      if(ac.state==='suspended') ac.resume();
+      var t=ac.currentTime+(when||0), o=ac.createOscillator(), g=ac.createGain();
+      o.type='square'; o.frequency.value=freq;
+      g.gain.setValueAtTime(.05,t); g.gain.exponentialRampToValueAtTime(.001,t+dur);
+      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+dur);
+    }catch(e){}
+  }
+  var sfx={
+    move:function(){beep(520,.05)},
+    ok:function(){beep(660,.06);beep(990,.09,.06)},
+    back:function(){beep(330,.08)},
+    no:function(){beep(160,.12)},
+    boot:function(){beep(523,.09);beep(659,.09,.1);beep(784,.09,.2);beep(1047,.22,.3)}
+  };
+
+  function setState(s){ state=s; screen.dataset.state=s; device.classList.toggle('on', s!=='off'); }
+
+  function hrefOf(g){ return g.href ? BASE+g.href : ''; }
+
+  function drawMenu(dir){
+    var g=GAMES[idx];
+    cart.style.setProperty('--neon',g.neon);
+    cart.classList.toggle('soon',g.status==='soon');
+    $('cartArt').textContent=g.art;
+    $('cartNo').textContent='CART 0'+(idx+1);
+    $('gname').textContent=g.name;
+    var st=$('gstat'); st.textContent=g.cta; st.className='gstat px '+g.status;
+    $('count').textContent=(idx+1)+'/'+GAMES.length;
+    if(dir){ cart.classList.remove('in','inL'); void cart.offsetWidth; cart.classList.add(dir>0?'in':'inL'); }
+  }
+
+  function drawDetail(){
+    var g=GAMES[idx], h=hrefOf(g);
+    $('detail').style.setProperty('--neon',g.neon);
+    $('dname').textContent=g.name;
+    $('dtag').textContent=g.tag;
+    go.textContent=g.cta;
+    go.classList.toggle('soon',!h);
+    if(h){ go.href=h; go.removeAttribute('aria-disabled'); }
+    else { go.removeAttribute('href'); go.setAttribute('aria-disabled','true'); }
+    $('dhint').innerHTML = h ? '<b>A</b> PLAY' : '';
+  }
+
+  function boot(){
+    setState('boot');
+    var p=0, pct=$('pct'), bar=$('bar');
+    pct.textContent='LOADING...0%'; bar.style.width='0';
+    clearInterval(bootTimer);
+    bootTimer=setInterval(function(){
+      p=Math.min(100,p+4+Math.floor(Math.random()*9));
+      pct.textContent='LOADING...'+p+'%'; bar.style.width=p+'%';
+      if(p>=100){
+        clearInterval(bootTimer);
+        setTimeout(function(){
+          if(state!=='boot') return;
+          setState('title');
+          var l=$('logo'); l.style.animation='none'; void l.offsetWidth; l.style.animation='';
+          sfx.boot();
+        },220);
+      }
+    },70);
+  }
+
+  function powerOff(){ clearInterval(bootTimer); setState('off'); }
+
+  /* ----- game takeover: zoom into the screen, then the game fills the window ----- */
+  function setHash(id){
+    try{
+      if(id){ history.pushState(null,'','#'+id); pushed=true; }
+      else { pushed=false; history.replaceState(null,'',location.pathname+location.search); }
+    }catch(e){ try{ location.hash=id||''; }catch(e2){} }
+  }
+
+  // Swap the frame's page without stacking browser-history entries.
+  function setFrame(url){
+    try{ frame.contentWindow.location.replace(url); }catch(e){ frame.src=url; }
+  }
+
+  function openGame(i,instant){
+    var g=GAMES[i], h=hrefOf(g);
+    if(!h||playing) return;
+    if(!g.id){ location.href=h; return; }           // plain links (contact page) just navigate
+    playing=true; idx=i; drawMenu(); drawDetail();
+    $('launchView').style.setProperty('--neon',g.neon);
+    $('lname').textContent=g.name;
+    setState('launch');
+    document.body.classList.add('playing');
+    if(onSite){ frame.style.display='block'; offsite.style.display='none'; setFrame(h); }
+    else{
+      frame.style.display='none'; offsite.style.display='flex';
+      offsite.style.setProperty('--neon',g.neon);
+      $('oname').textContent=g.name; $('otag').textContent=g.tag; $('olink').href=h;
+    }
+    if(location.hash!=='#'+g.id) setHash(g.id);
+
+    var quick=instant||reduced;
+    var r=screen.getBoundingClientRect(), d=device.getBoundingClientRect();
+    var vw=window.innerWidth, vh=window.innerHeight;
+    var s=Math.max(vw/r.width,vh/r.height)*1.04;
+    var cx=r.left+r.width/2, cy=r.top+r.height/2;
+    device.style.transformOrigin=(cx-d.left)+'px '+(cy-d.top)+'px';
+    device.style.transition=quick?'none':'transform .7s cubic-bezier(.7,0,.9,.5)';
+    device.style.transform='translate('+(vw/2-cx)+'px,'+(vh/2-cy)+'px) scale('+s+')';
+    clearTimeout(zoomTimer);
+    zoomTimer=setTimeout(function(){
+      takeover.classList.add('show'); takeover.setAttribute('aria-hidden','false');
+      void takeover.offsetWidth; takeover.classList.add('in');
+      if(onSite){ try{ frame.focus(); }catch(e){} }
+    }, quick?0:680);
+  }
+
+  function closeGame(fromHistory){
+    if(!playing) return;
+    playing=false; clearTimeout(zoomTimer);
+    takeover.classList.remove('in');
+    if(!fromHistory) setHash('');
+    setTimeout(function(){
+      takeover.classList.remove('show'); takeover.setAttribute('aria-hidden','true');
+      setFrame('about:blank');
+      setState('detail');
+      device.style.transition=reduced?'none':'transform .5s cubic-bezier(.2,.8,.3,1)';
+      device.style.transform='';
+      document.body.classList.remove('playing');
+      window.focus();
+    },230);
+  }
+
+  window.addEventListener('message',function(e){
+    if(e.data&&e.data.farcade==='exit'&&e.source===frame.contentWindow) closeGame();
+  });
+  function route(){
+    var id=location.hash.replace('#',''), i=-1;
+    GAMES.forEach(function(g,n){ if(g.id&&g.id===id) i=n; });
+    if(i>=0&&!playing){ if(state==='off'||state==='boot'){ clearInterval(bootTimer); } openGame(i,state==='off'||state==='boot'); }
+    else if(i<0&&playing) closeGame(true);
+  }
+  window.addEventListener('hashchange',route);
+  window.addEventListener('popstate',route);
+  $('oback').addEventListener('click',function(){ closeGame(); });
+  go.addEventListener('click',function(e){
+    if(!go.getAttribute('href')) return;
+    if(GAMES[idx].id){ e.preventDefault(); sfx.ok(); openGame(idx); }
+  });
+
+  function press(b){
+    if(b==='power'){ if(state==='off'){ beep(440,.05); boot(); } else { beep(220,.1); powerOff(); } return; }
+    if(state==='off'||state==='boot'||state==='launch') return;
+    if(b==='select'){ sound=!sound; if(sound) beep(880,.08); return; }
+
+    if(state==='title'){
+      if(b==='start'||b==='a'){ sfx.ok(); drawMenu(); setState('menu'); }
+      return;
+    }
+    if(state==='menu'){
+      if(b==='left'||b==='up'){ idx=(idx+GAMES.length-1)%GAMES.length; sfx.move(); drawMenu(-1); }
+      else if(b==='right'||b==='down'){ idx=(idx+1)%GAMES.length; sfx.move(); drawMenu(1); }
+      else if(b==='a'||b==='start'){ sfx.ok(); drawDetail(); setState('detail'); }
+      else if(b==='b'){ sfx.back(); setState('title'); }
+      return;
+    }
+    if(state==='detail'){
+      if(b==='b'){ sfx.back(); setState('menu'); }
+      else if(b==='a'||b==='start'){
+        if(go.getAttribute('href')){ if(GAMES[idx].id) go.click(); else { sfx.ok(); go.click(); } } else sfx.no();
+      }
+      else if(b==='left'){ idx=(idx+GAMES.length-1)%GAMES.length; sfx.move(); drawDetail(); drawMenu(); }
+      else if(b==='right'){ idx=(idx+1)%GAMES.length; sfx.move(); drawDetail(); drawMenu(); }
+    }
+  }
+
+  /* ----- on-screen buttons ----- */
+  device.addEventListener('click',function(e){
+    var t=e.target.closest('[data-btn]'); if(t) press(t.dataset.btn);
+  });
+  // Tapping the dark screen powers on; tapping the title starts.
+  screen.addEventListener('click',function(e){
+    if(e.target.closest('a')) return;
+    if(state==='off') press('power'); else if(state==='title') press('start');
+  });
+
+  /* ----- keyboard ----- */
+  var KEYS={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',
+    w:'up',s:'down',a:'left',d:'right',Enter:'a',z:'a',Backspace:'b',x:'b',Escape:'b',' ':'start',Shift:'select'};
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    if(playing){ if(e.key==='Escape') closeGame(); return; }
+    var tag=(e.target.tagName||'').toLowerCase();
+    if(tag==='summary'||(tag==='a'&&e.key==='Enter')) return;
+    if(tag==='button'&&(e.key==='Enter'||e.key===' ')) return; // let the focused button click itself
+    var k=e.key.length===1?e.key.toLowerCase():e.key, b=KEYS[k];
+    if(!b) return;
+    e.preventDefault();
+    if(state==='off'&&(b==='a'||b==='start')) b='power';
+    var el=device.querySelector('[data-btn="'+b+'"]');
+    if(el){ el.classList.add('hit'); setTimeout(function(){el.classList.remove('hit')},110); }
+    press(b);
+  });
+
+  /* ----- plain list fallback ----- */
+  var ul=$('plain');
+  GAMES.forEach(function(g){
+    var li=document.createElement('li'), h=hrefOf(g), head;
+    if(h){ head=document.createElement('a'); head.href=g.id?'#'+g.id:h; }
+    else head=document.createElement('strong');
+    head.textContent=g.name+(g.status==='soon'?' (coming soon)':'');
+    li.appendChild(head); li.appendChild(document.createTextNode(' · '+g.tag));
+    ul.appendChild(li);
+  });
+
+  drawMenu();
+  route();
+})();
+</script>
 </body>
 </html>
