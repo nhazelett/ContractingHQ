@@ -56,6 +56,23 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 #dollarbox{text-align:right;font-size:clamp(11px,3vw,15px);color:var(--cyan);text-shadow:0 0 10px rgba(25,227,255,.55);border-color:rgba(25,227,255,.3)}
 #lvltag{text-align:center;font-size:clamp(8px,2vw,10px);color:var(--ink);border-radius:999px;padding:7px 12px 6px}
 #slots{max-width:760px;margin:8px auto 0;display:flex;gap:6px;justify-content:flex-start}
+/* 12-slot loadout: desktop single strip, small screens two tidy rows. */
+#slots{max-width:760px;display:grid;grid-template-columns:repeat(12, minmax(0,34px));
+  gap:5px;align-items:center;justify-content:start}
+#slots .slot{width:34px;height:34px;min-width:0}
+#slots .slot.gap{margin-left:0;border-left:2px solid var(--cyan)}
+@media(max-width:640px){
+  #slots{grid-template-columns:repeat(6,minmax(0,34px));grid-template-rows:repeat(2,34px);
+    gap:4px;max-width:224px;margin:6px auto 0;justify-content:center}
+  #slots .slot{width:34px;height:34px}
+  #slots .slot.gap{border-left:2px solid var(--cyan)}
+  #hud{padding-bottom:12px}
+}
+@media(max-width:365px){
+  #slots{grid-template-columns:repeat(6,minmax(0,30px));grid-template-rows:repeat(2,30px);max-width:200px}
+  #slots .slot{width:30px;height:30px}
+  #slots .slot canvas{width:19px;height:19px}
+}
 /* lighter scanlines while a run is on */
 body:has(#hud.on) #scan{opacity:.3}
 .slot{width:34px;height:34px;border:1px solid rgba(255,255,255,.14);border-radius:9px;background:rgba(20,10,46,.72);
@@ -868,77 +885,93 @@ const POPS=[]; let popI=0;
 for(let i=0;i<48;i++)POPS.push({x:0,y:0,t:-9,r:0,c:'#fff'});
 function pop(x,y,r,c){ if(RM)return; const o=POPS[popI++%48]; o.x=x;o.y=y;o.t=G.t;o.r=r;o.c=c; }
 
-/* Modern 22x27 action-character sprites, authored at boot with Canvas pixels.
-   Strong silhouettes and role-specific colorways replace the 10px stick figures.
-   Generated into the existing SPRA atlas, with no assets or frame allocations. */
-const HERO_STYLES={
- spec:{coat:'#176b77',side:'#12374e',shine:'#40edee',detail:'#f5cf5b',hair:'#15172c',skin:'#e8ad83',gear:0},
- buyer:{coat:'#a67b39',side:'#564027',shine:'#ffda65',detail:'#35ded2',hair:'#332536',skin:'#d99c78',gear:1},
- cco:{coat:'#54664a',side:'#263a37',shine:'#8ce3a6',detail:'#ff4c9f',hair:'#262c36',skin:'#e3b48e',gear:2},
- ko:{coat:'#343b5a',side:'#1c223b',shine:'#f4c952',detail:'#f7f5f2',hair:'#13182b',skin:'#bd896e',gear:3},
- civ:{coat:'#476aaf',side:'#26365f',shine:'#99dbff',detail:'#ffffff',hair:'#412e31',skin:'#edb98e',gear:0},
- supt:{coat:'#64394b',side:'#31243d',shine:'#f27797',detail:'#ffd16e',hair:'#242132',skin:'#ad795e',gear:2}
+/* Detailed, readable OCP-style Airman sprites. All generated once at boot,
+   with pre-rendered animated frames and no external art dependencies.
+   Silhouette: patrol cap, OCP jacket, name tapes, sleeve flag, cargo pants,
+   tan boots. Six character variants retain their identities. */
+const AIRMAN_VARIANTS={
+ spec:{skin:'#e5b08a',hair:'#30291f',accent:'#62d3cb',rank:2,civilian:false},
+ buyer:{skin:'#d59a73',hair:'#26201d',accent:'#e5c96c',rank:2,civilian:false},
+ cco:{skin:'#c58967',hair:'#222323',accent:'#ffb96b',rank:3,civilian:false},
+ ko:{skin:'#b87858',hair:'#201b1c',accent:'#ffd36b',rank:4,civilian:false},
+ civ:{skin:'#e8b894',hair:'#4a3028',accent:'#81d5ff',rank:0,civilian:true},
+ supt:{skin:'#af765c',hair:'#252528',accent:'#ffb184',rank:5,civilian:false}
 };
-function buildModernHeroSprite(key,style){
- const frames=[];
+function buildAirmanSprite(key,v){
+ const frames=new Array(4);
+ const rim='#171d19',dark='#364233',base='#687354',
+       medium='#85836a',light='#aaa48b',sand='#c1b49a',
+       boot='#b39a70',bootShadow='#675c43',ink='#171c22';
  for(let frame=0;frame<2;frame++){
-   const src=document.createElement('canvas');src.width=22;src.height=27;
-   const x=src.getContext('2d');
-   function px(col,a,b,w,h){x.fillStyle=col;x.fillRect(a,b,w,h);}
-   const edge='#0a1025',boot='#10152b',metal='#a3d8df';
-   // Ground-facing boots and articulated trousers, with alternating stride.
-   px(edge,5,19,5,7);px(edge,12,19,5,7);
-   px(style.side,6,19,3,5);px(style.side,13,19,3,5);
-   px('#8698a9',7,20+frame,1,3);px('#8698a9',14,20+(1-frame),1,3);
-   px(boot,4,24+frame,6,2);px(boot,12,25-frame,6,2);
-   px(style.shine,5,24+frame,3,1);px(style.shine,14,25-frame,3,1);
-   // Distinctive armored jacket with heavier shoulders and tapered waist.
-   px(edge,4,10,14,11);px(style.side,5,12,12,8);
-   px(style.coat,6,11,10,8);px(style.shine,5,11,3,2);px(style.shine,14,11,3,2);
-   px('#12263b',8,12,6,7);
-   px(style.coat,9,13,4,5);px(style.detail,10,12,2,5);
-   px('#d9e7df',10,12,2,1);px(metal,8,18,6,1);
-   px(edge,7,20,9,2);px(style.detail,10,20,3,1);
-   // Gloves, articulated sleeves and a forearm-mounted acquisition tablet.
-   px(edge,2,12,4,8);px(style.coat,3,13,3,5);
-   px(style.side,3,17,3,3);px(style.shine,3,16,2,1);
-   px(edge,16,12,4,8);px(style.coat,16,13,3,5);
-   px(style.side,17,17,3,3);px(style.shine,17,16,2,1);
-   px('#171e3b',1,14,4,4);px(style.shine,2,15,3,1);
-   px(style.detail,3,16,1,1);
-   // Face, neck, jaw shadow, asymmetric fringe and luminous tech visor.
-   px(edge,6,2,11,10);px(style.skin,7,5,9,6);
-   px('#ba775a',8,9,6,2);px(style.skin,9,10,4,2);
-   px(style.hair,6,2,11,4);px(style.hair,6,4,3,3);
-   px(style.hair,15,4,2,3);
-   px('#f7d7b1',8,6,6,1);
-   px(edge,7,7,9,2);px(style.shine,8,7,7,1);
-   px('#ffffff',12,7,2,1);
-   px(style.side,7,9,2,1);
-   // Class-specific silhouette: headset, visor, command cap or epaulets.
-   if(style.gear===0){px(edge,5,5,2,5);px(style.shine,5,7,1,2);px(style.shine,15,4,2,2);}
-   if(style.gear===1){px(edge,5,3,13,2);px(style.detail,7,3,9,1);px(style.detail,16,13,2,1);}
-   if(style.gear===2){px(edge,6,1,12,4);px(style.coat,7,2,10,2);px(style.detail,9,2,5,1);px(edge,5,4,13,1);}
-   if(style.gear===3){px(edge,6,1,12,4);px(style.detail,8,2,8,1);px(style.detail,7,12,2,1);px(style.detail,14,12,2,1);}
-   const out=[];
-   for(let flip=0;flip<2;flip++){
-     const c=document.createElement('canvas');c.width=60;c.height=70;
-     const cx=c.getContext('2d');cx.imageSmoothingEnabled=false;
-     if(flip){cx.translate(60,0);cx.scale(-1,1);}
-     // Pre-rendered accent halo only at sprite creation.
-     cx.shadowColor=style.shine;cx.shadowBlur=8;
-     cx.drawImage(src,8,8,44,54);cx.shadowBlur=0;
-     cx.drawImage(src,8,8,44,54);
-     out[flip*2+frame]=c;
-   }
-   for(let flip=0;flip<2;flip++)frames[flip*2+frame]=out[flip*2+frame];
+  const src=document.createElement('canvas');src.width=26;src.height=32;
+  const g=src.getContext('2d');
+  function block(c,x,y,w,h){g.fillStyle=c;g.fillRect(x,y,w,h);}
+  // Separate two walking poses, with tan military boots and bloused trousers.
+  const lStep=frame?1:0,rStep=frame?0:1;
+  block(rim,5,23,7,7);block(rim,15,23,7,7);
+  block(base,6,23+lStep,5,4);block(medium,16,23+rStep,5,4);
+  block(dark,7,25+lStep,2,2);block(light,17,24+rStep,3,2);
+  block(bootShadow,4,27+lStep,8,4-lStep);block(bootShadow,15,27+rStep,8,4-rStep);
+  block(boot,5,27+lStep,7,3-lStep);block(boot,16,27+rStep,7,3-rStep);
+  block(sand,5,28+lStep,3,1);block(sand,16,28+rStep,3,1);
+  block(ink,4,30,8,1);block(ink,15,30,8,1);
+  // Shoulder-to-waist contour with layered OCP camouflage geometry.
+  block(rim,4,12,18,13);
+  block(base,5,13,16,11);block(medium,8,13,8,10);
+  block(light,7,14,4,3);block(dark,13,14,3,4);
+  block(sand,17,16,3,3);block(dark,6,19,4,3);
+  block(light,10,20,4,2);block(base,16,20,3,3);
+  block(rim,4,22,18,2);block(bootShadow,9,23,9,1);
+  // Arms, sleeves, sleeve pockets and a recognizable subdued flag.
+  block(rim,1,13,5,11);block(base,2,14,4,9);
+  block(dark,2,16,2,3);block(medium,4,19,2,3);
+  block(rim,20,13,5,11);block(medium,20,14,4,9);
+  block(sand,21,15,3,2);block(base,21,19,3,3);
+  block(ink,21,17,3,3);block(sand,21,17,3,1);
+  block(light,21,19,3,1);
+  block(bootShadow,2,23,4,2);block(bootShadow,20,23,4,2);
+  // Front blouse, center closure, horizontal name and branch tapes.
+  block(dark,12,14,2,9);block(sand,7,15,5,2);block(sand,14,15,5,2);
+  block(ink,8,16,3,1);block(ink,15,16,3,1);
+  block(dark,7,19,4,3);block(dark,15,19,4,3);
+  block(light,12,19,2,2);
+  // Rank insignia (stylized enlisted chevrons, no readable lettering).
+  if(v.rank>0){block(ink,3,15,3,2);block(sand,3,15,3,1);
+   if(v.rank>=3)block(sand,4,16,2,1);}
+  // Neck and clean uncovered face; no neon goggles or armor.
+  block(ink,9,5,9,9);block(v.skin,10,6,7,7);
+  block('#9c684d',11,12,6,1);block(v.skin,11,13,5,1);
+  block(v.hair,9,4,9,3);
+  block('#372c2a',10,9,2,1);block('#372c2a',15,9,2,1);
+  block('#e8c5a7',12,10,3,1);
+  // Patrol cap with short forward brim and camo patches.
+  if(!v.civilian){
+    block(ink,7,2,13,5);block(base,8,2,11,4);
+    block(light,9,3,4,2);block(dark,14,3,4,2);
+    block(ink,6,6,15,2);block(medium,7,6,13,1);
+    block(sand,12,4,2,1);
+  }else{
+    // Civilian retains a professional jacket, no military rank/cap.
+    block(v.hair,8,2,11,5);block(v.accent,11,16,4,2);
+    block('#314d6f',6,14,3,6);block('#314d6f',17,14,3,6);
+  }
+  // Small contracting tablet on the forearm, not a weapon.
+  block(ink,0,18,5,5);block('#475760',1,19,3,3);block(v.accent,2,20,2,1);
+  for(let flip=0;flip<2;flip++){
+    const c=document.createElement('canvas');c.width=70;c.height=84;
+    const cx=c.getContext('2d');cx.imageSmoothingEnabled=false;
+    if(flip){cx.translate(c.width,0);cx.scale(-1,1);}
+    cx.shadowColor='rgba(91,110,72,.55)';cx.shadowBlur=5;
+    cx.drawImage(src,9,7,52,64);cx.shadowBlur=0;
+    cx.drawImage(src,9,7,52,64);
+    frames[flip*2+frame]=c;
+  }
  }
  SPRA[key]=frames;
 }
 function buildModernHeroes(){
- for(const id in HERO_STYLES)buildModernHeroSprite('pl_'+id,HERO_STYLES[id]);
+ for(const id in AIRMAN_VARIANTS)buildAirmanSprite('pl_'+id,AIRMAN_VARIANTS[id]);
 }
-
 function buildSprites(){
   buildShadow();
   for(const k in PXDATA)if(PXDATA[k].g)GLOWK[k]=PXDATA[k].g;
@@ -1204,7 +1237,7 @@ const PASSIVES={
   gfp:{name:'GFP',flavor:'Government furnished property. Free protection.',icon:'gfp',per:'-2 damage taken'},
   ea:{name:'EMERGENCY AUTHORITY',flavor:"When it's an emergency, the rules flex.",icon:'ea',per:'one revive per run',maxl:1}
 };
-const MAXLVL=5, MAX_W=4, MAX_PSV=4;
+const MAXLVL=5, MAX_W=6, MAX_PSV=6;
 const PSTAT={warrant:l=>'+'+(12*l)+'% damage', palt:l=>'-'+(7*l)+'% cooldown',
   mr:l=>'+'+(35*l)+'px pickup range', dawia:l=>'+'+(12*l)+'% XP',
   tdy:l=>'+'+(7*l)+'% move speed', comp:l=>'+'+(20*l)+' HP, +'+(0.3*l).toFixed(1)+' HP/s',
