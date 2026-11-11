@@ -1295,15 +1295,15 @@ const CHARS=[
   {id:'spec',name:'SPECIALIST',icon:'ch_spec',desc:'Balanced. Starts with the GPC.',
     weapon:'gpc',hp:100,spd:1,palt:0,unlocked:()=>true,how:''},
   {id:'buyer',name:'BUYER',icon:'ch_buyer',desc:'Starts with BPA CALL. Innate PALT bonus.',
-    weapon:'bpa',hp:100,spd:1,palt:.12,unlocked:()=>meta.buyer,how:'SURVIVE TO Q3'},
+    weapon:'bpa',hp:100,spd:1,palt:.12,unlocked:()=>true,how:'SURVIVE TO Q3'},
   {id:'cco',name:'CCO',icon:'ch_cco',desc:'Deployed. Starts with J&A. Fast, fragile.',
-    weapon:'jna',hp:75,spd:1.12,palt:0,unlocked:()=>meta.cco,how:'WIN A RUN'},
+    weapon:'jna',hp:75,spd:1.12,palt:0,unlocked:()=>true,how:'WIN A RUN'},
   {id:'ko',name:'KO',icon:'ch_ko',desc:"Warranted. Starts with PURCHASE ORDER. Hits harder. The warrant means it's your signature.",
-    weapon:'po',hp:100,spd:1,palt:0,unlocked:()=>meta.ko,how:'OBLIGATE $1,000,000 IN ONE RUN'},
+    weapon:'po',hp:100,spd:1,palt:0,unlocked:()=>true,how:'OBLIGATE $1,000,000 IN ONE RUN'},
   {id:'civ',name:'1102 CIVILIAN',icon:'ch_civ',desc:'Starts with SOURCES SOUGHT. Learns faster, walks slower. The continuity of the whole shop.',
-    weapon:'ss',hp:100,spd:0.92,palt:0,unlocked:()=>meta.civ,how:'WIN A RUN ON THE OFFICE MAP'},
+    weapon:'ss',hp:100,spd:0.92,palt:0,unlocked:()=>true,how:'WIN A RUN ON THE OFFICE MAP'},
   {id:'supt',name:'SUPERINTENDENT',icon:'ch_supt',desc:'Starts with COR. Slows nearby problems. Runs the flight. Sees everything.',
-    weapon:'cor',hp:100,spd:1,palt:0,unlocked:()=>meta.supt,how:'$100,000,000 LIFETIME OBLIGATED'}
+    weapon:'cor',hp:100,spd:1,palt:0,unlocked:()=>true,how:'$100,000,000 LIFETIME OBLIGATED'}
 ];
 
 /* =============== AAR TIPS (real, plain language) =============== */
@@ -1347,7 +1347,7 @@ const MAPS={
   mptSub:'Outside the U.S., supporting a contingency, the floor rises.',
   satLabel:'CONTINGENCY SAT CROSSED — $2M (OCONUS)',
   satSub:'Contingency OCONUS: simplified procedures reach $2 million.',
-  unlocked:()=>meta.fob, how:'SURVIVE TO JULY ON ANY RUN'}
+  unlocked:()=>true, how:'SURVIVE TO JULY ON ANY RUN'}
 };
 function mapDef(){ return MAPS[G.mapId]||MAPS.office; }
 const FLOORS={};
@@ -1913,11 +1913,10 @@ function onMonth(m){
   if(m===3){ AU.chime(); banner('Q2 BEGINS — JAN','cyan','New appropriation, new problems.'); }
   else if(m===6){ AU.chime(); banner('Q3 BEGINS — APR','cyan','Elites in the wire.'); }
   else if(m===9){ AU.chime(); banner('Q4 BEGINS — JUL','gold','The hot season. Everything moves.');
-    if(!meta.fob){ meta.fob=true; saveMeta(); banner('NEW STAGE UNLOCKED — THE FOB','gold','Contingency contracting. Different thresholds.'); } }
+    if(!meta.fob){ meta.fob=true; saveMeta(); } }
   else if(m===11){ AU.boss(); banner('SEPTEMBER','pink','30 days to closeout.'); }
   // BUYER unlock: reached Q3
-  if(m>=6&&!meta.buyer){ meta.buyer=true; saveMeta();
-    banner('NEW CHALLENGER UNLOCKED — BUYER','gold','Survived to Q3.'); }
+  if(m>=6&&!meta.buyer){ meta.buyer=true; saveMeta(); }
 }
 
 function updEnemies(dt){
@@ -2672,10 +2671,10 @@ function endRun(won){
     $('entrystatus').textContent='';
     buildWheels();
   } else $('entrybox').style.display='none';
-  if(won&&meta.wins===1)$('aarsub').textContent+=' NEW CHARACTER UNLOCKED: CCO.';
-  if(meta.ko&&!G.koWas)$('aarsub').textContent+=' NEW CHARACTER UNLOCKED: KO.';
-  if(meta.civ&&!G.civWas)$('aarsub').textContent+=' NEW CHARACTER UNLOCKED: 1102 CIVILIAN.';
-  if(meta.supt&&!G.suptWas)$('aarsub').textContent+=' NEW CHARACTER UNLOCKED: SUPERINTENDENT.';
+
+
+
+
   $('hud').classList.remove('on'); $('edge').style.opacity=0; $('vig').style.opacity=0;
   joyEl.style.display='none'; joy.on=false;
   setTimeout(()=>{ $('aarov').classList.add('on'); },won?600:700);
