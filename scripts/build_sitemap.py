@@ -10,7 +10,12 @@ BUILDERS = ('1442-builder', '1449-sf30-builder', 'bpa-builder',
 
 class Metadata(HTMLParser):
     excluded = False
+    canonical = ''
     def handle_starttag(self, tag, attrs):
+        if tag.lower() == 'link' and not self.canonical:
+            link = {k.lower(): (v or '') for k, v in attrs}
+            if link.get('rel', '').lower() == 'canonical':
+                self.canonical = link.get('href', '').strip()
         if tag.lower() != 'meta':
             return
         attrs = {k.lower(): (v or '').lower() for k, v in attrs}
@@ -35,6 +40,14 @@ def build():
         if parser.excluded:
             continue
         relative = page.relative_to(ROOT).as_posix()
+        # List each page under its canonical URL (folder URLs for index pages).
+        location = 'https://kthq.org/' + relative
+        if location.endswith('/index.html'):
+            location = location[:-len('index.html')]
+        if parser.canonical.startswith('https://kthq.org/'):
+            if parser.canonical not in (location, 'https://kthq.org/' + relative):
+                continue  # canonical points at a different page
+            location = parser.canonical
         date = subprocess.check_output(
             ['git', 'log', '-1', '--format=%cs', '--', relative],
             cwd=ROOT, text=True).strip()
