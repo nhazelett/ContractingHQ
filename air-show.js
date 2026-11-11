@@ -68,7 +68,8 @@
     ['air-show-sole-source.html', '5', 'Sole source builder']
   ];
   ASB.chrome = function (current) {
-    const nav = el('nav', { class: 'suite noprint', 'aria-label': 'Air Show in a Box' }, ASB.PAGES.map(p => el('a', { href: p[0], 'aria-current': p[0] === current ? 'page' : null }, el('b', { text: p[1] }), el('span', { text: p[2] }))));
+    const idx = ASB.PAGES.findIndex(p => p[0] === current);
+    const nav = el('nav', { class: 'suite noprint', 'aria-label': 'Air Show in a Box steps' }, el('span', { class: 'suite-label', text: 'Air Show in a Box' }), ASB.PAGES.map((p, i) => el('a', { href: p[0], class: i < idx ? 'done' : null, 'aria-current': p[0] === current ? 'page' : null }, el('b', { text: p[1] }), el('span', { text: p[2] }))));
     const s = ASB.getShow(), d = ASB.showDate(), bar = el('div', { class: 'showbar noprint' });
     if (s.name || s.base || d) {
       const days = d ? Math.ceil((d - new Date()) / 864e5) : null;
@@ -76,6 +77,15 @@
       if (current !== 'air-show.html') bar.append(el('a', { href: 'air-show.html#setup', text: 'Change' }));
     } else if (current !== 'air-show.html') bar.append(el('span', null, 'No show entered yet. ', el('a', { href: 'air-show.html#setup', text: 'Enter your show date' }), ' and every page fills in around it.'));
     const host = document.getElementById('asb-chrome'); if (host) host.replaceChildren(nav, bar);
+    /* next / previous step at the bottom of every page */
+    const main = document.getElementById('main'), old = document.getElementById('asb-next'); if (old) old.remove();
+    if (main && idx >= 0) {
+      const prev = ASB.PAGES[idx - 1], next = ASB.PAGES[idx + 1];
+      const box = el('nav', { id: 'asb-next', class: 'stepnav noprint', 'aria-label': 'Next step' },
+        prev ? el('a', { class: 'prev', href: prev[0] }, el('small', { text: 'Back: Step ' + prev[1] }), el('span', { text: prev[2] })) : el('span'),
+        next ? el('a', { class: 'next', href: next[0] }, el('small', { text: 'Step ' + (idx + 1) + ' of ' + ASB.PAGES.length + ' done. Next: Step ' + next[1] }), el('span', { text: next[2] + ' \u2192' })) : el('a', { class: 'next', href: ASB.PAGES[0][0] }, el('small', { text: 'That is all five steps' }), el('span', { text: 'Back to the plan \u2192' })));
+      const method = main.querySelector('.method'); if (method) main.insertBefore(box, method); else main.append(box);
+    }
   };
   ASB.copyBtn = function (getText, label) {
     label = label || 'Copy';
@@ -127,7 +137,7 @@
     { jul: 2, what: 'Request the Thunderbirds or Blue Angels (DD Form 2535 through MAJCOM/PA)', opr: 'Open House Director', c: ['afman', '11.2.1.1.1'], hard: true },
     { jul: 1, what: 'Request an ACC single-ship demonstration team or Heritage Flight', opr: 'Open House Director', c: ['afman', '2.14.11'], hard: true },
     { d: 450, d2: 270, what: 'Appoint the Open House Director (O-4 or higher) and start the planning cycle', opr: 'Installation Commander', c: ['afman', '2.13.1'] },
-    { d: 270, what: 'Assign a contracting officer to the open house staff and identify purchase requirements', opr: 'Contracting Squadron', c: ['afman', '8.1'], note: 'The manual says "early" and gives no number. This row sits at the start of the planning cycle.' },
+    { d: 270, what: 'Assign a contracting officer to the open house staff and identify purchase requirements', opr: 'Open House Director with Contracting', c: ['afman', '8.1'], note: 'The manual says "early" and gives no number. This row sits at the start of the planning cycle.' },
     { d: 180, what: 'Submit the open house request', opr: 'Open House Director', c: ['afman', 'Table A2.2'] },
     { d: 120, what: 'Foreign military demonstration team application', opr: 'Open House Director', c: ['afman', '4.4'], hard: true },
     { d: 120, what: 'Decide aerial performers and static displays, commit performers, mark show center and crowd lines', opr: 'Air Operations Officer', c: ['afman', 'Table A2.2'] },
