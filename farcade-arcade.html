@@ -351,6 +351,62 @@ details li a,details li strong{color:#aff27c}
   .device,.sitebar .site-link{transition:none!important}
 }
 
+
+/* ---------- FARCADE / physical interaction pass ---------- */
+.device{
+  --tilt-x:0deg;--tilt-y:0deg;
+  transform:perspective(1200px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transform-style:preserve-3d;
+  transition:transform .32s cubic-bezier(.18,.75,.28,1),filter .35s,box-shadow .35s;
+}
+.device::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:10;
+  background:linear-gradient(135deg,rgba(255,255,255,.24),transparent 25%,transparent 67%,rgba(14,40,29,.11));
+  opacity:.72;mix-blend-mode:soft-light;
+}
+.device .bezel{position:relative;transform:translateZ(2px)}
+.device .controls,.device .pills{position:relative;transform:translateZ(3px)}
+.device .power i,.device .dpad button,.device .ab button,.device .pills i{
+  transition:transform .11s cubic-bezier(.2,.8,.2,1),box-shadow .11s,filter .11s;
+}
+.device .power:active i,.device .power.hit i{
+  transform:translateY(.26em) scale(.96);box-shadow:0 .09em 0 #627a6d,inset 0 .1em .3em rgba(0,0,0,.2);
+}
+.device .dpad button:active,.device .dpad button.hit{
+  transform:translateY(.27em);box-shadow:0 .1em 0 #192d24,inset 0 .13em .24em rgba(0,0,0,.18);
+}
+.device .ab button:active,.device .ab button.hit{
+  transform:translateY(.3em) scale(.96);box-shadow:0 .13em 0 #456d4a,inset 0 .12em .3em rgba(0,0,0,.22);
+  filter:brightness(1.12);
+}
+.device .pills button:active i,.device .pills button.hit i{
+  transform:rotate(-18deg) translateY(.25em) scale(.98);box-shadow:0 .08em 0 #283c30;
+}
+.screen[data-state="boot"]::before{
+  content:"";position:absolute;inset:-30% 0;z-index:4;pointer-events:none;
+  background:linear-gradient(180deg,transparent 0%,rgba(155,245,188,.04) 43%,
+    rgba(190,255,199,.37) 49.8%,rgba(209,255,206,.57) 50%,rgba(138,233,171,.09) 51%,transparent 57%);
+  animation:scanBoot 1.25s ease-in-out both;
+}
+.screen[data-state="boot"]{animation:bootPower 1.25s steps(1,end) both}
+.screen[data-state="title"] .v-title{animation:titleWake .5s ease-out both}
+.screen[data-state="title"] .logo{animation:drop .58s cubic-bezier(.25,1.3,.45,1) both}
+.device.on .led i{animation:ledWake .85s ease-out both}
+.device .screen .v-boot .bar i{box-shadow:0 0 1em rgba(164,250,72,.7)}
+@keyframes scanBoot{from{transform:translateY(-65%);opacity:0}12%{opacity:1}to{transform:translateY(65%);opacity:0}}
+@keyframes bootPower{0%,5%{filter:brightness(0)}6%,9%{filter:brightness(1.7)}10%,14%{filter:brightness(.22)}15%,100%{filter:brightness(1)}}
+@keyframes titleWake{from{opacity:0;filter:brightness(2);transform:translateY(.35em)}to{opacity:1;filter:brightness(1);transform:none}}
+@keyframes ledWake{0%,25%{opacity:.2;box-shadow:none}45%{opacity:1}60%{opacity:.5}100%{opacity:1}}
+@media(hover:none),(pointer:coarse){
+  .device{transform:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .device{transform:none!important;transition:none!important}
+  .screen[data-state="boot"],.screen[data-state="boot"]::before,
+  .screen[data-state="title"] .v-title,.screen[data-state="title"] .logo,
+  .device.on .led i{animation:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -489,6 +545,67 @@ details li a,details li strong{color:#aff27c}
   var playing=false, pushed=false, zoomTimer=null;
   var reduced=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
 
+  /* ----- subtle desktop 3D: input and game launch always take precedence ----- */
+  var canTilt=!reduced && window.matchMedia &&
+    matchMedia('(hover:hover) and (pointer:fine)').matches;
+  var tiltFrame=0, tiltX=0, tiltY=0;
+  function applyTilt(){
+    tiltFrame=0;
+    if(playing) return;
+    device.style.setProperty('--tilt-x',tiltX.toFixed(2)+'deg');
+    device.style.setProperty('--tilt-y',tiltY.toFixed(2)+'deg');
+  }
+  function queueTilt(){
+    if(!tiltFrame) tiltFrame=requestAnimationFrame(applyTilt);
+  }
+  function resetTilt(){
+    tiltX=0;tiltY=0;queueTilt();
+  }
+  if(canTilt){
+    device.addEventListener('pointermove',function(e){
+      if(playing || e.pointerType!=='mouse') return;
+      var r=device.getBoundingClientRect();
+      // Modest angles prevent the device from becoming difficult to click.
+      var x=Math.max(-1,Math.min(1,(e.clientX-r.left)/r.width*2-1));
+      var y=Math.max(-1,Math.min(1,(e.clientY-r.top)/r.height*2-1));
+      tiltX=-y*3.2;tiltY=x*4.4;queueTilt();
+    },{passive:true});
+    device.addEventListener('pointerleave',resetTilt);
+    window.addEventListener('blur',resetTilt);
+  }
+
+  /* ----- immediate physical key depression on pointer and keyboard ----- */
+  function releaseKey(t){
+    if(t && t.dataset && t.dataset.btn) t.classList.remove('hit');
+  }
+  device.addEventListener('pointerdown',function(e){
+    var t=e.target.closest('[data-btn]');
+    if(t && !playing){
+      t.classList.add('hit');
+      if(e.pointerType==='touch' && 'vibrate' in navigator) {
+        try{ navigator.vibrate(8); }catch(err){}
+      }
+    }
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(function(type){
+    device.addEventListener(type,function(e){
+      if(type==='pointerleave'){
+        device.querySelectorAll('[data-btn].hit').forEach(releaseKey);
+      }else{
+        releaseKey(e.target.closest('[data-btn]'));
+      }
+    });
+  });
+  document.addEventListener('keyup',function(e){
+    var k=e.key.length===1?e.key.toLowerCase():e.key;
+    var map={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',
+      w:'up',a:'left',s:'down',d:'right',Enter:'a',z:'a',Backspace:'b',
+      x:'b',Escape:'b',' ':'start',Shift:'select'};
+    var btn=map[k];
+    if(btn){ releaseKey(device.querySelector('[data-btn="'+btn+'"]')); }
+  });
+
+
   /* ----- sound: tiny square-wave blips ----- */
   function beep(freq,dur,when){
     if(!sound) return;
@@ -557,7 +674,7 @@ details li a,details li strong{color:#aff27c}
     },70);
   }
 
-  function powerOff(){ clearInterval(bootTimer); setState('off'); }
+  function powerOff(){ clearInterval(bootTimer); setState('off'); resetTilt(); }
 
   /* ----- game takeover: zoom into the screen, then the game fills the window ----- */
   function setHash(id){
@@ -574,6 +691,8 @@ details li a,details li strong{color:#aff27c}
 
   function openGame(i,instant){
     var g=GAMES[i], h=hrefOf(g);
+    // Return to neutral pose before the cinematic screen takeover.
+    resetTilt();
     if(!h||playing) return;
     if(!g.id){ location.href=h; return; }           // plain links (contact page) just navigate
     playing=true; idx=i; drawMenu(); drawDetail();
