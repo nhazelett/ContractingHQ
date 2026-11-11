@@ -590,6 +590,13 @@ body::after{top:52%;width:min(96vw,850px);height:min(83vw,730px);filter:blur(55p
 .modelstage .model-status{bottom:3.8%;font-size:10px;letter-spacing:.15em}
 @media(max-width:520px){.v-menu .cart{width:19em;height:14em}.v-menu .cart .label{height:11.5em}.modelstage .model-status{font-size:8px}}
 
+
+/* 3D model v2 paints the entire interface onto a true perspective-mapped LCD. */
+.three-active .model-display{display:none!important}
+.three-active .modelstage{width:min(94vw,560px,78vh);aspect-ratio:7.2/10.9}
+.three-active .modelstage canvas{cursor:pointer}
+.three-active .modelstage[data-intro="true"] .model-status::after{content:"SLIDE THE BRASS SIDE SWITCH  →  OR PRESS P"!important}
+.three-active .modelstage:not([data-intro="true"]) .model-status::after{content:"ARROWS / WASD TO BROWSE  ·  ENTER TO SELECT"}
 </style>
 </head>
 <body>
@@ -1069,196 +1076,298 @@ body::after{top:52%;width:min(96vw,850px);height:min(83vw,730px);filter:blur(55p
 })();
 </script>
 <script type="module">
-/* FARCADE 3D — a procedural, fully three-dimensional handheld, no static image.
-   If WebGL/CDN is unavailable the original functional DOM handheld remains visible. */
+/* FARCADE physical handheld v2: 3D hardware + real perspective-mapped pixel LCD.
+   Game logic stays in the original DOM controller; the 3D screen is a live canvas texture. */
 (async function(){
- const stage=document.getElementById('modelstage'),display=document.getElementById('model-display');
- const device=document.getElementById('device'),screen=document.getElementById('screen');
- let THREE;
- try{THREE=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js');}
- catch(e){console.warn('FARCADE: 3D unavailable, keeping accessible handheld.',e);return;}
+ const stage=document.getElementById('modelstage');
+ const device=document.getElementById('device');
+ const domScreen=document.getElementById('screen');
+ const preview=document.getElementById('gamePreview');
+ const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
+ let T;
+ try{T=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js');}
+ catch(err){console.warn('FARCADE WebGL module unavailable; retaining HTML console.',err);return;}
  let renderer;
- try{renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});}
- catch(e){console.warn('FARCADE: WebGL unavailable; retaining original controls.',e);return;}
- renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
- renderer.outputColorSpace=THREE.SRGBColorSpace;
- renderer.toneMapping=THREE.ACESFilmicToneMapping;
- renderer.toneMappingExposure=1.37;
- renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
- renderer.domElement.setAttribute('aria-label','3D handheld. Click the side-mounted power switch or press P to begin; use arrows and Enter to navigate.');
- renderer.domElement.tabIndex=0;
- stage.insertBefore(renderer.domElement,stage.firstChild);
- renderer.domElement.title='Click the side-mounted power switch (or press P) to start FARCADE';
- const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-3.6,3.6,5.45,-5.45,.1,100);
- const overviewPos=new THREE.Vector3(1.8,.1,17),overviewLook=new THREE.Vector3(0,0,0);
- const closePos=new THREE.Vector3(8.4,5.3,11),closeLook=new THREE.Vector3(2.45,3.1,0);
- camera.position.copy(closePos);camera.lookAt(closeLook);camera.zoom=2.55;camera.updateProjectionMatrix();
- scene.add(new THREE.HemisphereLight(0xeaf6f0,0x25372d,2.65));
- function lamp(color,power,x,y,z){
-   const light=new THREE.DirectionalLight(color,power);light.position.set(x,y,z);scene.add(light);
+ try{renderer=new T.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});}
+ catch(err){console.warn('FARCADE WebGL unavailable; retaining HTML console.',err);return;}
+ renderer.outputColorSpace=T.SRGBColorSpace;
+ renderer.toneMapping=T.ACESFilmicToneMapping;
+ renderer.toneMappingExposure=.92;
+ renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+ const canvas=renderer.domElement;
+ canvas.tabIndex=0;
+ canvas.setAttribute('role','application');
+ canvas.setAttribute('aria-label','Interactive 3D FARCADE: click the sliding power switch on the right edge, or press P. Then use arrows and Enter to select games.');
+ stage.insertBefore(canvas,stage.firstChild);
+ const scene=new T.Scene();
+ const camera=new T.OrthographicCamera(-3.6,3.6,5.45,-5.45,.1,100);
+ const fullPos=new T.Vector3(5.15,1.1,17.8);
+ const fullLook=new T.Vector3(0,0,0);
+ const closePos=new T.Vector3(9.4,4.3,10.2);
+ const closeLook=new T.Vector3(2.55,2.78,.02);
+ const aim=closeLook.clone();
+ camera.position.copy(closePos);camera.zoom=2.9;camera.lookAt(aim);camera.updateProjectionMatrix();
+ const hemi=new T.HemisphereLight(0xeaf9ff,0x163639,1.03);scene.add(hemi);
+ function light(color,power,x,y,z){
+   const l=new T.DirectionalLight(color,power);l.position.set(x,y,z);scene.add(l);
  }
- lamp(0xffffff,4.1,-4,7,9);lamp(0xc9e2db,2.7,6,1,5);lamp(0x86b69e,1.8,-2,-5,2);
- const root=new THREE.Group();scene.add(root);
- const material=(color,roughness=.46,metalness=.08,opts={})=>new THREE.MeshPhysicalMaterial({
-    color,roughness,metalness,clearcoat:opts.clearcoat||0,clearcoatRoughness:.2,
-    envMapIntensity:.7,side:THREE.DoubleSide});
- const shell=material(0xc3c9bd,.31,.09,{clearcoat:.3});
- const side=material(0x8b978c,.48,.1),rim=material(0x273431,.39,.2),
-   dark=material(0x101c1b,.54,.08),glass=material(0x07100e,.19,.13,{clearcoat:.7}),
-   rubber=material(0x26332f,.62,.08),green=material(0x98ba84,.25,.15,{clearcoat:.6}),
-   gray=material(0x8d9e91,.3,.13,{clearcoat:.4}),engrave=material(0x69766b,.63,.1);
- function rr(w,h,r){
-   const s=new THREE.Shape(),x=-w/2,y=-h/2;
+ light(0xffffff,1.6,-5,7,9);
+ light(0x9afaff,1.1,6,4,7);
+ light(0x84a7b0,.45,4,-5,-7);
+ const root=new T.Group();scene.add(root);
+ const textureCanvas=document.createElement('canvas');
+ textureCanvas.width=256;textureCanvas.height=192;
+ const ctx=textureCanvas.getContext('2d',{alpha:false});
+ const lcdTexture=new T.CanvasTexture(textureCanvas);
+ lcdTexture.colorSpace=T.SRGBColorSpace;
+ lcdTexture.minFilter=T.NearestFilter;lcdTexture.magFilter=T.NearestFilter;
+ const polymer=(()=>{
+   const cn=document.createElement('canvas');cn.width=128;cn.height=128;
+   const g=cn.getContext('2d'),data=g.createImageData(128,128);
+   let seed=26751;
+   for(let i=0;i<data.data.length;i+=4){
+     seed=(seed*1664525+1013904223)>>>0;
+     const a=218+(seed%38);data.data[i]=a;data.data[i+1]=a;data.data[i+2]=a;data.data[i+3]=255;
+   }
+   g.putImageData(data,0,0);
+   const t=new T.CanvasTexture(cn);
+   t.wrapS=t.wrapT=T.RepeatWrapping;t.repeat.set(2,3);
+   return t;
+ })();
+ const mat=(color,rough=.42,metal=.03,coat=.0,texture=null)=>new T.MeshPhysicalMaterial({
+   color,roughness:rough,metalness:metal,clearcoat:coat,clearcoatRoughness:.22,
+   roughnessMap:texture||null,side:T.DoubleSide
+ });
+ const cyan=mat(0x02d0d4,.37,.04,.38,polymer);
+ const cyanEdge=mat(0x018a9a,.44,.08,.2);
+ const lip=mat(0x036d79,.53,.08,.1);
+ const inlay=mat(0x0c1319,.34,.1,.3);
+ const black=mat(0x161b21,.59,.02,.12);
+ const rubber=mat(0x10151a,.7,.0,.08);
+ const hard=mat(0x242a31,.38,.1,.45);
+ const silver=mat(0xd4a16f,.35,.42,.25);
+ const glass=mat(0x071015,.14,.22,.85);
+ const ink=mat(0x063c45,.72,.01);
+ const lcdMat=new T.MeshBasicMaterial({map:lcdTexture,toneMapped:false,side:T.DoubleSide});
+ function shape(w,h,r){
+   const s=new T.Shape(),x=-w/2,y=-h/2;
    s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);
    s.lineTo(x+w,y+h-r);s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
    s.lineTo(x+r,y+h);s.quadraticCurveTo(x,y+h,x,y+h-r);
    s.lineTo(x,y+r);s.quadraticCurveTo(x,y,x+r,y);
    return s;
  }
- function block(w,h,r,depth,mat,x,y,z,bevel=.05){
-   const g=new THREE.ExtrudeGeometry(rr(w,h,r),{depth,bevelEnabled:bevel>0,
-     bevelThickness:bevel,bevelSize:bevel,bevelSegments:4,curveSegments:15,steps:1});
-   const mesh=new THREE.Mesh(g,mat);mesh.position.set(x,y,z);root.add(mesh);return mesh;
+ function solid(w,h,r,depth,material,x,y,z,bevel=.07){
+   const g=new T.ExtrudeGeometry(shape(w,h,r),{
+     depth,bevelEnabled:!!bevel,bevelSize:bevel,bevelThickness:bevel,
+     bevelSegments:5,curveSegments:16
+   });
+   const m=new T.Mesh(g,material);m.position.set(x,y,z);root.add(m);return m;
  }
- function disk(radius,depth,mat,x,y,z){
-   const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius,radius,depth,48),mat);
-   mesh.rotation.x=Math.PI/2;mesh.position.set(x,y,z);root.add(mesh);return mesh;
+ function cylinder(radius,height,material,x,y,z,segments=48){
+   const m=new T.Mesh(new T.CylinderGeometry(radius,radius,height,segments),material);
+   m.rotation.x=Math.PI/2;m.position.set(x,y,z);root.add(m);return m;
  }
- const targets=[];
- function target(obj,key){obj.userData.button=key;targets.push(obj);return obj;}
- // Real extruded polymer shell, with a thicker dark sidewall and beveled front.
- block(5.02,8.1,.5,.42,side,0,-.03,-.42,.19);
- block(4.97,8.05,.5,.32,shell,0,0,-.12,.17);
- block(4.71,7.8,.46,.02,shell,0,.055,.19,.05);
- // Screen recess and protective graphite bezel.
- block(4.38,3.46,.26,.13,rim,0,1.55,.3,.09);
- block(3.99,2.92,.1,.07,dark,0,1.61,.48,.055);
- block(3.84,2.73,.045,.018,glass,0,1.62,.55,.012);
- // Raised trim rings around controls.
- disk(.94,.09,side,-1.22,-1.55,.38);
- disk(.83,.06,rim,-1.22,-1.55,.45);
- disk(.49,.075,side,.63,-1.98,.37);
- disk(.49,.075,side,1.43,-1.32,.37);
- // Four independent arrow caps, all genuine click targets.
- const cross=block(1.65,.48,.075,.17,rubber,-1.22,-1.55,.52,.055);
- const crossV=block(.48,1.65,.075,.18,rubber,-1.22,-1.55,.53,.055);
- function invisibleHit(x,y,w,h,key){
-   const hit=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));
-   hit.position.set(x,y,.86);root.add(hit);target(hit,key);
+ function box(w,h,d,material,x,y,z){
+   const m=new T.Mesh(new T.BoxGeometry(w,h,d),material);m.position.set(x,y,z);root.add(m);return m;
  }
- invisibleHit(-1.22,-.96,.53,.56,'up');invisibleHit(-1.22,-2.13,.53,.56,'down');
- invisibleHit(-1.83,-1.55,.55,.53,'left');invisibleHit(-.62,-1.55,.55,.53,'right');
- disk(.2,.17,rubber,-1.22,-1.55,.68);
- function face(x,y,mat,key){
-   disk(.455,.21,side,x,y,.48);
-   const cap=disk(.398,.21,mat,x,y,.62);target(cap,key);
-   invisibleHit(x,y,.76,.76,key);
+ function decal(words,x,y,w,h,color,px=44){
+   const cn=document.createElement('canvas');cn.width=512;cn.height=128;
+   const g=cn.getContext('2d');g.clearRect(0,0,512,128);
+   g.font='900 '+px+'px Arial, sans-serif';g.textAlign='center';g.textBaseline='middle';
+   g.fillStyle=color;g.fillText(words,256,64);
+   const tex=new T.CanvasTexture(cn);tex.colorSpace=T.SRGBColorSpace;
+   const m=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false,side:T.DoubleSide}));
+   m.position.set(x,y,zFront);root.add(m);return m;
+ }
+ // Deep body with distinctly visible right side and injection-molded front.
+ solid(5.05,8.25,.5,.72,lip,0,0,-.65,.18);
+ solid(5,8.19,.49,.56,cyanEdge,0,0,-.49,.16);
+ solid(4.94,8.13,.48,.28,cyan,0,.04,-.12,.15);
+ solid(4.72,7.93,.48,.045,cyan,0,.04,.16,.05);
+ // Console case seam + right-side cartridge shell bulge.
+ box(.25,2.8,.49,cyanEdge,2.57,.24,-.36);
+ box(.3,2.25,.52,cyan,2.61,.19,-.38);
+ // Thick glossy screen lens, with dark shadow well.
+ solid(4.40,3.63,.31,.16,hard,-.05,1.46,.225,.09);
+ solid(4.20,3.43,.29,.10,inlay,-.05,1.47,.35,.055);
+ solid(3.94,2.91,.105,.06,glass,-.05,1.55,.47,.022);
+ // Real perspective-projected screen image, underneath the outer glass lip.
+ const lcd=new T.Mesh(new T.PlaneGeometry(3.70,2.73),lcdMat);
+ lcd.position.set(-.05,1.55,.571);root.add(lcd);
+ const hitTargets=[];
+ function register(mesh,name){mesh.userData.control=name;hitTargets.push(mesh);return mesh;}
+ function hitbox(w,h,depth,x,y,z,name){
+   const m=box(w,h,depth,new T.MeshBasicMaterial({visible:false}),x,y,z);
+   return register(m,name);
+ }
+ // Black cross D-pad and molded recessed circular surround.
+ cylinder(.92,.11,cyanEdge,-1.30,-1.55,.29);
+ cylinder(.82,.05,inlay,-1.30,-1.55,.39);
+ solid(1.68,.46,.07,.2,rubber,-1.30,-1.55,.45,.05);
+ solid(.46,1.68,.07,.2,rubber,-1.30,-1.55,.46,.05);
+ cylinder(.16,.03,hard,-1.30,-1.55,.69);
+ hitbox(.55,.5,.18,-1.30,-.97,.78,'up');
+ hitbox(.55,.5,.18,-1.30,-2.13,.78,'down');
+ hitbox(.54,.5,.18,-1.85,-1.55,.78,'left');
+ hitbox(.54,.5,.18,-.75,-1.55,.78,'right');
+ // Real black tactile A/B buttons, with beveled wells and small white letters.
+ function keyFace(x,y,name){
+   cylinder(.53,.09,cyanEdge,x,y,.27);
+   cylinder(.49,.07,inlay,x,y,.34);
+   cylinder(.40,.20,hard,x,y,.52);
+   const cap=cylinder(.33,.08,black,x,y,.64);
+   hitbox(.76,.76,.14,x,y,.77,name);
    return cap;
  }
- const b=face(.64,-2.02,gray,'b'),a=face(1.45,-1.33,green,'a');
- // Small controls seated in physical recesses.
- function pill(x,y,key){
-   block(.78,.25,.12,.065,rim,x,y,.34,.02);
-   const top=block(.65,.16,.07,.13,rubber,x,y,.44,.02);target(top,key);
-   invisibleHit(x,y,.74,.4,key);
+ keyFace(.65,-2.00,'b');keyFace(1.43,-1.30,'a');
+ function small(x,name){
+   solid(.84,.28,.12,.06,cyanEdge,x,-3.16,.23,.025);
+   solid(.65,.18,.08,.14,hard,x,-3.16,.34,.025);
+   hitbox(.73,.38,.12,x,-3.16,.54,name);
  }
- pill(-.48,-3.13,'select');pill(.59,-3.13,'start');
- // Actual side-mounted power slider, facing the introductory camera.
- const track=new THREE.Mesh(new THREE.BoxGeometry(.13,.94,.42),rim);
- track.position.set(2.58,3.05,-.03);root.add(track);
- const slot=new THREE.Mesh(new THREE.BoxGeometry(.15,.65,.25),dark);
- slot.position.set(2.665,3.05,-.03);root.add(slot);
- const slider=new THREE.Mesh(new THREE.BoxGeometry(.25,.3,.38),gray);
- slider.position.set(2.74,2.86,-.03);root.add(slider);
- const grip=new THREE.Mesh(new THREE.BoxGeometry(.27,.09,.42),side);
- grip.position.set(2.89,2.86,-.03);root.add(grip);
- const powerHit=new THREE.Mesh(new THREE.BoxGeometry(.47,1.02,.7),new THREE.MeshBasicMaterial({visible:false}));
- powerHit.position.set(2.79,3.05,-.03);root.add(powerHit);target(powerHit,'power');
- // Back speaker perforations physically recessed beneath the last row.
- const speaker=material(0x4c6254,.8,.05);
- for(let i=0;i<6;i++)for(let j=0;j<2;j++){
-   const hole=disk(.038,.015,speaker,1.14+i*.16,-3.15-j*.17,.35);
+ small(-.45,'select');small(.55,'start');
+ // Recessed speaker holes (black circular geometry) in Game Boy Color arrangement.
+ for(let row=0;row<7;row++)for(let col=0;col<4;col++){
+   cylinder(.036,.012,ink,1.19+col*.18,-2.53-row*.175,.25,16);
  }
- // Fine hardware seam running around the shell.
- block(4.81,7.89,.49,.012,side,0,.015,-.075,.012);
- // Quiet metallic badge (geometry, not a CSS illustration).
- block(1.42,.18,.06,.01,engrave,0,3.55,.39,.012);
- // Place existing fully functional screen UI in front of the 3D screen plane.
- display.appendChild(screen);
+ // Real side-mounted sliding brass switch; exposed by the intro camera angle.
+ box(.13,.94,.40,inlay,2.76,2.77,-.12);
+ box(.035,.7,.27,black,2.85,2.77,-.12);
+ const slider=box(.25,.36,.46,silver,2.91,2.54,-.12);
+ const ridges=[];
+ for(let i=0;i<3;i++)ridges.push(box(.05,.025,.5,hard,3.065,2.45+i*.075,-.12));
+ hitbox(.42,.96,.75,3.03,2.77,-.12,'power');
+ // Surface labeling projected slightly in front of body.
+ const zFront=.34;
+ decal('FARCADE COLOR',0,-.43,2.4,.29,'#165c63',36);
+ decal('SELECT',-.45,-3.49,.85,.14,'#155d63',32);
+ decal('START',.55,-3.49,.76,.14,'#155d63',32);
+ decal('A',1.43,-1.30,.31,.23,'#d5dadc',62).position.z=.79;
+ decal('B',.65,-2.00,.31,.23,'#d5dadc',62).position.z=.79;
+ // This is a single, actual 3D LCD plane — no flat HTML overlay during rotation.
+ const display=document.getElementById('model-display');
+ display.style.display='none';
  stage.dataset.off='true';stage.dataset.intro='true';
  document.body.classList.add('three-active');
- let width=0,height=0;
  function resize(){
-   width=stage.clientWidth;height=stage.clientHeight;
-   if(!width||!height)return;
-   const hw=5.45*width/height;
-   camera.left=-hw;camera.right=hw;camera.top=5.45;camera.bottom=-5.45;
-   camera.updateProjectionMatrix();
-   renderer.setSize(width,height,false);
-   // Orthographic screen projection, in stage coordinates.
-   const sx=(3.84/(hw*2)*100),sy=(2.73/10.9*100);
-   display.style.width=sx.toFixed(3)+'%';display.style.height=sy.toFixed(3)+'%';
-   display.style.top=((5.45-1.62)/10.9*100).toFixed(3)+'%';
+   const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;
+   const hh=5.45*w/h;
+   camera.left=-hh;camera.right=hh;camera.top=5.45;camera.bottom=-5.45;
+   camera.updateProjectionMatrix();renderer.setSize(w,h,false);
  }
  resize();
  if('ResizeObserver'in window)new ResizeObserver(resize).observe(stage);
  else window.addEventListener('resize',resize);
- const ray=new THREE.Raycaster(),pt=new THREE.Vector2();
- function pointer(e){
-   const bounds=renderer.domElement.getBoundingClientRect();
-   pt.x=((e.clientX-bounds.left)/bounds.width)*2-1;
-   pt.y=-((e.clientY-bounds.top)/bounds.height)*2+1;
-   ray.setFromCamera(pt,camera);
-   return ray.intersectObjects(targets,false)[0];
+ const ray=new T.Raycaster(),uv=new T.Vector2();
+ function picked(e){
+   const r=canvas.getBoundingClientRect();
+   uv.set((e.clientX-r.left)/r.width*2-1,-((e.clientY-r.top)/r.height*2-1));
+   ray.setFromCamera(uv,camera);
+   const hits=ray.intersectObjects(hitTargets,false);
+   return hits.length?hits[0].object.userData.control:null;
  }
- function dispatch(key){
-   if(stage.dataset.intro==='true' && key!=='power')return;
-   const btn=device.querySelector('[data-btn="'+key+'"]');
-   if(btn)btn.click();
+ let down=null;
+ function send(key){
+   if(stage.dataset.intro==='true'&&key!=='power')return;
+   const b=device.querySelector('[data-btn="'+key+'"]');if(b)b.click();
  }
- let pressed=null,releaseTimeout=0;
- renderer.domElement.addEventListener('pointerdown',e=>{
+ canvas.addEventListener('pointerdown',e=>{
    if(document.body.classList.contains('playing'))return;
-   const hit=pointer(e);if(!hit)return;
-   pressed=hit.object.userData.button;renderer.domElement.setPointerCapture(e.pointerId);
-   const obj=hit.object;obj.scale.z=.83;
-   clearTimeout(releaseTimeout);releaseTimeout=setTimeout(()=>{obj.scale.z=1},125);
-   e.preventDefault();
+   down=picked(e);
+   if(down){canvas.setPointerCapture(e.pointerId);e.preventDefault();}
  },{passive:false});
- renderer.domElement.addEventListener('pointerup',e=>{
-   if(!pressed)return;
-   const key=pressed;pressed=null;
-   if(key==='power' && stage.dataset.intro==='true')reveal();
-   dispatch(key);
+ canvas.addEventListener('pointerup',e=>{
+   if(!down)return;
+   const key=down;down=null;
+   if(key==='power'&&stage.dataset.intro==='true')beginReveal();
+   send(key);
  });
- renderer.domElement.addEventListener('pointercancel',()=>{pressed=null});
- // No idle rotation. The sole cinematic camera move is the switch-to-console reveal.
- const reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
- const lookTarget=closeLook.clone();
- let revealStart=0,revealDuration=reduce?1:1550,revealing=false,revealed=false;
- function reveal(){
-   if(revealed||revealing)return;
-   revealing=true;revealStart=performance.now();
-   slider.position.y=3.24;grip.position.y=3.24;
+ canvas.addEventListener('pointercancel',()=>{down=null});
+ // Allow mouse wheel to rotate between game screens without rotating hardware.
+ stage.addEventListener('wheel',e=>{
+   if(stage.dataset.intro==='true'||domScreen.dataset.state!=='menu')return;
+   if(Math.abs(e.deltaY)<2)return;
+   e.preventDefault();
+   const key=e.deltaY>0?'right':'left';
+   send(key);
+ },{passive:false});
+ let showing=false,finished=false,started=0;
+ const duration=reduced?1:1550;
+ function beginReveal(){
+   if(showing||finished)return;
+   showing=true;started=performance.now();
+   slider.position.y=2.99;
+   for(let i=0;i<ridges.length;i++)ridges[i].position.y+=.45;
    stage.dataset.off='false';
  }
- function tick(time){
-   // Keyboard accessibility: pressing P must also trigger the camera reveal.
-   if(stage.dataset.intro==='true' && screen.dataset.state!=='off' && !revealing && !revealed)reveal();
-   if(revealing){
-     const t=Math.min(1,(time-revealStart)/revealDuration);
-     const ease=t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
-     camera.position.copy(closePos).lerp(overviewPos,ease);
-     lookTarget.copy(closeLook).lerp(overviewLook,ease);
-     camera.lookAt(lookTarget);
-     camera.zoom=2.55+(1-2.55)*ease;camera.updateProjectionMatrix();
-     if(t>=1){revealing=false;revealed=true;stage.dataset.intro='false';display.style.opacity='1';}
-   }
-   if(!document.hidden)renderer.render(scene,camera);
-   requestAnimationFrame(tick);
+ function rect(x,y,w,h,col){ctx.fillStyle=col;ctx.fillRect(x,y,w,h);}
+ function textLine(str,x,y,size,col,align='center'){
+   ctx.font='bold '+size+'px monospace';ctx.fillStyle=col;ctx.textAlign=align;
+   ctx.fillText(str,x,y);
  }
- requestAnimationFrame(tick);
- window.addEventListener('pagehide',()=>{renderer.dispose()},{once:true});
+ let lastDraw='',frame=0;
+ function paint(now){
+   if(!ctx)return;
+   const state=domScreen.dataset.state;
+   const game=document.getElementById('gname')?.textContent||'';
+   const count=document.getElementById('count')?.textContent||'1/6';
+   const phrase=document.getElementById('dtag')?.textContent||'';
+   const load=document.getElementById('pct')?.textContent||'';
+   const key=state+'|'+game+'|'+count+'|'+phrase+'|'+load;
+   if(key===lastDraw&&now-frame<250)return;
+   frame=now;lastDraw=key;
+   rect(0,0,256,192,'#061615');
+   rect(0,0,256,2,'#719b7d');rect(0,190,256,2,'#719b7d');
+   if(state==='off'){
+     rect(17,18,222,153,'#061010');
+   }else if(state==='boot'){
+     textLine('FARCADE',128,76,26,'#c7fca9');
+     textLine('SYSTEM INITIALIZING',128,100,12,'#9aceb0');
+     const value=Number(load.match(/\d+/)?.[0]||0);
+     rect(35,117,186,12,'#244a3a');rect(37,119,value*1.82,8,'#a1e9a4');
+   }else if(state==='menu'||state==='title'){
+     rect(0,0,256,22,'#0d2b2a');
+     textLine('FARCADE  /  GAMES',12,15,12,'#d1efdc','left');
+     textLine(count,245,15,12,'#e9c37a','right');
+     if(preview){
+       ctx.imageSmoothingEnabled=false;
+       ctx.drawImage(preview,0,0,160,112,6,27,244,126);
+     }
+     rect(0,157,256,35,'#0a2221');
+     textLine(game||'SELECT GAME',128,172,14,'#f2f6df');
+     textLine('< > BROWSE    A SELECT',128,187,9,'#a5eac0');
+   }else if(state==='detail'||state==='launch'){
+     rect(12,26,232,136,'#0a2824');
+     textLine(document.getElementById('dname')?.textContent||game,128,55,16,'#d3fcb0');
+     const words=phrase.split(' ');let line='',lines=[];
+     for(const word of words){
+       const next=line?line+' '+word:word;
+       if(next.length>27){lines.push(line);line=word;}else line=next;
+     }
+     if(line)lines.push(line);
+     lines.slice(0,5).forEach((v,i)=>textLine(v,128,78+i*15,10,'#d1e0d9'));
+     textLine(state==='detail'?'A  PLAY   /   B  BACK':'LOADING GAME...',128,181,11,'#a6e7ba');
+   }
+   lcdTexture.needsUpdate=true;
+ }
+ function animate(now){
+   if(stage.dataset.intro==='true'&&domScreen.dataset.state!=='off'&&!showing&&!finished)beginReveal();
+   if(showing){
+     const t=Math.min(1,(now-started)/duration);
+     const k=t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+     camera.position.copy(closePos).lerp(fullPos,k);
+     aim.copy(closeLook).lerp(fullLook,k);
+     camera.lookAt(aim);
+     camera.zoom=2.9+(1-2.9)*k;camera.updateProjectionMatrix();
+     if(t===1){showing=false;finished=true;stage.dataset.intro='false';}
+   }
+   paint(now);
+   if(!document.hidden)renderer.render(scene,camera);
+   requestAnimationFrame(animate);
+ }
+ requestAnimationFrame(animate);
+ window.addEventListener('pagehide',()=>renderer.dispose(),{once:true});
 })();
 </script>
 </body>
