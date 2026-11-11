@@ -1,6 +1,14 @@
 # FARCADE — Professional 3D Handheld Asset Integration
 
-Status: **asset acquisition required**. Do not deploy the current procedurally built 3D shell as the final model.
+Status: **source acquired and converted; binary upload and production integration remain pending**. Do not deploy the current procedurally built 3D shell as the final model.
+
+## Asset conversion completed (2026-11-11)
+
+User-supplied Sketchfab source ZIP was inspected. It contained a COLLADA `model/model.dae` with four geometry groups, plus PBR textures. The exact groups are **Case lp (11,932 triangles)**, **Plastic lp (2,288)**, **Metal lp (970)** and **Screen lp (160)**. This is a combined-material mesh, **not** one mesh per button. Thus individual button click animations need custom invisible 3D hit regions, manual mesh editing in Blender, or reconstruction of those few controls.
+
+A browser-ready textured GLB has been converted locally: `farcade-professional-source.glb` (~8.6 MB), with UV-mapped case/plastic/metal/glass albedo, normal, ambient-occlusion and metallic/roughness images. Four meshes, 15,350 triangles total. The converted file and a separate interactive prototype are offered as a downloadable ZIP in the ChatGPT conversation. Geometry was visually inspected in an offscreen render, but the interactive Three.js preview has not been QA tested in a real browser.
+
+**Deployment dependency:** GitHub connector cannot directly ingest this local binary GLB. The asset has NOT been pushed to the repository. To activate a GitHub-hosted version, place the exported GLB at `assets/farcade/models/farcade-professional-source.glb` through GitHub UI or another binary-capable Git workflow. Do not deploy the old procedural shell as the finished design. The on-site page currently still uses that earlier model until the GLB is uploaded and integrated.
 
 ## Preferred asset
 
