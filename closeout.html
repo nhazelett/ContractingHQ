@@ -133,6 +133,50 @@ body:has(#hud.on) #scan{opacity:.3}
 .card.evo{border-color:var(--gold);box-shadow:0 0 18px rgba(255,210,63,.35)}
 @keyframes blink{50%{opacity:.25}}
 
+/* Responsive promotion selector. A card is a self-contained, readable tap target.
+   Use grid rather than flex-grow on buttons: Safari can otherwise stretch cards
+   while compressing their contents into overlapping strips. */
+#lvlov{overflow:hidden}
+#lvlov .ovbox{width:min(920px,calc(100vw - 28px));max-width:920px;
+  max-height:calc(100dvh - 24px);overflow-x:hidden;overflow-y:auto;
+  scrollbar-width:thin;overscroll-behavior:contain;padding:clamp(16px,3vw,30px)}
+#lvlov #cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  width:100%;gap:12px;margin:20px 0 0;align-items:stretch}
+#lvlov .card{display:block;appearance:none;-webkit-appearance:none;flex:none;
+  width:100%;max-width:none;min-width:0;min-height:230px;height:auto;
+  padding:16px 14px 14px;text-align:center;white-space:normal;
+  overflow:visible;vertical-align:top;line-height:normal;touch-action:manipulation}
+#lvlov .card .cwrap{display:flex;flex-direction:column;align-items:center;
+  gap:7px;min-width:0;width:100%}
+#lvlov .card .ctext{display:block;min-width:0;width:100%;overflow-wrap:anywhere}
+#lvlov .card .cn{font-size:clamp(8px,1.4vw,11px);line-height:1.55;
+  min-height:0;overflow-wrap:break-word}
+#lvlov .card .cf{font-size:17px;line-height:1.12;margin-top:7px}
+#lvlov .card .delta{font-size:15px;white-space:pre-line;overflow-wrap:anywhere}
+#lvlov .card .chips{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+#lvlov .card .new{pointer-events:none;opacity:.85}
+#lvlov .card .cp{margin-top:9px}
+#lvlov .card canvas{width:54px;height:54px;margin:2px auto 8px;flex:none}
+@media(max-width:640px){
+  #lvlov .ovbox{width:calc(100vw - 20px);padding:18px 12px}
+  #lvlov #cards{grid-template-columns:minmax(0,1fr);gap:10px;margin-top:14px}
+  #lvlov .card{min-height:104px;max-height:none;padding:12px 13px;text-align:left}
+  #lvlov .card .cwrap{flex-direction:row;align-items:center;gap:12px}
+  #lvlov .card canvas{width:52px;height:52px;margin:0}
+  #lvlov .card .cn{font-size:10px;line-height:1.45;padding-right:42px}
+  #lvlov .card .cf{font-size:16px;margin-top:4px}
+  #lvlov .card .delta{font-size:15px;margin-top:5px}
+  #lvlov .card .chips,#lvlov .card .cp{justify-content:flex-start}
+}
+@media(max-height:560px) and (min-width:641px){
+  #lvlov .ovbox{max-height:calc(100dvh - 12px);padding:12px}
+  #lvlov .ovsub{margin-top:2px}
+  #lvlov #cards{margin-top:8px;gap:8px}
+  #lvlov .card{min-height:170px;padding:9px}
+  #lvlov .card canvas{width:38px;height:38px;margin:0 auto 3px}
+  #lvlov .card .cf{font-size:14px;margin-top:3px}
+  #lvlov .card .delta{font-size:13px}
+}
 /* chest slot machine */
 #slotreel{margin:18px auto 4px;width:min(330px,86vw);border:3px solid var(--gold);border-radius:8px;
   background:#050214;padding:18px 8px;font-family:'Press Start 2P',monospace;
@@ -824,6 +868,77 @@ const POPS=[]; let popI=0;
 for(let i=0;i<48;i++)POPS.push({x:0,y:0,t:-9,r:0,c:'#fff'});
 function pop(x,y,r,c){ if(RM)return; const o=POPS[popI++%48]; o.x=x;o.y=y;o.t=G.t;o.r=r;o.c=c; }
 
+/* Modern 22x27 action-character sprites, authored at boot with Canvas pixels.
+   Strong silhouettes and role-specific colorways replace the 10px stick figures.
+   Generated into the existing SPRA atlas, with no assets or frame allocations. */
+const HERO_STYLES={
+ spec:{coat:'#176b77',side:'#12374e',shine:'#40edee',detail:'#f5cf5b',hair:'#15172c',skin:'#e8ad83',gear:0},
+ buyer:{coat:'#a67b39',side:'#564027',shine:'#ffda65',detail:'#35ded2',hair:'#332536',skin:'#d99c78',gear:1},
+ cco:{coat:'#54664a',side:'#263a37',shine:'#8ce3a6',detail:'#ff4c9f',hair:'#262c36',skin:'#e3b48e',gear:2},
+ ko:{coat:'#343b5a',side:'#1c223b',shine:'#f4c952',detail:'#f7f5f2',hair:'#13182b',skin:'#bd896e',gear:3},
+ civ:{coat:'#476aaf',side:'#26365f',shine:'#99dbff',detail:'#ffffff',hair:'#412e31',skin:'#edb98e',gear:0},
+ supt:{coat:'#64394b',side:'#31243d',shine:'#f27797',detail:'#ffd16e',hair:'#242132',skin:'#ad795e',gear:2}
+};
+function buildModernHeroSprite(key,style){
+ const frames=[];
+ for(let frame=0;frame<2;frame++){
+   const src=document.createElement('canvas');src.width=22;src.height=27;
+   const x=src.getContext('2d');
+   function px(col,a,b,w,h){x.fillStyle=col;x.fillRect(a,b,w,h);}
+   const edge='#0a1025',boot='#10152b',metal='#a3d8df';
+   // Ground-facing boots and articulated trousers, with alternating stride.
+   px(edge,5,19,5,7);px(edge,12,19,5,7);
+   px(style.side,6,19,3,5);px(style.side,13,19,3,5);
+   px('#8698a9',7,20+frame,1,3);px('#8698a9',14,20+(1-frame),1,3);
+   px(boot,4,24+frame,6,2);px(boot,12,25-frame,6,2);
+   px(style.shine,5,24+frame,3,1);px(style.shine,14,25-frame,3,1);
+   // Distinctive armored jacket with heavier shoulders and tapered waist.
+   px(edge,4,10,14,11);px(style.side,5,12,12,8);
+   px(style.coat,6,11,10,8);px(style.shine,5,11,3,2);px(style.shine,14,11,3,2);
+   px('#12263b',8,12,6,7);
+   px(style.coat,9,13,4,5);px(style.detail,10,12,2,5);
+   px('#d9e7df',10,12,2,1);px(metal,8,18,6,1);
+   px(edge,7,20,9,2);px(style.detail,10,20,3,1);
+   // Gloves, articulated sleeves and a forearm-mounted acquisition tablet.
+   px(edge,2,12,4,8);px(style.coat,3,13,3,5);
+   px(style.side,3,17,3,3);px(style.shine,3,16,2,1);
+   px(edge,16,12,4,8);px(style.coat,16,13,3,5);
+   px(style.side,17,17,3,3);px(style.shine,17,16,2,1);
+   px('#171e3b',1,14,4,4);px(style.shine,2,15,3,1);
+   px(style.detail,3,16,1,1);
+   // Face, neck, jaw shadow, asymmetric fringe and luminous tech visor.
+   px(edge,6,2,11,10);px(style.skin,7,5,9,6);
+   px('#ba775a',8,9,6,2);px(style.skin,9,10,4,2);
+   px(style.hair,6,2,11,4);px(style.hair,6,4,3,3);
+   px(style.hair,15,4,2,3);
+   px('#f7d7b1',8,6,6,1);
+   px(edge,7,7,9,2);px(style.shine,8,7,7,1);
+   px('#ffffff',12,7,2,1);
+   px(style.side,7,9,2,1);
+   // Class-specific silhouette: headset, visor, command cap or epaulets.
+   if(style.gear===0){px(edge,5,5,2,5);px(style.shine,5,7,1,2);px(style.shine,15,4,2,2);}
+   if(style.gear===1){px(edge,5,3,13,2);px(style.detail,7,3,9,1);px(style.detail,16,13,2,1);}
+   if(style.gear===2){px(edge,6,1,12,4);px(style.coat,7,2,10,2);px(style.detail,9,2,5,1);px(edge,5,4,13,1);}
+   if(style.gear===3){px(edge,6,1,12,4);px(style.detail,8,2,8,1);px(style.detail,7,12,2,1);px(style.detail,14,12,2,1);}
+   const out=[];
+   for(let flip=0;flip<2;flip++){
+     const c=document.createElement('canvas');c.width=60;c.height=70;
+     const cx=c.getContext('2d');cx.imageSmoothingEnabled=false;
+     if(flip){cx.translate(60,0);cx.scale(-1,1);}
+     // Pre-rendered accent halo only at sprite creation.
+     cx.shadowColor=style.shine;cx.shadowBlur=8;
+     cx.drawImage(src,8,8,44,54);cx.shadowBlur=0;
+     cx.drawImage(src,8,8,44,54);
+     out[flip*2+frame]=c;
+   }
+   for(let flip=0;flip<2;flip++)frames[flip*2+frame]=out[flip*2+frame];
+ }
+ SPRA[key]=frames;
+}
+function buildModernHeroes(){
+ for(const id in HERO_STYLES)buildModernHeroSprite('pl_'+id,HERO_STYLES[id]);
+}
+
 function buildSprites(){
   buildShadow();
   for(const k in PXDATA)if(PXDATA[k].g)GLOWK[k]=PXDATA[k].g;
@@ -835,6 +950,7 @@ function buildSprites(){
   makeSprite('pt_green',12,(x,h)=>glowCircle(x,h,C.green));
   makeSprite('pt_ink',12,(x,h)=>glowCircle(x,h,C.ink));
   for(const k in PXDATA)buildPxSprite(k,PXDATA[k]);
+  buildModernHeroes();
 }
 
 /* =============== ICON DRAWING (cards, HUD slots, AAR) =============== */
