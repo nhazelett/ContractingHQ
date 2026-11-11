@@ -176,7 +176,7 @@ function power(){
  btn.textContent='POWERING ON…';btn.disabled=true;
  $('viewLabel').textContent='BOOTING / FARCADE 3D';
  status.textContent='Sliding power switch and starting FARCADE…';
- if(switchMesh)switchMesh.position.y+=.23;
+ if(switchMesh)switchMesh.position.y+=.12;
  revealStart=performance.now();revealing=!!renderer;
  renderMenu();
  setTimeout(finishPower,renderer?1400:250);
@@ -224,9 +224,10 @@ async function connectViewer(){
   lamp(0xffffff,3,-6,8,9);lamp(0x97f5ea,1.4,7,3,7);lamp(0x769da9,.7,3,-6,-4);
   camera=new THREE.PerspectiveCamera(36,1,.1,60);
   root=new THREE.Group();scene.add(root);
-  closePos=new THREE.Vector3(4.25,2.56,2.24);
-  closeLook=new THREE.Vector3(1.7,1.72,-.15);
-  fullPos=new THREE.Vector3(3.85,1.16,10.75);
+  // Actual GLB bounds: X ±1.66, Y ±2.73, Z -0.71..0.58.
+  closePos=new THREE.Vector3(4.15,1.20,5.80);
+  closeLook=new THREE.Vector3(1.28,.52,0);
+  fullPos=new THREE.Vector3(2.60,.65,9.70);
   fullLook=new THREE.Vector3(0,0,0);
   look=closeLook.clone();camera.position.copy(closePos);camera.lookAt(look);
   function meshHit(w,h,d,x,y,z,key){
@@ -246,22 +247,22 @@ async function connectViewer(){
   lcdTexture.minFilter=THREE.NearestFilter;lcdTexture.magFilter=THREE.NearestFilter;
   lcdTexture.generateMipmaps=false;tex=lcdTexture;tex.needsUpdate=true;
   // Separate emissive/unlit screen: it cannot inherit the glass model's glare or black texture.
-  const lcd=new THREE.Mesh(new THREE.PlaneGeometry(2.43,1.77),new THREE.MeshBasicMaterial({
+  const lcd=new THREE.Mesh(new THREE.PlaneGeometry(2.39,1.85),new THREE.MeshBasicMaterial({
     map:lcdTexture,toneMapped:false,depthTest:false,side:THREE.DoubleSide
   }));
-  lcd.position.set(-.07,1.40,.595);lcd.renderOrder=20;root.add(lcd);
+  lcd.position.set(-.03,1.35,.565);lcd.renderOrder=20;root.add(lcd);
   const brass=new THREE.MeshStandardMaterial({color:0xc8a675,metalness:.74,roughness:.26});
   const charcoal=new THREE.MeshStandardMaterial({color:0x172124,metalness:.12,roughness:.66});
-  const slot=new THREE.Mesh(new THREE.BoxGeometry(.12,.46,.27),charcoal);
-  slot.position.set(1.76,1.87,-.23);root.add(slot);
-  switchMesh=new THREE.Mesh(new THREE.BoxGeometry(.21,.19,.33),brass);
-  switchMesh.position.set(1.88,1.77,-.23);root.add(switchMesh);
-  meshHit(.45,.75,.60,1.94,1.87,-.23,'power');
+  // Slim actuator over the actual textured right-side switch, no floating blocks.
+  switchMesh=new THREE.Mesh(new THREE.BoxGeometry(.055,.16,.19),
+    new THREE.MeshStandardMaterial({color:0xa88353,metalness:.57,roughness:.42}));
+  switchMesh.position.set(1.64,.48,-.07);root.add(switchMesh);
+  meshHit(.27,.70,.55,1.69,.51,-.07,'power');
   // Overlay hit targets on actual textured model. The original geometry combines controls.
-  meshHit(.60,.40,.27,-.91,-1.06,.62,'left');
-  meshHit(.60,.40,.27,-.91,-1.70,.62,'right');
-  meshHit(.69,.76,.27,1.02,-1.34,.62,'a');
-  meshHit(.69,.76,.27,.38,-1.72,.62,'b');
+  meshHit(.52,.37,.24,-.99,-1.36,.60,'left');
+  meshHit(.52,.37,.24,-.45,-1.36,.60,'right');
+  meshHit(.50,.52,.23,.88,-1.30,.59,'a');
+  meshHit(.50,.52,.23,.30,-1.57,.59,'b');
   ray=new THREE.Raycaster();
   renderer.domElement.addEventListener('pointerdown',function(e){
     if(!ray||!renderer)return;
