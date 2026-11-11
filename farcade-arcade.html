@@ -537,6 +537,41 @@ body::after{top:52%;width:min(96vw,850px);height:min(83vw,730px);filter:blur(55p
 .device.on .led i{background:#b8ff7c;box-shadow:0 0 .4em #b8ff7c,0 0 1em rgba(174,250,122,.65)}
 @media(prefers-reduced-motion:reduce){.device{filter:none}}
 
+
+/* True WebGL handheld: original DOM console retained as an accessible fallback. */
+.modelstage{display:none;position:relative;isolation:isolate;width:min(93vw,530px,67vh);aspect-ratio:7.2 / 10.9;margin:0 auto;
+  touch-action:manipulation;user-select:none;filter:drop-shadow(0 26px 29px rgba(0,0,0,.38))}
+.three-active .modelstage{display:block}
+.three-active .device{position:absolute!important;left:-10000px!important;top:0!important;pointer-events:none!important;
+  transform:none!important;visibility:hidden!important}
+.modelstage canvas{width:100%;height:100%;display:block;outline:none;cursor:pointer}
+.model-display{position:absolute;z-index:2;left:50%;top:36.1%;width:52.3%;height:23.3%;transform:translate(-50%,-50%);
+  overflow:hidden;background:#040b0b;box-shadow:inset 0 0 12px rgba(0,0,0,.7);border-radius:2px;
+  pointer-events:auto;perspective:800px}
+.model-display .screen{width:100%;height:100%;font-size:clamp(6px,1.74vw,9.2px);margin:0!important;border:0!important;
+  border-radius:2px;box-shadow:none!important}
+.model-display.on .screen{background:radial-gradient(ellipse at 50% 40%,#204839,#0a1e18 88%);box-shadow:none}
+.model-display:not(.on) .screen{background:#050b0a}
+.model-display .screen .v-title .logo{font-size:2.7em}
+.model-display .screen .v-menu .gname{margin-top:.6em}
+.model-display .screen .v-menu .gstat{margin-top:.45em}
+.model-display .screen .view{padding:1em 1.1em}
+.model-display .screen .v-detail .dtag{font-size:1.92em}
+.model-display .screen .go{font-size:1em}
+.model-display .screen .v-off span{color:#365448}
+.model-status{position:absolute;left:0;right:0;bottom:6%;text-align:center;pointer-events:none;
+  font:600 10px/1.5 'Inter',sans-serif;letter-spacing:.17em;color:#a1b4aa;opacity:.8}
+.three-active .modelstage[data-off="true"] .model-status::after{content:"CLICK POWER TO BEGIN"}
+.three-active .modelstage:not([data-off="true"]) .model-status::after{content:"MOVE • SELECT • PLAY"}
+.three-active .intro{margin-bottom:6px}
+.three-active .below{margin-top:5px}
+@media(max-width:560px){
+ .modelstage{width:min(96vw,460px,68vh)}
+ .model-display .screen{font-size:clamp(5.2px,1.68vw,7.6px)}
+ .model-status{font-size:8px}
+}
+@media(prefers-reduced-motion:reduce){.modelstage{filter:none}}
+
 </style>
 </head>
 <body>
@@ -550,6 +585,10 @@ body::after{top:52%;width:min(96vw,850px);height:min(83vw,730px);filter:blur(55p
   <h1 id="arcade-heading">Regulations. <span>Reimagined.</span></h1>
   <p>A pocket-sized arcade for mastering federal acquisition. Power on, pick a cartridge, and play your way through contracting.</p>
 </section>
+<div id="modelstage" class="modelstage" aria-label="Interactive three dimensional FARCADE handheld">
+  <div class="model-display" id="model-display"></div>
+  <div id="model-status" class="model-status" aria-live="polite"></div>
+</div>
 <div class="device" id="device">
   <div class="toprow">
     <div class="brand px">FAR-<b>CADE</b></div>
@@ -759,7 +798,11 @@ body::after{top:52%;width:min(96vw,850px);height:min(83vw,730px);filter:blur(55p
     boot:function(){beep(523,.09);beep(659,.09,.1);beep(784,.09,.2);beep(1047,.22,.3)}
   };
 
-  function setState(s){ state=s; screen.dataset.state=s; device.classList.toggle('on', s!=='off'); }
+  function setState(s){ state=s; screen.dataset.state=s; device.classList.toggle('on', s!=='off');
+    var display=document.getElementById('model-display'),stage=document.getElementById('modelstage');
+    if(display) display.classList.toggle('on',s!=='off');
+    if(stage) stage.dataset.off=String(s==='off');
+  }
 
   function hrefOf(g){ return g.href ? BASE+g.href : ''; }
 
@@ -840,6 +883,15 @@ body::after{top:52%;width:min(96vw,850px);height:min(83vw,730px);filter:blur(55p
       $('oname').textContent=g.name; $('otag').textContent=g.tag; $('olink').href=h;
     }
     if(location.hash!=='#'+g.id) setHash(g.id);
+    // With a WebGL model, dissolve directly into the game: no hidden DOM-shell zoom.
+    if(document.body.classList.contains('three-active')){
+      clearTimeout(zoomTimer);
+      takeover.classList.add('show');takeover.setAttribute('aria-hidden','false');
+      requestAnimationFrame(function(){takeover.classList.add('in');});
+      if(onSite){try{frame.focus();}catch(e){}}
+      return;
+    }
+
 
     var quick=instant||reduced;
     var r=screen.getBoundingClientRect(), d=device.getBoundingClientRect();
@@ -957,6 +1009,182 @@ body::after{top:52%;width:min(96vw,850px);height:min(83vw,730px);filter:blur(55p
 
   drawMenu();
   route();
+})();
+</script>
+<script type="module">
+/* FARCADE 3D — a procedural, fully three-dimensional handheld, no static image.
+   If WebGL/CDN is unavailable the original functional DOM handheld remains visible. */
+(async function(){
+ const stage=document.getElementById('modelstage'),display=document.getElementById('model-display');
+ const device=document.getElementById('device'),screen=document.getElementById('screen');
+ let THREE;
+ try{THREE=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js');}
+ catch(e){console.warn('FARCADE: 3D unavailable, keeping accessible handheld.',e);return;}
+ let renderer;
+ try{renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});}
+ catch(e){console.warn('FARCADE: WebGL unavailable; retaining original controls.',e);return;}
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+ renderer.outputColorSpace=THREE.SRGBColorSpace;
+ renderer.toneMapping=THREE.ACESFilmicToneMapping;
+ renderer.toneMappingExposure=1.37;
+ renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+ renderer.domElement.setAttribute('aria-label','3D handheld. Click its power switch to begin; use arrow keys and Enter to navigate.');
+ renderer.domElement.tabIndex=0;
+ stage.insertBefore(renderer.domElement,stage.firstChild);
+ const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-3.6,3.6,5.45,-5.45,.1,100);
+ camera.position.set(0,.05,17);camera.lookAt(0,0,0);
+ scene.add(new THREE.HemisphereLight(0xeaf6f0,0x25372d,2.65));
+ function lamp(color,power,x,y,z){
+   const light=new THREE.DirectionalLight(color,power);light.position.set(x,y,z);scene.add(light);
+ }
+ lamp(0xffffff,4.1,-4,7,9);lamp(0xc9e2db,2.7,6,1,5);lamp(0x86b69e,1.8,-2,-5,2);
+ const root=new THREE.Group();scene.add(root);
+ const material=(color,roughness=.46,metalness=.08,opts={})=>new THREE.MeshPhysicalMaterial({
+    color,roughness,metalness,clearcoat:opts.clearcoat||0,clearcoatRoughness:.2,
+    envMapIntensity:.7,side:THREE.DoubleSide});
+ const shell=material(0xc3c9bd,.31,.09,{clearcoat:.3});
+ const side=material(0x8b978c,.48,.1),rim=material(0x273431,.39,.2),
+   dark=material(0x101c1b,.54,.08),glass=material(0x07100e,.19,.13,{clearcoat:.7}),
+   rubber=material(0x26332f,.62,.08),green=material(0x98ba84,.25,.15,{clearcoat:.6}),
+   gray=material(0x8d9e91,.3,.13,{clearcoat:.4}),engrave=material(0x69766b,.63,.1);
+ function rr(w,h,r){
+   const s=new THREE.Shape(),x=-w/2,y=-h/2;
+   s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);
+   s.lineTo(x+w,y+h-r);s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+   s.lineTo(x+r,y+h);s.quadraticCurveTo(x,y+h,x,y+h-r);
+   s.lineTo(x,y+r);s.quadraticCurveTo(x,y,x+r,y);
+   return s;
+ }
+ function block(w,h,r,depth,mat,x,y,z,bevel=.05){
+   const g=new THREE.ExtrudeGeometry(rr(w,h,r),{depth,bevelEnabled:bevel>0,
+     bevelThickness:bevel,bevelSize:bevel,bevelSegments:4,curveSegments:15,steps:1});
+   const mesh=new THREE.Mesh(g,mat);mesh.position.set(x,y,z);root.add(mesh);return mesh;
+ }
+ function disk(radius,depth,mat,x,y,z){
+   const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius,radius,depth,48),mat);
+   mesh.rotation.x=Math.PI/2;mesh.position.set(x,y,z);root.add(mesh);return mesh;
+ }
+ const targets=[];
+ function target(obj,key){obj.userData.button=key;targets.push(obj);return obj;}
+ // Real extruded polymer shell, with a thicker dark sidewall and beveled front.
+ block(5.02,8.1,.5,.42,side,0,-.03,-.42,.19);
+ block(4.97,8.05,.5,.32,shell,0,0,-.12,.17);
+ block(4.71,7.8,.46,.02,shell,0,.055,.19,.05);
+ // Screen recess and protective graphite bezel.
+ block(4.38,3.46,.26,.13,rim,0,1.55,.3,.09);
+ block(3.99,2.92,.1,.07,dark,0,1.61,.48,.055);
+ block(3.84,2.73,.045,.018,glass,0,1.62,.55,.012);
+ // Raised trim rings around controls.
+ disk(.94,.09,side,-1.22,-1.55,.38);
+ disk(.83,.06,rim,-1.22,-1.55,.45);
+ disk(.49,.075,side,.63,-1.98,.37);
+ disk(.49,.075,side,1.43,-1.32,.37);
+ // Four independent arrow caps, all genuine click targets.
+ const cross=block(1.65,.48,.075,.17,rubber,-1.22,-1.55,.52,.055);
+ const crossV=block(.48,1.65,.075,.18,rubber,-1.22,-1.55,.53,.055);
+ function invisibleHit(x,y,w,h,key){
+   const hit=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));
+   hit.position.set(x,y,.86);root.add(hit);target(hit,key);
+ }
+ invisibleHit(-1.22,-.96,.53,.56,'up');invisibleHit(-1.22,-2.13,.53,.56,'down');
+ invisibleHit(-1.83,-1.55,.55,.53,'left');invisibleHit(-.62,-1.55,.55,.53,'right');
+ disk(.2,.17,rubber,-1.22,-1.55,.68);
+ function face(x,y,mat,key){
+   disk(.455,.21,side,x,y,.48);
+   const cap=disk(.398,.21,mat,x,y,.62);target(cap,key);
+   invisibleHit(x,y,.76,.76,key);
+   return cap;
+ }
+ const b=face(.64,-2.02,gray,'b'),a=face(1.45,-1.33,green,'a');
+ // Small controls seated in physical recesses.
+ function pill(x,y,key){
+   block(.78,.25,.12,.065,rim,x,y,.34,.02);
+   const top=block(.65,.16,.07,.13,rubber,x,y,.44,.02);target(top,key);
+   invisibleHit(x,y,.74,.4,key);
+ }
+ pill(-.48,-3.13,'select');pill(.59,-3.13,'start');
+ // A recessed, illuminated power key at top-right of the front shell.
+ disk(.31,.1,rim,1.85,3.55,.34);
+ const p=disk(.235,.14,gray,1.85,3.55,.45);target(p,'power');
+ invisibleHit(1.85,3.55,.51,.51,'power');
+ // Back speaker perforations physically recessed beneath the last row.
+ const speaker=material(0x4c6254,.8,.05);
+ for(let i=0;i<6;i++)for(let j=0;j<2;j++){
+   const hole=disk(.038,.015,speaker,1.14+i*.16,-3.15-j*.17,.35);
+ }
+ // Fine hardware seam running around the shell.
+ block(4.81,7.89,.49,.012,side,0,.015,-.075,.012);
+ // Quiet metallic badge (geometry, not a CSS illustration).
+ block(1.42,.18,.06,.01,engrave,0,3.55,.39,.012);
+ // Place existing fully functional screen UI in front of the 3D screen plane.
+ display.appendChild(screen);
+ stage.dataset.off='true';
+ document.body.classList.add('three-active');
+ let width=0,height=0;
+ function resize(){
+   width=stage.clientWidth;height=stage.clientHeight;
+   if(!width||!height)return;
+   const hw=5.45*width/height;
+   camera.left=-hw;camera.right=hw;camera.top=5.45;camera.bottom=-5.45;
+   camera.updateProjectionMatrix();
+   renderer.setSize(width,height,false);
+   // Orthographic screen projection, in stage coordinates.
+   const sx=(3.84/(hw*2)*100),sy=(2.73/10.9*100);
+   display.style.width=sx.toFixed(3)+'%';display.style.height=sy.toFixed(3)+'%';
+   display.style.top=((5.45-1.62)/10.9*100).toFixed(3)+'%';
+ }
+ resize();
+ if('ResizeObserver'in window)new ResizeObserver(resize).observe(stage);
+ else window.addEventListener('resize',resize);
+ const ray=new THREE.Raycaster(),pt=new THREE.Vector2();
+ function pointer(e){
+   const bounds=renderer.domElement.getBoundingClientRect();
+   pt.x=((e.clientX-bounds.left)/bounds.width)*2-1;
+   pt.y=-((e.clientY-bounds.top)/bounds.height)*2+1;
+   ray.setFromCamera(pt,camera);
+   return ray.intersectObjects(targets,false)[0];
+ }
+ function dispatch(key){
+   const btn=device.querySelector('[data-btn="'+key+'"]');
+   if(btn)btn.click();
+ }
+ let pressed=null,releaseTimeout=0;
+ renderer.domElement.addEventListener('pointerdown',e=>{
+   if(document.body.classList.contains('playing'))return;
+   const hit=pointer(e);if(!hit)return;
+   pressed=hit.object.userData.button;renderer.domElement.setPointerCapture(e.pointerId);
+   const obj=hit.object;obj.scale.z=.83;
+   clearTimeout(releaseTimeout);releaseTimeout=setTimeout(()=>{obj.scale.z=1},125);
+   e.preventDefault();
+ },{passive:false});
+ renderer.domElement.addEventListener('pointerup',e=>{
+   if(!pressed)return;
+   const key=pressed;pressed=null;dispatch(key);
+ });
+ renderer.domElement.addEventListener('pointercancel',()=>{pressed=null});
+ let mx=0,my=0,targetX=0,targetY=0;
+ const reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+ stage.addEventListener('pointermove',e=>{
+   if(reduce||e.pointerType!=='mouse')return;
+   const r=stage.getBoundingClientRect();
+   targetY=Math.max(-.075,Math.min(.075,((e.clientX-r.left)/r.width-.5)*.15));
+   targetX=Math.max(-.055,Math.min(.055,-((e.clientY-r.top)/r.height-.5)*.11));
+ },{passive:true});
+ stage.addEventListener('pointerleave',()=>{targetX=targetY=0});
+ let last=0;
+ function tick(time){
+   if(!document.hidden){
+     if(!reduce){
+       mx+=(targetX-mx)*.08;my+=(targetY-my)*.08;
+       root.rotation.x=mx;root.rotation.y=my;
+       display.style.transform='translate(-50%,-50%) perspective(800px) rotateX('+(mx*180/Math.PI).toFixed(2)+'deg) rotateY('+(my*180/Math.PI).toFixed(2)+'deg)';
+     }
+     renderer.render(scene,camera);
+   }
+   requestAnimationFrame(tick);
+ }
+ requestAnimationFrame(tick);
+ window.addEventListener('pagehide',()=>{renderer.dispose()},{once:true});
 })();
 </script>
 </body>
