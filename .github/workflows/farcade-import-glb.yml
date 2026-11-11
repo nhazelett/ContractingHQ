@@ -62,7 +62,13 @@ jobs:
           unzip -q /tmp/farcade-source/download.zip -d /tmp/farcade-source/model
           find /tmp/farcade-source/model -name '*.gltf' -print
 
-      - name: Pack glTF and textures into a standalone binary GLB
+      - name: Install image optimizer
+        run: python3 -m pip install --user --disable-pip-version-check "Pillow>=10,<13"
+
+      - name: Pack optimized glTF and textures into a standalone binary GLB
+        env:
+          FARCADE_TEXTURE_MAX: "1024"
+          FARCADE_JPEG_QUALITY: "85"
         run: |
           set -euo pipefail
           python3 .github/scripts/farcade_pack_gltf.py /tmp/farcade-source/model assets/farcade/models/farcade-professional-source.glb
