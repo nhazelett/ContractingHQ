@@ -17,18 +17,18 @@
   --void:#0a0118; --panel:#140a2e; --pink:#ff2d95; --cyan:#19e3ff;
   --gold:#ffd23f; --ink:#f4f0ff; --dim:#9a8fc0;
   --shell:#2b1d5c; --shell-hi:#3d2b7a; --shell-lo:#1c1240;
-  --glass:#07030f; --lcd:#0d0625;
-  --w:min(94vw,56vh,400px);
+  --glass:#07030f; --lcd:#0a1024; --page:#060b18;
+  --w:min(90vw,58vh,420px);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%}
 body{
-  background:var(--void);color:var(--ink);font-family:'Inter',system-ui,sans-serif;
+  background:var(--page);color:var(--ink);font-family:'Inter',system-ui,sans-serif;
   display:flex;flex-direction:column;align-items:center;
-  padding:16px 0 32px;
+  padding:20px 0 32px;
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% 0%,rgba(255,45,149,.16),transparent 70%),
-    radial-gradient(ellipse 70% 40% at 50% 100%,rgba(25,227,255,.10),transparent 70%);
+    radial-gradient(ellipse 80% 55% at 50% 0%,rgba(42,82,152,.38),transparent 70%),
+    radial-gradient(ellipse 70% 40% at 50% 100%,rgba(15,35,71,.6),transparent 70%);
   background-attachment:fixed;
 }
 .px{font-family:'Press Start 2P',monospace;line-height:1.5}
@@ -36,91 +36,47 @@ body{
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 a{color:var(--cyan)}
 
-/* ---------- handheld ---------- */
+/* ---------- handheld (photo shell, live screen and tap zones laid over it) ---------- */
 .device{
-  width:var(--w);font-size:calc(var(--w)/40);
-  background:linear-gradient(160deg,var(--shell-hi),var(--shell) 45%,var(--shell-lo));
-  border-radius:3em 3em 7em 3em;
-  padding:2.2em 3em 3em;
-  box-shadow:
-    inset 0 .3em 0 rgba(255,255,255,.12),
-    inset 0 -.6em 0 rgba(0,0,0,.35),
-    0 2em 4em rgba(0,0,0,.6),
-    0 0 6em rgba(255,45,149,.12);
-  position:relative;user-select:none;-webkit-user-select:none;
+  width:var(--w);aspect-ratio:942/1460;position:relative;user-select:none;-webkit-user-select:none;
+  font-size:calc(var(--w)*.6815/30); /* screen is 30em wide */
+  filter:drop-shadow(0 calc(var(--w)*.05) calc(var(--w)*.06) rgba(0,0,0,.55));
+  will-change:transform;
 }
-.toprow{display:flex;justify-content:space-between;align-items:center;height:3.6em;margin-bottom:1em}
-.brand{font-size:1.15em;letter-spacing:.08em;color:var(--ink);opacity:.9}
-.brand b{color:var(--pink);font-weight:400}
-.power{
-  display:flex;align-items:center;gap:.8em;font-size:.85em;color:var(--dim);letter-spacing:.1em;
-  padding:.6em .4em;
-}
-.power i{
-  display:block;width:3.4em;height:3.4em;border-radius:50%;
-  background:radial-gradient(circle at 35% 30%,#5a4a9a,#231650);
-  box-shadow:0 .35em 0 #0f0828,inset 0 .15em 0 rgba(255,255,255,.2);
-  position:relative;
-}
-.power i::after{content:"";position:absolute;inset:30%;border:.22em solid var(--dim);border-top-color:transparent;border-radius:50%}
-.power i::before{content:"";position:absolute;left:50%;top:22%;width:.22em;height:32%;margin-left:-.11em;background:var(--dim)}
-.power:active i{transform:translateY(.25em);box-shadow:0 .1em 0 #0f0828}
-
-.bezel{
-  background:var(--glass);border-radius:1.4em 1.4em 4em 1.4em;
-  padding:2.2em 2em 1.2em;
-  box-shadow:inset 0 0 0 .15em #1a1036,inset 0 .4em 1em rgba(0,0,0,.8);
-}
+.shell{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;-webkit-user-drag:none}
+.device.noimg{background:linear-gradient(160deg,#24498a,#1a3a6b 45%,#0f2347);border-radius:9% / 6%}
+.device.noimg .shell{display:none}
 .screen{
-  width:30em;height:22.5em;margin:0 auto;position:relative;overflow:hidden;
-  background:#040109;border-radius:.4em;
-  transition:background .25s;
+  position:absolute;left:15.07%;top:14.86%;width:68.15%;height:35.55%;overflow:hidden;
+  background:#000;border-radius:.3em;transition:background .25s;
 }
-.device.on .screen{background:var(--lcd);box-shadow:0 0 2.4em rgba(25,227,255,.18)}
-.screen::after{ /* scanlines */
+.device.on .screen{background:var(--lcd);box-shadow:0 0 2em rgba(74,158,255,.22)}
+.screen::after{ /* scanlines + glass sheen */
   content:"";position:absolute;inset:0;pointer-events:none;z-index:5;
-  background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);
+  background:
+    linear-gradient(125deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,0) 28%),
+    repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 3px);
 }
-.bezelrow{display:flex;align-items:center;justify-content:space-between;margin-top:.9em;padding:0 .4em}
-.led{display:flex;align-items:center;gap:.7em;font-size:.75em;color:#5e548a;letter-spacing:.1em}
-.led i{width:1em;height:1em;border-radius:50%;background:#2a1d4a;display:block}
-.device.on .led i{background:var(--pink);box-shadow:0 0 .8em var(--pink)}
-.model{font-size:.75em;color:#5e548a;letter-spacing:.12em}
-
-/* ---------- controls ---------- */
-.controls{display:flex;justify-content:space-between;align-items:center;margin-top:3em;height:15em}
-.dpad{position:relative;width:13em;height:13em}
-.dpad button{position:absolute;background:#120a2a;box-shadow:0 .4em 0 #07030f}
-.dpad button:active,.dpad button.hit{background:#1d1240;transform:translateY(.2em);box-shadow:0 .2em 0 #07030f}
-.dpad .u,.dpad .d{left:4.4em;width:4.2em;height:4.6em}
-.dpad .l,.dpad .r{top:4.4em;height:4.2em;width:4.6em}
-.dpad .u{top:0;border-radius:.8em .8em 0 0}
-.dpad .d{bottom:0;border-radius:0 0 .8em .8em}
-.dpad .l{left:0;border-radius:.8em 0 0 .8em}
-.dpad .r{right:0;border-radius:0 .8em .8em 0}
-.dpad .hub{position:absolute;left:4.4em;top:4.4em;width:4.2em;height:4.2em;background:#120a2a;box-shadow:0 .4em 0 #07030f}
-.dpad button::after{content:"";position:absolute;left:50%;top:50%;border:.7em solid transparent;transform:translate(-50%,-50%)}
-.dpad .u::after{border-bottom-color:#3a2c6e;margin-top:-.4em}
-.dpad .d::after{border-top-color:#3a2c6e;margin-top:.4em}
-.dpad .l::after{border-right-color:#3a2c6e;margin-left:-.4em}
-.dpad .r::after{border-left-color:#3a2c6e;margin-left:.4em}
-
-.ab{position:relative;width:14em;height:11em}
-.ab button{
-  position:absolute;width:6em;height:6em;border-radius:50%;
-  font-family:'Press Start 2P',monospace;font-size:1em;color:rgba(10,1,24,.75);
-}
-.ab .a{right:0;top:0;background:radial-gradient(circle at 35% 30%,#ffe98a,var(--gold));box-shadow:0 .5em 0 #8a6d0c}
-.ab .b{left:0;bottom:0;background:radial-gradient(circle at 35% 30%,#8cf2ff,var(--cyan));box-shadow:0 .5em 0 #0b7486}
-.ab button:active,.ab button.hit{transform:translateY(.3em);box-shadow:0 .2em 0 #07030f}
-.ab button span{font-size:1.5em}
-
-.pills{display:flex;justify-content:center;gap:3em;margin-top:1.6em}
-.pills button{display:flex;flex-direction:column;align-items:center;gap:.8em;font-size:.75em;color:var(--dim);letter-spacing:.1em;padding:.4em}
-.pills i{display:block;width:7em;height:1.9em;border-radius:1em;background:#120a2a;box-shadow:0 .35em 0 #07030f;transform:rotate(-18deg)}
-.pills button:active i,.pills button.hit i{transform:rotate(-18deg) translateY(.2em);box-shadow:0 .1em 0 #07030f}
-.grill{position:absolute;right:3.4em;bottom:3.2em;display:grid;grid-template-columns:repeat(4,.7em);gap:.7em;transform:rotate(-18deg)}
-.grill i{width:.7em;height:.7em;border-radius:50%;background:#150c30;box-shadow:inset 0 .1em 0 #000}
+.ledglow{position:absolute;left:83.1%;top:7.4%;width:3.4%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;opacity:0;transition:opacity .2s;
+  background:radial-gradient(circle,#fff6c9 0%,#ffd23f 45%,rgba(255,210,63,0) 72%);box-shadow:0 0 .9em .25em rgba(255,210,63,.75)}
+.device.on .ledglow{opacity:1}
+.print{position:absolute;font-family:'Inter',sans-serif;font-weight:700;color:#c8d4e0;opacity:.82;letter-spacing:.14em;pointer-events:none;white-space:nowrap;transform:translate(-50%,-50%);
+  text-shadow:0 1px 0 rgba(0,0,0,.45)}
+.print.brand{left:15.2%;top:7.4%;transform:translateY(-50%);font-size:1.55em;letter-spacing:.2em}
+.print.brand b{color:#d8ad2c}
+.print.sm{font-size:.82em}
+/* tap zones */
+.zone{position:absolute;transform:translate(-50%,-50%);border-radius:50%;background:transparent}
+.zone:active,.zone.hit{background:radial-gradient(circle,rgba(0,0,0,.34) 0%,rgba(0,0,0,.2) 55%,rgba(0,0,0,0) 72%)}
+.zone.a{left:77.3%;top:63.56%;width:19%;aspect-ratio:1}
+.zone.b{left:62.3%;top:72.67%;width:19%;aspect-ratio:1}
+.zone.pill{width:16%;height:5.2%;border-radius:999px}
+.zone.sel{left:37.3%;top:84.5%} .zone.sta{left:55.7%;top:84.5%}
+.zone.pwr{left:96.5%;top:20.75%;width:15%;height:12%;border-radius:20%}
+.dpad{position:absolute;left:25.9%;top:68.3%;width:30%;aspect-ratio:1;transform:translate(-50%,-50%);display:grid;grid-template:1fr 1fr 1fr/1fr 1fr 1fr}
+.dpad button{border-radius:18%}
+.dpad button:active,.dpad button.hit{background:rgba(0,0,0,.28)}
+.dpad .u{grid-area:1/2} .dpad .l{grid-area:2/1} .dpad .r{grid-area:2/3} .dpad .d{grid-area:3/2}
 
 /* ---------- screen views ---------- */
 .view{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;padding:1.2em 1.4em;text-align:center}
@@ -132,7 +88,7 @@ a{color:var(--cyan)}
 .screen[data-state="launch"] .v-launch{display:flex}
 
 .v-off{justify-content:center}
-.v-off span{font-size:1.1em;color:#3a2c6e;animation:blink 1.4s steps(1) infinite}
+.v-off span{font-size:1.1em;color:#2f558f;animation:blink 1.4s steps(1) infinite}
 
 .v-boot{justify-content:center;gap:1.6em}
 .v-boot .pct{font-size:1.3em;color:var(--cyan)}
@@ -212,16 +168,16 @@ body.playing .below{opacity:0;transition:opacity .2s}
 
 /* ---------- below the device ---------- */
 .below{width:min(94vw,520px);margin-top:22px;text-align:center}
-.keys{font-family:'VT323',monospace;font-size:19px;color:var(--dim);line-height:1.3}
+.keys{font-family:'VT323',monospace;font-size:19px;color:#8a9bb0;line-height:1.3}
 .keys b{color:var(--ink);font-weight:400}
 @media (hover:none){.keys{display:none}}
-details{margin-top:14px;text-align:left;background:var(--panel);border:1px solid #2a1d4a;border-radius:8px}
+details{margin-top:14px;text-align:left;background:#0c1730;border:1px solid #1e3358;border-radius:8px}
 summary{cursor:pointer;padding:12px 16px;font-size:14px;color:var(--ink)}
 details ul{list-style:none;padding:0 16px 12px}
-details li{padding:10px 0;border-top:1px solid #2a1d4a;font-size:14px;line-height:1.45;color:var(--dim)}
+details li{padding:10px 0;border-top:1px solid #1e3358;font-size:14px;line-height:1.45;color:var(--dim)}
 details li a,details li strong{font-weight:600;color:var(--cyan)}
 details li strong{color:var(--ink)}
-.legal{margin-top:16px;font-family:'VT323',monospace;font-size:15px;color:#5e548a;line-height:1.3}
+.legal{margin-top:16px;font-family:'VT323',monospace;font-size:15px;color:#52698f;line-height:1.3}
 :focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
@@ -229,13 +185,10 @@ details li strong{color:var(--ink)}
 <body>
 
 <div class="device" id="device">
-  <div class="toprow">
-    <div class="brand px">FAR-<b>CADE</b></div>
-    <button class="power px" data-btn="power" aria-label="Power">POWER<i></i></button>
-  </div>
-
-  <div class="bezel">
-    <div class="screen" id="screen" data-state="off" aria-live="polite">
+  <img class="shell" src="assets/farcade/kt-pocket.webp" alt="" onerror="this.parentNode.classList.add('noimg')">
+  <span class="print brand">FAR-<b>CADE</b></span>
+  <i class="ledglow"></i>
+  <div class="screen" id="screen" data-state="off" aria-live="polite">
 
       <div class="view v-off"><span class="px">PRESS POWER</span></div>
 
@@ -276,30 +229,21 @@ details li strong{color:var(--ink)}
       </div>
 
     </div>
-    <div class="bezelrow">
-      <div class="led px"><i></i>PWR</div>
-      <div class="model px">KT-POCKET</div>
-    </div>
+  <div class="dpad">
+    <button class="u" data-btn="up" aria-label="Up"></button>
+    <button class="l" data-btn="left" aria-label="Left"></button>
+    <button class="r" data-btn="right" aria-label="Right"></button>
+    <button class="d" data-btn="down" aria-label="Down"></button>
   </div>
-
-  <div class="controls">
-    <div class="dpad">
-      <button class="u" data-btn="up" aria-label="Up"></button>
-      <button class="l" data-btn="left" aria-label="Left"></button>
-      <div class="hub"></div>
-      <button class="r" data-btn="right" aria-label="Right"></button>
-      <button class="d" data-btn="down" aria-label="Down"></button>
-    </div>
-    <div class="ab">
-      <button class="b" data-btn="b" aria-label="B, back"><span>B</span></button>
-      <button class="a" data-btn="a" aria-label="A, select"><span>A</span></button>
-    </div>
-  </div>
-  <div class="pills">
-    <button class="px" data-btn="select" aria-label="Select, toggle sound"><i></i>SELECT</button>
-    <button class="px" data-btn="start" aria-label="Start"><i></i>START</button>
-  </div>
-  <div class="grill" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <button class="zone a" data-btn="a" aria-label="A, select"></button>
+  <button class="zone b" data-btn="b" aria-label="B, back"></button>
+  <button class="zone pill sel" data-btn="select" aria-label="Select, toggle sound"></button>
+  <button class="zone pill sta" data-btn="start" aria-label="Start"></button>
+  <button class="zone pwr" data-btn="power" aria-label="Power"></button>
+  <span class="print sm" style="left:86.5%;top:70.6%">A</span>
+  <span class="print sm" style="left:72%;top:79.6%">B</span>
+  <span class="print sm" style="left:37.3%;top:88.4%">SELECT</span>
+  <span class="print sm" style="left:55.7%;top:88.4%">START</span>
 </div>
 
 <div class="below">
@@ -340,8 +284,8 @@ details li strong{color:var(--ink)}
      tag:'Horde survival. Your tools fire themselves. Live until Sept 30, level up, evolve your warrant, beat the year.'},
     {name:'THRESHOLD', art:'···', neon:'var(--gold)', href:'', status:'soon', cta:'COMING SOON',
      tag:'An endless runner through the acquisition lifecycle. Jump the hurdles, duck the protests, don\'t blow the threshold.'},
-    {name:'CLAUSE CRASH', art:'···', neon:'var(--cyan)', href:'', status:'soon', cta:'COMING SOON',
-     tag:'Falling-block clause matching. Pair the 52.2XX with its prescription before the solicitation stacks out.'},
+    {id:'clause-crash', name:'CLAUSE CRASH', art:'52.2', neon:'var(--cyan)', href:'clause-crash.html', status:'play', cta:'▶ BUILD THE BUY',
+     tag:'Clauses fall. Send each one in or out of the buy before the solicitation stacks out. Learn what every clause is used for.'},
     {name:'OPEN SLOT', art:'?', neon:'var(--pink)', href:'contact.html', status:'idea', cta:'✉ SUGGEST A GAME',
      tag:'This slot is reserved. The arcade grows when the field speaks up. Pitch a game and it gets built.'}
   ];

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CLAUSE CRASH | FAR-CADE | KTHQ</title>
+<meta name="description" content="CLAUSE CRASH. Sort falling clauses in or out of the buy before the solicitation stacks out. Free play, no login.">
+<link rel="canonical" href="https://kthq.org/clause-crash.html">
+<meta property="og:type" content="website"><meta property="og:site_name" content="ContractingHQ"><meta property="og:title" content="CLAUSE CRASH | FAR-CADE | KTHQ"><meta property="og:description" content="Sort falling clauses in or out of the buy before the solicitation stacks out."><meta property="og:url" content="https://kthq.org/clause-crash.html"><meta property="og:image" content="https://kthq.org/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--void:#0a0118;--panel:#140a2e;--pink:#ff2d95;--cyan:#19e3ff;--gold:#ffd23f;--ink:#f4f0ff;--dim:#9a8fc0;--red:#ff4d5e;--line:rgba(255,255,255,.12)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--void);color:var(--ink);font-family:'Inter',system-ui,sans-serif;overflow:hidden;
+  background-image:radial-gradient(ellipse 90% 45% at 50% 0%,rgba(25,227,255,.13),transparent 70%),radial-gradient(ellipse 80% 40% at 50% 100%,rgba(255,45,149,.13),transparent 70%)}
+.px{font-family:'Press Start 2P',monospace;line-height:1.5}
+.crt{font-family:'VT323',monospace}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;touch-action:manipulation}
+a{color:var(--cyan)}
+#app{height:100dvh;max-width:520px;margin:0 auto;display:flex;flex-direction:column;
+  padding:max(8px,env(safe-area-inset-top)) 10px max(8px,env(safe-area-inset-bottom));gap:8px;position:relative}
+.glass{background:rgba(20,10,46,.74);border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.08)}
+
+/* top bar */
+#top{display:flex;gap:6px;align-items:stretch}
+.stat{flex:1;padding:6px 8px 5px;min-width:0}
+.stat small{display:block;font-size:9px;font-weight:600;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.stat b{display:block;font-family:'Press Start 2P',monospace;font-weight:400;font-size:11px;margin-top:4px;white-space:nowrap}
+#sScore b{color:var(--cyan)} #sStreak b{color:var(--gold)} #sCon b{color:var(--ink)}
+#menuBtn{width:40px;font-size:16px;color:var(--dim)}
+
+/* the buy */
+#buy{padding:9px 11px 10px}
+#buy .hd{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+#buy small{font-size:9px;font-weight:600;letter-spacing:.14em;color:var(--dim)}
+#buyName{font-size:10px;color:var(--gold)}
+#buyLines{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+#buyLines span{font-size:12px;font-weight:500;line-height:1.25;padding:4px 8px;border-radius:7px;background:rgba(255,255,255,.07);border:1px solid var(--line)}
+
+/* well */
+#well{flex:1;min-height:0;position:relative;overflow:hidden;border-radius:14px;border:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(13,6,37,.9),rgba(8,2,22,.95));box-shadow:inset 0 0 40px rgba(0,0,0,.6)}
+.gut{position:absolute;top:0;bottom:0;width:38px;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.gut i{font-style:normal;font-family:'Press Start 2P',monospace;font-size:10px;letter-spacing:.2em;writing-mode:vertical-rl;opacity:.75}
+#gIn{left:0;border-right:1px dashed rgba(25,227,255,.3);background:linear-gradient(90deg,rgba(25,227,255,.14),transparent);color:var(--cyan)}
+#gOut{right:0;border-left:1px dashed rgba(255,45,149,.3);background:linear-gradient(270deg,rgba(255,45,149,.14),transparent);color:var(--pink)}
+#gIn.hit{background:rgba(25,227,255,.45)} #gOut.hit{background:rgba(255,45,149,.45)}
+#gIn.bad,#gOut.bad{background:rgba(255,77,94,.5)}
+#block{position:absolute;left:46px;right:46px;top:0;padding:11px 12px 12px;border-radius:12px;will-change:transform,opacity;
+  background:linear-gradient(160deg,#2b1d66,#1a1046);border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 8px 22px rgba(0,0,0,.55),0 0 22px rgba(139,92,246,.25),inset 0 1px 0 rgba(255,255,255,.18);display:none}
+#block .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+#bNum{font-size:15px;color:#fff;text-shadow:0 0 12px rgba(255,255,255,.35)}
+.chip{font-size:9px;font-weight:700;letter-spacing:.12em;padding:3px 6px;border-radius:5px;background:rgba(255,255,255,.12);color:var(--dim);white-space:nowrap}
+.chip.new{background:var(--gold);color:#221400}
+#bTitle{font-size:14px;font-weight:600;line-height:1.25;margin-top:8px}
+#bUse{font-family:'VT323',monospace;font-size:19px;line-height:1.05;color:var(--gold);margin-top:7px;display:none}
+#block.showuse #bUse{display:block}
+#block.notitle #bTitle{display:none}
+#stack{position:absolute;left:46px;right:46px;bottom:0;display:flex;flex-direction:column-reverse}
+.junk{height:30px;margin-top:2px;border-radius:7px;display:flex;align-items:center;justify-content:center;
+  font-family:'Press Start 2P',monospace;font-size:9px;color:#ffc2c8;background:repeating-linear-gradient(135deg,#5a1626 0 8px,#481020 8px 16px);border:1px solid rgba(255,77,94,.55);animation:land .25s ease-out}
+.junk.gone{animation:clearrow .35s ease-in forwards}
+#limit{position:absolute;left:46px;right:46px;border-top:2px dashed rgba(255,77,94,.55);pointer-events:none}
+#limit span{position:absolute;right:0;top:-15px;font-size:9px;font-weight:700;letter-spacing:.12em;color:rgba(255,77,94,.8)}
+#toast{position:absolute;left:46px;right:46px;top:38%;text-align:center;pointer-events:none;opacity:0;font-size:12px}
+#toast.go{animation:toast .7s ease-out}
+#fact{position:absolute;left:10px;right:10px;bottom:8px;text-align:center;font-family:'VT323',monospace;font-size:18px;line-height:1.05;color:var(--cyan);opacity:0;transition:opacity .25s;pointer-events:none;text-shadow:0 2px 6px #000}
+#fact.on{opacity:1}
+
+/* controls */
+#ctl{display:flex;gap:8px}
+#ctl button{flex:1;height:62px;border-radius:14px;font-family:'Press Start 2P',monospace;font-size:13px;border:1px solid;transition:transform .06s}
+#ctl button:active{transform:translateY(2px)}
+#bIn{background:linear-gradient(180deg,rgba(25,227,255,.28),rgba(25,227,255,.1));border-color:rgba(25,227,255,.6);color:var(--cyan);box-shadow:0 0 18px rgba(25,227,255,.2)}
+#bOut{background:linear-gradient(180deg,rgba(255,45,149,.28),rgba(255,45,149,.1));border-color:rgba(255,45,149,.6);color:var(--pink);box-shadow:0 0 18px rgba(255,45,149,.2)}
+#ctl #bHint{flex:0 0 64px;font-size:8px;line-height:1.7;border-color:rgba(255,210,63,.5);color:var(--gold);background:rgba(255,210,63,.08)}
+#bHint:disabled{opacity:.35}
+
+/* overlays */
+.ov{position:absolute;inset:0;z-index:20;display:none;align-items:center;justify-content:center;padding:14px;background:rgba(6,1,18,.86)}
+.ov.on{display:flex}
+.box{width:100%;max-height:100%;overflow:auto;padding:20px 16px;text-align:center}
+.box h1{font-size:22px;color:var(--cyan);text-shadow:3px 3px 0 #0b5a68,0 0 18px rgba(25,227,255,.5)}
+.box h1 b{color:var(--pink);font-weight:400;text-shadow:3px 3px 0 #6b0f3d,0 0 18px rgba(255,45,149,.5)}
+.box h2{font-size:13px;color:var(--gold);line-height:1.6}
+.box p{font-size:14px;line-height:1.45;color:var(--ink);margin-top:10px}
+.box p.d{color:var(--dim);font-size:13px}
+.box .big{font-family:'VT323',monospace;font-size:22px;line-height:1.1;color:var(--gold);margin-top:10px}
+.btn{display:inline-block;margin-top:14px;padding:13px 16px;border-radius:12px;font-family:'Press Start 2P',monospace;font-size:11px;text-decoration:none;
+  background:var(--gold);color:#221400;box-shadow:0 4px 0 #8a6d0c}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #8a6d0c}
+.btn.alt{background:transparent;color:var(--cyan);border:1px solid rgba(25,227,255,.55);box-shadow:none;margin-left:4px;margin-right:4px}
+.how{text-align:left;margin-top:14px;display:grid;gap:8px}
+.how div{font-size:13px;line-height:1.4;padding:9px 11px;border-radius:9px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
+.how b{color:var(--gold)}
+.cnum{font-family:'Press Start 2P',monospace;font-size:13px;color:#fff;margin-top:12px}
+.verdict{font-size:14px;font-weight:600;margin-top:10px}
+.verdict .in{color:var(--cyan)} .verdict .out{color:var(--pink)}
+.cite{font-size:11px;color:var(--dim);margin-top:8px;letter-spacing:.03em}
+#list{text-align:left;margin-top:12px;display:grid;gap:7px}
+.li{padding:9px 11px;border-radius:9px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-size:12.5px;line-height:1.4}
+.li b{font-family:'Press Start 2P',monospace;font-weight:400;font-size:10px;color:#fff}
+.li .u{color:var(--gold);font-family:'VT323',monospace;font-size:17px;line-height:1.05;display:block;margin-top:4px}
+.li .c{color:var(--dim);font-size:11px;display:block;margin-top:3px}
+.li .s{float:right;font-size:9px;font-weight:700;letter-spacing:.1em;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.1);color:var(--dim)}
+.li .s.m{background:rgba(125,201,122,.25);color:#9fe29c} .li .s.l{background:rgba(255,210,63,.2);color:var(--gold)}
+.li .w{color:#ffc2c8}
+.stats{display:flex;gap:6px;margin-top:12px}
+.stats div{flex:1;padding:8px 4px;border-radius:9px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
+.stats small{display:block;font-size:9px;font-weight:600;letter-spacing:.12em;color:var(--dim)}
+.stats b{display:block;font-family:'Press Start 2P',monospace;font-weight:400;font-size:11px;margin-top:5px;color:var(--cyan)}
+.legal{font-family:'VT323',monospace;font-size:13px;line-height:1.15;color:#5e548a;margin-top:14px}
+
+@keyframes land{from{transform:translateY(-14px);opacity:.3}}
+@keyframes clearrow{to{transform:scaleX(0);opacity:0;height:0;margin:0}}
+@keyframes toast{0%{opacity:0;transform:translateY(10px) scale(.9)}20%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-26px)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="top">
+    <div class="stat glass" id="sScore"><small>Score</small><b>0</b></div>
+    <div class="stat glass" id="sStreak"><small>Streak</small><b>x1</b></div>
+    <div class="stat glass" id="sCon"><small>Contract</small><b>1/5</b></div>
+    <button id="menuBtn" class="glass" aria-label="Pause">II</button>
+  </div>
+
+  <div id="buy" class="glass">
+    <div class="hd"><small>THE BUY</small><span id="buyName" class="px"></span></div>
+    <div id="buyLines"></div>
+  </div>
+
+  <div id="well">
+    <div class="gut" id="gIn"><i>IN</i></div>
+    <div class="gut" id="gOut"><i>OUT</i></div>
+    <div id="limit"><span>KICKED BACK</span></div>
+    <div id="stack"></div>
+    <div id="block">
+      <div class="row"><span id="bNum" class="px"></span><span><span class="chip new" id="bNew">NEW</span> <span class="chip" id="bKind"></span></span></div>
+      <div id="bTitle"></div>
+      <div id="bUse"></div>
+    </div>
+    <div id="toast" class="px"></div>
+    <div id="fact"></div>
+  </div>
+
+  <div id="ctl">
+    <button id="bIn" aria-label="Clause belongs in this buy">◀ IN</button>
+    <button id="bHint" aria-label="Hint">HINT<br><span id="hintN">3</span></button>
+    <button id="bOut" aria-label="Clause stays out of this buy">OUT ▶</button>
+  </div>
+
+  <!-- title -->
+  <div class="ov on" id="ovTitle"><div class="box glass">
+    <h1 class="px">CLAUSE <b>CRASH</b></h1>
+    <p class="big">BUILD THE SOLICITATION. KEEP THE WRONG CLAUSES OUT.</p>
+    <div class="how">
+      <div>Each contract starts with <b>THE BUY</b>. Read it.</div>
+      <div>Clauses fall one at a time. Send each one <b>IN</b> if it belongs in this buy, or <b>OUT</b> if it does not.</div>
+      <div>A wrong call or a clause that lands unsorted turns into a junk row. Reach the red line and the solicitation is <b>kicked back</b>.</div>
+      <div><b>NEW</b> clauses show what they are used for. After that, you are on your own.</div>
+      <div>Award <b>five contracts</b> to win the run.</div>
+    </div>
+    <div class="stats"><div><small>BEST SCORE</small><b id="tBest">0</b></div><div><small>MASTERED</small><b id="tMast">0/0</b></div></div>
+    <button class="btn" id="startBtn">▶ START</button>
+    <div><button class="btn alt" id="binderBtn">CLAUSE BINDER</button><a class="btn alt" href="farcade-arcade.html">BACK TO ARCADE</a></div>
+    <p class="legal">CLAUSE TITLES AND PRESCRIPTIONS COME FROM THE <a href="clause-matrix.html">KTHQ CLAUSE MATRIX</a>.<br>NOT AFFILIATED WITH THE U.S. AIR FORCE, DOD, OR ANY GOVERNMENT AGENCY · FOR EDUCATIONAL PURPOSES ONLY</p>
+  </div></div>
+
+  <!-- contract intro -->
+  <div class="ov" id="ovCon"><div class="box glass">
+    <h2 class="px" id="cHead"></h2>
+    <div class="cnum" id="cName"></div>
+    <div id="cLines" class="how"></div>
+    <button class="btn" id="conGo">▶ BUILD IT</button>
+  </div></div>
+
+  <!-- miss -->
+  <div class="ov" id="ovWhy"><div class="box glass">
+    <h2 class="px" id="wHead" style="color:var(--red)">NOT QUITE</h2>
+    <div class="cnum" id="wNum"></div>
+    <p id="wTitle" class="d"></p>
+    <div class="verdict" id="wVerdict"></div>
+    <div class="big" id="wUse"></div>
+    <div class="cite" id="wCite"></div>
+    <button class="btn" id="whyGo">GOT IT</button>
+  </div></div>
+
+  <!-- pause -->
+  <div class="ov" id="ovPause"><div class="box glass">
+    <h2 class="px">PAUSED</h2>
+    <button class="btn" id="resumeBtn">▶ RESUME</button>
+    <div><button class="btn alt" id="sfxBtn">SOUND: ON</button><button class="btn alt" id="quitBtn">END RUN</button></div>
+    <div><a class="btn alt" href="farcade-arcade.html">BACK TO ARCADE</a></div>
+  </div></div>
+
+  <!-- after action -->
+  <div class="ov" id="ovEnd"><div class="box glass">
+    <h2 class="px" id="eHead"></h2>
+    <p id="eSub" class="d"></p>
+    <div class="stats"><div><small>SCORE</small><b id="eScore"></b></div><div><small>ACCURACY</small><b id="eAcc"></b></div><div><small>BEST STREAK</small><b id="eStreak"></b></div></div>
+    <p class="d" id="eMissHd"></p>
+    <div id="list"></div>
+    <button class="btn" id="againBtn">▶ PLAY AGAIN</button>
+    <div><button class="btn alt" id="binder2Btn">CLAUSE BINDER</button><a class="btn alt" href="farcade-arcade.html">BACK TO ARCADE</a></div>
+  </div></div>
+
+  <!-- binder -->
+  <div class="ov" id="ovBinder"><div class="box glass">
+    <h2 class="px">CLAUSE BINDER</h2>
+    <p class="d" id="bSub"></p>
+    <div id="blist" style="text-align:left;margin-top:12px;display:grid;gap:7px"></div>
+    <button class="btn" id="binderClose">CLOSE</button>
+  </div></div>
+</div>
+
+<script>
+const CL={"52.204-7":{"t":"System for Award Management","k":"P","c":"FAR 4.208(b)(1)","u":"Solicitations. Offerors must be registered in SAM."},"52.211-10":{"t":"Commencement, Prosecution, and Completion of Work","k":"C","c":"FAR 11.404(b)","u":"Fixed-price construction. Sets the start and completion of work."},"52.211-12":{"t":"Liquidated Damages: Construction","k":"C","c":"FAR 11.403(b)","u":"Construction when liquidated damages are determined appropriate."},"52.212-1":{"t":"Instructions to Offerors: Commercial Products and Commercial Services","k":"P","c":"FAR 12.301(b)(1)","u":"Solicitations for commercial products and commercial services."},"52.212-2":{"t":"Evaluation: Commercial Products and Commercial Services","k":"P","c":"FAR 12.301(c)","u":"Commercial solicitations when evaluation factors are used."},"52.212-4":{"t":"Contract Terms and Conditions: Commercial Products and Commercial Services","k":"C","c":"FAR 12.301(b)(3)","u":"Commercial products and services. Carries its own changes, inspection, disputes, and termination terms."},"52.216-18":{"t":"Ordering","k":"C","c":"FAR 16.505(a)","u":"Definite-quantity, requirements, or indefinite-quantity contracts."},"52.216-19":{"t":"Order Limitations","k":"C","c":"FAR 16.505(b)","u":"Definite-quantity, requirements, or indefinite-quantity contracts. Sets order size limits."},"52.216-22":{"t":"Indefinite Quantity","k":"C","c":"FAR 16.505(e)","u":"Indefinite-quantity contracts."},"52.217-8":{"t":"Option to Extend Services","k":"C","c":"FAR 17.203(f)","u":"Services, when an option is appropriate."},"52.217-9":{"t":"Option to Extend the Term of the Contract","k":"C","c":"FAR 17.203(g)","u":"When an option to extend the term is appropriate and notice terms are needed."},"52.219-6":{"t":"Notice of Total Small Business Set-Aside","k":"C","c":"FAR 19.104-3(a)","u":"Total small business set-asides."},"52.219-14":{"t":"Limitations on Subcontracting","k":"C","c":"FAR 19.104(c)","u":"Set-asides subject to limitations on subcontracting."},"52.222-6":{"t":"Construction Wage Rate Requirements","k":"C","c":"FAR 22.402-4(a)(1)","u":"Construction over $2,000 performed within the United States."},"52.222-41":{"t":"Service Contract Labor Standards","k":"C","c":"FAR 22.1002-2(b)(1)","u":"Services subject to the Service Contract Labor Standards statute, over $2,500."},"52.228-15":{"t":"Performance and Payment Bonds: Construction","k":"C","c":"FAR 28.102-3(a)","u":"Construction above $150,000. Performance and payment bonds."},"52.232-5":{"t":"Payments under Fixed-Price Construction Contracts","k":"C","c":"FAR 32.111(a)(5)","u":"Fixed-price construction. Payments as the work progresses."},"52.232-18":{"t":"Availability of Funds","k":"C","c":"FAR 32.706-1(a)","u":"Charged to new fiscal year funds, with the action started before those funds are available."},"52.232-19":{"t":"Availability of Funds for the Next Fiscal Year","k":"C","c":"FAR 32.706-1(b)","u":"One-year indefinite-quantity or requirements contracts for services that run past the first fiscal year."},"52.232-25":{"t":"Prompt Payment","k":"C","c":"FAR 32.908(c)","u":"Prompt payment for buys other than construction and architect-engineer."},"52.232-27":{"t":"Prompt Payment for Construction Contracts","k":"C","c":"FAR 32.908(b)","u":"All construction. Prompt payment for construction."},"52.232-36":{"t":"Payment by Third Party","k":"C","c":"FAR 32.1110(d)","u":"Payment by charge to a third party account, such as the Government purchase card."},"52.233-1":{"t":"Disputes","k":"C","c":"FAR 33.205-9(a)","u":"Solicitations and contracts. Commercial buys pick it up through 52.212-4."},"52.236-2":{"t":"Differing Site Conditions","k":"C","c":"FAR 36.101-7(a)","u":"Fixed-price construction expected to exceed the SAT."},"52.236-3":{"t":"Site Investigation and Conditions Affecting the Work","k":"C","c":"FAR 36.101-7(a)","u":"Fixed-price construction expected to exceed the SAT."},"52.242-14":{"t":"Suspension of Work","k":"C","c":"FAR 42.1005(a)","u":"Fixed-price construction or architect-engineer contracts."},"52.243-1":{"t":"Changes: Fixed Price","k":"C","c":"FAR 43.305(a)(1)","u":"Fixed-price supplies. Alternates cover services. Construction uses 52.243-4."},"52.243-4":{"t":"Changes","k":"C","c":"FAR 43.305(d)","u":"Fixed-price construction expected to exceed the SAT. The construction changes clause."},"52.246-2":{"t":"Inspection of Supplies: Fixed-Price","k":"C","c":"FAR 46.302","u":"Fixed-price supplies."},"52.246-4":{"t":"Inspection of Services: Fixed-Price","k":"C","c":"FAR 46.304","u":"Fixed-price services expected to exceed the SAT."},"52.246-12":{"t":"Inspection of Construction","k":"C","c":"FAR 46.312","u":"Fixed-price construction expected to exceed the SAT."},"52.249-1":{"t":"Termination for Convenience of the Government (Fixed-Price) (Short Form)","k":"C","c":"FAR 49.502(a)(1)","u":"Fixed-price buys at or below the SAT. Short-form termination for convenience."},"52.249-2":{"t":"Termination for Convenience of the Government (Fixed-Price)","k":"C","c":"FAR 49.502(b)(1)(i)","u":"Fixed-price buys above the SAT. Long-form termination for convenience."},"52.249-8":{"t":"Default (Fixed-Price Supply and Service)","k":"C","c":"FAR 49.504(a)(1)","u":"Fixed-price supply and service buys above the SAT. Default."},"52.249-10":{"t":"Default (Fixed-Price Construction)","k":"C","c":"FAR 49.504(c)(1)","u":"Fixed-price construction. Default."},"252.225-7040":{"t":"Contractor Personnel Supporting U.S. Armed Forces Deployed Outside the United States","k":"C","c":"DFARS 225.771-5(a) (Class Deviation 2026-O0041)","u":"Performance in a designated operational area with contractor personnel supporting U.S. forces deployed outside the United States."},"252.232-7003":{"t":"Electronic Submission of Payment Requests and Receiving Reports","k":"C","c":"DFARS 232.7004(a) (Class Deviation 2026-O0022)","u":"DoD buys where payment requests and receiving reports go in electronically."},"252.232-7006":{"t":"Wide Area WorkFlow Payment Instructions","k":"C","c":"DFARS 232.7004(b) (Class Deviation 2026-O0022)","u":"Used with 252.232-7003. WAWF routing and payment instructions."},"252.232-7007":{"t":"Limitation of Government's Obligation","k":"C","c":"DFARS 232.706-70 (Class Deviation 2026-O0022)","u":"Incrementally funded fixed-price contracts."}};
+const SC=[{"id":"gpc","name":"PURCHASE ORDER","lines":["Commercial supplies","$20,000 · firm-fixed-price","FAR Part 12 · one-time buy","Paid with the Government purchase card"],"in":["52.212-1","52.212-4","52.232-36"],"out":["52.249-1","52.249-8","52.217-9","52.236-2","52.216-18","252.232-7007","52.222-6","52.243-1","52.232-5"]},{"id":"csup","name":"COMMERCIAL SUPPLIES","lines":["Commercial supplies","$90,000 · firm-fixed-price","FAR Part 12 · evaluation factors used","Invoiced and paid through WAWF"],"in":["52.212-1","52.212-2","52.212-4","252.232-7003","252.232-7006","52.204-7"],"out":["52.249-2","52.249-8","52.236-2","52.222-6","52.232-36","52.217-8","52.216-22","252.232-7007","52.243-1","52.232-5","52.228-15"]},{"id":"csvc","name":"COMMERCIAL SERVICES","lines":["Commercial services","$400,000 · firm-fixed-price","FAR Part 12 · base year plus option years","Service Contract Labor Standards apply","Total small business set-aside","Funds available now"],"in":["52.212-1","52.212-4","52.217-8","52.217-9","52.222-41","52.219-6","52.219-14","252.232-7003","252.232-7006"],"out":["52.249-2","52.249-8","52.246-4","52.236-3","52.242-14","52.246-12","52.232-36","52.216-18","52.232-18","52.249-10"]},{"id":"con","name":"CONSTRUCTION","lines":["Construction · renovate a dormitory","$1,200,000 · firm-fixed-price","Not commercial · performed in the United States","Liquidated damages determined appropriate"],"in":["52.236-2","52.236-3","52.211-10","52.211-12","52.228-15","52.222-6","52.243-4","52.242-14","52.246-12","52.232-5","52.232-27","52.249-10"],"out":["52.212-4","52.212-1","52.249-8","52.243-1","52.222-41","52.217-8","52.232-25","52.246-4","52.249-1","52.246-2"]},{"id":"dcon","name":"DEPLOYED CONSTRUCTION","lines":["Construction · repair a perimeter road","Firm-fixed-price · not commercial","Performed outside the United States","Designated operational area · contractor personnel support deployed U.S. forces"],"in":["52.232-5","52.232-27","52.249-10","52.242-14","52.211-10","252.225-7040"],"out":["52.222-6","52.222-41","52.212-4","52.249-8","52.232-25","52.243-1","52.217-8","52.246-2"]},{"id":"svc","name":"SERVICES · NEW FISCAL YEAR","lines":["Services · not commercial","$600,000 · firm-fixed-price · base plus options","Awarded in September for an October 1 start","New fiscal year funds not yet available","Service Contract Labor Standards apply"],"in":["52.232-18","52.217-8","52.217-9","52.222-41","52.249-2","52.249-8","52.246-4","52.233-1","52.232-25"],"out":["52.212-4","52.232-19","252.232-7007","52.236-2","52.249-10","52.232-5","52.216-22","52.232-36","52.249-1","52.232-27"]},{"id":"idiq","name":"IDIQ SUPPLIES","lines":["Supplies · not commercial","Indefinite-delivery, indefinite-quantity","$2,000,000 ceiling · fixed-price orders","Total small business set-aside"],"in":["52.216-18","52.216-19","52.216-22","52.219-6","52.219-14","52.246-2","52.249-2","52.249-8","52.243-1"],"out":["52.217-8","52.222-41","52.236-3","52.212-1","52.232-19","52.246-12","52.249-10","52.232-5","52.236-2"]},{"id":"incr","name":"INCREMENTAL FUNDING","lines":["Services · not commercial","$3,000,000 · firm-fixed-price","Incrementally funded with current-year funds","Full and open competition","Service Contract Labor Standards apply"],"in":["252.232-7007","52.249-2","52.249-8","52.246-4","52.233-1","52.232-25","52.222-41"],"out":["52.232-18","52.212-4","52.236-2","52.232-5","52.232-27","52.216-22","52.219-6","52.232-36","52.249-10","52.211-12"]}];
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id)};
+  var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var IDS=Object.keys(CL), CONTRACTS=5, WAVE=10, ROWH=32, MAXJ=6, MASTER=3;
+  var FALL=[11,9.5,8,7,6]; // seconds to cross an empty well, per contract
+
+  /* ---------- storage ---------- */
+  var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+  var prog={}; try{prog=JSON.parse(store.get('farcade_cc_prog')||'{}')||{}}catch(e){prog={}}
+  function pr(id){return prog[id]||(prog[id]={s:0,n:0})}       // s: correct in a row, n: times seen
+  function saveProg(){store.set('farcade_cc_prog',JSON.stringify(prog))}
+  function mastered(id){return (prog[id]&&prog[id].s>=MASTER)}
+  function best(){return +(store.get('farcade_cc_best')||0)}
+  var sfxOn=store.get('farcade_cc_sfx')!=='0';
+
+  /* ---------- sound ---------- */
+  var ac=null;
+  function beep(f,d,w,type){ if(!sfxOn)return; try{
+    if(!ac){var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;ac=new AC()}
+    if(ac.state==='suspended')ac.resume();
+    var t=ac.currentTime+(w||0),o=ac.createOscillator(),g=ac.createGain();
+    o.type=type||'square';o.frequency.value=f;g.gain.setValueAtTime(.05,t);g.gain.exponentialRampToValueAtTime(.001,t+d);
+    o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+d);}catch(e){} }
+  var sfx={ok:function(){beep(660,.06);beep(990,.1,.06)},bad:function(){beep(180,.2,0,'sawtooth')},
+    award:function(){[523,659,784,1047].forEach(function(f,i){beep(f,.12,i*.09)})},
+    over:function(){[392,330,262,196].forEach(function(f,i){beep(f,.18,i*.14,'sawtooth')})},tick:function(){beep(440,.04)}};
+
+  /* ---------- state ---------- */
+  var G=null, raf=0, last=0;
+  var well=$('well'), block=$('block'), stackEl=$('stack');
+  function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+
+  function pickContracts(){
+    var easy=shuffle(SC.filter(function(s){return s.id==='gpc'||s.id==='csup'}));
+    var rest=shuffle(SC.filter(function(s){return s!==easy[0]}));
+    return [easy[0]].concat(rest.slice(0,CONTRACTS-1));
+  }
+  function buildWave(sc){
+    // unmastered clauses first, then random; about half in, half out
+    function order(list){return shuffle(list.slice()).sort(function(a,b){return (mastered(a)?1:0)-(mastered(b)?1:0)})}
+    var nIn=Math.min(sc.in.length,Math.ceil(WAVE/2)), nOut=Math.min(sc.out.length,WAVE-nIn);
+    var w=order(sc.in).slice(0,nIn).map(function(id){return {id:id,ans:'in'}})
+      .concat(order(sc.out).slice(0,nOut).map(function(id){return {id:id,ans:'out'}}));
+    return shuffle(w);
+  }
+
+  function newRun(){
+    G={cons:pickContracts(),ci:0,score:0,streak:0,bestStreak:0,right:0,total:0,junk:[],hints:3,misses:[],
+       wave:[],wi:0,cur:null,y:0,state:'idle',hinted:false,t0:0};
+    stackEl.innerHTML=''; $('hintN').textContent=G.hints; $('bHint').disabled=false;
+    hud(); showContract();
+  }
+  function hud(){
+    $('sScore').lastChild.textContent=G.score.toLocaleString('en-US');
+    $('sStreak').lastChild.textContent='x'+mult().toFixed(1).replace('.0','');
+    $('sCon').lastChild.textContent=(G.ci+1)+'/'+CONTRACTS;
+  }
+  function mult(){return Math.min(4,1+Math.floor(G.streak/3)*.5)}
+  function show(id,on){$(id).classList.toggle('on',on)}
+
+  function showContract(){
+    var sc=G.cons[G.ci];
+    $('buyName').textContent=sc.name;
+    $('buyLines').innerHTML=''; $('cLines').innerHTML='';
+    sc.lines.forEach(function(l){var s=document.createElement('span');s.textContent=l;$('buyLines').appendChild(s);
+      var d=document.createElement('div');d.textContent=l;$('cLines').appendChild(d)});
+    $('cHead').textContent='CONTRACT '+(G.ci+1)+' OF '+CONTRACTS;
+    $('cName').textContent=sc.name;
+    G.wave=buildWave(sc); G.wi=0; G.state='intro'; block.style.display='none';
+    hud(); show('ovCon',true);
+  }
+
+  function limitLine(){ $('limit').style.bottom=(MAXJ*ROWH)+'px'; }
+
+  function spawn(){
+    if(G.wi>=G.wave.length){ award(); return; }
+    var it=G.wave[G.wi], c=CL[it.id], p=pr(it.id), isNew=p.n===0;
+    G.cur=it; G.hinted=false; G.isNew=isNew;
+    $('bNum').textContent=it.id; $('bTitle').textContent=c.t; $('bUse').textContent='Used for: '+c.u;
+    $('bKind').textContent=c.k==='P'?'PROVISION':'CLAUSE';
+    $('bNew').style.display=isNew?'':'none';
+    block.className=(isNew?'showuse ':'')+((!isNew&&G.ci>=3&&mastered(it.id))?'notitle':'');
+    block.style.display='block'; block.style.opacity=1; block.style.transition='none';
+    G.y=-10; G.t0=performance.now(); place(0);
+    G.state='fall'; $('fact').classList.remove('on');
+  }
+  function place(x){ block.style.transform='translate('+x+'px,'+G.y+'px)'; }
+  function floorY(){ return well.clientHeight-G.junk.length*ROWH-block.offsetHeight-4; }
+  function speed(){ var T=FALL[Math.min(G.ci,FALL.length-1)]*(G.isNew?1.5:1)*(G.hinted?1.15:1); return (well.clientHeight-block.offsetHeight)/T; }
+
+  function frame(t){
+    raf=requestAnimationFrame(frame);
+    var dt=Math.min(.05,(t-last)/1000); last=t;
+    if(!G||G.state!=='fall')return;
+    G.y+=speed()*dt;
+    var f=floorY();
+    if(G.y>=f){ G.y=f; place(0); decide(null); return; }
+    place(0);
+  }
+
+  function decide(side){
+    if(!G||G.state!=='fall')return;
+    var it=G.cur, c=CL[it.id], p=pr(it.id), ok=side===it.ans;
+    G.state='anim'; G.total++; p.n++;
+    var gut=side==='in'?$('gIn'):side==='out'?$('gOut'):null;
+    if(ok){
+      var frac=1-Math.max(0,Math.min(1,G.y/Math.max(1,floorY())));
+      var pts=Math.round((100+(G.hinted?0:Math.round(50*frac)))*mult());
+      G.streak++; G.bestStreak=Math.max(G.bestStreak,G.streak); G.right++; G.score+=pts; p.s++;
+      sfx.ok(); toast('+'+pts, side==='in'?'var(--cyan)':'var(--pink)');
+      fact(it.id+' · '+c.u);
+      flash(gut,'hit'); fly(side,function(){ G.wi++; hud(); spawn(); });
+    }else{
+      G.streak=0; p.s=0; sfx.bad();
+      G.misses.push({id:it.id,said:side,ans:it.ans,buy:G.cons[G.ci].name});
+      if(gut)flash(gut,'bad');
+      block.style.transition='opacity .2s'; block.style.opacity=0;
+      setTimeout(function(){ addJunk(it.id); why(it,side); },RM?0:200);
+    }
+    saveProg(); hud();
+  }
+  function flash(el,cls){ if(!el)return; el.classList.add(cls); setTimeout(function(){el.classList.remove(cls)},260); }
+  function fly(side,done){
+    if(RM){ block.style.display='none'; done(); return; }
+    block.style.transition='transform .2s ease-in,opacity .2s ease-in';
+    block.style.transform='translate('+(side==='in'?-1:1)*well.clientWidth*.7+'px,'+G.y+'px) scale(.6)';
+    block.style.opacity=0; setTimeout(done,210);
+  }
+  function toast(txt,color){ var t=$('toast'); t.textContent=txt; t.style.color=color; t.classList.remove('go'); void t.offsetWidth; t.classList.add('go'); }
+  var factT=0;
+  function fact(txt){ var f=$('fact'); f.textContent=txt; f.classList.add('on'); clearTimeout(factT); factT=setTimeout(function(){f.classList.remove('on')},2600); }
+
+  function addJunk(id){ G.junk.push(id); var d=document.createElement('div'); d.className='junk'; d.textContent=id; stackEl.appendChild(d); }
+  function clearJunk(n){
+    var rows=stackEl.querySelectorAll('.junk:not(.gone)');
+    for(var i=0;i<n&&G.junk.length;i++){ G.junk.pop(); var el=rows[rows.length-1-i]; if(!el)continue;
+      if(RM){ el.remove(); continue; }
+      el.classList.add('gone'); (function(el){ setTimeout(function(){el.remove()},360); })(el); }
+  }
+
+  function why(it,side){
+    var c=CL[it.id];
+    $('wHead').textContent=side?'NOT QUITE':'TIME RAN OUT';
+    $('wNum').textContent=it.id; $('wTitle').textContent=c.t;
+    var said=side?('You sent it <span class="'+side+'">'+side.toUpperCase()+'</span>. '):'It landed unsorted. ';
+    $('wVerdict').innerHTML=said+(it.ans==='in'?'It belongs <span class="in">IN</span> this buy.':'It stays <span class="out">OUT</span> of this buy.');
+    $('wUse').textContent='Used for: '+c.u; $('wCite').textContent='Prescribed at '+c.c;
+    G.state='why'; show('ovWhy',true);
+  }
+  function afterWhy(){
+    show('ovWhy',false);
+    if(G.junk.length>=MAXJ){ end(false); return; }
+    G.wi++; spawn();
+  }
+
+  function award(){
+    G.state='anim'; block.style.display='none';
+    var bonus=500*(G.ci+1); G.score+=bonus; sfx.award(); toast('AWARDED +'+bonus,'var(--gold)'); clearJunk(2); hud();
+    setTimeout(function(){ G.ci++; if(G.ci>=CONTRACTS){ G.ci=CONTRACTS-1; end(true); } else showContract(); },RM?300:1100);
+  }
+
+  function end(won){
+    G.state='over'; block.style.display='none'; if(!won)sfx.over();
+    var nb=G.score>best(); if(nb)store.set('farcade_cc_best',G.score);
+    $('eHead').textContent=won?'FIVE AWARDS':'KICKED BACK';
+    $('eHead').style.color=won?'var(--gold)':'var(--red)';
+    $('eSub').textContent=(won?'Clean file. Every contract awarded.':'The stack hit the line and the solicitation came back.')+(nb?' New best score.':'');
+    $('eScore').textContent=G.score.toLocaleString('en-US');
+    $('eAcc').textContent=(G.total?Math.round(G.right/G.total*100):0)+'%';
+    $('eStreak').textContent=G.bestStreak;
+    var L=$('list'); L.innerHTML='';
+    $('eMissHd').textContent=G.misses.length?'AFTER ACTION: WHAT YOU MISSED':'No misses this run.';
+    G.misses.forEach(function(m){ var c=CL[m.id], d=document.createElement('div'); d.className='li';
+      d.innerHTML='<b></b> <span class="t"></span><span class="w"></span><span class="u"></span><span class="c"></span>';
+      d.children[0].textContent=m.id; d.children[1].textContent=c.t;
+      d.children[2].textContent=' · '+m.buy+': belongs '+m.ans.toUpperCase()+(m.said?', you sent it '+m.said.toUpperCase():', not sorted in time');
+      d.children[3].textContent='Used for: '+c.u; d.children[4].textContent='Prescribed at '+c.c; L.appendChild(d); });
+    show('ovEnd',true);
+  }
+
+  /* ---------- binder ---------- */
+  var binderFrom='ovTitle';
+  function openBinder(from){
+    binderFrom=from; show(from,false);
+    var n=IDS.filter(mastered).length;
+    $('bSub').textContent=n+' of '+IDS.length+' mastered. Three right in a row masters a clause.';
+    var L=$('blist'); L.innerHTML='';
+    IDS.forEach(function(id){ var c=CL[id], p=prog[id]||{s:0,n:0}, d=document.createElement('div'); d.className='li';
+      var st=p.s>=MASTER?['MASTERED','m']:p.n?[Math.min(p.s,MASTER)+'/'+MASTER,'l']:['NEW',''];
+      d.innerHTML='<span class="s '+st[1]+'">'+st[0]+'</span><b></b><br><span class="t"></span><span class="u"></span><span class="c"></span>';
+      d.children[1].textContent=id; d.children[3].textContent=c.t+' ('+(c.k==='P'?'provision':'clause')+')';
+      d.children[4].textContent='Used for: '+c.u; d.children[5].textContent='Prescribed at '+c.c; L.appendChild(d); });
+    show('ovBinder',true); $('ovBinder').firstElementChild.scrollTop=0;
+  }
+  function titleStats(){ $('tBest').textContent=best().toLocaleString('en-US'); $('tMast').textContent=IDS.filter(mastered).length+'/'+IDS.length; }
+
+  /* ---------- input ---------- */
+  function hint(){
+    if(!G||G.state!=='fall'||G.hints<=0||G.hinted||G.isNew)return;
+    G.hints--; G.hinted=true; block.classList.add('showuse'); block.classList.remove('notitle'); sfx.tick();
+    $('hintN').textContent=G.hints; if(!G.hints)$('bHint').disabled=true;
+  }
+  var pausedFrom=null;
+  function pause(){ if(!G||(G.state!=='fall'))return; pausedFrom=G.state; G.state='pause'; show('ovPause',true); }
+  function resume(){ if(!G||G.state!=='pause')return; show('ovPause',false); G.state=pausedFrom; last=performance.now(); }
+
+  $('bIn').addEventListener('click',function(){decide('in')});
+  $('bOut').addEventListener('click',function(){decide('out')});
+  $('bHint').addEventListener('click',hint);
+  $('menuBtn').addEventListener('click',pause);
+  $('resumeBtn').addEventListener('click',resume);
+  $('quitBtn').addEventListener('click',function(){ show('ovPause',false); end(false); });
+  $('sfxBtn').addEventListener('click',function(){ sfxOn=!sfxOn; store.set('farcade_cc_sfx',sfxOn?'1':'0'); this.textContent='SOUND: '+(sfxOn?'ON':'OFF'); if(sfxOn)sfx.tick(); });
+  $('sfxBtn').textContent='SOUND: '+(sfxOn?'ON':'OFF');
+  $('startBtn').addEventListener('click',function(){ show('ovTitle',false); sfx.tick(); newRun(); });
+  $('againBtn').addEventListener('click',function(){ show('ovEnd',false); newRun(); });
+  $('conGo').addEventListener('click',function(){ show('ovCon',false); sfx.tick(); last=performance.now(); spawn(); });
+  $('whyGo').addEventListener('click',afterWhy);
+  $('binderBtn').addEventListener('click',function(){openBinder('ovTitle')});
+  $('binder2Btn').addEventListener('click',function(){openBinder('ovEnd')});
+  $('binderClose').addEventListener('click',function(){ show('ovBinder',false); titleStats(); show(binderFrom,true); });
+
+  // swipe on the well
+  var sx=null;
+  well.addEventListener('pointerdown',function(e){sx=e.clientX});
+  well.addEventListener('pointerup',function(e){ if(sx===null)return; var dx=e.clientX-sx; sx=null; if(Math.abs(dx)>36)decide(dx<0?'in':'out'); });
+
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var k=e.key.length===1?e.key.toLowerCase():e.key;
+    var on=function(id){return $(id).classList.contains('on')};
+    if(k==='Enter'||k===' '){
+      var b=on('ovCon')?'conGo':on('ovWhy')?'whyGo':on('ovPause')?'resumeBtn':on('ovBinder')?'binderClose':on('ovEnd')?'againBtn':on('ovTitle')?'startBtn':null;
+      if(b){ e.preventDefault(); $(b).click(); } return; }
+    if(k==='ArrowLeft'||k==='a'){ e.preventDefault(); decide('in'); }
+    else if(k==='ArrowRight'||k==='d'){ e.preventDefault(); decide('out'); }
+    else if(k==='h'||k==='ArrowUp'){ e.preventDefault(); hint(); }
+    else if(k==='p'||k==='Escape'){ if(G&&G.state==='pause')resume(); else pause(); }
+  });
+  document.addEventListener('visibilitychange',function(){ if(document.hidden)pause(); });
+
+  limitLine(); titleStats();
+  last=performance.now(); raf=requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
