@@ -224,10 +224,146 @@ details li strong{color:var(--ink)}
 .legal{margin-top:16px;font-family:'VT323',monospace;font-size:15px;color:#5e548a;line-height:1.3}
 :focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ---------- FARCADE / premium interactive handheld ---------- */
+/* Presentation-only layer. The original cartridge, input and launch logic remain intact. */
+:root{
+  --void:#0b0e13;--panel:#151b21;--pink:#a4fa48;--cyan:#b2e3cb;
+  --gold:#f5c778;--ink:#f5f4ed;--dim:#a2acb1;
+  --shell:#d5d7cb;--shell-hi:#fbfbf1;--shell-lo:#969e95;
+  --glass:#202a2c;--lcd:#132523;
+  --w:min(92vw,460px);
+}
+html{scroll-behavior:smooth}
+body{
+  min-height:100svh;overflow-x:hidden;padding:0 20px 44px;
+  background:radial-gradient(ellipse 44% 40% at 50% 40%,rgba(122,180,141,.17),transparent 80%),
+    radial-gradient(ellipse 45% 42% at 13% 79%,rgba(101,134,140,.12),transparent 80%),
+    radial-gradient(ellipse 50% 60% at 90% 6%,rgba(160,180,147,.09),transparent 76%),
+    #0b0e13;
+  background-attachment:fixed;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.23;z-index:0;
+  background-image:linear-gradient(rgba(230,245,232,.08) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(230,245,232,.08) 1px,transparent 1px);
+  background-size:44px 44px;
+  mask-image:linear-gradient(180deg,black,transparent 92%);
+}
+body::after{
+  content:"";position:fixed;left:50%;top:33%;width:min(76vw,760px);height:min(76vw,760px);
+  border-radius:50%;transform:translate(-50%,-50%);z-index:0;pointer-events:none;
+  background:radial-gradient(circle,rgba(141,207,155,.14),rgba(141,207,155,.05) 40%,transparent 71%);
+  filter:blur(20px);
+}
+.sitebar,.intro,.device,.below,.ambient-orbit{position:relative;z-index:1}
+.sitebar{
+  width:min(1120px,100%);height:68px;flex:none;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  border-bottom:1px solid rgba(224,236,220,.13);margin:0 auto 14px;
+  font-family:'Inter',system-ui,sans-serif;
+}
+.sitebar .mark{display:flex;align-items:center;gap:13px;color:#f5f4ed;text-decoration:none;font-weight:800;font-size:17px;letter-spacing:-.055em}
+.sitebar .mark small{color:#9aef69;letter-spacing:.18em;font-size:10px;font-weight:700;border-left:1px solid rgba(255,255,255,.2);padding-left:14px}
+.sitebar .site-link{
+  display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:1px solid rgba(237,245,228,.26);
+  border-radius:100px;color:#e8eddf;text-decoration:none;font-size:11px;font-weight:600;letter-spacing:.07em;
+  transition:background .2s,border-color .2s,transform .2s;
+}
+.sitebar .site-link:hover{background:rgba(255,255,255,.08);border-color:rgba(237,245,228,.5);transform:translateY(-1px)}
+.intro{text-align:center;margin:18px auto 24px;max-width:730px;font-family:'Inter',system-ui,sans-serif}
+.intro .eyebrow{font-size:10px;letter-spacing:.32em;text-transform:uppercase;font-weight:700;color:#aceb81}
+.intro h1{font-size:clamp(29px,4.5vw,54px);line-height:1.09;font-weight:800;letter-spacing:-.06em;margin:12px 0 10px;color:#f5f4ed}
+.intro h1 span{color:#aff27c}
+.intro p{font-size:clamp(12px,1.6vw,15px);line-height:1.6;color:#aeb7b2;max-width:540px;margin:auto}
+.device{
+  background:linear-gradient(145deg,#fffef2 0%,#e2e6d9 18%,#c4cec3 65%,#9ca99e 100%);
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:3.1em 3.1em 7em 3.1em;
+  box-shadow:inset .25em .35em .75em rgba(255,255,255,.85),
+    inset -.9em -1.5em 2.2em rgba(46,68,61,.25),
+    0 .2em .05em #81928a,0 1.3em 0 -.65em #5d726a,
+    0 3em 4em rgba(0,0,0,.45),0 5em 10em rgba(0,0,0,.3),
+    0 0 7em rgba(140,235,149,.12);
+  isolation:isolate;
+  transition:filter .35s,box-shadow .35s;
+}
+.device::before{content:"";position:absolute;inset:1.15em;border:1px solid rgba(255,255,255,.32);border-radius:2em 2em 6.1em 2em;pointer-events:none}
+.device:not(.on) .screen{box-shadow:inset 0 0 3em #030807}
+.device.on{box-shadow:inset .25em .35em .75em rgba(255,255,255,.85),
+    inset -.9em -1.5em 2.2em rgba(46,68,61,.25),0 .2em .05em #81928a,
+    0 1.3em 0 -.65em #5d726a,0 3em 4em rgba(0,0,0,.45),
+    0 5em 10em rgba(0,0,0,.3),0 0 8em rgba(164,250,72,.2)}
+.toprow .brand{color:#33443a;opacity:1;font-weight:700}
+.toprow .brand b{color:#4a835b}
+.power{color:#4c6356}.power i{background:radial-gradient(circle at 30% 25%,#edf4e7,#8eaa92 65%,#536b5f);box-shadow:0 .35em 0 #627a6d,inset 0 .1em 0 #fff}
+.power i::before{background:#415d4c}.power i::after{border-color:#415d4c;border-top-color:transparent}
+.bezel{background:linear-gradient(150deg,#273531,#111d1e 72%,#33423a);border:1px solid rgba(18,26,23,.85);
+  box-shadow:inset 0 0 0 .2em #4a6058,inset 0 .4em 1em #060e0d,0 .25em .4em rgba(255,255,255,.32)}
+.screen{background:#071311;border-radius:.7em}
+.device.on .screen{background:radial-gradient(circle at 50% 10%,#17382e,#10201e 75%);
+  box-shadow:0 0 2.8em rgba(150,246,147,.18),inset 0 0 2em rgba(0,0,0,.3)}
+.screen::after{opacity:.5;background:repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 4px)}
+.led{color:#708477}.led i{background:#43564b}.device.on .led i{background:#a4fa48;box-shadow:0 0 1em #a4fa48}
+.model{color:#88a194}
+.dpad button,.dpad .hub{background:linear-gradient(140deg,#455d51,#253a32);box-shadow:0 .4em 0 #192d24,inset 0 .12em 0 rgba(255,255,255,.13)}
+.dpad button:active,.dpad button.hit{background:#5a7962;box-shadow:0 .15em 0 #192d24}
+.dpad .u::after{border-bottom-color:#a9c2ae}.dpad .d::after{border-top-color:#a9c2ae}
+.dpad .l::after{border-right-color:#a9c2ae}.dpad .r::after{border-left-color:#a9c2ae}
+.ab .a{background:radial-gradient(circle at 34% 25%,#dbffad,#a4e872 65%,#6db45a);box-shadow:0 .5em 0 #4f8250;color:#243b29}
+.ab .b{background:radial-gradient(circle at 34% 25%,#e8f8e4,#a8c6b1 65%,#799a86);box-shadow:0 .5em 0 #4d685a;color:#243b29}
+.pills button{color:#536759}.pills i{background:linear-gradient(#5f7969,#344a3d);box-shadow:0 .35em 0 #283c30}
+.grill i{background:#73877a;box-shadow:inset 0 .12em .1em #36473b}
+.v-off span{color:#7fae91}
+.logo{color:#b6f78b;text-shadow:.09em .09em 0 #315a3e,0 0 1em rgba(161,247,139,.45)}
+.logo b{color:#f1f5de;text-shadow:.09em .09em 0 #647d69,0 0 1em rgba(191,235,184,.35)}
+.free{color:#a3c4b4}
+.sub{color:#f5c778}
+.bar{border-color:#a4fa48}.bar i{background:linear-gradient(90deg,#a4fa48,#b2e3cb)}
+.cart{background:linear-gradient(155deg,#627e6b,#304d44 75%);box-shadow:inset 0 .2em rgba(255,255,255,.18),0 0 1.6em color-mix(in srgb,var(--neon) 35%,transparent)}
+.cart::before{background-color:#223e34}.cart .label{background:#0e1c1a}
+.dname{border-color:#46665a}.go{border-radius:.35em;box-shadow:.25em .25em 0 #6f945a}
+.go.soon{background:#425047;color:#aab5a9}
+.below{width:min(94vw,620px);margin-top:30px}
+.keys{color:#a9b4ac;font-family:'Inter',system-ui,sans-serif;font-size:11px;line-height:1.9;letter-spacing:.02em}
+.keys b{color:#d8edc8;font-weight:700}
+details{background:rgba(18,30,28,.7);border:1px solid rgba(203,234,203,.19);border-radius:12px;backdrop-filter:blur(12px)}
+summary{font-size:12px;padding:15px 18px;color:#dfe9d9}
+details li{border-color:rgba(255,255,255,.1)}
+details li a,details li strong{color:#aff27c}
+.legal{font-family:'Inter',system-ui,sans-serif;font-size:9px;line-height:1.7;color:#7d8e85}
+#takeover{background:#071411}
+#offsite a{border-radius:8px;box-shadow:0 5px #739755}
+:focus-visible{outline:3px solid #a4fa48;outline-offset:4px}
+@media(min-width:800px){
+  .intro{margin-top:18px;margin-bottom:26px}
+  .device{filter:drop-shadow(0 22px 34px rgba(0,0,0,.16))}
+}
+@media(max-width:520px){
+  body{padding:0 12px 28px}
+  .sitebar{height:60px;margin-bottom:10px}
+  .intro{margin:14px auto 18px}
+  .intro h1{margin:8px 0}
+  .device{--w:min(94vw,440px)}
+  .below{margin-top:25px}
+  .sitebar .mark{font-size:15px}
+}
+@media(prefers-reduced-motion:reduce){
+  .device,.sitebar .site-link{transition:none!important}
+}
+
 </style>
 </head>
 <body>
 
+<header class="sitebar">
+  <a class="mark" href="index.html" aria-label="KTHQ home">KTHQ <small>FARCADE</small></a>
+  <a class="site-link" href="tools.html">BACK TO KTHQ <span aria-hidden="true">↗</span></a>
+</header>
+<section class="intro" aria-labelledby="arcade-heading">
+  <div class="eyebrow">KTHQ / The Contracting Arcade</div>
+  <h1 id="arcade-heading">Regulations. <span>Reimagined.</span></h1>
+  <p>A pocket-sized arcade for mastering federal acquisition. Power on, pick a cartridge, and play your way through contracting.</p>
+</section>
 <div class="device" id="device">
   <div class="toprow">
     <div class="brand px">FAR-<b>CADE</b></div>
