@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Air Show Act Directory and Pricing | Air Show in a Box | KTHQ</title>
+  <meta name="description" content="Who performs at military air shows, what bases paid, and whether each act was competed. Built from public award data." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="air-show.css?v=20261111" />
+</head>
+<body>
+<nav class="navbar" id="navbar" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html" class="active">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="working-theory/">Leadership</a></li>
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main class="asb" id="main">
+<div id="asb-chrome"></div>
+<div class="eyebrow">Air Show in a Box &middot; Step 4</div>
+  <h1>Act Directory and Pricing</h1>
+  <p class="lede">Who performs at military air shows, what bases paid them, and whether each buy was competed. Every number here comes from public contract award records.</p>
+
+  <div class="tiles" id="tiles"></div>
+
+  <section class="why" aria-labelledby="whyh">
+    <h3 id="whyh">Why this page exists</h3>
+    <ul>
+      <li><b>The customer picks the acts.</b> Your job is to buy them correctly. To do that you need to know whether the act they picked has one source or several.</li>
+      <li><b>That answer drives your file.</b> One source means you document why only that source is available. <span data-cite="far12|12.102(a)"></span> Several sources means quotes are realistic.</li>
+      <li><b>You still determine the price is fair and reasonable.</b> <span data-cite="far12|12.204(a)"></span> When there is one quote, what other bases paid for the same act is the comparison.</li>
+    </ul>
+  </section>
+
+  <div class="tabs" role="tablist" aria-label="Views">
+    <button class="tab" role="tab" id="t-types" aria-controls="p-types" aria-selected="true">Acts by type</button>
+    <button class="tab" role="tab" id="t-vendors" aria-controls="p-vendors" aria-selected="false">Performers</button>
+    <button class="tab" role="tab" id="t-price" aria-controls="p-price" aria-selected="false">Price check</button>
+  </div>
+
+  <section id="p-types" role="tabpanel" aria-labelledby="t-types">
+    <div class="bar">
+      <input type="search" id="q-types" placeholder="Search an aircraft or act (P-51, MiG, Tora...)" aria-label="Search act types" />
+      <span id="chips"></span>
+    </div>
+    <div class="legend"><span><i style="background:#e0705f"></i>Not competed</span><span><i style="background:#c9a227"></i>Competed, one offer</span><span><i style="background:#3fb98a"></i>Competed, two or more offers</span></div>
+    <div id="d-types"></div>
+    <div class="tablewrap"><table id="tb-types"><thead></thead><tbody></tbody></table></div>
+    <p class="note" style="margin-top:.6rem">Select a row to see the performers and every award behind it.</p>
+  </section>
+
+  <section id="p-vendors" role="tabpanel" aria-labelledby="t-vendors" hidden>
+    <div class="bar"><input type="search" id="q-vendors" placeholder="Search a performer or aircraft" aria-label="Search performers" /></div>
+    <div id="d-vendors"></div>
+    <div class="tablewrap"><table id="tb-vendors"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="p-price" role="tabpanel" aria-labelledby="t-price" hidden>
+    <h2>Is this quote in line with what others paid?</h2>
+    <p class="note">Pick the act, enter the quote, and get the comparison plus a paragraph you can adapt for your price determination.</p>
+    <div class="grid2">
+      <div><label for="pc-type">Act type</label><select id="pc-type"></select></div>
+      <div><label for="pc-vendor">Performer (optional)</label><select id="pc-vendor"></select></div>
+      <div><label for="pc-amt">Quoted price ($)</label><input type="number" id="pc-amt" min="0" step="100" placeholder="e.g. 8500" /></div>
+      <div><label for="pc-since">Compare against</label><select id="pc-since"><option value="2022">FY22 and later</option><option value="2018">FY18 and later</option><option value="0">All years</option></select></div>
+    </div>
+    <div id="pc-out" style="margin-top:1.2rem"></div>
+  </section>
+
+  <section class="method">
+    <h3 style="margin-top:0">Where the data comes from and its limits</h3>
+    <ul>
+      <li>Source: USASpending.gov contract awards, FY2007 to FY2026, all DoD components, pulled <span id="gen"></span>. Awards were matched on air show terms in the award description.</li>
+      <li>"Not competed" and offers received are what the buying office reported at award.</li>
+      <li>Source tags are calculated: <b>One dominant source</b> means one performer holds 75% or more of awards for that type. <b>Multiple sources</b> means five or more performers with repeat winners. <b>Limited data</b> means fewer than five awards.</li>
+      <li>About a third of act awards do not name an aircraft in the description. They appear under the performer but not under a type.</li>
+      <li>Commemorative Air Force is one contractor made up of many local wings, each with its own aircraft. A specific CAF aircraft is not interchangeable with another wing's.</li>
+      <li>Prices are award totals and can include lodging, fuel, or multiple aircraft. Read the description before comparing.</li>
+      <li>Funding rules for acts: <span data-cite="afman|6.3"></span><span data-cite="afman|6.4"></span> Sole source rules: <span data-cite="far12|12.102"></span> NAF buys: <span data-cite="naf|6.8"></span></li>
+    </ul>
+  </section>
+
+<script src="air-show.js?v=20261111"></script>
+<script>
+(function(){
+  const { el, $, money, pct, cite } = ASB; const mix = ASB.mix;
+  ASB.chrome('air-show-acts.html');
+  document.querySelectorAll('[data-cite]').forEach(s => { const [r, p] = s.dataset.cite.split('|'); s.replaceWith(cite(r, p)); });
+  const TAGC = { 'One dominant source': 'one', 'Few sources': 'few', 'Multiple sources': 'multi', 'Limited data': 'ltd' };
+  const TAGWHY = {
+    'One dominant source': 'One performer has won 75% or more of these awards. A single-source file for this act has the record behind it.',
+    'Few sources': 'A small number of performers fly this. Name what the customer needs that only one of them offers, or expect to ask more than one.',
+    'Multiple sources': 'Several performers have won this type at different bases. A claim that only one source exists does not match the record. A file here rests on what is specific to the chosen performer.',
+    'Limited data': 'Fewer than five awards on record. The record cannot show how many sources exist.'
+  };
+  let D, sortT = { k: 'n', d: -1 }, sortV = { k: 'n', d: -1 }, tagFilter = null;
+
+  ASB.loadData().then(init).catch(() => { $('#tiles').append(el('p', { text: 'The data file did not load. Confirm data/airshow_data.json is in place.' })); });
+
+  function init(d) {
+    D = d; const s = d.act_summary;
+    $('#gen').textContent = d.generated;
+    [[s.n.toLocaleString(), 'act awards on record'], [d.totals.act_vendors, 'performers'], [money(s.median), 'median act price'],
+     [pct(d.act_awards.filter(a => a.amt <= 15000).length, s.n) + '%', 'of acts at or under $15,000'],
+     [pct(s.not_competed + s.competed_one_offer, s.n) + '%', 'not competed or drew one offer']]
+      .forEach(([b, t]) => $('#tiles').append(el('div', { class: 'tile' }, el('b', { text: b }), el('span', { text: t }))));
+    ['One dominant source', 'Few sources', 'Multiple sources', 'Limited data'].forEach(t => $('#chips').append(el('button', { class: 'chip', 'aria-pressed': 'false', text: t, onclick: e => { tagFilter = tagFilter === t ? null : t; document.querySelectorAll('#chips .chip').forEach(c => c.setAttribute('aria-pressed', String(c.textContent === tagFilter))); drawTypes(); } }), ' '));
+    $('#q-types').addEventListener('input', drawTypes); $('#q-vendors').addEventListener('input', drawVendors);
+    document.querySelectorAll('.asb .tab').forEach(t => t.addEventListener('click', () => show(t.id.slice(2))));
+    const ts = $('#pc-type'); d.types.slice().sort((a, b) => a.type.localeCompare(b.type)).forEach(t => ts.append(el('option', { value: t.type, text: t.type + ' (' + t.n + ')' })));
+    ts.addEventListener('change', () => { fillPcVendors(); priceCheck(); }); ['pc-vendor', 'pc-amt', 'pc-since'].forEach(i => $('#' + i).addEventListener('input', priceCheck));
+    fillPcVendors(); drawTypes(); drawVendors(); priceCheck();
+    if (location.hash === '#price') show('price'); if (location.hash === '#performers') show('vendors');
+  }
+  function show(name) { ['types', 'vendors', 'price'].forEach(n => { $('#p-' + n).hidden = n !== name; $('#t-' + n).setAttribute('aria-selected', String(n === name)); }); }
+
+  function head(tb, cols, sort, redraw) { const tr = el('tr'); cols.forEach(c => { const th = el('th', { class: c.num ? 'num' : (c.cls || null), scope: 'col' }); if (c.k) th.append(el('button', { text: c.t + (sort.k === c.k ? (sort.d < 0 ? ' ▾' : ' ▴') : ''), 'aria-label': 'Sort by ' + c.t, onclick: () => { sort.d = sort.k === c.k ? -sort.d : (c.num ? -1 : 1); sort.k = c.k; redraw(); } })); else th.textContent = c.t; tr.append(th); }); tb.tHead.replaceChildren(tr); }
+  const cmp = s => (a, b) => { const x = a[s.k], y = b[s.k]; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * s.d; };
+  function pickRow(tr, fn) { tr.className = 'pick'; tr.tabIndex = 0; tr.addEventListener('click', fn); tr.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fn(); } }); return tr; }
+
+  function drawTypes() {
+    const q = $('#q-types').value.trim().toLowerCase();
+    head($('#tb-types'), [{ t: 'Act type', k: 'type' }, { t: 'Awards', k: 'n', num: 1 }, { t: 'Performers', k: 'vendors', num: 1 }, { t: 'Sources', k: 'tag' }, { t: 'Median', k: 'median', num: 1 }, { t: 'Middle half', cls: 'hide-sm' }, { t: 'How it was bought' }], sortT, drawTypes);
+    const rows = D.types.filter(t => (!tagFilter || t.tag === tagFilter) && (!q || (t.type + ' ' + t.top_vendor).toLowerCase().includes(q))).sort(cmp(sortT));
+    $('#tb-types').tBodies[0].replaceChildren(...rows.map(t => pickRow(el('tr', null,
+      el('td', null, el('b', { text: t.type })), el('td', { class: 'num', text: t.n }), el('td', { class: 'num', text: t.vendors }),
+      el('td', null, el('span', { class: 'tag ' + TAGC[t.tag], text: t.tag })), el('td', { class: 'num', text: money(t.median) }),
+      el('td', { class: 'hide-sm', text: money(t.p25) + ' to ' + money(t.p75) }), el('td', null, mix(t))), () => typeDetail(t))));
+    if (!rows.length) $('#tb-types').tBodies[0].append(el('tr', null, el('td', { colspan: 7, class: 'note', text: 'No act types match. Try the Performers tab: about a third of awards do not name an aircraft.' })));
+  }
+  function awardsTable(list) {
+    const tb = el('table', null, el('thead', null, el('tr', null, ...['FY', 'Performer', 'Buying office', 'Price', 'Competed', 'Offers', 'Description'].map((h, i) => el('th', { class: i === 3 || i === 5 ? 'num' : (i === 6 ? 'hide-sm' : null), scope: 'col', text: h })))), el('tbody'));
+    list.forEach(a => tb.tBodies[0].append(el('tr', null, el('td', { text: a.fy }), el('td', { text: a.vendor }), el('td', { text: a.office + (a.st ? ', ' + a.st : '') }),
+      el('td', { class: 'num' }, el('a', { href: 'https://www.usaspending.gov/award/' + encodeURIComponent(a.gid), target: '_blank', rel: 'noopener', text: money(a.amt), title: 'Open award ' + a.id + ' on USASpending' })),
+      el('td', { text: a.nc ? 'No' : 'Yes' }), el('td', { class: 'num', text: a.offers == null ? '' : a.offers }), el('td', { class: 'hide-sm note', text: a.desc }))));
+    return el('div', { class: 'tablewrap', style: 'max-height:420px;overflow:auto' }, tb);
+  }
+  function facts(o, extra) { return el('div', { class: 'facts' }, ...[[o.n, 'awards'], [money(o.median), 'median, all years'], [o.median_fy22 ? money(o.median_fy22) : 'none', 'median, FY22 and later (' + o.n_fy22 + ')'], [money(o.min) + ' to ' + money(o.max), 'full range'], [o.bases, 'buying offices'], [pct(o.not_competed, o.n) + '%', 'reported not competed']].concat(extra || []).map(([b, s]) => el('div', { class: 'fact' }, el('b', { text: b }), el('span', { text: s })))); }
+  function typeDetail(t) {
+    const aw = D.act_awards.filter(a => a.types.includes(t.type));
+    const box = el('div', { class: 'detail', tabindex: '-1' },
+      el('div', { class: 'head' }, el('div', null, el('h2', { text: t.type }), el('span', { class: 'tag ' + TAGC[t.tag], text: t.tag })), el('button', { class: 'close', text: 'Close', onclick: () => $('#d-types').replaceChildren() })),
+      el('p', { style: 'margin-top:.7rem', text: TAGWHY[t.tag] }), facts(t),
+      el('h3', { text: 'Who has won it' }),
+      el('div', { class: 'bar' }, ...t.vendor_list.map(v => el('button', { class: 'chip', text: v.vendor + ' (' + v.n + ')', onclick: () => { show('vendors'); const x = D.vendors.find(z => z.vendor === v.vendor); if (x) vendorDetail(x); } }))),
+      el('h3', { text: 'Every award' }), awardsTable(aw),
+      el('p', { class: 'note', style: 'margin-top:.7rem' }, el('a', { href: 'air-show-sole-source.html', text: 'Write the single-source documentation for this act.' }), ' Have a quote in hand? ', el('a', { href: '#', text: 'Run a price check on this act.', onclick: e => { e.preventDefault(); $('#pc-type').value = t.type; fillPcVendors(); show('price'); priceCheck(); $('#pc-amt').focus(); } })));
+    $('#d-types').replaceChildren(box); box.focus(); box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function drawVendors() {
+    const q = $('#q-vendors').value.trim().toLowerCase();
+    head($('#tb-vendors'), [{ t: 'Performer', k: 'vendor' }, { t: 'Awards', k: 'n', num: 1 }, { t: 'Offices', k: 'bases', num: 1 }, { t: 'Median', k: 'median', num: 1 }, { t: 'Last FY', k: 'last_fy', num: 1 }, { t: 'Aircraft and acts', cls: 'hide-sm' }, { t: 'How it was bought' }], sortV, drawVendors);
+    const rows = D.vendors.filter(v => !q || (v.vendor + ' ' + v.types.join(' ')).toLowerCase().includes(q)).sort(cmp(sortV));
+    $('#tb-vendors').tBodies[0].replaceChildren(...rows.map(v => pickRow(el('tr', null, el('td', null, el('b', { text: v.vendor })), el('td', { class: 'num', text: v.n }), el('td', { class: 'num', text: v.bases }), el('td', { class: 'num', text: money(v.median) }), el('td', { class: 'num', text: v.last_fy }), el('td', { class: 'hide-sm note', text: v.types.join(', ') }), el('td', null, mix(v))), () => vendorDetail(v))));
+  }
+  function vendorDetail(v) {
+    const aw = D.act_awards.filter(a => a.vendor === v.vendor);
+    const box = el('div', { class: 'detail', tabindex: '-1' },
+      el('div', { class: 'head' }, el('div', null, el('h2', { text: v.vendor }), el('span', { class: 'note', text: 'On record FY' + v.first_fy + ' to FY' + v.last_fy + (v.types.length ? '. ' + v.types.join(', ') : '') })), el('button', { class: 'close', text: 'Close', onclick: () => $('#d-vendors').replaceChildren() })),
+      facts(v), /COMMEMORATIVE AIR FORCE/.test(v.vendor) ? el('p', { class: 'note', text: 'This contractor is made up of many local wings, each with its own aircraft. Check which wing and aircraft each award covered.' }) : null,
+      el('h3', { text: 'Every award' }), awardsTable(aw));
+    $('#d-vendors').replaceChildren(box); box.focus(); box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function fillPcVendors() { const t = $('#pc-type').value, s = $('#pc-vendor'); const vs = [...new Set(D.act_awards.filter(a => a.types.includes(t)).map(a => a.vendor))].sort(); s.replaceChildren(el('option', { value: '', text: 'Any performer' }), ...vs.map(v => el('option', { value: v, text: v }))); }
+  function quant(a, p) { return a[Math.floor(p * (a.length - 1))]; }
+  function priceCheck() {
+    const t = $('#pc-type').value, v = $('#pc-vendor').value, amt = parseFloat($('#pc-amt').value), since = $('#pc-since').value, out = $('#pc-out');
+    let aw = D.act_awards.filter(a => a.types.includes(t) && a.fy >= since); const all = aw; if (v) aw = aw.filter(a => a.vendor === v);
+    if (!aw.length) { out.replaceChildren(el('p', { class: 'note', text: 'No awards on record for that selection. Widen the years or choose "Any performer".' })); return; }
+    const am = aw.map(a => a.amt).sort((a, b) => a - b), med = am.length % 2 ? am[(am.length - 1) / 2] : (am[am.length / 2 - 1] + am[am.length / 2]) / 2, p25 = quant(am, .25), p75 = quant(am, .75), lo = am[0], hi = am[am.length - 1];
+    const kids = [el('div', { class: 'facts' }, ...[[aw.length, 'comparable awards'], [money(med), 'median'], [money(p25) + ' to ' + money(p75), 'middle half'], [money(lo) + ' to ' + money(hi), 'full range'], [new Set(aw.map(a => a.office)).size, 'buying offices']].map(([b, s]) => el('div', { class: 'fact' }, el('b', { text: b }), el('span', { text: s }))))];
+    if (aw.length < 5) kids.push(el('p', { class: 'note', text: 'Fewer than five comparable awards. Treat this as a reference point, not a range.' + (v ? ' Awards to other performers for this act type: ' + (all.length - aw.length) + '.' : '') }));
+    if (amt > 0) {
+      const max = Math.max(hi, amt) * 1.05, x = n => (100 * n / max) + '%';
+      const r = el('div', { class: 'range', role: 'img', 'aria-label': 'Quote of ' + money(amt) + ' against a middle half of ' + money(p25) + ' to ' + money(p75) }, el('div', { class: 'track' }));
+      const iqr = el('div', { class: 'iqr' }); iqr.style.left = x(p25); iqr.style.width = (100 * (p75 - p25) / max) + '%';
+      const m = el('div', { class: 'med' }); m.style.left = x(med); const y = el('div', { class: 'you' }); y.style.left = x(amt);
+      const l1 = el('div', { class: 'lab', text: 'median ' + money(med) }); l1.style.left = x(med);
+      r.append(iqr, m, y, l1); kids.push(r);
+      const below = am.filter(n => n <= amt).length, pos = amt < p25 ? 'below the middle half' : amt > hi ? 'above every award on record' : amt > p75 ? 'above the middle half' : 'inside the middle half';
+      const scope = (v ? v + ' ' : '') + t + ' awards' + (since > 0 ? ' since FY' + since : '');
+      const para = 'The quoted price of ' + money(amt) + ' was compared with ' + aw.length + ' ' + scope + ' made by ' + new Set(aw.map(a => a.office)).size + ' buying offices (USASpending.gov, pulled ' + D.generated + '). Those awards ranged from ' + money(lo) + ' to ' + money(hi) + ' with a median of ' + money(med) + '; the middle half fell between ' + money(p25) + ' and ' + money(p75) + '. The quote is ' + pos + ' and is at or above ' + below + ' of the ' + aw.length + ' prior awards.';
+      kids.push(el('p', null, el('b', { text: 'The quote is ' + pos + '.' }), amt > p75 ? ' Check what the prior awards included (number of aircraft, show days, lodging, fuel, pyrotechnics) before comparing totals.' : ''));
+      kids.push(el('h3', { text: 'Comparison paragraph' }), el('div', { class: 'out', id: 'pc-para', text: para }), el('p', { style: 'margin-top:.6rem' }, el('button', { class: 'btn2', text: 'Copy paragraph', onclick: e => { navigator.clipboard && navigator.clipboard.writeText(para).then(() => { e.target.textContent = 'Copied'; setTimeout(() => e.target.textContent = 'Copy paragraph', 1500); }); } })));
+      kids.push(el('p', { class: 'note', text: 'Why this matters: comparison with prices paid before for the same service is a recognized basis for a fair and reasonable determination. The paragraph states the comparison. The determination is yours.' }));
+    }
+    kids.push(el('h3', { text: 'The awards behind the numbers' }), awardsTable(aw));
+    out.replaceChildren(...kids);
+  }
+})();
+</script>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+<script src="main.js"></script>
+</body>
+</html>

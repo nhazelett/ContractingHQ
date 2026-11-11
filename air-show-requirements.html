@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Air Show Requirements Library | Air Show in a Box | KTHQ</title>
+  <meta name="description" content="Every contract an air show needs, who owns each requirement, how it is funded, what it costs and what other bases asked for." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="air-show.css?v=20261111" />
+</head>
+<body>
+<nav class="navbar" id="navbar" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html" class="active">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="working-theory/">Leadership</a></li>
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main class="asb" id="main">
+<div id="asb-chrome"></div>
+<div class="eyebrow">Air Show in a Box &middot; Step 2</div>
+<h1>Requirements Library</h1>
+<p class="lede">Every kind of buy that shows up at a military air show, pulled from <span id="n-aw">thousands of</span> real awards. Open one to see who usually writes the requirement, what money pays for it, what bases paid, and what other bases put in their solicitations. Tick the ones your show needs and the page builds your buy plan.</p>
+
+<section class="why">
+  <h3>Why work from a list</h3>
+  <ul>
+    <li><b>The acts get the attention. The support buys sink the schedule.</b> Toilets, buses, fencing and sound each need their own requirement, funds and award, and they all come due at once.</li>
+    <li><b>Each requirement belongs to somebody.</b> The contracting officer buys it. The owning unit defines it and funds it. If nobody owns it, it does not get bought.</li>
+    <li><b>Identify purchase requirements early and put a contracting officer on the open house staff.</b> That is the manual's instruction, not a courtesy. <span data-cite="afman|8.1"></span></li>
+  </ul>
+</section>
+
+<div class="bar noprint">
+  <input type="search" id="q" placeholder="Search requirements (parking, latrines, Air Boss...)" aria-label="Search requirements" />
+  <button class="chip" id="only" aria-pressed="false" type="button">Show only what I ticked</button>
+</div>
+<div class="legend"><span><i style="background:#e0705f"></i>Not competed</span><span><i style="background:#c9a227"></i>Competed, one offer</span><span><i style="background:#3fb98a"></i>Competed, two or more offers</span></div>
+
+<div id="lib"></div>
+
+<section class="block" id="plan">
+  <h2>Your buy plan</h2>
+  <p class="note">Tick requirements above and enter an estimate for each. The lane column shows which rules apply at that dollar value. Saved in this browser only.</p>
+  <div id="plan-out"></div>
+</section>
+
+<section class="method">
+  <p>Prices and competition figures: USASpending.gov contract awards, FY2007 to FY2026, all DoD components. "Middle half" is the 25th to 75th percentile. Solicitation excerpts: SAM.gov contract opportunities, quoted from the public notice. Owning units are the usual arrangement, and wings may tailor the staff (AFMAN 10-1004, para 3.1). Funding sources are from AFMAN 10-1004 Chapter 6 and Attachment 4. Confirm the source of funds with FM for your show.</p>
+</section>
+
+<script src="air-show.js?v=20261111"></script>
+<script>
+(function(){
+  const { el, $, cite, money, pct } = ASB;
+  ASB.chrome('air-show-requirements.html');
+  document.querySelectorAll('[data-cite]').forEach(s => { const [r, p] = s.dataset.cite.split('|'); s.replaceWith(cite(r, p)); });
+  let D = null, plan = ASB.getPlan(), only = false;
+  const FUNDOPT = f => { const o = []; if (f.includes('A')) o.push('Appropriated'); if (f.includes('N')) o.push('NAF'); if (f.includes('P')) o.push('Donated or private gift'); return o.length ? o : ['Appropriated', 'NAF']; };
+  const save = () => { ASB.setPlan(plan); drawPlan(); };
+
+  ASB.loadData().then(d => { D = d; $('#n-aw').textContent = d.totals.awards.toLocaleString(); draw(); drawPlan(); })
+    .catch(() => { $('#lib').append(el('p', { class: 'fact-box flag', text: 'The data file did not load, so prices are missing. The regulation facts below still work.' })); D = { families: [], asks: {}, examples: {} }; draw(); drawPlan(); });
+  $('#q').addEventListener('input', draw);
+  $('#only').addEventListener('click', e => { only = !only; e.currentTarget.setAttribute('aria-pressed', String(only)); draw(); });
+
+  function draw() {
+    const q = $('#q').value.trim().toLowerCase(), lib = $('#lib'), open = new Set([...lib.querySelectorAll('details[open]')].map(x => x.dataset.k)); lib.replaceChildren();
+    ASB.GROUPS.forEach((g, gi) => {
+      const keys = Object.keys(ASB.FAM).filter(k => ASB.FAM[k].group === gi).filter(k => { const m = ASB.FAM[k]; if (only && !(plan[k] && plan[k].need)) return false; return !q || (m.label + ' ' + k + ' ' + m.owner + ' ' + m.spec.join(' ')).toLowerCase().includes(q); });
+      if (!keys.length) return;
+      lib.append(el('h3', { text: g }));
+      keys.forEach(k => lib.append(card(k, open.has(k))));
+    });
+    if (!lib.children.length) lib.append(el('p', { class: 'note', text: only ? 'Nothing ticked yet.' : 'No requirement matches that search.' }));
+  }
+
+  function card(k, isOpen) {
+    const m = ASB.FAM[k], f = (D.families || []).find(x => x.family === k), p = plan[k] || (plan[k] = {}), opts = FUNDOPT(m.fund);
+    const chk = el('input', { type: 'checkbox', 'aria-label': 'My show needs ' + m.label, checked: p.need ? true : null, onclick: e => e.stopPropagation(), onchange: e => { p.need = e.target.checked; save(); } });
+    const sum = el('summary', null, chk, el('span', { class: 'req-head', text: m.label }),
+      el('span', { class: 'req-meta' }, m.fund ? ASB.fundTags(m.fund.replace('|', '')) : null, f ? el('span', { text: 'median ' + money(f.median) }) : null, el('span', { class: 'hide-sm', text: m.owner })));
+    const body = el('div', { class: 'body' });
+    const kv = el('dl', { class: 'kv' });
+    const row = (a, b) => kv.append(el('dt', { text: a }), el('dd', null, b));
+    row('Usually written by', m.owner);
+    row('Funds', m.fundNote);
+    if (f) {
+      row('What bases paid', money(f.p25) + ' to ' + money(f.p75) + ' for the middle half, median ' + money(f.median) + ', across ' + f.n + ' awards by ' + f.bases + ' offices' + (f.median_fy22 ? '. Since FY22 the median is ' + money(f.median_fy22) + '.' : '.'));
+      row('How it was bought', [ASB.mix(f), el('span', { class: 'note', style: 'display:block;margin-top:.3rem', text: pct(f.not_competed, f.n) + '% not competed, ' + pct(f.competed_one_offer, f.n) + '% competed with one offer, ' + pct(f.competed_multi, f.n) + '% with two or more.' })]);
+      if (f.top_vendors && f.top_vendors.length) row('Who won most often', f.top_vendors.slice(0, 5).map(v => v.vendor + ' (' + v.n + ')').join(', '));
+      if (f.naics.length || f.psc.length) row('Codes offices used', [f.naics.length ? 'NAICS ' + f.naics.join(', ') : '', f.psc.length ? 'PSC ' + f.psc.join(', ') : ''].filter(Boolean).join(' · '));
+    } else row('What bases paid', 'No awards on record for this family.');
+    body.append(kv);
+    body.append(el('h3', { text: 'What the regulations say' }), el('ul', null, m.facts.map(x => el('li', null, x[0] + ' ', x.slice(1).map(c => cite(c[0], c[1]))))));
+    body.append(el('h3', { text: 'What contracting needs from the owning unit' }), el('p', { class: 'note', text: 'A requirement that answers these can be solicited without a second trip.' }), el('ul', null, m.spec.map(x => el('li', { text: x }))));
+    const asks = (D.asks || {})[k] || [], exs = (D.examples || {})[k] || [];
+    if (asks.length) body.append(el('h3', { text: 'What other bases asked for' }), asks.slice(0, 4).map(a => el('div', { class: 'ex' }, a.text, el('span', { class: 'src' }, a.office + ', ' + a.posted.slice(0, 4) + '. ', el('a', { href: a.url, target: '_blank', rel: 'noopener', text: 'Open the notice on SAM.gov' })))));
+    if (exs.length) body.append(el('h3', { text: 'Solicitations with attachments you can read' }), el('ul', null, exs.slice(0, 6).map(x => el('li', null, el('a', { href: x.url, target: '_blank', rel: 'noopener', text: x.title }), el('span', { class: 'note', text: ' ' + x.office + ', ' + x.posted.slice(0, 4) + ', ' + x.atts + ' attachment' + (x.atts > 1 ? 's' : '') })))));
+    if (m.tool) body.append(el('p', null, el('a', { class: 'btn2 ghost', href: m.tool[0], text: m.tool[1] })));
+    /* plan inputs */
+    const est = el('input', { type: 'number', min: '0', step: '500', id: 'est-' + k, value: p.est || null, placeholder: f ? 'median is ' + Math.round(f.median) : '' });
+    est.addEventListener('input', () => { p.est = est.value; if (est.value && !p.need) { p.need = true; chk.checked = true; } save(); });
+    const sel = el('select', { id: 'fd-' + k }, opts.map(o => el('option', { value: o, text: o, selected: (p.funds || opts[0]) === o ? true : null })));
+    sel.addEventListener('change', () => { p.funds = sel.value; save(); });
+    body.append(el('h3', { text: 'Add to your buy plan' }), el('div', { class: 'grid2' }, el('div', null, el('label', { for: 'est-' + k, text: 'Your estimate ($)' }), est), el('div', null, el('label', { for: 'fd-' + k, text: 'Funds' }), sel)));
+    const d = el('details', { 'data-k': k, open: isOpen ? true : null }, sum, body);
+    return d;
+  }
+
+  function drawPlan() {
+    const out = $('#plan-out'), keys = Object.keys(ASB.FAM).filter(k => plan[k] && plan[k].need);
+    if (!keys.length) { out.replaceChildren(el('p', { class: 'fact-box', text: 'Nothing ticked yet. Open a requirement above and tick the box beside its name.' })); return; }
+    const show = ASB.getShow(), sd = ASB.showDate(); let total = 0, lines = [];
+    const tb = el('tbody');
+    keys.forEach(k => { const m = ASB.FAM[k], p = plan[k], opts = FUNDOPT(m.fund), funds = p.funds || opts[0], amt = parseFloat(p.est) || 0; total += amt;
+      let laneCell, laneTxt;
+      if (funds.startsWith('Donated')) { laneTxt = 'No Government contract. Gift or in-kind donation processed through FSS and Legal.'; laneCell = [laneTxt + ' ', cite('afman', '5.5.4')]; }
+      else if (!amt) { laneTxt = 'Enter an estimate'; laneCell = el('span', { class: 'note', text: laneTxt }); }
+      else { const L = ASB.lane(funds === 'NAF' ? 'NAF' : 'APF', amt, 'no'); laneTxt = L.name + '. ' + L.rule; laneCell = [el('b', { text: L.name + '. ' }), L.rule + ' ', L.c.map(c => cite(c[0], c[1]))];
+        if (funds !== 'NAF' && amt > ASB.T.MPT_SCLS && amt <= ASB.T.MPT) { const x = ' If the service labor standards apply to this service, the micro-purchase limit is ' + money(ASB.T.MPT_SCLS) + ' and this buy uses simplified procedures.'; laneTxt += x; laneCell.push(el('span', { class: 'note', style: 'display:block', text: x.trim() })); }
+        if (funds !== 'NAF' && amt > ASB.T.NOTICE) { const x = ' Over ' + money(ASB.T.NOTICE) + ': a notice is posted unless an exemption applies.'; laneTxt += x; laneCell.push(el('span', { class: 'note', style: 'display:block' }, x.trim() + ' ', cite('far5', '5.101'))); } }
+      tb.append(el('tr', null, el('td', null, el('b', { text: m.label })), el('td', { text: m.owner }), el('td', { text: funds }), el('td', { class: 'num', text: amt ? money(amt) : '' }), el('td', null, laneCell)));
+      lines.push('- ' + m.label + ' | Owner: ' + m.owner + ' | Funds: ' + funds + ' | Estimate: ' + (amt ? money(amt) : 'TBD') + ' | ' + laneTxt); });
+    const head = 'BUY PLAN' + (show.name ? ': ' + show.name : '') + (show.base ? ', ' + show.base : '') + (sd ? ' (' + ASB.milDate(sd) + ')' : '');
+    const text = head + '\n' + keys.length + ' requirements, estimated total ' + money(total) + '\n\n' + lines.join('\n');
+    out.replaceChildren(
+      el('div', { class: 'facts' }, [[keys.length, 'requirements'], [money(total), 'estimated total'], [keys.filter(k => (plan[k].funds || FUNDOPT(ASB.FAM[k].fund)[0]) === 'NAF').length, 'NAF buys'], [keys.filter(k => !(parseFloat(plan[k].est) > 0)).length, 'still need an estimate']].map(([b, s]) => el('div', { class: 'fact' }, el('b', { text: b }), el('span', { text: s })))),
+      el('div', { class: 'tablewrap' }, el('table', null, el('thead', null, el('tr', null, ['Requirement', 'Owner', 'Funds', 'Estimate', 'Lane and what it requires'].map((h, i) => el('th', { scope: 'col', class: i === 3 ? 'num' : null, text: h })))), tb)),
+      el('div', { class: 'outbar noprint' }, ASB.copyBtn(() => text, 'Copy plan as text'), el('button', { class: 'btn2 ghost', type: 'button', text: 'Print', onclick: () => window.print() }), el('button', { class: 'btn2 ghost', type: 'button', text: 'Clear plan', onclick: () => { plan = {}; ASB.setPlan(plan); draw(); drawPlan(); } })),
+      el('p', { class: 'note', text: 'Take this to the first open house staff meeting. Each line needs a name beside it, a funded purchase request, and a date the requirement reaches contracting.' }));
+  }
+})();
+</script>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+<script src="main.js"></script>
+</body>
+</html>
