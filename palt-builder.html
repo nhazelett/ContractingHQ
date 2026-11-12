@@ -2746,7 +2746,7 @@
     }
 
     const wb = new ExcelJS.Workbook();
-    wb.creator = 'KTHQ PALT & Milestone Builder';
+    wb.creator = 'PALT & Milestone Builder';
     wb.created = new Date();
     wb.calcProperties.fullCalcOnLoad = true;
 
@@ -2767,9 +2767,20 @@
     t1.alignment = { vertical: 'middle', indent: 1 };
     ws.getRow(1).height = 30;
     ws.mergeCells('A2:P2');
-    ws.getCell('A2').value = (cfg.path === 'custom' && state.customFrom ? 'Custom, started from: ' + state.customFrom : profileText(cfg)) + '   ·   Built ' + formatDate(t0) + ' with the KTHQ PALT & Milestone Builder (kthq.org/palt-builder.html)';
+    ws.getCell('A2').value = (cfg.path === 'custom' && state.customFrom ? 'Custom, started from: ' + state.customFrom : profileText(cfg)) + '   ·   Built ' + formatDate(t0);
     ws.getCell('A2').font = font({ size: 9, color: { argb: C.soft } });
     ws.getCell('A2').alignment = { indent: 1 };
+
+    // Row 3: reopen this exact setup in the builder
+    let reopenUrl = 'https://kthq.org/palt-builder.html';
+    try {
+      const withState = reopenUrl + '#c=' + btoa(unescape(encodeURIComponent(JSON.stringify(getConfig()))));
+      if (withState.length <= 2000) reopenUrl = withState;
+    } catch (e) { /* plain link */ }
+    ws.mergeCells('A3:P3');
+    ws.getCell('A3').value = { text: 'Wrong setup? Click here to reopen this schedule in the builder, change it, and export a new tracker.', hyperlink: reopenUrl };
+    ws.getCell('A3').font = font({ size: 9, underline: true, color: { argb: C.blue } });
+    ws.getCell('A3').alignment = { indent: 1, vertical: 'middle' };
 
     const label = (addr, text) => { const c = ws.getCell(addr); c.value = text; c.font = font({ size: 9, color: { argb: C.faint } }); c.alignment = { horizontal: 'right', vertical: 'middle' }; };
     const inputCell = (addr) => { const c = ws.getCell(addr); c.fill = fill(C.input); c.font = font({ bold: true, color: { argb: C.white } }); c.border = box; return c; };
@@ -3120,7 +3131,7 @@
       ['Reg: a period set by statute or regulation (calendar days unless marked). Data: scaled so solicitation to award matches FY2025 DoD award data. Local: your review cycle inputs. Est: practitioner estimate. Yours: added or set by you. Hover over a Basis cell for its source, or see the Sources tab.', false],
       ['Regulatory periods are minimums. Your solicitation can allow more time.', false],
       ['', false],
-      ['Built with the KTHQ PALT & Milestone Builder: https://kthq.org/palt-builder.html', false]
+      ['Wrong action, contract type, or value? Use the link at the top of the Tracker to reopen this schedule in the builder, change it, and export again.', false]
     ];
     paint(wi, lines.length + 3, 1);
     wi.getCell('A1').value = 'Instructions';
