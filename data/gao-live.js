@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-11-11T15:31:57.195Z",
+  "generatedAt": "2026-11-12T16:08:17.242Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,13 +7,13 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 18,
+    "total": 19,
     "latestDecisionDate": "2026-11-09",
     "sustained": 1,
-    "denied": 9,
+    "denied": 10,
     "dismissed": 3,
-    "mixed": 5,
-    "unclassified": 0,
+    "mixed": 4,
+    "unclassified": 1,
     "sourceStatus": {
       "rss": {
         "ok": true,
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 12
+        "parsedOutcomes": 14
       },
       "productPages": {
         "attempted": 18,
@@ -143,6 +143,35 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424731,B-424731.2",
+      "caseName": "Applied Research Associates, Inc.",
+      "title": "Applied Research Associates, Inc.",
+      "bNumbers": [
+        "B-424731",
+        "B-424731.2"
+      ],
+      "bNumberText": "B-424731, B-424731.2",
+      "link": "https://www.gao.gov/products/b-424731%2Cb-424731.2",
+      "publicationDate": "2026-11-12",
+      "decisionDate": "2026-10-28",
+      "displayDate": "Oct 28, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "Applied Research Associates, Inc. (ARA), of Albuquerque, New Mexico, protests the issuance a task order to Leidos, Inc., of Reston, Virginia, under...",
+      "highlights": "",
+      "digest": "Protest alleging flaws in the agency's evaluation of proposals and best-value tradeoff decision is denied where the agency's evaluation judgements and tradeoff decision were reasonable and consistent with the terms of the solicitation.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms",
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -277,6 +306,34 @@ window.KTHQ_GAO_DATA = {
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424613,B-424613.2",
+      "caseName": "Integrity Management Consulting, Inc.",
+      "title": "Integrity Management Consulting, Inc.",
+      "bNumbers": [
+        "B-424613",
+        "B-424613.2"
+      ],
+      "bNumberText": "B-424613, B-424613.2",
+      "link": "https://www.gao.gov/products/b-424613%2Cb-424613.2",
+      "publicationDate": "2026-10-20",
+      "decisionDate": "2026-10-20",
+      "displayDate": "Oct 20, 2026",
+      "outcome": "unclassified",
+      "outcomeLabel": "Read Decision",
+      "outcomeSource": "Inferred from GAO RSS",
+      "decisionLine": "",
+      "officialSynopsis": "Integrity Management Consulting, Inc., a small business of McLean, Virginia, protests the issuance of a task order to ASET Partners Corp., a small...",
+      "highlights": "",
+      "digest": "",
+      "tags": [
+        "Small business",
+        "Orders / IDIQ"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "rss",
+      "sourceStatusLabel": "RSS fallback"
     },
     {
       "id": "B-423574.2",
@@ -467,36 +524,6 @@ window.KTHQ_GAO_DATA = {
       "tags": [
         "Evaluation",
         "Solicitation terms",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424613,B-424613.2",
-      "caseName": "Integrity Management Consulting, Inc.",
-      "title": "Integrity Management Consulting, Inc.",
-      "bNumbers": [
-        "B-424613",
-        "B-424613.2"
-      ],
-      "bNumberText": "B-424613, B-424613.2",
-      "link": "https://www.gao.gov/products/b-424613%2Cb-424613.2",
-      "publicationDate": "2026-10-20",
-      "decisionDate": "2026-10-01",
-      "displayDate": "Oct 1, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest in part and dismiss it in part.",
-      "officialSynopsis": "Integrity Management Consulting, Inc., a small business of McLean, Virginia, protests the issuance of a task order to ASET Partners Corp., a small...",
-      "highlights": "",
-      "digest": "1. Protest that solicitation contained a latent ambiguity is denied where the protester's interpretation of the solicitation language in question is not reasonable. 2. Protester is not an interested party to challenge other aspects of the evaluation where its quotation was reasonably evaluated as ineligible for award.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Small business",
         "Orders / IDIQ"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
