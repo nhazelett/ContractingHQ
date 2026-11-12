@@ -355,7 +355,7 @@
         <h3>Set by your agency, not the FAR</h3>
         <ul>
           <li>Requirements approval format and thresholds (Air Force example: Requirements Approval Document under DAFI 63-138)</li>
-          <li>Legal review and business clearance thresholds</li>
+          <li>Legal review thresholds, and the strategy and pricing reviews that replace or include business and contract clearance (Air Force example: CASPER under Policy Memo 26-C-16)</li>
           <li>Scope determination format for modifications</li>
           <li>Early effective date approval</li>
           <li>Pricing assistance thresholds</li>
@@ -463,7 +463,7 @@
   function simp(s) { return s.method === 'po'; }
   function sole(s) { return s.comp === 'single'; }
   function sb(s) { return s.comp === 'sbsa' || s.comp === 'socio'; }
-  function needsCOR(s) { return s.a.cor || s.a.tm; }
+  function needsCOR(s) { return s.a.cor || s.a.tm || (s.dod && svc(s)); }
   function sca(s) { return svc(s) && s.a.sca; }
   function isAct(a) { return function (s) { return s.act === a; }; }
   var isNew = isAct('new');
@@ -655,8 +655,8 @@
       cite: function (s) { return s.dod ? ['RFO 46.401(a)', 'RDFARS 246.401'] : ['RFO 46.401(a)']; }, due: 'With the PWS' },
     { ph: 1, when: function (s) { return isNew(s) && overMPT(s) && needsCOR(s); },
       doc: 'COR nomination',
-      trig: function (s) { return 'Nominated by the requirements official or under agency procedures as early as possible in the acquisition.' + (s.dod ? ' DoD: the nomination runs through the Joint Appointment Module (JAM) in PIEE.' : ''); },
-      cite: function (s) { return s.dod ? ['RFO 7.104(b)(6)', 'RFO 1.404(a)(1)', 'RDFARS PGI 201.404'] : ['RFO 7.104(b)(6)', 'RFO 1.404(a)(1)']; }, due: 'During planning' },
+      trig: function (s) { return 'Nominated by the requirements official or under agency procedures as early as possible in the acquisition.' + (s.dod ? ' DoD: a COR is required for every service contract, firm-fixed-price included, and for supply contracts with cost-reimbursement line items. The nomination runs through the Joint Appointment Module (JAM) in PIEE.' : ''); },
+      cite: function (s) { return s.dod ? ['RFO 7.104(b)(6)', 'RFO 1.404(a)(1)', 'RDFARS PGI 201.404-70(e)'] : ['RFO 7.104(b)(6)', 'RFO 1.404(a)(1)']; }, due: 'During planning' },
     { ph: 1, when: function (s) { return isNew(s) && overMPT(s) && s.a.gfp; },
       doc: 'Government-furnished property list',
       trig: 'Availability confirmed before the property is offered; the solicitation states contractor responsibilities and evaluation procedures for the property.',
@@ -678,13 +678,16 @@
       trig: 'Written determination required for consolidation over ' + $m(T.consol) + ', any bundling, and substantial bundling (DoD: ' + $m(T.bundleDoD) + ' and up). Incumbent small business contractors get notice at least 30 days before the solicitation.',
       cite: ['RFO 7.107-1(b)', 'RFO 7.107-2', 'RFO 7.107-3'], due: 'Before solicitation' },
     { ph: 1, when: function (s) { return isNew(s) && overSAT(s); },
-      doc: 'Legal review', tag: 'local',
-      trig: 'Thresholds and timing come from agency procedures. Air Force example: DAFFARS 5301.602-2 and the Contracting Compass clearance and legal review page.',
-      cite: ['Agency'], due: 'Per local matrix' },
-    { ph: 1, when: function (s) { return isNew(s) && overSAT(s); },
-      doc: 'Business clearance', tag: 'local',
-      trig: 'Clearance thresholds and approvers come from agency procedures. Air Force example: DAFFARS 5301.90.',
-      cite: ['Agency'], due: 'Per local matrix' },
+      doc: 'Acquisition strategy review', tag: 'local',
+      trig: function (s) { return 'Above a dollar value set by agency procedures, the acquisition strategy gets an independent review before the solicitation goes out (sole source: before negotiations start). Your agency sets the threshold and the reviewer.' +
+        (s.dod ? ' Air Force example: a CASPER Acquisition Strategy Review for operational buys at $5M and up. The chief of the contracting office reviews to $10M, the SCO over $10M, and the HCA at $1B. Acquisitions already underway can stay on legacy business clearance.' : '') +
+        (ord(s) && !sole(s) ? ' Competitive orders that add no evaluation criteria and no new terms are usually exempt.' : ''); },
+      cite: function (s) { return s.dod ? ['Agency procedures', 'DAF Policy Memo 26-C-16'] : ['Agency procedures']; },
+      due: function (s) { return sole(s) ? 'Before negotiations start' : 'Before the solicitation goes out'; } },
+    { ph: 1, when: function (s) { return isNew(s) && overSAT(s) && sole(s); },
+      doc: 'Legal review of the justification', tag: 'local',
+      trig: function (s) { return 'Your agency sets when a justification gets legal review.' + (s.dod ? ' Air Force example: justifications expected to exceed $10M, including exceptions to fair opportunity and FSS limited-sources justifications. The SCO can set a lower threshold with local legal.' : ''); },
+      cite: function (s) { return s.dod ? ['Agency procedures', 'DAF Contracting Compass, Part 1'] : ['Agency procedures']; }, due: 'Before approval' },
 
     /* Phase 2: Solicitation */
     { ph: 2, when: function (s) { return isNew(s) && ctr(s) && b(s) === 1; },
@@ -731,6 +734,12 @@
       doc: 'Amendments (SF 30)', tag: 'cond',
       trig: 'Any amendment to the solicitation is issued on SF 30.',
       cite: ['RFO 43.401(a)(1)'], due: 'As issued' },
+    { ph: 2, when: function (s) { return isNew(s) && overSAT(s); },
+      doc: 'Legal review of the solicitation', tag: 'local',
+      trig: function (s) { return 'Solicitations and amendments, other than administrative amendments, get legal review above a value your agency sets.' +
+        (s.dod ? ' Air Force example: over $3M for operational buys ($5M non-operational). The SCO and local legal can set a different number, but not below $1M operational without SCO and HCA coordination.' : '') +
+        (ord(s) ? ' For orders, this covers order solicitations that need negotiation at the order level and BPA calls under the FSS.' : ''); },
+      cite: function (s) { return s.dod ? ['Agency procedures', 'DAF Contracting Compass, Part 1'] : ['Agency procedures']; }, due: 'Before release' },
 
     /* Phase 3: Evaluation and award */
     { ph: 3, when: function (s) { return isNew(s) && overMPT(s); },
@@ -791,6 +800,21 @@
       doc: 'Small business subcontracting plan', tag: 'cond',
       trig: 'Required from an other-than-small apparent awardee when the award exceeds ' + $m(T.subk) + ' (' + $m(T.subkCon) + ' for construction of a public facility) and subcontracting possibilities exist. The accepted plan becomes part of the contract. A determination that no subcontracting possibilities exist is approved one level above the CO and placed in the file.',
       cite: ['RFO 19.109(a)(1), (b), (c)(2)', 'RFO 19.206'], due: 'Before award' },
+    { ph: 3, when: function (s) { return isNew(s) && overSAT(s); },
+      doc: 'Pricing and negotiation review', tag: 'local',
+      trig: function (s) { return 'Above a dollar value set by agency procedures, pricing and the award decision get an independent review.' +
+        (s.dod ? ' Air Force example: a CASPER Pricing and Negotiation Review for operational buys at $5M and up, held before negotiations or the competitive range. The reviewer can also look at the source selection decision before award, and can waive this phase after the strategy review. Under legacy clearance this is contract clearance, the approval to award.' : ''); },
+      cite: function (s) { return s.dod ? ['Agency procedures', 'DAF Policy Memo 26-C-16'] : ['Agency procedures']; },
+      due: function (s) { return s.method === 'neg' ? 'Before negotiations or the competitive range' : sole(s) ? 'Before negotiations' : 'Before award'; } },
+    { ph: 3, when: function (s) { return isNew(s) && overMPT(s) && s.method === 'neg'; },
+      doc: 'Legal review of the source selection', tag: 'local',
+      trig: function (s) { return 'Legal review of source selection decisions and their supporting documents is set by agency procedures, often at any dollar value rather than above a threshold.' + (s.dod ? ' Air Force: required at any value.' : ''); },
+      cite: function (s) { return s.dod ? ['Agency procedures', 'DAF Contracting Compass, Part 1'] : ['Agency procedures']; }, due: 'Before the decision is signed' },
+    { ph: 3, when: function (s) { return isNew(s) && overSAT(s); },
+      doc: 'Legal review of the award', tag: 'local',
+      trig: function (s) { return 'Proposed contracts, and orders that need negotiation at the order level, get legal review above a value your agency sets.' +
+        (s.dod ? ' Air Force example: over $3M for operational buys ($5M non-operational). The SCO and local legal can set a different number. Orders placed under the existing terms of the contract usually do not need one.' : ''); },
+      cite: function (s) { return s.dod ? ['Agency procedures', 'DAF Contracting Compass, Part 1'] : ['Agency procedures']; }, due: 'Before award' },
     { ph: 3, when: function (s) { return isNew(s) && overMPT(s); },
       doc: 'Award decision documentation',
       trig: function (s) {
@@ -820,8 +844,8 @@
       cite: ['RFO 28.102-1', 'RFO 28.102-2', 'RFO 28.101-1'], due: 'Before notice to proceed' },
     { ph: 3, when: function (s) { return isNew(s) && overMPT(s) && needsCOR(s); },
       doc: 'COR designation letter',
-      trig: function (s) { return 'Required for every contract and order other than firm-fixed-price; optional for firm-fixed-price. States the extent of authority, the period, that authority cannot be redelegated, and personal liability for unauthorized acts. Copies go to the contractor and the contract administration office.' + (s.dod ? ' DoD: nominations, designations, and training records live in the Joint Appointment Module (JAM); surveillance lives in Surveillance and Performance Monitoring (SPM). The PIEE records stand on their own; a duplicate copy in the contract file is needed only when local procedures ask for one (Air Force: DAFFARS 5304.802(f) treats PIEE as the system of record).' : ''); },
-      cite: function (s) { return s.dod ? ['RFO 1.404(a), (b)', 'RDFARS PGI 201.404', 'DAFFARS 5304.802(f)'] : ['RFO 1.404(a), (b)']; }, due: 'At award' },
+      trig: function (s) { return 'Required for every contract and order other than firm-fixed-price' + (s.dod ? '. DoD: also required for every service contract, firm-fixed-price included, and for supply contracts with cost-reimbursement line items, designated within 3 business days of award. A service contract can be exempted when it uses simplified acquisition procedures, the requirement is not complex, and the CO documents the specific reasons in the file.' : '; optional for firm-fixed-price.') + ' The designation states the extent of authority, the period, that authority cannot be redelegated, and personal liability for unauthorized acts. Copies go to the contractor and the contract administration office.' + (s.dod ? ' DoD: nominations, designations, and training records live in the Joint Appointment Module (JAM); surveillance lives in Surveillance and Performance Monitoring (SPM). The PIEE records stand on their own; a duplicate copy in the contract file is needed only when local procedures ask for one (Air Force: DAFFARS 5304.802(f) treats PIEE as the system of record).' : ''); },
+      cite: function (s) { return s.dod ? ['RFO 1.404(a), (b)', 'RDFARS PGI 201.404-70(e)', 'DAFFARS 5304.802(f)'] : ['RFO 1.404(a), (b)']; }, due: function (s) { return s.dod ? 'Within 3 business days of award' : 'At award'; } },
     { ph: 3, when: function (s) { return isNew(s) && overSAT(s) && sole(s); },
       doc: 'Justification made public',
       trig: function (s) {
@@ -880,9 +904,9 @@
       cite: ['RFO 32.706-2(b)'], due: 'As funds are added' },
     { ph: 4, when: function (s) { return isNew(s) && overMPT(s); },
       doc: 'Cure notice, show cause, termination', tag: 'cond',
-      trig: function (s) { return com(s)
+      trig: function (s) { return (com(s)
         ? 'Commercial contracts terminate under 12.304 and the 52.212-4 termination paragraphs, not Part 49. A cure notice comes first except for late delivery. Terminations for cause are reported in FAPIIS within 3 calendar days.'
-        : 'Noncommercial contracts follow Part 49, including cure and show cause notices (49.402-3, 49.607). Terminations for default are reported in FAPIIS within 3 calendar days.'; },
+        : 'Noncommercial contracts follow Part 49, including cure and show cause notices (49.402-3, 49.607). Terminations for default are reported in FAPIIS within 3 calendar days.') + (s.dod ? ' Air Force: legal review before any termination for default or cause, and before a termination for convenience other than a purchase order cancellation.' : ''); },
       cite: function (s) { return com(s) ? ['RFO 12.304', 'RFO 42.1103(g)'] : ['RFO 49.402-3', 'RFO 49.607', 'RFO 42.1103(g)']; }, due: 'Only if performance fails' },
 
     /* Modification */
@@ -906,6 +930,15 @@
       doc: 'Price of the modification',
       trig: 'Priced before execution when doing so does not prejudice the Government; otherwise at least a ceiling is negotiated. A change order definitized later takes two SF 30s: the change order and a supplemental agreement with a contractor release, backed by an appropriate cost analysis.',
       cite: ['RFO 43.202(b)', 'RFO 43.304'], due: 'Before or at definitization' },
+    { ph: 1, when: function (s) { return s.act === 'mod' && overSAT(s); },
+      doc: 'Pricing and negotiation review', tag: 'local',
+      trig: function (s) { return 'A modification that adds or changes work can need the same independent review as a new award above your agency threshold.' +
+        (s.dod ? ' Air Force example: CASPER applies to modifications at $5M and up for operational buys. Funding-only, administrative, award or incentive fee, and labor standards wage adjustment mods are exempt.' : ''); },
+      cite: function (s) { return s.dod ? ['Agency procedures', 'DAF Policy Memo 26-C-16'] : ['Agency procedures']; }, due: 'Before negotiating the mod' },
+    { ph: 3, when: function (s) { return s.act === 'mod' && overSAT(s); },
+      doc: 'Legal review of the modification', tag: 'local',
+      trig: function (s) { return 'Modifications, other than funding-only and administrative changes, get legal review above a value your agency sets.' + (s.dod ? ' Air Force example: ' + 'over $3M for operational buys ($5M non-operational). The SCO and local legal can set a different number' + '.' : ''); },
+      cite: function (s) { return s.dod ? ['Agency procedures', 'DAF Contracting Compass, Part 1'] : ['Agency procedures']; }, due: 'Before execution' },
     { ph: 1, when: function (s) { return s.act === 'mod' && svc(s); },
       doc: 'Inherently governmental functions determination', tag: 'cond',
       trig: 'The requirements official\'s determination accompanies any modification that changes the work.',
@@ -1074,8 +1107,10 @@
       cite: ['RDFARS PGI 219.102(g)(1)'] },
     { when: function (s) { return isNew(s) && overMPT(s) && !needsCOR(s); },
       doc: 'COR designation',
-      why: 'A COR is required for every contract or order other than firm-fixed-price. For firm-fixed-price it is the CO\'s choice.',
-      cite: ['RFO 1.404(b)'] },
+      why: function (s) { return s.dod
+        ? 'The FAR requires a COR only for contracts and orders other than firm-fixed-price. DoD adds every service contract and supply contracts with cost-reimbursement line items. A firm-fixed-price supply or construction contract leaves it to the CO.'
+        : 'A COR is required for every contract or order other than firm-fixed-price. For firm-fixed-price it is the CO\'s choice.'; },
+      cite: function (s) { return s.dod ? ['RFO 1.404(b)', 'RDFARS PGI 201.404-70(e)'] : ['RFO 1.404(b)']; } },
     { when: function (s) { return isNew(s) && overSAT(s); },
       doc: 'Preaward EEO compliance clearance',
       why: 'The old 22.805 clearance implemented Executive Order 11246, which Executive Order 14173 revoked in January 2025. RFO Part 22 does not carry it.',
@@ -1095,7 +1130,23 @@
     { when: function (s) { return s.act === 'mod' && s.dod; },
       doc: 'DD Form 2579 for a funding-only mod',
       why: 'Funding-only modifications and mods that do not increase scope generally are not reviewed.',
-      cite: ['RDFARS PGI 219.102(g)(1)(ii)'] }
+      cite: ['RDFARS PGI 219.102(g)(1)(ii)'] },
+    { when: function (s) { return isNew(s) && s.dod && b(s) <= 1; },
+      doc: 'Strategy, pricing, or legal review at this value',
+      why: 'Air Force review thresholds start above the SAT: legal review over $3M operational (not set below $1M without SCO and HCA coordination) and CASPER at $5M operational. Other agencies set their own. Your agency or SCO can still require one.',
+      cite: ['DAF Contracting Compass, Part 1', 'DAF Policy Memo 26-C-16'] },
+    { when: function (s) { return isNew(s) && s.dod && overSAT(s); },
+      doc: 'DoD peer review',
+      why: 'DPCAP peer reviews start at $1B: competitive buys under major defense acquisition programs and noncompetitive actions. An August 2026 DPCAP memo adds a streamlined sole-source review over $50M. Below that, components review through their own process (Air Force: CASPER).',
+      cite: ['RDFARS PGI 201.170(a)(1)'] },
+    { when: function (s) { return s.act === 'mod' && s.dod; },
+      doc: 'Legal or CASPER review of a funding-only or administrative mod',
+      why: 'Air Force: legal review is not normally required for a funding action with no other change, and funding-only, administrative, award or incentive fee, and labor standards wage adjustment mods are exempt from CASPER.',
+      cite: ['DAF Contracting Compass, Part 1', 'DAF Policy Memo 26-C-16'] },
+    { when: function (s) { return s.act === 'option' && s.dod; },
+      doc: 'Legal or clearance review of a priced option',
+      why: 'Air Force: legal review is not normally required for a unilateral exercise of a pre-priced option that was reviewed at award, and an option exercised under the approved pricing is not a clearance action.',
+      cite: ['DAF Contracting Compass, Part 1'] }
   ];
 
   var PHASES = {
@@ -1207,7 +1258,7 @@
       html += '<div class="cfc-phase"><h3><span>' + p + '. ' + PHASES[p].name + '</span><span class="cfc-count">' + list.length + (list.length === 1 ? ' item' : ' items') + '</span></h3><p class="cfc-intro">' + PHASES[p].intro + '</p>';
       list.forEach(function (r, i) {
         var id = 'cfc-' + p + '-' + i;
-        var tag = r.tag === 'dod' ? '<span class="cfc-tag dod">DoD</span>' : r.tag === 'local' ? '<span class="cfc-tag local">Local policy</span>' : r.tag === 'cond' ? '<span class="cfc-tag cond">If it applies</span>' : '';
+        var tag = r.tag === 'dod' ? '<span class="cfc-tag dod">DoD</span>' : r.tag === 'local' ? '<span class="cfc-tag local">Check agency policy</span>' : r.tag === 'cond' ? '<span class="cfc-tag cond">If it applies</span>' : '';
         html += '<div class="cfc-row"><input type="checkbox" class="cfc-check" id="' + id + '" aria-label="Mark ' + esc(val(r.doc, s)) + ' as in the file">' +
           '<div><div class="cfc-top"><span class="cfc-doc">' + esc(val(r.doc, s)) + '</span>' + tag +
           '<button type="button" class="cfc-more" aria-expanded="false" aria-controls="' + id + '-t">Why and when</button></div>' +
@@ -1272,7 +1323,7 @@
       if (!list.length) return;
       out.push(p + '. ' + PHASES[p].name.toUpperCase());
       list.forEach(function (r) {
-        out.push('[ ] ' + val(r.doc, s) + (r.tag === 'dod' ? ' (DoD)' : r.tag === 'local' ? ' (local policy)' : r.tag === 'cond' ? ' (if it applies)' : ''));
+        out.push('[ ] ' + val(r.doc, s) + (r.tag === 'dod' ? ' (DoD)' : r.tag === 'local' ? ' (check agency policy)' : r.tag === 'cond' ? ' (if it applies)' : ''));
         out.push('    Due: ' + val(r.due, s) + ' | ' + val(r.cite, s).join('; '));
       });
       out.push('');
