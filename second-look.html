@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Second Look: a contract file review tool built on twelve questions. Read the file cold, record what you saw, grade what the file does not support, and export a comment resolution matrix." />
+
+  <!-- No analytics on this page. Review findings are source selection sensitive and stay in the browser.
+       1. The Content-Security-Policy tells the browser to refuse scripts and data connections from outside this site.
+       2. The inert tag below stops main.js from adding the Cloudflare Web Analytics beacon (main.js skips it when a matching tag exists).
+       3. This page is deliberately NOT in player.js SOFT_NAV_PAGES: soft navigation would carry the previous page's analytics scripts into this one. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://music.kthq.org; media-src 'self' blob: data: https://music.kthq.org; connect-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'" />
+  <meta name="referrer" content="no-referrer" />
+  <script type="text/plain" data-inert="analytics-off" src="https://static.cloudflareinsights.com/beacon.min.js"></script>
+  <script>window['ga-disable-G-X2RXS78N7K'] = true;</script>
+
+  <title>Second Look: Contract File Review | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>
+    body.sl-page { background: #040d1f; min-height: 100vh; }
+    body.sl-page #gc-stats, body.sl-page .kthq-visitor-count { display: none !important; }
+
+    .sl-hero { padding: 6rem 1.5rem 1.25rem; text-align: center; }
+    .sl-hero-tag {
+      display: inline-block; background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25);
+      color: var(--accent); font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      padding: 0.3rem 1rem; border-radius: 100px; margin-bottom: 0.75rem;
+    }
+    .sl-hero h1 {
+      font-family: 'Rajdhani', sans-serif; font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 700;
+      color: #e2e8f0; margin-bottom: 0.6rem; letter-spacing: 0.5px;
+    }
+    .sl-hero p { color: #a7b3c7; font-size: 1rem; max-width: 760px; margin: 0 auto; line-height: 1.65; }
+    .sl-private {
+      max-width: 760px; margin: 0.9rem auto 0; text-align: left; font-size: 0.86rem; color: #cfe9dc; line-height: 1.55;
+      background: rgba(126,226,184,0.07); border: 1px solid rgba(126,226,184,0.3); border-radius: 10px; padding: 0.65rem 0.9rem;
+    }
+    .sl-private strong { color: #eafff5; }
+
+    .sl-layout {
+      max-width: 1240px; margin: 1.25rem auto 3rem; padding: 0 1.25rem;
+      display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 1.5rem; align-items: start;
+    }
+    @media (max-width: 960px) { .sl-layout { grid-template-columns: 1fr; } }
+
+    .sl-panel {
+      background: rgba(10,22,50,0.65); border: 1px solid rgba(74,158,255,0.15);
+      border-radius: 12px; padding: 1.25rem 1.25rem 1rem; min-width: 0;
+    }
+    .sl-inputs { position: sticky; top: 80px; max-height: calc(100vh - 96px); overflow-y: auto; }
+    @media (max-width: 960px) { .sl-inputs { position: static; max-height: none; } }
+
+    .sl-inputs h2, .sl-results-head h2 {
+      font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 600; color: #fbbf24; margin-bottom: 0.75rem;
+    }
+    .sl-field { border: 0; margin: 0 0 1rem; padding: 0; min-width: 0; }
+    .sl-field legend {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+      color: #8fb5e8; margin-bottom: 0.45rem; padding: 0;
+    }
+    .sl-field[disabled] { opacity: 0.55; }
+    .sl-opts { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .sl-opt { position: relative; }
+    .sl-opt[hidden] { display: none; }
+    .sl-opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+    .sl-opt span {
+      display: inline-block; padding: 0.42rem 0.7rem; border-radius: 8px; cursor: pointer;
+      background: rgba(20,40,80,0.45); border: 1px solid rgba(74,158,255,0.18);
+      color: #cdd8e6; font-size: 0.84rem; line-height: 1.3; transition: all 0.12s ease;
+    }
+    .sl-opt span:hover { border-color: rgba(74,158,255,0.45); }
+    .sl-opt input:checked + span { background: rgba(74,158,255,0.2); border-color: #4a9eff; color: #fff; }
+    .sl-opt input:focus-visible + span { outline: 2px solid #fbbf24; outline-offset: 2px; }
+    .sl-opt input:disabled + span { opacity: 0.35; cursor: not-allowed; text-decoration: line-through; }
+    .sl-checks .sl-opt span::before { content: '+ '; color: #8fb5e8; }
+    .sl-checks .sl-opt input:checked + span::before { content: '\2713  '; color: #7ee2b8; }
+    .sl-hint { font-size: 0.76rem; color: #8a9bb0; margin-top: 0.35rem; line-height: 1.45; }
+    .sl-notes { margin-top: 0.5rem; }
+    .sl-note {
+      font-size: 0.8rem; color: #fcd34d; background: rgba(251,191,36,0.08);
+      border: 1px solid rgba(251,191,36,0.25); border-radius: 8px; padding: 0.5rem 0.65rem; margin-bottom: 0.4rem; line-height: 1.45;
+    }
+
+    .sl-results-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.25rem; }
+    .sl-summary { color: #c8d4e0; font-size: 0.92rem; }
+    .sl-summary strong { color: #fff; }
+    .sl-echo { color: #8a9bb0; font-size: 0.82rem; margin-bottom: 1rem; line-height: 1.5; }
+    .sl-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .sl-btn {
+      font-family: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+      padding: 0.45rem 0.85rem; border-radius: 8px; border: 1px solid rgba(74,158,255,0.35);
+      background: rgba(74,158,255,0.12); color: #dbe8f8;
+    }
+    .sl-btn:hover { background: rgba(74,158,255,0.25); }
+    .sl-btn:focus-visible { outline: 2px solid #fbbf24; outline-offset: 2px; }
+    .sl-btn.warn { border-color: rgba(248,153,153,0.45); background: rgba(248,113,113,0.1); color: #fecaca; }
+
+    .sl-how { margin: 0.25rem 0 1rem; border: 1px solid rgba(74,158,255,0.18); border-radius: 10px; background: rgba(255,255,255,0.02); }
+    .sl-how summary { cursor: pointer; padding: 0.6rem 0.85rem; color: #dbe8f8; font-weight: 600; font-size: 0.92rem; }
+    .sl-how summary:focus-visible { outline: 2px solid #fbbf24; outline-offset: 2px; }
+    .sl-how-body { padding: 0 0.95rem 0.85rem; }
+    .sl-how-body h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.02rem; color: #e2e8f0; margin: 0.7rem 0 0.25rem; }
+    .sl-how-body p, .sl-how-body li { font-size: 0.86rem; color: #b6c3d6; line-height: 1.6; }
+    .sl-how-body ul { padding-left: 1.1rem; }
+    .sl-how-body b { color: #e2e8f0; }
+
+    .sl-head-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem 0.8rem; margin-bottom: 0.4rem; }
+    @media (max-width: 640px) { .sl-head-grid { grid-template-columns: 1fr; } }
+    .sl-head-grid .wide { grid-column: 1 / -1; }
+    .sl-lab { display: block; font-size: 0.74rem; font-weight: 600; color: #8fb5e8; margin-bottom: 0.2rem; letter-spacing: 0.3px; }
+    .sl-in, .sl-ta {
+      width: 100%; box-sizing: border-box; font-family: inherit; font-size: 0.88rem; color: #f1f5fb;
+      background: rgba(4,13,31,0.7); border: 1px solid rgba(143,181,232,0.45); border-radius: 8px; padding: 0.45rem 0.6rem; line-height: 1.45;
+    }
+    .sl-ta { min-height: 4.2rem; resize: vertical; }
+    .sl-in:focus-visible, .sl-ta:focus-visible { outline: 2px solid #fbbf24; outline-offset: 1px; }
+
+    .sl-group { margin-top: 1.25rem; }
+    .sl-group h3 {
+      font-family: 'Rajdhani', sans-serif; font-size: 1.12rem; font-weight: 700; color: #e2e8f0;
+      letter-spacing: 0.4px; border-bottom: 1px solid rgba(74,158,255,0.18); padding-bottom: 0.35rem; margin-bottom: 0.5rem;
+      display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem;
+    }
+    .sl-group h3 .sl-count { font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; color: #8a9bb0; white-space: nowrap; }
+    .sl-intro { font-size: 0.84rem; color: #a7b3c7; margin-bottom: 0.6rem; line-height: 1.55; }
+
+    .sl-row {
+      background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px;
+      margin-bottom: 0.5rem; padding: 0.7rem 0.85rem;
+    }
+    .sl-row.is-ok { border-left: 3px solid #7ee2b8; }
+    .sl-row.is-find { border-left: 3px solid #fbbf24; }
+    .sl-row.is-na { border-left: 3px solid #64748b; background: rgba(255,255,255,0.01); }
+    .sl-row.is-na .sl-q { color: #b6c3d6; font-weight: 500; }
+    .sl-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.6rem; }
+    .sl-q { color: #f1f5fb; font-weight: 600; font-size: 0.95rem; line-height: 1.45; flex: 1 1 320px; }
+    .sl-tag {
+      font-size: 0.66rem; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+      padding: 0.12rem 0.45rem; border-radius: 100px; border: 1px solid; white-space: nowrap;
+    }
+    .sl-tag.dod { color: #9ccaff; border-color: rgba(156,202,255,0.4); }
+    .sl-tag.local { color: #f5c88a; border-color: rgba(245,200,138,0.45); }
+    .sl-meta { font-size: 0.8rem; color: #8fa3bd; margin-top: 0.25rem; line-height: 1.5; }
+    .sl-meta b { color: #b8c7da; font-weight: 600; }
+    .sl-cite a { color: #7ab8ff; text-decoration: none; border-bottom: 1px dotted rgba(122,184,255,0.5); }
+    .sl-cite a:hover { color: #fff; }
+    .sl-more {
+      font-family: inherit; font-size: 0.74rem; font-weight: 600; color: #7ab8ff; background: none;
+      border: 1px solid rgba(122,184,255,0.3); border-radius: 100px; padding: 0.1rem 0.55rem; cursor: pointer; margin-left: auto; white-space: nowrap;
+    }
+    .sl-more:hover { color: #fff; border-color: #7ab8ff; }
+    .sl-more:focus-visible { outline: 2px solid #fbbf24; outline-offset: 2px; }
+    .sl-why { font-size: 0.86rem; color: #c8d4e0; line-height: 1.6; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed rgba(255,255,255,0.08); }
+    .sl-why p + p { margin-top: 0.4rem; }
+    .sl-why b { color: #e2e8f0; }
+
+    .sl-ans { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.55rem; border: 0; padding: 0; min-width: 0; }
+    .sl-ans .sl-opt span { font-size: 0.78rem; padding: 0.3rem 0.6rem; }
+    .sl-ans .sl-opt input[value="ok"]:checked + span { background: rgba(126,226,184,0.16); border-color: #7ee2b8; }
+    .sl-ans .sl-opt input[value="find"]:checked + span { background: rgba(251,191,36,0.16); border-color: #fbbf24; }
+    .sl-edit { margin-top: 0.6rem; display: grid; gap: 0.5rem; }
+    .sl-edit[hidden] { display: none; }
+    .sl-type { display: flex; flex-wrap: wrap; gap: 0.35rem; border: 0; padding: 0; margin: 0; min-width: 0; }
+    .sl-type legend { font-size: 0.74rem; font-weight: 600; color: #8fb5e8; margin-bottom: 0.25rem; padding: 0; }
+    .sl-type .sl-opt span { font-size: 0.78rem; padding: 0.3rem 0.6rem; }
+
+    .sl-matrix-wrap { margin-top: 1.75rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1rem; }
+    .sl-matrix-wrap h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.12rem; color: #e2e8f0; margin-bottom: 0.35rem; }
+    .sl-scroll { overflow-x: auto; }
+    .sl-scroll:focus-visible { outline: 2px solid #fbbf24; outline-offset: 2px; }
+    .sl-matrix { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 0.4rem; min-width: 720px; }
+    .sl-matrix th, .sl-matrix td { text-align: left; padding: 0.4rem 0.5rem; border: 1px solid rgba(255,255,255,0.1); vertical-align: top; }
+    .sl-matrix th { color: #8fb5e8; font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.6px; background: rgba(74,158,255,0.06); }
+    .sl-matrix td { color: #c8d4e0; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .sl-matrix td.c { white-space: nowrap; }
+    .sl-empty { font-size: 0.86rem; color: #9fb0c5; margin-top: 0.3rem; }
+    .sl-marking { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.5px; color: #fcd34d; margin: 0.4rem 0; }
+    .sl-phead { display: none; }
+
+    .sl-static { margin-top: 1.75rem; display: grid; gap: 1rem; }
+    .sl-static h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; color: #e2e8f0; margin-bottom: 0.4rem; }
+    .sl-static p, .sl-static li { font-size: 0.84rem; color: #a7b3c7; line-height: 1.6; }
+    .sl-static ul { padding-left: 1.1rem; }
+    .sl-static a { color: #7ab8ff; }
+    .sl-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    @media print {
+      body.sl-page { background: #fff !important; color: #000 !important; }
+      .navbar, .footer, .sl-inputs, .sl-actions, .sl-hero p, .sl-private, .sl-how, .sl-headform, .sl-ans, .sl-edit, .sl-more, .sl-addrow, #cfm-float, #cfm-drawer, [id^="kthq-"], .kthq-visitor-count { display: none !important; }
+      .sl-hero { padding: 0 0 0.5rem; text-align: left; }
+      .sl-hero h1 { color: #000; font-size: 20pt; }
+      .sl-hero-tag { display: none; }
+      .sl-layout { display: block; margin: 0; padding: 0; max-width: none; }
+      .sl-panel { background: none; border: 0; padding: 0; }
+      .sl-phead { display: block; font-size: 10pt; color: #000; margin: 0.3rem 0 0.6rem; line-height: 1.5; }
+      .sl-results-head h2, .sl-group h3, .sl-matrix-wrap h3, .sl-static h3 { color: #000; }
+      .sl-summary, .sl-summary strong, .sl-echo, .sl-intro, .sl-marking, .sl-empty { color: #000 !important; }
+      .sl-row { break-inside: avoid; background: none; border: 1px solid #999; opacity: 1 !important; }
+      .sl-q, .sl-meta, .sl-meta b, .sl-why, .sl-why b, .sl-cite a, .sl-static p, .sl-static li, .sl-static a, .sl-count { color: #000 !important; }
+      .sl-tag { color: #000 !important; border-color: #000 !important; }
+      .sl-state { display: inline !important; font-weight: 700; }
+      .sl-matrix { min-width: 0; font-size: 9pt; }
+      .sl-matrix th, .sl-matrix td { color: #000 !important; border: 1px solid #000; background: none; }
+      .sl-matrix-wrap { break-before: page; border-top: 0; }
+      .sl-static .disclaimer:not(:last-child) { display: none; }
+      .sl-scroll { overflow: visible; }
+    }
+    .sl-state { display: none; }
+    .sl-herobtns { margin-top: 0.8rem !important; }
+    .sl-dialog { margin: auto; width: min(820px, calc(100vw - 2rem)); max-height: calc(100vh - 3rem); padding: 0; border: 1px solid rgba(74,158,255,0.35); border-radius: 12px; background: #0a1632; color: #c8d4e0; }
+    .sl-dialog::backdrop { background: rgba(2,6,16,0.78); }
+    .sl-dialog-head { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.9rem 1.25rem; background: #0a1632; border-bottom: 1px solid rgba(74,158,255,0.2); }
+    .sl-dialog-head h2 { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: #fbbf24; margin: 0; }
+    .sl-dialog-body { padding: 0.5rem 1.25rem 1.25rem; }
+    .sl-dialog-body h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; color: #e2e8f0; margin: 1rem 0 0.3rem; }
+    .sl-dialog-body p, .sl-dialog-body li { font-size: 0.9rem; line-height: 1.65; color: #c8d4e0; }
+    .sl-dialog-body p + p { margin-top: 0.5rem; }
+    .sl-dialog-body ul { padding-left: 1.15rem; }
+    .sl-dialog-body li { margin-bottom: 0.4rem; }
+    .sl-dialog-body b { color: #f1f5fb; }
+    .sl-dialog-body a { color: #7ab8ff; }
+    @media print { .sl-dialog, .sl-herobtns { display: none !important; } }
+    .sl-area { display: block; font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: #fbbf24; letter-spacing: 0.4px; margin-bottom: 0.15rem; }
+    .sl-aimh { font-size: 0.72rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #8fb5e8; margin: 0.7rem 0 0.3rem; }
+    .sl-aim { padding-left: 1.1rem; margin: 0; }
+    .sl-aim li { font-size: 0.87rem; color: #c8d4e0; line-height: 1.55; margin-bottom: 0.3rem; }
+    .sl-aim .sl-cite { font-size: 0.78rem; color: #8fa3bd; }
+    .sl-def { font-size: 0.8rem; color: #b6c3d6; line-height: 1.5; margin-top: 0.35rem; min-height: 1.2em; }
+    .sl-warn { font-size: 0.8rem; color: #fcd34d; margin-top: 0.3rem; }
+    .sl-warn[hidden] { display: none; }
+    .sl-block { margin-top: 0.7rem; }
+    .sl-row.is-no { border-left: 3px solid #fbbf24; }
+    .sl-row.is-strong { border-left: 3px solid #7ab8ff; }
+    .sl-ans .sl-opt input[value="no"]:checked + span { background: rgba(251,191,36,0.16); border-color: #fbbf24; }
+    .sl-ans .sl-opt input[value="strong"]:checked + span { background: rgba(122,184,255,0.2); border-color: #7ab8ff; }
+    .sl-rec { margin-top: 0.75rem; padding-top: 0.6rem; border-top: 1px dashed rgba(255,255,255,0.08); display: grid; gap: 0.45rem; }
+    .sl-rules { padding-left: 1.2rem; }
+    .sl-rules li { margin-bottom: 0.3rem; }
+    @media print { .sl-rec, .sl-def, .sl-warn, .sl-block textarea, .sl-block label { display: none !important; } .sl-area, .sl-aimh, .sl-aim li, .sl-aim .sl-cite { color: #000 !important; } }
+  </style>
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="ContractingHQ" />
+  <meta property="og:title"       content="Second Look: Contract File Review | ContractingHQ" />
+  <meta property="og:description" content="Twelve questions for reviewing a contract file: three before award, four at award, five after. Read the file cold, record what you saw, and export a comment resolution matrix. Runs in your browser only." />
+  <meta property="og:url"         content="https://kthq.org/second-look.html" />
+  <meta property="og:image"       content="https://kthq.org/og-image.png" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@ContractingHQ" />
+  <meta name="twitter:title"       content="Second Look: Contract File Review | ContractingHQ" />
+  <meta name="twitter:description" content="Twelve questions for reviewing a contract file: three before award, four at award, five after. Read the file cold, record what you saw, and export a comment resolution matrix. Runs in your browser only." />
+  <meta name="twitter:image"       content="https://kthq.org/og-image.png" />
+  <link rel="canonical"            href="https://kthq.org/second-look.html" />
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Second Look: Contract File Review",
+  "url": "https://kthq.org/second-look.html",
+  "description": "Twelve questions for reviewing a contract file: three before award, four at award, five after. Read the file cold, record what you saw, and export a comment resolution matrix. Runs in your browser only.",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web Browser, any modern browser",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "inLanguage": "en-US",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "publisher": { "@type": "Organization", "@id": "https://kthq.org/#organization", "name": "KTHQ ContractingHQ", "url": "https://kthq.org/" }
+}
+  </script>
+</head>
+<body class="sl-page">
+
+<!-- NAV -->
+<nav class="navbar" id="navbar" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="logo-full">ContractingHQ</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html" class="active">Tools</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li><a href="links.html">Links</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="working-theory/">Leadership</a></li>
+          <li><a href="community-tools.html">Community Tools</a></li>
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main id="main">
+
+<div class="sl-hero">
+  <span class="sl-hero-tag">Workbench · Contract file review</span>
+  <h1>Second Look</h1>
+  <p>Twelve questions for reviewing a contract file. Each one asks whether the file supports a decision.</p>
+  <p class="sl-herobtns"><button type="button" class="sl-btn" id="btnAbout" aria-haspopup="dialog">About this tool and how it was designed</button></p>
+  <p class="sl-private"><strong>Your review stays on your computer.</strong> Nothing you type is sent or saved to a server, and this page runs no analytics. Your work is held in this browser tab until you close it or clear it. Export the matrix to keep it.</p>
+</div>
+
+<dialog class="sl-dialog" id="slAbout" aria-labelledby="aboutTitle">
+  <div class="sl-dialog-head">
+    <h2 id="aboutTitle">About Second Look</h2>
+    <button type="button" class="sl-btn" id="btnAboutClose">Close</button>
+  </div>
+  <div class="sl-dialog-body">
+    <h3>What it is</h3>
+    <p>A standard for reviewing a contract file, and a tool for applying it. Twelve questions cover the life of a contract: three before award, four at award, five after. Each question asks whether the file supports a decision the contracting officer made. The reviewer reads the file cold, records what is there, and grades only what the file does not support.</p>
+
+    <h3>Why it was built</h3>
+    <p>The FAR tells a contracting officer what has to be done. It does not tell a reviewer what to look at. Without a standard, a review tends to become a second compliance check: a search for documents and clauses the contracting officer and the contracting office are already responsible for. That adds time to the acquisition and little judgment to the file.</p>
+    <p>The record on where awards fail points somewhere else. In its reports to Congress for fiscal years 2024 and 2025, the Government Accountability Office listed the most common reasons it sustained protests: unreasonable technical evaluation, unreasonable cost or price evaluation, a flawed selection decision, and unreasonable rejection of a proposal. Each one is a failure of reasoning the file could not support. None is a missing form.</p>
+
+    <h3>How it was designed</h3>
+    <ul>
+      <li><b>Structure: the Contract Management Standard.</b> The National Contract Management Association publishes it as an American National Standard (ANSI/NCMA ASD 1-2019, reaffirmed 2025), and DoD built its contracting competency model on it. It divides contract management into pre-award, award, and post-award, with competencies and job tasks under each. Second Look uses the same three phases, and every question names the competency it sits under. The standard names the work. It does not say how to judge whether the work was done well, which is the gap this tool fills.</li>
+      <li><b>Focus: what DoD peer reviews examine.</b> DFARS PGI 201.170-3 lists the elements a peer review team looks at: whether the process was understood by Government and industry, whether the source selection followed the plan and the solicitation, whether the evaluation and the decision were clearly documented and consistent with the stated criteria, and the business arrangement. None of them is a clause check, and peer review results are advisory. The questions here follow that lead.</li>
+      <li><b>Where awards fail: the protest record.</b> The Government Accountability Office reports above set the weight. The award questions on evaluation and price are where a reviewer's time is most likely to matter.</li>
+      <li><b>Grading: existing practice.</b> Critical, Substantive, and Administrative follow common DoD comment-matrix practice and line up with the Air Force CASPER matrix, so an Air Force reviewer can run a CASPER review with this tool.</li>
+      <li><b>Cites: current text.</b> Every regulatory cite points to the Revolutionary FAR Overhaul model deviation text and the DoD class deviations, checked against acquisition.gov.</li>
+    </ul>
+    <p>Three things are this tool's own and are not drawn from those sources: the cold-reader test, the three rules for findings, and the wording of the twelve questions.</p>
+
+    <h3>The test</h3>
+    <p>Could someone seeing this file for the first time follow the decision and defend it from the file alone? That reader might be a protest attorney, an auditor, or a member of the public. A finding names a decision the file does not support. It does not name a missing document, and it does not second-guess a choice that was the contracting officer's to make.</p>
+
+    <h3>What it does</h3>
+    <ul>
+      <li>Reviews judgment: whether the reasoning in the file holds.</li>
+      <li>Asks the same twelve questions at every level, from a peer in the office to a headquarters review to a contracting officer checking their own file.</li>
+      <li>Keeps a record. Each answer carries a note on what the reviewer saw, so the review itself can be read and checked.</li>
+      <li>Ignores format. It asks what the file shows and never asks for a document by name.</li>
+    </ul>
+
+    <h3>What it is not</h3>
+    <ul>
+      <li>A compliance checklist. Whether required documents and clauses are present is the contracting officer's and the contracting office's work. The one exception is the award document, in the fourth award question, because the award is what binds the Government.</li>
+      <li>A way to overrule the contracting officer. If the file supports the choice, the answer is Supported. A reviewer's preference goes in a recommendation the contracting officer can dismiss.</li>
+      <li>An approval, a clearance, or a legal review.</li>
+      <li>Policy. No regulation or agency requires it. It is offered as a standard that a review at any level can follow, and it is written to work for any agency.</li>
+    </ul>
+
+    <h3>Sources</h3>
+    <ul>
+      <li><a href="https://www.ncmahq.org/cms" target="_blank" rel="noopener">National Contract Management Association, Contract Management Standard</a>, ANSI/NCMA ASD 1-2019 (R2025)</li>
+      <li><a href="https://www.acquisition.gov/dfarspgi/pgi-201.170-3-administration-peer-reviews." target="_blank" rel="noopener">DFARS PGI 201.170-3, Administration of peer reviews</a></li>
+      <li><a href="https://www.gao.gov/products/gao-26-900695" target="_blank" rel="noopener">GAO Bid Protest Annual Report to Congress for Fiscal Year 2025</a>, GAO-26-900695, and the fiscal year 2024 report</li>
+      <li><a href="https://www.acquisition.gov/far-overhaul" target="_blank" rel="noopener">Revolutionary FAR Overhaul model deviation text</a>, acquisition.gov</li>
+    </ul>
+  </div>
+</dialog>
+
+<div class="sl-layout" id="slApp">
+
+  <form class="sl-panel sl-inputs" id="slForm" aria-label="Describe the review and the buy" autocomplete="off">
+    <h2>The review</h2>
+
+    <fieldset class="sl-field" id="fRole">
+      <legend>You are</legend>
+      <div class="sl-opts">
+        <label class="sl-opt"><input type="radio" name="role" value="rev" checked><span>Reviewing a package</span></label>
+        <label class="sl-opt"><input type="radio" name="role" value="self"><span>Checking my own</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="sl-field" id="fPoint">
+      <legend>Review</legend>
+      <div class="sl-opts">
+        <label class="sl-opt"><input type="radio" name="point" value="pre" checked><span>Pre-award</span></label>
+        <label class="sl-opt"><input type="radio" name="point" value="award"><span>Award</span></label>
+        <label class="sl-opt"><input type="radio" name="point" value="post"><span>Post-award</span></label>
+      </div>
+      <p class="sl-hint" id="pointHint"></p>
+    </fieldset>
+
+    <h2 style="margin-top:0.25rem">The buy</h2>
+    <p class="sl-hint" style="margin:-0.4rem 0 0.8rem">These choices do not change the questions. They change where each question tells you to aim.</p>
+
+    <fieldset class="sl-field" id="fProc">
+      <legend>How the buy is done</legend>
+      <div class="sl-opts">
+        <label class="sl-opt"><input type="radio" name="proc" value="simp12"><span>Simplified, commercial (Part 12)</span></label>
+        <label class="sl-opt"><input type="radio" name="proc" value="simp13"><span>Simplified, noncommercial (Part 13)</span></label>
+        <label class="sl-opt"><input type="radio" name="proc" value="neg" checked><span>Negotiated (Part 15)</span></label>
+        <label class="sl-opt"><input type="radio" name="proc" value="order"><span>Order, multiple-award contract (16.507)</span></label>
+        <label class="sl-opt"><input type="radio" name="proc" value="fss"><span>Federal Supply Schedule order (Part 8)</span></label>
+      </div>
+      <p class="sl-hint" id="procHint"></p>
+    </fieldset>
+
+    <fieldset class="sl-field" id="fComm">
+      <legend>Commercial?</legend>
+      <div class="sl-opts">
+        <label class="sl-opt"><input type="radio" name="comm" value="c"><span>Commercial</span></label>
+        <label class="sl-opt"><input type="radio" name="comm" value="n" checked><span>Noncommercial</span></label>
+      </div>
+      <p class="sl-hint" id="commHint"></p>
+    </fieldset>
+
+    <fieldset class="sl-field" id="fComp">
+      <legend>Competition</legend>
+      <div class="sl-opts">
+        <label class="sl-opt"><input type="radio" name="comp" value="comp" checked><span>Competitive</span></label>
+        <label class="sl-opt"><input type="radio" name="comp" value="sole"><span>Sole source</span></label>
+      </div>
+      <p class="sl-hint" id="compHint"></p>
+    </fieldset>
+
+    <fieldset class="sl-field" id="fBasis">
+      <legend>Basis for award</legend>
+      <div class="sl-opts">
+        <label class="sl-opt"><input type="radio" name="basis" value="trade" checked><span id="basisTradeLabel">Tradeoff</span></label>
+        <label class="sl-opt"><input type="radio" name="basis" value="lpta"><span>Lowest price technically acceptable</span></label>
+        <label class="sl-opt"><input type="radio" name="basis" value="htr"><span>Highest technically rated, fair and reasonable price</span></label>
+        <label class="sl-opt"><input type="radio" name="basis" value="price"><span>Lowest price that meets the requirement</span></label>
+      </div>
+      <p class="sl-hint" id="basisHint"></p>
+    </fieldset>
+
+    <fieldset class="sl-field" id="fNegs">
+      <legend>Negotiations</legend>
+      <div class="sl-opts">
+        <label class="sl-opt"><input type="radio" name="negs" value="none" checked><span>Award without negotiation</span></label>
+        <label class="sl-opt"><input type="radio" name="negs" value="held"><span>Competitive range and negotiations</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="sl-field sl-checks" id="fAttr">
+      <legend>Also true for this buy</legend>
+      <div class="sl-opts">
+        <label class="sl-opt"><input type="checkbox" name="a" value="svc" checked><span>Services</span></label>
+        <label class="sl-opt"><input type="checkbox" name="a" value="options"><span>Has options</span></label>
+        <label class="sl-opt" data-only="pp"><input type="checkbox" name="a" value="pp" checked><span>Past performance is evaluated</span></label>
+        <label class="sl-opt" data-only="one"><input type="checkbox" name="a" value="one"><span>Only one offer came in</span></label>
+        <label class="sl-opt"><input type="checkbox" name="a" value="flex"><span>Cost-type, time-and-materials, or labor-hour</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="sl-field" id="fDod">
+      <legend>Supplement layer</legend>
+      <div class="sl-opts">
+        <label class="sl-opt"><input type="radio" name="dod" value="1" checked><span>FAR plus DoD</span></label>
+        <label class="sl-opt"><input type="radio" name="dod" value="0"><span>FAR only</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="sl-field sl-checks" id="fCasper">
+      <legend>Air Force</legend>
+      <div class="sl-opts">
+        <label class="sl-opt"><input type="checkbox" name="casper" value="1"><span>Show CASPER phase names</span></label>
+      </div>
+      <p class="sl-hint">CASPER is the Air Force review process under Policy Memo 26-C-16. Turn this on to label the review and the export with its phase.</p>
+    </fieldset>
+
+    <div class="sl-notes" id="slNotes" aria-live="polite"></div>
+  </form>
+
+  <section class="sl-panel" aria-labelledby="resultsTitle">
+    <div class="sl-results-head">
+      <h2 id="resultsTitle">Your review</h2>
+      <div class="sl-actions">
+        <button type="button" class="sl-btn" id="btnExpand">Expand all</button>
+        <button type="button" class="sl-btn" id="btnWord">Export matrix (Word)</button>
+        <button type="button" class="sl-btn" id="btnCsv">Export matrix (Excel)</button>
+        <button type="button" class="sl-btn" id="btnCopy">Copy as text</button>
+        <button type="button" class="sl-btn" id="btnPrint">Print</button>
+        <button type="button" class="sl-btn warn" id="btnClear">Clear this review</button>
+      </div>
+    </div>
+    <p class="sl-summary" id="slSummary" role="status" aria-live="polite"></p>
+    <p class="sl-echo" id="slEcho"></p>
+    <div class="sl-phead" id="slPrintHead"></div>
+
+    <details class="sl-how">
+      <summary>How this review works</summary>
+      <div class="sl-how-body">
+        <h3>The test</h3>
+        <p>Read the file cold, the way a protest attorney or a member of the public would. For each question, ask one thing: <b>could someone seeing this for the first time follow the decision and defend it from the file alone?</b></p>
+        <h3>Three rules</h3>
+        <ol class="sl-rules">
+          <li><b>A finding names a decision the file does not support.</b> It does not name a missing document. "Nothing in the file says why labor-hour was chosen" is a finding. "No determination and findings" is an administrative note at most.</li>
+          <li><b>The contracting officer's discretion is not under review.</b> If the file supports the choice, the answer is Supported, even when you would have chosen differently.</li>
+          <li><b>How you would have done it goes in the recommendation box.</b> The contracting officer can dismiss a recommendation without a response.</li>
+        </ol>
+        <h3>What is left to the contracting officer and the office</h3>
+        <p>Compliance. This review assumes the contracting officer and the contracting office have checked that required documents exist and required clauses are in. The one exception is the award document, in the fourth award question, because the award is what binds the Government and everything else in the file leads up to it or follows from it.</p>
+        <h3>For each question</h3>
+        <ul>
+          <li><b>Where to aim</b> lists the places the answer usually turns on for this kind of buy. It is a guide for reading, not a list to answer line by line.</li>
+          <li><b>What I saw</b> is your record: what the contracting officer decided and what in the file supports it. Write it for every question you answer. It is what makes the review worth reading.</li>
+          <li><b>Answer.</b> Not supported, Supported, or Strong. Rest on an answer or tab to it to see what it means.</li>
+          <li><b>Leave offeror names and prices out.</b> Use Offeror A, B, C.</li>
+        </ul>
+        <h3>Grading what the file does not support</h3>
+        <ul>
+          <li><b>Critical.</b> Illegal, certain to lose a protest, or a risk the mission cannot carry. The acquisition stops until it is fixed, and the reviewer concurs on the fix.</li>
+          <li><b>Substantive.</b> Could lose a protest or put execution at risk. The contracting officer corrects or addresses it and proceeds. No second review is needed.</li>
+          <li><b>Administrative.</b> Small gaps that would not change the outcome if protested, plus grammar and format. Can be dismissed, and the acquisition proceeds.</li>
+          <li><b>Recommendation.</b> How the reviewer would do it. The contracting officer's discretion, with no response required.</li>
+        </ul>
+        <h3>Where the line falls on a missing document</h3>
+        <ul>
+          <li>The document is missing and the file supports the decision somewhere else: Administrative.</li>
+          <li>The decision is not supported anywhere in the file: Substantive or Critical, by what rides on it.</li>
+          <li>The document is what grants the authority, such as an approved sole-source justification: Critical. Nothing else in the file can stand in for it.</li>
+        </ul>
+      </div>
+    </details>
+
+    <div class="sl-headform" id="slHeadForm">
+      <div class="sl-head-grid">
+        <div><label class="sl-lab" for="hName">Reviewer name</label><input class="sl-in" id="hName" type="text" data-h="name" autocomplete="off"></div>
+        <div><label class="sl-lab" for="hEmail">Reviewer email</label><input class="sl-in" id="hEmail" type="text" data-h="email" autocomplete="off"></div>
+        <div><label class="sl-lab" for="hTitle">Acquisition (short title, no offeror names)</label><input class="sl-in" id="hTitle" type="text" data-h="title" autocomplete="off"></div>
+        <div><label class="sl-lab" for="hDate">Review date</label><input class="sl-in" id="hDate" type="text" data-h="date" placeholder="12 Nov 2026" autocomplete="off"></div>
+        <div class="wide"><label class="sl-lab" for="hMark">Marking printed on the export</label><input class="sl-in" id="hMark" type="text" data-h="mark" autocomplete="off"><p class="sl-hint">Use the marking your agency requires. Air Force example: the CASPER comment resolution matrix template is marked as controlled unclassified information.</p></div>
+      </div>
+    </div>
+
+    <div id="slGroups"></div>
+
+    <div class="sl-matrix-wrap" id="slMatrixWrap">
+      <h3 id="matrixTitle">Comment resolution matrix</h3>
+      <p class="sl-marking" id="slMarking"></p>
+      <p class="sl-intro" id="matrixIntro"></p>
+      <div class="sl-scroll" id="slMatrixScroll" tabindex="0" role="region" aria-labelledby="matrixTitle"></div>
+      <p class="sl-empty" id="slHidden"></p>
+      <h3 id="recordTitle" style="margin-top:1.25rem">Review record</h3>
+      <p class="sl-intro">Each question, your answer, and what you saw. This goes on the export ahead of the matrix.</p>
+      <div class="sl-scroll" id="slRecordScroll" tabindex="0" role="region" aria-labelledby="recordTitle"></div>
+    </div>
+
+    <div class="sl-static">
+      <div class="disclaimer">
+        <h3>Set by your agency, not the FAR</h3>
+        <ul>
+          <li>Which buys get an independent review, at what dollar value, and who the reviewer is. Air Force example: CASPER applies to operational buys at $5 million and up. The reviewer (the CASPER Risk Advisor) is the chief of the contracting office or a designee from $5 million to $10 million, the senior contracting official or a designee over $10 million to under $1 billion, and the head of the contracting activity or a designee at $1 billion and up. A designee sits at least one level above the contracting officer. Acquisitions already underway can stay on legacy business and contract clearance.</li>
+          <li>When the reviews happen. Air Force example: an Acquisition Strategy Review before the acquisition plan is final, a Pricing and Negotiation Review before negotiations or the competitive range, and an optional Contract Execution Review after award. After the strategy review, the reviewer sets the scope of later phases or waives them.</li>
+          <li>What is exempt. Air Force example: funding-only and administrative modifications, award or incentive fee modifications paid per the plan, labor standards wage adjustments, competitive orders under multiple-award contracts and schedules with no specific evaluation criteria and no new or changed terms, and mandatory sources.</li>
+          <li>Legal review. Air Force example: solicitations and proposed contracts over $3 million for operational contracting, justifications over $10 million, and source selection decisions and terminations at any value. The senior contracting official can change the dollar thresholds with local legal counsel. This tool does not replace legal review.</li>
+          <li>Rating scales and source selection document formats. DoD example: the DoD Source Selection Procedures referenced at DFARS PGI 215.200.</li>
+        </ul>
+      </div>
+      <div class="disclaimer">
+        <h3>Outside this tool</h3>
+        <p>Sealed bidding, architect-engineer selection, broad agency announcements, other transactions, undefinitized contract actions, major system acquisitions, and DoD peer reviews. Those reviews carry questions this set does not cover.</p>
+      </div>
+      <div class="disclaimer">
+        <p><strong>Note.</strong> Cites point to the Revolutionary FAR Overhaul (RFO) model deviation text on acquisition.gov. DoD rows cite the DoD class deviation supplement text (RDFARS) where it exists. Federal Supply Schedule ordering procedures sit in GSAR subpart 538.71. Agency supplements and local policy can add requirements. Second Look is a reference for the reviewer. It is not an approval, a clearance, or legal advice. To check which documents a file needs, use the <a href="contract-file-checklist.html">Contract File Checklist</a>.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('slApp');
+  if (!root || root.dataset.ready === 'true') return;
+  root.dataset.ready = 'true';
+  /* This page promises no analytics. Belt and braces with the Content-Security-Policy in the head. */
+  try { window['ga-disable-G-X2RXS78N7K'] = true; } catch (e) {}
+
+  var KEY = 'sl-review-v2';
+  var DEFAULT_MARK = 'SOURCE SELECTION INFORMATION - SEE FAR 2.101 AND 3.104';
+  var MAX_AIM = 6;
+
+  /* ── Predicates ── */
+  function neg(s) { return s.proc === 'neg'; }
+  function simp(s) { return s.proc === 'simp12' || s.proc === 'simp13'; }
+  function ord(s) { return s.proc === 'order'; }
+  function fss(s) { return s.proc === 'fss'; }
+  function com(s) { return s.comm === 'c'; }
+  function comp(s) { return s.comp === 'comp'; }
+  function sole(s) { return s.comp === 'sole'; }
+  function trade(s) { return comp(s) && s.basis === 'trade'; }
+  function lpta(s) { return comp(s) && s.basis === 'lpta'; }
+  function htr(s) { return comp(s) && s.basis === 'htr'; }
+  function lowp(s) { return comp(s) && s.basis === 'price'; }
+  function held(s) { return neg(s) && comp(s) && s.negs === 'held'; }
+  function noneg(s) { return neg(s) && comp(s) && s.negs === 'none'; }
+  function all() { return true; }
+
+  var FSS_C = ['RFO 8.401(b)', 'GSAR 538.71'];
+  function pick(s, m) { return m[s.proc] || []; }
+  function plus(list, s, dodList) { return s.dod && dodList ? list.concat(dodList) : list; }
+
+  var RFO_BASE = 'https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-';
+  function esc(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function citeHTML(list) {
+    return list.map(function (c) {
+      var m = /^RFO (?:subpart |Part )?(\d{1,2})(?:[.\s]|$)/.exec(c);
+      if (m) return '<a href="' + RFO_BASE + parseInt(m[1], 10) + '" target="_blank" rel="noopener">' + esc(c) + '</a>';
+      return esc(c);
+    }).join('; ');
+  }
+  function val(v, s) { return typeof v === 'function' ? v(s) : v; }
+
+  var PHASE = {
+    pre: { name: 'Pre-award', casper: 'Acquisition Strategy Review', when: 'Market research, strategy, and the solicitation, before it goes out.' },
+    award: { name: 'Award', casper: 'Pricing and Negotiation Review', when: 'Evaluation, negotiation, price, and the award document, before award.' },
+    post: { name: 'Post-award', casper: 'Contract Execution Review', when: 'How the contract is being run, after award.' }
+  };
+  var PROC = {
+    simp12: 'Simplified, commercial (Part 12)', simp13: 'Simplified, noncommercial (Part 13)', neg: 'Negotiated (Part 15)',
+    order: 'Order under a multiple-award contract (16.507)', fss: 'Federal Supply Schedule order (Part 8)'
+  };
+
+  /* ── The twelve questions ──
+     aim: [when, text, cite]. Listed in priority order; the page shows the first MAX_AIM that apply. */
+  var QS = [
+    /* ───────── PRE-AWARD ───────── */
+    { id: 'pre1', pt: 'pre', area: 'Market research', when: all,
+      q: 'Does the file show what the market looked like and what was concluded from it?',
+      why: 'Everything later rests on this: the commercial call, the set-aside decision, who can compete, and what a fair price looks like. It is also where the buy first gets described for people outside the office.',
+      found: 'Often in a market research report, an acquisition plan, or a strategy summary. The name of the document does not matter. The content does.',
+      ncma: '2.1.1 Plan Buying Strategy: Shape Requirements, Conduct Market Research',
+      aim: [
+        [all, 'Says in plain words what is being bought and why, so a firm outside the office would recognize the work.', ['RFO 10.001(a)']],
+        [all, 'Shows who was looked at, when, and what was learned, at a depth that fits the size of the buy.', function (s) { return plus(['RFO 10.001(b)', 'RFO 10.001(e)'], s, ['RDFARS PGI 210.001(e)']); }],
+        [function (s) { return !fss(s) && com(s) && s.dod; }, 'The commercial determination is in writing with reasons of its own: who sells this to the public, and on what terms. A prior determination in the DoD Commercial Item Database can serve, with the file pointing to it.', ['RDFARS 212.001-70(b)-(c)', 'RDFARS PGI 212.001-70(b)']],
+        [function (s) { return !fss(s) && com(s) && !s.dod; }, 'Says who sells this to the public and on what terms.', ['RFO 10.001(f)']],
+        [function (s) { return !fss(s) && !com(s); }, 'Says why nothing in the commercial market fits.', ['RFO 10.001(f)', 'RFO 7.102(b)(1)']],
+        [function (s) { return comp(s) && (neg(s) || simp(s)); }, 'The set-aside decision lines up with the firms the research found. If the buy is not set aside, the reason is stated.', ['RFO 19.104-1(a)', 'RFO 19.104-1(b)(1)']],
+        [sole, 'Shows what was done to find another source and what came back.', function (s) { return ord(s) ? ['RFO 16.507-6(d)'] : fss(s) ? FSS_C : simp(s) && !com(s) ? ['RFO 13.101(b)'] : ['RFO 6.103(c)', 'RFO 6.104-1(a)(6)', 'RFO 6.104-1(a)(8)']; }],
+        [comp, 'Anything in the requirement that narrows who can compete has a stated reason: experience, brand, certification, transition time.', function (s) { return ord(s) ? ['RFO 16.507-2(c)(1)(i)'] : fss(s) ? FSS_C : ['RFO 7.102(b)(2)']; }]
+      ] },
+    { id: 'pre2', pt: 'pre', area: 'Strategy', when: all,
+      q: 'Does the file support the approach chosen: procedure, competition, contract type, and basis for award?',
+      why: 'These are the contracting officer\'s calls to make. The review asks whether the file shows the reasoning behind each one, and whether that reasoning traces back to the requirement and the market.',
+      found: 'Often in an acquisition plan, a strategy summary, the market research, a justification, or a determination. Where a regulation requires a specific approval, that approval has to exist.',
+      ncma: '2.1.1 Plan Buying Strategy: Formulate Contracting Approach and Strategy',
+      aim: [
+        [sole, function (s) { return ord(s) ? 'The exception to fair opportunity fits the facts, and the justification is approved at the level its value requires. The approval is what grants the authority, so nothing else in the file can stand in for it.' : fss(s) ? 'The reason for limiting sources fits the facts, and the justification is approved under the schedule ordering procedures.' : simp(s) && !com(s) ? 'The file shows why only one source is reasonably available. Part 13 calls for a determination and findings.' : 'The authority cited fits the facts, and the justification is approved at the level its value requires. The approval is what grants the authority, so nothing else in the file can stand in for it. A lack of planning is not grounds.'; },
+          function (s) { return pick(s, { simp12: ['RFO 12.102', 'RFO 6.104-2'], simp13: ['RFO 13.101(b)'], neg: com(s) ? ['RFO 12.102(b)', 'RFO 6.103(b)', 'RFO 6.104-2'] : ['RFO 6.103(b)', 'RFO 6.104-1(a)(5)', 'RFO 6.104-2'], order: ['RFO 16.507-6(b)', 'RFO 16.507-6(e)'], fss: FSS_C }); }],
+        [function (s) { return ord(s) || fss(s); }, 'The work fits inside the scope, ordering period, and ceiling of the contract being ordered against.', function (s) { return ord(s) ? ['RFO 16.506(a)', 'RFO 16.508(a)(1)'] : FSS_C; }],
+        [all, function (s) { return simp(s) ? 'The procedure fits the buy. For quotations, no evaluation plan, scoring, or competitive range is required, so a file without them has no gap.' : ord(s) ? 'The ordering procedure fits the buy. Part 15 source selection procedures do not apply to fair opportunity, and no evaluation plan or competitive range is required.' : fss(s) ? 'The ordering procedure fits the dollar value under the schedule rules.' : 'The procedure fits the size and complexity of the buy, and the file says why it was chosen.'; },
+          function (s) { return pick(s, { simp12: ['RFO 12.201-1', 'RFO 12.203(c)(2)'], simp13: ['RFO 13.201', 'RFO 12.203(c)(2)'], neg: com(s) ? ['RFO 12.201-2', 'RFO 15.103'] : ['RFO 15.103'], order: ['RFO 16.507-2(a)(2)-(3)'], fss: FSS_C }); }],
+        [all, function (s) { return s.a.flex ? 'Contract type: the file explains why this type fits and how the Government will manage it. Time-and-materials and labor-hour need a determination that no other type is suitable, and a ceiling price.' + (com(s) ? ' Commercial buys cannot be cost-reimbursement.' : '') : 'Contract type: firm-fixed-price needs nothing written about the choice, except for major systems and research and development. The thing to check is whether offerors can price the work as described.'; },
+          function (s) { var c = ['RFO 16.102(b)-(c)', 'RFO 16.103']; if (s.a.flex) c.push('RFO 16.601-3'); if (com(s)) c.push('RFO 12.104'); return c; }],
+        [comp, function (s) { return 'The basis for award fits what the customer values: whether anything above the minimum is worth paying more for.' + (lpta(s) ? (s.dod ? ' DoD limits lowest price technically acceptable to buys that meet listed conditions, with the justification in the file.' : ' Lowest price technically acceptable needs its justification in the file.') : ''); },
+          function (s) { return pick(s, { simp12: ['RFO 12.203(b)'], simp13: ['RFO 13.202', 'RFO 12.203(b)'], neg: lpta(s) ? (s.dod ? ['RFO 15.103-2', 'RDFARS 215.103-270'] : ['RFO 15.103-2']) : htr(s) ? ['RFO 15.103-3'] : ['RFO 15.103-1'], order: ['RFO 16.507-2(c)(1)'], fss: FSS_C }); }],
+        [function (s) { return comp(s) && !lowp(s); }, 'The evaluation factors line up with the requirement. The rule asks for factors tailored to the buy. It does not ask for a memo on why each one was picked.',
+          function (s) { return pick(s, { simp12: ['RFO 12.203(a)'], simp13: ['RFO 13.202', 'RFO 12.203(a)'], neg: plus(['RFO 15.104(a)'], s, ['RDFARS 215.104-70']), order: ['RFO 16.507-5(a)(3)'], fss: FSS_C }); }],
+        [function (s) { return s.a.options; }, 'Options: the file says why they are in the Government\'s interest, and the contract will limit what they add and how long it can run.', ['RFO 17.201-1(b)-(c)', 'RFO 17.201-2(a)']],
+        [function (s) { return sole(s) && !simp(s) && !fss(s); }, 'Names what will be done so the next buy is not sole source again.', function (s) { return ord(s) ? ['RFO 16.507-6(d)(2)(vii)'] : ['RFO 6.104-1(a)(11)']; }],
+        [function (s) { return comp(s) && s.a.svc && !simp(s); }, 'If an incumbent holds the work, the file addresses how a new contractor would take over.', []]
+      ] },
+    { id: 'pre3', pt: 'pre', area: 'Solicitation', when: all,
+      q: 'Does what goes to offerors tell them what is being bought, how to respond, and how the winner is picked?',
+      why: 'This is the document the public sees and the one every later decision is measured against. An offeror who has never worked with this office should be able to read it and know how to win.',
+      found: 'In the solicitation or request itself, read against the strategy and the market research.',
+      ncma: '2.1.2 Request Offers: Prepare Buying Request',
+      aim: [
+        [all, 'Describes the same buy the strategy supports: basis for award, contract type, period, and set-aside.', function (s) { return neg(s) ? ['RFO 15.201(b)'] : []; }],
+        [comp, function (s) { return simp(s) ? 'Tells quoters the basis on which the award decision will be made.' : ord(s) ? 'States the basis for selection. Above $7.5 million, also the factors and subfactors, including price, and their relative importance.' : fss(s) ? 'Tells schedule holders what the order decision will rest on.' : 'States the factors plainly' + (trade(s) || htr(s) ? ', with their relative importance, including nonprice factors against price.' : '.'); },
+          function (s) { return pick(s, { simp12: ['RFO 12.203(b)'], simp13: ['RFO 13.202'], neg: ['RFO 15.104(a)', 'RFO 15.104(d)'], order: ['RFO 16.507-4(a)', 'RFO 16.507-5(a)'], fss: FSS_C }); }],
+        [lpta, 'The acceptability standards are written so two evaluators would reach the same pass or fail.', ['RFO 15.103-2(b)']],
+        [htr, 'Says that tradeoffs will not be made and that the highest rated proposal with a fair and reasonable price will be selected.', ['RFO 15.103-3(b)']],
+        [function (s) { return comp(s) && !lowp(s); }, 'Everything offerors are asked to submit gets evaluated, and everything evaluated has a submission behind it.',
+          function (s) { return pick(s, { simp12: ['RFO 12.203(c)'], simp13: ['RFO 13.202', 'RFO 12.203(c)'], neg: ['RFO 15.104(a)', 'RFO 15.202(a)(1)'], order: ['RFO 16.507-2(a)(3)'], fss: FSS_C }); }],
+        [function (s) { return comp(s) && s.a.pp; }, 'Past performance: says what counts as recent and relevant, and how an offeror with no record is treated.',
+          function (s) { return pick(s, { simp12: ['RFO 12.203(a)(2)'], simp13: ['RFO 13.202', 'RFO 12.203(a)(2)'], neg: ['RFO 15.104(b)(3)', 'RFO 15.202(c)(1)'], order: ['RFO 16.507-2(c)(2)'], fss: FSS_C }); }],
+        [comp, function (s) { return 'An offeror can compute its own evaluated price from the solicitation: which line items, what quantities' + (s.a.options ? ', and which option periods. The option provisions match how options will be evaluated.' : '.'); },
+          function (s) { var c = pick(s, { simp12: ['RFO 12.203(a)(3)'], simp13: ['RFO 13.202', 'RFO 12.203(a)(3)'], neg: ['RFO 15.104(b)(1)'], order: ['RFO 16.507-2(c)(1)(iv)'], fss: FSS_C }); return s.a.options ? c.concat(['RFO 17.202', 'RFO 17.203']) : c; }],
+        [function (s) { return ord(s) && comp(s); }, 'Every contract holder gets the notice, or the file says why fewer did.', ['RFO 16.507-2(a)(1)', 'RFO 16.507-3(a)', 'RFO 16.507-4(a)']],
+        [sole, 'Asks the offeror for the data needed to price this, and no more.', function (s) { return simp(s) ? (com(s) ? ['RFO 12.204(a)'] : ['RFO 13.203(a)']) : ['RFO 15.402(b)', 'RFO 15.403-1(a)']; }],
+        [function (s) { return neg(s) && comp(s); }, function (s) { return 'If the plan is to award without negotiation, the solicitation says so.' + (s.dod ? ' DoD expects negotiations at $100 million or more.' : ''); }, function (s) { return plus(['RFO 15.203'], s, ['RDFARS 215.204-2']); }],
+        [comp, 'The response time is workable for an offeror that is not the incumbent.', function (s) { return ord(s) ? ['RFO 16.507-5(a)(2)'] : fss(s) ? FSS_C : ['RFO 5.201, Table 5-3']; }],
+        [all, 'Nothing in the work statement, the price schedule, and the instructions conflicts.', []]
+      ] },
+
+    /* ───────── AWARD ───────── */
+    { id: 'aw1', pt: 'award', area: 'Evaluation', when: comp,
+      q: 'Were offers judged on what the solicitation said, and only that?',
+      why: 'In the Government Accountability Office reports to Congress for fiscal years 2024 and 2025, unreasonable technical evaluation was the most common reason for sustaining a protest. Put the solicitation and the evaluation side by side.',
+      found: 'Often in the evaluation worksheets or report, the abstract, and the award decision.',
+      ncma: '3.1.1 Evaluate Offer; 3.1.4 Award Contract: Select Successful Offeror',
+      aim: [
+        [function (s) { return !lowp(s); }, 'Every stated factor appears in the evaluation, and nothing appears that the solicitation does not state.',
+          function (s) { return pick(s, { simp12: ['RFO 12.203(b)'], simp13: ['RFO 13.202', 'RFO 12.203(b)'], neg: ['RFO 15.202(a)(1)'], order: ['RFO 16.507-4(b)', 'RFO 16.507-5(b)(1)'], fss: FSS_C }); }],
+        [lowp, 'Award went to the lowest price that meets the requirement. A lower offer was passed over only for a reason tied to a stated requirement.',
+          function (s) { return pick(s, { simp12: ['RFO 12.204(b)'], simp13: ['RFO 13.203(b)'], order: ['RFO 16.507-3(b)', 'RFO 16.507-4(b)'], fss: FSS_C }); }],
+        [function (s) { return !lowp(s); }, 'Where two offerors proposed the same thing, they got the same treatment.',
+          function (s) { return pick(s, { simp12: ['RFO 12.203(c)'], simp13: ['RFO 13.202', 'RFO 12.203(c)'], neg: ['RFO 15.201(d)'], order: ['RFO 16.507-2(c)(1)(i)'], fss: FSS_C }); }],
+        [lpta, 'Each unacceptable finding rests on a stated minimum, and award went to the lowest evaluated price among acceptable offers with no credit for exceeding the minimum.', ['RFO 15.202(b)(1)', 'RFO 15.103-2(a)']],
+        [htr, 'The highest rated proposal was identified first, and its price was then checked for reasonableness without a tradeoff.', ['RFO 15.103-3(a)']],
+        [trade, function (s) { return neg(s) ? 'The decision compares offerors to each other. If it pays more, it names what the Government gets for the difference, in line with the relative importance the solicitation stated.' : 'The file compares the offers to each other. If it pays more than the lowest price, it names what the Government gets for the difference.'; },
+          function (s) { return pick(s, { simp12: ['RFO 12.204(b)'], simp13: ['RFO 13.203(b)'], neg: ['RFO 15.205', 'RFO 15.104(d)'], order: ['RFO 16.507-5(b)'], fss: FSS_C }); }],
+        [function (s) { return neg(s) && (trade(s) || htr(s)); }, 'Each strength, significant weakness, and deficiency says what in the proposal it rests on and why it matters. Nothing called a weakness is really a deficiency.', ['RFO 15.202(b)(2)', 'RFO 15.001']],
+        [function (s) { return s.a.pp; }, function (s) { return 'Past performance: the recent and relevant terms were applied as stated, the same way for every offeror' + (neg(s) ? ', and an offeror with no record was rated neither favorably nor unfavorably.' : '.'); },
+          function (s) { return pick(s, { simp12: ['RFO 12.203(a)(2)'], simp13: ['RFO 13.202', 'RFO 12.203(a)(2)'], neg: ['RFO 15.202(c)(1)', 'RFO 15.202(c)(3)'], order: ['RFO 16.507-2(c)(2)'], fss: FSS_C }); }],
+        [noneg, 'For award without negotiation: no exchange let an offeror revise its proposal or cure an omission.', ['RFO 15.203', 'RFO 15.202(a)(2)']],
+        [function (s) { return !simp(s); }, 'An offer that was rejected or eliminated has a reason the file states, tied to the solicitation.', function (s) { return neg(s) ? ['RFO 15.202(a)(1)', 'RFO 15.204-1'] : ord(s) ? ['RFO 16.507-4(b)'] : FSS_C; }],
+        [all, 'The choice could be explained to an unsuccessful offeror from the record as written.',
+          function (s) { return pick(s, { simp12: ['RFO 12.301(b)'], simp13: ['RFO 13.301'], neg: plus(['RFO 15.301-1'], s, ['RDFARS 215.301-170']), order: ['RFO 16.507-5(c)'], fss: FSS_C }); }]
+      ] },
+    { id: 'aw2', pt: 'award', area: 'Negotiation', when: function (s) { return held(s) || sole(s); },
+      q: 'Does the file show what was raised with whom, what changed, and why?',
+      why: 'A negotiation leaves the Government with a different deal than the one first offered. The file should let a reader see where the Government started, what it asked for, and how it got to the result.',
+      found: 'Often in prenegotiation objectives, the competitive range decision, negotiation notes, and the price negotiation memorandum.',
+      ncma: '3.1.2 Prepare for Negotiations; 3.1.3 Conduct Negotiations',
+      aim: [
+        [held, 'The competitive range follows from the evaluation, and each exclusion is explained in terms of the solicitation.', ['RFO 15.204-1']],
+        [held, 'Every deficiency and significant weakness was raised with the offeror it belongs to.', ['RFO 15.204-2(b)(1)']],
+        [held, 'Offerors were treated even-handedly and got the same chance at a final revision.', ['RFO 15.204-2(a)', 'RFO 15.204-2(d)', 'RFO 15.201(d)']],
+        [function (s) { return !simp(s) && !fss(s); }, 'The Government\'s objective was set before negotiating, and each number can be traced to its source.', ['RFO 15.408-1']],
+        [function (s) { return sole(s) && !simp(s); }, 'The record explains the distance between the objective and the result.', ['RFO 15.408-2(a)(7)-(8)']],
+        [sole, 'Nothing changed in negotiation that the justification does not cover: scope, period, or a value in a higher approval bracket.',
+          function (s) { return ord(s) ? ['RFO 16.507-6(d)-(e)'] : fss(s) ? FSS_C : simp(s) && !com(s) ? ['RFO 13.101(b)'] : ['RFO 6.104-1(a)(2)-(3)', 'RFO 6.104-2']; }],
+        [function (s) { return sole(s) && simp(s); }, 'The file says what was asked of the single source and what it agreed to.', function (s) { return com(s) ? ['RFO 12.204(b)'] : ['RFO 13.203(b)']; }]
+      ] },
+    { id: 'aw3', pt: 'award', area: 'Price', when: all,
+      q: 'Does the file support the finding that the price is fair and reasonable?',
+      why: 'Unreasonable cost or price evaluation was among the top three reasons the Government Accountability Office sustained protests in fiscal years 2024 and 2025. The finding needs a comparison a reader can check, not a statement that one was made.',
+      found: 'Often in a price analysis, an abstract, a price negotiation memorandum, or the award decision.',
+      ncma: '3.1.1 Evaluate Offer: Document Analysis Results',
+      aim: [
+        [all, function (s) { return fss(s) ? 'Names the comparison that carries the finding for this mix and quantity. Schedule prices are a ceiling, so look for a comparison among holders or a price reduction sought.' : 'Names the comparison that carries the finding, and the things compared are alike: same scope, same period, same quantities.'; },
+          function (s) { return pick(s, { simp12: ['RFO 12.204(a)'], simp13: ['RFO 13.203(a)'], neg: ['RFO 15.404-1(b)-(c)'], order: ['RFO 16.506(f)', 'RFO 15.404-1(b)'], fss: FSS_C }); }],
+        [function (s) { return comp(s) && !s.a.one && !fss(s); }, 'Shows the offers side by side and says what the spread means. It does more than state that competition existed.',
+          function (s) { return pick(s, { simp12: ['RFO 12.204(a)'], simp13: ['RFO 13.203(a)'], neg: ['RFO 15.202(d)', 'RFO 15.403-2(c)(1)'], order: ['RFO 15.404-1(b)'] }); }],
+        [function (s) { return comp(s) && s.a.one; }, function (s) { return s.dod && neg(s) ? 'One offer came in. DoD: the solicitation was open at least 30 days or was resolicited, unless an exception or waiver applies, and the price is supported without leaning on competition.' : 'One offer came in. The file says why and supports the price without leaning on competition.'; },
+          function (s) { return s.dod && neg(s) ? ['RDFARS 215.202-71'] : neg(s) ? ['RFO 15.403-2(c)(1)'] : pick(s, { simp12: ['RFO 12.204(a)'], simp13: ['RFO 13.203(a)'], order: ['RFO 16.506(f)'], fss: FSS_C }); }],
+        [all, 'If the Government estimate carries weight, the file shows how it was built and when.', ['RFO 15.404-1(b)(5)']],
+        [function (s) { return (s.a.svc || s.a.flex) && !simp(s); }, 'Someone who knows the work looked at the hours and the labor mix.', ['RFO 15.404-4']],
+        [function (s) { return comp(s) && s.a.options; }, 'Options were evaluated before award the way the solicitation said, and pricing across periods was checked for imbalance.', ['RFO 17.202', 'RFO 15.404-6']],
+        [function (s) { return comp(s) && s.a.flex && (neg(s) || ord(s)); }, 'Where the contract type requires it, a probable cost was developed for each offeror and used in the evaluation.', ['RFO 15.404-3(b)']],
+        [function (s) { return comp(s) && !s.a.flex && neg(s); }, 'If realism was analyzed on a fixed-price buy, the offered prices were left unadjusted.', ['RFO 15.404-3(c)']],
+        [function (s) { return sole(s) && neg(s) && !com(s); }, 'Above the threshold, certified cost or pricing data was obtained or the exception is named.', ['RFO 15.403-2', 'RFO 15.408-2(a)(5)']],
+        [function (s) { return s.a.flex; }, 'For time-and-materials or labor-hour, the ceiling price rests on estimated hours by labor category.', ['RFO 16.601-3(c)']]
+      ] },
+    { id: 'aw4', pt: 'award', area: 'The award document', when: all, compliance: true,
+      q: 'Does the contract as written match what was solicited and evaluated, with terms that carry no risk the file has not accounted for?',
+      why: 'This is the one place this review checks compliance. The award document is what binds the Government. Everything else in the file leads up to it or follows from it, so clauses, line items, and terms get a direct look here and nowhere else.',
+      found: 'In the award document itself, read against the solicitation and the offer that was selected.',
+      ncma: '3.1.4 Award Contract: Prepare Final Contract, Finalize Contract Award',
+      aim: [
+        [all, 'Matches the offer that was selected: price, period, line items, and attachments. Promises that drove the selection are in the contract.',
+          function (s) { return neg(s) ? ['RFO 15.207-1'] : ord(s) ? ['RFO 16.506(b)'] : simp(s) ? [s.proc === 'simp12' ? 'RFO 12.204' : 'RFO 13.203'] : FSS_C; }],
+        [all, 'The line item structure lets the work be ordered, accepted, and paid for the way the parties intend.', ['RFO 4.202']],
+        [all, function (s) { return com(s) ? 'The clause set fits a commercial buy, and any tailored term is deliberate and inside what commercial practice allows.' : simp(s) ? 'The clauses fit a noncommercial simplified buy, with no commercial-only clauses carried over.' : 'The clauses fit the contract type and the kind of work, and anything changed from the solicitation was changed on purpose.'; },
+          function (s) { return com(s) ? ['RFO 12.205'] : simp(s) ? ['RFO 13.204'] : []; }],
+        [all, 'The awardee can receive this award and do this work: active registration, no exclusion, and for a firm taking on more than it has before, something showing what the contracting officer looked at.', ['RFO 4.203-2', 'RFO 9.405', 'RFO 9.103(b)', 'RFO 9.104-1']],
+        [function (s) { return s.a.options; }, 'Option terms state when each option can be exercised and cap the total length of the contract.', ['RFO 17.201-2', 'RFO 17.203']],
+        [function (s) { return s.a.flex; }, 'A ceiling price is in the contract.', ['RFO 16.601-3(c)']],
+        [function (s) { return s.a.svc; }, 'If labor standards apply, the current wage determination is incorporated.', ['RFO 22.1002-3']],
+        [sole, 'The final value, with options, is inside the level that approved the justification.', function (s) { return ord(s) ? ['RFO 16.507-6(e)'] : fss(s) ? FSS_C : simp(s) && !com(s) ? ['RFO 13.101(b)'] : ['RFO 6.104-2']; }],
+        [all, 'Funds are available for what is being obligated.', ['RFO 32.702']]
+      ] },
+
+    /* ───────── POST-AWARD ───────── */
+    { id: 'po1', pt: 'post', area: 'Management', when: all,
+      q: 'Is the contract being run as awarded, with someone watching it?',
+      why: 'A good award can still fail in administration. The file should show who is watching the contract and that what is happening on the ground is what the contract says.',
+      found: 'Often in the designation of the contracting officer\'s representative (COR), correspondence, meeting notes, and performance records.',
+      ncma: '4.1.1 Fulfill Contract',
+      aim: [
+        [all, 'What the contractor is doing matches the contract. No work has been added or dropped by informal agreement.', []],
+        [function (s) { return s.a.svc; }, function (s) { return 'A contracting officer\'s representative is designated and active.' + (s.dod ? ' DoD requires one on every service contract.' : ''); }, function (s) { return plus(['RFO 1.404(a)(1)'], s, ['RDFARS PGI 201.404-70(e)']); }],
+        [function (s) { return s.a.flex; }, 'Hours and costs are tracked against the ceiling, and someone compares them to work completed.', ['RFO 16.601-2(a)']],
+        [all, 'Contractor performance is being recorded while the facts are fresh.', ['RFO 42.1102(b)']],
+        [comp, 'Unsuccessful offerors were told, and anyone who asked got an explanation or a debriefing.',
+          function (s) { return pick(s, { simp12: ['RFO 12.301(b)'], simp13: ['RFO 13.301'], neg: plus(['RFO 15.301-1'], s, ['RDFARS 215.301-170']), order: ['RFO 16.507-5(c)'], fss: FSS_C }); }]
+      ] },
+    { id: 'po2', pt: 'post', area: 'Quality', when: all,
+      q: 'Does the file show the Government is getting what it pays for?',
+      why: 'Acceptance and payment are the Government saying the work met the contract. The file should show what that statement rests on.',
+      found: 'Often in surveillance records, inspection and acceptance documents, and invoices.',
+      ncma: '4.1.2 Ensure Quality',
+      aim: [
+        [function (s) { return s.a.svc; }, 'Surveillance is happening the way the plan says, and it is written down: dated, tied to a standard, and shared with the contracting officer.', ['RFO 46.401(a)']],
+        [all, 'Acceptance is tied to what the contract requires, and payment follows acceptance.', ['RFO Part 46']],
+        [all, 'Performance problems were raised with the contractor in writing when they happened.', []],
+        [function (s) { return s.a.flex; }, 'Billed hours and labor categories have been checked against the work performed.', ['RFO 16.601-2(a)']]
+      ] },
+    { id: 'po3', pt: 'post', area: 'Changes and options', when: all,
+      q: 'Did changes stay in scope, and were options exercised on current facts?',
+      why: 'Work outside the scope of the contract is a new buy that was never competed. An option exercised on last year\'s facts is a price and a performance record nobody checked.',
+      found: 'Often in modifications and their supporting memos, and in option exercise determinations.',
+      ncma: '4.1.4 Govern Contract: Change Contract, Renew or Extend Contract',
+      aim: [
+        [all, 'Each modification was checked against the scope of the contract.', function (s) { return ord(s) ? ['RFO 16.506(a)', 'RFO 16.508(a)(1)'] : ['RFO 6.001(c)']; }],
+        [all, 'No work is being performed that the contract and its modifications do not cover.', []],
+        [function (s) { return s.a.options; }, 'Each option was exercised on a fresh look: an existing need, funds, acceptable performance, and a price that is fair and reasonable in the current market.', ['RFO 17.204-1(b)']],
+        [function (s) { return s.a.flex; }, 'Any increase to the ceiling price was analyzed and documented before it was made.', ['RFO 16.601-5']],
+        [all, 'Funds were in hand before work was added.', ['RFO 32.702']]
+      ] },
+    { id: 'po4', pt: 'post', area: 'When things went wrong', when: all, tag: 'local',
+      q: 'When something went wrong, did the contracting officer bring in the right people before acting?',
+      why: 'A dispute, a failure to perform, or a termination is where a contracting officer acting alone gets hurt. The review asks whether the contracting officer was set up to succeed: counsel, the requirements owner, and the contractor\'s side of the story, before the decision. If nothing went wrong, mark this not applicable.',
+      found: 'Often in correspondence, cure or show cause notices, legal reviews, and decision memos.',
+      ncma: '4.1.4 Govern Contract: Manage Disputes; 4.2.1 Terminate Contract',
+      aim: [
+        [all, 'The file shows the problem, the contract term it falls under, and what the Government did about it.', []],
+        [all, 'Legal counsel was consulted before a cure notice, a show cause notice, a termination, or a decision on a claim. Your agency sets when that is required. Air Force example: legal review at any dollar value before a termination.', ['Agency procedures']],
+        [all, function (s) { return com(s) ? 'A commercial contract was handled under its own termination terms, with a cure notice first except for late delivery.' : 'Cure and show cause notices went out when the rules call for them.'; }, function (s) { return com(s) ? ['RFO 12.304'] : ['RFO 49.402-3']; }],
+        [all, 'The requirements owner and the contracting officer\'s representative were part of the decision, and the contractor was heard.', []]
+      ] },
+    { id: 'po5', pt: 'post', area: 'Closeout', when: all,
+      q: 'Is the contract ready to close?',
+      why: 'An open contract holds funds and risk. Closeout is also the last chance to write down what the next buy should do differently.',
+      found: 'Often in the final invoice, the completion statement, the final performance assessment, and a note for the follow-on.',
+      ncma: '4.2.2 Close Out Contract',
+      aim: [
+        [all, 'The closeout conditions are met: final invoice paid, excess funds deobligated, property dispositioned.', ['RFO 4.308-1(a)']],
+        [all, 'The completion statement is prepared and signed.', ['RFO 4.308-1(b)-(c)']],
+        [all, 'The final performance assessment is done.', ['RFO 42.1102(b)']],
+        [function (s) { return sole(s) && !simp(s) && !fss(s); }, 'The work to remove the barrier to competition moved before the follow-on.', function (s) { return ord(s) ? ['RFO 16.507-6(d)(2)(vii)'] : ['RFO 6.104-1(a)(11)']; }],
+        [all, 'What this contract taught is written down for the next one.', ['RFO 7.104(b)(2)']]
+      ] }
+  ];
+
+  var ANS = {
+    no: ['Not supported', 'A reader seeing this for the first time could not follow the decision or defend it from the file.'],
+    ok: ['Supported', 'A reader seeing this for the first time could follow the decision and defend it from the file. Whether you would have decided the same way is not part of the test.'],
+    strong: ['Strong', 'Supported, and done well enough to show other offices as an example.'],
+    na: ['Not applicable', 'This question does not apply to this buy.']
+  };
+  var TYPES = {
+    C: ['Critical', 'Illegal, certain to lose a protest, or a risk the mission cannot carry. The acquisition stops until it is fixed, and the reviewer concurs on the fix.'],
+    S: ['Substantive', 'Could lose a protest or put execution at risk. The contracting officer corrects or addresses it and proceeds. No second review is needed.'],
+    R: ['Recommendation', 'How the reviewer would do it. The contracting officer\'s discretion, with no response required.'],
+    A: ['Administrative', 'A small gap that would not change the outcome if protested, such as a missing document where the file supports the decision elsewhere, or grammar and format. Can be dismissed.']
+  };
+
+  /* ── State ── */
+  var form = document.getElementById('slForm');
+  var st = { ans: {}, head: { mark: DEFAULT_MARK }, inputs: null };
+  function load() {
+    try {
+      var raw = window.sessionStorage.getItem(KEY);
+      if (!raw) return;
+      var d = JSON.parse(raw);
+      if (d && typeof d === 'object') {
+        st.ans = d.ans || {}; st.head = d.head || st.head; st.inputs = d.inputs || null;
+        if (typeof st.head.mark !== 'string') st.head.mark = DEFAULT_MARK;
+      }
+    } catch (e) {}
+  }
+  var saveT = null;
+  function save() {
+    clearTimeout(saveT);
+    saveT = setTimeout(function () {
+      try { window.sessionStorage.setItem(KEY, JSON.stringify({ ans: st.ans, head: st.head, inputs: snapshot() })); } catch (e) {}
+    }, 150);
+  }
+  var RADIOS = ['role', 'point', 'proc', 'comm', 'comp', 'basis', 'negs', 'dod'];
+  function snapshot() {
+    var o = { a: {} };
+    RADIOS.forEach(function (n) { var el = form.querySelector('input[name="' + n + '"]:checked'); o[n] = el ? el.value : null; });
+    form.querySelectorAll('input[name="a"]').forEach(function (el) { o.a[el.value] = el.checked; });
+    o.casper = form.querySelector('input[name="casper"]').checked;
+    return o;
+  }
+  function setRadio(name, value) {
+    var el = form.querySelector('input[name="' + name + '"][value="' + value + '"]');
+    if (el) el.checked = true;
+  }
+  function applyInputs(o) {
+    if (!o) return;
+    RADIOS.forEach(function (n) { if (o[n] != null) setRadio(n, o[n]); });
+    if (o.a) form.querySelectorAll('input[name="a"]').forEach(function (el) { if (o.a[el.value] != null) el.checked = !!o.a[el.value]; });
+    form.querySelector('input[name="casper"]').checked = !!o.casper;
+  }
+  function read() {
+    var s = { a: {} };
+    RADIOS.forEach(function (n) { var el = form.querySelector('input[name="' + n + '"]:checked'); s[n] = el ? el.value : null; });
+    s.dod = s.dod === '1';
+    form.querySelectorAll('input[name="a"]').forEach(function (el) { s.a[el.value] = el.checked && !el.disabled; });
+    var c = form.querySelector('input[name="casper"]');
+    s.casper = c.checked && !c.disabled;
+    return s;
+  }
+
+  var BASIS_OK = { neg: ['trade', 'lpta', 'htr'], simp12: ['trade', 'price'], simp13: ['trade', 'price'], order: ['trade', 'price'], fss: ['trade', 'price'] };
+
+  function normalize() {
+    var s = read(), notes = [];
+    var commField = document.getElementById('fComm'), commHint = document.getElementById('commHint');
+    var forced = s.proc === 'simp12' || s.proc === 'fss' ? 'c' : s.proc === 'simp13' ? 'n' : null;
+    commField.disabled = !!forced;
+    if (forced) { setRadio('comm', forced); commHint.textContent = s.proc === 'simp13' ? 'Part 13 covers noncommercial buys only.' : s.proc === 'fss' ? 'Schedules carry commercial products and services.' : 'Commercial buys use Part 12 at any dollar value.'; }
+    else commHint.textContent = s.proc === 'neg' ? 'A commercial buy above the simplified ceiling uses Part 12 with Part 15 procedures.' : '';
+    document.getElementById('procHint').textContent = s.proc === 'simp12' ? 'Commercial simplified procedures run to $9 million (RFO 12.201-1). Above that, pick Negotiated and Commercial.' : s.proc === 'simp13' ? 'Noncommercial buys at or below the simplified acquisition threshold.' : s.proc === 'order' ? 'Fair opportunity among the holders of a multiple-award contract.' : s.proc === 'fss' ? 'Ordering follows the GSA procedures at GSAR subpart 538.71.' : '';
+    s = read();
+    document.getElementById('compHint').textContent = s.proc === 'order' ? 'Sole source here means an exception to fair opportunity.' : s.proc === 'fss' ? 'Sole source here means limited sources.' : '';
+
+    var basisField = document.getElementById('fBasis'), ok = BASIS_OK[s.proc];
+    basisField.disabled = sole(s);
+    basisField.hidden = s.point === 'post';
+    document.getElementById('basisTradeLabel').textContent = s.proc === 'neg' ? 'Tradeoff' : 'Price and other factors';
+    form.querySelectorAll('input[name="basis"]').forEach(function (el) {
+      var allowed = ok.indexOf(el.value) > -1;
+      el.disabled = !allowed; el.closest('.sl-opt').hidden = !allowed;
+    });
+    if (ok.indexOf(s.basis) === -1) {
+      var to = s.basis === 'lpta' ? 'price' : 'trade';
+      if (ok.indexOf(to) === -1) to = ok[0];
+      setRadio('basis', to);
+      if (!sole(s)) notes.push('Basis for award set to ' + (to === 'price' ? 'lowest price that meets the requirement' : s.proc === 'neg' ? 'tradeoff' : 'price and other factors') + '. The choices follow the procedure.');
+    }
+    document.getElementById('basisHint').textContent = sole(s) ? 'Not used for a sole-source buy.' : '';
+    s = read();
+
+    var negField = document.getElementById('fNegs');
+    var showNegs = neg(s) && comp(s) && s.point === 'award';
+    negField.hidden = !showNegs; negField.disabled = !showNegs;
+
+    /* Switches that only matter for some reviews */
+    form.querySelectorAll('[data-only]').forEach(function (lab) {
+      var k = lab.getAttribute('data-only');
+      var show = k === 'pp' ? comp(s) && s.point !== 'post' : comp(s) && s.point === 'award';
+      lab.hidden = !show; lab.querySelector('input').disabled = !show;
+    });
+
+    var cField = document.getElementById('fCasper');
+    cField.hidden = !s.dod; cField.disabled = !s.dod;
+    s = read();
+
+    var p = PHASE[s.point];
+    document.getElementById('pointHint').textContent = p.when + (s.casper ? ' CASPER: ' + p.casper + '.' : '');
+    if (s.point === 'award' && noneg(s)) notes.push('Award without negotiation: the negotiation question is left out.');
+    if (s.point === 'award' && sole(s)) notes.push('Sole source: the evaluation question is left out, because there are no competing offers to judge.');
+    if (s.casper && comp(s) && (ord(s) || fss(s))) notes.push('CASPER: competitive orders under multiple-award contracts and schedules with no specific evaluation criteria and no new or changed terms are exempt.');
+    if (s.casper) notes.push('CASPER does not replace legal review or an approval a regulation requires.');
+    document.getElementById('slNotes').innerHTML = notes.map(function (n) { return '<div class="sl-note">' + esc(n) + '</div>'; }).join('');
+    return read();
+  }
+
+  function echo(s) {
+    var p = PHASE[s.point];
+    var parts = [s.role === 'self' ? 'Self-check' : 'Review', p.name + (s.casper ? ' (CASPER ' + p.casper + ')' : ''), PROC[s.proc]];
+    if (neg(s) || ord(s)) parts.push(com(s) ? 'commercial' : 'noncommercial');
+    parts.push(sole(s) ? (ord(s) ? 'exception to fair opportunity' : fss(s) ? 'limited sources' : 'sole source') : 'competitive');
+    if (comp(s) && s.point !== 'post') parts.push({ trade: neg(s) ? 'tradeoff' : 'price and other factors', lpta: 'lowest price technically acceptable', htr: 'highest technically rated', price: 'lowest price that meets the requirement' }[s.basis]);
+    if (neg(s) && comp(s) && s.point === 'award') parts.push(s.negs === 'held' ? 'negotiations held' : 'award without negotiation');
+    var names = { svc: 'services', options: 'options', pp: 'past performance', one: 'one offer', flex: 'cost-type or T&M/labor-hour' };
+    var on = Object.keys(names).filter(function (k) { return s.a[k]; }).map(function (k) { return names[k]; });
+    if (on.length) parts.push('with ' + on.join(', '));
+    parts.push(s.dod ? 'FAR plus DoD' : 'FAR only');
+    return parts.join(' · ');
+  }
+
+  /* ── Render ── */
+  var groupsEl = document.getElementById('slGroups');
+  var cur = { s: null, qs: [] };
+  function L(s) { return s.role === 'self' ? { saw: 'What the file shows', f: 'What the file does not support', i: 'Why it matters', r: 'Note to self or administrative fix (optional)' } : { saw: 'What I saw', f: 'What the file does not support, and what would resolve it', i: 'Potential impact and rationale', r: 'Recommendation or administrative note (optional)' }; }
+  function typeLabel(t, s) { return t === 'R' && s.casper ? 'Administrative (recommendation)' : TYPES[t][0]; }
+
+  function aims(r, s) {
+    return r.aim.filter(function (a) { try { return a[0](s); } catch (e) { return false; } }).slice(0, MAX_AIM);
+  }
+  function optHTML(name, v, text, def, checked, descId) {
+    return '<label class="sl-opt" title="' + esc(def) + '" data-def="' + esc(def) + '"><input type="radio" name="' + name + '" value="' + v + '"' + (checked ? ' checked' : '') + ' aria-describedby="' + descId + '"><span>' + text + '</span></label><span class="sl-sr" id="' + descId + '">' + esc(def) + '</span>';
+  }
+  function rowHTML(r, s, n) {
+    var a = st.ans[r.id] || {}, lab = L(s), id = 'sl-' + r.id;
+    var tag = r.tag === 'local' ? '<span class="sl-tag local">Check agency policy</span>' : r.compliance ? '<span class="sl-tag dod">Compliance check</span>' : '';
+    var list = aims(r, s);
+    var aimHTML = list.map(function (x) { var c = val(x[2], s); return '<li>' + esc(val(x[1], s)) + (c && c.length ? ' <span class="sl-cite">(' + citeHTML(c) + ')</span>' : '') + '</li>'; }).join('');
+    var why = '<p>' + esc(r.why) + '</p><p><b>Where the answer usually lives:</b> ' + esc(r.found) + '</p><p><b>Contract Management Standard:</b> ' + esc(r.ncma) + '</p>';
+    var defNow = a.a ? ANS[a.a][1] : 'Rest on an answer, or tab to it, to see what it means.';
+    var t = a.t || 'S', rt = a.rt || 'R';
+    var cls = a.a === 'no' ? ' is-no' : a.a === 'ok' ? ' is-ok' : a.a === 'strong' ? ' is-strong' : a.a === 'na' ? ' is-na' : '';
+    return '<div class="sl-row' + cls + '" data-q="' + r.id + '">' +
+      '<div class="sl-top"><span class="sl-q" id="' + id + '-q"><span class="sl-area">' + n + '. ' + esc(r.area) + '</span>' + esc(r.q) + '</span>' + tag +
+      '<button type="button" class="sl-more" aria-expanded="false" aria-controls="' + id + '-w">Why and when</button></div>' +
+      '<div class="sl-why" id="' + id + '-w" hidden>' + why + '</div>' +
+      '<p class="sl-aimh" id="' + id + '-ah">Where to aim</p><ul class="sl-aim" aria-labelledby="' + id + '-ah">' + aimHTML + '</ul>' +
+      '<div class="sl-meta"><span class="sl-state">[' + (a.a ? ANS[a.a][0] : 'Not reviewed') + ']</span></div>' +
+      '<div class="sl-block"><label class="sl-lab" for="' + id + '-s">' + lab.saw + '</label><textarea class="sl-ta" id="' + id + '-s" data-f="saw" placeholder="The contracting officer decided... The file supports it by...">' + esc(a.saw || '') + '</textarea>' +
+      '<p class="sl-warn" data-warn' + (a.a && a.a !== 'na' && !(a.saw || '').trim() ? '' : ' hidden') + '>Add what you saw. The export will show this answer with no note behind it.</p></div>' +
+      '<fieldset class="sl-ans" aria-labelledby="' + id + '-q">' +
+      ['no', 'ok', 'strong', 'na'].map(function (v) { return optHTML('ans-' + r.id, v, ANS[v][0], ANS[v][1], a.a === v, id + '-d-' + v); }).join('') + '</fieldset>' +
+      '<p class="sl-def" data-def-line aria-hidden="true">' + esc(defNow) + '</p>' +
+      '<div class="sl-edit"' + (a.a === 'no' ? '' : ' hidden') + '>' +
+      '<div><label class="sl-lab" for="' + id + '-f">' + lab.f + '</label><textarea class="sl-ta" id="' + id + '-f" data-f="f">' + esc(a.f || '') + '</textarea></div>' +
+      '<div><label class="sl-lab" for="' + id + '-i">' + lab.i + '</label><textarea class="sl-ta" id="' + id + '-i" data-f="i">' + esc(a.i || '') + '</textarea></div>' +
+      '<fieldset class="sl-type"><legend>Type</legend>' + optHTML('type-' + r.id, 'C', 'Critical', TYPES.C[1], t === 'C', id + '-t-C') + optHTML('type-' + r.id, 'S', 'Substantive', TYPES.S[1], t === 'S', id + '-t-S') + '</fieldset>' +
+      '<p class="sl-def" data-type-line aria-hidden="true">' + esc(TYPES[t][1]) + '</p>' +
+      '</div>' +
+      '<div class="sl-rec"><div><label class="sl-lab" for="' + id + '-r">' + lab.r + '</label><textarea class="sl-ta" id="' + id + '-r" data-f="r" style="min-height:3rem">' + esc(a.r || '') + '</textarea></div>' +
+      '<fieldset class="sl-type"><legend>This note is</legend>' + optHTML('rt-' + r.id, 'R', s.role === 'self' ? 'A note' : 'A recommendation', TYPES.R[1], rt === 'R', id + '-rt-R') + optHTML('rt-' + r.id, 'A', 'Administrative', TYPES.A[1], rt === 'A', id + '-rt-A') + '</fieldset></div>' +
+      '</div>';
+  }
+
+  function render() {
+    var s = normalize();
+    cur.s = s;
+    cur.qs = QS.filter(function (r) { try { return r.pt === s.point && r.when(s); } catch (e) { return false; } });
+    var html = '<div class="sl-group"><h3><span>' + PHASE[s.point].name + ' review</span><span class="sl-count">' + cur.qs.length + ' questions</span></h3>';
+    cur.qs.forEach(function (r, i) { r._n = i + 1; html += rowHTML(r, s, i + 1); });
+    html += '</div>';
+    groupsEl.innerHTML = html;
+    document.getElementById('slEcho').textContent = echo(s);
+    expanded = false;
+    document.getElementById('btnExpand').textContent = 'Expand all';
+    refresh();
+    save();
+  }
+
+  function items() {
+    var s = cur.s, out = [];
+    cur.qs.forEach(function (r) {
+      var a = st.ans[r.id]; if (!a) return;
+      var ref = PHASE[s.point].name + ' ' + r._n + ': ' + r.area;
+      if (a.a === 'no') out.push({ ref: ref, f: a.f || '', i: a.i || '', t: a.t || 'S' });
+      if ((a.r || '').trim()) out.push({ ref: ref, f: a.r, i: '', t: a.rt || 'R' });
+    });
+    out.forEach(function (o, i) { o.n = i + 1; });
+    return out;
+  }
+  function hiddenCount() {
+    var vis = {};
+    cur.qs.forEach(function (r) { vis[r.id] = 1; });
+    return Object.keys(st.ans).filter(function (k) { var a = st.ans[k]; return a && !vis[k] && (a.a || (a.saw || '').trim() || (a.r || '').trim()); }).length;
+  }
+  function cols(s) { return s.role === 'self' ? ['Item', 'Gap or note', 'Why it matters', 'Type', 'Action taken', 'Status'] : ['Item', 'Finding / recommendation', 'Potential impact / rationale', 'Type', 'CO disposition and rationale', 'Final disposition']; }
+  var DOC_TBL = ' border="1" cellspacing="0" cellpadding="5" style="border-collapse:collapse;width:100%;font-family:Arial,sans-serif;font-size:9.5pt"';
+  function br(t, forDoc) { return forDoc ? esc(t).replace(/\n/g, '<br>') : esc(t); }
+
+  function matrixTable(f, s, forDoc) {
+    var c = cols(s), h = '<table class="sl-matrix"' + (forDoc ? DOC_TBL : '') + '><caption class="sl-sr">' + (s.role === 'self' ? 'Self-check gaps and notes' : 'Comment resolution matrix') + '</caption><thead><tr>';
+    c.forEach(function (x, i) { h += '<th scope="col"' + (forDoc ? ' style="background:#d9e2f3;text-align:left;width:' + [5, 30, 23, 10, 21, 11][i] + '%"' : '') + '>' + esc(x) + '</th>'; });
+    h += '</tr></thead><tbody>';
+    f.forEach(function (o) {
+      h += '<tr><td class="c">' + o.n + '</td><td>' + br((o.f || '(not written yet)') + '\n\nRef: ' + o.ref, forDoc) + '</td><td>' + br(o.i, forDoc) + '</td><td>' + esc(typeLabel(o.t, s)) + '</td><td>' + (forDoc ? '&nbsp;' : '') + '</td><td>' + (forDoc ? '&nbsp;' : '') + '</td></tr>';
+    });
+    return h + '</tbody></table>';
+  }
+  function recordTable(s, forDoc) {
+    var h = '<table class="sl-matrix"' + (forDoc ? DOC_TBL : '') + '><caption class="sl-sr">Review record</caption><thead><tr>';
+    [['Question', 34], ['Answer', 12], [L(s).saw, 54]].forEach(function (x) { h += '<th scope="col"' + (forDoc ? ' style="background:#d9e2f3;text-align:left;width:' + x[1] + '%"' : '') + '>' + esc(x[0]) + '</th>'; });
+    h += '</tr></thead><tbody>';
+    cur.qs.forEach(function (r) {
+      var a = st.ans[r.id] || {};
+      h += '<tr><td>' + br(r._n + '. ' + r.area + '\n' + r.q, forDoc) + '</td><td>' + esc(a.a ? ANS[a.a][0] : 'Not reviewed') + '</td><td>' + br((a.saw || '').trim() || (a.a && a.a !== 'na' ? '(no note recorded)' : ''), forDoc) + '</td></tr>';
+    });
+    return h + '</tbody></table>';
+  }
+
+  function headLines(s) {
+    var p = PHASE[s.point], h = st.head, lines = [];
+    lines.push(['Review', (s.role === 'self' ? 'Self-check, ' : '') + p.name + (s.casper ? ' (CASPER ' + p.casper + ')' : '')]);
+    if (h.title) lines.push(['Acquisition', h.title]);
+    lines.push(['Buy', echo(s).split(' · ').slice(2).join(' · ')]);
+    if (h.name || h.email) lines.push([s.role === 'self' ? 'Prepared by' : 'Reviewer', [h.name, h.email].filter(Boolean).join(', ')]);
+    if (h.date) lines.push(['Date', h.date]);
+    return lines;
+  }
+  function counts() {
+    var c = { no: 0, ok: 0, strong: 0, na: 0, none: 0 };
+    cur.qs.forEach(function (r) { var a = st.ans[r.id]; c[a && a.a ? a.a : 'none'] += 1; });
+    return c;
+  }
+
+  function refresh() {
+    var s = cur.s, f = items(), c = counts();
+    document.getElementById('slSummary').innerHTML = '<strong>' + cur.qs.length + '</strong> questions · <strong>' + c.no + '</strong> not supported · <strong>' + c.ok + '</strong> supported · <strong>' + c.strong + '</strong> strong' + (c.na ? ' · ' + c.na + ' not applicable' : '') + ' · <strong>' + c.none + '</strong> not reviewed · <strong>' + f.length + '</strong> on the matrix';
+    document.getElementById('matrixTitle').textContent = s.role === 'self' ? 'Self-check gaps and notes' : 'Comment resolution matrix';
+    document.getElementById('slMarking').textContent = st.head.mark || '';
+    document.getElementById('matrixIntro').textContent = s.role === 'self' ? 'Every gap and note you recorded, in order.' : 'Every finding and note you recorded, in order. The contracting officer fills in the disposition columns in the exported file. Recommendations and administrative notes need no response.';
+    document.getElementById('slMatrixScroll').innerHTML = f.length ? matrixTable(f, s, false) : '<p class="sl-empty">Nothing on the matrix yet. A question marked Not supported adds a row. So does a recommendation or an administrative note.</p>';
+    document.getElementById('slRecordScroll').innerHTML = recordTable(s, false);
+    var hid = hiddenCount();
+    document.getElementById('slHidden').textContent = hid ? 'You have answers on ' + hid + (hid === 1 ? ' question' : ' questions') + ' that are not shown under the current inputs. They are kept in this tab and left out of this export. Switch the inputs back to see them.' : '';
+    document.getElementById('slPrintHead').innerHTML = '<strong>' + esc(st.head.mark || '') + '</strong><br>' + headLines(s).map(function (l) { return '<b>' + esc(l[0]) + ':</b> ' + esc(l[1]); }).join('<br>');
+  }
+
+  /* ── Events ── */
+  form.addEventListener('change', function () { render(); });
+  form.addEventListener('submit', function (e) { e.preventDefault(); });
+
+  function setOpen(btn, open) {
+    btn.setAttribute('aria-expanded', String(open));
+    btn.textContent = open ? 'Hide' : 'Why and when';
+    var t = document.getElementById(btn.getAttribute('aria-controls'));
+    if (t) t.hidden = !open;
+  }
+  groupsEl.addEventListener('click', function (e) {
+    var btn = e.target.closest('.sl-more');
+    if (btn) setOpen(btn, btn.getAttribute('aria-expanded') !== 'true');
+  });
+  function rec(id) { if (!st.ans[id]) st.ans[id] = {}; return st.ans[id]; }
+  function warn(row, a) { row.querySelector('[data-warn]').hidden = !(a.a && a.a !== 'na' && !(a.saw || '').trim()); }
+  groupsEl.addEventListener('change', function (e) {
+    var row = e.target.closest('[data-q]'); if (!row || e.target.type !== 'radio') return;
+    var a = rec(row.getAttribute('data-q')), n = e.target.name;
+    if (n.indexOf('ans-') === 0) {
+      a.a = e.target.value;
+      if (a.a === 'no' && !a.t) a.t = 'S';
+      row.className = 'sl-row' + (a.a === 'no' ? ' is-no' : a.a === 'ok' ? ' is-ok' : a.a === 'strong' ? ' is-strong' : ' is-na');
+      row.querySelector('.sl-edit').hidden = a.a !== 'no';
+      row.querySelector('.sl-state').textContent = '[' + ANS[a.a][0] + ']';
+      row.querySelector('[data-def-line]').textContent = ANS[a.a][1];
+      warn(row, a);
+    } else if (n.indexOf('type-') === 0) {
+      a.t = e.target.value; row.querySelector('[data-type-line]').textContent = TYPES[a.t][1];
+    } else if (n.indexOf('rt-') === 0) {
+      a.rt = e.target.value;
+    }
+    refresh(); save();
+  });
+  groupsEl.addEventListener('input', function (e) {
+    var row = e.target.closest('[data-q]'); if (!row || !e.target.dataset.f) return;
+    var a = rec(row.getAttribute('data-q'));
+    a[e.target.dataset.f] = e.target.value;
+    if (e.target.dataset.f === 'saw') warn(row, a);
+    refresh(); save();
+  });
+  /* Definitions: show on hover and on keyboard focus, then settle back on the selected answer */
+  function defLine(lab) { var fs = lab.closest('fieldset'); return fs ? fs.nextElementSibling : null; }
+  function showDef(e) {
+    var lab = e.target.closest ? e.target.closest('.sl-opt[data-def]') : null; if (!lab) return;
+    var line = defLine(lab); if (line && line.classList.contains('sl-def')) line.textContent = lab.getAttribute('data-def');
+  }
+  function restoreDef(e) {
+    var lab = e.target.closest ? e.target.closest('.sl-opt[data-def]') : null; if (!lab) return;
+    var line = defLine(lab); if (!line || !line.classList.contains('sl-def')) return;
+    var sel = lab.closest('fieldset').querySelector('input:checked');
+    line.textContent = sel ? sel.closest('.sl-opt').getAttribute('data-def') : 'Rest on an answer, or tab to it, to see what it means.';
+  }
+  groupsEl.addEventListener('mouseover', showDef);
+  groupsEl.addEventListener('focusin', showDef);
+  groupsEl.addEventListener('mouseout', restoreDef);
+  groupsEl.addEventListener('focusout', restoreDef);
+
+  var headForm = document.getElementById('slHeadForm');
+  headForm.addEventListener('input', function (e) {
+    var k = e.target.dataset.h; if (!k) return;
+    st.head[k] = e.target.value; refresh(); save();
+  });
+  function fillHead() { headForm.querySelectorAll('[data-h]').forEach(function (el) { el.value = st.head[el.dataset.h] || ''; }); }
+
+  var expanded = false;
+  document.getElementById('btnExpand').addEventListener('click', function () {
+    expanded = !expanded;
+    groupsEl.querySelectorAll('.sl-more').forEach(function (btn) { setOpen(btn, expanded); });
+    this.textContent = expanded ? 'Collapse all' : 'Expand all';
+  });
+  document.getElementById('btnPrint').addEventListener('click', function () { window.print(); });
+
+  /* ── Exports: built in the browser and handed to the browser's own download. Nothing is uploaded. ── */
+  function stamp() { var d = new Date(); function z(n) { return (n < 10 ? '0' : '') + n; } return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()); }
+  function download(name, mime, text) {
+    var blob = new Blob([text], { type: mime }), url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = name; a.style.display = 'none';
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+  }
+  function flash(btn, text, back) { btn.textContent = text; setTimeout(function () { btn.textContent = back; }, 1800); }
+  function titleOf(s) { return s.role === 'self' ? 'Second Look: Self-Check' : 'Second Look: Review and Comment Resolution Matrix'; }
+  var TYPE_NOTE = 'Types. Critical: illegal, certain to lose a protest, or a risk the mission cannot carry; the acquisition stops until it is fixed, and the reviewer concurs on the fix. Substantive: could lose a protest or put execution at risk; the contracting officer corrects or addresses it and proceeds. Administrative: a small gap that would not change the outcome; can be dismissed. Recommendation: the contracting officer\'s discretion; no response required.';
+  var TEST_NOTE = 'The test for every question: could someone seeing this file for the first time follow the decision and defend it from the file alone? A finding names a decision the file does not support, not a missing document.';
+
+  function textExport() {
+    var s = cur.s, f = items(), out = [], lab = L(s);
+    if (st.head.mark) out.push(st.head.mark, '');
+    out.push(titleOf(s).toUpperCase());
+    headLines(s).forEach(function (l) { out.push(l[0] + ': ' + l[1]); });
+    out.push('', 'REVIEW RECORD');
+    cur.qs.forEach(function (r) {
+      var a = st.ans[r.id] || {};
+      out.push(r._n + '. ' + r.area + ' [' + (a.a ? ANS[a.a][0] : 'Not reviewed') + ']');
+      out.push('   ' + r.q);
+      if (a.a && a.a !== 'na') out.push('   ' + lab.saw + ': ' + ((a.saw || '').trim() || '(no note recorded)'));
+    });
+    out.push('', s.role === 'self' ? 'GAPS AND NOTES' : 'COMMENT RESOLUTION MATRIX');
+    if (!f.length) out.push('Nothing recorded.');
+    f.forEach(function (o) {
+      out.push(o.n + '. [' + typeLabel(o.t, s) + '] ' + (o.f || '(not written yet)'));
+      if (o.i) out.push('   ' + (s.role === 'self' ? 'Why it matters' : 'Impact / rationale') + ': ' + o.i);
+      out.push('   Ref: ' + o.ref);
+      if (o.t === 'C' || o.t === 'S') { out.push('   ' + (s.role === 'self' ? 'Action taken' : 'CO disposition and rationale') + ':'); out.push('   ' + (s.role === 'self' ? 'Status' : 'Final disposition') + ':'); }
+      out.push('');
+    });
+    out.push(TEST_NOTE, TYPE_NOTE, 'Built with Second Look, kthq.org/second-look.html (RFO text)');
+    if (st.head.mark) out.push('', st.head.mark);
+    return out.join('\n');
+  }
+
+  document.getElementById('btnWord').addEventListener('click', function () {
+    var s = cur.s, f = items(), mark = esc(st.head.mark || ''), title = titleOf(s);
+    var h = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>' + title + '</title>' +
+      '<style>@page WordSection1{size:11in 8.5in;mso-page-orientation:landscape;margin:0.7in}div.WordSection1{page:WordSection1}body{font-family:Arial,sans-serif;font-size:10pt}h1{font-size:15pt;margin:4pt 0}h2{font-size:12pt;margin:10pt 0 4pt}p{margin:3pt 0}.mk{text-align:center;font-weight:bold}</style></head><body><div class="WordSection1">';
+    if (mark) h += '<p class="mk">' + mark + '</p>';
+    h += '<h1>' + title + '</h1>';
+    headLines(s).forEach(function (l) { h += '<p><b>' + esc(l[0]) + ':</b> ' + esc(l[1]) + '</p>'; });
+    h += '<p>' + esc(TEST_NOTE) + '</p>';
+    h += '<h2>Review record</h2>' + recordTable(s, true);
+    h += '<h2>' + (s.role === 'self' ? 'Gaps and notes' : 'Comment resolution matrix') + '</h2>' + (f.length ? matrixTable(f, s, true) : '<p>Nothing recorded.</p>');
+    h += '<p>&nbsp;</p><p>' + esc(TYPE_NOTE) + '</p>';
+    h += '<p style="font-size:8pt">Built with Second Look, kthq.org/second-look.html. Cites are to the Revolutionary FAR Overhaul model deviation text.</p>';
+    if (mark) h += '<p class="mk">' + mark + '</p>';
+    h += '</div></body></html>';
+    download('second-look-' + stamp() + '.doc', 'application/msword', '﻿' + h);
+    flash(this, 'Downloaded', 'Export matrix (Word)');
+  });
+
+  function csvCell(t) {
+    t = String(t == null ? '' : t);
+    if (/^[=+\-@\t\r]/.test(t)) t = "'" + t; /* keep spreadsheet programs from reading typed text as a formula */
+    return '"' + t.replace(/"/g, '""') + '"';
+  }
+  document.getElementById('btnCsv').addEventListener('click', function () {
+    var s = cur.s, f = items(), rows = [], lab = L(s);
+    if (st.head.mark) rows.push([st.head.mark]);
+    rows.push([titleOf(s)]);
+    headLines(s).forEach(function (l) { rows.push([l[0], l[1]]); });
+    rows.push([]); rows.push(['Review record']); rows.push(['Question', 'Answer', lab.saw]);
+    cur.qs.forEach(function (r) { var a = st.ans[r.id] || {}; rows.push([r._n + '. ' + r.area + ': ' + r.q, a.a ? ANS[a.a][0] : 'Not reviewed', (a.saw || '').trim() || (a.a && a.a !== 'na' ? '(no note recorded)' : '')]); });
+    rows.push([]); rows.push([s.role === 'self' ? 'Gaps and notes' : 'Comment resolution matrix']);
+    rows.push(cols(s).concat(['Reference']));
+    f.forEach(function (o) { rows.push([o.n, o.f, o.i, typeLabel(o.t, s), '', '', o.ref]); });
+    var text = rows.map(function (r) { return r.map(csvCell).join(','); }).join('\r\n');
+    download('second-look-' + stamp() + '.csv', 'text/csv;charset=utf-8', '﻿' + text);
+    flash(this, 'Downloaded', 'Export matrix (Excel)');
+  });
+
+  document.getElementById('btnCopy').addEventListener('click', function () {
+    var text = textExport(), btn = this;
+    function done(ok) { flash(btn, ok ? 'Copied' : 'Copy failed', 'Copy as text'); }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(fallback(text)); });
+      else done(fallback(text));
+    } catch (e) { done(fallback(text)); }
+  });
+  function fallback(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  var clearArmed = false, clearT = null;
+  document.getElementById('btnClear').addEventListener('click', function () {
+    var btn = this;
+    if (!clearArmed) {
+      clearArmed = true; btn.textContent = 'Select again to erase';
+      clearT = setTimeout(function () { clearArmed = false; btn.textContent = 'Clear this review'; }, 4000);
+      return;
+    }
+    clearTimeout(clearT); clearArmed = false; btn.textContent = 'Clear this review';
+    st.ans = {}; st.head = { mark: DEFAULT_MARK };
+    try { window.sessionStorage.removeItem(KEY); } catch (e) {}
+    fillHead(); render();
+  });
+
+  /* About dialog: opens once per tab on arrival, and from the button any time */
+  var about = document.getElementById('slAbout');
+  function openAbout() { if (about && about.showModal && !about.open) about.showModal(); }
+  document.getElementById('btnAbout').addEventListener('click', openAbout);
+  document.getElementById('btnAboutClose').addEventListener('click', function () { about.close(); });
+  about.addEventListener('click', function (e) { if (e.target === about) about.close(); });
+  about.addEventListener('close', function () { try { window.sessionStorage.setItem('sl-about-seen', '1'); } catch (e) {} document.getElementById('btnAbout').focus(); });
+  var seen = false;
+  try { seen = window.sessionStorage.getItem('sl-about-seen') === '1'; } catch (e) {}
+  if (!seen) openAbout();
+
+  load();
+  applyInputs(st.inputs);
+  fillHead();
+  render();
+})();
+</script>
+<script src="player.js?v=20261110-r2"></script>
+</body>
+</html>
