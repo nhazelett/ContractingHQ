@@ -180,10 +180,396 @@ details li strong{color:var(--ink)}
 .legal{margin-top:16px;font-family:'VT323',monospace;font-size:15px;color:#52698f;line-height:1.3}
 :focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ---------- FARCADE / premium interactive handheld ---------- */
+/* Presentation-only layer. The original cartridge, input and launch logic remain intact. */
+:root{
+  --void:#0b0e13;--panel:#151b21;--pink:#a4fa48;--cyan:#b2e3cb;
+  --gold:#f5c778;--ink:#f5f4ed;--dim:#a2acb1;
+  --shell:#d5d7cb;--shell-hi:#fbfbf1;--shell-lo:#969e95;
+  --glass:#202a2c;--lcd:#132523;
+  --w:min(92vw,460px);
+}
+html{scroll-behavior:smooth}
+body{
+  min-height:100svh;overflow-x:hidden;padding:0 20px 44px;
+  background:radial-gradient(ellipse 44% 40% at 50% 40%,rgba(122,180,141,.17),transparent 80%),
+    radial-gradient(ellipse 45% 42% at 13% 79%,rgba(101,134,140,.12),transparent 80%),
+    radial-gradient(ellipse 50% 60% at 90% 6%,rgba(160,180,147,.09),transparent 76%),
+    #0b0e13;
+  background-attachment:fixed;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.23;z-index:0;
+  background-image:linear-gradient(rgba(230,245,232,.08) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(230,245,232,.08) 1px,transparent 1px);
+  background-size:44px 44px;
+  mask-image:linear-gradient(180deg,black,transparent 92%);
+}
+body::after{
+  content:"";position:fixed;left:50%;top:33%;width:min(76vw,760px);height:min(76vw,760px);
+  border-radius:50%;transform:translate(-50%,-50%);z-index:0;pointer-events:none;
+  background:radial-gradient(circle,rgba(141,207,155,.14),rgba(141,207,155,.05) 40%,transparent 71%);
+  filter:blur(20px);
+}
+.sitebar,.intro,.device,.below,.ambient-orbit{position:relative;z-index:1}
+.sitebar{
+  width:min(1120px,100%);height:68px;flex:none;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  border-bottom:1px solid rgba(224,236,220,.13);margin:0 auto 14px;
+  font-family:'Inter',system-ui,sans-serif;
+}
+.sitebar .mark{display:flex;align-items:center;gap:13px;color:#f5f4ed;text-decoration:none;font-weight:800;font-size:17px;letter-spacing:-.055em}
+.sitebar .mark small{color:#9aef69;letter-spacing:.18em;font-size:10px;font-weight:700;border-left:1px solid rgba(255,255,255,.2);padding-left:14px}
+.sitebar .site-link{
+  display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:1px solid rgba(237,245,228,.26);
+  border-radius:100px;color:#e8eddf;text-decoration:none;font-size:11px;font-weight:600;letter-spacing:.07em;
+  transition:background .2s,border-color .2s,transform .2s;
+}
+.sitebar .site-link:hover{background:rgba(255,255,255,.08);border-color:rgba(237,245,228,.5);transform:translateY(-1px)}
+.intro{text-align:center;margin:18px auto 24px;max-width:730px;font-family:'Inter',system-ui,sans-serif}
+.intro .eyebrow{font-size:10px;letter-spacing:.32em;text-transform:uppercase;font-weight:700;color:#aceb81}
+.intro h1{font-size:clamp(29px,4.5vw,54px);line-height:1.09;font-weight:800;letter-spacing:-.06em;margin:12px 0 10px;color:#f5f4ed}
+.intro h1 span{color:#aff27c}
+.intro p{font-size:clamp(12px,1.6vw,15px);line-height:1.6;color:#aeb7b2;max-width:540px;margin:auto}
+.device{
+  background:linear-gradient(145deg,#fffef2 0%,#e2e6d9 18%,#c4cec3 65%,#9ca99e 100%);
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:3.1em 3.1em 7em 3.1em;
+  box-shadow:inset .25em .35em .75em rgba(255,255,255,.85),
+    inset -.9em -1.5em 2.2em rgba(46,68,61,.25),
+    0 .2em .05em #81928a,0 1.3em 0 -.65em #5d726a,
+    0 3em 4em rgba(0,0,0,.45),0 5em 10em rgba(0,0,0,.3),
+    0 0 7em rgba(140,235,149,.12);
+  isolation:isolate;
+  transition:filter .35s,box-shadow .35s;
+}
+.device::before{content:"";position:absolute;inset:1.15em;border:1px solid rgba(255,255,255,.32);border-radius:2em 2em 6.1em 2em;pointer-events:none}
+.device:not(.on) .screen{box-shadow:inset 0 0 3em #030807}
+.device.on{box-shadow:inset .25em .35em .75em rgba(255,255,255,.85),
+    inset -.9em -1.5em 2.2em rgba(46,68,61,.25),0 .2em .05em #81928a,
+    0 1.3em 0 -.65em #5d726a,0 3em 4em rgba(0,0,0,.45),
+    0 5em 10em rgba(0,0,0,.3),0 0 8em rgba(164,250,72,.2)}
+.toprow .brand{color:#33443a;opacity:1;font-weight:700}
+.toprow .brand b{color:#4a835b}
+.power{color:#4c6356}.power i{background:radial-gradient(circle at 30% 25%,#edf4e7,#8eaa92 65%,#536b5f);box-shadow:0 .35em 0 #627a6d,inset 0 .1em 0 #fff}
+.power i::before{background:#415d4c}.power i::after{border-color:#415d4c;border-top-color:transparent}
+.bezel{background:linear-gradient(150deg,#273531,#111d1e 72%,#33423a);border:1px solid rgba(18,26,23,.85);
+  box-shadow:inset 0 0 0 .2em #4a6058,inset 0 .4em 1em #060e0d,0 .25em .4em rgba(255,255,255,.32)}
+.screen{background:#071311;border-radius:.7em}
+.device.on .screen{background:radial-gradient(circle at 50% 10%,#17382e,#10201e 75%);
+  box-shadow:0 0 2.8em rgba(150,246,147,.18),inset 0 0 2em rgba(0,0,0,.3)}
+.screen::after{opacity:.5;background:repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 4px)}
+.led{color:#708477}.led i{background:#43564b}.device.on .led i{background:#a4fa48;box-shadow:0 0 1em #a4fa48}
+.model{color:#88a194}
+.dpad button,.dpad .hub{background:linear-gradient(140deg,#455d51,#253a32);box-shadow:0 .4em 0 #192d24,inset 0 .12em 0 rgba(255,255,255,.13)}
+.dpad button:active,.dpad button.hit{background:#5a7962;box-shadow:0 .15em 0 #192d24}
+.dpad .u::after{border-bottom-color:#a9c2ae}.dpad .d::after{border-top-color:#a9c2ae}
+.dpad .l::after{border-right-color:#a9c2ae}.dpad .r::after{border-left-color:#a9c2ae}
+.ab .a{background:radial-gradient(circle at 34% 25%,#dbffad,#a4e872 65%,#6db45a);box-shadow:0 .5em 0 #4f8250;color:#243b29}
+.ab .b{background:radial-gradient(circle at 34% 25%,#e8f8e4,#a8c6b1 65%,#799a86);box-shadow:0 .5em 0 #4d685a;color:#243b29}
+.pills button{color:#536759}.pills i{background:linear-gradient(#5f7969,#344a3d);box-shadow:0 .35em 0 #283c30}
+.grill i{background:#73877a;box-shadow:inset 0 .12em .1em #36473b}
+.v-off span{color:#7fae91}
+.logo{color:#b6f78b;text-shadow:.09em .09em 0 #315a3e,0 0 1em rgba(161,247,139,.45)}
+.logo b{color:#f1f5de;text-shadow:.09em .09em 0 #647d69,0 0 1em rgba(191,235,184,.35)}
+.free{color:#a3c4b4}
+.sub{color:#f5c778}
+.bar{border-color:#a4fa48}.bar i{background:linear-gradient(90deg,#a4fa48,#b2e3cb)}
+.cart{background:linear-gradient(155deg,#627e6b,#304d44 75%);box-shadow:inset 0 .2em rgba(255,255,255,.18),0 0 1.6em color-mix(in srgb,var(--neon) 35%,transparent)}
+.cart::before{background-color:#223e34}.cart .label{background:#0e1c1a}
+.dname{border-color:#46665a}.go{border-radius:.35em;box-shadow:.25em .25em 0 #6f945a}
+.go.soon{background:#425047;color:#aab5a9}
+.below{width:min(94vw,620px);margin-top:30px}
+.keys{color:#a9b4ac;font-family:'Inter',system-ui,sans-serif;font-size:11px;line-height:1.9;letter-spacing:.02em}
+.keys b{color:#d8edc8;font-weight:700}
+details{background:rgba(18,30,28,.7);border:1px solid rgba(203,234,203,.19);border-radius:12px;backdrop-filter:blur(12px)}
+summary{font-size:12px;padding:15px 18px;color:#dfe9d9}
+details li{border-color:rgba(255,255,255,.1)}
+details li a,details li strong{color:#aff27c}
+.legal{font-family:'Inter',system-ui,sans-serif;font-size:9px;line-height:1.7;color:#7d8e85}
+#takeover{background:#071411}
+#offsite a{border-radius:8px;box-shadow:0 5px #739755}
+:focus-visible{outline:3px solid #a4fa48;outline-offset:4px}
+@media(min-width:800px){
+  .intro{margin-top:18px;margin-bottom:26px}
+  .device{filter:drop-shadow(0 22px 34px rgba(0,0,0,.16))}
+}
+@media(max-width:520px){
+  body{padding:0 12px 28px}
+  .sitebar{height:60px;margin-bottom:10px}
+  .intro{margin:14px auto 18px}
+  .intro h1{margin:8px 0}
+  .device{--w:min(94vw,440px)}
+  .below{margin-top:25px}
+  .sitebar .mark{font-size:15px}
+}
+@media(prefers-reduced-motion:reduce){
+  .device,.sitebar .site-link{transition:none!important}
+}
+
+
+/* ---------- FARCADE / physical interaction pass ---------- */
+.device{
+  --tilt-x:0deg;--tilt-y:0deg;
+  transform:perspective(1200px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transform-style:preserve-3d;
+  transition:transform .32s cubic-bezier(.18,.75,.28,1),filter .35s,box-shadow .35s;
+}
+.device::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:10;
+  background:linear-gradient(135deg,rgba(255,255,255,.24),transparent 25%,transparent 67%,rgba(14,40,29,.11));
+  opacity:.72;mix-blend-mode:soft-light;
+}
+.device .bezel{position:relative;transform:translateZ(2px)}
+.device .controls,.device .pills{position:relative;transform:translateZ(3px)}
+.device .power i,.device .dpad button,.device .ab button,.device .pills i{
+  transition:transform .11s cubic-bezier(.2,.8,.2,1),box-shadow .11s,filter .11s;
+}
+.device .power:active i,.device .power.hit i{
+  transform:translateY(.26em) scale(.96);box-shadow:0 .09em 0 #627a6d,inset 0 .1em .3em rgba(0,0,0,.2);
+}
+.device .dpad button:active,.device .dpad button.hit{
+  transform:translateY(.27em);box-shadow:0 .1em 0 #192d24,inset 0 .13em .24em rgba(0,0,0,.18);
+}
+.device .ab button:active,.device .ab button.hit{
+  transform:translateY(.3em) scale(.96);box-shadow:0 .13em 0 #456d4a,inset 0 .12em .3em rgba(0,0,0,.22);
+  filter:brightness(1.12);
+}
+.device .pills button:active i,.device .pills button.hit i{
+  transform:rotate(-18deg) translateY(.25em) scale(.98);box-shadow:0 .08em 0 #283c30;
+}
+.screen[data-state="boot"]::before{
+  content:"";position:absolute;inset:-30% 0;z-index:4;pointer-events:none;
+  background:linear-gradient(180deg,transparent 0%,rgba(155,245,188,.04) 43%,
+    rgba(190,255,199,.37) 49.8%,rgba(209,255,206,.57) 50%,rgba(138,233,171,.09) 51%,transparent 57%);
+  animation:scanBoot 1.25s ease-in-out both;
+}
+.screen[data-state="boot"]{animation:bootPower 1.25s steps(1,end) both}
+.screen[data-state="title"] .v-title{animation:titleWake .5s ease-out both}
+.screen[data-state="title"] .logo{animation:drop .58s cubic-bezier(.25,1.3,.45,1) both}
+.device.on .led i{animation:ledWake .85s ease-out both}
+.device .screen .v-boot .bar i{box-shadow:0 0 1em rgba(164,250,72,.7)}
+@keyframes scanBoot{from{transform:translateY(-65%);opacity:0}12%{opacity:1}to{transform:translateY(65%);opacity:0}}
+@keyframes bootPower{0%,5%{filter:brightness(0)}6%,9%{filter:brightness(1.7)}10%,14%{filter:brightness(.22)}15%,100%{filter:brightness(1)}}
+@keyframes titleWake{from{opacity:0;filter:brightness(2);transform:translateY(.35em)}to{opacity:1;filter:brightness(1);transform:none}}
+@keyframes ledWake{0%,25%{opacity:.2;box-shadow:none}45%{opacity:1}60%{opacity:.5}100%{opacity:1}}
+@media(hover:none),(pointer:coarse){
+  .device{transform:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .device{transform:none!important;transition:none!important}
+  .screen[data-state="boot"],.screen[data-state="boot"]::before,
+  .screen[data-state="title"] .v-title,.screen[data-state="title"] .logo,
+  .device.on .led i{animation:none!important}
+}
+
+
+/* ---------- FARCADE / photographic material treatment ---------- */
+/* A layered, light-responsive physical shell with no flat illustrative outlines. */
+:root{
+ --shell:#aeb7b1;--shell-hi:#e8ece5;--shell-lo:#66756e;
+ --glass:#0c1213;--lcd:#0e2421;
+}
+body{
+ background:
+  radial-gradient(ellipse 55% 46% at 51% 57%,rgba(161,178,166,.18),transparent 70%),
+  radial-gradient(ellipse 36% 34% at 50% 85%,rgba(173,202,175,.08),transparent 73%),
+  linear-gradient(125deg,#141a1c,#080d10 54%,#101819);
+}
+body::before{opacity:.09;background-size:70px 70px}
+body::after{top:52%;width:min(96vw,850px);height:min(83vw,730px);filter:blur(55px);opacity:.5}
+.device{
+  --shine-x:48%;--shine-y:17%;
+  background:
+    radial-gradient(ellipse 68% 38% at var(--shine-x) var(--shine-y),rgba(255,255,255,.67),transparent 80%),
+    radial-gradient(ellipse 80% 48% at 78% 97%,rgba(52,69,59,.34),transparent 78%),
+    repeating-linear-gradient(112deg,rgba(255,255,255,.008) 0 1px,rgba(12,22,16,.008) 1px 2px),
+    linear-gradient(124deg,#e3e8df 0%,#cbd2c9 17%,#b1bcb2 48%,#929f95 78%,#74857a 100%);
+  border:1px solid #e4e9dd;
+  border-radius:3.35em 3.35em 7em 3.35em;
+  box-shadow:
+    inset .12em .2em .1em rgba(255,255,255,.97),
+    inset .6em .75em 1.25em rgba(255,255,255,.25),
+    inset -.75em -1.25em 1.5em rgba(33,49,38,.38),
+    inset .09em -.32em .16em rgba(47,64,54,.35),
+    0 .18em .09em #7c8a80,
+    0 .9em .2em -.4em #47564d,
+    0 1.35em .14em -.7em #26352f,
+    0 2.6em 3.5em rgba(0,0,0,.55),
+    0 5.8em 7em rgba(0,0,0,.28);
+  filter:drop-shadow(0 3em 2em rgba(0,0,0,.2));
+}
+.device::before{
+ inset:.75em;border-radius:2.7em 2.7em 6.3em 2.7em;
+ border:1px solid rgba(242,249,236,.3);
+ box-shadow:inset 0 .07em .09em rgba(255,255,255,.38),0 0 0 .1em rgba(57,77,64,.05);
+}
+.device::after{
+ background:
+   radial-gradient(ellipse 62% 52% at var(--shine-x) var(--shine-y),rgba(255,255,255,.12),transparent 74%),
+   linear-gradient(137deg,rgba(255,255,255,.3),transparent 25%,transparent 70%,rgba(3,16,10,.1));
+ opacity:.68;mix-blend-mode:screen;
+}
+.device .brand{color:#4f5d54;text-shadow:0 1px 0 rgba(255,255,255,.85),0 -1px 0 rgba(67,81,71,.12)}
+.device .brand b{color:#4f6757}
+.device .power{color:#4a594f;text-shadow:0 1px rgba(255,255,255,.75)}
+.device .power i{
+ border:1px solid #5a6d62;
+ background:radial-gradient(circle at 27% 20%,#f1f5e8 0%,#b3c1b2 30%,#728c7a 72%,#4b6353 100%);
+ box-shadow:inset .13em .15em .16em rgba(255,255,255,.65),
+   inset -.2em -.25em .18em rgba(21,41,28,.5),
+   0 .16em .08em #556c5b,0 .37em .14em #3f5145,0 .6em .45em rgba(26,42,31,.34);
+}
+.bezel{
+ background:linear-gradient(145deg,#4a5554 0%,#253131 8%,#141e20 49%,#293535 93%,#52605a);
+ border:1px solid #182425;
+ border-radius:1.65em 1.65em 4.1em 1.65em;
+ box-shadow:
+   0 .15em .2em rgba(255,255,255,.55),
+   0 .45em .35em rgba(55,69,56,.35),
+   inset .18em .16em .18em rgba(186,204,193,.38),
+   inset -.18em -.25em .32em rgba(0,0,0,.8),
+   inset 0 0 0 .45em rgba(7,14,15,.65),
+   0 1.2em 1.4em rgba(24,37,29,.24);
+}
+.screen{
+ border:.24em solid #070d0f;
+ background:#040b0b;
+ box-shadow:
+  inset 0 0 0 .07em rgba(189,224,215,.13),
+  inset .15em .3em .35em rgba(0,0,0,.85),
+  0 0 0 .13em rgba(84,108,102,.35),
+  0 .22em .28em rgba(0,0,0,.8);
+}
+.device.on .screen{
+ background:radial-gradient(ellipse 75% 65% at 49% 33%,#1d4336,#102823 73%,#071815);
+ box-shadow:
+  inset .08em .15em .65em rgba(0,0,0,.62),
+  inset 0 0 .15em rgba(219,247,220,.5),
+  0 0 0 .14em rgba(90,119,109,.4),
+  0 .25em .45em rgba(0,0,0,.65),
+  0 0 1.1em rgba(139,221,152,.11);
+}
+.screen::before{
+ content:"";position:absolute;inset:0;z-index:4;pointer-events:none;
+ background:linear-gradient(150deg,rgba(255,255,255,.16),rgba(255,255,255,.035) 20%,transparent 28%,transparent 72%,rgba(178,224,191,.05));
+ opacity:.5;
+}
+.screen[data-state="boot"]::before{
+ inset:-30% 0;opacity:1;
+ background:linear-gradient(180deg,transparent 0%,rgba(155,245,188,.04) 43%,
+    rgba(190,255,199,.37) 49.8%,rgba(209,255,206,.57) 50%,rgba(138,233,171,.09) 51%,transparent 57%);
+ animation:scanBoot 1.25s ease-in-out both;
+}
+.dpad{filter:drop-shadow(.15em .4em .16em rgba(39,54,43,.26))}
+.dpad button,.dpad .hub{
+ background:
+  linear-gradient(155deg,rgba(255,255,255,.13),transparent 29%),
+  linear-gradient(145deg,#46544e,#242f2c 67%,#121c1b);
+ border:1px solid #182422;
+ box-shadow:inset .13em .18em .18em rgba(198,214,202,.19),
+  inset -.15em -.13em .2em rgba(0,0,0,.38),
+  0 .42em .05em #0f1d19,0 .57em .3em rgba(43,58,45,.43);
+}
+.dpad .hub{box-shadow:inset 0 .15em .17em rgba(255,255,255,.12),0 .42em .05em #0f1d19}
+.dpad button::after{filter:drop-shadow(0 1px 0 #111d19)}
+.ab button{
+ border:1px solid rgba(13,32,20,.55);
+ box-shadow:inset .12em .2em .19em rgba(255,255,255,.69),
+   inset -.28em -.33em .28em rgba(22,55,26,.31),
+   0 .21em .05em #536952,0 .53em .09em #354b39,0 .73em .5em rgba(35,54,39,.3);
+ text-shadow:0 1px rgba(255,255,255,.32);
+}
+.ab .a{background:radial-gradient(circle at 29% 20%,#f0ffca,#aedf87 42%,#76ad5c 79%,#507d44)}
+.ab .b{background:radial-gradient(circle at 29% 20%,#fafdf4,#c0d4c4 39%,#849b89 78%,#526c5e)}
+.pills button{color:#5a6c5e;text-shadow:0 1px rgba(255,255,255,.9)}
+.pills i{
+ background:linear-gradient(155deg,#6b7b70,#43564a 52%,#273b30);
+ border:1px solid #30483b;
+ box-shadow:inset .11em .14em .11em rgba(255,255,255,.35),0 .29em .1em #2e4537,0 .5em .25em rgba(25,48,31,.3);
+}
+.grill i{background:#65746b;box-shadow:inset .07em .12em .12em #293b30,0 .05em rgba(255,255,255,.55)}
+.bezelrow .model,.bezelrow .led{color:#81988e}
+.device.on .led i{background:#b8ff7c;box-shadow:0 0 .4em #b8ff7c,0 0 1em rgba(174,250,122,.65)}
+@media(prefers-reduced-motion:reduce){.device{filter:none}}
+
+
+/* True WebGL handheld: original DOM console retained as an accessible fallback. */
+.modelstage{display:none;position:relative;isolation:isolate;width:min(93vw,530px,67vh);aspect-ratio:7.2 / 10.9;margin:0 auto;
+  touch-action:manipulation;user-select:none;filter:drop-shadow(0 26px 29px rgba(0,0,0,.38))}
+.three-active .modelstage{display:block}
+.three-active .device{position:absolute!important;left:-10000px!important;top:0!important;pointer-events:none!important;
+  transform:none!important;visibility:hidden!important}
+.modelstage canvas{width:100%;height:100%;display:block;outline:none;cursor:pointer}
+.model-display{position:absolute;z-index:2;left:50%;top:36.1%;width:52.3%;height:23.3%;transform:translate(-50%,-50%);
+  overflow:hidden;background:#040b0b;box-shadow:inset 0 0 12px rgba(0,0,0,.7);border-radius:2px;
+  pointer-events:auto;perspective:800px}
+.model-display .screen{width:100%;height:100%;font-size:clamp(6px,1.74vw,9.2px);margin:0!important;border:0!important;
+  border-radius:2px;box-shadow:none!important}
+.model-display.on .screen{background:radial-gradient(ellipse at 50% 40%,#204839,#0a1e18 88%);box-shadow:none}
+.model-display:not(.on) .screen{background:#050b0a}
+.model-display .screen .v-title .logo{font-size:2.7em}
+.model-display .screen .v-menu .gname{margin-top:.6em}
+.model-display .screen .v-menu .gstat{margin-top:.45em}
+.model-display .screen .view{padding:1em 1.1em}
+.model-display .screen .v-detail .dtag{font-size:1.92em}
+.model-display .screen .go{font-size:1em}
+.model-display .screen .v-off span{color:#365448}
+.model-status{position:absolute;left:0;right:0;bottom:6%;text-align:center;pointer-events:none;
+  font:600 10px/1.5 'Inter',sans-serif;letter-spacing:.17em;color:#a1b4aa;opacity:.8}
+.three-active .modelstage[data-off="true"] .model-status::after{content:"CLICK POWER TO BEGIN"}
+.three-active .modelstage:not([data-off="true"]) .model-status::after{content:"MOVE • SELECT • PLAY"}
+.three-active .intro{margin-bottom:6px}
+.three-active .below{margin-top:5px}
+@media(max-width:560px){
+ .modelstage{width:min(96vw,460px,68vh)}
+ .model-display .screen{font-size:clamp(5.2px,1.68vw,7.6px)}
+ .model-status{font-size:8px}
+}
+@media(prefers-reduced-motion:reduce){.modelstage{filter:none}}
+
+
+/* Pixel-art preview scenes, deliberately rendered at original handheld resolution. */
+.v-menu .stage{min-height:0;gap:.25em}
+.v-menu .cart{width:21em;height:14.8em;padding:.6em .6em 0;background:#283b39;border-radius:.55em .55em .2em .2em}
+.v-menu .cart .label{height:12.3em;border:.25em solid var(--neon);background:#071512;position:relative;overflow:hidden;padding:0}
+#gamePreview{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;object-fit:fill}
+.v-menu .cart .no{position:absolute;right:.7em;bottom:.5em;padding:.3em .5em;background:rgba(3,12,14,.78);color:#e1e8d7;font-size:.56em}
+.v-menu .gname{margin-top:.55em;font-size:1.23em}
+.v-menu .gstat{margin-top:.5em;font-size:.73em}
+.v-menu .hud{font-size:.86em}
+.v-menu .arrow{font-size:1.25em}
+.v-menu .hint{font-size:1.6em}
+.modelstage[data-intro="true"] .model-display{opacity:0;pointer-events:none}
+.modelstage .model-display{transition:opacity .38s ease}
+.modelstage[data-intro="true"] .model-status::after{content:"SLIDE THE SIDE SWITCH TO POWER ON"!important}
+.modelstage .model-status{bottom:3.8%;font-size:10px;letter-spacing:.15em}
+@media(max-width:520px){.v-menu .cart{width:19em;height:14em}.v-menu .cart .label{height:11.5em}.modelstage .model-status{font-size:8px}}
+
+
+/* 3D model v2 paints the entire interface onto a true perspective-mapped LCD. */
+.three-active .model-display{display:none!important}
+.three-active .modelstage{width:min(94vw,560px,78vh);aspect-ratio:7.2/10.9}
+.three-active .modelstage canvas{cursor:pointer}
+.three-active .modelstage[data-intro="true"] .model-status::after{content:"SLIDE THE BRASS SIDE SWITCH  →  OR PRESS P"!important}
+.three-active .modelstage:not([data-intro="true"]) .model-status::after{content:"ARROWS / WASD TO BROWSE  ·  ENTER TO SELECT"}
 </style>
 </head>
 <body>
 
+<header class="sitebar">
+  <a class="mark" href="index.html" aria-label="KTHQ home">KTHQ <small>FARCADE</small></a>
+  <a class="site-link" href="tools.html">BACK TO KTHQ <span aria-hidden="true">↗</span></a>
+</header>
+<section class="intro" aria-labelledby="arcade-heading">
+  <div class="eyebrow">KTHQ / The Contracting Arcade</div>
+  <h1 id="arcade-heading">Regulations. <span>Reimagined.</span></h1>
+  <p>A pocket-sized arcade for mastering federal acquisition. Power on, pick a cartridge, and play your way through contracting.</p>
+</section>
+<div id="modelstage" class="modelstage" aria-label="Interactive three dimensional FARCADE handheld">
+  <div class="model-display" id="model-display"></div>
+  <div id="model-status" class="model-status" aria-live="polite"></div>
+</div>
 <div class="device" id="device">
   <img class="shell" src="assets/farcade/kt-pocket.webp" alt="" onerror="this.parentNode.classList.add('noimg')">
   <span class="print brand">FAR-<b>CADE</b></span>
@@ -208,7 +594,7 @@ details li strong{color:var(--ink)}
         <div class="hud px"><span>SELECT GAME</span><b id="count">1/6</b></div>
         <div class="stage">
           <span class="arrow px">◀</span>
-          <div class="cart" id="cart"><div class="label"><div class="art px" id="cartArt"></div><div class="no px" id="cartNo"></div></div></div>
+          <div class="cart" id="cart"><div class="label"><canvas id="gamePreview" width="160" height="112" role="img" aria-label="Pixel-art game preview"></canvas><div class="no px" id="cartNo"></div></div></div>
           <span class="arrow r px">▶</span>
         </div>
         <div class="gname px" id="gname"></div>
@@ -246,7 +632,7 @@ details li strong{color:var(--ink)}
 </div>
 
 <div class="below">
-  <p class="keys"><b>ARROWS / WASD</b> move · <b>ENTER / Z</b> is A · <b>BACKSPACE / X</b> is B · <b>SPACE</b> start · <b>SHIFT</b> sound · or tap the buttons</p>
+  <p class="keys"><b>P</b> power · <b>ARROWS / WASD</b> move · <b>ENTER / Z</b> is A · <b>BACKSPACE / X</b> is B · <b>SPACE</b> start · <b>SHIFT</b> sound · or tap the buttons</p>
   <details>
     <summary>All games as a plain list</summary>
     <ul id="plain"></ul>
@@ -296,6 +682,70 @@ details li strong{color:var(--ink)}
   var playing=false, pushed=false, zoomTimer=null;
   var reduced=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
 
+  /* ----- subtle desktop 3D: input and game launch always take precedence ----- */
+  var canTilt=!reduced && window.matchMedia &&
+    matchMedia('(hover:hover) and (pointer:fine)').matches;
+  var tiltFrame=0, tiltX=0, tiltY=0;
+  function applyTilt(){
+    tiltFrame=0;
+    // Update pose variables during takeover too; the zoom's inline transform wins.
+    device.style.setProperty('--tilt-x',tiltX.toFixed(2)+'deg');
+    device.style.setProperty('--tilt-y',tiltY.toFixed(2)+'deg');
+  }
+  function queueTilt(){
+    if(!tiltFrame) tiltFrame=requestAnimationFrame(applyTilt);
+  }
+  function resetTilt(){
+    tiltX=0;tiltY=0;queueTilt();
+  }
+  if(canTilt){
+    device.addEventListener('pointermove',function(e){
+      if(playing || e.pointerType!=='mouse') return;
+      var r=device.getBoundingClientRect();
+      // Modest angles prevent the device from becoming difficult to click.
+      var x=Math.max(-1,Math.min(1,(e.clientX-r.left)/r.width*2-1));
+      var y=Math.max(-1,Math.min(1,(e.clientY-r.top)/r.height*2-1));
+      tiltX=-y*3.2;tiltY=x*4.4;
+      device.style.setProperty('--shine-x',((x+1)*32+18).toFixed(1)+'%');
+      device.style.setProperty('--shine-y',((y+1)*28+8).toFixed(1)+'%');
+      queueTilt();
+    },{passive:true});
+    device.addEventListener('pointerleave',resetTilt);
+    window.addEventListener('blur',resetTilt);
+  }
+
+  /* ----- immediate physical key depression on pointer and keyboard ----- */
+  function releaseKey(t){
+    if(t && t.dataset && t.dataset.btn) t.classList.remove('hit');
+  }
+  device.addEventListener('pointerdown',function(e){
+    var t=e.target.closest('[data-btn]');
+    if(t && !playing){
+      t.classList.add('hit');
+      if(e.pointerType==='touch' && 'vibrate' in navigator) {
+        try{ navigator.vibrate(8); }catch(err){}
+      }
+    }
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(function(type){
+    device.addEventListener(type,function(e){
+      if(type==='pointerleave'){
+        device.querySelectorAll('[data-btn].hit').forEach(releaseKey);
+      }else{
+        releaseKey(e.target.closest('[data-btn]'));
+      }
+    });
+  });
+  document.addEventListener('keyup',function(e){
+    var k=e.key.length===1?e.key.toLowerCase():e.key;
+    var map={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',
+      w:'up',a:'left',s:'down',d:'right',Enter:'a',z:'a',Backspace:'b',
+      x:'b',Escape:'b',' ':'start',Shift:'select',p:'power'};
+    var btn=map[k];
+    if(btn){ releaseKey(device.querySelector('[data-btn="'+btn+'"]')); }
+  });
+
+
   /* ----- sound: tiny square-wave blips ----- */
   function beep(freq,dur,when){
     if(!sound) return;
@@ -316,16 +766,60 @@ details li strong{color:var(--ink)}
     boot:function(){beep(523,.09);beep(659,.09,.1);beep(784,.09,.2);beep(1047,.22,.3)}
   };
 
-  function setState(s){ state=s; screen.dataset.state=s; device.classList.toggle('on', s!=='off'); }
+  function setState(s){ state=s; screen.dataset.state=s; device.classList.toggle('on', s!=='off');
+    var display=document.getElementById('model-display'),stage=document.getElementById('modelstage');
+    if(display) display.classList.toggle('on',s!=='off');
+    if(stage) stage.dataset.off=String(s==='off');
+  }
 
   function hrefOf(g){ return g.href ? BASE+g.href : ''; }
+
+
+  /* Six low-resolution, scene-specific pixel art game screens. */
+  function drawGamePreview(i){
+    var el=$('gamePreview'),ctx=el&&el.getContext('2d');if(!ctx)return;
+    ctx.imageSmoothingEnabled=false;
+    function r(x,y,w,h,col){ctx.fillStyle=col;ctx.fillRect(x,y,w,h)}
+    function t(str,x,y,z,col){ctx.fillStyle=col;ctx.font='bold '+z+'px monospace';ctx.textAlign='center';ctx.fillText(str,x,y)}
+    var mint='#a6f8ac',white='#e8f4db',yellow='#ffd77b',pink='#ff8daf',blue='#76cafa';
+    r(0,0,160,112,['#142b37','#09205c','#17352f','#231a44','#152b42','#28223f'][i]);
+    for(var n=0;n<22;n++)r((n*43+9)%158,(n*23+7)%103,2,2,'#476477');
+    if(i===0){
+      r(8,10,144,18,'#3b5764');t('PART LOCK',80,23,13,mint);
+      t('SELECT THE CORRECT FAR PART',80,39,7,white);
+      r(22,47,116,34,'#091b29');t('FAR PART ?',80,62,12,yellow);
+      t('17     12      6',80,76,9,white);r(35,88,90,14,mint);t('TARGET LOCKED',80,98,8,'#102c27');
+    }else if(i===1){
+      r(7,7,146,21,'#1c3696');t('FAR JEOPARDY',80,23,12,yellow);
+      for(var a=0;a<3;a++)for(var b=0;b<5;b++){
+        r(8+b*29,33+a*24,27,21,'#3155be');t(String((a+1)*100),21+b*29,47+a*24,9,yellow);
+      }
+    }else if(i===2){
+      t('CLOSEOUT',80,17,13,white);r(9,21,90,8,'#263c35');r(10,22,69,6,mint);
+      for(var a=0;a<12;a++){var x=(a*37+3)%150,y=(a*29+32)%96;r(x,y,7,7,pink);r(x+2,y+2,2,2,'#233443')}
+      r(74,51,12,20,'#ddd7b2');r(77,43,7,9,'#edcba6');r(74,70,5,11,blue);r(82,70,5,11,blue);
+      t('SURVIVE THE FY',80,104,9,yellow);
+    }else if(i===3){
+      t('THRESHOLD',80,20,13,yellow);t('JUMP THE LIMITS',80,34,8,white);
+      r(0,80,160,30,'#51447f');for(var a=0;a<13;a++)r(a*14,90,10,2,'#917bab');
+      r(30,60,12,20,mint);r(33,52,8,9,'#f7cb9a');r(95,65,18,15,pink);t('LIMIT',104,75,7,'#1b2131');
+    }else if(i===4){
+      t('CLAUSE CRASH',80,17,12,white);r(42,22,76,85,'#0c1625');
+      for(var a=0;a<6;a++)for(var b=0;b<7;b++)if((a*3+b*5)%7<4)r(46+b*10,96-a*10,9,9,[mint,pink,yellow,blue][(a+b)%4]);
+      r(76,31,10,10,yellow);r(86,31,10,10,yellow);r(86,41,10,10,yellow);r(86,51,10,10,yellow);
+    }else{
+      t('MYSTERY CARTRIDGE',80,20,11,white);r(42,27,76,64,'#11182b');
+      t('?',80,78,53,yellow);t('YOUR GAME HERE',80,104,9,mint);
+    }
+    el.setAttribute('aria-label',GAMES[i].name+' illustrated eight-bit game preview');
+  }
 
   function drawMenu(dir){
     var g=GAMES[idx];
     cart.style.setProperty('--neon',g.neon);
     cart.classList.toggle('soon',g.status==='soon');
-    $('cartArt').textContent=g.art;
-    $('cartNo').textContent='CART 0'+(idx+1);
+    drawGamePreview(idx);
+    $('cartNo').textContent='GAME 0'+(idx+1);
     $('gname').textContent=g.name;
     var st=$('gstat'); st.textContent=g.cta; st.className='gstat px '+g.status;
     $('count').textContent=(idx+1)+'/'+GAMES.length;
@@ -356,15 +850,14 @@ details li strong{color:var(--ink)}
         clearInterval(bootTimer);
         setTimeout(function(){
           if(state!=='boot') return;
-          setState('title');
-          var l=$('logo'); l.style.animation='none'; void l.offsetWidth; l.style.animation='';
+          drawMenu();setState('menu');
           sfx.boot();
         },220);
       }
     },70);
   }
 
-  function powerOff(){ clearInterval(bootTimer); setState('off'); }
+  function powerOff(){ clearInterval(bootTimer); setState('off'); resetTilt(); }
 
   /* ----- game takeover: zoom into the screen, then the game fills the window ----- */
   function setHash(id){
@@ -381,6 +874,8 @@ details li strong{color:var(--ink)}
 
   function openGame(i,instant){
     var g=GAMES[i], h=hrefOf(g);
+    // Return to neutral pose before the cinematic screen takeover.
+    resetTilt();
     if(!h||playing) return;
     if(!g.id){ location.href=h; return; }           // plain links (contact page) just navigate
     playing=true; idx=i; drawMenu(); drawDetail();
@@ -395,6 +890,15 @@ details li strong{color:var(--ink)}
       $('oname').textContent=g.name; $('otag').textContent=g.tag; $('olink').href=h;
     }
     if(location.hash!=='#'+g.id) setHash(g.id);
+    // With a WebGL model, dissolve directly into the game: no hidden DOM-shell zoom.
+    if(document.body.classList.contains('three-active')){
+      clearTimeout(zoomTimer);
+      takeover.classList.add('show');takeover.setAttribute('aria-hidden','false');
+      requestAnimationFrame(function(){takeover.classList.add('in');});
+      if(onSite){try{frame.focus();}catch(e){}}
+      return;
+    }
+
 
     var quick=instant||reduced;
     var r=screen.getBoundingClientRect(), d=device.getBoundingClientRect();
@@ -483,7 +987,7 @@ details li strong{color:var(--ink)}
 
   /* ----- keyboard ----- */
   var KEYS={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',
-    w:'up',s:'down',a:'left',d:'right',Enter:'a',z:'a',Backspace:'b',x:'b',Escape:'b',' ':'start',Shift:'select'};
+    w:'up',s:'down',a:'left',d:'right',Enter:'a',z:'a',Backspace:'b',x:'b',Escape:'b',' ':'start',Shift:'select',p:'power'};
   document.addEventListener('keydown',function(e){
     if(e.metaKey||e.ctrlKey||e.altKey) return;
     if(playing){ if(e.key==='Escape') closeGame(); return; }
@@ -493,7 +997,7 @@ details li strong{color:var(--ink)}
     var k=e.key.length===1?e.key.toLowerCase():e.key, b=KEYS[k];
     if(!b) return;
     e.preventDefault();
-    if(state==='off'&&(b==='a'||b==='start')) b='power';
+    if(state==='off' && b!=='power')return;
     var el=device.querySelector('[data-btn="'+b+'"]');
     if(el){ el.classList.add('hit'); setTimeout(function(){el.classList.remove('hit')},110); }
     press(b);
@@ -513,6 +1017,301 @@ details li strong{color:var(--ink)}
   drawMenu();
   route();
   if(state==='off') boot(); // no power gate: the device starts itself
+})();
+</script>
+<script type="module">
+/* FARCADE physical handheld v2: 3D hardware + real perspective-mapped pixel LCD.
+   Game logic stays in the original DOM controller; the 3D screen is a live canvas texture. */
+(async function(){
+ const stage=document.getElementById('modelstage');
+ const device=document.getElementById('device');
+ const domScreen=document.getElementById('screen');
+ const preview=document.getElementById('gamePreview');
+ const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
+ let T;
+ try{T=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js');}
+ catch(err){console.warn('FARCADE WebGL module unavailable; retaining HTML console.',err);return;}
+ let renderer;
+ try{renderer=new T.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});}
+ catch(err){console.warn('FARCADE WebGL unavailable; retaining HTML console.',err);return;}
+ renderer.outputColorSpace=T.SRGBColorSpace;
+ renderer.toneMapping=T.ACESFilmicToneMapping;
+ renderer.toneMappingExposure=.92;
+ renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+ const canvas=renderer.domElement;
+ canvas.tabIndex=0;
+ canvas.setAttribute('role','application');
+ canvas.setAttribute('aria-label','Interactive 3D FARCADE: click the sliding power switch on the right edge, or press P. Then use arrows and Enter to select games.');
+ stage.insertBefore(canvas,stage.firstChild);
+ const scene=new T.Scene();
+ const camera=new T.OrthographicCamera(-3.6,3.6,5.45,-5.45,.1,100);
+ const fullPos=new T.Vector3(5.15,1.1,17.8);
+ const fullLook=new T.Vector3(0,0,0);
+ const closePos=new T.Vector3(9.4,4.3,10.2);
+ const closeLook=new T.Vector3(2.55,2.78,.02);
+ const aim=closeLook.clone();
+ camera.position.copy(closePos);camera.zoom=2.9;camera.lookAt(aim);camera.updateProjectionMatrix();
+ const hemi=new T.HemisphereLight(0xeaf9ff,0x163639,1.03);scene.add(hemi);
+ function light(color,power,x,y,z){
+   const l=new T.DirectionalLight(color,power);l.position.set(x,y,z);scene.add(l);
+ }
+ light(0xffffff,1.6,-5,7,9);
+ light(0x9afaff,1.1,6,4,7);
+ light(0x84a7b0,.45,4,-5,-7);
+ const root=new T.Group();scene.add(root);
+ const textureCanvas=document.createElement('canvas');
+ textureCanvas.width=256;textureCanvas.height=192;
+ const ctx=textureCanvas.getContext('2d',{alpha:false});
+ const lcdTexture=new T.CanvasTexture(textureCanvas);
+ lcdTexture.colorSpace=T.SRGBColorSpace;
+ lcdTexture.minFilter=T.NearestFilter;lcdTexture.magFilter=T.NearestFilter;
+ const polymer=(()=>{
+   const cn=document.createElement('canvas');cn.width=128;cn.height=128;
+   const g=cn.getContext('2d'),data=g.createImageData(128,128);
+   let seed=26751;
+   for(let i=0;i<data.data.length;i+=4){
+     seed=(seed*1664525+1013904223)>>>0;
+     const a=218+(seed%38);data.data[i]=a;data.data[i+1]=a;data.data[i+2]=a;data.data[i+3]=255;
+   }
+   g.putImageData(data,0,0);
+   const t=new T.CanvasTexture(cn);
+   t.wrapS=t.wrapT=T.RepeatWrapping;t.repeat.set(2,3);
+   return t;
+ })();
+ const mat=(color,rough=.42,metal=.03,coat=.0,texture=null)=>new T.MeshPhysicalMaterial({
+   color,roughness:rough,metalness:metal,clearcoat:coat,clearcoatRoughness:.22,
+   roughnessMap:texture||null,side:T.DoubleSide
+ });
+ const cyan=mat(0x02d0d4,.37,.04,.38,polymer);
+ const cyanEdge=mat(0x018a9a,.44,.08,.2);
+ const lip=mat(0x036d79,.53,.08,.1);
+ const inlay=mat(0x0c1319,.34,.1,.3);
+ const black=mat(0x161b21,.59,.02,.12);
+ const rubber=mat(0x10151a,.7,.0,.08);
+ const hard=mat(0x242a31,.38,.1,.45);
+ const silver=mat(0xd4a16f,.35,.42,.25);
+ const glass=mat(0x071015,.14,.22,.85);
+ const ink=mat(0x063c45,.72,.01);
+ const lcdMat=new T.MeshBasicMaterial({map:lcdTexture,toneMapped:false,side:T.DoubleSide});
+ function shape(w,h,r){
+   const s=new T.Shape(),x=-w/2,y=-h/2;
+   s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);
+   s.lineTo(x+w,y+h-r);s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+   s.lineTo(x+r,y+h);s.quadraticCurveTo(x,y+h,x,y+h-r);
+   s.lineTo(x,y+r);s.quadraticCurveTo(x,y,x+r,y);
+   return s;
+ }
+ function solid(w,h,r,depth,material,x,y,z,bevel=.07){
+   const g=new T.ExtrudeGeometry(shape(w,h,r),{
+     depth,bevelEnabled:!!bevel,bevelSize:bevel,bevelThickness:bevel,
+     bevelSegments:5,curveSegments:16
+   });
+   const m=new T.Mesh(g,material);m.position.set(x,y,z);root.add(m);return m;
+ }
+ function cylinder(radius,height,material,x,y,z,segments=48){
+   const m=new T.Mesh(new T.CylinderGeometry(radius,radius,height,segments),material);
+   m.rotation.x=Math.PI/2;m.position.set(x,y,z);root.add(m);return m;
+ }
+ function box(w,h,d,material,x,y,z){
+   const m=new T.Mesh(new T.BoxGeometry(w,h,d),material);m.position.set(x,y,z);root.add(m);return m;
+ }
+ function decal(words,x,y,w,h,color,px=44){
+   const cn=document.createElement('canvas');cn.width=512;cn.height=128;
+   const g=cn.getContext('2d');g.clearRect(0,0,512,128);
+   g.font='900 '+px+'px Arial, sans-serif';g.textAlign='center';g.textBaseline='middle';
+   g.fillStyle=color;g.fillText(words,256,64);
+   const tex=new T.CanvasTexture(cn);tex.colorSpace=T.SRGBColorSpace;
+   const m=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false,side:T.DoubleSide}));
+   m.position.set(x,y,zFront);root.add(m);return m;
+ }
+ // Deep body with distinctly visible right side and injection-molded front.
+ solid(5.05,8.25,.5,.72,lip,0,0,-.65,.18);
+ solid(5,8.19,.49,.56,cyanEdge,0,0,-.49,.16);
+ solid(4.94,8.13,.48,.28,cyan,0,.04,-.12,.15);
+ solid(4.72,7.93,.48,.045,cyan,0,.04,.16,.05);
+ // Console case seam + right-side cartridge shell bulge.
+ box(.25,2.8,.49,cyanEdge,2.57,.24,-.36);
+ box(.3,2.25,.52,cyan,2.61,.19,-.38);
+ // Thick glossy screen lens, with dark shadow well.
+ solid(4.40,3.63,.31,.16,hard,-.05,1.46,.225,.09);
+ solid(4.20,3.43,.29,.10,inlay,-.05,1.47,.35,.055);
+ solid(3.94,2.91,.105,.06,glass,-.05,1.55,.47,.022);
+ // Real perspective-projected screen image, underneath the outer glass lip.
+ const lcd=new T.Mesh(new T.PlaneGeometry(3.70,2.73),lcdMat);
+ lcd.position.set(-.05,1.55,.571);root.add(lcd);
+ const hitTargets=[];
+ function register(mesh,name){mesh.userData.control=name;hitTargets.push(mesh);return mesh;}
+ function hitbox(w,h,depth,x,y,z,name){
+   const m=box(w,h,depth,new T.MeshBasicMaterial({visible:false}),x,y,z);
+   return register(m,name);
+ }
+ // Black cross D-pad and molded recessed circular surround.
+ cylinder(.92,.11,cyanEdge,-1.30,-1.55,.29);
+ cylinder(.82,.05,inlay,-1.30,-1.55,.39);
+ solid(1.68,.46,.07,.2,rubber,-1.30,-1.55,.45,.05);
+ solid(.46,1.68,.07,.2,rubber,-1.30,-1.55,.46,.05);
+ cylinder(.16,.03,hard,-1.30,-1.55,.69);
+ hitbox(.55,.5,.18,-1.30,-.97,.78,'up');
+ hitbox(.55,.5,.18,-1.30,-2.13,.78,'down');
+ hitbox(.54,.5,.18,-1.85,-1.55,.78,'left');
+ hitbox(.54,.5,.18,-.75,-1.55,.78,'right');
+ // Real black tactile A/B buttons, with beveled wells and small white letters.
+ function keyFace(x,y,name){
+   cylinder(.53,.09,cyanEdge,x,y,.27);
+   cylinder(.49,.07,inlay,x,y,.34);
+   cylinder(.40,.20,hard,x,y,.52);
+   const cap=cylinder(.33,.08,black,x,y,.64);
+   hitbox(.76,.76,.14,x,y,.77,name);
+   return cap;
+ }
+ keyFace(.65,-2.00,'b');keyFace(1.43,-1.30,'a');
+ function small(x,name){
+   solid(.84,.28,.12,.06,cyanEdge,x,-3.16,.23,.025);
+   solid(.65,.18,.08,.14,hard,x,-3.16,.34,.025);
+   hitbox(.73,.38,.12,x,-3.16,.54,name);
+ }
+ small(-.45,'select');small(.55,'start');
+ // Recessed speaker holes (black circular geometry) in Game Boy Color arrangement.
+ for(let row=0;row<7;row++)for(let col=0;col<4;col++){
+   cylinder(.036,.012,ink,1.19+col*.18,-2.53-row*.175,.25,16);
+ }
+ // Real side-mounted sliding brass switch; exposed by the intro camera angle.
+ box(.13,.94,.40,inlay,2.76,2.77,-.12);
+ box(.035,.7,.27,black,2.85,2.77,-.12);
+ const slider=box(.25,.36,.46,silver,2.91,2.54,-.12);
+ const ridges=[];
+ for(let i=0;i<3;i++)ridges.push(box(.05,.025,.5,hard,3.065,2.45+i*.075,-.12));
+ hitbox(.42,.96,.75,3.03,2.77,-.12,'power');
+ // Surface labeling projected slightly in front of body.
+ const zFront=.34;
+ decal('FARCADE COLOR',0,-.43,2.4,.29,'#165c63',36);
+ decal('SELECT',-.45,-3.49,.85,.14,'#155d63',32);
+ decal('START',.55,-3.49,.76,.14,'#155d63',32);
+ decal('A',1.43,-1.30,.31,.23,'#d5dadc',62).position.z=.79;
+ decal('B',.65,-2.00,.31,.23,'#d5dadc',62).position.z=.79;
+ // This is a single, actual 3D LCD plane — no flat HTML overlay during rotation.
+ const display=document.getElementById('model-display');
+ display.style.display='none';
+ stage.dataset.off='true';stage.dataset.intro='true';
+ document.body.classList.add('three-active');
+ function resize(){
+   const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;
+   const hh=5.45*w/h;
+   camera.left=-hh;camera.right=hh;camera.top=5.45;camera.bottom=-5.45;
+   camera.updateProjectionMatrix();renderer.setSize(w,h,false);
+ }
+ resize();
+ if('ResizeObserver'in window)new ResizeObserver(resize).observe(stage);
+ else window.addEventListener('resize',resize);
+ const ray=new T.Raycaster(),uv=new T.Vector2();
+ function picked(e){
+   const r=canvas.getBoundingClientRect();
+   uv.set((e.clientX-r.left)/r.width*2-1,-((e.clientY-r.top)/r.height*2-1));
+   ray.setFromCamera(uv,camera);
+   const hits=ray.intersectObjects(hitTargets,false);
+   return hits.length?hits[0].object.userData.control:null;
+ }
+ let down=null;
+ function send(key){
+   if(stage.dataset.intro==='true'&&key!=='power')return;
+   const b=device.querySelector('[data-btn="'+key+'"]');if(b)b.click();
+ }
+ canvas.addEventListener('pointerdown',e=>{
+   if(document.body.classList.contains('playing'))return;
+   down=picked(e);
+   if(down){canvas.setPointerCapture(e.pointerId);e.preventDefault();}
+ },{passive:false});
+ canvas.addEventListener('pointerup',e=>{
+   if(!down)return;
+   const key=down;down=null;
+   if(key==='power'&&stage.dataset.intro==='true')beginReveal();
+   send(key);
+ });
+ canvas.addEventListener('pointercancel',()=>{down=null});
+ // Allow mouse wheel to rotate between game screens without rotating hardware.
+ stage.addEventListener('wheel',e=>{
+   if(stage.dataset.intro==='true'||domScreen.dataset.state!=='menu')return;
+   if(Math.abs(e.deltaY)<2)return;
+   e.preventDefault();
+   const key=e.deltaY>0?'right':'left';
+   send(key);
+ },{passive:false});
+ let showing=false,finished=false,started=0;
+ const duration=reduced?1:1550;
+ function beginReveal(){
+   if(showing||finished)return;
+   showing=true;started=performance.now();
+   slider.position.y=2.99;
+   for(let i=0;i<ridges.length;i++)ridges[i].position.y+=.45;
+   stage.dataset.off='false';
+ }
+ function rect(x,y,w,h,col){ctx.fillStyle=col;ctx.fillRect(x,y,w,h);}
+ function textLine(str,x,y,size,col,align='center'){
+   ctx.font='bold '+size+'px monospace';ctx.fillStyle=col;ctx.textAlign=align;
+   ctx.fillText(str,x,y);
+ }
+ let lastDraw='',frame=0;
+ function paint(now){
+   if(!ctx)return;
+   const state=domScreen.dataset.state;
+   const game=document.getElementById('gname')?.textContent||'';
+   const count=document.getElementById('count')?.textContent||'1/6';
+   const phrase=document.getElementById('dtag')?.textContent||'';
+   const load=document.getElementById('pct')?.textContent||'';
+   const key=state+'|'+game+'|'+count+'|'+phrase+'|'+load;
+   if(key===lastDraw&&now-frame<250)return;
+   frame=now;lastDraw=key;
+   rect(0,0,256,192,'#061615');
+   rect(0,0,256,2,'#719b7d');rect(0,190,256,2,'#719b7d');
+   if(state==='off'){
+     rect(17,18,222,153,'#061010');
+   }else if(state==='boot'){
+     textLine('FARCADE',128,76,26,'#c7fca9');
+     textLine('SYSTEM INITIALIZING',128,100,12,'#9aceb0');
+     const value=Number(load.match(/\d+/)?.[0]||0);
+     rect(35,117,186,12,'#244a3a');rect(37,119,value*1.82,8,'#a1e9a4');
+   }else if(state==='menu'||state==='title'){
+     rect(0,0,256,22,'#0d2b2a');
+     textLine('FARCADE  /  GAMES',12,15,12,'#d1efdc','left');
+     textLine(count,245,15,12,'#e9c37a','right');
+     if(preview){
+       ctx.imageSmoothingEnabled=false;
+       ctx.drawImage(preview,0,0,160,112,6,27,244,126);
+     }
+     rect(0,157,256,35,'#0a2221');
+     textLine(game||'SELECT GAME',128,172,14,'#f2f6df');
+     textLine('< > BROWSE    A SELECT',128,187,9,'#a5eac0');
+   }else if(state==='detail'||state==='launch'){
+     rect(12,26,232,136,'#0a2824');
+     textLine(document.getElementById('dname')?.textContent||game,128,55,16,'#d3fcb0');
+     const words=phrase.split(' ');let line='',lines=[];
+     for(const word of words){
+       const next=line?line+' '+word:word;
+       if(next.length>27){lines.push(line);line=word;}else line=next;
+     }
+     if(line)lines.push(line);
+     lines.slice(0,5).forEach((v,i)=>textLine(v,128,78+i*15,10,'#d1e0d9'));
+     textLine(state==='detail'?'A  PLAY   /   B  BACK':'LOADING GAME...',128,181,11,'#a6e7ba');
+   }
+   lcdTexture.needsUpdate=true;
+ }
+ function animate(now){
+   if(stage.dataset.intro==='true'&&domScreen.dataset.state!=='off'&&!showing&&!finished)beginReveal();
+   if(showing){
+     const t=Math.min(1,(now-started)/duration);
+     const k=t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+     camera.position.copy(closePos).lerp(fullPos,k);
+     aim.copy(closeLook).lerp(fullLook,k);
+     camera.lookAt(aim);
+     camera.zoom=2.9+(1-2.9)*k;camera.updateProjectionMatrix();
+     if(t===1){showing=false;finished=true;stage.dataset.intro='false';}
+   }
+   paint(now);
+   if(!document.hidden)renderer.render(scene,camera);
+   requestAnimationFrame(animate);
+ }
+ requestAnimationFrame(animate);
+ window.addEventListener('pagehide',()=>renderer.dispose(),{once:true});
 })();
 </script>
 </body>
