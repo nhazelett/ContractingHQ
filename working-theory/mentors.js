@@ -116,47 +116,83 @@
     return ready && !form.dataset.template && (form.dataset.route !== '/takes/submit' || (config.publishedTopics || []).includes(topic));
   });
   if (enabledForms.length) {
-    document.querySelectorAll('[data-form-availability]').forEach(function (el) { el.textContent = 'Sign in with your KTHQ account before contributing. Submissions are reviewed before they appear.'; });
-    window.KTHQ_initMentorTurnstile = function () {
-      enabledForms.forEach(function (form) {
+    enabledForms.forEach(function (form) {
+      var fieldset = form.querySelector('fieldset');
+      var button = form.querySelector('button[type=submit]');
+      var message = form.querySelector('[role=status]');
+      var availability = form.parentNode.querySelector('[data-form-availability]');
+      var application = form.dataset.route === '/mentors/apply';
+      var widget = null;
+      var sending = false;
+      function updateAccess() {
         if (!form.isConnected) return;
-        function updateAccess() {
-          if (!form.isConnected) return;
-          var user = window.KTHQAccount && window.KTHQAccount.user();
-          form.querySelector('fieldset').disabled = !(user && user.email_confirmed_at);
+        var user = window.KTHQAccount && window.KTHQAccount.user();
+        var verified = !!(user && user.email_confirmed_at);
+        // Drafting an application does not require authentication or the bot script.
+        // Submission still requires a verified account and a bot-check token.
+        fieldset.disabled = application ? false : !verified;
+        button.disabled = sending || !verified || widget === null;
+        if (availability) {
+          availability.textContent = !user
+            ? 'You can fill out your application now. Sign in or create a KTHQ account above, then verify your email before sending. Keep this page open to preserve your draft.'
+            : !verified
+              ? 'Verify your account email before sending. Keep this page open to preserve your draft.'
+              : 'Your account is verified. Complete the bot check and send your application for review.';
         }
+      }
+      updateAccess();
+      document.addEventListener('kthq-account-changed', updateAccess);
+      form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        var user = window.KTHQAccount && window.KTHQAccount.user();
+        if (!(user && user.email_confirmed_at)) {
+          message.textContent = 'Sign in with a verified KTHQ account before sending. Your draft is still here.';
+          return;
+        }
+        if (sending) return;
+        if (widget === null) { message.textContent = 'The bot check is not ready. Please wait, or refresh if it could not load.'; return; }
+        var payload = Object.fromEntries(new FormData(form).entries());
+        payload.terms = form.elements.terms ? form.elements.terms.checked : undefined;
+        payload.topicSlug = topic;
+        payload.turnstileToken = window.turnstile.getResponse(widget);
+        if (!payload.turnstileToken) { message.textContent = 'Please complete the bot check.'; return; }
+        sending = true;
         updateAccess();
-        document.addEventListener('kthq-account-changed', updateAccess);
-        var widget = window.turnstile.render(form.querySelector('[data-turnstile]'), {
-          sitekey: config.turnstileSiteKey,
-          action: 'turnstile-spin-v1'
-        });
-        form.addEventListener('submit', async function (event) {
-          event.preventDefault();
-          var message = form.querySelector('[role=status]');
-          var payload = Object.fromEntries(new FormData(form).entries());
-          payload.terms = form.elements.terms ? form.elements.terms.checked : undefined;
-          payload.topicSlug = topic;
-          payload.turnstileToken = window.turnstile.getResponse(widget);
-          if (!payload.turnstileToken) { message.textContent = 'Please complete the bot check.'; return; }
-          var button = form.querySelector('button[type=submit]');
-          button.disabled = true;
-          message.textContent = 'Sending…';
-          try {
-            var data = await api(form.dataset.route, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-            message.textContent = data.message;
-            form.reset();
-          } catch (error) { message.textContent = error.message; }
-          finally { button.disabled = false; window.turnstile.reset(widget); }
-        });
+        message.textContent = 'Sending…';
+        try {
+          var data = await api(form.dataset.route, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+          message.textContent = data.message;
+          form.reset();
+        } catch (error) { message.textContent = error.message; }
+        finally { sending = false; updateAccess(); window.turnstile.reset(widget); }
       });
+      form.initMentorTurnstile = function () {
+        if (!form.isConnected || widget !== null) return;
+        try {
+          widget = window.turnstile.render(form.querySelector('[data-turnstile]'), {
+            sitekey: config.turnstileSiteKey,
+            action: 'turnstile-spin-v1',
+            'error-callback': function () { message.textContent = 'The bot check could not complete. Please retry the check before sending.'; }
+          });
+          updateAccess();
+        } catch (error) {
+          message.textContent = 'The bot check could not load. Please refresh to try again.';
+        }
+      };
+    });
+    window.KTHQ_initMentorTurnstile = function () {
+      enabledForms.forEach(function (form) { form.initMentorTurnstile(); });
     };
     if (window.turnstile) window.KTHQ_initMentorTurnstile();
     else {
       var script = document.createElement('script');
       script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=KTHQ_initMentorTurnstile&render=explicit';
       script.async = true;
-      script.onerror = function () { document.querySelectorAll('[data-form-availability]').forEach(function (el) { el.textContent = 'The bot check could not load. Please refresh to try again.'; }); };
+      script.onerror = function () {
+        enabledForms.forEach(function (form) {
+          form.querySelector('[role=status]').textContent = 'The bot check could not load. Your draft is still editable; refresh to retry before sending.';
+        });
+      };
       document.head.append(script);
     }
   }
