@@ -9,22 +9,22 @@ function fixture(status, options={}) {
   const workspace=el('section'), application=el('section'), badge=el('p'), workspaceLink=el('a');
   let user=options.signedOut?null:{email_confirmed_at:'verified'};
   const document={getElementById:id=>({'mentor-workspace':workspace,'mentor-application-section':application,'mentor-session-status':badge,'mentor-workspace-link':workspaceLink}[id]||null),addEventListener(){}};
-  const window={KTHQAccount:{user:()=>user,accessToken:async()=> 'test-token'},addEventListener(){}};
+  let studioCalls=0;const window={KTHQWritingStudio:()=>{studioCalls++;},KTHQAccount:{user:()=>user,accessToken:async()=> 'test-token'},addEventListener(){}};
   const api=options.api || (async(path,request)=>{ assert.equal(path,'/me/mentor');assert.equal(request.headers.Authorization,'Bearer test-token');return {mentor:status?{status,name:'Mentor Name',id:'profile-id'}:null}; });
   const context={document,window,api,node:el,config:{publishedTopics:['blame']},topicTitles:{blame:'Blame'}};
   vm.createContext(context);vm.runInContext(code,context);
-  return {workspace,application,badge,workspaceLink,context,logout(){user=null;return context.refreshMentorWorkspace();}};
+  return {workspace,application,badge,workspaceLink,context,get studioCalls(){return studioCalls;},logout(){user=null;return context.refreshMentorWorkspace();}};
 }
 function text(element){return [element.textContent,...element.children.map(text)].join(' ');}
 function links(element){return [element,...element.children.flatMap(links)].filter(x=>x.tag==='a');}
 const settle=()=>new Promise(resolve=>setImmediate(resolve));
 test('approved mentors see posting links and no duplicate application',async()=>{
   const f=fixture('approved');await settle();assert.equal(f.application.hidden,true);assert.equal(f.workspace.hidden,false);
-  assert.match(text(f.workspace),/profile is approved/);
+  assert.equal(f.studioCalls,1);
   assert.equal(f.badge.textContent,'Signed in as an approved KTHQ mentor');
   assert.equal(f.badge.hidden,false);
   assert.equal(f.workspaceLink.hidden,false);
-  assert.ok(links(f.workspace).some(link=>link.href==='/working-theory/blame.html#mentor-take'));
+  assert.ok(links(f.workspace).some(link=>link.href==='/working-theory/mentor.html?id=profile-id'));
 });
 test('pending applicants see their status without another application',async()=>{
   const f=fixture('pending');await settle();assert.equal(f.application.hidden,true);assert.match(text(f.workspace),/awaiting review/);
@@ -45,3 +45,5 @@ test('status errors offer retry instead of another application',async()=>{
 test('pending and new accounts never claim an approved mentor session',async()=>{
   for(const status of [null,'pending','rejected']){const f=fixture(status);await settle();assert.ok(!f.badge.textContent.includes('as an approved'));}
 });
+
+test('a status refresh preserves the open editor for the same approved mentor',async()=>{const f=fixture('approved');await settle();await f.context.refreshMentorWorkspace();assert.equal(f.studioCalls,1);});

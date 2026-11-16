@@ -3,6 +3,10 @@
   var config = window.KTHQ_WORKING_THEORY || {};
   var base = String(config.apiBase || '').replace(/\/$/, '');
   var topic = document.body.dataset.topic || '';
+  if (document.body.dataset.essayPage === 'true') {
+    var essayId = new URLSearchParams(location.search).get('id') || '';
+    if (/^[a-f0-9-]{36}$/.test(essayId)) { topic = 'essay-' + essayId; document.body.dataset.topic = topic; }
+  }
   function node(tag, text, className) {
     var el = document.createElement(tag);
     if (text !== undefined) el.textContent = text;
@@ -87,7 +91,7 @@
       picker.append(heading, row);
       var original = node('button', undefined, 'wt-take wt-voice');
       original.type = 'button'; original.dataset.voice = '';
-      original.append(node('strong', 'KTHQ'), node('span', 'Original piece'));
+      original.append(node('strong', document.body.dataset.originalAuthor || 'KTHQ'), node('span', 'Original piece'));
       original.addEventListener('click', function () {
         if (!document.getElementById('mentor-piece').hidden) document.getElementById('back-to-nick').click();
         original.focus();
@@ -113,7 +117,7 @@
   var forms = Array.from(document.querySelectorAll('form[data-route]'));
   var ready = !!(base && config.turnstileSiteKey);
   var enabledForms = forms.filter(function (form) {
-    return ready && !form.dataset.template && (form.dataset.route !== '/takes/submit' || (config.publishedTopics || []).includes(topic));
+    return ready && !form.dataset.template && (form.dataset.route !== '/takes/submit' || ((config.publishedTopics || []).includes(topic) || document.body.dataset.essayPage === 'true'));
   });
   if (enabledForms.length) {
     enabledForms.forEach(function (form) {
@@ -186,6 +190,8 @@
         var user = currentUser();
         var verified = !!(user && user.email_confirmed_at);
         fieldset.disabled = application ? false : !verified;
+        var signinPrompt = form.querySelector('[data-contribution-signin]');
+        if (signinPrompt) signinPrompt.hidden = !!user;
         // The application button stays actionable so it can explain a missing
         // sign-in, verification or bot check instead of silently ignoring clicks.
         button.disabled = sending || (!application && (!verified || widget === null));
@@ -205,7 +211,7 @@
             ? 'New here? This application creates your shared KTHQ account. Already have a KTHQ or forum account? Select that option below—no second account needed.'
             : !verified
               ? 'Verify your KTHQ account email, then return here to send your application. Your mentor profile still needs review.'
-              : 'Signed in with your shared KTHQ account. Complete the bot check and send your mentor profile for review. No second account is needed.';
+              : (application ? 'Signed in with your shared KTHQ account. Complete the bot check and send your mentor profile for review.' : 'Signed in. Approved mentors can publish a take immediately.');
         }
       }
       updateAccess();
@@ -257,6 +263,7 @@
           if (application) forgetDraft();
           form.reset();
           if (application) document.dispatchEvent(new CustomEvent('kthq-mentor-profile-changed'));
+          else if (data.url && data.url.startsWith('/working-theory/')) { var publishedLink = node('a', 'View your published take'); publishedLink.href = data.url; message.append(document.createTextNode(' '), publishedLink); }
         } catch (error) { message.textContent = error.message || 'The request could not complete. Your draft is still here.'; }
         finally {
           if (credentials) { password.value = ''; confirm.value = ''; }
@@ -278,6 +285,7 @@
     });
     window.KTHQ_initMentorTurnstile = function () {
       enabledForms.forEach(function (form) { form.initMentorTurnstile(); });
+      document.dispatchEvent(new CustomEvent('kthq-turnstile-ready'));
     };
     if (window.turnstile) window.KTHQ_initMentorTurnstile();
     else {
@@ -295,6 +303,9 @@
   var workspace = document.getElementById('mentor-workspace');
   var applicationSection = document.getElementById('mentor-application-section');
   var workspaceGeneration = 0;
+  var workspaceIdentity = '';
+  var workspaceApproved = false;
+  var adminConsoleLink = document.getElementById('admin-console-link');
   var mentorSessionStatus = document.getElementById('mentor-session-status');
   var mentorWorkspaceLink = document.getElementById('mentor-workspace-link');
   function showMentorSession(text, linkVisible) {
@@ -306,6 +317,8 @@
     var generation = ++workspaceGeneration;
     var user = window.KTHQAccount && window.KTHQAccount.user();
     if (!user || !user.email_confirmed_at) {
+      workspaceIdentity = ''; workspaceApproved = false;
+      if (adminConsoleLink) adminConsoleLink.hidden = true;
       showMentorSession('', false);
       workspace.hidden = true;
       workspace.replaceChildren();
@@ -315,12 +328,17 @@
     showMentorSession('Signed in to KTHQ · Checking your mentor status…', false);
     workspace.hidden = false;
     applicationSection.hidden = true;
-    workspace.replaceChildren(node('h2', 'Your mentor workspace'), node('p', 'Checking your mentor status…', 'wt-note'));
+    if (!workspaceIdentity) workspace.replaceChildren(node('h2', 'Your mentor workspace'), node('p', 'Checking your mentor status…', 'wt-note'));
     try {
       var token = await window.KTHQAccount.accessToken();
       var data = await api('/me/mentor', { headers: { Authorization: 'Bearer ' + token } });
       if (generation !== workspaceGeneration || !workspace.isConnected) return;
       var mentor = data.mentor;
+      if (adminConsoleLink) adminConsoleLink.hidden = !data.isAdmin;
+      workspaceApproved = !!(mentor && mentor.status === 'approved');
+      var identity = mentor ? mentor.id + ':' + mentor.status + ':' + !!data.isAdmin : '';
+      if (identity && identity === workspaceIdentity && mentor.status === 'approved') { showMentorSession('Signed in as an approved KTHQ mentor', true); return; }
+      workspaceIdentity = identity;
       workspace.replaceChildren(node('h2', 'Your mentor workspace'));
       if (!mentor) {
         showMentorSession('Signed in to KTHQ · No mentor profile yet', false);
@@ -331,19 +349,11 @@
       workspace.append(node('p', mentor.name, 'wt-kicker'));
       if (mentor.status === 'approved') {
         showMentorSession('Signed in as an approved KTHQ mentor', true);
-        workspace.append(node('p', 'Your mentor profile is approved. You can submit a take on any of the pieces below.'));
-        workspace.append(node('p', 'Choose a piece, read it, then write in the “Your take” box at the bottom. Submit your take for review; each take needs approval before it appears.', 'wt-note'));
-        var profileLink = node('a', 'View your public mentor profile', 'wt-button');
+        var profileLink = node('a', 'Your public profile', 'wt-button wt-secondary');
         profileLink.href = '/working-theory/mentor.html?id=' + encodeURIComponent(mentor.id);
-        workspace.append(profileLink, node('h3', 'Write a take'));
-        var list = node('ul');
-        (config.publishedTopics || []).forEach(function (slug) {
-          var item = node('li');
-          var link = node('a', topicTitles[slug] || slug.replace(/-/g, ' '));
-          link.href = '/working-theory/' + encodeURIComponent(slug) + '.html#mentor-take';
-          item.append(link); list.append(item);
-        });
-        workspace.append(list);
+        workspace.append(profileLink);
+        if (window.KTHQWritingStudio) window.KTHQWritingStudio({container:workspace,mentor:mentor,api:api,topics:config.publishedTopics || [],titles:topicTitles});
+        else workspace.append(node('p', 'The writing editor could not load. Refresh this page to try again.', 'wt-note'));
       } else if (mentor.status === 'pending') {
         showMentorSession('Signed in to KTHQ · Mentor application pending review', true);
         workspace.append(node('p', 'Your mentor application is awaiting review. You have already applied; there is no need to apply again.'));
@@ -355,6 +365,7 @@
       }
     } catch (_) {
       if (generation !== workspaceGeneration || !workspace.isConnected) return;
+      if (workspaceIdentity && workspaceApproved) { showMentorSession('Signed in as an approved KTHQ mentor', true); return; }
       showMentorSession('Signed in to KTHQ · Mentor status unavailable', true);
       workspace.replaceChildren(node('h2', 'Your mentor workspace'), node('p', 'Your mentor status could not be loaded. Try refreshing your status below. Your existing profile is unchanged.', 'wt-note'));
     }
@@ -371,6 +382,55 @@
     window.addEventListener('focus', function () { void refreshMentorWorkspace(); });
     void refreshMentorWorkspace();
   }
+  async function loadEssayPage() {
+    if (document.body.dataset.essayPage !== 'true') return true;
+    var id = new URLSearchParams(location.search).get('id') || '';
+    try {
+      var data = await api('/essays/' + encodeURIComponent(id));
+      var essay = data.essay;
+      document.title = essay.title + ' | Working Theory | KTHQ';
+      var description = document.querySelector('meta[name="description"]');
+      if (description) description.content = essay.summary;
+      document.getElementById('topic-title').textContent = essay.title;
+      document.getElementById('essay-summary').textContent = essay.summary;
+      document.getElementById('essay-read-time').textContent = essay.readMinutes + ' min read';
+      document.getElementById('essay-category').textContent = 'Working Theory of Leadership · ' + essay.category;
+      document.body.dataset.originalAuthor = essay.mentor.name;
+      var author = document.getElementById('essay-author');
+      var profile = node('a', essay.mentor.name); profile.href = '/working-theory/mentor.html?id=' + encodeURIComponent(essay.mentor.id);
+      author.replaceChildren(profile, node('p', [essay.mentor.rank,essay.mentor.role].filter(Boolean).join(' · '), 'wt-note'));
+      var content = document.getElementById('essay-body'); content.replaceChildren();
+      essay.body.split(/\n\s*\n/).filter(Boolean).forEach(function (paragraph) { content.append(node('p', paragraph)); });
+      var sources = document.getElementById('essay-sources'); sources.replaceChildren();
+      sources.hidden = !essay.sources;
+      if (essay.sources) sources.append(node('h2', 'Sources and further reading'), node('p', essay.sources, 'wt-plain'));
+      var canonical = document.querySelector('link[rel="canonical"]');
+      if (canonical) canonical.href = 'https://kthq.org/working-theory/essay.html?id=' + encodeURIComponent(essay.id);
+      return true;
+    } catch (error) {
+      document.getElementById('topic-title').textContent = 'Essay unavailable';
+      document.getElementById('essay-body').replaceChildren(node('p', 'This essay is unavailable or has been removed.'));
+      document.getElementById('mentor-take').hidden = true;
+      return false;
+    }
+  }
+  async function loadOriginalEssayCards() {
+    var list = document.querySelector('[data-essay-index]');
+    if (!list) return;
+    try {
+      var cursor = '', essays = [];
+      do { var data = await api('/essays' + (cursor ? '?cursor=' + encodeURIComponent(cursor) : '')); essays.push.apply(essays,data.essays); cursor = data.cursor || ''; } while (cursor);
+      if (!list.isConnected) return;
+      essays.sort(function (a,b) { return a.publishedAt.localeCompare(b.publishedAt); }).forEach(function (essay) {
+        var item = node('li'); var link = node('a', undefined, 'wt-piece-link');
+        link.href = '/working-theory/essay.html?id=' + encodeURIComponent(essay.id);
+        var text = node('div'); var meta = node('div', undefined, 'wt-meta');
+        meta.append(node('span', essay.category),node('span',essay.readMinutes + ' min read'),node('span',essay.mentor.name));
+        text.append(node('h2',essay.title),node('p',essay.summary),meta);
+        link.append(text,node('span','Mentor essay','wt-status wt-live')); item.append(link); list.append(item);
+      });
+    } catch (_) { /* Existing pieces remain available if the catalog is offline. */ }
+  }
   async function loadProfile() {
     if (!document.getElementById('profile-content')) return;
     var id = new URLSearchParams(location.search).get('id');
@@ -382,7 +442,7 @@
       var mentor = data.mentor;
       document.getElementById('profile-name').textContent = mentor.name;
       var content = document.getElementById('profile-content');
-      content.replaceChildren(node('p', [mentor.rank, mentor.field, mentor.role].filter(Boolean).join(' · '), 'wt-note'), node('h2', 'About'), node('p', mentor.bio, 'wt-prose wt-plain'), node('h2', 'Leadership philosophy'), node('p', mentor.philosophy, 'wt-prose wt-plain'), node('h2', 'Approved takes'));
+      content.replaceChildren(node('p', [mentor.rank, mentor.field, mentor.role].filter(Boolean).join(' · '), 'wt-note'), node('h2', 'About'), node('p', mentor.bio, 'wt-prose wt-plain'), node('h2', 'Leadership philosophy'), node('p', mentor.philosophy, 'wt-prose wt-plain'), node('h2', 'Published takes'));
       var list = node('ul');
       content.append(list);
       var cursor = '';
@@ -390,13 +450,21 @@
         var takes = await api('/mentors/' + encodeURIComponent(id) + '/takes' + (cursor ? '?cursor=' + encodeURIComponent(cursor) : ''));
         takes.takes.forEach(function (take) {
           var li = node('li');
-          var link = node('a', topicTitles[take.topicSlug] || take.topicSlug.replace(/-/g, ' '));
-          link.href = '/working-theory/' + encodeURIComponent(take.topicSlug) + '.html?mentor=' + encodeURIComponent(mentor.id);
+          var link = node('a', take.topicTitle || topicTitles[take.topicSlug] || take.topicSlug.replace(/-/g, ' '));
+          link.href = (take.topicUrl || '/working-theory/' + encodeURIComponent(take.topicSlug) + '.html') + (take.topicSlug.startsWith('essay-') ? '&' : '?') + 'mentor=' + encodeURIComponent(mentor.id);
           li.append(link); list.append(li);
         });
         cursor = takes.cursor || '';
       } while (cursor);
-      if (!list.children.length) content.append(node('p', 'No approved takes yet.', 'wt-note'));
+      if (!list.children.length) content.append(node('p', 'No published takes yet.', 'wt-note'));
+      var essayList = node('ul'); content.append(node('h2', 'Original essays'), essayList);
+      cursor = '';
+      do {
+        var originals = await api('/mentors/' + encodeURIComponent(id) + '/essays' + (cursor ? '?cursor=' + encodeURIComponent(cursor) : ''));
+        originals.essays.forEach(function (essay) { var item = node('li'); var link = node('a', essay.title); link.href = '/working-theory/essay.html?id=' + encodeURIComponent(essay.id); item.append(link); essayList.append(item); });
+        cursor = originals.cursor || '';
+      } while (cursor);
+      if (!essayList.children.length) content.append(node('p', 'No original essays yet.', 'wt-note'));
     } catch (error) { document.getElementById('profile-content').replaceChildren(node('p', error.message, 'wt-note')); }
   }
   var login = document.getElementById('admin-login');
@@ -453,6 +521,7 @@
       status.textContent = 'Token forgotten.';
     });
   }
-  void loadTakes();
+  void (async function () { if (await loadEssayPage()) await loadTakes(); })();
+  void loadOriginalEssayCards();
   void loadProfile();
 })();

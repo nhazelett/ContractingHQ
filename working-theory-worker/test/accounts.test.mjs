@@ -41,7 +41,7 @@ function fixture(t) {
   async function submit() { assert.equal((await request('/takes/submit', 'POST', take)).status, 200); const key = [...env.takes.data.keys()].find(key => key.startsWith('take:')); return env.takes.get(key, 'json'); }
   return { env, external, request, application, take, apply, approveMentor, submit };
 }
-test('both gates hold; verified account identity overrides supplied email and stays private', async t => {
+test('approved mentors publish immediately; verified identity stays private', async t => {
   const f = fixture(t); const mentor = await f.apply();
   assert.equal(mentor.email, f.external.user.email);
   assert.equal(mentor.accountId, f.external.user.id);
@@ -51,10 +51,11 @@ test('both gates hold; verified account identity overrides supplied email and st
   assert.equal((await f.request('/takes/submit', 'POST', f.take)).status, 403);
   await f.request('/admin/approve', 'POST', { kind: 'mentor', id: mentor.id }, 'admin');
   const take = await f.submit();
-  assert.deepEqual((await (await f.request('/topics/ownership/takes')).json()).takes, []);
+  assert.equal((await (await f.request('/topics/ownership/takes')).json()).takes.length, 1);
+  assert.equal(take.status, 'approved');
   const queue = await (await f.request('/admin/queue', 'GET', undefined, 'admin')).json();
-  assert.equal(queue.takes.length, 1);
-  await f.request('/admin/approve', 'POST', { kind: 'take', id: take.id, topicSlug: 'ownership', body: 'Cannot edit' }, 'admin');
+  assert.equal(queue.takes.length, 0);
+  assert.equal((await f.request('/admin/approve', 'POST', { kind: 'take', id: take.id, topicSlug: 'ownership', body: 'Cannot edit' }, 'admin')).status, 409);
   const publicData = await (await f.request('/topics/ownership/takes')).json();
   assert.equal(publicData.takes[0].body, f.take.body);
   assert.equal(publicData.takes[0].mentor.name, 'Mentor Real Name');
@@ -87,6 +88,7 @@ test('rejected mentors can resubmit; public forms cannot overwrite approved prof
 });
 test('rejected takes stay private and contributors may resubmit', async t => {
   const f = fixture(t); await f.approveMentor(); const take = await f.submit();
+  take.status = 'pending'; await f.env.takes.put('take:ownership:' + take.id, JSON.stringify(take)); // legacy pending record
   await f.request('/admin/reject', 'POST', { kind: 'take', id: take.id, topicSlug: 'ownership' }, 'admin');
   assert.equal((await (await f.request('/topics/ownership/takes')).json()).takes.length, 0);
   await f.submit(); assert.equal(f.env.takes.data.size, 2);
@@ -209,4 +211,80 @@ test('outbox storage failure leaves the real application safely saved', async t 
   t.mock.method(f.env.mentors, 'put', async (key, value) => { if (key.startsWith('notice:')) throw new Error('outbox unavailable'); return originalPut(key,value); });
   const mentor = await f.apply(); assert.equal(mentor.status, 'pending');
   assert.equal(f.external.mail.length, 0);
+});
+
+const original = { title: 'A mentor original', summary: 'An introduction to the original essay.', category: 'Moment', body: 'First paragraph.\n\nSecond paragraph.', sources: 'Author, title, 2026.', terms: true, turnstileToken: 'local-token', submissionId: '8a55746c-1656-40f0-b6ee-ff2c7837d991' };
+async function publishOriginal(f, changes = {}) {
+  const response = await f.request('/essays/submit', 'POST', { ...original, ...changes });
+  assert.equal(response.status, 200, JSON.stringify(await response.clone().json()));
+  return (await response.json());
+}
+function adminAccount(f) { f.env.ADMIN_EMAIL = 'hazelett.nicholas@gmail.com'; f.external.user.email = f.env.ADMIN_EMAIL; }
+test('approved mentors publish originals immediately with accurate reading time and private identities', async t => {
+  const f = fixture(t); await f.approveMentor();
+  const result = await publishOriginal(f, { body: Array(1000).fill('word').join(' '), status: 'pending', mentorId: 'spoofed' });
+  assert.equal(result.url, '/working-theory/essay.html?id=' + original.submissionId);
+  const listed = await (await f.request('/essays')).json();
+  assert.equal(listed.essays.length, 1); assert.equal(listed.essays[0].readMinutes, 5);
+  assert.ok(!('body' in listed.essays[0]));
+  const full = await (await f.request('/essays/' + original.submissionId)).json();
+  assert.equal(full.essay.body.split(' ').length, 1000);
+  assert.equal(full.essay.mentor.name, 'Mentor Real Name');
+  for (const value of [f.external.user.id, f.external.user.email, 'accountId', 'Forum Pseudonym']) assert.ok(!JSON.stringify(full).includes(value));
+  const mentor = await f.env.mentors.get([...f.env.mentors.data.keys()].find(k => k.startsWith('mentor:')), 'json');
+  const profile = await (await f.request('/mentors/' + mentor.id + '/essays')).json(); assert.equal(profile.essays.length, 1);
+});
+test('original essay retries do not publish duplicates or silently edit earlier work', async t => {
+  const f = fixture(t); await f.approveMentor(); await publishOriginal(f); await publishOriginal(f);
+  assert.equal((await (await f.request('/essays')).json()).essays.length, 1);
+  assert.equal((await f.request('/essays/submit','POST',{...original,body:'Different draft'})).status,409);
+});
+test('unapproved, unverified and anonymous accounts cannot publish originals', async t => {
+  const f=fixture(t);
+  assert.equal((await f.request('/essays/submit','POST',original,null)).status,401);
+  await f.apply(); assert.equal((await f.request('/essays/submit','POST',original)).status,403);
+  f.external.user.email_confirmed_at=null; assert.equal((await f.request('/essays/submit','POST',original)).status,403);
+  f.external.user.email_confirmed_at='verified';f.external.user.is_anonymous=true;assert.equal((await f.request('/essays/submit','POST',original)).status,403);
+});
+test('originals accept long writing but reject missing terms, HTML, invalid IDs and oversized transport', async t => {
+  const f=fixture(t);await f.approveMentor();
+  for(const changes of [{terms:false},{body:'<script>alert(1)</script>'},{submissionId:'../../path'},{title:''}]) assert.equal((await f.request('/essays/submit','POST',{...original,...changes})).status,400);
+  assert.equal((await f.request('/essays/submit','POST',{...original,body:'x'.repeat(250000)})).status,413);
+  await publishOriginal(f,{body:Array(8000).fill('word').join(' ')});
+});
+test('takes on new originals publish immediately and link back to the correct essay', async t => {
+  const f=fixture(t);await f.approveMentor();await publishOriginal(f);
+  const slug='essay-'+original.submissionId;
+  assert.equal((await f.request('/takes/submit','POST',{...f.take,topicSlug:slug})).status,200);
+  const takes=await (await f.request('/topics/'+slug+'/takes')).json();assert.equal(takes.takes.length,1);assert.equal(takes.takes[0].topicTitle,original.title);assert.equal(takes.takes[0].topicUrl,'/working-theory/essay.html?id='+original.submissionId);
+});
+test('account administration checks the actual verified email, never mentor approval or metadata', async t => {
+  const f=fixture(t);await f.approveMentor();f.env.ADMIN_EMAIL='hazelett.nicholas@gmail.com';f.external.user.user_metadata={admin:true,email:f.env.ADMIN_EMAIL};
+  for(const path of ['/admin/dashboard','/admin/mentors/update','/admin/posts/edit','/admin/posts/remove','/admin/posts/restore']) assert.equal((await f.request(path,path.endsWith('dashboard')?'GET':'POST',path.endsWith('dashboard')?undefined:{})).status,403,path);
+  adminAccount(f);assert.equal((await f.request('/admin/dashboard')).status,200);
+  f.external.user.email_confirmed_at=null;assert.equal((await f.request('/admin/dashboard')).status,403);
+});
+test('admin accounts edit and reversibly remove mentor writing without reassigning authorship', async t => {
+  const f=fixture(t);const mentor=await f.approveMentor();await publishOriginal(f);const take=await f.submit();adminAccount(f);
+  let response=await f.request('/admin/posts/edit','POST',{...original,title:'Edited title',body:'Edited essay.',kind:'essay',id:original.submissionId,mentorId:'spoofed'});assert.equal(response.status,200);
+  let full=await (await f.request('/essays/'+original.submissionId)).json();assert.equal(full.essay.title,'Edited title');assert.equal(full.essay.mentor.id,mentor.id);
+  assert.equal((await f.request('/admin/posts/remove','POST',{kind:'essay',id:original.submissionId})).status,200);
+  assert.equal((await f.request('/essays/'+original.submissionId)).status,404);assert.equal((await (await f.request('/essays')).json()).essays.length,0);
+  assert.equal((await f.request('/admin/posts/restore','POST',{kind:'essay',id:original.submissionId})).status,200);
+  response=await f.request('/admin/posts/edit','POST',{kind:'take',id:take.id,topicSlug:'ownership',body:'Edited take.'});assert.equal(response.status,200);
+  assert.equal((await (await f.request('/topics/ownership/takes')).json()).takes[0].body,'Edited take.');
+  await f.request('/admin/posts/remove','POST',{kind:'take',id:take.id,topicSlug:'ownership'});assert.equal((await (await f.request('/topics/ownership/takes')).json()).takes.length,0);
+});
+test('removing a mentor hides their writing and blocks publishing; restoring reopens access', async t => {
+  const f=fixture(t);const mentor=await f.approveMentor();await publishOriginal(f);await f.submit();adminAccount(f);
+  assert.equal((await f.request('/admin/mentors/update','POST',{id:mentor.id,status:'removed'})).status,200);
+  assert.equal((await f.request('/essays/'+original.submissionId)).status,404);assert.equal((await f.request('/mentors/'+mentor.id)).status,404);assert.equal((await (await f.request('/topics/ownership/takes')).json()).takes.length,0);
+  assert.equal((await f.request('/takes/submit','POST',f.take)).status,403);
+  assert.equal((await f.request('/admin/posts/restore','POST',{kind:'essay',id:original.submissionId})).status,409);
+  await f.request('/admin/mentors/update','POST',{id:mentor.id,status:'approved'});assert.equal((await f.request('/essays/'+original.submissionId)).status,200);
+});
+test('published-original alerts include the new page link rather than an approval request', async t => {
+  const f=fixture(t);enableMail(f);await f.approveMentor();await publishOriginal(f);
+  assert.match(f.external.mail.at(-1).body.subject,/essay published/);assert.match(f.external.mail.at(-1).body.text,/essay.html\?id=/);
+  assert.ok(!f.external.mail.at(-1).body.text.includes(original.body));
 });

@@ -2516,7 +2516,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     // Working Theory uses a directory index plus single-file essay pages.
     // Keep its pages in the same persistent player session as the root pages.
     var workingTheoryPages = [
-      '', 'index.html', 'shelf.html', 'mentors.html', 'mentor.html', 'piece-template.html',
+      '', 'index.html', 'shelf.html', 'mentors.html', 'mentor.html', 'essay.html', 'piece-template.html',
       'what-ive-learned-over-the-years.html', 'leadership-for-people-who-just-got-handed-it.html',
       'stop-controlling-people.html', 'nobody-dropped-the-hammer.html', 'blame.html',
       'everything-is-priority-one.html', 'the-new-rule-after-one-mistake.html',
