@@ -5,6 +5,7 @@ import worker from '../index.js';
 class KV {
   data = new Map();
   async get(key, type) { const value = this.data.get(key); return value === undefined ? null : type === 'json' ? JSON.parse(value) : value; }
+  async delete(key) { this.data.delete(key); }
   async put(key, value) { this.data.set(key, value); }
   async list({ prefix, cursor, limit }) {
     const names = [...this.data.keys()].filter(key => key.startsWith(prefix)).sort();
@@ -14,8 +15,13 @@ class KV {
 }
 function fixture(t) {
   const env = { SITE_ORIGIN: 'https://kthq.org', SUPABASE_URL: 'https://localtest.supabase.co', SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_localtest', PUBLISHED_TOPICS: '["ownership"]', SUBMISSIONS_ENABLED: 'true', ADMIN_TOKEN: 'local-admin-token-for-tests-only-12345', IDENTITY_SECRET: 'local-identity-secret-for-tests-only-12345', TURNSTILE_SECRET_KEY: 'local-turnstile', mentors: new KV(), takes: new KV(), SUBMISSION_LIMITER: { limit: async () => ({ success: true }) } };
-  const external = { turnstile: { success: true, hostname: 'kthq.org', action: 'turnstile-spin-v1' }, user: { id: '11111111-2222-4333-8444-555555555555', email: 'private@example.test', email_confirmed_at: '2026-11-09', is_anonymous: false, user_metadata: { display_name: 'Forum Pseudonym' } }, authStatus: 200 };
+  const external = { turnstile: { success: true, hostname: 'kthq.org', action: 'turnstile-spin-v1' }, user: { id: '11111111-2222-4333-8444-555555555555', email: 'private@example.test', email_confirmed_at: '2026-11-09', is_anonymous: false, user_metadata: { display_name: 'Forum Pseudonym' } }, authStatus: 200, mail: [], mailStatus: 200, mailThrows: false };
   t.mock.method(globalThis, 'fetch', async (url, options) => {
+    if (url === 'https://api.resend.com/emails') {
+      external.mail.push({ headers: options.headers, body: JSON.parse(options.body) });
+      if (external.mailThrows) throw new Error('timeout');
+      return Response.json({ id: 'local-email-id' }, { status: external.mailStatus });
+    }
     if (String(url).includes('siteverify')) return Response.json(external.turnstile);
     assert.equal(url, env.SUPABASE_URL + '/auth/v1/user');
     assert.equal(options.headers.Authorization, 'Bearer local-session');
@@ -125,4 +131,82 @@ test('queue pagination skips finished collections; pending bodies require admin 
   const noAuth = await f.request('/admin/queue', 'GET', undefined, null);
   assert.equal(noAuth.status, 401); assert.equal(noAuth.headers.get('Cache-Control'), 'no-store');
   assert.equal((await f.request('/takes/confirm?token=old')).status, 410);
+});
+
+test('private mentor status returns only the verified caller profile and status', async t => {
+  const f = fixture(t);
+  assert.equal((await f.request('/me/mentor', 'GET', undefined, null)).status, 401);
+  assert.equal((await (await f.request('/me/mentor')).json()).mentor, null);
+  await f.apply();
+  let data = await (await f.request('/me/mentor')).json();
+  assert.equal(data.mentor.status, 'pending');
+  await f.request('/admin/approve', 'POST', { kind: 'mentor', id: data.mentor.id }, 'admin');
+  data = await (await f.request('/me/mentor')).json();
+  assert.equal(data.mentor.status, 'approved');
+  assert.ok(!JSON.stringify(data).includes(f.external.user.email));
+  assert.ok(!JSON.stringify(data).includes(f.external.user.id));
+  assert.ok(!JSON.stringify(data).includes('accountId'));
+  f.external.user.id = 'another-verified-user';
+  assert.equal((await (await f.request('/me/mentor')).json()).mentor, null);
+  f.external.user.email_confirmed_at = null;
+  assert.equal((await f.request('/me/mentor')).status, 403);
+});
+function enableMail(f) {
+  Object.assign(f.env, { RESEND_API_KEY: 'local-send-secret', NOTIFY_FROM: 'KTHQ <approvals@example.test>', NOTIFY_TO: 'admin@example.test' });
+}
+function notice(f) {
+  const entry = [...f.env.mentors.data.entries()].find(([key]) => key.startsWith('notice:'));
+  return entry && { key: entry[0], value: JSON.parse(entry[1]) };
+}
+test('alerts go only to the configured admin for newly pending applications and takes', async t => {
+  const f = fixture(t); enableMail(f);
+  const mentor = await f.apply();
+  await f.apply(); // already pending, no duplicate mail
+  assert.equal(f.external.mail.length, 1);
+  const mail = f.external.mail[0];
+  assert.deepEqual(mail.body.to, ['admin@example.test']);
+  assert.match(mail.body.text, /https:\/\/kthq.org\/working-theory\/admin.html/);
+  for (const privateValue of [f.external.user.email, f.external.user.id, f.env.ADMIN_TOKEN, mentor.name, mentor.bio]) assert.ok(!JSON.stringify(mail.body).includes(privateValue));
+  assert.equal(notice(f), undefined);
+  await f.request('/admin/approve', 'POST', { kind: 'mentor', id: mentor.id }, 'admin');
+  await f.submit();
+  assert.equal(f.external.mail.length, 2);
+  assert.match(f.external.mail[1].body.subject, /mentor take/);
+});
+test('transient mail errors save the application and retry with the same idempotency key', async t => {
+  const f = fixture(t); enableMail(f); f.external.mailStatus = 503;
+  const mentor = await f.apply(); assert.equal(mentor.status, 'pending');
+  const job = notice(f); assert.equal(job.value.state, 'pending');
+  assert.ok(!JSON.stringify(job.value).includes(f.env.RESEND_API_KEY));
+  job.value.nextAttemptAt = 0;
+  await f.env.mentors.put(job.key, JSON.stringify(job.value));
+  f.external.mailStatus = 200;
+  await worker.scheduled({}, f.env, {});
+  assert.equal(f.external.mail.length, 2);
+  assert.equal(f.external.mail[0].headers['Idempotency-Key'], f.external.mail[1].headers['Idempotency-Key']);
+  assert.deepEqual(f.external.mail[0].body, f.external.mail[1].body);
+  assert.equal(notice(f), undefined);
+});
+test('permanent mail errors do not prevent submission or send repeatedly', async t => {
+  const f = fixture(t); enableMail(f); f.external.mailStatus = 403;
+  await f.apply(); assert.equal(notice(f).value.state, 'failed');
+  await worker.scheduled({}, f.env, {});
+  assert.equal(f.external.mail.length, 1);
+});
+test('an approval before a scheduled retry cancels the now obsolete alert', async t => {
+  const f = fixture(t); enableMail(f); f.external.mailThrows = true;
+  const mentor = await f.apply();
+  await f.request('/admin/approve', 'POST', { kind: 'mentor', id: mentor.id }, 'admin');
+  const job = notice(f); job.value.nextAttemptAt = 0;
+  await f.env.mentors.put(job.key, JSON.stringify(job.value));
+  f.external.mailThrows = false;
+  await worker.scheduled({}, f.env, {});
+  assert.equal(f.external.mail.length, 1); assert.equal(notice(f), undefined);
+});
+test('outbox storage failure leaves the real application safely saved', async t => {
+  const f = fixture(t); enableMail(f);
+  const originalPut = f.env.mentors.put.bind(f.env.mentors);
+  t.mock.method(f.env.mentors, 'put', async (key, value) => { if (key.startsWith('notice:')) throw new Error('outbox unavailable'); return originalPut(key,value); });
+  const mentor = await f.apply(); assert.equal(mentor.status, 'pending');
+  assert.equal(f.external.mail.length, 0);
 });

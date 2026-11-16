@@ -256,6 +256,7 @@
           message.textContent = data.message;
           if (application) forgetDraft();
           form.reset();
+          if (application) document.dispatchEvent(new CustomEvent('kthq-mentor-profile-changed'));
         } catch (error) { message.textContent = error.message || 'The request could not complete. Your draft is still here.'; }
         finally {
           if (credentials) { password.value = ''; confirm.value = ''; }
@@ -290,6 +291,85 @@
       };
       document.head.append(script);
     }
+  }
+  var workspace = document.getElementById('mentor-workspace');
+  var applicationSection = document.getElementById('mentor-application-section');
+  var workspaceGeneration = 0;
+  var mentorSessionStatus = document.getElementById('mentor-session-status');
+  var mentorWorkspaceLink = document.getElementById('mentor-workspace-link');
+  function showMentorSession(text, linkVisible) {
+    if (mentorSessionStatus) { mentorSessionStatus.textContent = text; mentorSessionStatus.hidden = !text; }
+    if (mentorWorkspaceLink) mentorWorkspaceLink.hidden = !linkVisible;
+  }
+  async function refreshMentorWorkspace() {
+    if (!workspace || !workspace.isConnected || !applicationSection) return;
+    var generation = ++workspaceGeneration;
+    var user = window.KTHQAccount && window.KTHQAccount.user();
+    if (!user || !user.email_confirmed_at) {
+      showMentorSession('', false);
+      workspace.hidden = true;
+      workspace.replaceChildren();
+      applicationSection.hidden = false;
+      return;
+    }
+    showMentorSession('Signed in to KTHQ · Checking your mentor status…', false);
+    workspace.hidden = false;
+    applicationSection.hidden = true;
+    workspace.replaceChildren(node('h2', 'Your mentor workspace'), node('p', 'Checking your mentor status…', 'wt-note'));
+    try {
+      var token = await window.KTHQAccount.accessToken();
+      var data = await api('/me/mentor', { headers: { Authorization: 'Bearer ' + token } });
+      if (generation !== workspaceGeneration || !workspace.isConnected) return;
+      var mentor = data.mentor;
+      workspace.replaceChildren(node('h2', 'Your mentor workspace'));
+      if (!mentor) {
+        showMentorSession('Signed in to KTHQ · No mentor profile yet', false);
+        workspace.hidden = true;
+        applicationSection.hidden = false;
+        return;
+      }
+      workspace.append(node('p', mentor.name, 'wt-kicker'));
+      if (mentor.status === 'approved') {
+        showMentorSession('Signed in as an approved KTHQ mentor', true);
+        workspace.append(node('p', 'Your mentor profile is approved. You can submit a take on any of the pieces below.'));
+        workspace.append(node('p', 'Choose a piece, read it, then write in the “Your take” box at the bottom. Submit your take for review; each take needs approval before it appears.', 'wt-note'));
+        var profileLink = node('a', 'View your public mentor profile', 'wt-button');
+        profileLink.href = '/working-theory/mentor.html?id=' + encodeURIComponent(mentor.id);
+        workspace.append(profileLink, node('h3', 'Write a take'));
+        var list = node('ul');
+        (config.publishedTopics || []).forEach(function (slug) {
+          var item = node('li');
+          var link = node('a', topicTitles[slug] || slug.replace(/-/g, ' '));
+          link.href = '/working-theory/' + encodeURIComponent(slug) + '.html#mentor-take';
+          item.append(link); list.append(item);
+        });
+        workspace.append(list);
+      } else if (mentor.status === 'pending') {
+        showMentorSession('Signed in to KTHQ · Mentor application pending review', true);
+        workspace.append(node('p', 'Your mentor application is awaiting review. You have already applied; there is no need to apply again.'));
+        workspace.append(node('p', 'Once approved, this workspace will show where to write and submit your takes.', 'wt-note'));
+      } else {
+        showMentorSession('Signed in to KTHQ · Mentor application not approved', true);
+        workspace.append(node('p', 'Your previous mentor application was not approved. You can update the application below and submit it for another review.'));
+        applicationSection.hidden = false;
+      }
+    } catch (_) {
+      if (generation !== workspaceGeneration || !workspace.isConnected) return;
+      showMentorSession('Signed in to KTHQ · Mentor status unavailable', true);
+      workspace.replaceChildren(node('h2', 'Your mentor workspace'), node('p', 'Your mentor status could not be loaded. Try refreshing your status below. Your existing profile is unchanged.', 'wt-note'));
+    }
+    if (generation === workspaceGeneration && workspace.isConnected) {
+      var refreshButton = node('button', 'Refresh mentor status', 'wt-button');
+      refreshButton.type = 'button';
+      refreshButton.addEventListener('click', function () { void refreshMentorWorkspace(); });
+      workspace.append(refreshButton);
+    }
+  }
+  if (workspace) {
+    document.addEventListener('kthq-account-changed', function () { void refreshMentorWorkspace(); });
+    document.addEventListener('kthq-mentor-profile-changed', function () { void refreshMentorWorkspace(); });
+    window.addEventListener('focus', function () { void refreshMentorWorkspace(); });
+    void refreshMentorWorkspace();
   }
   async function loadProfile() {
     if (!document.getElementById('profile-content')) return;

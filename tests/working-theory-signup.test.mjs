@@ -27,8 +27,8 @@ function fixture({ user = null, storage = new Map(), authError = null, signupSes
   if(widget) window.turnstile={render:()=>0,getResponse:()=> 'test-bot-token',reset:()=>{}};
   const localStorage={getItem:k=>storage.get(k)||null,setItem(k,v){if(storageFails) throw new Error('No storage');storage.set(k,v);},removeItem:k=>storage.delete(k)};
   const document={body:{dataset:{}}, getElementById:id=>nodes[id]||null,
-    querySelectorAll:s=>s==='form[data-route]'?[form]:[], addEventListener:(k,fn)=>listeners[k]=fn,createElement:()=>({}),head:{append(){}}};
-  const context = {window,document,localStorage,fetch:async(url,options)=>{calls.posts.push(JSON.parse(options.body));return {ok:true,json:async()=>({message:'Application queued'})};},FormData:class {constructor(){throw new Error('Account fields must never be serialized');}}};
+    querySelectorAll:s=>s==='form[data-route]'?[form]:[], addEventListener:(k,fn)=>listeners[k]=fn,createElement:()=>({}),head:{append(){}}, dispatchEvent() {}};
+  const context = {CustomEvent: class {}, window,document,localStorage,fetch:async(url,options)=>{calls.posts.push(JSON.parse(options.body));return {ok:true,json:async()=>({message:'Application queued'})};},FormData:class {constructor(){throw new Error('Account fields must never be serialized');}}};
   vm.runInNewContext(accountSource, context);
   vm.runInNewContext(mentorSource, context);
   return {calls,nodes,fields,button,message,fieldset,storage,account,submit:()=>form.handlers.submit({preventDefault(){}}),change:()=>nodes['mentor-account-mode'].handlers.change(),user(next){user=next;listeners['kthq-account-changed']();}};
