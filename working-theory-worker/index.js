@@ -120,10 +120,80 @@ async function publicTakes(env, prefix, cursor, onlyMentor) {
   }
   return { takes: result, cursor: page.cursor === 'done' ? null : page.cursor };
 }
-async function route(request, env) {
+const NOTICE_PREFIX = 'notice:';
+const NOTICE_LIFETIME = 12 * 60 * 60 * 1000;
+function notificationConfigured(env) {
+  return !!(env.RESEND_API_KEY && env.NOTIFY_FROM && env.NOTIFY_TO);
+}
+async function saveNotice(env, key, job) {
+  const ttl = Math.max(60, Math.ceil((job.expiresAt - Date.now()) / 1000));
+  await env.mentors.put(key, JSON.stringify(job), { expirationTtl: ttl });
+}
+async function deliverNotice(env, key, job) {
+  if (!notificationConfigured(env) || job.state === 'failed' || job.nextAttemptAt > Date.now()) return;
+  if (job.expiresAt <= Date.now()) { await env.mentors.delete(key); return; }
+  // Recheck pending status before sending; a quick approval cancels the alert.
+  const store = job.kind === 'mentor' ? env.mentors : env.takes;
+  const record = await store.get(job.recordKey, 'json');
+  if (!record || record.status !== 'pending' || record.createdAt !== job.createdAt) {
+    await env.mentors.delete(key); return;
+  }
+  let response;
+  try {
+    response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json', 'Idempotency-Key': job.id },
+      body: JSON.stringify({
+        from: env.NOTIFY_FROM, to: [env.NOTIFY_TO],
+        subject: job.kind === 'mentor' ? 'KTHQ: mentor application awaiting approval' : 'KTHQ: mentor take awaiting approval',
+        text: (job.kind === 'mentor' ? 'A new mentor application' : 'A new mentor take') + ' is waiting for your review.\n\nOpen the approval desk:\n' + env.SITE_ORIGIN + '/working-theory/admin.html\n\nUse your admin token on that page. No approval happens through this email.'
+      }),
+      signal: AbortSignal.timeout(10000)
+    });
+    if (response.ok) { await env.mentors.delete(key); return; }
+  } catch (_) { /* A timeout is retried with the same idempotency key. */ }
+  job.attempts++;
+  const retryable = !response || response.status === 429 || response.status >= 500;
+  job.state = retryable && job.attempts < 10 ? 'pending' : 'failed';
+  job.nextAttemptAt = Date.now() + Math.min(3600000, 300000 * Math.pow(2, job.attempts - 1));
+  await saveNotice(env, key, job);
+  // Only a generic operational marker is logged, never content or credentials.
+  console.warn('Mentor approval notification not delivered; outbox status:', job.state);
+}
+async function queueNotice(env, ctx, kind, recordKey, record) {
+  if (!env.NOTIFY_FROM || !env.NOTIFY_TO) return;
+  try {
+    const id = 'kthq-review-' + hex(await digest(kind + ':' + record.id + ':' + record.createdAt));
+    const key = NOTICE_PREFIX + id;
+    const job = { id, kind, recordKey, createdAt: record.createdAt, expiresAt: Date.now() + NOTICE_LIFETIME, attempts: 0, nextAttemptAt: 0, state: 'pending' };
+    await saveNotice(env, key, job);
+    const delivery = deliverNotice(env, key, job).catch(() => { console.warn('Mentor approval notification retained for retry.'); });
+    if (ctx && ctx.waitUntil) ctx.waitUntil(delivery);
+    else await delivery;
+  } catch (_) {
+    // Notification failure never changes the success of the saved submission.
+    console.warn('Mentor approval notification could not be queued. Submission remains saved.');
+  }
+}
+async function retryNotices(env) {
+  if (!notificationConfigured(env)) return;
+  let cursor;
+  let sent = 0;
+  do {
+    const page = await env.mentors.list({ prefix: NOTICE_PREFIX, limit: 100, ...(cursor ? { cursor } : {}) });
+    for (const entry of page.keys) {
+      const job = await env.mentors.get(entry.name, 'json');
+      if (!job || job.state !== 'pending' || job.nextAttemptAt > Date.now()) continue;
+      await deliverNotice(env, entry.name, job);
+      if (++sent >= 25) return;
+    }
+    cursor = page.list_complete ? null : page.cursor;
+  } while (cursor);
+}
+async function route(request, env, ctx) {
   const url = new URL(request.url);
   const path = url.pathname;
-  if (path === '/health' && request.method === 'GET') return { ok: true, submissionsEnabled: env.SUBMISSIONS_ENABLED === 'true' };
+  if (path === '/health' && request.method === 'GET') return { ok: true, submissionsEnabled: env.SUBMISSIONS_ENABLED === 'true', notificationsConfigured: notificationConfigured(env) };
   if (path.startsWith('/admin/')) {
     await authorized(request, env);
     if (path === '/admin/queue' && request.method === 'GET') {
@@ -156,6 +226,13 @@ async function route(request, env) {
     }
     fail(404, 'Route not found.');
   }
+  if (path === '/me/mentor' && request.method === 'GET') {
+    const user = await accountUser(request, env);
+    const id = await mentorId(user.id, env);
+    const record = await env.mentors.get('mentor:' + id, 'json');
+    // Private, bearer-authenticated view of the caller's own status only.
+    return { mentor: record && record.accountId === user.id ? { ...summary(record), status: record.status } : null };
+  }
   if (path === '/mentors/apply' && request.method === 'POST') {
     const data = await body(request);
     await publicGate(request, env, data);
@@ -167,7 +244,7 @@ async function route(request, env) {
     const existing = await env.mentors.get('mentor:' + id, 'json');
     if (!existing || existing.status === 'rejected') {
       await env.mentors.put('mentor:' + id, JSON.stringify(record));
-
+      await queueNotice(env, ctx, 'mentor', 'mentor:' + id, record);
     }
     return { ok: true, message: 'If eligible, your application is now in the review queue. An existing pending or approved profile is kept as submitted.' };
   }
@@ -184,6 +261,7 @@ async function route(request, env) {
     const takeId = crypto.randomUUID();
     const record = { id: takeId, topicSlug: slug, mentorId: id, body: content, status: 'pending', createdAt: new Date().toISOString() };
     await env.takes.put('take:' + slug + ':' + takeId, JSON.stringify(record));
+    await queueNotice(env, ctx, 'take', 'take:' + slug + ':' + takeId, record);
     return { ok: true, message: 'Your take is in the review queue. It is not public until approved.' };
   }
   if (path === '/takes/confirm') fail(410, 'Takes now use a verified KTHQ account instead of email confirmation links.');
@@ -203,7 +281,10 @@ async function route(request, env) {
   fail(404, 'Route not found.');
 }
 export default {
-  async fetch(request, env) {
+  async scheduled(controller, env, ctx) {
+    await retryNotices(env);
+  },
+  async fetch(request, env, ctx) {
     const origin = request.headers.get('Origin');
     const headers = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer', 'X-Robots-Tag': 'noindex, nofollow', Vary: 'Origin' };
     if (origin && origin === env.SITE_ORIGIN) headers['Access-Control-Allow-Origin'] = origin;
@@ -212,7 +293,7 @@ export default {
       if (origin && origin !== env.SITE_ORIGIN) fail(403, 'Origin not allowed.');
       if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: { ...headers, 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, Authorization', 'Access-Control-Max-Age': '600' } });
       if (request.method === 'POST' && origin !== env.SITE_ORIGIN && !new URL(request.url).pathname.startsWith('/admin/')) fail(403, 'Origin not allowed.');
-      const result = await route(request, env);
+      const result = await route(request, env, ctx);
       if (result instanceof Response) return result;
       return new Response(JSON.stringify(result), { headers });
     } catch (error) {
