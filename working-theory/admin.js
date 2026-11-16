@@ -37,6 +37,7 @@
         card.append(node('p',(record.mentor&&record.mentor.name || 'Removed mentor')+' · '+new Date(record.createdAt).toLocaleDateString(),'wt-note'));
         card.append(node('p',record.body.slice(0,360)+(record.body.length>360?'…':''),'wt-plain'));
         action(card,'Edit post',function(){edit(card,record);},true);
+        if(['pending','rejected'].includes(record.status)) action(card,'Publish post',async function(){await request('/admin/posts/restore',{kind:record.kind,id:record.id,topicSlug:record.topicSlug});await load();});
         if(record.status!=='deleted') action(card,'Remove post',async function(){if(!window.confirm('Remove this post from public view? You can restore it later.'))return;await request('/admin/posts/remove',{kind:record.kind,id:record.id,topicSlug:record.topicSlug});await load();},true);
         else action(card,'Restore post',async function(){await request('/admin/posts/restore',{kind:record.kind,id:record.id,topicSlug:record.topicSlug});await load();});
       }

@@ -358,6 +358,9 @@
         showMentorSession('Signed in to KTHQ · Mentor application pending review', true);
         workspace.append(node('p', 'Your mentor application is awaiting review. You have already applied; there is no need to apply again.'));
         workspace.append(node('p', 'Once approved, this workspace will show where to write and submit your takes.', 'wt-note'));
+      } else if (mentor.status === 'removed') {
+        showMentorSession('Signed in to KTHQ · Mentor access removed', true);
+        workspace.append(node('p', 'Your mentor access has been removed. Contact KTHQ if you need help with your profile.'));
       } else {
         showMentorSession('Signed in to KTHQ · Mentor application not approved', true);
         workspace.append(node('p', 'Your previous mentor application was not approved. You can update the application below and submit it for another review.'));

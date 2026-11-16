@@ -47,3 +47,5 @@ test('pending and new accounts never claim an approved mentor session',async()=>
 });
 
 test('a status refresh preserves the open editor for the same approved mentor',async()=>{const f=fixture('approved');await settle();await f.context.refreshMentorWorkspace();assert.equal(f.studioCalls,1);});
+
+test('removed mentors cannot bypass removal by applying again',async()=>{const f=fixture('removed');await settle();assert.equal(f.application.hidden,true);assert.match(f.badge.textContent,/Mentor access removed/);assert.equal(f.studioCalls,0);});
