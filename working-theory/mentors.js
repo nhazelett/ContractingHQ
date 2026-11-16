@@ -122,49 +122,146 @@
       var message = form.querySelector('[role=status]');
       var availability = form.parentNode.querySelector('[data-form-availability]');
       var application = form.dataset.route === '/mentors/apply';
+      var credentials = application && document.getElementById('mentor-credentials');
+      var mode = application && document.getElementById('mentor-account-mode');
+      var emailInput = application && document.getElementById('mentor-email');
+      var password = application && document.getElementById('mentor-password');
+      var confirm = application && document.getElementById('mentor-confirm');
+      var username = application && document.getElementById('mentor-username');
+      var draftNotice = application && document.getElementById('mentor-draft-notice');
+      var clearDraft = application && document.getElementById('mentor-clear-draft');
+      var draftKey = 'kthq-mentor-application-v1';
+      var profileFields = ['name', 'rank', 'field', 'role', 'bio', 'philosophy'];
+      var savedEmail = '';
       var widget = null;
       var sending = false;
+      function currentUser() { return window.KTHQAccount && window.KTHQAccount.user(); }
+      function profile() {
+        var values = {};
+        profileFields.forEach(function (key) { values[key] = form.elements[key].value; });
+        return values;
+      }
+      function forgetDraft() {
+        try { localStorage.removeItem(draftKey); } catch (_) {}
+        savedEmail = '';
+        if (draftNotice) draftNotice.textContent = '';
+        if (clearDraft) clearDraft.hidden = true;
+      }
+      function saveDraft(address) {
+        // Deliberate whitelist: passwords, tokens, username and accepted terms
+        // never enter draft storage or the mentor application API payload.
+        localStorage.setItem(draftKey, JSON.stringify({ email: address.toLowerCase(), profile: profile(), savedAt: Date.now() }));
+        savedEmail = address.toLowerCase();
+        draftNotice.textContent = 'Application draft saved on this browser for up to 24 hours. After verifying your email, return here with the same account, review the draft, and send it.';
+        clearDraft.hidden = false;
+      }
+      if (credentials) {
+        try {
+          var draft = JSON.parse(localStorage.getItem(draftKey) || 'null');
+          if (draft && typeof draft.email === 'string' && draft.profile && Date.now() - draft.savedAt < 86400000 && draft.savedAt <= Date.now()) {
+            savedEmail = draft.email.toLowerCase();
+            emailInput.value = draft.email;
+            mode.value = 'existing';
+            profileFields.forEach(function (key) {
+              var input = form.elements[key];
+              if (typeof draft.profile[key] === 'string') input.value = draft.profile[key].slice(0, input.maxLength > 0 ? input.maxLength : 24000);
+            });
+            draftNotice.textContent = 'Your saved application draft has been restored. Sign in with the same account, review it, accept the contributor terms, and send it.';
+            clearDraft.hidden = false;
+          } else if (draft) forgetDraft();
+        } catch (_) { forgetDraft(); }
+        mode.addEventListener('change', updateAccess);
+        clearDraft.addEventListener('click', function () {
+          forgetDraft(); form.reset(); message.textContent = 'Saved application discarded.'; updateAccess();
+        });
+        form.addEventListener('input', function () {
+          if (!savedEmail) return;
+          var user = currentUser();
+          if (user && user.email.toLowerCase() !== savedEmail) return;
+          try { saveDraft(savedEmail); } catch (_) { draftNotice.textContent = 'Draft changes could not be saved. Keep this page open or copy your writing before leaving.'; }
+        });
+      }
       function updateAccess() {
         if (!form.isConnected) return;
-        var user = window.KTHQAccount && window.KTHQAccount.user();
+        var user = currentUser();
         var verified = !!(user && user.email_confirmed_at);
-        // Drafting an application does not require authentication or the bot script.
-        // Submission still requires a verified account and a bot-check token.
         fieldset.disabled = application ? false : !verified;
-        button.disabled = sending || !verified || widget === null;
+        // The application button stays actionable so it can explain a missing
+        // sign-in, verification or bot check instead of silently ignoring clicks.
+        button.disabled = sending || (!application && (!verified || widget === null));
+        if (credentials) {
+          credentials.hidden = !!user;
+          credentials.disabled = !!user || sending;
+          var isNew = mode.value === 'new';
+          document.getElementById('mentor-new-account').hidden = !isNew;
+          username.disabled = !!user || !isNew || sending;
+          confirm.disabled = !!user || !isNew || sending;
+          password.minLength = isNew ? 12 : 1;
+          password.autocomplete = isNew ? 'new-password' : 'current-password';
+          button.textContent = sending ? 'Please wait…' : user ? 'Send my application' : isNew ? 'Create account & continue application' : 'Sign in & send my application';
+        }
         if (availability) {
           availability.textContent = !user
-            ? 'You can fill out your application now. Sign in or create a KTHQ account above, then verify your email before sending. Keep this page open to preserve your draft.'
+            ? 'New here? This application creates your shared KTHQ account. Already have a KTHQ or forum account? Select that option below—no second account needed.'
             : !verified
-              ? 'Verify your account email before sending. Keep this page open to preserve your draft.'
-              : 'Your account is verified. Complete the bot check and send your application for review.';
+              ? 'Verify your KTHQ account email, then return here to send your application. Your mentor profile still needs review.'
+              : 'Signed in with your shared KTHQ account. Complete the bot check and send your mentor profile for review. No second account is needed.';
         }
       }
       updateAccess();
       document.addEventListener('kthq-account-changed', updateAccess);
       form.addEventListener('submit', async function (event) {
         event.preventDefault();
-        var user = window.KTHQAccount && window.KTHQAccount.user();
-        if (!(user && user.email_confirmed_at)) {
-          message.textContent = 'Sign in with a verified KTHQ account before sending. Your draft is still here.';
-          return;
-        }
         if (sending) return;
-        if (widget === null) { message.textContent = 'The bot check is not ready. Please wait, or refresh if it could not load.'; return; }
-        var payload = Object.fromEntries(new FormData(form).entries());
-        payload.terms = form.elements.terms ? form.elements.terms.checked : undefined;
-        payload.topicSlug = topic;
-        payload.turnstileToken = window.turnstile.getResponse(widget);
-        if (!payload.turnstileToken) { message.textContent = 'Please complete the bot check.'; return; }
         sending = true;
+        // Read credentials before disabling their fieldset during the request.
+        var input = credentials ? { email: emailInput.value.trim(), password: password.value, username: username.value.trim() } : null;
+        var creating = credentials && mode.value === 'new';
         updateAccess();
-        message.textContent = 'Sending…';
         try {
+          var account = window.KTHQAccount;
+          var user = currentUser();
+          if (credentials && !user) {
+            if (!account || !account.register) throw new Error('Account services could not load. Copy your writing before refreshing to try again.');
+            if (creating && input.password !== confirm.value) throw new Error('The passwords do not match. Please enter them again.');
+            try { saveDraft(input.email); }
+            catch (_) { throw new Error('Your browser could not save this application draft. Copy your writing before verifying your email, or allow browser storage and try again.'); }
+            message.textContent = creating ? 'Creating your shared KTHQ account…' : 'Signing in…';
+            var result = creating
+              ? await account.register(input)
+              : await account.client.auth.signInWithPassword({ email: input.email, password: input.password });
+            if (result.error) throw new Error(result.error.message);
+            await account.refresh();
+            user = currentUser();
+            if (!user || !user.email_confirmed_at) {
+              if (creating) mode.value = 'existing';
+              message.textContent = creating
+                ? 'Check your email to verify your shared KTHQ account, then return here to review and send your saved application. It has not been sent yet. If you already have an account, sign in or use password help above.'
+                : 'Verify your account email before sending. Your application draft is saved.';
+              return;
+            }
+          }
+          if (!(user && user.email_confirmed_at)) throw new Error('Sign in with a verified KTHQ account before sending. Your draft is still here.');
+          if (application && savedEmail && user.email.toLowerCase() !== savedEmail) throw new Error('This saved application belongs to a different account. Sign in with its email, or discard the saved application to start a new one.');
+          if (widget === null) throw new Error('The bot check has not loaded. Your account is ready; keep your draft and retry the check before sending.');
+          var token = window.turnstile.getResponse(widget);
+          if (!token) throw new Error('Please complete the bot check, then click Send my application again.');
+          // Never serialize account fields into the Worker request.
+          var payload = application ? profile() : Object.fromEntries(new FormData(form).entries());
+          payload.terms = form.elements.terms ? form.elements.terms.checked : undefined;
+          payload.topicSlug = topic;
+          payload.turnstileToken = token;
+          message.textContent = 'Sending…';
           var data = await api(form.dataset.route, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
           message.textContent = data.message;
+          if (application) forgetDraft();
           form.reset();
-        } catch (error) { message.textContent = error.message; }
-        finally { sending = false; updateAccess(); window.turnstile.reset(widget); }
+        } catch (error) { message.textContent = error.message || 'The request could not complete. Your draft is still here.'; }
+        finally {
+          if (credentials) { password.value = ''; confirm.value = ''; }
+          sending = false; updateAccess();
+          if (widget !== null) window.turnstile.reset(widget);
+        }
       });
       form.initMentorTurnstile = function () {
         if (!form.isConnected || widget !== null) return;
@@ -175,9 +272,7 @@
             'error-callback': function () { message.textContent = 'The bot check could not complete. Please retry the check before sending.'; }
           });
           updateAccess();
-        } catch (error) {
-          message.textContent = 'The bot check could not load. Please refresh to try again.';
-        }
+        } catch (error) { message.textContent = 'The bot check could not load. Your draft is still editable.'; }
       };
     });
     window.KTHQ_initMentorTurnstile = function () {
