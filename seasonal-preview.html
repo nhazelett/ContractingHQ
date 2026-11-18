@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Seasonal Theme Preview | KTHQ</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#080f18;color:#e9eef5;font:16px/1.5 system-ui,sans-serif}
+    header{padding:18px 24px;border-bottom:1px solid #2f4054;background:#101d2b;display:flex;gap:16px 28px;align-items:center;flex-wrap:wrap}
+    h1{font-size:18px;margin:0 0 3px}p{margin:0;color:#b1c0d2;font-size:14px}
+    .controls{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin-left:auto}label{display:grid;gap:4px;font-size:13px;color:#c4d0df}
+    select,button,a{font:inherit}select,button{min-height:42px;padding:8px 13px;border:1px solid #41556e;border-radius:7px;background:#182b40;color:#eef4fc}
+    select{padding-right:32px;appearance:none;background:#182b40 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23c4d0df' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 11px center}
+    button{cursor:pointer}button[aria-pressed=true]{background:#b9d7ed;color:#0b1b2b;border-color:#b9d7ed}button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #91c9ff;outline-offset:3px}
+    a{color:#b9d7ed;font-size:14px;text-underline-offset:3px}.viewport{padding:16px;display:flex;justify-content:center;background:radial-gradient(ellipse at top,#182b3e,#080f18 70%)}
+    iframe{display:block;width:100%;height:calc(100vh - 160px);min-height:550px;border:1px solid #34475d;border-radius:8px;background:#08111f;transition:width .2s}
+    iframe.phone{width:390px;max-width:100%}.schedule{padding:0 24px 20px;color:#b1c0d2;font-size:14px}.schedule summary{cursor:pointer}.schedule table{margin-top:14px;border-collapse:collapse;width:min(720px,100%)}td,th{text-align:left;padding:7px 10px;border-bottom:1px solid #2f4054}th{color:#e9eef5}
+    @media(max-width:650px){header{padding:16px;gap:12px}.controls{margin-left:0;gap:8px}select,button{font-size:14px}.viewport{padding:8px}iframe{height:75vh}.schedule{padding:8px 16px 20px}}
+    @media(prefers-reduced-motion:reduce){iframe{transition:none}}
+  </style>
+</head>
+<body>
+  <header>
+    <div><h1>KTHQ · Seasonal preview</h1><p>Explore the themes. These controls affect this preview only.</p></div>
+    <div class="controls">
+      <label>Theme<select id="season-select">
+        <option value="christmas">Christmas</option><option value="winter">January / Winter</option><option value="valentine">Valentine’s</option>
+        <option value="standard">Standard KTHQ</option><option value="independence">Fourth of July</option><option value="fiscal">End of Fiscal Year</option>
+        <option value="halloween">Halloween</option><option value="thanksgiving">Thanksgiving</option><option value="auto">Automatic calendar</option>
+      </select></label>
+      <label>Page<select id="page-select"><option value="index.html">Homepage</option><option value="training.html">Training</option></select></label>
+      <button type="button" id="desktop" aria-pressed="true">Desktop</button>
+      <button type="button" id="phone" aria-pressed="false">Phone</button>
+      <a id="full-preview" href="index.html?theme=christmas" target="_blank" rel="noopener">Open full preview</a>
+    </div>
+  </header>
+  <main>
+    <div class="viewport"><iframe id="theme-preview" title="KTHQ seasonal theme preview" src="index.html?theme=christmas"></iframe></div>
+    <details class="schedule"><summary>Annual schedule · midnight Eastern</summary>
+      <table><thead><tr><th>Dates</th><th>Theme</th></tr></thead><tbody>
+        <tr><td>January 1–31</td><td>Winter / New Year</td></tr><tr><td>February 1–last day</td><td>Valentine’s</td></tr>
+        <tr><td>March 1–June 30</td><td>Standard KTHQ</td></tr><tr><td>July 1–31</td><td>Fourth of July</td></tr>
+        <tr><td>August 1–31</td><td>Standard KTHQ</td></tr><tr><td>September 1–30</td><td>End of Fiscal Year</td></tr>
+        <tr><td>October 1–31</td><td>Halloween</td></tr><tr><td>November 1–Thanksgiving Day</td><td>Thanksgiving</td></tr>
+        <tr><td>Day after Thanksgiving–December 31</td><td>Christmas</td></tr>
+      </tbody></table>
+    </details>
+  </main>
+  <script>
+    (function () {
+      var season = document.getElementById('season-select');
+      var page = document.getElementById('page-select');
+      var frame = document.getElementById('theme-preview');
+      var full = document.getElementById('full-preview');
+      var desktop = document.getElementById('desktop');
+      var phone = document.getElementById('phone');
+      function update() {
+        var url = page.value + (season.value === 'auto' ? '' : '?theme=' + encodeURIComponent(season.value));
+        frame.src = url; full.href = url;
+      }
+      season.addEventListener('change', update); page.addEventListener('change', update);
+      function size(isPhone) { frame.classList.toggle('phone', isPhone); desktop.setAttribute('aria-pressed', String(!isPhone)); phone.setAttribute('aria-pressed', String(isPhone)); }
+      desktop.addEventListener('click', function () { size(false); }); phone.addEventListener('click', function () { size(true); });
+    })();
+  </script>
+</body>
+</html>
