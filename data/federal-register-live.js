@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-11-17T16:51:08.244Z",
-  "since": "2025-05-26",
+  "generatedAt": "2026-11-18T16:24:23.552Z",
+  "since": "2025-05-27",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,17 +14,50 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 146,
-    "latestPublicationDate": "2026-10-30",
-    "openCommentWindows": 14,
+    "total": 147,
+    "latestPublicationDate": "2026-11-18",
+    "openCommentWindows": 15,
     "rules": 50,
     "byTone": {
-      "monitor": 94,
+      "monitor": 95,
       "watch": 26,
       "action": 26
     }
   },
   "items": [
+    {
+      "id": "2026-23428",
+      "documentNumber": "2026-23428",
+      "title": "Information Collection; General Services Administration Acquisition Regulation; Contract Solicitation Information",
+      "shortTitle": "Information Collection; General Services Administration Acquisition Regulation; Contract Solicitation Information",
+      "system": "Acquisition",
+      "stage": "Information collection",
+      "topic": "Labor / construction",
+      "actionLevel": "Monitor",
+      "actionTone": "monitor",
+      "practitionerNote": "This is usually an administrative Paperwork Reduction Act notice, not a new contracting rule. It matters most when you rely on the cited representation, form, report, or system requirement.",
+      "nextSteps": [
+        "Identify the cited provision, clause, form, or system",
+        "Comment only if your office has burden data or a process concern",
+        "No template change unless a later rule follows"
+      ],
+      "type": "Notice",
+      "publicationDate": "2026-11-18",
+      "effectiveDate": "",
+      "commentsCloseDate": "2027-01-19",
+      "datesText": "GSA will consider all comments received by January 19, 2027.",
+      "actionText": "Notice; request for comments.",
+      "summary": "In accordance with the Paperwork Reduction Act of 1995 and Office of Management and Budget (OMB) regulations, GSA is extending a previously approved information collection regarding OMB Control Number 3090-0163 Contract Solicitation Information, without changes except for updated wage rates, until the information collection can be assessed and revised after the completion of the rulemaking related to the Revolutionary GSA Regulation (GSAR) Overhaul (RGO).",
+      "citation": "91 FR 74168",
+      "regulationIds": [],
+      "cfrReferences": "",
+      "agencies": [
+        "General Services Administration"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/11/18/2026-23428/information-collection-general-services-administration-acquisition-regulation-contract-solicitation",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-11-18/pdf/2026-23428.pdf",
+      "sourceQuery": "Federal Acquisition Regulation keyword feed"
+    },
     {
       "id": "2026-22183",
       "documentNumber": "2026-22183",
