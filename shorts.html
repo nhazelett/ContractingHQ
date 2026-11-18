@@ -100,6 +100,10 @@
     .short-dur{position:absolute;right:.6rem;top:.6rem;background:rgba(13,17,23,.85);color:#fff;font-size:.78rem;font-weight:600;padding:.15rem .45rem;border-radius:6px}
     .short-now{display:none;position:absolute;left:.6rem;top:.6rem;background:#ffd23f;color:#0a1630;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:.18rem .45rem;border-radius:6px}
     .short-card.is-current .short-now{display:block}
+    .short-seen{display:none;position:absolute;left:.6rem;bottom:.6rem;background:rgba(13,17,23,.88);color:#9be7a8;font-size:.72rem;font-weight:700;padding:.18rem .45rem;border-radius:6px}
+    .short-card.is-seen .short-seen{display:block}
+    .short-card.is-seen .short-play img{opacity:.55}
+    .shorts-clear{background:none;border:0;padding:0;color:#7ab8ff;font:inherit;text-decoration:underline;cursor:pointer}
     .short-body{padding:.9rem 1rem 1.1rem;display:flex;flex-direction:column;gap:.4rem;flex:1}
     .short-num{color:#7ab8ff;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
     .short-body h3{color:#fff;font-size:1.02rem;line-height:1.3;margin:0}
@@ -170,7 +174,7 @@
       <span class="section-tag">KTHQ Shorts</span>
       <h1>Government contracting, a few minutes at a time</h1>
     </div>
-    <p class="shorts-intro">Short animated lessons on how the government buys. One idea per video, one to three minutes each. Press play and the TV runs every episode in order, or pick the one you need from the guide below.</p>
+    <p class="shorts-intro">Short animated lessons on how the government buys. One idea per video, one to three minutes each. Press play and the TV keeps serving episodes you haven't watched yet, or pick the one you need from the guide below.</p>
 
     <div class="tv-stage" id="tvStage">
       <div class="tv" id="tv">
@@ -209,6 +213,7 @@
           <button type="button" class="tv-btn" id="tvFull"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 4h6v2H6v4H4zM14 4h6v6h-2V6h-4zM4 14h2v4h4v2H4zM18 14h2v6h-6v-2h4z" fill="currentColor"/></svg>Full screen</button>
         </div>
         <label class="shorts-auto"><input type="checkbox" id="shortsAuto" checked /> Play the next episode automatically</label>
+        <br /><label class="shorts-auto" style="margin-top:.5rem"><input type="checkbox" id="shortsMix" checked /> Mix it up and skip episodes I've watched</label>
         <p class="tv-next" id="tvNextLine">Up next: <button type="button" id="tvNextLink"></button></p>
         <p class="tv-hint" id="tvHint" aria-hidden="true"></p>
         <a class="tv-yt" id="tvYt" href="https://www.youtube.com/shorts/UQviqC2PsJI" target="_blank" rel="noopener">Watch this one on YouTube<span class="sr-only"> (opens in a new tab)</span></a>
@@ -223,7 +228,7 @@
     </ul>
 
     <h2 class="shorts-h2" id="guide">Episode guide</h2>
-    <p class="shorts-sub">Pick any episode and it plays on the TV. New episodes are added here as they come out.</p>
+    <p class="shorts-sub">Pick any episode and it plays on the TV. New episodes are added here as they come out. <span id="shortsSeenLine" style="display:none"><span id="shortsSeenCount"></span> <button type="button" class="shorts-clear" id="shortsSeenClear">Clear watched</button></span></p>
     <ul class="shorts-grid">
       <li class="short-card">
         <a class="short-play" href="https://www.youtube.com/shorts/UQviqC2PsJI" data-yt="UQviqC2PsJI" data-title="Episode 1: What makes something a contract?" target="_blank" rel="noopener" aria-label="Play Episode 1: What makes something a contract? (1:00)">
@@ -486,20 +491,33 @@
     var num=numEl?numEl.textContent.replace(/\D/g,''):'';
     li.id='ep'+num;
     var now=document.createElement('span'); now.className='short-now'; now.setAttribute('aria-hidden','true'); now.textContent='On the TV'; a.appendChild(now);
+    var sn=document.createElement('span'); sn.className='short-seen'; sn.textContent='\u2713 Watched'; a.appendChild(sn);
     return {id:a.getAttribute('data-yt'),num:num,name:h?h.textContent:'',desc:p?p.textContent:'',dur:dur?dur.textContent:'',thumb:img?img.getAttribute('src'):'',link:a,li:li};
   });
   function $(id){return document.getElementById(id);}
   var tv=$('tv'), stage=$('tvStage'), screen=$('tvScreen'), poster=$('tvPoster'), posterImg=$('tvPosterImg'), posterLabel=$('tvPosterLabel');
   var kicker=$('tvKicker'), titleEl=$('tvTitle'), descEl=$('tvDesc'), nextLine=$('tvNextLine'), nextLink=$('tvNextLink'), ytLink=$('tvYt');
-  var hint=$('tvHint'), status=$('shortsStatus'), auto=$('shortsAuto'), barTitle=$('tvBarTitle');
+  var hint=$('tvHint'), status=$('shortsStatus'), auto=$('shortsAuto'), mix=$('shortsMix'), barTitle=$('tvBarTitle');
   var playBtn=$('tvPlay'), playText=$('tvPlayText'), playIcon=$('tvPlayIcon'), prevBtn=$('tvPrev'), nextBtn=$('tvNext');
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var idx=0, resumed=false, player=null, plain=false, apiState=0, waiting=[], timer=null, last=0, token=0, started=false, playing=false;
+  var idx=0, nextIdx=-1, hist=[], seen={}, resumed=false, player=null, plain=false, apiState=0, waiting=[], timer=null, last=0, token=0, started=false, playing=false;
   var PLAY='M8 5v14l11-7z', PAUSE='M6 5h4v14H6zM14 5h4v14h-4z';
 
   function label(e){return 'Episode '+e.num+': '+e.name;}
   function store(k,v){try{ if(v===undefined) return window.localStorage.getItem(k); window.localStorage.setItem(k,v); }catch(x){ return null; }}
 
+  function loadSeen(){ seen={}; (store('kthqShortsSeen')||'').split(',').forEach(function(n){ if(n) seen[n]=1; }); }
+  function saveSeen(){ store('kthqShortsSeen',Object.keys(seen).join(',')); }
+  function markSeen(e){ if(seen[e.num])return; seen[e.num]=1; saveSeen(); e.li.classList.add('is-seen'); }
+  function seenCount(){ var c=0; eps.forEach(function(e){ if(seen[e.num]) c++; }); return c; }
+  function mixing(){ return !!(mix&&mix.checked); }
+  // what plays after the current one: a random episode not watched yet, or simply the next one when mixing is off
+  function pickNext(){
+    if(!mixing()) return idx+1<eps.length?idx+1:-1;
+    var pool=[];
+    eps.forEach(function(e,i){ if(i!==idx&&!seen[e.num]) pool.push(i); });
+    return pool.length?pool[Math.floor(Math.random()*pool.length)]:-1;
+  }
   function setPlaying(on){
     playing=on;
     tv.classList.toggle('is-playing',on);
@@ -507,8 +525,10 @@
     playIcon.setAttribute('d',on?PAUSE:PLAY);
   }
   function render(){
-    var e=eps[idx], n=eps[idx+1];
-    kicker.textContent=started?'Now playing':(resumed?'Pick up where you left off':(idx?'Up next':'Start here'));
+    var e=eps[idx], n;
+    if(nextIdx<0||nextIdx===idx||(mixing()&&seen[eps[nextIdx].num])) nextIdx=pickNext();
+    n=nextIdx>=0?eps[nextIdx]:null;
+    kicker.textContent=started?'Now playing':(resumed?'Pick up where you left off':(seenCount()?'Next up for you':'Start here'));
     titleEl.textContent=label(e);
     descEl.textContent=e.desc;
     barTitle.textContent=label(e);
@@ -517,9 +537,12 @@
     poster.setAttribute('aria-label','Play '+label(e));
     ytLink.href='https://www.youtube.com/shorts/'+e.id;
     if(n){ nextLine.style.display=''; nextLink.textContent=label(n); } else { nextLine.style.display='none'; }
-    prevBtn.disabled=idx===0; nextBtn.disabled=!n;
-    $('tvBarPrev').disabled=idx===0; $('tvBarNext').disabled=!n;
-    eps.forEach(function(x,i){ x.li.classList.toggle('is-current',i===idx); });
+    var noPrev=mixing()?!hist.length:idx===0;
+    prevBtn.disabled=noPrev; nextBtn.disabled=!n&&!mixing();
+    $('tvBarPrev').disabled=noPrev; $('tvBarNext').disabled=!n&&!mixing();
+    eps.forEach(function(x,i){ x.li.classList.toggle('is-current',i===idx); x.li.classList.toggle('is-seen',!!seen[x.num]); });
+    $('shortsSeenLine').style.display=seenCount()?'':'none';
+    $('shortsSeenCount').textContent=seenCount()+' of '+eps.length+' watched.';
     store('kthqShortsEp',e.num);
   }
   function loadApi(cb){
@@ -568,14 +591,19 @@
       if(mine!==token){ return; }
       try{ t=player.getCurrentTime(); d=player.getDuration(); }catch(x){ return; }
       if(!d||typeof t!=='number')return;
+      if(t>=d*0.8) markSeen(eps[idx]);
       if(t>=d-0.4||(last>d-1.5&&t<1)){ ended(mine); return; }
       last=t;
     },250);
   }
   function ended(mine){
     if(mine!==token)return;
-    if(auto&&auto.checked&&idx+1<eps.length){ go(idx+1,true,true); return; }
-    stop(idx+1<eps.length?idx+1:idx);
+    markSeen(eps[idx]);
+    var n=(nextIdx>=0&&nextIdx!==idx&&!(mixing()&&seen[eps[nextIdx].num]))?nextIdx:pickNext();
+    if(auto&&auto.checked&&n>=0){ hist.push(idx); go(n,true,true); return; }
+    if(n>=0){ hist.push(idx); stop(n); return; }
+    stop(idx);
+    hint.textContent=mixing()?'You have watched every episode. New ones are added as they come out.':'';
   }
   function stop(showIdx){
     token++;
@@ -583,7 +611,7 @@
     try{ if(player&&player.pauseVideo) player.pauseVideo(); }catch(x){}
     if(plain){ $('tvPlayer').innerHTML='<div id="tvSlot"></div>'; plain=false; }
     tv.classList.remove('is-on'); setPlaying(false); started=false;
-    idx=showIdx; render();
+    idx=showIdx; nextIdx=-1; render();
   }
   function start(fromAuto){
     var e=eps[idx], mine=++token;
@@ -620,7 +648,7 @@
   }
   function go(i,play,fromAuto){
     if(i<0||i>=eps.length)return;
-    idx=i;
+    idx=i; nextIdx=-1;
     if(play){ start(fromAuto); }
     else if(started){ start(false); }
     else { render(); }
@@ -662,11 +690,18 @@
   poster.addEventListener('keydown',function(e){ if(e.key===' '){ e.preventDefault(); start(false); } });
   playBtn.addEventListener('click',toggle);
   $('tvGold').addEventListener('click',toggle);
-  function prev(){ go(idx-1,started,false); }
-  function next(){ go(idx+1,started,false); }
+  function prev(){ if(mixing()){ if(hist.length) go(hist.pop(),started,false); } else go(idx-1,started,false); }
+  function next(){
+    var n=nextIdx>=0?nextIdx:pickNext();
+    if(n<0&&mixing()){ seen={}; saveSeen(); n=pickNext(); }   // seen them all: start a fresh round
+    if(n<0)return;
+    hist.push(idx); go(n,started,false);
+  }
   prevBtn.addEventListener('click',prev); $('tvKnobPrev').addEventListener('click',prev); $('tvBarPrev').addEventListener('click',prev);
   nextBtn.addEventListener('click',next); $('tvKnobNext').addEventListener('click',next); $('tvBarNext').addEventListener('click',next);
-  nextLink.addEventListener('click',function(){ go(idx+1,true,false); });
+  nextLink.addEventListener('click',function(){ if(nextIdx>=0){ hist.push(idx); go(nextIdx,true,false); } });
+  if(mix){ if(store('kthqShortsMix')==='0') mix.checked=false; mix.addEventListener('change',function(){ store('kthqShortsMix',mix.checked?'1':'0'); hist=[]; nextIdx=-1; render(); }); }
+  $('shortsSeenClear').addEventListener('click',function(){ seen={}; saveSeen(); nextIdx=-1; hint.textContent=''; render(); });
   $('tvFull').addEventListener('click',enterFull);
   $('tvBlue').addEventListener('click',function(){ if(isFull()) exitFull(); else enterFull(); });
   $('tvBarExit').addEventListener('click',exitFull);
@@ -675,14 +710,22 @@
     e.link.addEventListener('click',function(ev){
       if(ev.metaKey||ev.ctrlKey||ev.shiftKey||ev.altKey)return;
       ev.preventDefault();
+      if(i!==idx) hist.push(idx);
       go(i,true,false);
       stage.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
     });
   });
 
-  // open on the episode in the link (shorts.html#ep14), else the last one watched
-  var want=(location.hash.match(/^#ep(\d+)$/)||[])[1]||store('kthqShortsEp');
-  if(want){ for(var k=0;k<eps.length;k++){ if(eps[k].num===want||parseInt(eps[k].num,10)===parseInt(want,10)){ idx=k; resumed=k>0; break; } } }
+  // open on the episode in the link (shorts.html#ep14); otherwise pick for the viewer
+  loadSeen();
+  var linked=(location.hash.match(/^#ep(\d+)$/)||[])[1], want=linked||(mixing()?null:store('kthqShortsEp'));
+  if(want){ for(var k=0;k<eps.length;k++){ if(parseInt(eps[k].num,10)===parseInt(want,10)){ idx=k; resumed=!linked&&k>0; break; } } }
+  else if(seenCount()){
+    // returning viewer: open on something they have not watched
+    idx=-1; var first=pickNext();
+    if(first<0){ seen={}; saveSeen(); first=pickNext(); hint.textContent='You have watched every episode, so here is a fresh round.'; }
+    idx=first<0?0:first;
+  }
   render();
 })();
 </script>
