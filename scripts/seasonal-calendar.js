@@ -88,6 +88,15 @@
     return day <= monthDays[month - 1] ? { year, month, day } : null;
   }
 
+  // January shows its own year; an out-of-season preview welcomes the next January.
+  // A valid explicit date always keeps the year the reviewer selected.
+  function getNewYear(date = new Date(), timeZone = defaultTimeZone, previewDate) {
+    const preview = previewParts(previewDate);
+    if (preview) return preview.year;
+    const parts = getEasternParts(date, timeZone);
+    return parts ? parts.year + (parts.month === 1 ? 0 : 1) : null;
+  }
+
   // URL previews affect only the visitor using them; mode is shared site configuration.
   // Precedence: valid theme preview, valid calendar-date preview, forced mode, current date.
   function resolveSeason(options = {}) {
@@ -104,6 +113,6 @@
   }
 
   return Object.freeze({
-    defaultTimeZone, themes, getEasternParts, thanksgivingDay, getSeason, resolveSeason
+    defaultTimeZone, themes, getEasternParts, thanksgivingDay, getSeason, getNewYear, resolveSeason
   });
 });
