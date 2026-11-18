@@ -33,29 +33,100 @@
     .shorts-follow{display:flex;flex-wrap:wrap;gap:.6rem;margin:1.5rem 0 0;padding:0;list-style:none}
     .shorts-follow a{display:inline-block;padding:.55rem 1rem;border:1px solid rgba(74,158,255,.45);border-radius:999px;color:#e2eaf4;text-decoration:none;font-weight:600;font-size:.92rem}
     .shorts-follow a:hover,.shorts-follow a:focus-visible{background:rgba(74,158,255,.16);border-color:#4a9eff}
-    .shorts-h2{font-family:Rajdhani,Inter,sans-serif;font-size:1.6rem;color:#fff;margin:3rem 0 .35rem}
-    .shorts-sub{color:#8a9bb0;margin:0 0 1.5rem;font-size:.95rem}
-    .shorts-auto{display:inline-flex;align-items:center;gap:.55rem;color:#c0cdd8;font-size:.92rem;margin:0 0 1.25rem;cursor:pointer}
+
+    /* ---------- the TV ---------- */
+    .tv-stage{display:grid;grid-template-columns:minmax(0,390px) minmax(0,1fr);gap:3rem;align-items:center;margin:2.5rem 0 0;scroll-margin-top:84px}
+    .tv{position:relative;width:100%;aspect-ratio:928/1502}
+    .tv-shell{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;-webkit-user-drag:none;user-select:none;filter:drop-shadow(0 18px 22px rgba(0,0,0,.55))}
+    .tv.noimg{background:linear-gradient(160deg,#24498a,#1a3a6b 45%,#0f2347);border-radius:9% / 6%}
+    .tv.noimg .tv-shell{display:none}
+    .tv-screen{position:absolute;left:15.19%;top:8.79%;width:69.61%;height:69.91%;background:#000;border-radius:2.2% / 1.4%;overflow:hidden;display:flex;flex-direction:column}
+    .tv-bar{display:none;flex:none;align-items:center;gap:.5rem;padding:.45rem .6rem;padding-top:max(.45rem,env(safe-area-inset-top));background:#0a1630;border-bottom:1px solid rgba(74,158,255,.3)}
+    .tv-bar-title{flex:1;min-width:0;color:#fff;font-weight:600;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tv-bar button{flex:none;min-width:44px;min-height:40px;padding:0 .7rem;border-radius:8px;border:1px solid rgba(74,158,255,.45);background:rgba(74,158,255,.12);color:#fff;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+    .tv-bar button:hover,.tv-bar button:focus-visible{background:rgba(74,158,255,.3)}
+    .tv-view{position:relative;flex:1;min-height:0}
+    .tv-poster{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;background:#000;cursor:pointer;display:block;color:#fff;font:inherit}
+    .tv-poster img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
+    .tv-poster::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(125deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,0) 30%),repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,transparent 1px 3px)}
+    .tv-playicon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:76px;border-radius:50%;background:rgba(13,17,23,.8);border:2px solid #4a9eff;display:flex;align-items:center;justify-content:center;z-index:2;transition:transform .15s,background .15s}
+    .tv-poster:hover .tv-playicon,.tv-poster:focus-visible .tv-playicon{transform:translate(-50%,-50%) scale(1.08);background:#1c5fd0}
+    .tv-poster:focus-visible{outline:3px solid #7ab8ff;outline-offset:-3px}
+    .tv-poster-label{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:1.6rem .8rem .7rem;background:linear-gradient(transparent,rgba(4,13,31,.92));font-size:.82rem;font-weight:600;line-height:1.3;text-align:center}
+    .tv-player{position:absolute;inset:0;display:none;background:#000}
+    .tv-player iframe,.tv-player>div{position:absolute;inset:0;width:100%;height:100%;border:0}
+    .tv.is-on .tv-player{display:block}
+    .tv.is-on .tv-poster{display:none}
+    .tv-led{position:absolute;left:90.5%;top:5.3%;width:3.4%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;opacity:0;transition:opacity .25s;background:radial-gradient(circle,#fff6c9 0%,#ffd23f 45%,rgba(255,210,63,0) 72%);box-shadow:0 0 12px 3px rgba(255,210,63,.75)}
+    .tv.is-playing .tv-led{opacity:1}
+    .tv-zone{position:absolute;top:87.9%;width:12.4%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:0;padding:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .tv-zone:active{background:radial-gradient(circle,rgba(0,0,0,.34) 0%,rgba(0,0,0,.2) 55%,rgba(0,0,0,0) 72%)}
+    .tv-zone:focus-visible{outline:3px solid #fff;outline-offset:2px}
+    .tv-zone.k1{left:14.9%}.tv-zone.k2{left:30.7%}.tv-zone.gold{left:71.3%}.tv-zone.blue{left:86.1%}
+
+    .tv-kicker{color:#7ab8ff;font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin:0}
+    .tv-title{font-family:Rajdhani,Inter,sans-serif;font-size:2rem;line-height:1.15;color:#fff;margin:.4rem 0 .6rem}
+    .tv-desc{color:#c0cdd8;font-size:1.02rem;line-height:1.65;margin:0;max-width:560px}
+    .tv-controls{display:flex;flex-wrap:wrap;gap:.6rem;margin:1.4rem 0 0}
+    .tv-btn{min-height:46px;padding:0 1.1rem;border-radius:10px;border:1px solid rgba(74,158,255,.45);background:rgba(74,158,255,.1);color:#e2eaf4;font:inherit;font-weight:600;font-size:.95rem;cursor:pointer;display:inline-flex;align-items:center;gap:.45rem}
+    .tv-btn:hover,.tv-btn:focus-visible{background:rgba(74,158,255,.24);border-color:#4a9eff}
+    .tv-btn.primary{background:#1c5fd0;border-color:#4a9eff;color:#fff}
+    .tv-btn.primary:hover,.tv-btn.primary:focus-visible{background:#2a70e6}
+    .tv-btn:disabled{opacity:.4;cursor:default}
+    .tv-btn svg{flex:none}
+    .shorts-auto{display:inline-flex;align-items:center;gap:.55rem;color:#c0cdd8;font-size:.92rem;margin:1.1rem 0 0;cursor:pointer}
     .shorts-auto input{width:1.05rem;height:1.05rem;accent-color:#4a9eff}
-    .shorts-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1.5rem}
-    .short-card{background:rgba(255,255,255,.04);border:1px solid rgba(74,158,255,.15);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
-    .short-play,.short-frame{position:relative;display:block;aspect-ratio:9/16;background:#0d1117;width:100%}
+    .tv-next{color:#8a9bb0;font-size:.92rem;margin:1.1rem 0 0}
+    .tv-next button{background:none;border:0;padding:0;color:#7ab8ff;font:inherit;font-weight:600;text-decoration:underline;cursor:pointer;text-align:left}
+    .tv-hint{color:#ffd23f;font-size:.9rem;margin:.8rem 0 0;min-height:1.2em}
+    .tv-yt{display:inline-block;color:#7ab8ff;font-size:.9rem;font-weight:600;text-decoration:underline;margin-top:.9rem}
+
+    /* full screen: the TV screen itself grows to fill the window */
+    body.tv-full{overflow:hidden}
+    body.tv-full .tv-screen,.tv-screen:fullscreen{position:fixed;left:0;top:0;width:100vw;height:100vh;height:100dvh;z-index:10000;border-radius:0}
+    body.tv-full .tv-bar,.tv-screen:fullscreen .tv-bar{display:flex}
+
+    /* ---------- episode guide ---------- */
+    .shorts-h2{font-family:Rajdhani,Inter,sans-serif;font-size:1.6rem;color:#fff;margin:3.5rem 0 .35rem}
+    .shorts-sub{color:#8a9bb0;margin:0 0 1.5rem;font-size:.95rem}
+    .shorts-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:1.25rem}
+    .short-card{background:rgba(255,255,255,.04);border:1px solid rgba(74,158,255,.15);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;scroll-margin-top:90px}
+    .short-card.is-current{border-color:#ffd23f;box-shadow:0 0 0 1px #ffd23f}
+    .short-play{position:relative;display:block;aspect-ratio:9/16;background:#0d1117;width:100%}
     .short-play img{width:100%;height:100%;object-fit:cover;display:block}
     .short-play:focus-visible{outline:3px solid #7ab8ff;outline-offset:-3px}
-    .short-playicon{position:absolute;top:38%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:rgba(13,17,23,.78);border:2px solid #4a9eff;color:#fff;display:flex;align-items:center;justify-content:center;transition:transform .15s,background .15s}
+    .short-playicon{position:absolute;top:38%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:rgba(13,17,23,.78);border:2px solid #4a9eff;color:#fff;display:flex;align-items:center;justify-content:center;transition:transform .15s,background .15s}
     .short-play:hover .short-playicon,.short-play:focus-visible .short-playicon{transform:translate(-50%,-50%) scale(1.08);background:#1c5fd0}
     .short-dur{position:absolute;right:.6rem;top:.6rem;background:rgba(13,17,23,.85);color:#fff;font-size:.78rem;font-weight:600;padding:.15rem .45rem;border-radius:6px}
-    .short-frame iframe,.short-frame>div{position:absolute;inset:0;width:100%;height:100%;border:0}
-    .short-body{padding:1rem 1.1rem 1.2rem;display:flex;flex-direction:column;gap:.4rem;flex:1}
+    .short-now{display:none;position:absolute;left:.6rem;top:.6rem;background:#ffd23f;color:#0a1630;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:.18rem .45rem;border-radius:6px}
+    .short-card.is-current .short-now{display:block}
+    .short-body{padding:.9rem 1rem 1.1rem;display:flex;flex-direction:column;gap:.4rem;flex:1}
     .short-num{color:#7ab8ff;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-    .short-body h3{color:#fff;font-size:1.08rem;line-height:1.3;margin:0}
-    .short-body p{color:#c0cdd8;font-size:.92rem;line-height:1.55;margin:0;flex:1}
-    .short-yt{color:#7ab8ff;font-size:.88rem;font-weight:600;text-decoration:underline;margin-top:.35rem;align-self:flex-start}
+    .short-body h3{color:#fff;font-size:1.02rem;line-height:1.3;margin:0}
+    .short-body p{color:#c0cdd8;font-size:.9rem;line-height:1.55;margin:0;flex:1}
+    .short-yt{color:#7ab8ff;font-size:.86rem;font-weight:600;text-decoration:underline;margin-top:.35rem;align-self:flex-start}
     .shorts-note{color:#8a9bb0;font-size:.88rem;line-height:1.6;margin:2.5rem 0 0;max-width:720px}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-    @media (max-width:560px){.shorts-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem}.short-body{padding:.8rem}.short-body p{font-size:.85rem}.short-playicon{width:52px;height:52px}}
-    @media (prefers-reduced-motion:reduce){.short-playicon{transition:none}}
-    @media print{.short-playicon,.short-dur,.shorts-auto{display:none}.short-card{break-inside:avoid;border-color:#999}.short-body h3,.shorts-h2{color:#000}.short-body p,.shorts-intro,.shorts-note,.shorts-sub{color:#222}}
+
+    @media (max-width:860px){
+      .tv-stage{grid-template-columns:1fr;gap:1.25rem;margin-top:1.75rem}
+      .tv{max-width:400px;margin:0 auto}
+      .tv-info{text-align:center}
+      .tv-title{font-size:1.6rem}
+      .tv-desc{margin:0 auto}
+      .tv-controls{justify-content:center}
+      .tv-next button{text-align:center}
+    }
+    @media (max-width:560px){
+      .shorts-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem}
+      .short-body{padding:.8rem}.short-body p{font-size:.85rem}.short-playicon{width:48px;height:48px}
+      .tv-btn{padding:0 .9rem}
+      #shorts .section-header h1{font-size:1.6rem;line-height:1.2}
+      .shorts-intro{font-size:.98rem;line-height:1.6;margin-top:.9rem}
+      .tv-stage{margin-top:1.25rem}
+    }
+    @media (prefers-reduced-motion:reduce){.short-playicon,.tv-playicon,.tv-led{transition:none}}
+    @media print{.tv-stage,.short-playicon,.short-dur,.short-now{display:none}.short-card{break-inside:avoid;border-color:#999}.short-body h3,.shorts-h2{color:#000}.short-body p,.shorts-intro,.shorts-note,.shorts-sub{color:#222}}
   </style>
 </head>
 <body>
@@ -95,21 +166,64 @@
 <!-- KTHQ SHORTS -->
 <section class="section" id="shorts" style="padding-top:5rem;">
   <div class="container shorts-wrap">
-    <div class="section-header" style="text-align:left;">
+    <div class="section-header" style="text-align:left;margin-bottom:0;">
       <span class="section-tag">KTHQ Shorts</span>
       <h1>Government contracting, a few minutes at a time</h1>
     </div>
-    <p class="shorts-intro">Short animated lessons on how the government buys. One idea per video, one to three minutes each. Start at Episode 1 and work your way down, or jump to the topic you need. New episodes are added here as they come out.</p>
-    <ul class="shorts-follow" aria-label="Follow KTHQ Shorts">
+    <p class="shorts-intro">Short animated lessons on how the government buys. One idea per video, one to three minutes each. Press play and the TV runs every episode in order, or pick the one you need from the guide below.</p>
+
+    <div class="tv-stage" id="tvStage">
+      <div class="tv" id="tv">
+        <img class="tv-shell" src="assets/shorts/kt-vision.webp" alt="" width="928" height="1502" onerror="this.parentNode.classList.add('noimg')" />
+        <div class="tv-screen" id="tvScreen">
+          <div class="tv-bar">
+            <span class="tv-bar-title" id="tvBarTitle"></span>
+            <button type="button" id="tvBarPrev" aria-label="Previous episode">Prev</button>
+            <button type="button" id="tvBarNext" aria-label="Next episode">Next</button>
+            <button type="button" id="tvBarExit">Exit</button>
+          </div>
+          <div class="tv-view">
+            <a class="tv-poster" id="tvPoster" href="https://www.youtube.com/playlist?list=PLWOR_sFRFHWo" role="button" aria-label="Play">
+              <img id="tvPosterImg" src="assets/shorts/ep01.jpg" alt="" width="540" height="960" />
+              <span class="tv-playicon" aria-hidden="true"><svg viewBox="0 0 24 24" width="36" height="36"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
+              <span class="tv-poster-label" id="tvPosterLabel">Episode 01: What makes something a contract?</span>
+            </a>
+            <div class="tv-player" id="tvPlayer"><div id="tvSlot"></div></div>
+          </div>
+        </div>
+        <span class="tv-led" aria-hidden="true"></span>
+        <button type="button" class="tv-zone k1" id="tvKnobPrev" aria-label="Previous episode" title="Previous episode"></button>
+        <button type="button" class="tv-zone k2" id="tvKnobNext" aria-label="Next episode" title="Next episode"></button>
+        <button type="button" class="tv-zone gold" id="tvGold" aria-label="Play or pause" title="Play or pause"></button>
+        <button type="button" class="tv-zone blue" id="tvBlue" aria-label="Full screen" title="Full screen"></button>
+      </div>
+
+      <div class="tv-info">
+        <p class="tv-kicker" id="tvKicker">Start here</p>
+        <h2 class="tv-title" id="tvTitle">Episode 01: What makes something a contract?</h2>
+        <p class="tv-desc" id="tvDesc">Offer, acceptance and consideration. Get all three and you have a contract, even if you sold your car for a dollar.</p>
+        <div class="tv-controls">
+          <button type="button" class="tv-btn" id="tvPrev"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 5h2v14H6zM20 5v14L9 12z" fill="currentColor"/></svg>Previous</button>
+          <button type="button" class="tv-btn primary" id="tvPlay"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path id="tvPlayIcon" d="M8 5v14l11-7z" fill="currentColor"/></svg><span id="tvPlayText">Play</span></button>
+          <button type="button" class="tv-btn" id="tvNext">Next<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M16 5h2v14h-2zM4 5v14l11-7z" fill="currentColor"/></svg></button>
+          <button type="button" class="tv-btn" id="tvFull"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 4h6v2H6v4H4zM14 4h6v6h-2V6h-4zM4 14h2v4h4v2H4zM18 14h2v6h-6v-2h4z" fill="currentColor"/></svg>Full screen</button>
+        </div>
+        <label class="shorts-auto"><input type="checkbox" id="shortsAuto" checked /> Play the next episode automatically</label>
+        <p class="tv-next" id="tvNextLine">Up next: <button type="button" id="tvNextLink"></button></p>
+        <p class="tv-hint" id="tvHint" aria-hidden="true"></p>
+        <a class="tv-yt" id="tvYt" href="https://www.youtube.com/shorts/UQviqC2PsJI" target="_blank" rel="noopener">Watch this one on YouTube<span class="sr-only"> (opens in a new tab)</span></a>
+        <div class="sr-only" id="shortsStatus" role="status" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <ul class="shorts-follow" aria-label="Follow KTHQ Shorts" style="margin-top:2.25rem">
       <li><a href="https://www.youtube.com/playlist?list=PLWOR_sFRFHWo" target="_blank" rel="noopener">YouTube playlist<span class="sr-only"> (opens in a new tab)</span></a></li>
       <li><a href="https://www.tiktok.com/@kthq.org" target="_blank" rel="noopener">TikTok<span class="sr-only"> (opens in a new tab)</span></a></li>
       <li><a href="https://www.instagram.com/kthqorg/" target="_blank" rel="noopener">Instagram<span class="sr-only"> (opens in a new tab)</span></a></li>
     </ul>
 
-    <h2 class="shorts-h2">Contracting basics</h2>
-    <p class="shorts-sub">What a contract is, who can sign one, how the government competes its work, and the dollar thresholds that change the rules.</p>
-    <label class="shorts-auto"><input type="checkbox" id="shortsAuto" checked /> Play the next episode automatically</label>
-    <div class="sr-only" id="shortsStatus" role="status" aria-live="polite"></div>
+    <h2 class="shorts-h2" id="guide">Episode guide</h2>
+    <p class="shorts-sub">Pick any episode and it plays on the TV. New episodes are added here as they come out.</p>
     <ul class="shorts-grid">
       <li class="short-card">
         <a class="short-play" href="https://www.youtube.com/shorts/UQviqC2PsJI" data-yt="UQviqC2PsJI" data-title="Episode 1: What makes something a contract?" target="_blank" rel="noopener" aria-label="Play Episode 1: What makes something a contract? (1:00)">
@@ -364,17 +478,49 @@
 <script src="main.js"></script>
 <script>
 (function(){
-  var links=Array.prototype.slice.call(document.querySelectorAll('.short-play'));
-  var auto=document.getElementById('shortsAuto');
-  var status=document.getElementById('shortsStatus');
-  var current=null, apiState=0, waiting=[];
+  var cards=Array.prototype.slice.call(document.querySelectorAll('.short-play'));
+  if(!cards.length)return;
+  var eps=cards.map(function(a){
+    var li=a.closest('.short-card'), img=a.querySelector('img'), dur=a.querySelector('.short-dur');
+    var numEl=li.querySelector('.short-num'), h=li.querySelector('h3'), p=li.querySelector('.short-body p');
+    var num=numEl?numEl.textContent.replace(/\D/g,''):'';
+    li.id='ep'+num;
+    var now=document.createElement('span'); now.className='short-now'; now.setAttribute('aria-hidden','true'); now.textContent='On the TV'; a.appendChild(now);
+    return {id:a.getAttribute('data-yt'),num:num,name:h?h.textContent:'',desc:p?p.textContent:'',dur:dur?dur.textContent:'',thumb:img?img.getAttribute('src'):'',link:a,li:li};
+  });
+  function $(id){return document.getElementById(id);}
+  var tv=$('tv'), stage=$('tvStage'), screen=$('tvScreen'), poster=$('tvPoster'), posterImg=$('tvPosterImg'), posterLabel=$('tvPosterLabel');
+  var kicker=$('tvKicker'), titleEl=$('tvTitle'), descEl=$('tvDesc'), nextLine=$('tvNextLine'), nextLink=$('tvNextLink'), ytLink=$('tvYt');
+  var hint=$('tvHint'), status=$('shortsStatus'), auto=$('shortsAuto'), barTitle=$('tvBarTitle');
+  var playBtn=$('tvPlay'), playText=$('tvPlayText'), playIcon=$('tvPlayIcon'), prevBtn=$('tvPrev'), nextBtn=$('tvNext');
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function restore(){
-    if(!current)return;
-    if(current.timer) clearInterval(current.timer);
-    try{ if(current.player&&current.player.destroy) current.player.destroy(); }catch(e){}
-    if(current.frame.parentNode) current.frame.parentNode.replaceChild(current.link,current.frame);
-    current=null;
+  var idx=0, resumed=false, player=null, plain=false, apiState=0, waiting=[], timer=null, last=0, token=0, started=false, playing=false;
+  var PLAY='M8 5v14l11-7z', PAUSE='M6 5h4v14H6zM14 5h4v14h-4z';
+
+  function label(e){return 'Episode '+e.num+': '+e.name;}
+  function store(k,v){try{ if(v===undefined) return window.localStorage.getItem(k); window.localStorage.setItem(k,v); }catch(x){ return null; }}
+
+  function setPlaying(on){
+    playing=on;
+    tv.classList.toggle('is-playing',on);
+    playText.textContent=on?'Pause':'Play';
+    playIcon.setAttribute('d',on?PAUSE:PLAY);
+  }
+  function render(){
+    var e=eps[idx], n=eps[idx+1];
+    kicker.textContent=started?'Now playing':(resumed?'Pick up where you left off':(idx?'Up next':'Start here'));
+    titleEl.textContent=label(e);
+    descEl.textContent=e.desc;
+    barTitle.textContent=label(e);
+    posterImg.src=e.thumb;
+    posterLabel.textContent=label(e)+(e.dur?' ('+e.dur+')':'');
+    poster.setAttribute('aria-label','Play '+label(e));
+    ytLink.href='https://www.youtube.com/shorts/'+e.id;
+    if(n){ nextLine.style.display=''; nextLink.textContent=label(n); } else { nextLine.style.display='none'; }
+    prevBtn.disabled=idx===0; nextBtn.disabled=!n;
+    $('tvBarPrev').disabled=idx===0; $('tvBarNext').disabled=!n;
+    eps.forEach(function(x,i){ x.li.classList.toggle('is-current',i===idx); });
+    store('kthqShortsEp',e.num);
   }
   function loadApi(cb){
     if(apiState===2){cb(true);return;}
@@ -391,75 +537,153 @@
     document.head.appendChild(t);
     setTimeout(function(){done(!!(window.YT&&window.YT.Player));},5000);
   }
-  function plainFrame(frame,link){
-    var f=document.createElement('iframe');
-    f.src='https://www.youtube-nocookie.com/embed/'+link.getAttribute('data-yt')+'?autoplay=1&rel=0&playsinline=1';
-    f.title=link.getAttribute('data-title');
+  function plainFrame(){
+    plain=true;
+    var e=eps[idx], f=document.createElement('iframe');
+    f.src='https://www.youtube-nocookie.com/embed/'+e.id+'?autoplay=1&rel=0&playsinline=1';
+    f.title=label(e);
     f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
     f.allowFullscreen=true;
     f.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
-    frame.innerHTML='';
-    frame.appendChild(f);
+    var box=$('tvPlayer'); box.innerHTML=''; box.appendChild(f);
+    setPlaying(true);
   }
-  function ended(i){
-    if(!current||current.index!==i)return;
-    if(!auto||!auto.checked||i+1>=links.length){ restore(); return; }
-    play(i+1,true);
+  // Some phones block sound on a video the viewer did not tap. Start it muted instead of stalling.
+  function nudge(mine,fromAuto){
+    if(!fromAuto)return;
+    setTimeout(function(){
+      try{
+        if(mine!==token||document.visibilityState!=='visible')return;
+        var st=player.getPlayerState();
+        if(st===-1||st===5){ player.mute(); player.playVideo(); hint.textContent='Sound is off. Tap the video to turn it on.'; }
+      }catch(x){}
+    },2000);
   }
-  function play(i,fromAuto){
-    restore();
-    var link=links[i];
-    var frame=document.createElement('div');
-    frame.className='short-frame';
-    var slot=document.createElement('div');
-    frame.appendChild(slot);
-    link.parentNode.replaceChild(frame,link);
-    var mine=current={frame:frame,link:link,index:i,player:null,timer:null};
-    if(fromAuto){
-      frame.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});
-      if(status) status.textContent='Now playing '+link.getAttribute('data-title');
+  function watchClock(mine){
+    if(timer) clearInterval(timer);
+    last=0;
+    // Shorts loop instead of ending, so watch the clock and move on at the end.
+    timer=setInterval(function(){
+      var t,d;
+      if(mine!==token){ return; }
+      try{ t=player.getCurrentTime(); d=player.getDuration(); }catch(x){ return; }
+      if(!d||typeof t!=='number')return;
+      if(t>=d-0.4||(last>d-1.5&&t<1)){ ended(mine); return; }
+      last=t;
+    },250);
+  }
+  function ended(mine){
+    if(mine!==token)return;
+    if(auto&&auto.checked&&idx+1<eps.length){ go(idx+1,true,true); return; }
+    stop(idx+1<eps.length?idx+1:idx);
+  }
+  function stop(showIdx){
+    token++;
+    if(timer){ clearInterval(timer); timer=null; }
+    try{ if(player&&player.pauseVideo) player.pauseVideo(); }catch(x){}
+    if(plain){ $('tvPlayer').innerHTML='<div id="tvSlot"></div>'; plain=false; }
+    tv.classList.remove('is-on'); setPlaying(false); started=false;
+    idx=showIdx; render();
+  }
+  function start(fromAuto){
+    var e=eps[idx], mine=++token;
+    started=true; resumed=false; hint.textContent='';
+    tv.classList.add('is-on'); render();
+    if(status) status.textContent='Now playing '+label(e);
+    if(player&&player.loadVideoById){
+      try{ player.loadVideoById(e.id); player.getIframe().title=label(e); }catch(x){}
+      watchClock(mine); nudge(mine,fromAuto);
+      return;
     }
     loadApi(function(ok){
-      if(current!==mine)return;
-      if(!ok){ plainFrame(frame,link); return; }
-      mine.player=new YT.Player(slot,{
+      if(mine!==token)return;
+      if(!ok){ plainFrame(); return; }
+      player=new YT.Player('tvSlot',{
         host:'https://www.youtube-nocookie.com',
-        videoId:link.getAttribute('data-yt'),
+        videoId:e.id,
         width:'100%',height:'100%',
         playerVars:{autoplay:1,rel:0,playsinline:1},
         events:{
-          onReady:function(e){
-            try{ e.target.getIframe().title=link.getAttribute('data-title'); e.target.playVideo(); }catch(x){}
-            // Some phones block sound on a video the viewer did not tap. Start it muted instead of stalling.
-            if(fromAuto) setTimeout(function(){
-              try{
-                if(current!==mine||document.visibilityState!=='visible')return;
-                var st=e.target.getPlayerState();
-                if(st===-1||st===5){ e.target.mute(); e.target.playVideo(); }
-              }catch(x){}
-            },2000);
+          onReady:function(ev){
+            try{ ev.target.getIframe().title=label(eps[idx]); ev.target.playVideo(); }catch(x){}
+            nudge(token,fromAuto);
           },
-          onStateChange:function(e){ if(e.data===0) ended(i); }
+          onStateChange:function(ev){
+            if(ev.data===1){ setPlaying(true); }
+            else if(ev.data===2){ setPlaying(false); }
+            else if(ev.data===0){ ended(token); }
+          }
         }
       });
-      // Shorts loop instead of ending, so watch the clock and move on at the end.
-      var last=0;
-      mine.timer=setInterval(function(){
-        var p=mine.player, t, d;
-        try{ t=p.getCurrentTime(); d=p.getDuration(); }catch(x){ return; }
-        if(!d||typeof t!=='number')return;
-        if(t>=d-0.4||(last>d-1.5&&t<1)){ ended(i); return; }
-        last=t;
-      },250);
+      watchClock(mine);
     });
   }
-  links.forEach(function(link,i){
-    link.addEventListener('click',function(e){
-      if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
-      e.preventDefault();
-      play(i,false);
+  function go(i,play,fromAuto){
+    if(i<0||i>=eps.length)return;
+    idx=i;
+    if(play){ start(fromAuto); }
+    else if(started){ start(false); }
+    else { render(); }
+  }
+  function toggle(){
+    if(!started){ start(false); return; }
+    if(plain)return;
+    try{ if(playing) player.pauseVideo(); else player.playVideo(); }catch(x){}
+  }
+
+  // full screen: real full screen where the browser allows it, otherwise the screen fills the window
+  var nativeFull=false;
+  function isFull(){return document.body.classList.contains('tv-full');}
+  function enterFull(){
+    if(isFull())return;
+    document.body.classList.add('tv-full');
+    var rq=screen.requestFullscreen||screen.webkitRequestFullscreen;
+    if(rq){ try{ var r=rq.call(screen); nativeFull=true; if(r&&r.catch) r.catch(function(){nativeFull=false;}); }catch(x){ nativeFull=false; } }
+    if(!started) start(false);
+    $('tvBarExit').focus();
+  }
+  function exitFull(){
+    if(!isFull())return;
+    document.body.classList.remove('tv-full');
+    var fe=document.fullscreenElement||document.webkitFullscreenElement;
+    if(fe){ try{ (document.exitFullscreen||document.webkitExitFullscreen).call(document); }catch(x){} }
+    nativeFull=false;
+    $('tvFull').focus();
+  }
+  function onFsChange(){
+    var fe=document.fullscreenElement||document.webkitFullscreenElement;
+    if(!fe&&nativeFull&&isFull()){ document.body.classList.remove('tv-full'); nativeFull=false; }
+  }
+  document.addEventListener('fullscreenchange',onFsChange);
+  document.addEventListener('webkitfullscreenchange',onFsChange);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&isFull()) exitFull(); });
+
+  poster.addEventListener('click',function(e){ if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return; e.preventDefault(); start(false); });
+  poster.addEventListener('keydown',function(e){ if(e.key===' '){ e.preventDefault(); start(false); } });
+  playBtn.addEventListener('click',toggle);
+  $('tvGold').addEventListener('click',toggle);
+  function prev(){ go(idx-1,started,false); }
+  function next(){ go(idx+1,started,false); }
+  prevBtn.addEventListener('click',prev); $('tvKnobPrev').addEventListener('click',prev); $('tvBarPrev').addEventListener('click',prev);
+  nextBtn.addEventListener('click',next); $('tvKnobNext').addEventListener('click',next); $('tvBarNext').addEventListener('click',next);
+  nextLink.addEventListener('click',function(){ go(idx+1,true,false); });
+  $('tvFull').addEventListener('click',enterFull);
+  $('tvBlue').addEventListener('click',function(){ if(isFull()) exitFull(); else enterFull(); });
+  $('tvBarExit').addEventListener('click',exitFull);
+
+  eps.forEach(function(e,i){
+    e.link.addEventListener('click',function(ev){
+      if(ev.metaKey||ev.ctrlKey||ev.shiftKey||ev.altKey)return;
+      ev.preventDefault();
+      go(i,true,false);
+      stage.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
     });
   });
+
+  // open on the episode in the link (shorts.html#ep14), else the last one watched
+  var want=(location.hash.match(/^#ep(\d+)$/)||[])[1]||store('kthqShortsEp');
+  if(want){ for(var k=0;k<eps.length;k++){ if(eps[k].num===want||parseInt(eps[k].num,10)===parseInt(want,10)){ idx=k; resumed=k>0; break; } } }
+  render();
 })();
 </script>
 <script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
