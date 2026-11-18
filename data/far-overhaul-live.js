@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-11-17T17:37:08.941309+00:00",
+  "generatedAt": "2026-11-18T17:15:15.901745+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -11,20 +11,141 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
   "stats": {
     "totalParts": 51,
     "issuedParts": 51,
-    "updatedParts": 11,
+    "updatedParts": 12,
     "agencyDeviationCount": 1577,
     "uniqueAgencyCount": 42,
-    "latestPartDate": "2026-07-01",
-    "latestPartDateLabel": "Jul 1, 2026",
+    "latestPartDate": "2026-11-17",
+    "latestPartDateLabel": "Nov 17, 2026",
     "announcementCount": 9,
-    "federalRegisterCount": 6
+    "federalRegisterCount": 5
   },
   "changes": {
     "baseline": false,
     "newParts": [],
-    "updatedParts": [],
-    "newAgencyDeviations": [],
-    "removedAgencyDeviations": []
+    "updatedParts": [
+      {
+        "partNumber": 9,
+        "partLabel": "Part 9",
+        "title": "Contractor Qualifications",
+        "fullTitle": "Part 9 - Contractor Qualifications",
+        "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
+        "issuanceDate": "2025-08-21",
+        "issuanceDateLabel": "Aug 21, 2025",
+        "updateDate": "2026-11-17",
+        "updateDateLabel": "Nov 17, 2026",
+        "deviationCount": 35,
+        "previousUpdateDate": "2026-04-20",
+        "previousUpdateDateLabel": "Apr 20, 2026"
+      },
+      {
+        "partNumber": 42,
+        "partLabel": "Part 42",
+        "title": "Contract Administration and Audit Services",
+        "fullTitle": "Part 42 - Contract Administration and Audit Services",
+        "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-42",
+        "issuanceDate": "2025-09-30",
+        "issuanceDateLabel": "Sep 30, 2025",
+        "updateDate": "2026-11-17",
+        "updateDateLabel": "Nov 17, 2026",
+        "deviationCount": 31,
+        "previousUpdateDate": "",
+        "previousUpdateDateLabel": ""
+      },
+      {
+        "partNumber": 52,
+        "partLabel": "Part 52",
+        "title": "Solicitation Provisions and Contract Clauses",
+        "fullTitle": "Part 52 - Solicitation Provisions and Contract Clauses",
+        "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-52",
+        "issuanceDate": "2025-10-28",
+        "issuanceDateLabel": "Oct 28, 2025",
+        "updateDate": "2026-11-17",
+        "updateDateLabel": "Nov 17, 2026",
+        "deviationCount": 0,
+        "previousUpdateDate": "2026-07-01",
+        "previousUpdateDateLabel": "Jul 1, 2026"
+      }
+    ],
+    "newAgencyDeviations": [
+      {
+        "part": {
+          "partNumber": 9,
+          "partLabel": "Part 9",
+          "title": "Contractor Qualifications",
+          "fullTitle": "Part 9 - Contractor Qualifications",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
+          "issuanceDate": "2025-08-21",
+          "issuanceDateLabel": "Aug 21, 2025",
+          "updateDate": "2026-11-17",
+          "updateDateLabel": "Nov 17, 2026",
+          "deviationCount": 35
+        },
+        "agency": {
+          "name": "General Services Administration (GSA)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-9_Supplement_1-3.pdf",
+          "id": "00d742eb732d8ca0"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 42,
+          "partLabel": "Part 42",
+          "title": "Contract Administration and Audit Services",
+          "fullTitle": "Part 42 - Contract Administration and Audit Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-42",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-11-17",
+          "updateDateLabel": "Nov 17, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "General Services Administration (GSA)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-42_Supplement_1.pdf",
+          "id": "ef0c08859305320d"
+        }
+      }
+    ],
+    "removedAgencyDeviations": [
+      {
+        "part": {
+          "partNumber": 9,
+          "partLabel": "Part 9",
+          "title": "Contractor Qualifications",
+          "fullTitle": "Part 9 - Contractor Qualifications",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
+          "issuanceDate": "2025-08-21",
+          "issuanceDateLabel": "Aug 21, 2025",
+          "updateDate": "2026-11-17",
+          "updateDateLabel": "Nov 17, 2026",
+          "deviationCount": 35
+        },
+        "agency": {
+          "name": "General Services Administration (GSA)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-9-Supplement.pdf",
+          "id": "d8fb974e39d698d8"
+        }
+      },
+      {
+        "part": {
+          "partNumber": 42,
+          "partLabel": "Part 42",
+          "title": "Contract Administration and Audit Services",
+          "fullTitle": "Part 42 - Contract Administration and Audit Services",
+          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-42",
+          "issuanceDate": "2025-09-30",
+          "issuanceDateLabel": "Sep 30, 2025",
+          "updateDate": "2026-11-17",
+          "updateDateLabel": "Nov 17, 2026",
+          "deviationCount": 31
+        },
+        "agency": {
+          "name": "General Services Administration (GSA)",
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-42.pdf",
+          "id": "a8fc7cbf8cd1028c"
+        }
+      }
+    ]
   },
   "parts": [
     {
@@ -1381,8 +1502,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
       "issuanceDate": "2025-08-21",
       "issuanceDateLabel": "Aug 21, 2025",
-      "updateDate": "2026-04-20",
-      "updateDateLabel": "Apr 20, 2026",
+      "updateDate": "2026-11-17",
+      "updateDateLabel": "Nov 17, 2026",
       "isUpdated": true,
       "deviationCount": 35,
       "agencies": [
@@ -1538,8 +1659,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "General Services Administration (GSA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-9-Supplement.pdf",
-          "id": "d8fb974e39d698d8"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-9_Supplement_1-3.pdf",
+          "id": "00d742eb732d8ca0"
         },
         {
           "name": "Department of Commerce (DOC)",
@@ -6946,9 +7067,9 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-42",
       "issuanceDate": "2025-09-30",
       "issuanceDateLabel": "Sep 30, 2025",
-      "updateDate": "",
-      "updateDateLabel": "",
-      "isUpdated": false,
+      "updateDate": "2026-11-17",
+      "updateDateLabel": "Nov 17, 2026",
+      "isUpdated": true,
       "deviationCount": 31,
       "agencies": [
         {
@@ -7093,8 +7214,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         },
         {
           "name": "General Services Administration (GSA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-42.pdf",
-          "id": "a8fc7cbf8cd1028c"
+          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-42_Supplement_1.pdf",
+          "id": "ef0c08859305320d"
         },
         {
           "name": "Department of Commerce (DOC)",
@@ -7111,7 +7232,7 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
         "Money",
         "Performance"
       ],
-      "watchNote": "Model text is posted. Contract administration risk area. Compare the model text against current clauses, mods, payment, and closeout practices."
+      "watchNote": "Updated model text is posted. Contract administration risk area. Compare the model text against current clauses, mods, payment, and closeout practices."
     },
     {
       "partNumber": 43,
@@ -8702,8 +8823,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-52",
       "issuanceDate": "2025-10-28",
       "issuanceDateLabel": "Oct 28, 2025",
-      "updateDate": "2026-07-01",
-      "updateDateLabel": "Jul 1, 2026",
+      "updateDate": "2026-11-17",
+      "updateDateLabel": "Nov 17, 2026",
       "isUpdated": true,
       "deviationCount": 0,
       "agencies": [],
@@ -8884,6 +9005,16 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
   ],
   "announcements": [
     {
+      "id": "9f6497bb25ba2262",
+      "title": "FAR Updates to Align with Integrity Records Transition to SAM.gov",
+      "url": "https://www.acquisition.gov/content/far-updates-align-integrity-records-transition-sam.gov",
+      "date": "2026-11-18",
+      "dateLabel": "Nov 18, 2026",
+      "source": "Acquisition.gov",
+      "type": "Official announcement",
+      "summary": "FAR Updates to Align with Integrity Records Transition to SAM.gov Anonymous (not verified) Wed, 11/18/2026 - 11:08 November 18, 2026 As part of GSA\u2019s ongoing modernization effort to the suite of federal acquisition systems, government users will begin creating Integrity Records..."
+    },
+    {
       "id": "92debf7a88a41605",
       "title": "FAR Overhaul | FAR Companion Guide | Version 3.0",
       "url": "https://www.acquisition.gov/content/far-overhaul-far-companion-guide-version-3.0",
@@ -8962,16 +9093,6 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "source": "Acquisition.gov",
       "type": "Official announcement",
       "summary": "FAR Overhaul Model Deviation Text Update Anonymous (not verified) Tue, 03/17/2026 - 11:00 Today, March 16th, 2026, the Federal Acquisition Regulatory Council has updated the Revolutionary FAR Overhaul (RFO) to conform with the changes to the codified Federal Acquisition..."
-    },
-    {
-      "id": "752481dceaf6ea89",
-      "title": "FAR Updates to Align with eSRS Decommissioning",
-      "url": "https://www.acquisition.gov/content/far-updates-align-esrs-decommissioning",
-      "date": "2026-02-20",
-      "dateLabel": "Feb 20, 2026",
-      "source": "Acquisition.gov",
-      "type": "Official announcement",
-      "summary": "FAR Updates to Align with eSRS Decommissioning Anonymous (not verified) Fri, 02/20/2026 - 12:00 GSA will decommission the Electronic Subcontracting Reporting System (eSRS.gov) on February 20, 2026, moving subcontracting reporting to SAM.gov, as part of the ongoing effort to..."
     }
   ],
   "federalRegister": [
@@ -9024,16 +9145,6 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
       "source": "Federal Register",
       "type": "Rule",
       "summary": "This document is issued under the joint authority of OFPP, DoD, GSA, and NASA. This Small Entity Compliance Guide has been prepared in accordance with section 212 of the Small Business Regulatory Enforcement Fairness Act of 1996. It consists of a summary of the rule appearing in Federal Acquisition Circular (FAC)..."
-    },
-    {
-      "id": "d4520fe22c4e3750",
-      "title": "Federal Acquisition Regulation: Small Business Innovation Research and Technology Transfer Programs",
-      "url": "https://www.federalregister.gov/documents/2025/06/12/2025-10609/federal-acquisition-regulation-small-business-innovation-research-and-technology-transfer-programs",
-      "date": "2025-06-12",
-      "dateLabel": "Jun 12, 2025",
-      "source": "Federal Register",
-      "type": "Proposed Rule",
-      "summary": "OFPP, DoD, GSA, and NASA (collectively referred to as the Federal Acquisition Regulatory Council, or FAR Council) are withdrawing the proposed rule to amend the Federal Acquisition Regulation (FAR) titled: Small Business Innovation Research and Technology Transfer. The FAR Council will re-evaluate implementation..."
     }
   ],
   "resources": [
