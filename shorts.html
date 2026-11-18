@@ -285,7 +285,17 @@
         width:'100%',height:'100%',
         playerVars:{autoplay:1,rel:0,playsinline:1},
         events:{
-          onReady:function(e){ try{ e.target.getIframe().title=link.getAttribute('data-title'); e.target.playVideo(); }catch(x){} },
+          onReady:function(e){
+            try{ e.target.getIframe().title=link.getAttribute('data-title'); e.target.playVideo(); }catch(x){}
+            // Some phones block sound on a video the viewer did not tap. Start it muted instead of stalling.
+            if(fromAuto) setTimeout(function(){
+              try{
+                if(current!==mine||document.visibilityState!=='visible')return;
+                var st=e.target.getPlayerState();
+                if(st===-1||st===5){ e.target.mute(); e.target.playVideo(); }
+              }catch(x){}
+            },2000);
+          },
           onStateChange:function(e){ if(e.data===0) ended(i); }
         }
       });
