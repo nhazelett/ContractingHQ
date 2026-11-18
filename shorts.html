@@ -228,6 +228,7 @@
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function restore(){
     if(!current)return;
+    if(current.timer) clearInterval(current.timer);
     try{ if(current.player&&current.player.destroy) current.player.destroy(); }catch(e){}
     if(current.frame.parentNode) current.frame.parentNode.replaceChild(current.link,current.frame);
     current=null;
@@ -270,7 +271,7 @@
     var slot=document.createElement('div');
     frame.appendChild(slot);
     link.parentNode.replaceChild(frame,link);
-    var mine=current={frame:frame,link:link,index:i,player:null};
+    var mine=current={frame:frame,link:link,index:i,player:null,timer:null};
     if(fromAuto){
       frame.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});
       if(status) status.textContent='Now playing '+link.getAttribute('data-title');
@@ -288,6 +289,15 @@
           onStateChange:function(e){ if(e.data===0) ended(i); }
         }
       });
+      // Shorts loop instead of ending, so watch the clock and move on at the end.
+      var last=0;
+      mine.timer=setInterval(function(){
+        var p=mine.player, t, d;
+        try{ t=p.getCurrentTime(); d=p.getDuration(); }catch(x){ return; }
+        if(!d||typeof t!=='number')return;
+        if(t>=d-0.4||(last>d-1.5&&t<1)){ ended(i); return; }
+        last=t;
+      },250);
     });
   }
   links.forEach(function(link,i){
