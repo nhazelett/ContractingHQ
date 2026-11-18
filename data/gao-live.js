@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-11-17T17:00:17.020Z",
+  "generatedAt": "2026-11-18T16:40:16.005Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,12 +7,12 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 18,
+    "total": 16,
     "latestDecisionDate": "2026-11-12",
     "sustained": 1,
     "denied": 10,
     "dismissed": 3,
-    "mixed": 4,
+    "mixed": 2,
     "unclassified": 0,
     "sourceStatus": {
       "rss": {
@@ -23,11 +23,11 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 12
+        "parsedOutcomes": 16
       },
       "productPages": {
-        "attempted": 18,
-        "enriched": 18,
+        "attempted": 16,
+        "enriched": 16,
         "blocked": 0
       },
       "legacyCache": {
@@ -59,6 +59,36 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424389.2,B-424389.3",
+      "caseName": "American Veteran Contracting Solutions, LLC",
+      "title": "American Veteran Contracting Solutions, LLC",
+      "bNumbers": [
+        "B-424389.2",
+        "B-424389.3"
+      ],
+      "bNumberText": "B-424389.2, B-424389.3",
+      "link": "https://www.gao.gov/products/b-424389.2%2Cb-424389.3",
+      "publicationDate": "2026-11-17",
+      "decisionDate": "2026-11-09",
+      "displayDate": "Nov 9, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We sustain the protest in part and deny it in part.",
+      "officialSynopsis": "American Veteran Contracting Solutions, LLC, a service-disabled veteran-owned small business (SDVOSB) of Mesa, Arizona, protests the award of a...",
+      "highlights": "",
+      "digest": "1. Protest challenging the agency's decision to select the lowest-priced, technically acceptable offer for award is denied where the agency's selection was in accordance with the plain language of the solicitation. 2. Protest challenging the agency's evaluation of the awardee's technical proposal is denied where the record shows that the agency's evaluation was reasonable and consistent with the terms of the solicitation. 3. Protest that agency held unequal discussions is sustained where the record shows that the agency engaged in an additional round of discussions with only the awardee.",
+      "tags": [
+        "Evaluation",
+        "Discussions / FPR",
+        "Solicitation terms",
+        "Price / cost"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -114,6 +144,34 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
+      "id": "B-424718,B-424718.2",
+      "caseName": "The Ross Group Construction Corporation LLC",
+      "title": "The Ross Group Construction Corporation LLC",
+      "bNumbers": [
+        "B-424718",
+        "B-424718.2"
+      ],
+      "bNumberText": "B-424718, B-424718.2",
+      "link": "https://www.gao.gov/products/b-424718%2Cb-424718.2",
+      "publicationDate": "2026-11-17",
+      "decisionDate": "2026-11-06",
+      "displayDate": "Nov 6, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "The Ross Group Construction Corporation LLC, of Tulsa, Oklahoma, protests its exclusion from the competition under request for proposals (RFP) No....",
+      "highlights": "",
+      "digest": "1. Protest challenging agency's evaluation of protester's past performance is denied where the agency's evaluation was reasonable and in accordance with the solicitation criteria. 2. Protester is not an interested party to challenge agency's evaluation of other offerors' past performance where its proposal was reasonably not selected to proceed to phase two of the procurement.",
+      "tags": [
+        "Evaluation",
+        "Solicitation terms"
+      ],
+      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
@@ -391,35 +449,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424664,B-424664.2",
-      "caseName": "The MIL Corporation",
-      "title": "The MIL Corporation",
-      "bNumbers": [
-        "B-424664",
-        "B-424664.2"
-      ],
-      "bNumberText": "B-424664, B-424664.2",
-      "link": "https://www.gao.gov/products/b-424664%2Cb-424664.2",
-      "publicationDate": "2026-10-23",
-      "decisionDate": "2026-10-19",
-      "displayDate": "Oct 19, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest in part and dismiss it in part.",
-      "officialSynopsis": "The MIL Corporation, of Bowie, Maryland, protests the Department of the Navy's issuance of a task order to BAE Systems Technology Solutions &...",
-      "highlights": "",
-      "digest": "1. Protest is denied where agency reasonably determined that protester's offer failed to comply with the solicitation requirements regarding key personnel. 2. Where agency reasonably determined that protester's offer was unacceptable, protester does not qualify as an interested party to further challenge the procurement.",
-      "tags": [
-        "Solicitation terms",
-        "Staffing",
-        "Orders / IDIQ"
-      ],
-      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
       "id": "B-424641,B-424641.2",
       "caseName": "Michael Baker-International Stantec JV",
       "title": "Michael Baker-International Stantec JV",
@@ -441,91 +470,6 @@ window.KTHQ_GAO_DATA = {
       "digest": "Protest challenging the agency's evaluation of qualification statements submitted in a procurement for architect-engineering services is sustained where the experience criterion was not evaluated consistent with the terms of the synopsis.",
       "tags": [
         "Evaluation"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424203.2",
-      "caseName": "Fluor Federal Solutions, LLC",
-      "title": "Fluor Federal Solutions, LLC",
-      "bNumbers": [
-        "B-424203.2"
-      ],
-      "bNumberText": "B-424203.2",
-      "link": "https://www.gao.gov/products/b-424203.2",
-      "publicationDate": "2026-10-23",
-      "decisionDate": "2026-10-13",
-      "displayDate": "Oct 13, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We sustain the protest in part and dismiss the protest in part.",
-      "officialSynopsis": "Fluor Federal Services, LLC, of Greenville, South Carolina, protests the award of a contract to Strategic Test Solutions, LLC (STS), of Huntsville,...",
-      "highlights": "",
-      "digest": "1. Protest challenging the agency's conclusion that the disclosure of offerors' pricing information did not compromise the integrity of the procurement is sustained where the agency's conclusion is not supported by the record. 2. Protest challenging the evaluation of professional employee compensation plans is dismissed as untimely where the protester failed to challenge the evaluation within 10 days of receiving an earlier debriefing, and the agency's subsequent voluntary corrective action did not affect this aspect of the evaluation.",
-      "tags": [
-        "Timeliness",
-        "Evaluation",
-        "Corrective action",
-        "Price / cost"
-      ],
-      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424203.3,B-424203.4",
-      "caseName": "Reliance Test & Technology",
-      "title": "Reliance Test & Technology",
-      "bNumbers": [
-        "B-424203.3",
-        "B-424203.4"
-      ],
-      "bNumberText": "B-424203.3, B-424203.4",
-      "link": "https://www.gao.gov/products/b-424203.3%2Cb-424203.4",
-      "publicationDate": "2026-10-23",
-      "decisionDate": "2026-10-13",
-      "displayDate": "Oct 13, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We sustain the protest in part and deny the protest in part.",
-      "officialSynopsis": "Reliance Test & Technology (Reliance), of Crestview, Florida, protests the award of a contract to Strategic Test Solutions, LLC (STS), of...",
-      "highlights": "",
-      "digest": "1. Protest challenging the agency's conclusion that the disclosure of offerors' pricing information did not compromise the integrity of the procurement is sustained where the agency's conclusion is not supported by the record. 2. Protest challenging various aspects of the agency's evaluation of the offerors' technical proposals is denied where the evaluation was reasonable and consistent with the terms of the solicitation.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424623",
-      "caseName": "Octo Metric, LLC",
-      "title": "Octo Metric, LLC",
-      "bNumbers": [
-        "B-424623"
-      ],
-      "bNumberText": "B-424623",
-      "link": "https://www.gao.gov/products/b-424623",
-      "publicationDate": "2026-10-23",
-      "decisionDate": "2026-10-08",
-      "displayDate": "Oct 8, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Octo Metric LLC (hereinafter \"Octo\"), of Atlanta, Georgia, protests the issuance of a task order by the Department of Homeland Security, U.S....",
-      "highlights": "",
-      "digest": "Protest is denied where the agency reasonably evaluated the protester's proposed solution in a manner that was consistent with the solicitation's evaluation criteria.",
-      "tags": [
-        "Evaluation",
-        "Solicitation terms",
-        "Orders / IDIQ"
       ],
       "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
