@@ -25,7 +25,7 @@
     <div><h1>KTHQ · Seasonal preview</h1><p>Explore the themes. These controls affect this preview only.</p></div>
     <div class="controls">
       <label>Theme<select id="season-select">
-        <option value="christmas">Christmas</option><option value="winter">January / Winter</option><option value="valentine">Valentine’s</option>
+        <option value="christmas">Christmas</option><option value="winter">New Year / January</option><option value="valentine">Valentine’s</option>
         <option value="standard">Standard KTHQ</option><option value="independence">Fourth of July</option><option value="fiscal">End of Fiscal Year</option>
         <option value="halloween">Halloween</option><option value="thanksgiving">Thanksgiving</option><option value="auto">Automatic calendar</option>
       </select></label>
@@ -39,7 +39,7 @@
     <div class="viewport"><iframe id="theme-preview" title="KTHQ seasonal theme preview" src="index.html?theme=christmas"></iframe></div>
     <details class="schedule"><summary>Annual schedule · midnight Eastern</summary>
       <table><thead><tr><th>Dates</th><th>Theme</th></tr></thead><tbody>
-        <tr><td>January 1–31</td><td>Winter / New Year</td></tr><tr><td>February 1–last day</td><td>Valentine’s</td></tr>
+        <tr><td>January 1–31</td><td>New Year</td></tr><tr><td>February 1–last day</td><td>Valentine’s</td></tr>
         <tr><td>March 1–June 30</td><td>Standard KTHQ</td></tr><tr><td>July 1–31</td><td>Fourth of July</td></tr>
         <tr><td>August 1–31</td><td>Standard KTHQ</td></tr><tr><td>September 1–30</td><td>End of Fiscal Year</td></tr>
         <tr><td>October 1–31</td><td>Halloween</td></tr><tr><td>November 1–Thanksgiving Day</td><td>Thanksgiving</td></tr>
@@ -62,6 +62,10 @@
       season.addEventListener('change', update); page.addEventListener('change', update);
       function size(isPhone) { frame.classList.toggle('phone', isPhone); desktop.setAttribute('aria-pressed', String(!isPhone)); phone.setAttribute('aria-pressed', String(isPhone)); }
       desktop.addEventListener('click', function () { size(false); }); phone.addEventListener('click', function () { size(true); });
+      var requested = new URLSearchParams(window.location.search).get('theme');
+      if (Array.from(season.options).some(function (option) { return option.value === requested; })) {
+        season.value = requested; update();
+      }
     })();
   </script>
 </body>

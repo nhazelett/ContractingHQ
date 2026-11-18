@@ -30,6 +30,7 @@
     var paused = readPreference(motionKey);
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     var season = '';
+    var celebrationYear = null;
     var disposed = false;
     var frame = 0;
     var clockTimer = 0;
@@ -45,8 +46,10 @@
     var canvas = document.getElementById('seasonal-particles');
     var ctx = null;
     try { ctx = canvas && canvas.getContext('2d'); } catch (_) { /* Static theme remains available. */ }
-    var effects = { thanksgiving: 'leaves', christmas: 'snow', winter: 'snow', independence: 'sparkles', halloween: 'embers' };
-    var labels = { standard: 'Standard KTHQ', winter: 'Winter', valentine: 'Valentine’s', independence: 'Fourth of July', fiscal: 'End of Fiscal Year', halloween: 'Halloween', thanksgiving: 'Thanksgiving', christmas: 'Christmas' };
+    var fireworks = null;
+    try { if (ctx && window.KTHQSeasonFireworks) fireworks = window.KTHQSeasonFireworks.create(ctx); } catch (_) { /* Keep the static New Year artwork. */ }
+    var effects = { thanksgiving: 'leaves', christmas: 'snow', winter: fireworks ? 'fireworks' : null, independence: 'sparkles', halloween: 'embers' };
+    var labels = { standard: 'Standard KTHQ', winter: 'New Year', valentine: 'Valentine’s', independence: 'Fourth of July', fiscal: 'End of Fiscal Year', halloween: 'Halloween', thanksgiving: 'Thanksgiving', christmas: 'Christmas' };
     var copy = {
       standard: { eyebrow: 'Built by practitioners. For practitioners.', greeting: '', message: '', action: 'Explore Training' },
       thanksgiving: {
@@ -61,10 +64,10 @@
         community: 'The people beside you. The families behind you. The little moments that make a long year worthwhile. Wherever this season finds you, you have a place here.'
       },
       winter: {
-        eyebrow: 'A fresh start', greeting: 'New year. Same mission. Fresh perspective.',
-        message: 'Take a breath, pick something worth learning, and bring a little more confidence to the work ahead.', action: 'Start something new',
-        title: 'Room to grow.', card: 'Good judgment takes practice. A new year is a good place to begin.',
-        communityLabel: 'The next chapter', communityTitle: 'Start with one good question.', community: 'Something you want to understand. A skill you want to sharpen. A lesson you can share. Build from there.'
+        eyebrow: 'Happy New Year', greeting: 'A new year deserves a little noise.',
+        message: 'Here’s to good people, shared wins, and a few more reasons to celebrate. Happy New Year from KTHQ.', action: 'Start something new',
+        title: 'Here’s to a good one.', card: 'May the new year bring good company and plenty worth celebrating.',
+        communityLabel: 'Another year together', communityTitle: 'Glad you’re here.', community: 'Whether you’ve been here from the start or just found us, thanks for being part of KTHQ. Here’s to another year of figuring things out together.'
       },
       valentine: {
         eyebrow: 'A little appreciation goes a long way', greeting: 'For the people who care about getting it right.',
@@ -104,13 +107,37 @@
     function configuredSeason() {
       return calendar.resolveSeason({ now: new Date(), timeZone: config.timeZone, mode: config.mode, preview: preview, previewDate: previewDate });
     }
+    function newYearArt(year) {
+      // Editable vector artwork keeps the celebration visible with motion disabled.
+      function burst(x, y, radius, count, color) {
+        var rays = '';
+        for (var i = 0; i < count; i++) {
+          var angle = i * Math.PI * 2 / count;
+          var start = radius * (.25 + (i % 3) * .05);
+          var end = radius * (i % 2 ? .82 : 1);
+          var sx = (x + Math.cos(angle) * start).toFixed(2);
+          var sy = (y + Math.sin(angle) * start).toFixed(2);
+          var ex = (x + Math.cos(angle) * end).toFixed(2);
+          var ey = (y + Math.sin(angle) * end).toFixed(2);
+          rays += '<path d="M' + sx + ' ' + sy + 'L' + ex + ' ' + ey + '"/>';
+          rays += '<circle cx="' + (x + Math.cos(angle) * end * 1.13).toFixed(2) + '" cy="' + (y + Math.sin(angle) * end * 1.13).toFixed(2) + '" r="1.35" fill="' + color + '" stroke="none"/>';
+        }
+        return '<g fill="none" stroke="' + color + '" stroke-width="1.2" stroke-linecap="round">' + rays + '</g>';
+      }
+      return '<div class="new-year-art" role="img" aria-label="Happy New Year ' + year + '. Gold and blue fireworks in a midnight sky.">' +
+        '<svg viewBox="0 0 400 300" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">' +
+        burst(225, 83, 62, 28, '#f4d18b') + burst(72, 120, 43, 22, '#b3ceff') + burst(337, 139, 37, 20, '#c6a9ff') +
+        '<g fill="#f6dda2"><path d="m147 64 2 7 7 2-7 2-2 7-2-7-7-2 7-2m154 13 1 5 5 1-5 1-1 5-1-5-5-1 5-1"/><circle cx="42" cy="200" r="2"/><circle cx="357" cy="76" r="1.5"/><circle cx="299" cy="207" r="1.5"/></g>' +
+        '<path d="M51 267q149 32 298 0M101 278q99 14 198 0" fill="none" stroke="#f0cb80" stroke-width="1" opacity=".5"/></svg>' +
+        '<span class="new-year-art-kicker" aria-hidden="true">Oh, hello.</span>' +
+        '<span class="new-year-number" aria-hidden="true">' + year + '</span>' +
+        '<span class="new-year-art-footer" aria-hidden="true">Let’s make it a good one</span></div>';
+    }
     function emblem(name) {
       // Small native vector ornaments; content and colors remain editable in source.
       var svg = '<svg viewBox="0 0 300 270" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">';
       var base = '<ellipse cx="150" cy="242" rx="88" ry="10" fill="currentColor" opacity=".07"/>';
       var art = {
-        winter: '<circle cx="150" cy="132" r="90" fill="none" stroke="currentColor" stroke-opacity=".15"/><circle cx="150" cy="132" r="71" fill="none" stroke="currentColor" stroke-opacity=".2" stroke-dasharray="2 10"/>' +
-          '<g transform="translate(150 132)" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">' + [0,60,120,180,240,300].map(function (a) { return '<g transform="rotate(' + a + ')"><path d="M0 0V-77M0-45L-16-59M0-45L16-59M0-25L-12-36M0-25L12-36"/></g>'; }).join('') + '</g><circle cx="150" cy="132" r="9" fill="var(--season-bg)" stroke="currentColor" stroke-width="2"/>',
         valentine: '<g transform="rotate(-8 150 146)"><rect x="54" y="83" width="192" height="132" rx="9" fill="var(--season-surface-raised)" stroke="currentColor" stroke-opacity=".6"/><path d="m57 89 93 72 93-72M57 209l70-64m116 64-70-64" fill="none" stroke="currentColor" stroke-opacity=".4"/><circle cx="150" cy="154" r="27" fill="var(--season-bg)" stroke="currentColor"/><path d="M150 168c-30-18-16-37 0-24 16-13 30 6 0 24Z" fill="currentColor"/></g><path d="m75 46 2 8 8 2-8 2-2 8-2-8-8-2 8-2m151-18 2 9 9 2-9 2-2 9-2-9-9-2 9-2" fill="currentColor" opacity=".6"/>',
         independence: '<circle cx="150" cy="130" r="94" fill="none" stroke="currentColor" stroke-opacity=".2"/><circle cx="150" cy="130" r="82" fill="none" stroke="currentColor" stroke-opacity=".25" stroke-dasharray="1 9"/><path d="m150 52 23 48 53 8-38 37 9 53-47-25-47 25 9-53-38-37 53-8Z" fill="var(--season-surface-raised)" stroke="currentColor" stroke-width="2"/><path d="m150 52 0 78 76-22m-76 22 47 68m-47-68-47 68m47-68-76-22" fill="none" stroke="currentColor" stroke-opacity=".35"/><path d="M69 218h162" stroke="var(--season-secondary)" stroke-width="4"/><path d="M93 229h114" stroke="currentColor" stroke-width="2"/>',
         fiscal: '<g transform="rotate(-5 150 135)"><rect x="65" y="48" width="170" height="172" rx="12" fill="var(--season-surface-raised)" stroke="currentColor" stroke-opacity=".65"/><path d="M65 89h170M108 36v27m84-27v27" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><text x="150" y="143" text-anchor="middle" fill="currentColor" font-family="Georgia,serif" font-size="49">30</text><text x="150" y="175" text-anchor="middle" fill="currentColor" font-family="Inter,Arial,sans-serif" font-size="16" letter-spacing="5">SEP</text><path d="m130 193 11 10 27-23" stroke="var(--season-secondary)" stroke-width="3" fill="none" stroke-linecap="round"/></g>',
@@ -145,6 +172,12 @@
       if (disposed) return;
       var chosen = configuredSeason();
       var next = !isPreview && preferStandard ? 'standard' : chosen;
+      var nextYear = next === 'winter' && typeof calendar.getNewYear === 'function'
+        ? calendar.getNewYear(new Date(), config.timeZone, previewDate) : null;
+      if (next === 'winter' && !nextYear) {
+        var fallbackDate = new Date();
+        nextYear = fallbackDate.getUTCFullYear() + (fallbackDate.getUTCMonth() === 0 ? 0 : 1);
+      }
       body.setAttribute('data-kthq-seasonal', '');
       root.setAttribute('data-season', next);
       if (themeButton) {
@@ -152,15 +185,17 @@
         themeButton.textContent = preferStandard ? 'Use seasonal theme' : 'Use standard theme';
         themeButton.setAttribute('aria-label', themeButton.textContent + ' on this device');
       }
-      if (season === next) { syncMotion(); return; }
+      if (season === next && celebrationYear === nextYear) { syncMotion(); return; }
+      if (fireworks) fireworks.reset();
       season = next;
+      celebrationYear = nextYear;
       var harvestStyle = document.getElementById('thanksgiving-theme');
       if (harvestStyle) harvestStyle.media = season === 'thanksgiving' ? 'all' : 'not all';
       document.querySelectorAll('[data-season-only]').forEach(function (el) {
         el.hidden = el.getAttribute('data-season-only').split(/\s+/).indexOf(season) === -1;
       });
       var words = copy[season] || copy.standard;
-      text('[data-season-eyebrow]', words.eyebrow);
+      text('[data-season-eyebrow]', season === 'winter' && celebrationYear ? 'Hello, ' + celebrationYear + '.' : words.eyebrow);
       text('[data-season-greeting]', words.greeting);
       text('[data-season-message]', words.message);
       text('[data-season-action]', words.action);
@@ -181,10 +216,14 @@
           tree.src = 'images/kthq-christmas-tree.png'; tree.width = 1254; tree.height = 1254;
           tree.alt = 'An evergreen Christmas tree with warm lights, gold and cranberry ornaments, and three wrapped gifts.';
           art.replaceChildren(tree);
-        } else art.innerHTML = emblem(season);
+        } else art.innerHTML = season === 'winter' ? newYearArt(celebrationYear) : emblem(season);
       }
       resize();
       syncMotion();
+      if (visibilityObserver) {
+        visibilityObserver.disconnect();
+        visibilityObserver.observe(season === 'winter' && canvas && !canvas.hidden ? canvas : hero);
+      }
     }
 
     function makeParticle(scatter) {
@@ -195,10 +234,13 @@
     }
     function resize() {
       if (!ctx || !canvas) return;
-      width = hero.clientWidth; height = hero.clientHeight;
+      width = hero.clientWidth;
+      height = effects[season] === 'fireworks' ? Math.min(hero.clientHeight, 800) : hero.clientHeight;
+      canvas.style.height = height + 'px';
       var dpr = Math.min(window.devicePixelRatio || 1, 1.25);
       canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (fireworks) fireworks.resize(width, height);
       var count = hero.id === 'trainingSeason' ? 12 : width < 680 ? 16 : 32;
       particles = Array.from({ length: count }, function () { return makeParticle(true); });
     }
@@ -210,6 +252,7 @@
       lastDraw = now;
       ctx.clearRect(0, 0, width, height);
       var type = effects[season];
+      if (type === 'fireworks') { fireworks.draw(now, dt); return; }
       particles.forEach(function (p) {
         p.y += p.speed * dt; p.x += Math.sin(now * .0004 + p.phase) * 10 * dt; p.rotation += .3 * dt;
         if (p.y > height + 30) Object.assign(p, makeParticle(false));
@@ -260,6 +303,7 @@
     function cleanup() {
       if (disposed) return;
       disposed = true; cancelAnimationFrame(frame); clearTimeout(clockTimer);
+      if (fireworks) fireworks.reset();
       cleanupListeners.forEach(function (remove) { remove(); });
       if (resizeObserver) resizeObserver.disconnect();
       if (visibilityObserver) visibilityObserver.disconnect();

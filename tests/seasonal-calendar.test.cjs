@@ -124,3 +124,24 @@ test('the same module exposes a frozen browser API without needing a DOM or time
   vm.runInNewContext(source, unavailableIntl);
   assert.equal(unavailableIntl.window.KTHQSeasonCalendar.getSeason(new Date()), 'standard');
 });
+
+test('New Year artwork welcomes the upcoming January and keeps its year through January', () => {
+  assert.equal(calendar.getNewYear(new Date('2026-11-18T23:00:00Z')), 2027);
+  assert.equal(calendar.getNewYear(new Date('2027-01-01T04:59:59Z')), 2027);
+  assert.equal(calendar.getNewYear(new Date('2027-01-01T05:00:00Z')), 2027);
+  assert.equal(calendar.getNewYear(new Date('2027-02-01T04:59:59Z')), 2027);
+  assert.equal(calendar.getNewYear(new Date('2027-02-01T05:00:00Z')), 2028);
+  assert.equal(calendar.getNewYear(new Date('2027-02-01T05:00:00Z'), 'Pacific/Honolulu'), 2027);
+  assert.equal(calendar.getNewYear(new Date('2027-01-01T05:00:00Z'), 'invalid/timezone'), 2027);
+});
+
+test('explicit New Year dates determine the numeral and malformed dates cannot replace it', () => {
+  const now = new Date('2026-11-18T23:00:00Z');
+  assert.equal(calendar.getNewYear(now, undefined, '2028-01-01'), 2028);
+  assert.equal(calendar.getNewYear(now, undefined, '2031-01-31'), 2031);
+  assert.equal(calendar.getNewYear(now, undefined, '2028-02-29'), 2028);
+  assert.equal(calendar.getNewYear(now, undefined, '2027-02-29'), 2027);
+  assert.equal(calendar.getNewYear(now, undefined, '<b>2028</b>'), 2027);
+  assert.equal(calendar.getNewYear(new Date(NaN)), null);
+  assert.equal(calendar.getNewYear(new Date(NaN), undefined, '2028-01-01'), 2028);
+});
