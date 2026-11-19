@@ -45,6 +45,6 @@ test('search styling travels with page navigation, including older player script
  const css=fs.readFileSync(new URL('../training-search.css',import.meta.url),'utf8').trim();
  const inline=page.match(/<style id="training-search-styles">([\s\S]*?)<\/style>/);
  assert.ok(inline,'The navigation loader copies inline styles, but older versions omit stylesheet links');
- assert.equal(inline[1].trim(),css);
+ assert.equal(inline[1].replace(/\r\n/g,'\n').trim(),css.replace(/\r\n/g,'\n'));
  assert.match(page,/<svg width="21" height="21" style="width:21px;height:21px"/);
 });
