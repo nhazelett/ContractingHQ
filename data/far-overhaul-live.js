@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-11-18T17:15:15.901745+00:00",
+  "generatedAt": "2026-11-19T17:22:20.592295+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -22,130 +22,9 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
   "changes": {
     "baseline": false,
     "newParts": [],
-    "updatedParts": [
-      {
-        "partNumber": 9,
-        "partLabel": "Part 9",
-        "title": "Contractor Qualifications",
-        "fullTitle": "Part 9 - Contractor Qualifications",
-        "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
-        "issuanceDate": "2025-08-21",
-        "issuanceDateLabel": "Aug 21, 2025",
-        "updateDate": "2026-11-17",
-        "updateDateLabel": "Nov 17, 2026",
-        "deviationCount": 35,
-        "previousUpdateDate": "2026-04-20",
-        "previousUpdateDateLabel": "Apr 20, 2026"
-      },
-      {
-        "partNumber": 42,
-        "partLabel": "Part 42",
-        "title": "Contract Administration and Audit Services",
-        "fullTitle": "Part 42 - Contract Administration and Audit Services",
-        "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-42",
-        "issuanceDate": "2025-09-30",
-        "issuanceDateLabel": "Sep 30, 2025",
-        "updateDate": "2026-11-17",
-        "updateDateLabel": "Nov 17, 2026",
-        "deviationCount": 31,
-        "previousUpdateDate": "",
-        "previousUpdateDateLabel": ""
-      },
-      {
-        "partNumber": 52,
-        "partLabel": "Part 52",
-        "title": "Solicitation Provisions and Contract Clauses",
-        "fullTitle": "Part 52 - Solicitation Provisions and Contract Clauses",
-        "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-52",
-        "issuanceDate": "2025-10-28",
-        "issuanceDateLabel": "Oct 28, 2025",
-        "updateDate": "2026-11-17",
-        "updateDateLabel": "Nov 17, 2026",
-        "deviationCount": 0,
-        "previousUpdateDate": "2026-07-01",
-        "previousUpdateDateLabel": "Jul 1, 2026"
-      }
-    ],
-    "newAgencyDeviations": [
-      {
-        "part": {
-          "partNumber": 9,
-          "partLabel": "Part 9",
-          "title": "Contractor Qualifications",
-          "fullTitle": "Part 9 - Contractor Qualifications",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
-          "issuanceDate": "2025-08-21",
-          "issuanceDateLabel": "Aug 21, 2025",
-          "updateDate": "2026-11-17",
-          "updateDateLabel": "Nov 17, 2026",
-          "deviationCount": 35
-        },
-        "agency": {
-          "name": "General Services Administration (GSA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-9_Supplement_1-3.pdf",
-          "id": "00d742eb732d8ca0"
-        }
-      },
-      {
-        "part": {
-          "partNumber": 42,
-          "partLabel": "Part 42",
-          "title": "Contract Administration and Audit Services",
-          "fullTitle": "Part 42 - Contract Administration and Audit Services",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-42",
-          "issuanceDate": "2025-09-30",
-          "issuanceDateLabel": "Sep 30, 2025",
-          "updateDate": "2026-11-17",
-          "updateDateLabel": "Nov 17, 2026",
-          "deviationCount": 31
-        },
-        "agency": {
-          "name": "General Services Administration (GSA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-42_Supplement_1.pdf",
-          "id": "ef0c08859305320d"
-        }
-      }
-    ],
-    "removedAgencyDeviations": [
-      {
-        "part": {
-          "partNumber": 9,
-          "partLabel": "Part 9",
-          "title": "Contractor Qualifications",
-          "fullTitle": "Part 9 - Contractor Qualifications",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
-          "issuanceDate": "2025-08-21",
-          "issuanceDateLabel": "Aug 21, 2025",
-          "updateDate": "2026-11-17",
-          "updateDateLabel": "Nov 17, 2026",
-          "deviationCount": 35
-        },
-        "agency": {
-          "name": "General Services Administration (GSA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-9-Supplement.pdf",
-          "id": "d8fb974e39d698d8"
-        }
-      },
-      {
-        "part": {
-          "partNumber": 42,
-          "partLabel": "Part 42",
-          "title": "Contract Administration and Audit Services",
-          "fullTitle": "Part 42 - Contract Administration and Audit Services",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-42",
-          "issuanceDate": "2025-09-30",
-          "issuanceDateLabel": "Sep 30, 2025",
-          "updateDate": "2026-11-17",
-          "updateDateLabel": "Nov 17, 2026",
-          "deviationCount": 31
-        },
-        "agency": {
-          "name": "General Services Administration (GSA)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/GSA_RFO_Deviation_Part-42.pdf",
-          "id": "a8fc7cbf8cd1028c"
-        }
-      }
-    ]
+    "updatedParts": [],
+    "newAgencyDeviations": [],
+    "removedAgencyDeviations": []
   },
   "parts": [
     {
