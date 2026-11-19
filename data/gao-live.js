@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-11-18T16:40:16.005Z",
+  "generatedAt": "2026-11-19T16:44:00.925Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -10,8 +10,8 @@ window.KTHQ_GAO_DATA = {
     "total": 16,
     "latestDecisionDate": "2026-11-12",
     "sustained": 1,
-    "denied": 10,
-    "dismissed": 3,
+    "denied": 11,
+    "dismissed": 2,
     "mixed": 2,
     "unclassified": 0,
     "sourceStatus": {
@@ -23,7 +23,7 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 16
+        "parsedOutcomes": 14
       },
       "productPages": {
         "attempted": 16,
@@ -369,6 +369,34 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
+      "id": "B-424449.2",
+      "caseName": "RAS Enterprises, LLC",
+      "title": "RAS Enterprises, LLC",
+      "bNumbers": [
+        "B-424449.2"
+      ],
+      "bNumberText": "B-424449.2",
+      "link": "https://www.gao.gov/products/b-424449.2",
+      "publicationDate": "2026-11-19",
+      "decisionDate": "2026-10-23",
+      "displayDate": "Oct 23, 2026",
+      "outcome": "denied",
+      "outcomeLabel": "Denied",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny the protest.",
+      "officialSynopsis": "RAS Enterprises, LLC, an SDVOSB of Gulfport, Mississippi, challenges the terms of request for quotations (RFQ) No. 36C77626Q0016, issued by the...",
+      "highlights": "",
+      "digest": "1. Protest challenging solicitation requirement for a contractor-offered website as unduly restrictive of competition is denied where the agency has reasonably established that the requirement is necessary to meet its needs. 2. Protest arguing that solicitation should have been set aside for service‑disabled veteran-owned small businesses (SDVOSB) is denied where the agency reasonably concluded from its market research that would not receive quotations from two or more capable SDVOSB concerns at fair and reasonable prices. 3. Protest challenging the terms of the solicitation as ambiguous is denied where the challenged terms are clear and unambiguous.",
+      "tags": [
+        "Solicitation terms",
+        "Price / cost",
+        "Small business"
+      ],
+      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
+    {
       "id": "B-419224.2",
       "caseName": "Veteran Design and Construction Inc.",
       "title": "Veteran Design and Construction Inc.",
@@ -417,34 +445,6 @@ window.KTHQ_GAO_DATA = {
         "Solicitation terms"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-423574.2",
-      "caseName": "Encon Desbuild JV4, LLC",
-      "title": "Encon Desbuild JV4, LLC",
-      "bNumbers": [
-        "B-423574.2"
-      ],
-      "bNumberText": "B-423574.2",
-      "link": "https://www.gao.gov/products/b-423574.2",
-      "publicationDate": "2026-10-23",
-      "decisionDate": "2026-10-19",
-      "displayDate": "Oct 19, 2026",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protest as untimely.",
-      "officialSynopsis": "Encon Desbuild JV4, LLC (EDJV4), a small business of Hyattsville, Maryland, protests the exclusion of its proposal from the competition under request...",
-      "highlights": "",
-      "digest": "In a procurement conducted under the two-phase design-build selection procedures of Federal Acquisition Regulation subpart 36.3, protest challenging evaluation of protester's phase one proposal is dismissed as untimely where the protest was filed more than 10 days after the protester received information that formed the basis of the protest.",
-      "tags": [
-        "Timeliness",
-        "Evaluation",
-        "Small business"
-      ],
-      "practitionerNote": "Watch the clock. GAO filing windows are unforgiving, and late supplemental grounds usually die even when the underlying issue matters.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     },
