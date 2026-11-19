@@ -145,3 +145,31 @@ test('explicit New Year dates determine the numeral and malformed dates cannot r
   assert.equal(calendar.getNewYear(new Date(NaN)), null);
   assert.equal(calendar.getNewYear(new Date(NaN), undefined, '2028-01-01'), 2028);
 });
+
+test('fiscal countdown and September boundaries use the visitor’s local midnight', () => {
+  const { execFileSync } = require('node:child_process');
+  for (const [zone, midnight] of [['America/Los_Angeles','2027-10-01T07:00:00Z'],
+    ['Asia/Kathmandu','2027-09-30T18:15:00Z'], ['Pacific/Auckland','2027-09-30T11:00:00Z']]) {
+    const script = `
+      const assert = require('node:assert/strict');
+      const api = require('./scripts/seasonal-calendar.js');
+      const end = new Date(process.argv[1]);
+      const before = new Date(+end - 1000);
+      assert.deepEqual(api.fiscalCountdown(before, 2027), {days:0,hours:0,minutes:0,seconds:1,finalDay:true});
+      assert.equal(api.fiscalCountdown(end, 2027).seconds, 0);
+      assert.equal(api.resolveSeason({now:before,localFiscalMonth:true}), 'fiscal');
+      assert.equal(api.resolveSeason({now:end,localFiscalMonth:true}), 'halloween');
+      assert.equal(api.resolveSeason({now:new Date(2027,8,1),localFiscalMonth:true}), 'fiscal');
+      assert.equal(api.resolveSeason({now:new Date(2027,8,1)-1,localFiscalMonth:true}), 'standard');
+    `;
+    execFileSync(process.execPath, ['-e', script, midnight], {env:{...process.env,TZ:zone},cwd:path.join(__dirname,'..')});
+  }
+});
+
+test('world clock stations reach their October midnight at different instants', () => {
+  for (const [zone, instant] of [
+    ['UTC','2027-10-01T00:00:00Z'], ['America/Los_Angeles','2027-10-01T07:00:00Z'],
+    ['Europe/Berlin','2027-09-30T22:00:00Z'], ['Asia/Kathmandu','2027-09-30T18:15:00Z'],
+    ['Pacific/Auckland','2027-09-30T11:00:00Z'], ['Pacific/Honolulu','2027-10-01T10:00:00Z']
+  ]) assert.equal(calendar.fiscalCloseInZone(2027, zone), Date.parse(instant));
+});

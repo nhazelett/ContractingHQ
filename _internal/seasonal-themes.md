@@ -4,7 +4,7 @@ The homepage and training hub share one annual calendar. Their links, announceme
 
 ## Calendar
 
-All boundaries use America/New_York, independent of the visitor's timezone. A theme runs through the last day shown and switches at midnight on the following day.
+September follows the visitor’s device time zone for seasonal page selection. Other boundaries use America/New_York, independent of the visitor's timezone. A theme runs through the last day shown and switches at midnight on the following day.
 
 | Dates | Theme key |
 | --- | --- |
@@ -42,12 +42,28 @@ The artwork shows the current Eastern year during January. An out-of-season New 
 
 The fireworks use the same animation loop, pause button, reduced-motion preference, and navigation cleanup as the other seasonal effects. Their drawing surface is capped at 800 CSS pixels to keep the animation near the top of long training pages. Gold numerals and static vector bursts remain visible with effects paused, reduced motion enabled, or the fireworks script unavailable. Fireworks have no audio.
 
+## Valentine’s Day presentation
+
+February uses deep burgundy on the homepage and training hub. A photograph-style still life of crimson roses and a wax-sealed envelope accompanies the homepage love letter and decorates the training header. Paper hearts drift across the top of both pages and follow the shared pause and reduced-motion settings. Open `/seasonal-preview.html?theme=valentine` to preview either page.
+
+## Independence Day presentation
+
+July features a framed bald eagle portrait over a woven American flag backdrop with ivory serif type, midnight navy, and brass accents. The homepage and training hub display fireworks with three concentric rings in red, ivory, and blue. They follow the shared pause and reduced-motion controls. Open `/seasonal-preview.html?theme=independence` for the local comparison.
+
+## End of fiscal year presentation
+
+September uses the blue-hour office backdrop, a desk calendar, and a direct link to the Contract File Checklist. The homepage and training hub show a 24-hour world clock. Each station counts down to its own October 1 midnight using a named time zone. Zulu is UTC. The board shows Zulu, Los Angeles, Washington DC, Ramstein, and Yokota. The picker replaces the fifth station. Amber CO and blue CS searchlights sweep across the sky above the runway and follow the shared pause and reduced-motion controls. September 30 has its own homepage caption. A date preview uses the selected local date and the current local time of day. A theme-only preview after September counts toward the following October.
+
+## Halloween presentation
+
+October keeps the standard learning copy and casts burnt-orange light through the office blinds. A soft shadow crosses the window briefly every 33 seconds while effects are enabled. A fictional reply-all thread builds from one unread message to 999 on the homepage and training hub. Pause effects freezes the thread; reduced motion shows its completed state. Open `/seasonal-preview.html?theme=halloween` to preview either page.
+
 ## Files and integration
 
 - `scripts/seasonal-calendar.js`: pure date resolution, shared by browser and Node tests.
 - `scripts/seasonal-config.js`: sitewide automatic/manual setting and effects switch.
 - `scripts/seasonal.js`: seasonal copy, illustration selection, appearance controls, effects, and lifecycle cleanup.
-- `scripts/seasonal-fireworks.js`: bounded New Year fireworks simulation; the shared controller owns animation timing and visibility.
+- `scripts/seasonal-fireworks.js`: bounded New Year and Independence Day fireworks simulation; the shared controller owns animation timing and visibility.
 - `styles/seasonal.css`: shared palettes and homepage presentation.
 - `styles/training-seasonal.css`: permanent training layout with seasonal colors.
 - `styles/thanksgiving.css`: retained Thanksgiving presentation, enabled only in that season.

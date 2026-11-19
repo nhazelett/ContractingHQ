@@ -1,4 +1,4 @@
-/* Draw-only New Year fireworks. The seasonal controller owns timing and accessibility. */
+/* Draw-only seasonal fireworks. The seasonal controller owns timing and accessibility. */
 ((root, factory) => {
   'use strict';
   const api = factory();
@@ -11,6 +11,7 @@
     ['#e4f7ff', '#b9e4ff', '#86c9ff', '#d4eeff'],
     ['#f0deff', '#d1b5ff', '#af91f0', '#e6caff']
   ];
+  const julyColors = ['#ff4659', '#fff9e8', '#579dff'];
   const clamp = (value, low, high) => Math.min(high, Math.max(low, value));
   const random = (low, high) => low + Math.random() * (high - low);
   const smooth = (low, high, value) => {
@@ -19,6 +20,7 @@
   };
 
   function create(ctx) {
+    let july = false;
     let width = 0;
     let height = 0;
     let stageHeight = 0;
@@ -32,7 +34,8 @@
     let launchIndex = 0;
     let started = false;
 
-    function reset() {
+    function reset(season) {
+      if (season !== undefined) july = season === 'independence';
       sparks = [];
       rockets = [];
       elapsed = 0;
@@ -74,7 +77,9 @@
       const speed = narrow ? clamp(width * .32, 90, 160) : clamp(width * .15, 165, 235);
       for (let i = 0; i < count; i += 1) {
         const angle = (i / count) * Math.PI * 2 + random(-.025, .025);
-        const velocity = speed * (i % 4 === 0 ? random(.36, .62) : random(.78, 1.08));
+        // Interleave three concentric rings so every July bloom carries all three colors.
+        const ring = i % 3;
+        const velocity = july ? speed * (.46 + ring * .30) : speed * (i % 4 === 0 ? random(.36, .62) : random(.78, 1.08));
         sparks.push({
           x: location.x, y: location.y,
           vx: Math.cos(angle) * velocity,
@@ -82,7 +87,7 @@
           age: initialAge,
           life: narrow ? random(2.1, 2.75) : random(2.5, 3.25),
           drag: random(.9, 1.2), gravity: random(23, 35),
-          size: random(.85, 1.55), color: colors[i % colors.length]
+          size: random(.85, 1.55), color: july ? julyColors[(ring + location.palette) % 3] : colors[i % colors.length]
         });
       }
     }
@@ -154,7 +159,7 @@
       const tail = rocketPoint(rocket, Math.max(0, rocket.age - .19));
       const middle = rocketPoint(rocket, Math.max(0, rocket.age - .09));
       const alpha = visibility(head.x, head.y);
-      ctx.strokeStyle = '#ffdda0';
+      ctx.strokeStyle = july ? julyColors[rocket.target.palette] : '#ffdda0';
       ctx.beginPath();
       ctx.moveTo(tail.x, tail.y);
       ctx.quadraticCurveTo(middle.x, middle.y, head.x, head.y);
@@ -164,7 +169,7 @@
       ctx.globalAlpha = alpha * .72;
       ctx.lineWidth = 1.4;
       ctx.stroke();
-      ctx.fillStyle = '#fff1ca';
+      ctx.fillStyle = july ? '#fff9e8' : '#fff1ca';
       ctx.beginPath();
       ctx.arc(head.x, head.y, 1.9, 0, Math.PI * 2);
       ctx.fill();

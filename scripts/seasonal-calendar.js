@@ -88,6 +88,33 @@
     return day <= monthDays[month - 1] ? { year, month, day } : null;
   }
 
+  // The native date constructor resolves the offset at the destination midnight, including DST.
+  function fiscalCountdown(now, year) {
+    const end = new Date(now);
+    end.setFullYear(year, 9, 1);
+    end.setHours(0, 0, 0, 0);
+    const seconds = Math.max(0, Math.ceil((end - now) / 1000));
+    return { days: Math.floor(seconds / 86400), hours: Math.floor(seconds / 3600) % 24,
+      minutes: Math.floor(seconds / 60) % 60, seconds: seconds % 60,
+      finalDay: now.getFullYear() === year && now.getMonth() === 8 && now.getDate() === 30 };
+  }
+
+  // Find the first instant on October 1 in the named zone, even for fractional
+  // offsets or a clock change at midnight. Call once per station and target year.
+  function fiscalCloseInZone(year, zone) {
+    const formatter = new Intl.DateTimeFormat('en-US', {timeZone: zone, month: 'numeric'});
+    const pivot = new Date(0);
+    pivot.setUTCFullYear(year, 9, 1);
+    let low = pivot.getTime() - 86400000;
+    let high = pivot.getTime() + 86400000;
+    while (high - low > 1) {
+      const mid = low + Math.floor((high - low) / 2);
+      if (Number(formatter.format(mid)) === 9) low = mid;
+      else high = mid;
+    }
+    return high;
+  }
+
   // January shows its own year; an out-of-season preview welcomes the next January.
   // A valid explicit date always keeps the year the reviewer selected.
   function getNewYear(date = new Date(), timeZone = defaultTimeZone, previewDate) {
@@ -106,13 +133,19 @@
       const preview = previewParts(settings.previewDate);
       if (preview) return seasonForParts(preview);
       if (isTheme(settings.mode)) return settings.mode;
-      return getSeason(settings.now, settings.timeZone);
+      const scheduled = getSeason(settings.now, settings.timeZone);
+      if (settings.localFiscalMonth) {
+        const month = new Date(settings.now === undefined ? Date.now() : settings.now).getMonth();
+        if (month === 8) return 'fiscal';
+        if (scheduled === 'fiscal') return month === 9 ? 'halloween' : 'standard';
+      }
+      return scheduled;
     } catch (error) {
       return 'standard';
     }
   }
 
   return Object.freeze({
-    defaultTimeZone, themes, getEasternParts, thanksgivingDay, getSeason, getNewYear, resolveSeason
+    defaultTimeZone, themes, getEasternParts, thanksgivingDay, getSeason, getNewYear, fiscalCountdown, fiscalCloseInZone, resolveSeason
   });
 });

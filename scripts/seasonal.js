@@ -35,6 +35,14 @@
     var frame = 0;
     var clockTimer = 0;
     var lastDraw = 0;
+    var sweepPhase = 0;
+    var inboxTimer;
+    var inboxStep = 0;
+    var inboxCounts = [1, 2, 13, 47, 186, 437, 999];
+    var replies = ['Me too, please.', 'Everyone, please stop replying all.', 'Who owns this distro?', 'I think you meant to send this just to the sender.'];
+    var inbox;
+    var skyY = 0;
+    var horizonY = 0;
     var width = 0;
     var height = 0;
     var particles = [];
@@ -48,7 +56,7 @@
     try { ctx = canvas && canvas.getContext('2d'); } catch (_) { /* Static theme remains available. */ }
     var fireworks = null;
     try { if (ctx && window.KTHQSeasonFireworks) fireworks = window.KTHQSeasonFireworks.create(ctx); } catch (_) { /* Keep the static New Year artwork. */ }
-    var effects = { thanksgiving: 'leaves', christmas: 'snow', winter: fireworks ? 'fireworks' : null, independence: 'sparkles', halloween: 'embers' };
+    var effects = { thanksgiving: 'leaves', christmas: 'snow', winter: fireworks ? 'fireworks' : null, valentine: 'hearts', independence: fireworks ? 'fireworks' : 'sparkles', fiscal: 'searchlights', halloween: 'inbox' };
     var labels = { standard: 'Standard KTHQ', winter: 'New Year', valentine: 'Valentine’s', independence: 'Fourth of July', fiscal: 'End of Fiscal Year', halloween: 'Halloween', thanksgiving: 'Thanksgiving', christmas: 'Christmas' };
     var copy = {
       standard: { eyebrow: 'Built by practitioners. For practitioners.', greeting: '', message: '', action: 'Explore Training' },
@@ -70,28 +78,22 @@
         communityLabel: 'Another year together', communityTitle: 'Glad you’re here.', community: 'Whether you’ve been here from the start or just found us, thanks for being part of KTHQ. Here’s to another year of figuring things out together.'
       },
       valentine: {
-        eyebrow: 'A little appreciation goes a long way', greeting: 'For the people who care about getting it right.',
-        message: 'Here’s to the teammates, mentors, and families who make the hard days easier and the good days better.', action: 'Find something to love',
-        title: 'Better with good people.', card: 'Share a useful resource. Thank a mentor. Make someone’s day a little easier.',
-        communityLabel: 'Pass it on', communityTitle: 'Good work has people behind it.', community: 'A patient explanation, a second set of eyes, a little encouragement. The small things add up. Thank you for bringing them to this community.'
+        eyebrow: 'A love letter to our contracting community', greeting: 'Dear contracting people, we have a crush on you.',
+        message: 'You slid a chair over for the new specialist. You picked up on the third ring during closeout. We remember those things. If we could leave roses on every one of your desks, we would.', action: 'Find something to love',
+        title: 'Darling, these are yours.', card: 'All our love, KTHQ',
+        communityLabel: 'P.S. One more thing', communityTitle: 'Tell your work valentine.', community: 'You know the one. Their name pops up on Teams and your shoulders drop an inch. Send them the sappy message. “My first year would have been so much harder without you” is a pretty good place to start.'
       },
       independence: {
-        eyebrow: 'An American summer', greeting: 'A shared purpose. A little summer spirit.',
-        message: 'Celebrating Independence Day and the people who bring dedication, care, and good judgment to public service.', action: 'Explore Training',
-        title: 'Celebrate the Fourth.', card: 'Here’s to the communities we serve and the people who make them stronger.',
-        communityLabel: 'July at KTHQ', communityTitle: 'Good company. Shared purpose.', community: 'However you spend the summer, take a little time for the people and places that make the work matter.'
+        eyebrow: 'Independence Day · July 4', greeting: 'Let freedom ring.',
+        message: 'From a flag raised at first light to the last firework over the water, happy Independence Day from KTHQ.', action: 'Explore Training',
+        title: 'The American Bald Eagle', card: 'Independence Day · July 4, 1776',
+        communityLabel: 'From all of us at KTHQ', communityTitle: 'Save a seat at the picnic.', community: 'For the crew on duty tonight, the families watching from a thousand miles away, and the neighbor who brought enough food for the whole block, happy Independence Day. This country is lucky to have you.'
       },
       fiscal: {
-        eyebrow: 'September · Fiscal year close', greeting: 'Finish strong. Keep your judgment.',
-        message: 'A busy September calls for clear priorities, complete requirements, and a team that looks out for each other.', action: 'Sharpen your toolkit',
-        title: 'One thoughtful decision at a time.', card: 'Stay steady. Ask the next good question. Take care of your people.',
+        eyebrow: 'September · Fiscal year close', greeting: 'Bring it home.',
+        message: 'To the specialist working their first fiscal year end and the CO who pulled up a chair beside them: this place is for you.', action: 'Open the Contract File Checklist',
+        title: 'September 30', card: 'The last light on the contracting floor.',
         communityLabel: 'The September stretch', communityTitle: 'There are people behind every deadline.', community: 'Share what you know. Ask for help early. Bring a little patience to the next conversation. The mission needs good judgment all the way through.'
-      },
-      halloween: {
-        eyebrow: 'October after dark', greeting: 'A little spooky. Still mission ready.',
-        message: 'The season for crisp evenings, strange stories, and finally tackling that topic that’s been haunting you.', action: 'Unearth some knowledge',
-        title: 'Curiosity after dark.', card: 'A good question can make even the unfamiliar feel a little less frightening.',
-        communityLabel: 'An October invitation', communityTitle: 'Go looking for something new.', community: 'A lesson you have not tried. A tool you have not opened. A conversation worth having. There is always another corner of KTHQ to explore.'
       }
     };
 
@@ -105,7 +107,7 @@
       if (el) { el.textContent = value || ''; el.hidden = !value; }
     }
     function configuredSeason() {
-      return calendar.resolveSeason({ now: new Date(), timeZone: config.timeZone, mode: config.mode, preview: preview, previewDate: previewDate });
+      return calendar.resolveSeason({ now: new Date(), timeZone: config.timeZone, localFiscalMonth: true, mode: config.mode, preview: preview, previewDate: previewDate });
     }
     function newYearArt(year) {
       // Editable vector artwork keeps the celebration visible with motion disabled.
@@ -138,12 +140,12 @@
       var svg = '<svg viewBox="0 0 300 270" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">';
       var base = '<ellipse cx="150" cy="242" rx="88" ry="10" fill="currentColor" opacity=".07"/>';
       var art = {
-        valentine: '<g transform="rotate(-8 150 146)"><rect x="54" y="83" width="192" height="132" rx="9" fill="var(--season-surface-raised)" stroke="currentColor" stroke-opacity=".6"/><path d="m57 89 93 72 93-72M57 209l70-64m116 64-70-64" fill="none" stroke="currentColor" stroke-opacity=".4"/><circle cx="150" cy="154" r="27" fill="var(--season-bg)" stroke="currentColor"/><path d="M150 168c-30-18-16-37 0-24 16-13 30 6 0 24Z" fill="currentColor"/></g><path d="m75 46 2 8 8 2-8 2-2 8-2-8-8-2 8-2m151-18 2 9 9 2-9 2-2 9-2-9-9-2 9-2" fill="currentColor" opacity=".6"/>',
-        independence: '<circle cx="150" cy="130" r="94" fill="none" stroke="currentColor" stroke-opacity=".2"/><circle cx="150" cy="130" r="82" fill="none" stroke="currentColor" stroke-opacity=".25" stroke-dasharray="1 9"/><path d="m150 52 23 48 53 8-38 37 9 53-47-25-47 25 9-53-38-37 53-8Z" fill="var(--season-surface-raised)" stroke="currentColor" stroke-width="2"/><path d="m150 52 0 78 76-22m-76 22 47 68m-47-68-47 68m47-68-76-22" fill="none" stroke="currentColor" stroke-opacity=".35"/><path d="M69 218h162" stroke="var(--season-secondary)" stroke-width="4"/><path d="M93 229h114" stroke="currentColor" stroke-width="2"/>',
-        fiscal: '<g transform="rotate(-5 150 135)"><rect x="65" y="48" width="170" height="172" rx="12" fill="var(--season-surface-raised)" stroke="currentColor" stroke-opacity=".65"/><path d="M65 89h170M108 36v27m84-27v27" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><text x="150" y="143" text-anchor="middle" fill="currentColor" font-family="Georgia,serif" font-size="49">30</text><text x="150" y="175" text-anchor="middle" fill="currentColor" font-family="Inter,Arial,sans-serif" font-size="16" letter-spacing="5">SEP</text><path d="m130 193 11 10 27-23" stroke="var(--season-secondary)" stroke-width="3" fill="none" stroke-linecap="round"/></g>',
-        halloween: '<path d="M217 46c-20 2-32 22-21 40-27-5-34-38-14-55 8-7 19-10 30-6-8 3-13 11-13 19 6 3 12 3 18 2Z" fill="var(--season-secondary)" opacity=".65"/><path d="M149 106c-2-22 6-34 20-37" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round"/><ellipse cx="111" cy="162" rx="42" ry="56" fill="var(--season-surface-raised)" stroke="currentColor"/><ellipse cx="189" cy="162" rx="42" ry="56" fill="var(--season-surface-raised)" stroke="currentColor"/><ellipse cx="150" cy="163" rx="47" ry="59" fill="var(--season-surface-raised)" stroke="currentColor"/><ellipse cx="150" cy="163" rx="23" ry="59" fill="none" stroke="currentColor" stroke-opacity=".5"/><path d="m114 150 16-16 10 19Zm72 0-16-16-10 19ZM123 179q27 28 54 0" fill="currentColor"/><path d="m67 71 2 7 7 2-7 2-2 7-2-7-7-2 7-2" fill="currentColor" opacity=".6"/>'
+        valentine: '<img src="/images/valentine-roses.webp" width="1200" height="800" alt="Deep red roses and a love letter closed with a heart-shaped wax seal.">',
+        independence: '<img src="/images/independence-eagle-portrait.webp" width="1200" height="800" alt="A bald eagle fixes its golden eye on the viewer, its white feathers edged with light.">',
+        fiscal: '<img src="/images/eofy-calendar.webp" alt="A September 30 desk calendar beside a brass pen in lamplight.">',
+        halloween: ''
       };
-      return svg + base + (art[name] || '') + '</svg>';
+      return name === 'valentine' || name === 'independence' || name === 'fiscal' || name === 'halloween' ? art[name] : svg + base + (art[name] || '') + '</svg>';
     }
     var controls = document.querySelector('[data-season-controls]');
     var motionButton;
@@ -168,6 +170,92 @@
       hero.parentNode.insertBefore(notice, hero);
     }
 
+    var fiscalTimer;
+    var fiscalYear;
+    var previewOffset = 0;
+    var stationBody = document.querySelector('[data-fiscal-stations]');
+    var zonePicker = document.querySelector('[data-fiscal-picker]');
+    var stationRows = [];
+    var boardYear;
+    var stations = [
+      ['Zulu', 'UTC'], ['Los Angeles', 'America/Los_Angeles'],
+      ['Washington, DC', 'America/New_York'], ['Ramstein', 'Europe/Berlin']
+    ];
+    var actionLink = document.querySelector('[data-season-action]')?.closest('a');
+    var originalHref = actionLink && actionLink.getAttribute('href');
+    if (validDate) {
+      var actual = new Date();
+      var simulated = new Date(actual);
+      var parts = previewDate.split('-').map(Number);
+      simulated.setFullYear(parts[0], parts[1] - 1, parts[2]);
+      previewOffset = simulated - actual;
+    }
+
+    function addStation(name, zone) {
+      var row = stationBody.insertRow();
+      var label = document.createElement('th');
+      label.scope = 'row';
+      label.textContent = name;
+      label.title = zone;
+      row.appendChild(label);
+      stationRows.push({
+        row: row, time: row.insertCell(), left: row.insertCell(),
+        format: new Intl.DateTimeFormat('en-GB', {timeZone: zone, hourCycle: 'h23', hour: '2-digit', minute: '2-digit'}),
+        close: calendar.fiscalCloseInZone(fiscalYear, zone)
+      });
+    }
+
+    function addComparisonStation() {
+      var zone = zonePicker.value || 'Asia/Tokyo';
+      addStation(zone === 'Asia/Tokyo' ? 'Yokota' : zone.replace(/_/g, ' '), zone);
+    }
+
+    function syncFiscalClock() {
+      if (season !== 'fiscal' || !stationBody) return;
+      if (boardYear !== fiscalYear) {
+        boardYear = fiscalYear;
+        stationBody.replaceChildren();
+        stationRows = [];
+        stations.forEach(function (station) { addStation(station[0], station[1]); });
+        addComparisonStation();
+        text('[data-fiscal-zone]', 'Time until October 1, ' + fiscalYear + ' at midnight in each zone.');
+      }
+      if (zonePicker.options.length === 1) {
+        var zones = Intl.supportedValuesOf ? Intl.supportedValuesOf('timeZone') :
+          ['Pacific/Honolulu','America/Denver','America/Chicago','Europe/London','Asia/Qatar','Pacific/Guam','America/Anchorage','America/Phoenix','America/Puerto_Rico','Africa/Nairobi','Asia/Kolkata','Asia/Kathmandu','Asia/Seoul','Australia/Adelaide','Pacific/Auckland'];
+        zones.filter(zone => zone !== 'Asia/Tokyo' && !stations.some(station => station[1] === zone)).forEach(function (zone) {
+          zonePicker.add(new Option(zone.replace(/_/g, ' '), zone));
+        });
+      }
+      tickFiscalClock();
+    }
+
+    listen(zonePicker, 'change', function () {
+      if (stationRows.length > stations.length) stationRows.pop().row.remove();
+      addComparisonStation();
+      tickFiscalClock();
+    });
+
+    function tickFiscalClock() {
+      clearTimeout(fiscalTimer);
+      if (disposed || document.hidden || season !== 'fiscal' || !stationBody) return;
+      var now = new Date(Date.now() + previewOffset);
+      var pad = value => String(value).padStart(2, '0');
+      stationRows.forEach(function (station) {
+        var seconds = Math.max(0, Math.ceil((station.close - now) / 1000));
+        var days = Math.floor(seconds / 86400);
+        var time = station.format.format(now);
+        if (station.time.textContent !== time) station.time.textContent = time;
+        station.left.textContent = seconds ? days + 'd ' + pad(Math.floor(seconds / 3600) % 24) + ':' +
+          pad(Math.floor(seconds / 60) % 60) + ':' + pad(seconds % 60) : 'Closed';
+      });
+      var caption = document.querySelector('[data-season-card-copy]');
+      var finalDay = now.getMonth() === 8 && now.getDate() === 30;
+      var note = finalDay ? 'For everyone still at their desk.' : copy.fiscal.card;
+      if (caption && caption.textContent !== note) caption.textContent = note;
+      fiscalTimer = setTimeout(tickFiscalClock, 1000 - now.getMilliseconds() + 5);
+    }
+
     function apply() {
       if (disposed) return;
       var chosen = configuredSeason();
@@ -185,9 +273,17 @@
         themeButton.textContent = preferStandard ? 'Use seasonal theme' : 'Use standard theme';
         themeButton.setAttribute('aria-label', themeButton.textContent + ' on this device');
       }
-      if (season === next && celebrationYear === nextYear) { syncMotion(); return; }
-      if (fireworks) fireworks.reset();
+      if (season === next && celebrationYear === nextYear) { syncFiscalClock(); syncMotion(); return; }
+      if (fireworks) fireworks.reset(next);
+      clearTimeout(fiscalTimer);
+      clearTimeout(inboxTimer); inboxTimer = 0; inbox = null;
       season = next;
+      if (season === 'fiscal') {
+        var fiscalNow = new Date(Date.now() + previewOffset);
+        fiscalYear = validDate ? Number(previewDate.slice(0, 4)) : fiscalNow.getUTCFullYear();
+        // Keep one target year worldwide until even the last UTC-12 zone has closed.
+        if (!validDate && fiscalNow >= calendar.fiscalCloseInZone(fiscalYear, 'Etc/GMT+12')) fiscalYear++;
+      }
       celebrationYear = nextYear;
       var harvestStyle = document.getElementById('thanksgiving-theme');
       if (harvestStyle) harvestStyle.media = season === 'thanksgiving' ? 'all' : 'not all';
@@ -199,6 +295,7 @@
       text('[data-season-greeting]', words.greeting);
       text('[data-season-message]', words.message);
       text('[data-season-action]', words.action);
+      if (actionLink) actionLink.setAttribute('href', season === 'fiscal' ? 'contract-file-checklist.html' : originalHref);
       text('[data-season-label]', labels[season] + ' at KTHQ');
       text('[data-season-title]', words.title);
       text('[data-season-card-copy]', words.card);
@@ -218,11 +315,16 @@
           art.replaceChildren(tree);
         } else art.innerHTML = season === 'winter' ? newYearArt(celebrationYear) : emblem(season);
       }
+      if (season === 'halloween') {
+        var host = art || document.querySelector('[data-training-inbox]');
+        if (host) mountInbox(host);
+      }
+      syncFiscalClock();
       resize();
       syncMotion();
       if (visibilityObserver) {
         visibilityObserver.disconnect();
-        visibilityObserver.observe(season === 'winter' && canvas && !canvas.hidden ? canvas : hero);
+        visibilityObserver.observe(inbox || ((effects[season] === 'fireworks' || season === 'valentine' || season === 'fiscal' || season === 'halloween') && canvas && !canvas.hidden ? canvas : hero));
       }
     }
 
@@ -235,7 +337,15 @@
     function resize() {
       if (!ctx || !canvas) return;
       width = hero.clientWidth;
-      height = effects[season] === 'fireworks' ? Math.min(hero.clientHeight, 800) : hero.clientHeight;
+      height = (effects[season] === 'fireworks' || season === 'valentine' || season === 'fiscal' || season === 'halloween') ? Math.min(hero.clientHeight, 800) : hero.clientHeight;
+      if (season === 'fiscal') {
+        // The office photo is 2:1. Follow its rendered crop from the ceiling to the runway.
+        var training = hero.id === 'trainingSeason';
+        var photoHeight = training ? Math.max(width, 760) / 2 : Math.max(hero.clientHeight, width / 2);
+        var photoTop = training ? 0 : (hero.clientHeight - photoHeight) / 2;
+        skyY = photoTop + photoHeight * .245;
+        horizonY = photoTop + photoHeight * .51;
+      }
       canvas.style.height = height + 'px';
       var dpr = Math.min(window.devicePixelRatio || 1, 1.25);
       canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
@@ -243,6 +353,45 @@
       if (fireworks) fireworks.resize(width, height);
       var count = hero.id === 'trainingSeason' ? 12 : width < 680 ? 16 : 32;
       particles = Array.from({ length: count }, function () { return makeParticle(true); });
+    }
+    function drawSpotlight(baseX, baseY, targetX, targetY, radius, signal) {
+      var dx = targetX - baseX;
+      var dy = targetY - baseY;
+      var length = Math.hypot(dx, dy);
+      var tint = signal === 'CO' ? '255,220,153' : '174,212,248';
+      ctx.save();
+      ctx.translate(baseX, baseY);
+      ctx.rotate(Math.atan2(dx, -dy));
+      var wash = ctx.createLinearGradient(-radius, 0, radius, 0);
+      wash.addColorStop(0, 'rgba(' + tint + ',0)');
+      wash.addColorStop(.5, 'rgba(' + tint + ',.40)');
+      wash.addColorStop(1, 'rgba(' + tint + ',0)');
+      ctx.fillStyle = wash;
+      ctx.beginPath();
+      ctx.moveTo(-2, 0);
+      ctx.lineTo(-radius, -length);
+      ctx.quadraticCurveTo(0, -length - radius * .27, radius, -length);
+      ctx.lineTo(2, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
+      ctx.save();
+      ctx.translate(targetX, targetY);
+      ctx.scale(1, .66);
+      var glow = ctx.createRadialGradient(0, 0, 0, 0, 0, radius * 1.45);
+      glow.addColorStop(0, 'rgba(' + tint + ',.94)');
+      glow.addColorStop(.58, 'rgba(' + tint + ',.81)');
+      glow.addColorStop(.71, 'rgba(' + tint + ',.26)');
+      glow.addColorStop(1, 'rgba(' + tint + ',0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(-radius * 1.5, -radius * 1.5, radius * 3, radius * 3);
+      ctx.fillStyle = '#273342';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = 'bold ' + Math.round(radius * .95) + 'px Georgia, serif';
+      ctx.fillText(signal, 0, radius * .04);
+      ctx.restore();
     }
     function draw(now) {
       if (disposed || !hero.isConnected) return;
@@ -253,12 +402,28 @@
       ctx.clearRect(0, 0, width, height);
       var type = effects[season];
       if (type === 'fireworks') { fireworks.draw(now, dt); return; }
+      if (type === 'searchlights') {
+        sweepPhase = (sweepPhase + dt * Math.PI / 8) % (Math.PI * 2);
+        // Keep both moving signals clear of the calendar panel on wider layouts.
+        var reach = Math.min(56, width * .085);
+        var aim = Math.sin(sweepPhase);
+        drawSpotlight(width * .47, horizonY, width * (.46 + .065 * aim), skyY, reach, 'CO');
+        drawSpotlight(width * .32, horizonY, width * (.24 - .065 * aim), skyY + reach * .22, reach * .87, 'CS');
+        return;
+      }
       particles.forEach(function (p) {
         p.y += p.speed * dt; p.x += Math.sin(now * .0004 + p.phase) * 10 * dt; p.rotation += .3 * dt;
         if (p.y > height + 30) Object.assign(p, makeParticle(false));
-        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rotation);
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(type === 'hearts' ? Math.sin(p.rotation) * .45 : p.rotation);
         ctx.globalAlpha = p.alpha * (p.x > width * .1 && p.x < width * .65 ? .35 : 1);
-        if (type === 'leaves') {
+        if (type === 'hearts') {
+          ctx.fillStyle = ['#f3adbe', '#cf738e', '#efccac', '#e68c9e'][p.tone];
+          ctx.scale(p.size * 1.6, p.size * 1.6);
+          ctx.beginPath(); ctx.moveTo(0, 1);
+          ctx.bezierCurveTo(-2, -.25, -.9, -1.7, 0, -.7);
+          ctx.bezierCurveTo(.9, -1.7, 2, -.25, 0, 1);
+          ctx.fill();
+        } else if (type === 'leaves') {
           ctx.fillStyle = ['#cb8747','#c25b34','#d8ad64','#9b5831'][p.tone];
           var s = p.size * 2.4;
           ctx.beginPath(); ctx.moveTo(0, -s * 1.5); ctx.lineTo(s * .4, -s * .5); ctx.lineTo(s, -s);
@@ -276,11 +441,43 @@
         ctx.restore();
       });
     }
+    function mountInbox(host) {
+      host.innerHTML = '<div class="distro-monitor" role="group" aria-label="Halloween reply-all thread">' +
+        '<div class="distro-screen"><div class="distro-bar"><b>Inbox</b><span data-unread></span></div>' +
+        '<small>To: All personnel</small><h2>PLEASE REMOVE ME FROM THIS DISTRO</h2>' +
+        '<ol aria-label="Replies to everyone"></ol></div></div>';
+      inbox = host.querySelector('.distro-monitor');
+      var list = inbox.querySelector('ol');
+      replies.forEach(function (reply) {
+        var item = document.createElement('li');
+        item.textContent = reply;
+        list.appendChild(item);
+      });
+      inboxStep = 0;
+      renderInbox();
+    }
+
+    function renderInbox() {
+      inbox.querySelector('[data-unread]').textContent = inboxCounts[inboxStep] + ' unread';
+      Array.from(inbox.querySelectorAll('li')).forEach(function (item, index) {
+        item.hidden = index >= inboxStep;
+      });
+    }
+
+    function advanceInbox() {
+      inboxTimer = 0;
+      if (disposed || !inbox || !hero.isConnected || document.hidden || !visible || paused || reduced.matches) return;
+      inboxStep++;
+      renderInbox();
+      if (inboxStep < inboxCounts.length - 1) inboxTimer = setTimeout(advanceInbox, 3000);
+    }
+
     function syncMotion() {
       cancelAnimationFrame(frame); frame = 0; lastDraw = 0;
-      var hasEffect = config.effects !== false && !!effects[season] && !!ctx;
+      var hasEffect = config.effects !== false && !!effects[season] && (!!inbox || !!ctx);
       var allowed = hasEffect && !paused && !reduced.matches;
-      if (canvas) canvas.hidden = !allowed;
+      hero.toggleAttribute('data-shadow-running', season === 'halloween' && allowed && !document.hidden);
+      if (canvas) canvas.hidden = !allowed || !!inbox;
       if (motionButton) {
         motionButton.hidden = !hasEffect;
         motionButton.disabled = reduced.matches;
@@ -288,7 +485,11 @@
         motionButton.setAttribute('aria-pressed', String(allowed));
         motionButton.setAttribute('aria-label', reduced.matches ? 'Decorative motion disabled by your device preference' : paused ? 'Resume decorative effects' : 'Pause decorative effects');
       }
-      if (allowed && visible && !document.hidden) frame = requestAnimationFrame(draw);
+      if (inbox) {
+        if (reduced.matches || config.effects === false) { inboxStep = inboxCounts.length - 1; renderInbox(); }
+        if (!allowed || !visible || document.hidden) { clearTimeout(inboxTimer); inboxTimer = 0; }
+        else if (!inboxTimer && inboxStep < inboxCounts.length - 1) inboxTimer = setTimeout(advanceInbox, 3000);
+      } else if (allowed && visible && !document.hidden) frame = requestAnimationFrame(draw);
     }
     function checkClock() {
       clearTimeout(clockTimer);
@@ -298,15 +499,16 @@
         apply();
         // Align to wall-clock minute boundaries; DST never needs a 24-hour assumption.
         clockTimer = setTimeout(checkClock, 60000 - (Date.now() % 60000) + 30);
-      } else syncMotion();
+      } else { clearTimeout(fiscalTimer); syncMotion(); }
     }
     function cleanup() {
       if (disposed) return;
-      disposed = true; cancelAnimationFrame(frame); clearTimeout(clockTimer);
+      disposed = true; clearTimeout(inboxTimer); clearTimeout(fiscalTimer); cancelAnimationFrame(frame); clearTimeout(clockTimer);
       if (fireworks) fireworks.reset();
       cleanupListeners.forEach(function (remove) { remove(); });
       if (resizeObserver) resizeObserver.disconnect();
       if (visibilityObserver) visibilityObserver.disconnect();
+      hero.removeAttribute('data-shadow-running');
       if (pageObserver) pageObserver.disconnect();
       if (notice && notice.isConnected) notice.remove();
       if (canvas) canvas.hidden = true;

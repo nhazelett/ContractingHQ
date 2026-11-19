@@ -142,3 +142,20 @@ test('canvas state is restored even when a drawing operation fails', () => {
   assert.throws(() => engine.draw(0, 0), /lost drawing surface/);
   assert.deepEqual(ctx.state(), before);
 });
+
+test('July blooms keep their tricolor rings across resizes and switch back in January', () => {
+  const ctx = context();
+  const engine = isolated().create(ctx);
+  function firstBloomColors() {
+    ctx.clearLog();
+    engine.draw(0, 0);
+    return new Set(ctx.operations.filter(op => op[0] === 'stroke').map(op => op[1]));
+  }
+  engine.reset('independence');
+  for (const width of [1440, 390]) {
+    engine.resize(width, 800);
+    assert.deepEqual(firstBloomColors(), new Set(['#ff4659', '#fff9e8', '#579dff']));
+  }
+  engine.reset('winter');
+  assert.ok(firstBloomColors().has('#ffd477'));
+});
