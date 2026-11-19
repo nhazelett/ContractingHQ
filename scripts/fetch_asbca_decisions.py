@@ -244,8 +244,8 @@ def normalize_case_name(text: str, filename: str) -> str:
 
 def parse_markdown_index(markdown: str) -> list[DecisionMeta]:
     rows: list[DecisionMeta] = []
-    row_re = re.compile(r"^\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*\[([^\]]+)\]\(([^)]+)\)\s*\|\s*([^|]*?)\s*\|")
-    compact_re = re.compile(rf"^({MONTH_RE}\s+\d{{1,2}},\s+\d{{4}})\s+(.+?)\[([^\]]+)\]\(([^)]+)\)\s*(.*?)$")
+    row_re = re.compile(r"^\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*\[([^\]]+)\]\(((?:[^()\n]|\([^()\n]*\))+)\)\s*\|\s*([^|]*?)\s*\|")
+    compact_re = re.compile(rf"^({MONTH_RE}\s+\d{{1,2}},\s+\d{{4}})\s+(.+?)\[([^\]]+)\]\(((?:[^()\n]|\([^()\n]*\))+)\)\s*(.*?)$")
     for line in markdown.splitlines():
         text = line.strip()
         match = row_re.match(text)
@@ -349,20 +349,64 @@ def classify_type(filename: str, text: str) -> str:
     return "Decision"
 
 
+def disposition_text(text: str) -> str:
+    """Only explicit operative sections, never factual history or cited cases."""
+    text = re.sub(r"(?m) (?P<page>\d{1,3})[ \t]*\n\s*\n", "\n\n", text)
+    headings = list(re.finditer(r"(?im)^\s*(?:#{1,6}\s*)?(CONCLUSION|ORDER OF DISMISSAL)\s*$", text))
+    if not headings:
+        # Short consent orders have no CONCLUSION heading. Accept only their
+        # explicit current order in a short opinion section, never a quotation.
+        opinions = list(re.finditer(r"(?im)^\s*OPINION BY ADMINISTRATIVE JUDGE[^\n]*", text))
+        if not opinions:
+            return ""
+        body = re.split(r"(?im)^\s*Dated:", text[opinions[-1].end():])[0]
+        if len(body) > 2500 or not re.search(r"(?im)^It is the Board[’']s decision, pursuant to", body) or "consent judgment" not in body.lower():
+            return ""
+        tail = body[re.search(r"(?im)^It is the Board[’']s decision, pursuant to", body).start():]
+    else:
+        tail = text[headings[-1].end():]
+    tail = re.split(r"(?im)^\s*(?:Dated:|\(Signatures continued|I concur|I certify)", tail)[0]
+    return clean_text(re.sub(r"(?m)^\s*\d+\s*$", "", tail))
+
+
+def verified_pdf_text(reader: str, numbers: list[str]) -> str:
+    if re.search(r"(?i)Warning:.*(?:error|not found)|Title:.*(?:404|error page)|Target URL returned error", reader):
+        raise ValueError("Reader returned an error page, not a verified opinion.")
+    body = markdown_content(reader)
+    if "ARMED SERVICES BOARD OF CONTRACT APPEALS" not in body.upper():
+        raise ValueError("ASBCA opinion heading missing.")
+    caption_match = re.search(r"(?im)^\s*Appeals? of\b", body)
+    caption = body[caption_match.start():] if caption_match else ""
+    caption = re.split(r"(?i)Under Contract|APPEARANCES? FOR", caption)[0][:2500]
+    expected = {re.search(r"\d{5}", n).group() for n in numbers}
+    caption_numbers = set(re.findall(r"\b\d{5}\b", caption))
+    if not expected or not caption_match or not expected.issubset(caption_numbers):
+        raise ValueError("Opinion caption does not match index appeal numbers.")
+    if not re.search(r"(?i)Administrative Judge|ORDER OF DISMISSAL", body):
+        raise ValueError("Opinion/order identity could not be verified.")
+    return body
+
+
 def classify_outcome(decision_type: str, text: str) -> str:
     hay = clean_text(text).lower()
-    if "consent judgment" in decision_type.lower():
-        return "settled"
-    if "dismiss" in decision_type.lower() or re.search(r"\b(appeal|motion|application|petition).{0,100}dismissed\b", hay):
-        return "dismissed"
-    if re.search(r"\b(appeal|motion|application|petition).{0,100}sustained\b", hay):
-        return "sustained"
-    if re.search(r"\b(appeal|motion|application|petition).{0,100}denied\b", hay) or " is denied" in hay:
-        return "denied"
-    if re.search(r"\b(appeal|motion|application|petition).{0,100}granted\b", hay):
-        return "granted"
-    if "non-dispositive" in decision_type.lower() or "adr" in decision_type.lower():
+    if not hay:
+        return "unclassified"
+    # A motion ruling is not the disposition of the entire appeal.
+    if re.search(r"\bwe (?:grant|deny|stay)\b|\bmotion.{0,100}\b(?:granted|denied)\b|\bremainder\b|\bin part\b", hay):
         return "procedural"
+    if "consent judgment" in hay:
+        return "settled"
+    found = []
+    for label, verb in [("sustained", "sustained"), ("denied", "denied"), ("dismissed", "dismissed")]:
+        if re.search(r"\bappeals? (?:is|are) " + verb + r"\b", hay):
+            found.append(label)
+    if not found and re.search(r"\bappeal has been withdrawn\b", hay) and "it is dismissed" in hay:
+        found.append("dismissed")
+    if not found and re.search(r"\bwe hereby order (?:these |the )?appeals? be dismissed\b", hay):
+        found.append("dismissed")
+    if len(found) == 1:
+        return found[0]
+
     return "unclassified"
 
 
@@ -379,58 +423,17 @@ def outcome_label(outcome: str) -> str:
 
 
 def relevant_sentences(text: str, max_chars: int = 620) -> str:
-    if not text:
-        return ""
-    cleaned = re.sub(r"\b(Signatures continued|I concur|I certify that the foregoing).*$", "", text, flags=re.I)
-    direct_patterns = [
-        r"(It is the Board's decision, pursuant to.*?No further interest shall be paid\.)",
-        r"(It is the Board's decision, pursuant to.*?amount of \$?[\d,]+\.\d{2}\.)",
-        r"(The dispute has been settled\.\s*The appeal is dismissed[^.]*\.)",
-        r"(The dispute has been settled\.\s*The application for attorney fees and costs is dismissed[^.]*\.)",
-        r"(The dispute has been settled\.\s*The appeal is dismissed[^.]*and no matters remain[^.]*\.)",
-        r"(The appeal is dismissed[^.]*\.)",
-        r"(The appeal is sustained[^.]*\.)",
-        r"(The appeal is denied[^.]*\.)",
-    ]
-    for pattern in direct_patterns:
-        match = re.search(pattern, cleaned, re.I)
-        if match:
-            return clean_text(match.group(1))[:max_chars].rstrip()
-    candidates = re.split(r"(?<=[.!?])\s+", cleaned)
-    priority = [
-        r"appeal is sustained",
-        r"appeal is denied",
-        r"appeal is dismissed",
-        r"motion .* denied",
-        r"motion .* granted",
-        r"application .* denied",
-        r"lack of jurisdiction",
-        r"consent judgment",
-        r"sum certain",
-        r"certification",
-        r"termination",
-        r"equitable adjustment",
-        r"constructive change",
-        r"accord and satisfaction",
-        r"the parties have resolved",
-    ]
-    chosen: list[str] = []
-    for pattern in priority:
-        for sentence in candidates:
-            sentence = clean_text(sentence)
-            if len(sentence) < 45 or sentence in chosen:
-                continue
-            if re.search(pattern, sentence, re.I):
-                chosen.append(sentence)
-                break
-        if len(" ".join(chosen)) >= max_chars:
+    disposition = disposition_text(text)
+    if len(disposition) <= max_chars:
+        return disposition
+    # Keep the operative order in document order. Do not stitch historical sentences.
+    sentences = re.split(r"(?<=[.!?])\s+", disposition)
+    selected = []
+    for sentence in reversed(sentences):
+        if len(" ".join([sentence] + selected)) > max_chars - 4:
             break
-    if not chosen:
-        chosen = [clean_text(s) for s in candidates if len(clean_text(s)) > 70][:2]
-    text_out = clean_text(" ".join(chosen))
-    if len(text_out) > max_chars:
-        return text_out[: max_chars - 3].rstrip() + "..."
-    return text_out
+        selected.insert(0, sentence)
+    return "... " + " ".join(selected) if selected else disposition[:max_chars - 3].rstrip() + "..."
 
 
 def extract_judge(text: str, fallback: str) -> str:
@@ -495,17 +498,18 @@ def build_item(meta: DecisionMeta, index: int) -> dict[str, Any]:
 
     try:
         time.sleep(0.45)
-        pdf_text = clean_text(markdown_content(fetch_reader_with_retry(meta.pdf_url)))
+        pdf_text = verified_pdf_text(fetch_reader_with_retry(meta.pdf_url), meta.numbers)
         source_status = "reader-extracted" if pdf_text else "metadata-only"
     except Exception as exc:
         source_error = str(exc)
 
+    operative = disposition_text(pdf_text)
     excerpt = relevant_sentences(pdf_text)
     if not excerpt:
-        excerpt = "Metadata from the ASBCA decisions index. Open the PDF for the Board's full reasoning."
-    decision_type = classify_type(filename, f"{meta.case_name} {pdf_text[:3000]}")
-    outcome = classify_outcome(decision_type, f"{excerpt} {pdf_text[:5000]} {pdf_text[-5000:]}")
-    tags = classify_topics(f"{filename} {excerpt} {pdf_text[:5000]}", decision_type)
+        excerpt = "No verified current disposition excerpt available. Open the official PDF for the Board's reasoning."
+    decision_type = classify_type(filename, operative)
+    outcome = classify_outcome(decision_type, operative)
+    tags = classify_topics(operative, "") if operative else []
 
     nums = meta.numbers or extract_case_numbers(f"{filename} {pdf_text[:1500]}")
     date = meta.date or extract_date_from_text(f"{filename} {pdf_text[:1500]}")
@@ -524,11 +528,11 @@ def build_item(meta: DecisionMeta, index: int) -> dict[str, Any]:
         "displayDate": display_date(date),
         "decisionType": decision_type,
         "outcome": outcome,
-        "outcomeLabel": outcome_label(outcome),
+        "outcomeLabel": "Motion / partial ruling" if outcome == "procedural" else outcome_label(outcome),
         "judge": extract_judge(pdf_text, meta.judge),
         "officialExcerpt": excerpt,
         "tags": tags,
-        "practitionerPrompt": practitioner_prompt(tags, outcome),
+        "practitionerPrompt": ("This is a motion or partial ruling, not necessarily the final outcome of the appeal. Read the current order and reasoning before applying it." if outcome == "procedural" else "No current holding has been verified. Consult the official PDF." if outcome == "unclassified" else practitioner_prompt(tags, outcome)),
         "pdfUrl": meta.pdf_url,
         "filename": filename,
         "sourceStatus": source_status,
