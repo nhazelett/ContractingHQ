@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-11-18T16:24:23.552Z",
-  "since": "2025-05-27",
+  "generatedAt": "2026-11-19T16:30:52.448Z",
+  "since": "2025-05-28",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,12 +14,12 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 147,
+    "total": 145,
     "latestPublicationDate": "2026-11-18",
     "openCommentWindows": 15,
     "rules": 50,
     "byTone": {
-      "monitor": 95,
+      "monitor": 93,
       "watch": 26,
       "action": 26
     }
@@ -5222,80 +5222,6 @@ window.KTHQ_FEDREG_DATA = {
       "htmlUrl": "https://www.federalregister.gov/documents/2025/06/06/2025-10276/information-collection-requirements-defense-federal-acquisition-regulation-supplement-bonds-and",
       "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-06-06/pdf/2025-10276.pdf",
       "sourceQuery": "DFARS / DARS agency feed"
-    },
-    {
-      "id": "2025-09465",
-      "documentNumber": "2025-09465",
-      "title": "Submission for OMB Review; Certain Federal Acquisition Regulation Part 32 Requirements",
-      "shortTitle": "Submission for OMB Review; Certain Federal Acquisition Regulation Part 32 Requirements",
-      "system": "FAR",
-      "stage": "Notice",
-      "topic": "Clauses / reps",
-      "actionLevel": "Awareness",
-      "actionTone": "monitor",
-      "practitionerNote": "This is a clauses / reps item. Read enough to know whether it touches your current workload, then monitor for follow-on implementation.",
-      "nextSteps": [
-        "Skim the abstract",
-        "Check whether the affected topic matches your portfolio",
-        "Save the source link if it may affect an active file"
-      ],
-      "type": "Notice",
-      "publicationDate": "2025-05-27",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-06-26",
-      "datesText": "Submit comments on or before June 26, 2025.",
-      "actionText": "Notice.",
-      "summary": "Under the provisions of the Paperwork Reduction Act, the Regulatory Secretariat Division has submitted to OMB a request to review and approve an extension of a previously approved information collection requirement regarding certain Federal Acquisition Regulation part 32 requirements.",
-      "citation": "90 FR 22291",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Management and Budget Office",
-        "Federal Procurement Policy Office",
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/05/27/2025-09465/submission-for-omb-review-certain-federal-acquisition-regulation-part-32-requirements",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-05-27/pdf/2025-09465.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
-    },
-    {
-      "id": "2025-09466",
-      "documentNumber": "2025-09466",
-      "title": "Submission for OMB Review; Value Engineering Requirements",
-      "shortTitle": "Submission for OMB Review; Value Engineering Requirements",
-      "system": "Acquisition",
-      "stage": "Notice",
-      "topic": "Clauses / reps",
-      "actionLevel": "Awareness",
-      "actionTone": "monitor",
-      "practitionerNote": "This is a clauses / reps item. Read enough to know whether it touches your current workload, then monitor for follow-on implementation.",
-      "nextSteps": [
-        "Skim the abstract",
-        "Check whether the affected topic matches your portfolio",
-        "Save the source link if it may affect an active file"
-      ],
-      "type": "Notice",
-      "publicationDate": "2025-05-27",
-      "effectiveDate": "",
-      "commentsCloseDate": "2025-06-26",
-      "datesText": "Submit comments on or before June 26, 2025.",
-      "actionText": "Notice.",
-      "summary": "Under the provisions of the Paperwork Reduction Act, the Regulatory Secretariat Division has submitted to OMB a request to review and approve an extension of a previously approved information collection requirement regarding value engineering requirements.",
-      "citation": "90 FR 22294",
-      "regulationIds": [],
-      "cfrReferences": "",
-      "agencies": [
-        "Management and Budget Office",
-        "Federal Procurement Policy Office",
-        "Defense Department",
-        "General Services Administration",
-        "National Aeronautics and Space Administration"
-      ],
-      "htmlUrl": "https://www.federalregister.gov/documents/2025/05/27/2025-09466/submission-for-omb-review-value-engineering-requirements",
-      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2025-05-27/pdf/2025-09466.pdf",
-      "sourceQuery": "Federal Acquisition Regulation keyword feed"
     }
   ]
 };
