@@ -14,15 +14,14 @@ function christmasTracks() {
   return vm.runInNewContext(match[1]);
 }
 
-function liveAt(isoTime, search = '') {
-  const release = source.match(/var CHRISTMAS_2026_RELEASE = (Date\.UTC\([^)]*\));/)[1];
-  const fn = source.match(/function christmas2026Live\(\) \{[\s\S]*?\n  \}/)[0];
-  const RealDate = Date;
-  const FakeDate = { UTC: RealDate.UTC, now: () => new RealDate(isoTime).getTime() };
-  return vm.runInNewContext(`var CHRISTMAS_2026_RELEASE = ${release}; ${fn}; christmas2026Live();`, {
-    Date: FakeDate, window: { location: { search } }
+function seasonFns(search = '') {
+  const live = source.match(/function christmasSeasonLive\(\) \{[\s\S]*?\n  \}/)[0];
+  const season = source.match(/function isChristmasSeason\(date\) \{[\s\S]*?\n  \}/)[0];
+  return vm.runInNewContext(`${live}\n${season}\n({ live: christmasSeasonLive, season: isChristmasSeason })`, {
+    Date, Intl, Number, window: { location: { search } }
   });
 }
+const inSeason = (iso) => seasonFns().season(new Date(iso));
 
 test('player includes every Christmas album track and audio file', () => {
   const tracks = christmasTracks();
@@ -36,17 +35,27 @@ test('player includes every Christmas album track and audio file', () => {
   }
 });
 
-test('Christmas album joins the playlist at midnight Eastern on November 27, 2026', () => {
-  assert.equal(liveAt('2026-11-27T04:59:59Z'), false);
-  assert.equal(liveAt('2026-11-27T05:00:00Z'), true);
-  assert.equal(liveAt('2026-12-25T12:00:00Z'), true);
-  assert.equal(liveAt('2026-11-20T12:00:00Z', '?xmas-preview'), true);
-  assert.equal(liveAt('2026-11-20T12:00:00Z', '?xmas-previewer'), false);
+test('the seasonal songs follow the site Christmas theme every year', () => {
+  assert.equal(inSeason('2026-11-27T04:59:59Z'), false); // Thanksgiving night, Eastern
+  assert.equal(inSeason('2026-11-27T05:00:00Z'), true);  // day after Thanksgiving
+  assert.equal(inSeason('2026-12-25T12:00:00Z'), true);
+  assert.equal(inSeason('2027-01-01T04:59:59Z'), true);  // Dec 31, 11:59 PM Eastern
+  assert.equal(inSeason('2027-01-01T05:00:00Z'), false); // New Year's Day
+  assert.equal(inSeason('2027-07-04T12:00:00Z'), false);
+  assert.equal(inSeason('2027-11-25T12:00:00Z'), false); // Thanksgiving 2027
+  assert.equal(inSeason('2027-11-26T12:00:00Z'), true);
+  assert.equal(seasonFns('?xmas-preview').live(), true);
+  assert.equal(seasonFns('?xmas-previewer').live(), inSeason(new Date().toISOString()));
 });
 
-test('Christmas album is appended last and carries the newest release date', () => {
-  assert.match(source, /return christmas2026Live\(\) \? tracks\.concat\(CHRISTMAS_2026_TRACKS\) : tracks;/);
-  assert.match(source, /track\.releaseDate = '2026-11-27';/);
+test('two year-round songs play now; the rest wait for release and keep album order', () => {
+  const yearRound = vm.runInNewContext(source.match(/var CHRISTMAS_2026_YEAR_ROUND = (\[[^\]]*\]);/)[1]);
+  assert.deepEqual(Array.from(yearRound), ['First Time on Earth', 'Give Yourself Some Grace']);
+  const titles = christmasTracks().map((track) => track.title);
+  for (const title of yearRound) assert.ok(titles.includes(title), title);
+  assert.match(source, /return tracks\.concat\(yearRound, CHRISTMAS_SEASON_LIVE \? seasonal : \[\]\);/);
+  assert.match(source, /track\.releaseDate = CHRISTMAS_SEASON_LIVE \? '2026-11-27' : '';/);
+  assert.match(source, /\(TRACKS\[a\]\.albumTrack \|\| 0\) - \(TRACKS\[b\]\.albumTrack \|\| 0\)/);
   assert.ok('2026-11-27' > '2026-09-11');
 });
 

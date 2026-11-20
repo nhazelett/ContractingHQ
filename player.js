@@ -194,10 +194,11 @@
   });
 
 
-  // A Firm-Fixed Christmas (releases Friday, November 27, 2026). The songs join
-  // the playlist at midnight Eastern that day, then lead the list and start
-  // fresh visits like any newest release. Appended after the Yet album so saved
-  // favorite/skip indexes stay put. Add ?xmas-preview to a page URL to hear them early.
+  // A Firm-Fixed Christmas. It follows the site's Christmas theme: from the day
+  // after Thanksgiving through December 31 (Eastern), every song plays and the
+  // album leads the list and starts fresh visits. The rest of the year, the two
+  // year-round songs stay in the ordinary mix with no priority and the others
+  // sit out. Add ?xmas-preview to a page URL to hear the season early.
   var CHRISTMAS_2026_TRACKS = [
     {
       id: 'xmas2026-1',
@@ -328,15 +329,37 @@
       color: '#b91c1c'
     }
   ];
-  var CHRISTMAS_2026_RELEASE = Date.UTC(2026, 10, 27, 5, 0, 0);
-  CHRISTMAS_2026_TRACKS.forEach(function (track) {
-    track.releaseDate = '2026-11-27';
+  var CHRISTMAS_2026_YEAR_ROUND = ['First Time on Earth', 'Give Yourself Some Grace'];
+  var CHRISTMAS_SEASON_LIVE = christmasSeasonLive();
+  CHRISTMAS_2026_TRACKS.forEach(function (track, i) {
+    track.albumTrack = i + 1;
+    track.yearRound = CHRISTMAS_2026_YEAR_ROUND.indexOf(track.title) > -1;
+    // Out of season, the year-round songs play as ordinary playlist songs.
+    track.releaseDate = CHRISTMAS_SEASON_LIVE ? '2026-11-27' : '';
     track.landingPriority = track.title === 'A Firm-Fixed Christmas' ? 1 : 0;
   });
 
-  function christmas2026Live() {
-    if (Date.now() >= CHRISTMAS_2026_RELEASE) return true;
-    try { return /[?&]xmas-preview(?:[=&]|$)/.test(window.location.search); } catch (e) { return false; }
+  function christmasSeasonLive() {
+    try { if (/[?&]xmas-preview(?:[=&]|$)/.test(window.location.search)) return true; } catch (e) {}
+    return isChristmasSeason(new Date(Date.now()));
+  }
+
+  // Same calendar as the site's Christmas theme (scripts/seasonal-calendar.js).
+  function isChristmasSeason(date) {
+    var y, m, d;
+    try {
+      var parts = {};
+      new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric', month: 'numeric', day: 'numeric' })
+        .formatToParts(date).forEach(function (part) { parts[part.type] = Number(part.value); });
+      y = parts.year; m = parts.month; d = parts.day;
+    } catch (e) {
+      var eastern = new Date(date.getTime() - 5 * 3600000);
+      y = eastern.getUTCFullYear(); m = eastern.getUTCMonth() + 1; d = eastern.getUTCDate();
+    }
+    if (m === 12) return true;
+    if (m !== 11) return false;
+    var thanksgiving = 22 + ((4 - new Date(Date.UTC(y, 10, 1)).getUTCDay() + 7) % 7);
+    return d > thanksgiving;
   }
 
   // ── STATE ────────────────────────────────────────────────────────
@@ -433,7 +456,9 @@
       };
     }));
     tracks = tracks.concat(SEP_2026_TRACKS);
-    return christmas2026Live() ? tracks.concat(CHRISTMAS_2026_TRACKS) : tracks;
+    var yearRound = CHRISTMAS_2026_TRACKS.filter(function (track) { return track.yearRound; });
+    var seasonal = CHRISTMAS_2026_TRACKS.filter(function (track) { return !track.yearRound; });
+    return tracks.concat(yearRound, CHRISTMAS_SEASON_LIVE ? seasonal : []);
   }
 
   function modeStateKey(mode) {
@@ -580,7 +605,8 @@
       var dateA = TRACKS[a].releaseDate || '';
       var dateB = TRACKS[b].releaseDate || '';
       if (dateA !== dateB) return dateA > dateB ? -1 : 1;
-      return (TRACKS[b].landingPriority || 0) - (TRACKS[a].landingPriority || 0) || a - b;
+      return (TRACKS[b].landingPriority || 0) - (TRACKS[a].landingPriority || 0) ||
+        (TRACKS[a].albumTrack || 0) - (TRACKS[b].albumTrack || 0) || a - b;
     });
   }
 
