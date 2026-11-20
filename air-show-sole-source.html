@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="air-show.css?v=20261111g" />
+  <link rel="stylesheet" href="air-show.css?v=20261120a" />
 </head>
 <body>
 <nav class="navbar" id="navbar" aria-label="Primary">
@@ -70,7 +70,7 @@
   <h2><span class="n">2</span> The money and the lane</h2>
   <div class="grid2">
     <div><label for="b-funds">Funds</label><select id="b-funds"><option value="APF">Appropriated funds</option><option value="NAF">NAF or commercial sponsorship</option></select><span class="hint" id="funds-hint"></span></div>
-    <div><label for="b-scls">Do the service labor standards apply?</label><select id="b-scls"><option value="unk">Not determined yet</option><option value="yes">Yes</option><option value="no">No</option></select><span class="hint">Why it matters: the micro-purchase limit is $2,500 for covered services instead of $15,000. Several bases on record attached wage determinations to air show service buys.</span></div>
+    <div><label for="b-scls">Do the service labor standards apply?</label><select id="b-scls"><option value="unk">Not determined yet</option><option value="yes">Yes</option><option value="no">No</option></select><span class="hint">Why it matters: the micro-purchase limit is $2,500 for covered services instead of $15,000. A supply, or a service one person performs alone, is not covered.</span><details class="inline-help"><summary>Three questions that settle it</summary><div id="b-scls-check"></div></details></div>
   </div>
   <div id="lane"></div>
 </div>
@@ -111,7 +111,7 @@
   <p class="note">Bracketed items need an entry. The documents are built from what you typed. Read them, correct them, and use your office's format where it has one. The determination is the contracting officer's.</p>
 </div>
 
-<script src="air-show.js?v=20261111g"></script>
+<script src="air-show.js?v=20261120a"></script>
 <script>
 (function(){
   const { el, $, cite, money, pct, milDate, T } = ASB;
@@ -185,6 +185,7 @@
     const st = stats(cmp), stV = stats(venAw);
 
     /* lane */
+    if (!$('#b-scls-check').firstChild) $('#b-scls-check').append(ASB.sclsCheck('bsc', r => { const x = $('#b-scls'); if (x.value !== r) { x.value = r; x.dispatchEvent(new Event('input', { bubbles: true })); x.dispatchEvent(new Event('change', { bubbles: true })); } }));
     const L = price ? ASB.lane(funds, price, scls === 'yes' ? 'yes' : 'no') : null, laneBox = $('#lane');
     if (!L) laneBox.replaceChildren(el('div', { class: 'fact-box', text: 'Enter a price in section 1 to see which rule covers this buy.' }));
     else { laneBox.replaceChildren(el('div', { class: 'fact-box info' }, el('b', { text: L.name + '. ' }), L.rule + ' ', L.c.map(x => cite(x[0], x[1])),

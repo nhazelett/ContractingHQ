@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="air-show.css?v=20261111g" />
+  <link rel="stylesheet" href="air-show.css?v=20261120a" />
 </head>
 <body>
 <nav class="navbar" id="navbar" aria-label="Primary">
@@ -54,10 +54,37 @@
 <div class="bar noprint">
   <input type="search" id="q" placeholder="Search requirements (parking, latrines, Air Boss...)" aria-label="Search requirements" />
   <button class="chip" id="only" aria-pressed="false" type="button">Show only what I ticked</button>
+  <button class="chip" id="core" type="button">Tick the core eight</button>
 </div>
 <div class="legend"><span><i style="background:#e0705f"></i>Not competed</span><span><i style="background:#c9a227"></i>Competed, one offer</span><span><i style="background:#3fb98a"></i>Competed, two or more offers</span></div>
 
+<p class="note" id="core-note"></p>
 <div id="lib"></div>
+
+<section class="block" id="gpc">
+  <h2>Card or contract: the $2,500 question</h2>
+  <p>A buy at or under the micro-purchase threshold needs no competitive quotes, and the Government purchase card is a primary way to pay for it. <span data-cite="far12|12.402(b)"></span><span data-cite="far12|12.403(a)"></span> The threshold is $15,000. For a service covered by the service contract labor standards it is $2,500. <span data-cite="far2|2.101"></span> Most air show buys sit between those two numbers, so which one applies decides how most of the show gets bought.</p>
+  <div id="gpc-band" class="facts"></div>
+  <h3>What decides it</h3>
+  <ul>
+    <li><b>Supplies are not services.</b> Smoke oil and fuel delivered to the base are supplies. <span data-cite="cfr4|4.110"></span></li>
+    <li><b>The standards cover services performed through service employees.</b> Where the contractor performs the service individually, and the contracting officer knows that when soliciting or concluding negotiations, the standards are treated as not applying. <span data-cite="cfr4|4.113(a)(1)"></span></li>
+    <li><b>Calling the crew independent contractors changes nothing.</b> Anyone performing the work is a service employee regardless of the contractual relationship claimed. <span data-cite="cfr4|4.155"></span></li>
+    <li><b>Being a pilot is not an exemption.</b> Labor's rules name pilots on an air ambulance contract as service employees, not exempt professionals. <span data-cite="cfr4|4.156"></span> The solo performer rule above is what applies to a one-person act, not the pilot's profession.</li>
+    <li><b>The $2,500 figure is set by statute.</b> The inflation adjustments that raised the general threshold to $15,000 do not reach it.</li>
+  </ul>
+  <h3>Three questions for one buy</h3>
+  <div id="gpc-check"></div>
+  <h3>What bases on record did</h3>
+  <p class="note">Solicitations on record with a wage determination attached: parking 11 of 15, Air Boss 12 of 27, announcer 8 of 22, aerial acts 16 of 55, pyrotechnics 8 of 30, smoke oil 0 of 24. Offices split on the solo performers and were consistent on the crews and the supplies.</p>
+  <h3>Limits that stay in place either way</h3>
+  <ul>
+    <li>Local purchase card procedures can set a lower single-purchase limit for services. The agency program coordinator has that answer.</li>
+    <li>These thresholds are for appropriated funds. NAF buys follow their own dollar levels. <span data-cite="naf|6.6"></span></li>
+    <li>A civil performer still provides the hold harmless agreement and certificate of insurance for a landing permit, however the act is paid. <span data-cite="afman|7.9.3"></span></li>
+    <li>Only a contracting officer or a cardholder acting within their authority commits the Government. The director does not book the act. <span data-cite="afman|3.2"></span></li>
+  </ul>
+</section>
 
 <section class="block" id="plan">
   <h2>Your buy plan</h2>
@@ -66,10 +93,10 @@
 </section>
 
 <section class="method">
-  <p>Prices and competition figures: USASpending.gov contract awards, FY2007 to FY2026, all DoD components. "Middle half" is the 25th to 75th percentile. Solicitation excerpts: SAM.gov contract opportunities, quoted from the public notice. Owning units are the usual arrangement, and wings may tailor the staff (AFMAN 10-1004, para 3.1). Funding sources are from AFMAN 10-1004 Chapter 6 and Attachment 4. Confirm the source of funds with FM for your show.</p>
+  <p>Prices and competition figures: USASpending.gov contract awards, FY2007 to FY2026, all DoD components. "Middle half" is the 25th to 75th percentile. NAF buys are not reported there, so NAF-only requirements show no price history. Lines tagged Field practice come from host-wing after-action reports and continuity books, not from a regulation. Solicitation excerpts: SAM.gov contract opportunities, quoted from the public notice. Owning units are the usual arrangement, and wings may tailor the staff (AFMAN 10-1004, para 3.1). Funding sources are from AFMAN 10-1004 Chapter 6 and Attachment 4. Confirm the source of funds with FM for your show.</p>
 </section>
 
-<script src="air-show.js?v=20261111g"></script>
+<script src="air-show.js?v=20261120a"></script>
 <script>
 (function(){
   const { el, $, cite, money, pct } = ASB;
@@ -79,9 +106,13 @@
   const FUNDOPT = f => { const o = []; if (f.includes('A')) o.push('Appropriated'); if (f.includes('N')) o.push('NAF'); if (f.includes('P')) o.push('Donated or private gift'); return o.length ? o : ['Appropriated', 'NAF']; };
   const save = () => { ASB.setPlan(plan); drawPlan(); };
 
-  ASB.loadData().then(d => { D = d; $('#n-aw').textContent = d.totals.awards.toLocaleString(); draw(); drawPlan(); })
+  ASB.loadData().then(d => { D = d; $('#n-aw').textContent = d.totals.awards.toLocaleString(); draw(); drawPlan();
+      [['Civilian/warbird aerial act', 'aerial act awards'], ['Air Boss', 'Air Boss awards'], ['Announcer / narrator', 'announcer awards']].forEach(([k, t]) => { const f = d.families.find(x => x.family === k); if (f && f.band_pct != null) $('#gpc-band').append(el('div', { class: 'fact' }, el('b', { text: f.band_pct + '%' }), el('span', { text: 'of ' + t + ' on record fall between $2,500 and $15,000' }))); }); })
     .catch(() => { $('#lib').append(el('p', { class: 'fact-box flag', text: 'The data file did not load, so prices are missing. The regulation facts below still work.' })); D = { families: [], asks: {}, examples: {} }; draw(); drawPlan(); });
   $('#q').addEventListener('input', draw);
+  ASB.fill($('#core-note'), ASB.fp('One host wing lists eight appropriated fund contracts as the core of its show: Air Boss, announcer, pyrotechnics, tents, portable toilets, public address, smoke oil and a warbird act. The button ticks those. Your show may need more or fewer.'));
+  $('#core').addEventListener('click', () => { ASB.CORE.forEach(k => { (plan[k] || (plan[k] = {})).need = true; }); save(); draw(); document.getElementById('plan').scrollIntoView(); });
+  $('#gpc-check').append(ASB.sclsCheck('gpc'));
   $('#only').addEventListener('click', e => { only = !only; e.currentTarget.setAttribute('aria-pressed', String(only)); draw(); });
 
   function draw() {
@@ -99,31 +130,36 @@
     const m = ASB.FAM[k], f = (D.families || []).find(x => x.family === k), p = plan[k] || (plan[k] = {}), opts = FUNDOPT(m.fund);
     const chk = el('input', { type: 'checkbox', 'aria-label': 'My show needs ' + m.label, checked: p.need ? true : null, onclick: e => e.stopPropagation(), onchange: e => { p.need = e.target.checked; save(); } });
     const sum = el('summary', null, chk, el('span', { class: 'req-head', text: m.label }),
-      el('span', { class: 'req-meta' }, m.fund ? ASB.fundTags(m.fund.replace('|', '')) : null, f ? el('span', { text: 'median ' + money(f.median) }) : null, el('span', { class: 'hide-sm', text: m.owner })));
+      el('span', { class: 'req-meta' }, m.fund ? ASB.fundTags(m.fund.replace('|', '')) : null, f ? el('span', { text: f.median_fy22 ? 'FY22+ median ' + money(f.median_fy22) : 'median ' + money(f.median) }) : null, el('span', { class: 'hide-sm', text: m.owner })));
     const body = el('div', { class: 'body' });
     const kv = el('dl', { class: 'kv' });
     const row = (a, b) => kv.append(el('dt', { text: a }), el('dd', null, b));
     row('Usually written by', m.owner);
     row('Funds', m.fundNote);
     if (f) {
-      row('What bases paid', money(f.p25) + ' to ' + money(f.p75) + ' for the middle half, median ' + money(f.median) + ', across ' + f.n + ' awards by ' + f.bases + ' offices' + (f.median_fy22 ? '. Since FY22 the median is ' + money(f.median_fy22) + '.' : '.'));
+      row('What bases paid', (f.median_fy22 ? 'Median ' + money(f.median_fy22) + ' since FY22 (' + f.n_fy22 + ' awards). All years: ' : 'All years: ') + 'median ' + money(f.median) + ', middle half ' + money(f.p25) + ' to ' + money(f.p75) + ', across ' + f.n + ' awards by ' + f.bases + ' offices.');
       row('How it was bought', [ASB.mix(f), el('span', { class: 'note', style: 'display:block;margin-top:.3rem', text: pct(f.not_competed, f.n) + '% not competed, ' + pct(f.competed_one_offer, f.n) + '% competed with one offer, ' + pct(f.competed_multi, f.n) + '% with two or more.' })]);
       if (f.top_vendors && f.top_vendors.length) row('Who won most often', f.top_vendors.slice(0, 5).map(v => v.vendor + ' (' + v.n + ')').join(', '));
       if (f.naics.length || f.psc.length) row('Codes offices used', [f.naics.length ? 'NAICS ' + f.naics.join(', ') : '', f.psc.length ? 'PSC ' + f.psc.join(', ') : ''].filter(Boolean).join(' · '));
-    } else row('What bases paid', 'No awards on record for this family.');
+    } else row('What bases paid', m.nodata ? 'No price history. NAF buys are not reported to USASpending.gov. FSS has what it paid last time.' : 'No awards on record for this family.');
+    if (m.scls) row('Card or contract', [ASB.SCLS_KIND[m.scls] + ' ', el('a', { href: '#gpc', text: 'See the $2,500 question' })]);
     body.append(kv);
     body.append(el('h3', { text: 'What the regulations say' }), el('ul', null, m.facts.map(x => el('li', null, x[0] + ' ', x.slice(1).map(c => cite(c[0], c[1]))))));
+    if (m.field) body.append(el('h3', { text: 'What caught other bases' }), el('ul', { class: 'fplist' }, m.field.map(x => el('li', null, ASB.fp(x)))));
     body.append(el('h3', { text: 'What contracting needs from the owning unit' }), el('p', { class: 'note', text: 'A requirement that answers these can be solicited without a second trip.' }), el('ul', null, m.spec.map(x => el('li', { text: x }))));
     const asks = (D.asks || {})[k] || [], exs = (D.examples || {})[k] || [];
     if (asks.length) body.append(el('h3', { text: 'What other bases asked for' }), ...asks.slice(0, 4).map(a => el('div', { class: 'ex' }, a.text, el('span', { class: 'src' }, a.office + ', ' + a.posted.slice(0, 4) + '. ', el('a', { href: a.url, target: '_blank', rel: 'noopener', text: 'Open the notice on SAM.gov' })))));
     if (exs.length) body.append(el('h3', { text: 'Solicitations with attachments you can read' }), el('ul', null, exs.slice(0, 6).map(x => el('li', null, el('a', { href: x.url, target: '_blank', rel: 'noopener', text: x.title }), el('span', { class: 'note', text: ' ' + x.office + ', ' + x.posted.slice(0, 4) + ', ' + x.atts + ' attachment' + (x.atts > 1 ? 's' : '') })))));
     if (m.tool) body.append(el('p', null, el('a', { class: 'btn2 ghost', href: m.tool[0], text: m.tool[1] })));
     /* plan inputs */
-    const est = el('input', { type: 'number', min: '0', step: '500', id: 'est-' + k, value: p.est || null, placeholder: f ? 'median is ' + Math.round(f.median) : '' });
+    const est = el('input', { type: 'number', min: '0', step: '500', id: 'est-' + k, value: p.est || null, placeholder: f ? 'median is ' + Math.round(f.median_fy22 || f.median) : '' });
     est.addEventListener('input', () => { p.est = est.value; if (est.value && !p.need) { p.need = true; chk.checked = true; } save(); });
     const sel = el('select', { id: 'fd-' + k }, opts.map(o => el('option', { value: o, text: o, selected: (p.funds || opts[0]) === o ? true : null })));
     sel.addEventListener('change', () => { p.funds = sel.value; save(); });
-    body.append(el('h3', { text: 'Add to your buy plan' }), el('div', { class: 'grid2' }, el('div', null, el('label', { for: 'est-' + k, text: 'Your estimate ($)' }), est), el('div', null, el('label', { for: 'fd-' + k, text: 'Funds' }), sel)));
+    const ls = el('select', { id: 'ls-' + k }, [['unk', 'Not determined yet'], ['yes', 'Yes, covered service'], ['no', 'No: supply, or performed individually']].map(o => el('option', { value: o[0], text: o[1], selected: (p.scls || (m.scls === 'supply' ? 'no' : 'unk')) === o[0] ? true : null })));
+    ls.addEventListener('change', () => { p.scls = ls.value; save(); });
+    body.append(el('h3', { text: 'Add to your buy plan' }), el('div', { class: 'grid2' }, el('div', null, el('label', { for: 'est-' + k, text: 'Your estimate ($)' }), est), el('div', null, el('label', { for: 'fd-' + k, text: 'Funds' }), sel),
+      opts.includes('Appropriated') ? el('div', null, el('label', { for: 'ls-' + k, text: 'Do the service labor standards apply?' }), ls, el('span', { class: 'hint' }, 'Decides whether the micro-purchase limit is $2,500 or $15,000. ', el('a', { href: '#gpc', text: 'Three questions settle it' }), '.')) : null));
     const d = el('details', { 'data-k': k, open: isOpen ? true : null }, sum, body);
     return d;
   }
@@ -137,8 +173,8 @@
       let laneCell, laneTxt;
       if (funds.startsWith('Donated')) { laneTxt = 'No Government contract. Gift or in-kind donation processed through FSS and Legal.'; laneCell = [laneTxt + ' ', cite('afman', '5.5.4')]; }
       else if (!amt) { laneTxt = 'Enter an estimate'; laneCell = el('span', { class: 'note', text: laneTxt }); }
-      else { const L = ASB.lane(funds === 'NAF' ? 'NAF' : 'APF', amt, 'no'); laneTxt = L.name + '. ' + L.rule; laneCell = [el('b', { text: L.name + '. ' }), L.rule + ' ', L.c.map(c => cite(c[0], c[1]))];
-        if (funds !== 'NAF' && amt > ASB.T.MPT_SCLS && amt <= ASB.T.MPT) { const x = ' If the service labor standards apply to this service, the micro-purchase limit is ' + money(ASB.T.MPT_SCLS) + ' and this buy uses simplified procedures.'; laneTxt += x; laneCell.push(el('span', { class: 'note', style: 'display:block', text: x.trim() })); }
+      else { const sc = p.scls || (m.scls === 'supply' ? 'no' : 'unk'); const L = ASB.lane(funds === 'NAF' ? 'NAF' : 'APF', amt, sc === 'no' ? 'no' : 'yes'); laneTxt = L.name + '. ' + L.rule; laneCell = [el('b', { text: L.name + '. ' }), L.rule + ' ', L.c.map(c => cite(c[0], c[1]))];
+        if (funds !== 'NAF' && sc === 'unk' && amt > ASB.T.MPT_SCLS && amt <= ASB.T.MPT) { const x = ' Shown at the ' + money(ASB.T.MPT_SCLS) + ' limit because the labor standards question is not settled. If they do not apply, this is a micro-purchase up to ' + money(ASB.T.MPT) + '.'; laneTxt += x; laneCell.push(el('span', { class: 'note', style: 'display:block' }, x.trim() + ' ', el('a', { href: '#gpc', text: 'Settle it' }))); }
         if (funds !== 'NAF' && amt > ASB.T.NOTICE) { const x = ' Over ' + money(ASB.T.NOTICE) + ': a notice is posted unless an exemption applies.'; laneTxt += x; laneCell.push(el('span', { class: 'note', style: 'display:block' }, x.trim() + ' ', cite('far5', '5.101'))); } }
       tb.append(el('tr', null, el('td', null, el('b', { text: m.label })), el('td', { text: m.owner }), el('td', { text: funds }), el('td', { class: 'num', text: amt ? money(amt) : '' }), el('td', null, laneCell)));
       lines.push('- ' + m.label + ' | Owner: ' + m.owner + ' | Funds: ' + funds + ' | Estimate: ' + (amt ? money(amt) : 'TBD') + ' | ' + laneTxt); });
@@ -148,6 +184,7 @@
       el('div', { class: 'facts' }, [[keys.length, 'requirements'], [money(total), 'estimated total'], [keys.filter(k => (plan[k].funds || FUNDOPT(ASB.FAM[k].fund)[0]) === 'NAF').length, 'NAF buys'], [keys.filter(k => !(parseFloat(plan[k].est) > 0)).length, 'still need an estimate']].map(([b, s]) => el('div', { class: 'fact' }, el('b', { text: b }), el('span', { text: s })))),
       el('div', { class: 'tablewrap' }, el('table', null, el('thead', null, el('tr', null, ['Requirement', 'Owner', 'Funds', 'Estimate', 'Lane and what it requires'].map((h, i) => el('th', { scope: 'col', class: i === 3 ? 'num' : null, text: h })))), tb)),
       el('div', { class: 'outbar noprint' }, ASB.copyBtn(() => text, 'Copy plan as text'), el('button', { class: 'btn2 ghost', type: 'button', text: 'Print', onclick: () => window.print() }), el('button', { class: 'btn2 ghost', type: 'button', text: 'Clear plan', onclick: () => { plan = {}; ASB.setPlan(plan); draw(); drawPlan(); } })),
+      (() => { const fs = keys.map(k => plan[k].funds || FUNDOPT(ASB.FAM[k].fund)[0]); return fs.includes('NAF') && fs.includes('Appropriated') ? el('p', { class: 'fact-box' }, ASB.fp('This plan has appropriated fund and NAF buys. Host wings that held a standing sync between the contracting squadron and FSS, and named one open house point of contact for vendors both sides use, reported fewer late hand-offs.')) : null; })(),
       el('p', { class: 'note', text: 'Take this to the first open house staff meeting. Each line needs a name beside it, a funded purchase request, and a date the requirement reaches contracting.' }));
   }
 })();
