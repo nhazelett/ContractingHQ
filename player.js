@@ -408,7 +408,7 @@
   }
 
   function freshState() {
-    return { idx: 0, time: 0, vol: 0.5, shuffle: false, favs: [], skips: [], wasPlaying: false, favsOnly: false };
+    return { idx: 0, time: 0, vol: 0.5, shuffle: false, favs: [], skips: [], wasPlaying: false, favsOnly: false, heardNew: [] };
   }
 
   function normalizeCcoTrack(track, idx) {
@@ -538,6 +538,7 @@
         if (Array.isArray(s.skips))      state.skips   = sanitizeIndexes(s.skips);
         if (typeof s.wasPlaying === 'boolean') state.wasPlaying = s.wasPlaying;
         if (typeof s.favsOnly === 'boolean')   state.favsOnly   = s.favsOnly;
+        if (Array.isArray(s.heardNew))   state.heardNew = sanitizeIndexes(s.heardNew);
       }
     } catch (e) {}
   }
@@ -619,16 +620,48 @@
     return next;
   }
 
-  function landingTrackIndex() {
-    var pool = getPool();
-    if (!pool.length) return 0;
+  function newestInPool(pool) {
     var latest = pool.reduce(function (date, idx) {
       var release = TRACKS[idx].releaseDate || '';
       return release > date ? release : date;
     }, '');
-    var newest = pool.filter(function (idx) {
+    return pool.filter(function (idx) {
       return (TRACKS[idx].releaseDate || '') === latest;
     });
+  }
+
+  // A visit plays the newest release first, in random order, then picks at
+  // random from the whole pool, skipping anything from the last ten songs when
+  // it can. The shuffle button keeps pure random play.
+  function pickNextIndex(pool, current, newest, heard, shuffle, rand, recent) {
+    if (!pool.length) return current;
+    if (pool.length === 1) return pool[0];
+    var random = rand || Math.random;
+    var choices = pool;
+    if (!shuffle) {
+      var fresh = newest.filter(function (idx) {
+        return idx !== current && heard.indexOf(idx) === -1 && pool.indexOf(idx) > -1;
+      });
+      if (fresh.length) choices = fresh;
+    }
+    if (choices === pool && recent && recent.length) {
+      var notRecent = pool.filter(function (idx) { return recent.indexOf(idx) === -1; });
+      if (notRecent.length > 1) choices = notRecent;
+    }
+    var others = choices.filter(function (idx) { return idx !== current; });
+    if (!others.length) others = choices;
+    return others[Math.floor(random() * others.length)];
+  }
+
+  function noteHeard(idx) {
+    if (!Array.isArray(state.heardNew)) state.heardNew = [];
+    if (state.heardNew.indexOf(idx) === -1) state.heardNew.push(idx);
+  }
+
+  function landingTrackIndex() {
+    var pool = getPool();
+    if (!pool.length) return 0;
+    var newest = newestInPool(pool);
     var candidates = newest.filter(function (idx) { return idx !== state.idx; });
     if (!candidates.length) candidates = newest;
     var weighted = [];
@@ -643,21 +676,32 @@
     if (!TRACKS.length) return;
     state.idx = landingTrackIndex();
     state.time = 0;
+    state.heardNew = [state.idx];
+    playHistory = [];
     if (!keepPlaybackIntent) state.wasPlaying = false;
     saveState();
+  }
+
+  var playHistory = [];
+
+  // A song picked from the list counts as heard and can be stepped back from.
+  function pickTrack(idx) {
+    if (idx !== state.idx) {
+      playHistory.push(state.idx);
+      if (playHistory.length > 100) playHistory.shift();
+    }
+    noteHeard(idx);
+    loadTrack(idx, true);
   }
 
   function nextTrack(force) {
     var pool = getPool();
     if (!pool.length) { updateAll(); return; }
-    var cur = pool.indexOf(state.idx);
-    var next;
-    if (state.shuffle) {
-      do { next = pool[Math.floor(Math.random() * pool.length)]; }
-      while (pool.length > 1 && next === state.idx);
-    } else {
-      next = pool[(cur + 1) % pool.length];
-    }
+    var next = pickNextIndex(pool, state.idx, newestInPool(pool), state.heardNew || [], state.shuffle, null,
+      state.shuffle ? null : playHistory.slice(-10));
+    playHistory.push(state.idx);
+    if (playHistory.length > 100) playHistory.shift();
+    noteHeard(next);
     loadTrack(next, force || isPlaying);
   }
 
@@ -666,6 +710,11 @@
     if (aud.currentTime > 3) { aud.currentTime = 0; return; }
     var pool = getPool();
     if (!pool.length) return;
+    // Step back through what actually played; fall back to list order.
+    while (playHistory.length) {
+      var back = playHistory.pop();
+      if (back !== state.idx && pool.indexOf(back) > -1) { loadTrack(back, isPlaying); return; }
+    }
     var cur = pool.indexOf(state.idx);
     loadTrack(pool[(cur - 1 + pool.length) % pool.length], isPlaying);
   }
@@ -2152,7 +2201,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       el.addEventListener('click', function (e) {
         if (e.target.classList.contains('cfm-track-fav') || e.target.classList.contains('cfm-track-skip')) return;
         var idx = parseInt(this.getAttribute('data-idx'));
-        loadTrack(idx, true);
+        pickTrack(idx);
         playerReady = true;
       });
     });
@@ -2347,7 +2396,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
       el.addEventListener('click', function (e) {
         if (e.target.classList.contains('cfm-sb-track-fav') || e.target.classList.contains('cfm-sb-track-skip')) return;
         var idx = parseInt(this.getAttribute('data-idx'));
-        loadTrack(idx, true);
+        pickTrack(idx);
         playerReady = true;
       });
     });
