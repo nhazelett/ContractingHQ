@@ -25,9 +25,10 @@ const inSeason = (iso) => seasonFns().season(new Date(iso));
 
 test('player includes every Christmas album track and audio file', () => {
   const tracks = christmasTracks();
-  assert.equal(tracks.length, 16);
-  assert.equal(tracks[0].title, 'A Firm-Fixed Christmas');
-  assert.equal(new Set(Array.from(tracks, (track) => track.id)).size, 16);
+  assert.equal(tracks.length, 15);
+  assert.equal(tracks[0].title, 'Same Miles Both Ways');
+  assert.ok(!tracks.some((track) => track.title === 'A Firm-Fixed Christmas'), 'title track stays off the site player');
+  assert.equal(new Set(Array.from(tracks, (track) => track.id)).size, 15);
   for (const track of tracks) {
     assert.equal(track.subtitle, 'A Firm-Fixed Christmas');
     assert.ok(track.file.startsWith('audio/Christmas 2026/'), track.file);

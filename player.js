@@ -194,20 +194,12 @@
   });
 
 
-  // A Firm-Fixed Christmas. It follows the site's Christmas theme: from the day
+  // A Firm-Fixed Christmas (the title track is left off the site player). It follows the site's Christmas theme: from the day
   // after Thanksgiving through December 31 (Eastern), every song plays and the
   // album leads the list and starts fresh visits. The rest of the year, the two
   // year-round songs stay in the ordinary mix with no priority and the others
   // sit out. Add ?xmas-preview to a page URL to hear the season early.
   var CHRISTMAS_2026_TRACKS = [
-    {
-      id: 'xmas2026-1',
-      title: 'A Firm-Fixed Christmas',
-      subtitle: 'A Firm-Fixed Christmas',
-      genre: 'ContractingFM',
-      file: 'audio/Christmas 2026/A Firm-Fixed Christmas.mp3',
-      color: '#b91c1c'
-    },
     {
       id: 'xmas2026-2',
       title: 'Same Miles Both Ways',
@@ -336,7 +328,6 @@
     track.yearRound = CHRISTMAS_2026_YEAR_ROUND.indexOf(track.title) > -1;
     // Out of season, the year-round songs play as ordinary playlist songs.
     track.releaseDate = CHRISTMAS_SEASON_LIVE ? '2026-11-27' : '';
-    track.landingPriority = track.title === 'A Firm-Fixed Christmas' ? 1 : 0;
   });
 
   function christmasSeasonLive() {
