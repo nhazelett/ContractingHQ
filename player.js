@@ -193,6 +193,152 @@
       track.title === 'Look for the Helpers' ? 1 : 0;
   });
 
+
+  // A Firm-Fixed Christmas (releases Friday, November 27, 2026). The songs join
+  // the playlist at midnight Eastern that day, then lead the list and start
+  // fresh visits like any newest release. Appended after the Yet album so saved
+  // favorite/skip indexes stay put. Add ?xmas-preview to a page URL to hear them early.
+  var CHRISTMAS_2026_TRACKS = [
+    {
+      id: 'xmas2026-1',
+      title: 'A Firm-Fixed Christmas',
+      subtitle: 'A Firm-Fixed Christmas',
+      genre: 'ContractingFM',
+      file: 'audio/Christmas 2026/A Firm-Fixed Christmas.mp3',
+      color: '#b91c1c'
+    },
+    {
+      id: 'xmas2026-2',
+      title: 'Same Miles Both Ways',
+      subtitle: 'A Firm-Fixed Christmas',
+      genre: 'ContractingFM',
+      file: 'audio/Christmas 2026/Same Miles Both Ways.mp3',
+      color: '#15803d'
+    },
+    {
+      id: 'xmas2026-3',
+      title: 'Sole Source Santa',
+      subtitle: 'A Firm-Fixed Christmas',
+      genre: 'ContractingFM',
+      file: 'audio/Christmas 2026/Sole Source Santa.mp3',
+      color: '#d99a31'
+    },
+    {
+      id: 'xmas2026-4',
+      title: 'One More Chair',
+      subtitle: 'A Firm-Fixed Christmas',
+      genre: 'ContractingFM',
+      file: 'audio/Christmas 2026/One More Chair.mp3',
+      color: '#b91c1c'
+    },
+    {
+      id: 'xmas2026-5',
+      title: 'Ho, Ho, No',
+      subtitle: 'A Firm-Fixed Christmas',
+      genre: 'ContractingFM',
+      file: 'audio/Christmas 2026/Ho, Ho, No.mp3',
+      color: '#15803d'
+    },
+    {
+      id: 'xmas2026-6',
+      title: 'Everybody Gets a Rug',
+      subtitle: 'A Firm-Fixed Christmas',
+      genre: 'ContractingFM',
+      file: 'audio/Christmas 2026/Everybody Gets a Rug.mp3',
+      color: '#d99a31'
+    },
+    {
+      id: 'xmas2026-7',
+      title: 'I Baked You a Contract for Christmas',
+      subtitle: 'A Firm-Fixed Christmas',
+      genre: 'ContractingFM',
+      file: 'audio/Christmas 2026/I Baked You a Contract for Christmas.mp3',
+      color: '#b91c1c'
+    },
+    {
+      id: 'xmas2026-8',
+      title: 'Christmas in a Tent',
+      subtitle: 'A Firm-Fixed Christmas',
+      genre: 'ContractingFM',
+      file: 'audio/Christmas 2026/Christmas in a Tent.mp3',
+      color: '#15803d'
+    },
+    {
+      id: 'xmas2026-9',
+      title: 'Ratify Me',
+      subtitle: 'A Firm-Fixed Christmas',
+      genre: 'ContractingFM',
+      file: 'audio/Christmas 2026/Ratify Me.mp3',
+      color: '#d99a31'
+    },
+    {
+      id: 'xmas2026-10',
+      title: 'You Said No Gifts',
+      subtitle: 'A Firm-Fixed Christmas',
+      genre: 'ContractingFM',
+      file: 'audio/Christmas 2026/You Said No Gifts.mp3',
+      color: '#b91c1c'
+    },
+    {
+      id: 'xmas2026-11',
+      title: 'Special Delivery (PAC Three)',
+      subtitle: 'A Firm-Fixed Christmas',
+      genre: 'ContractingFM',
+      file: 'audio/Christmas 2026/Special Delivery (PAC Three).mp3',
+      color: '#15803d'
+    },
+    {
+      id: 'xmas2026-12',
+      title: 'An LPTA Christmas',
+      subtitle: 'A Firm-Fixed Christmas',
+      genre: 'ContractingFM',
+      file: 'audio/Christmas 2026/An LPTA Christmas.mp3',
+      color: '#d99a31'
+    },
+    {
+      id: 'xmas2026-13',
+      title: 'Options Not Exercised',
+      subtitle: 'A Firm-Fixed Christmas',
+      genre: 'ContractingFM',
+      file: 'audio/Christmas 2026/Options Not Exercised.mp3',
+      color: '#b91c1c'
+    },
+    {
+      id: 'xmas2026-14',
+      title: "You Can't Buy That",
+      subtitle: 'A Firm-Fixed Christmas',
+      genre: 'ContractingFM',
+      file: "audio/Christmas 2026/You Can't Buy That.mp3",
+      color: '#15803d'
+    },
+    {
+      id: 'xmas2026-15',
+      title: 'First Time on Earth',
+      subtitle: 'A Firm-Fixed Christmas',
+      genre: 'ContractingFM',
+      file: 'audio/Christmas 2026/First Time on Earth.mp3',
+      color: '#d99a31'
+    },
+    {
+      id: 'xmas2026-16',
+      title: 'Give Yourself Some Grace',
+      subtitle: 'A Firm-Fixed Christmas',
+      genre: 'ContractingFM',
+      file: 'audio/Christmas 2026/Give Yourself Some Grace.mp3',
+      color: '#b91c1c'
+    }
+  ];
+  var CHRISTMAS_2026_RELEASE = Date.UTC(2026, 10, 27, 5, 0, 0);
+  CHRISTMAS_2026_TRACKS.forEach(function (track) {
+    track.releaseDate = '2026-11-27';
+    track.landingPriority = track.title === 'A Firm-Fixed Christmas' ? 1 : 0;
+  });
+
+  function christmas2026Live() {
+    if (Date.now() >= CHRISTMAS_2026_RELEASE) return true;
+    try { return /[?&]xmas-preview(?:[=&]|$)/.test(window.location.search); } catch (e) { return false; }
+  }
+
   // ── STATE ────────────────────────────────────────────────────────
   var DEFAULT_TRACKS = TRACKS.slice();
   var CCO_PAGE_FALLBACKS = [
@@ -286,7 +432,8 @@
         color: track.color || '#d2a64c'
       };
     }));
-    return tracks.concat(SEP_2026_TRACKS);
+    tracks = tracks.concat(SEP_2026_TRACKS);
+    return christmas2026Live() ? tracks.concat(CHRISTMAS_2026_TRACKS) : tracks;
   }
 
   function modeStateKey(mode) {

@@ -22,6 +22,7 @@ await collect('', false);
 // Only the published library directories; local album source folders stay local.
 await collect('audio', false);
 await collect('audio/cco', false);
+await collect('audio/Christmas 2026', false);
 await collect('audio/ollie', false);
 await collect('ollie', false);
 

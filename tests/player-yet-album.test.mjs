@@ -47,7 +47,7 @@ test('player includes every Yet album track and audio file', () => {
 });
 
 test('player appends and prioritizes the newest album without reindexing old tracks', () => {
-  assert.match(source, /return tracks\.concat\(SEP_2026_TRACKS\);/);
+  assert.match(source, /tracks = tracks\.concat\(SEP_2026_TRACKS\);/);
   assert.match(source, /track\.releaseDate = '2026-09-11';/);
   assert.match(source, /function landingTrackIndex\(\)/);
   assert.match(source, /if \(\(TRACKS\[idx\]\.landingPriority \|\| 0\) > 0\) weighted\.push\(idx\);/);
