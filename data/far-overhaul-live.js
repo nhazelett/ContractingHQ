@@ -1,5 +1,5 @@
 window.KTHQ_FAR_OVERHAUL_DATA = {
-  "generatedAt": "2026-11-20T16:57:51.343856+00:00",
+  "generatedAt": "2026-11-21T16:08:10.843305+00:00",
   "source": {
     "name": "Acquisition.gov FAR Overhaul",
     "hubUrl": "https://www.acquisition.gov/far-overhaul",
@@ -23,86 +23,8 @@ window.KTHQ_FAR_OVERHAUL_DATA = {
     "baseline": false,
     "newParts": [],
     "updatedParts": [],
-    "newAgencyDeviations": [
-      {
-        "part": {
-          "partNumber": 9,
-          "partLabel": "Part 9",
-          "title": "Contractor Qualifications",
-          "fullTitle": "Part 9 - Contractor Qualifications",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
-          "issuanceDate": "2025-08-21",
-          "issuanceDateLabel": "Aug 21, 2025",
-          "updateDate": "2026-11-17",
-          "updateDateLabel": "Nov 17, 2026",
-          "deviationCount": 35
-        },
-        "agency": {
-          "name": "Securities and Exchange Commission (SEC)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/SEC_RFO_Deviation_Part-9and42.pdf",
-          "id": "ba65f23196e6585c"
-        }
-      },
-      {
-        "part": {
-          "partNumber": 42,
-          "partLabel": "Part 42",
-          "title": "Contract Administration and Audit Services",
-          "fullTitle": "Part 42 - Contract Administration and Audit Services",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-42",
-          "issuanceDate": "2025-09-30",
-          "issuanceDateLabel": "Sep 30, 2025",
-          "updateDate": "2026-11-17",
-          "updateDateLabel": "Nov 17, 2026",
-          "deviationCount": 31
-        },
-        "agency": {
-          "name": "Securities and Exchange Commission (SEC)",
-          "url": "https://login.staging.acquisition.gov/sites/default/files/page_file_uploads/SEC_RFO_Deviation_Part-9and42.pdf",
-          "id": "c3a3b00e0595ba15"
-        }
-      }
-    ],
-    "removedAgencyDeviations": [
-      {
-        "part": {
-          "partNumber": 9,
-          "partLabel": "Part 9",
-          "title": "Contractor Qualifications",
-          "fullTitle": "Part 9 - Contractor Qualifications",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-9",
-          "issuanceDate": "2025-08-21",
-          "issuanceDateLabel": "Aug 21, 2025",
-          "updateDate": "2026-11-17",
-          "updateDateLabel": "Nov 17, 2026",
-          "deviationCount": 35
-        },
-        "agency": {
-          "name": "Securities and Exchange Commission (SEC)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/SEC_RFO_Deviation_Parts-5-8-9-12and13.pdf",
-          "id": "f448cc2103d26d36"
-        }
-      },
-      {
-        "part": {
-          "partNumber": 42,
-          "partLabel": "Part 42",
-          "title": "Contract Administration and Audit Services",
-          "fullTitle": "Part 42 - Contract Administration and Audit Services",
-          "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-42",
-          "issuanceDate": "2025-09-30",
-          "issuanceDateLabel": "Sep 30, 2025",
-          "updateDate": "2026-11-17",
-          "updateDateLabel": "Nov 17, 2026",
-          "deviationCount": 31
-        },
-        "agency": {
-          "name": "Securities and Exchange Commission (SEC)",
-          "url": "https://www.acquisition.gov/sites/default/files/page_file_uploads/SEC_RFO_Deviation_Part-42.pdf",
-          "id": "4b6b076e3488de91"
-        }
-      }
-    ]
+    "newAgencyDeviations": [],
+    "removedAgencyDeviations": []
   },
   "parts": [
     {
