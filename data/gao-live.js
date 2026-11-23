@@ -1,5 +1,5 @@
 window.KTHQ_GAO_DATA = {
-  "generatedAt": "2026-11-22T15:34:42.824Z",
+  "generatedAt": "2026-11-23T19:25:41.201Z",
   "source": {
     "name": "U.S. Government Accountability Office",
     "rssUrl": "https://www.gao.gov/rss/reportslegal.xml",
@@ -7,11 +7,11 @@ window.KTHQ_GAO_DATA = {
   },
   "note": "Automated KTHQ GAO protest watch. Official synopsis/digest text comes from GAO sources when available. Practitioner notes are deterministic triage prompts, not legal advice.",
   "stats": {
-    "total": 16,
-    "latestDecisionDate": "2026-11-12",
+    "total": 12,
+    "latestDecisionDate": "2026-11-18",
     "sustained": 1,
-    "denied": 11,
-    "dismissed": 2,
+    "denied": 9,
+    "dismissed": 0,
     "mixed": 2,
     "unclassified": 0,
     "sourceStatus": {
@@ -23,11 +23,11 @@ window.KTHQ_GAO_DATA = {
       "recentPage": {
         "ok": true,
         "url": "https://www.gao.gov/legal/bid-protests/recent",
-        "parsedOutcomes": 14
+        "parsedOutcomes": 17
       },
       "productPages": {
-        "attempted": 16,
-        "enriched": 16,
+        "attempted": 12,
+        "enriched": 12,
         "blocked": 0
       },
       "legacyCache": {
@@ -36,6 +36,34 @@ window.KTHQ_GAO_DATA = {
     }
   },
   "items": [
+    {
+      "id": "B-424748,B-424748.2,B-424748.3",
+      "caseName": "Acacia Center for Justice",
+      "title": "Acacia Center for Justice",
+      "bNumbers": [
+        "B-424748",
+        "B-424748.2",
+        "B-424748.3"
+      ],
+      "bNumberText": "B-424748, B-424748.2, B-424748.3",
+      "link": "https://www.gao.gov/products/b-424748%2Cb-424748.2%2Cb-424748.3",
+      "publicationDate": "2026-11-23",
+      "decisionDate": "2026-11-18",
+      "displayDate": "Nov 18, 2026",
+      "outcome": "mixed",
+      "outcomeLabel": "Mixed",
+      "outcomeSource": "GAO product page",
+      "decisionLine": "We deny in part and dismiss in part the protest.",
+      "officialSynopsis": "Acacia Center for Justice, of Washington, District of Columbia, protests the issuance of a sole-source contract to Our Rescue, of Sandy, Utah, by the...",
+      "highlights": "",
+      "digest": "1. Request to dismiss protest pursuant to Bid Protest Regulations, 4 C.F.R. § 21.11(b), is denied where pending litigation in U.S. District Court challenging the government's alleged failure to fund legal representation for unaccompanied minors presents issues separate from the instant bid protest challenging the agency's proposed sole source of a contract to provide such legal representation and, therefore, is unlikely to render a decision by our Office academic. 2. Request to dismiss supplemental protest challenging the awardee's relevant experience performing the services covered by the sole-source contract is granted where the protester's allegations were filed more than 10 days after it knew or reasonably should have known of its bases of protest. 2. Protest challenging the agency's award of a contract to provide interim services on a sole-source basis for legal representation services is denied where the agency reasonably determined that there was an unusual and compelling urgency based on the need to fulfill statutory obligations and comply with an injunction issued by a U.S. District Court, and the sole-source award did not result from a lack of advanced procurement planning. 3. Protest challenging the potential 18-month length of the agency's award of a sole-source cont...",
+      "tags": [
+        "Sole source"
+      ],
+      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
+      "sourceStatus": "product-page",
+      "sourceStatusLabel": "Product page enriched"
+    },
     {
       "id": "B-424754",
       "caseName": "SureScan Corporation",
@@ -316,59 +344,6 @@ window.KTHQ_GAO_DATA = {
       "sourceStatusLabel": "Product page enriched"
     },
     {
-      "id": "B-424642.3",
-      "caseName": "SAVE THE AMERICAN COMMUNITIES LLC--Reconsideration",
-      "title": "SAVE THE AMERICAN COMMUNITIES LLC--Reconsideration",
-      "bNumbers": [
-        "B-424642.3"
-      ],
-      "bNumberText": "B-424642.3",
-      "link": "https://www.gao.gov/products/b-424642.3",
-      "publicationDate": "2026-10-28",
-      "decisionDate": "2026-10-27",
-      "displayDate": "Oct 27, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the request for reconsideration.",
-      "officialSynopsis": "SAVE THE AMERICAN COMMUNITIES, LLC (STAC), a small business of Thomasville, Georgia, requests reconsideration of our decision SAVE THE AM....",
-      "highlights": "",
-      "digest": "Request for reconsideration of prior decision is denied where the requesting party fails to show that our decision contains errors of fact or law that would warrant reversal or modification of the decision.",
-      "tags": [
-        "Small business"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424759",
-      "caseName": "Symons Emergency Specialties, Inc. d/b/a Symbiosis",
-      "title": "Symons Emergency Specialties, Inc. d/b/a Symbiosis",
-      "bNumbers": [
-        "B-424759"
-      ],
-      "bNumberText": "B-424759",
-      "link": "https://www.gao.gov/products/b-424759",
-      "publicationDate": "2026-10-28",
-      "decisionDate": "2026-10-27",
-      "displayDate": "Oct 27, 2026",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protest because it presents issues of contract administration not for our consideration as part of our bid protest function.",
-      "officialSynopsis": "Symons Emergency Specialties, Inc. d/b/a Symbiosis (Symbiosis), a small business located in Redlands, California, protests the termination of its...",
-      "highlights": "",
-      "digest": "Protest challenging the agency's termination for convenience of an exercised option to extend services under the protester's purchase order and alleging that the awardee of a follow-on contract is failing to comply with material performance requirements is dismissed because these arguments present questions of contract administration not for our consideration as part of our bid protest function.",
-      "tags": [
-        "Solicitation terms",
-        "Small business"
-      ],
-      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
       "id": "B-424449.2",
       "caseName": "RAS Enterprises, LLC",
       "title": "RAS Enterprises, LLC",
@@ -393,85 +368,6 @@ window.KTHQ_GAO_DATA = {
         "Small business"
       ],
       "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-419224.2",
-      "caseName": "Veteran Design and Construction Inc.",
-      "title": "Veteran Design and Construction Inc.",
-      "bNumbers": [
-        "B-419224.2"
-      ],
-      "bNumberText": "B-419224.2",
-      "link": "https://www.gao.gov/products/b-419224.2",
-      "publicationDate": "2026-10-29",
-      "decisionDate": "2026-10-23",
-      "displayDate": "Oct 23, 2026",
-      "outcome": "dismissed",
-      "outcomeLabel": "Dismissed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We dismiss the protest because the protester is not an interested party to advance most of its arguments, and because the remaining protest grounds are legally insufficient.",
-      "officialSynopsis": "Veteran Design and Construction Inc. (VDCI), a service-disabled, veteran-owned small business (SDVOSB) of Catonsville, Maryland, protests the award...",
-      "highlights": "",
-      "digest": "A contractor terminated for default is not an interested party to challenge the award of a reprocurement contract for the remaining work on the defaulted contract, even where the contractor is in the process of challenging the default termination.",
-      "tags": [
-        "Small business"
-      ],
-      "practitionerNote": "Skim the official synopsis, then read the decision if the facts resemble an active acquisition in your office.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424585.2",
-      "caseName": "Sawdey Solution Services, Inc.",
-      "title": "Sawdey Solution Services, Inc.",
-      "bNumbers": [
-        "B-424585.2"
-      ],
-      "bNumberText": "B-424585.2",
-      "link": "https://www.gao.gov/products/b-424585.2",
-      "publicationDate": "2026-10-30",
-      "decisionDate": "2026-10-22",
-      "displayDate": "Oct 22, 2026",
-      "outcome": "denied",
-      "outcomeLabel": "Denied",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We deny the protest.",
-      "officialSynopsis": "Sawdey Solution Services, Inc., of Beavercreek, Ohio, protests the terms of request for proposals (RFP) No. FA7014-26-R-0024, issued by the...",
-      "highlights": "",
-      "digest": "1. Solicitation provision that offerors must meet certain security clearance requirements at the time of proposal submission does not unduly restrict competition where the requirements are reasonably related to the agency's needs. 2. Protester's assertion that the solicitation is ambiguous reflects the protester's misunderstanding of the solicitation provisions and security clearance requirements and therefore is unreasonable.",
-      "tags": [
-        "Solicitation terms"
-      ],
-      "practitionerNote": "If the requirement matters, say it clearly in the solicitation. Ambiguity and unstated evaluation preferences are protest fuel.",
-      "sourceStatus": "product-page",
-      "sourceStatusLabel": "Product page enriched"
-    },
-    {
-      "id": "B-424641,B-424641.2",
-      "caseName": "Michael Baker-International Stantec JV",
-      "title": "Michael Baker-International Stantec JV",
-      "bNumbers": [
-        "B-424641",
-        "B-424641.2"
-      ],
-      "bNumberText": "B-424641, B-424641.2",
-      "link": "https://www.gao.gov/products/b-424641%2Cb-424641.2",
-      "publicationDate": "2026-11-03",
-      "decisionDate": "2026-10-16",
-      "displayDate": "Oct 16, 2026",
-      "outcome": "mixed",
-      "outcomeLabel": "Mixed",
-      "outcomeSource": "GAO product page",
-      "decisionLine": "We sustain the protest in part and deny it in part.",
-      "officialSynopsis": "Michael Baker-International Stantec JV (MBIS), of Moon Township, Pennsylvania, protests its elimination from consideration under synopsis No....",
-      "highlights": "",
-      "digest": "Protest challenging the agency's evaluation of qualification statements submitted in a procurement for architect-engineering services is sustained where the experience criterion was not evaluated consistent with the terms of the synopsis.",
-      "tags": [
-        "Evaluation"
-      ],
-      "practitionerNote": "Evaluation records need traceable reasoning. The file should show what the evaluators read, why it mattered, and how the same standard was applied across offerors.",
       "sourceStatus": "product-page",
       "sourceStatusLabel": "Product page enriched"
     }
