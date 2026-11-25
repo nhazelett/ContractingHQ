@@ -1,6 +1,6 @@
 window.KTHQ_FEDREG_DATA = {
-  "generatedAt": "2026-11-24T18:51:29.852Z",
-  "since": "2025-06-02",
+  "generatedAt": "2026-11-25T17:56:28.117Z",
+  "since": "2025-06-03",
   "source": {
     "name": "Federal Register API",
     "url": "https://www.federalregister.gov/developers/documentation/api/v1",
@@ -14,17 +14,50 @@ window.KTHQ_FEDREG_DATA = {
   },
   "note": "Automated KTHQ rulemaking watch. Practitioner notes are deterministic triage guidance based on document type and topic; they are not legal advice.",
   "stats": {
-    "total": 145,
-    "latestPublicationDate": "2026-11-18",
+    "total": 146,
+    "latestPublicationDate": "2026-11-25",
     "openCommentWindows": 12,
     "rules": 50,
     "byTone": {
+      "watch": 27,
       "monitor": 93,
-      "watch": 26,
       "action": 26
     }
   },
   "items": [
+    {
+      "id": "2026-24114",
+      "documentNumber": "2026-24114",
+      "title": "Protecting the Executive's Privileges and Enhancing Efficiencies in Federal Contracting",
+      "shortTitle": "Protecting the Executive's Privileges and Enhancing Efficiencies in Federal Contracting",
+      "system": "Acquisition",
+      "stage": "Executive action",
+      "topic": "Acquisition policy",
+      "actionLevel": "Read soon",
+      "actionTone": "watch",
+      "practitionerNote": "This is policy direction, not always clause text. It may drive later FAR/DFARS updates, agency memos, or implementation guidance.",
+      "nextSteps": [
+        "Read for policy direction",
+        "Watch for implementing FAR/DFARS cases",
+        "Do not change templates until implementation guidance exists"
+      ],
+      "type": "Presidential Document",
+      "publicationDate": "2026-11-25",
+      "effectiveDate": "",
+      "commentsCloseDate": "",
+      "datesText": "",
+      "actionText": "",
+      "summary": "Executive Order 14439 of November 20, 2026 Protecting the Executive's Privileges and Enhancing Efficiencies in Federal Contracting By the authority vested in me as President by the Constitution and the laws of the United States of America, including the Federal Property and Administrative Services Act (40 U.S.C. 101 et seq. ) and the common law, it is hereby ordered: Section 1 . Purpose and Policy. In order to protect and serve the American people, the executive branch must be able to work closely with its employe...",
+      "citation": "91 FR 76627",
+      "regulationIds": [],
+      "cfrReferences": "",
+      "agencies": [
+        "Executive Office of the President"
+      ],
+      "htmlUrl": "https://www.federalregister.gov/documents/2026/11/25/2026-24114/protecting-the-executives-privileges-and-enhancing-efficiencies-in-federal-contracting",
+      "pdfUrl": "https://www.govinfo.gov/content/pkg/FR-2026-11-25/pdf/2026-24114.pdf",
+      "sourceQuery": "Federal contracting keyword feed"
+    },
     {
       "id": "2026-23428",
       "documentNumber": "2026-23428",
