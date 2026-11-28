@@ -2601,6 +2601,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'cor-invoice-review.html',
     'cor-file.html',
     'cor-performance-assessment.html',
+    'cor-trouble.html',
     'cors.html',
     'award-decision-documents.html',
     'award-notice-letters.html',
