@@ -2599,6 +2599,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'annual-cor-file-reviews.html',
     'cor-surveillance.html',
     'cor-invoice-review.html',
+    'cor-file.html',
     'cors.html',
     'award-decision-documents.html',
     'award-notice-letters.html',
