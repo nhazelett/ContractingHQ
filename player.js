@@ -2706,6 +2706,7 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'why-behind-the-buy.html',
     'subcontracting-trap.html',
     'set-asides.html',
+    'what-cos-evaluate.html',
     'industry.html',
     'stafford-act.html',
     'federal-register.html',
