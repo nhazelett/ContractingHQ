@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-X2RXS78N7K');</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="How CORs read a QASP, run random sampling against acceptable quality levels, document surveillance that holds up, and know what goes to the CO." />
+  <title>Surveillance That Actually Works: The QASP for CORs | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>.rfp-bg{
+      background:
+        radial-gradient(ellipse 110% 35% at 50% 0%,   rgba(251,191,36,0.09) 0%, transparent 65%),
+        radial-gradient(ellipse 80%  25% at 0%   50%,  rgba(251,191,36,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 80%  25% at 100% 50%,  rgba(251,191,36,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 110% 30% at 50% 100%,  rgba(251,191,36,0.07) 0%, transparent 65%),
+        #040d1f;
+      padding: 0 0 6rem;
+      min-height: 100vh;
+    }.rfp-intro{ text-align: center; padding: 2.5rem 1.5rem 0; }.rfp-intro-tag{ display: inline-block; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); color: #fbbf24; font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }.rfp-intro h2, .rfp-intro h1{ font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }.rfp-intro p{ color: var(--silver); font-size: 0.9rem; max-width: 640px; margin: 0 auto 1.5rem; line-height: 1.6; }.rfp-tabs{ display: flex; gap: 0; border-bottom: 1px solid rgba(251,191,36,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }.rfp-tab{ padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }.rfp-tab:hover{ color: var(--white); }.rfp-tab.active{ color: #fbbf24; border-bottom-color: #fbbf24; }.rfp-panel{ display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }.rfp-panel.active{ display: block; }.learn-section{ margin-bottom: 2.5rem; }.learn-section h3, .learn-section h2{ font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }.learn-section h3 .section-num, .learn-section h2 .section-num{ display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(251,191,36,0.12); color: #fbbf24; font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }.learn-body{ color: var(--silver); font-size: 0.92rem; line-height: 1.75; }.learn-body p{ margin-bottom: 1rem; }.learn-body strong{ color: var(--white); font-weight: 600; }.learn-body ul{ margin: 0.5rem 0 1rem 1.3rem; padding: 0; }.learn-body ul li{ margin-bottom: 0.4rem; }.learn-divider{ border: none; border-top: 1px solid rgba(251,191,36,0.08); margin: 2rem 0; }.highlight-box{ background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; color: var(--silver); }.highlight-box strong{ color: var(--white); }.highlight-box.warn{ background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }.highlight-box.warn strong{ color: #fca5a5; }.highlight-box.tip{ background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }.highlight-box.tip strong{ color: #6ee7b7; }.highlight-box.amber{ background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.22); }.highlight-box.amber strong{ color: #fcd34d; }.rfp-table{ width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 1rem 0; }.rfp-table th{ background: rgba(251,191,36,0.1); color: #fbbf24; font-weight: 700; text-align: left; padding: 0.6rem 0.9rem; border-bottom: 1px solid rgba(251,191,36,0.2); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; }.rfp-table td{ color: var(--silver); padding: 0.65rem 0.9rem; border-bottom: 1px solid rgba(74,158,255,0.06); vertical-align: top; }.rfp-table tr:hover td{ background: rgba(251,191,36,0.03); }.rfp-table td strong{ color: var(--white); }/* Slide deck mockup */
+    .slide-deck{ display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0; }.slide{ background: linear-gradient(180deg, rgba(4,10,26,0.8) 0%, rgba(4,10,26,0.55) 100%); border: 1px solid rgba(74,158,255,0.18); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 18px rgba(0,0,0,0.3); }.slide-head{ display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 1.1rem; background: rgba(251,191,36,0.08); border-bottom: 1px solid rgba(251,191,36,0.18); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #fbbf24; }.slide-head .slide-num{ color: #8a9bb0; }.slide-body{ padding: 1.4rem 1.6rem 1.2rem; min-height: 120px; }.slide-title{ font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; line-height: 1.25; }.slide-sub{ font-size: 0.82rem; color: #8a9bb0; font-weight: 500; margin-top: -0.35rem; margin-bottom: 0.9rem; letter-spacing: 0.3px; }.slide-body ul{ margin: 0.4rem 0 0.3rem 1.15rem; padding: 0; font-size: 0.86rem; color: #c5d3e6; line-height: 1.65; }.slide-body ul li{ margin-bottom: 0.3rem; }.slide-body ul li strong{ color: var(--white); }.slide-body p{ font-size: 0.86rem; color: #c5d3e6; line-height: 1.7; margin: 0 0 0.5rem; }.slide-title-big{ text-align: center; padding: 2.2rem 1.5rem 1.8rem; }.slide-title-big .slide-title{ font-size: 1.85rem; margin-bottom: 0.5rem; }.slide-title-big .slide-sub{ font-size: 0.9rem; margin-bottom: 0.3rem; }.slide-notes{ background: rgba(4,10,26,0.55); border-top: 1px dashed rgba(74,158,255,0.22); padding: 0.85rem 1.6rem 1rem; font-size: 0.78rem; color: #8a9bb0; line-height: 1.65; font-style: italic; }.slide-notes-label{ display: block; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #4a9eff; margin-bottom: 0.3rem; font-style: normal; }.slide-kv{ display: grid; grid-template-columns: 140px 1fr; gap: 0.35rem 0.8rem; font-size: 0.82rem; color: #c5d3e6; }.slide-kv .k{ color: #8a9bb0; font-weight: 600; text-transform: uppercase; font-size: 0.68rem; letter-spacing: 0.8px; padding-top: 2px; }/* Quiz styles */
+    .quiz-scenario{ background: rgba(4,10,26,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden; }.quiz-scenario-head{ background: rgba(251,191,36,0.08); border-bottom: 1px solid rgba(251,191,36,0.15); padding: 0.8rem 1.1rem; }.quiz-scenario-num{ font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #fbbf24; opacity: 0.8; }.quiz-scenario-title{ font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); margin-top: 0.2rem; }.quiz-scenario-body{ padding: 1rem 1.1rem; font-size: 0.84rem; color: #8a9bb0; line-height: 1.7; }.quiz-options{ display: flex; flex-direction: column; gap: 0.4rem; margin: 0.75rem 0; }.quiz-option{ display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.55rem 0.75rem; border: 1px solid rgba(74,158,255,0.12); border-radius: 8px; cursor: pointer; transition: all 0.14s; font-size: 0.84rem; color: var(--silver); background: rgba(10,20,48,0.3); }.quiz-option:hover{ border-color: rgba(251,191,36,0.3); color: var(--white); background: rgba(251,191,36,0.04); }.quiz-option input[type=radio]{ margin-top: 2px; flex-shrink: 0; accent-color: #fbbf24; }.quiz-option.selected{ border-color: rgba(251,191,36,0.4); color: var(--white); background: rgba(251,191,36,0.07); }.quiz-option.correct-answer{ border-color: rgba(52,211,153,0.5); background: rgba(52,211,153,0.08); }.quiz-option.wrong-answer{ border-color: rgba(248,113,113,0.5); background: rgba(248,113,113,0.08); }.quiz-submit-btn{ background: #fbbf24; color: #050d1c; border: none; border-radius: 8px; padding: 0.5rem 1.3rem; font-weight: 700; font-size: 0.84rem; font-family: inherit; cursor: pointer; transition: opacity 0.2s; margin-top: 0.5rem; }.quiz-submit-btn:hover{ opacity: 0.85; }.quiz-feedback{ display: none; margin-top: 0.75rem; padding: 0.85rem 1rem; border-radius: 8px; font-size: 0.84rem; line-height: 1.7; color: var(--silver); }.quiz-feedback.shown{ display: block; }.quiz-feedback.right{ background: rgba(52,211,153,0.06); border: 1px solid rgba(52,211,153,0.2); }.quiz-feedback.wrong{ background: rgba(248,113,113,0.06); border: 1px solid rgba(248,113,113,0.2); }.quiz-feedback strong{ color: var(--white); }
+  </style>
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:type"        content="article" />
+  <meta property="og:site_name"   content="ContractingHQ" />
+  <meta property="og:title"       content="Surveillance That Actually Works: The QASP for CORs" />
+  <meta property="og:description" content="How CORs read a QASP, run random sampling against acceptable quality levels, document surveillance that holds up, and know what goes to the CO." />
+  <meta property="og:url"         content="https://kthq.org/cor-surveillance.html" />
+  <meta property="og:image"       content="https://kthq.org/og-image.png" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@ContractingHQ" />
+  <meta name="twitter:title"       content="Surveillance That Actually Works: The QASP for CORs" />
+  <meta name="twitter:description" content="How CORs read a QASP, run random sampling against acceptable quality levels, document surveillance that holds up, and know what goes to the CO." />
+  <meta name="twitter:image"       content="https://kthq.org/og-image.png" />
+  <link rel="canonical"            href="https://kthq.org/cor-surveillance.html" />
+</head>
+<body>
+
+<nav class="navbar" id="navbar" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="customer-education.html">Customer Education</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="working-theory/">Leadership</a></li>
+          <li><a href="links.html">Links</a></li>
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+<main id="main">
+
+<div class="rfp-bg">
+  <div class="rfp-intro">
+    <div class="rfp-intro-tag">COR Track &bull; Surveillance</div>
+    <h1>Surveillance That Actually Works</h1>
+    <p>How to read your Quality Assurance Surveillance Plan (QASP), pick and run the right surveillance method, document what you see so it holds up, and know what to handle yourself and what goes to the contracting officer.</p>
+  </div>
+
+  <div class="rfp-tabs" role="tablist">
+    <button class="rfp-tab active" onclick="showTab('learn', this)" role="tab" aria-selected="true" aria-controls="tab-learn">&#128214; Learn</button>
+    <button class="rfp-tab" onclick="showTab('showme', this)" role="tab" aria-selected="false" aria-controls="tab-showme">&#128269; Show Me</button>
+    <button class="rfp-tab" onclick="showTab('test', this)" role="tab" aria-selected="false" aria-controls="tab-test">&#9999;&#65039; Test Yourself</button>
+  </div>
+
+  <!-- LEARN -->
+  <div id="tab-learn" class="rfp-panel active" role="tabpanel">
+
+    <div class="learn-section">
+      <h2><span class="section-num">1</span> What Surveillance Is For</h2>
+      <div class="learn-body">
+        <p>Surveillance answers one question: is the government getting what the contract says it is paying for? Everything else on this page supports that question.</p>
+        <p>It does two jobs at once. In the moment, it catches problems early enough to fix them while they are small. Over time, it builds the record the contracting officer (CO) relies on for acceptance, payment, performance evaluations, option decisions, and, if it comes to it, remedies or termination. A contract with good surveillance records can be managed. A contract without them turns into one person's word against another's.</p>
+        <p>The FAR splits the work into two halves. The contractor is responsible for <strong>quality control</strong>: inspecting its own work before turning it over (FAR 46.201). The government is responsible for <strong>quality assurance</strong>: checking, at the times and places necessary, that the work conforms to the contract (FAR 46.401(a)). As the contracting officer's representative (COR), you are usually the person doing the government's half.</p>
+
+        <div class="highlight-box">
+          <strong>Quality assurance, not quality control.</strong> You check the contractor's results against the contract standard. You do not run the contractor's quality program, inspect on their behalf, or supervise their people. If you find yourself doing the contractor's inspections for them, the contractor's quality control program is the problem to raise with the CO.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> Reading Your QASP</h3>
+      <div class="learn-body">
+        <p>The QASP is the government's plan for watching the contract. FAR 46.401(a) says it should be prepared along with the statement of work and should specify all work requiring surveillance and the method of surveillance. For services, the activity responsible for the technical requirements prepares it (FAR 46.103(a)), which usually means the customer, often with the future COR involved.</p>
+        <p>Formats vary by agency, but most QASPs carry the same core pieces. The table below lays out each piece and the question it answers for you.</p>
+
+        <table class="rfp-table">
+          <thead><tr><th>QASP element</th><th>What it tells you</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Performance requirement</strong></td><td>The task or outcome being watched, tied to a paragraph of the performance work statement (PWS).</td></tr>
+            <tr><td><strong>Performance standard</strong></td><td>What "done right" looks like. Measurable when it is written well: "grass cut to 2 to 4 inches," not "grounds well maintained."</td></tr>
+            <tr><td><strong>Acceptable quality level (AQL)</strong></td><td>How much deviation from the standard the government will tolerate before performance is unacceptable. For example, "no more than 5 percent of sampled restrooms fail inspection" or "zero missed emergency responses."</td></tr>
+            <tr><td><strong>Surveillance method</strong></td><td>How you check: 100 percent inspection, random sampling, periodic inspection, or validated customer complaints.</td></tr>
+            <tr><td><strong>Frequency</strong></td><td>How often you check. Weekly, monthly, each delivery, each invoice period.</td></tr>
+            <tr><td><strong>Documentation</strong></td><td>What record you make and where it goes.</td></tr>
+            <tr><td><strong>Incentives or remedies</strong></td><td>What happens when the AQL is met or missed. Remedies are the CO's call, but you need to know what they are so your records support them.</td></tr>
+          </tbody>
+        </table>
+
+        <p>Read the QASP side by side with the PWS. Every QASP line should point to a PWS paragraph, and the standard in the QASP should match the standard in the PWS. When they disagree, the contract governs, and the mismatch is something to bring to the CO.</p>
+
+        <div class="highlight-box amber">
+          <strong>When the QASP does not work.</strong> Some QASPs were copied from an old contract, set frequencies nobody can sustain, or leave out the work that actually matters. Tell the CO what is not working and recommend a fix. Ask whether the QASP was made part of the contract. If it was not, it can usually be revised without a contract modification. If it was, changing it takes one. Either way, the CO decides; you keep following the current plan until it changes.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> The Surveillance Methods</h3>
+      <div class="learn-body">
+        <p>Your QASP picks the method for each requirement, so this section is about understanding why it picked that one and how to run it. The table below lays out the common methods, where each fits, and the trap in each.</p>
+
+        <table class="rfp-table">
+          <thead><tr><th>Method</th><th>Fits best when</th><th>Watch out for</th></tr></thead>
+          <tbody>
+            <tr><td><strong>100 percent inspection</strong></td><td>Few, critical, or high-dollar outputs: a monthly report, a fire alarm test, an emergency response.</td><td>It does not scale. Used on hundreds of routine tasks, it burns out the COR and drifts into supervising.</td></tr>
+            <tr><td><strong>Random sampling</strong></td><td>Many repetitive outputs: restroom cleanings, work orders, meals served.</td><td>"Random" has to be random. Picking the buildings you walk past anyway is not a sample.</td></tr>
+            <tr><td><strong>Periodic inspection</strong> (planned sampling)</td><td>Recurring work on a known schedule, checked at set intervals: a quarterly filter change, a weekly mow.</td><td>A predictable schedule can be performed to. Vary timing within the window when the QASP allows.</td></tr>
+            <tr><td><strong>Validated customer complaints</strong></td><td>Work customers see every day, as a supplement to another method.</td><td>Unvalidated complaints are not evidence. One loud customer is not a trend.</td></tr>
+          </tbody>
+        </table>
+
+        <p>Many QASPs combine methods: random sampling for routine cleaning, 100 percent inspection for the monthly report, and validated complaints as an early warning across all of it.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Running a Sample</h3>
+      <div class="learn-body">
+        <p>Random sampling is where most surveillance either works or quietly falls apart. Run it the same way every time:</p>
+        <ol>
+          <li><strong>Define the lot.</strong> Everything the sample is drawn from for the period. Example: 15 restrooms, cleaned 5 days a week, is 75 restroom cleanings per week.</li>
+          <li><strong>Draw the sample before you go.</strong> Use a random number generator or a numbered list and a random pick. Save how you drew it with the record.</li>
+          <li><strong>Inspect against the standard, not your preference.</strong> If the standard is "no visible trash, floors free of standing water, dispensers stocked," those three things are the inspection.</li>
+          <li><strong>Count and compare.</strong> Record how many you checked and how many failed, then compare the result to the AQL.</li>
+          <li><strong>Record passes too.</strong> A month of "met standard" entries is as valuable as a defect, because it shows the surveillance happened and what it found.</li>
+        </ol>
+
+        <div class="highlight-box tip">
+          <strong>Quick math.</strong> You sample 12 of 75 restroom cleanings this week. 1 fails. 1 of 12 is about 8 percent. If the AQL allows up to 10 percent, performance is acceptable this period, and you still document the one failure and tell the contractor's representative about it. If 2 had failed (about 17 percent), the AQL is exceeded and the CO needs to know.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> Customer Complaints</h3>
+      <div class="learn-body">
+        <p>Customers are useful eyes, but a complaint is a lead, not a finding. Before a complaint counts as surveillance:</p>
+        <ul>
+          <li><strong>Validate it.</strong> Go look, or confirm it with evidence. Was the work actually required by the PWS, at that time, to that standard?</li>
+          <li><strong>Check it against the contract.</strong> "The floors aren't waxed often enough" is not a defect if the PWS calls for quarterly waxing and the contractor did it on schedule.</li>
+          <li><strong>Record it either way.</strong> Valid or not, note what came in and what you found.</li>
+        </ul>
+        <p>Ask customers to bring concerns to you rather than to the contractor's crew. A customer telling the crew what to do creates the same problems as a COR doing it, and the crew may reasonably think the request is authorized.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> Documenting What You See</h3>
+      <div class="learn-body">
+        <p>A surveillance record has to make sense to someone who was not there: the CO, a new COR, an auditor, or a judge. Write it so a stranger could tell what you checked, against what standard, and what you found.</p>
+        <p>The table below compares a weak entry with a strong one for the same inspection.</p>
+
+        <table class="rfp-table">
+          <thead><tr><th>Weak entry</th><th>Strong entry</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>"Checked restrooms. Some issues in Bldg 12. Told contractor."</td>
+              <td>"14 Nov, 0930-1045. Random sample of 12 of 75 weekly restroom cleanings (draw attached). PWS 3.2.1 standard: no visible trash, no standing water, dispensers stocked. 11 met standard. Bldg 12, 2nd floor men's: soap and paper towel dispensers empty at 0950. Notified contractor site lead J. Ramos at 1000; restocked by 1025. Result: 1 of 12 failed (8%), within 10% AQL. Photos attached."</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>Every strong entry has the same bones: date and time, what was inspected and how it was selected, the standard with its PWS paragraph, the result, who at the contractor was told and when, and supporting evidence such as photos.</p>
+
+        <p><strong>Where it goes.</strong> In DoD, surveillance records live in the Surveillance and Performance Monitoring (SPM) module in the Procurement Integrated Enterprise Environment (PIEE). SPM has smart forms for the surveillance schedule, surveillance checklists, COR status reports, and Contract Discrepancy Reports (CDRs). Other agencies use their own systems. Your appointment letter and your CO set how often you report; ask if it is not clear.</p>
+
+        <div class="highlight-box">
+          <strong>Facts, not feelings.</strong> "The contractor doesn't care" will not survive a rebuttal. "Third missed trash pickup at Bldg 20 this month (3, 10, 17 Nov), each confirmed on site" will. Write what you observed and measured.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">7</span> When You Find a Problem</h3>
+      <div class="learn-body">
+        <p>Finding a defect is the system working. What you do next matters more than the defect itself.</p>
+        <ol>
+          <li><strong>Inform the contractor's representative.</strong> Point to the standard and what you observed: "PWS 3.2.1 calls for stocked dispensers; these two are empty." That is informing, which is fine.</li>
+          <li><strong>Document it</strong> the way section 6 describes.</li>
+          <li><strong>Tell the CO</strong> when the QASP or your appointment says to, when the AQL is exceeded, when the same problem keeps coming back, or when it affects safety, mission, or money.</li>
+          <li><strong>Let the CO decide the remedy.</strong> A CDR, a request for corrective action, reperformance, a price reduction for services not performed, a cure notice: those are contract actions under the inspection clause and they belong to the CO.</li>
+        </ol>
+
+        <p>FAR 1.404(d) draws the line: a COR has no authority to make commitments or changes that affect price, quality, quantity, delivery, or other terms and conditions, and must not direct the contractor to operate in conflict with the contract. In surveillance, that means you do not:</p>
+        <ul>
+          <li>tell the contractor <em>how</em> to fix it, beyond pointing to the standard;</li>
+          <li>accept substandard work in exchange for something else ("skip Bldg 12 this week and do an extra wax next month");</li>
+          <li>agree to a deduction, credit, or schedule change;</li>
+          <li>change the standard because the contractor says it is unrealistic.</li>
+        </ul>
+
+        <div class="highlight-box amber">
+          <strong>Watching results, not people.</strong> Surveillance checks outputs against standards. Relatively continuous supervision and control of contractor employees is a key indicator of a personal services contract (FAR 37.201-2(b)). Assigning tasks to individual workers, approving their leave, or running their day is supervising, even with good intentions. See <a href="personal-vs-non-personal-services.html">Personal vs. Non-personal Services</a>.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">8</span> Surveillance and Acceptance</h3>
+      <div class="learn-body">
+        <p>Acceptance is the government acknowledging that the work conforms to the contract, and it is the CO's responsibility (FAR 46.502). In practice, many CORs are authorized to perform acceptance, often by accepting receiving reports or invoices in Wide Area Workflow (WAWF). Your appointment letter says whether you have that authority.</p>
+        <p>The link to surveillance: FAR 46.501 says supplies or services ordinarily must not be accepted before the government's quality assurance actions are complete. When you accept a month of services, your surveillance records for that month are what back up the acceptance. Accepting work your own records show was not performed, or accepting before you have checked, undercuts the government's position if a dispute comes later.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">9</span> Record It, or Call the CO?</h3>
+      <div class="learn-body">
+        <p>The table below sorts common situations into what you handle and record and what goes to the CO right away. When you are unsure, the CO would rather hear about it early.</p>
+
+        <table class="rfp-table">
+          <thead><tr><th>Situation</th><th>Your move</th></tr></thead>
+          <tbody>
+            <tr><td>Isolated defect, within the AQL, fixed promptly</td><td>Inform the contractor's representative, record it, include it in your regular report.</td></tr>
+            <tr><td>AQL exceeded for the period</td><td>Record it and notify the CO. A CDR is likely the next step.</td></tr>
+            <tr><td>Same problem keeps recurring, even within the AQL</td><td>Notify the CO with the pattern documented.</td></tr>
+            <tr><td>Safety hazard or mission impact</td><td>Notify the CO immediately, and follow local safety procedures.</td></tr>
+            <tr><td>Contractor or customer asks for work you think is outside the PWS</td><td>Do not approve it. Send it to the CO.</td></tr>
+            <tr><td>Contractor says a standard is impossible or the workload changed</td><td>Record what they said and send it to the CO. Do not adjust the standard.</td></tr>
+            <tr><td>The QASP's method or frequency is not workable</td><td>Recommend a change to the CO; keep following the current QASP until it changes.</td></tr>
+            <tr><td>Invoice for work your records show was not performed</td><td>Do not accept or certify it. Notify the CO.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- end learn panel -->
+
+  <!-- SHOW ME -->
+  <div id="tab-showme" class="rfp-panel" role="tabpanel">
+
+    <div class="learn-section">
+      <h2><span class="section-num">1</span> A Sample QASP Excerpt</h2>
+      <div class="learn-body">
+        <p>This is a fictional QASP excerpt for a custodial services contract covering 15 restrooms and the common areas in five buildings. The table below shows three performance requirements the way a working QASP lays them out.</p>
+
+        <table class="rfp-table">
+          <thead><tr><th>PWS</th><th>Requirement and standard</th><th>AQL</th><th>Method and frequency</th></tr></thead>
+          <tbody>
+            <tr><td><strong>3.2.1</strong></td><td>Restrooms cleaned daily (Mon-Fri) by 0800: no visible trash, no standing water, dispensers stocked.</td><td>No more than 10% of sampled cleanings fail.</td><td>Random sample of 12 cleanings per week.</td></tr>
+            <tr><td><strong>3.4.2</strong></td><td>Trash removed from all exterior receptacles Mon, Wed, Fri by 1600.</td><td>No more than 1 missed pickup per month.</td><td>Periodic inspection each pickup day, plus validated complaints.</td></tr>
+            <tr><td><strong>5.1</strong></td><td>Monthly status report delivered to the COR by the 5th business day, covering all PWS 5.1 content.</td><td>0 late or incomplete reports.</td><td>100% inspection of each report.</td></tr>
+          </tbody>
+        </table>
+
+        <p>Read across each row and you have your plan for the month: what to check, how many, how often, and where the line is.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> One Month of Surveillance</h3>
+      <div class="learn-body">
+        <p>Here is how that excerpt plays out over a month.</p>
+
+        <p><strong>Week 1.</strong> The COR numbers the 75 weekly restroom cleanings (15 restrooms by 5 days), uses a random number generator to draw 12, saves the draw, and inspects at 0800 on the drawn days. 12 of 12 meet standard. Trash is checked Monday, Wednesday, and Friday; all picked up. The monthly report arrives on the 3rd business day and covers every PWS 5.1 item. Everything is recorded in SPM, including the passes.</p>
+
+        <p><strong>Week 2.</strong> 11 of 12 restrooms meet standard; one has empty dispensers. The COR tells the contractor's site lead, who restocks within the hour. 1 of 12 is about 8 percent, within the 10 percent AQL. Recorded with a photo.</p>
+
+        <p><strong>Week 3.</strong> A customer emails that "the trash is never picked up at Building 20." The COR checks Friday at 1630: the Building 20 receptacles are full. One missed pickup, validated. That is at the monthly AQL limit of 1, not over it. Recorded, contractor informed, and the COR mentions the complaint and the miss in the regular report to the CO.</p>
+
+        <p><strong>Week 4.</strong> Building 20 is missed again on Wednesday, confirmed on site. That is 2 missed pickups this month, which exceeds the AQL. The COR documents both dates with photos, notifies the CO the same day, and does not discuss deductions or fixes with the contractor beyond pointing to PWS 3.4.2. The CO issues a CDR asking the contractor for the cause and a corrective action.</p>
+
+        <div class="highlight-box tip">
+          <strong>What made this work.</strong> The sample was drawn before inspecting. Passes were recorded, so the failures sit in context. The complaint was validated before it counted. The COR informed the contractor about defects but left the remedy to the CO, and the CO got the AQL breach the day it happened, with dates and photos ready.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> The Same Month, Done Poorly</h3>
+      <div class="learn-body">
+        <p>Same contract, different COR:</p>
+        <ul>
+          <li>The COR checks the restrooms near the COR's own office every week because they are convenient. Two buildings are never inspected.</li>
+          <li>Only problems get written down, so the file shows four defects and nothing else. It looks like a failing contract with no evidence of what passed.</li>
+          <li>The customer complaint is forwarded to the contractor with "please fix," never validated, and logged as a missed pickup.</li>
+          <li>After the second Building 20 miss, the COR tells the site lead, "Just add Building 20 to Tuesday and we'll call it even." The CO hears about it at the end of the month.</li>
+        </ul>
+        <p>The last item is the one that causes real trouble: the COR changed the delivery schedule and settled a nonconformance, neither of which a COR has the authority to do (FAR 1.404(d)). The rest just leaves the CO with a file that cannot support a CDR, a performance evaluation, or a payment decision.</p>
+      </div>
+    </div>
+
+  </div><!-- end showme panel -->
+
+  <!-- TEST -->
+  <div id="tab-test" class="rfp-panel" role="tabpanel">
+
+    <div class="learn-section">
+      <h3><span class="section-num">&#9989;</span> Test Yourself</h3>
+      <div class="learn-body">
+        <p>Five scenarios on surveillance. Pick the best answer and check it.</p>
+      </div>
+
+      <div class="quiz-scenario">
+        <div class="quiz-scenario-head">
+          <div class="quiz-scenario-num">Question 1 &bull; Random Sampling</div>
+          <div class="quiz-scenario-title">Which restrooms should the COR inspect?</div>
+        </div>
+        <div class="quiz-scenario-body">
+          <p>The QASP calls for a random sample of 12 restroom cleanings per week out of 75. To save time, the COR inspects the 12 restrooms in the building where the COR works, every week. What is the problem?</p>
+          <div class="quiz-options" id="q1-options">
+            <label class="quiz-option" onclick="selectQuiz(1, 'a', this)">
+              <input type="radio" name="q1" value="a" />
+              <span><strong>A.</strong> Nothing. Twelve is the right number, so the sample is valid.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(1, 'b', this)">
+              <input type="radio" name="q1" value="b" />
+              <span><strong>B.</strong> The sample is not random. The COR needs to draw the 12 randomly from all 75 before inspecting, and keep a record of how they were drawn.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(1, 'c', this)">
+              <input type="radio" name="q1" value="c" />
+              <span><strong>C.</strong> The COR should inspect all 75 every week instead.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(1, 'd', this)">
+              <input type="radio" name="q1" value="d" />
+              <span><strong>D.</strong> The contractor should pick which 12 get inspected.</span>
+            </label>
+          </div>
+          <button class="quiz-submit-btn" onclick="submitQuiz(1, 'b')">Check Answer</button>
+          <div class="quiz-feedback" id="q1-feedback"></div>
+        </div>
+      </div>
+
+      <div class="quiz-scenario">
+        <div class="quiz-scenario-head">
+          <div class="quiz-scenario-num">Question 2 &bull; Acceptable Quality Level</div>
+          <div class="quiz-scenario-title">Is performance acceptable this week?</div>
+        </div>
+        <div class="quiz-scenario-body">
+          <p>The AQL for restroom cleaning is no more than 10 percent of sampled cleanings failing. This week the COR sampled 12 and 2 failed. The contractor fixed both within an hour. What should the COR do?</p>
+          <div class="quiz-options" id="q2-options">
+            <label class="quiz-option" onclick="selectQuiz(2, 'a', this)">
+              <input type="radio" name="q2" value="a" />
+              <span><strong>A.</strong> Nothing beyond telling the site lead. Both were fixed, so there is no defect to report.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(2, 'b', this)">
+              <input type="radio" name="q2" value="b" />
+              <span><strong>B.</strong> Document both failures and the fixes, and notify the CO that the AQL was exceeded this period.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(2, 'c', this)">
+              <input type="radio" name="q2" value="c" />
+              <span><strong>C.</strong> Tell the contractor that the government will deduct for the two failures.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(2, 'd', this)">
+              <input type="radio" name="q2" value="d" />
+              <span><strong>D.</strong> Re-sample until the failure rate comes in under 10 percent.</span>
+            </label>
+          </div>
+          <button class="quiz-submit-btn" onclick="submitQuiz(2, 'b')">Check Answer</button>
+          <div class="quiz-feedback" id="q2-feedback"></div>
+        </div>
+      </div>
+
+      <div class="quiz-scenario">
+        <div class="quiz-scenario-head">
+          <div class="quiz-scenario-num">Question 3 &bull; COR Authority</div>
+          <div class="quiz-scenario-title">The contractor says the standard is unrealistic.</div>
+        </div>
+        <div class="quiz-scenario-body">
+          <p>The contractor's site lead tells the COR that cleaning all 15 restrooms by 0800 daily is unrealistic with the current crew and asks to move the deadline to 1000, starting tomorrow. The COR thinks the request is reasonable. What should the COR do?</p>
+          <div class="quiz-options" id="q3-options">
+            <label class="quiz-option" onclick="selectQuiz(3, 'a', this)">
+              <input type="radio" name="q3" value="a" />
+              <span><strong>A.</strong> Agree, since the COR agrees it is reasonable and it does not change the price.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(3, 'b', this)">
+              <input type="radio" name="q3" value="b" />
+              <span><strong>B.</strong> Agree for a trial period and tell the CO if it works out.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(3, 'c', this)">
+              <input type="radio" name="q3" value="c" />
+              <span><strong>C.</strong> Record the request and the reasons given, tell the site lead the current standard stays in place, and send the request to the CO.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(3, 'd', this)">
+              <input type="radio" name="q3" value="d" />
+              <span><strong>D.</strong> Tell the site lead to hire more people.</span>
+            </label>
+          </div>
+          <button class="quiz-submit-btn" onclick="submitQuiz(3, 'c')">Check Answer</button>
+          <div class="quiz-feedback" id="q3-feedback"></div>
+        </div>
+      </div>
+
+      <div class="quiz-scenario">
+        <div class="quiz-scenario-head">
+          <div class="quiz-scenario-num">Question 4 &bull; Customer Complaints</div>
+          <div class="quiz-scenario-title">A customer says the trash is never picked up.</div>
+        </div>
+        <div class="quiz-scenario-body">
+          <p>A customer emails the COR: "The trash at Building 20 is never picked up." The PWS requires pickup Monday, Wednesday, and Friday by 1600. What should the COR do before recording a missed pickup?</p>
+          <div class="quiz-options" id="q4-options">
+            <label class="quiz-option" onclick="selectQuiz(4, 'a', this)">
+              <input type="radio" name="q4" value="a" />
+              <span><strong>A.</strong> Forward the email to the contractor and log a missed pickup.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(4, 'b', this)">
+              <input type="radio" name="q4" value="b" />
+              <span><strong>B.</strong> Validate it: check the receptacles after 1600 on a pickup day, or confirm with other evidence, then record what was found either way.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(4, 'c', this)">
+              <input type="radio" name="q4" value="c" />
+              <span><strong>C.</strong> Ignore it, since customer complaints are not part of the QASP.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(4, 'd', this)">
+              <input type="radio" name="q4" value="d" />
+              <span><strong>D.</strong> Ask the customer to call the contractor directly next time.</span>
+            </label>
+          </div>
+          <button class="quiz-submit-btn" onclick="submitQuiz(4, 'b')">Check Answer</button>
+          <div class="quiz-feedback" id="q4-feedback"></div>
+        </div>
+      </div>
+
+      <div class="quiz-scenario">
+        <div class="quiz-scenario-head">
+          <div class="quiz-scenario-num">Question 5 &bull; Surveillance and Acceptance</div>
+          <div class="quiz-scenario-title">An invoice arrives for a month with missed work.</div>
+        </div>
+        <div class="quiz-scenario-body">
+          <p>The COR is authorized to accept services in WAWF. The monthly invoice covers all scheduled trash pickups, but the COR's surveillance records show three pickups were missed and never made up. What should the COR do?</p>
+          <div class="quiz-options" id="q5-options">
+            <label class="quiz-option" onclick="selectQuiz(5, 'a', this)">
+              <input type="radio" name="q5" value="a" />
+              <span><strong>A.</strong> Accept it. The contract is firm-fixed-price, so the amount does not change.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(5, 'b', this)">
+              <input type="radio" name="q5" value="b" />
+              <span><strong>B.</strong> Accept it and note the missed pickups in next month's report.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(5, 'c', this)">
+              <input type="radio" name="q5" value="c" />
+              <span><strong>C.</strong> Do not accept it as submitted. Notify the CO with the surveillance records for the missed pickups.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(5, 'd', this)">
+              <input type="radio" name="q5" value="d" />
+              <span><strong>D.</strong> Accept it, then ask the contractor to do three extra pickups next month.</span>
+            </label>
+          </div>
+          <button class="quiz-submit-btn" onclick="submitQuiz(5, 'c')">Check Answer</button>
+          <div class="quiz-feedback" id="q5-feedback"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end test panel -->
+
+</div><!-- end rfp-bg -->
+
+</main>
+
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+    <div id="gc-stats" style="margin-top:.6rem;font-size:.72rem;color:#555;letter-spacing:.3px;"></div>
+  </div>
+</footer>
+
+<script>
+  /* tab switching */
+  function showTab(name, btn) {
+    document.querySelectorAll('.rfp-panel').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.rfp-tab').forEach(function(b){ b.classList.remove('active'); });
+    var panel = document.getElementById('tab-' + name);
+    if (panel) panel.classList.add('active');
+    if (btn) btn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* quiz logic */
+  var quizAnswers = {};
+
+  function selectQuiz(num, val, el) {
+    quizAnswers[num] = val;
+    var options = document.querySelectorAll('#q' + num + '-options .quiz-option');
+    options.forEach(function(o){ o.classList.remove('selected'); });
+    el.classList.add('selected');
+  }
+
+  function submitQuiz(num, correctAnswer) {
+    if (!quizAnswers[num]) {
+      alert('Select an answer first.');
+      return;
+    }
+    var fb = document.getElementById('q' + num + '-feedback');
+    var isCorrect = quizAnswers[num] === correctAnswer;
+
+    var feedbackText = {
+      1: {
+        correct: '<strong>Correct.</strong> A sample is only meaningful if every cleaning had a chance of being picked. Checking the same convenient restrooms every week tells you about one building and nothing about the rest, and the contractor can perform to it. Draw the sample randomly before you go and save the draw with the record.',
+        wrong: '<strong>Not quite.</strong> The correct answer is B. The number is right but the selection is not random (A), so the result does not represent the whole lot. Inspecting all 75 (C) ignores the QASP\'s method and does not scale. Letting the contractor pick (D) defeats the purpose.'
+      },
+      2: {
+        correct: '<strong>Correct.</strong> 2 of 12 is about 17 percent, which exceeds the 10 percent AQL. A prompt fix is worth recording, but it does not erase the result for the period. Document it and tell the CO, who decides what happens next.',
+        wrong: '<strong>Not quite.</strong> The correct answer is B. The quick fix (A) does not change that the AQL was exceeded. Deductions (C) are a contract remedy only the CO can take; a COR has no authority over price (FAR 1.404(d)). Re-sampling to get a better number (D) makes the record unreliable.'
+      },
+      3: {
+        correct: '<strong>Correct.</strong> Changing the time a service is due changes delivery, a term of the contract. FAR 1.404(d) says a COR has no authority to make changes that affect price, quality, quantity, delivery, or other terms. The COR\'s job is to capture the request and get it to the CO, and the COR can share a view on it.',
+        wrong: '<strong>Not quite.</strong> The correct answer is C. Agreeing (A) or running a trial (B) changes a contract term without authority, even if it seems reasonable and costs nothing. Telling the contractor how to staff (D) is directing how the work gets done, which is the contractor\'s business.'
+      },
+      4: {
+        correct: '<strong>Correct.</strong> A complaint is a lead, not a finding. Validate it against the PWS standard before it counts, and record what you found whether or not the complaint holds up.',
+        wrong: '<strong>Not quite.</strong> The correct answer is B. Logging an unvalidated complaint (A) puts an unverified defect in the record. Complaints are useful even when the QASP relies on other methods (C). Sending customers to the contractor (D) invites customers to direct the crew; ask them to come to you.'
+      },
+      5: {
+        correct: '<strong>Correct.</strong> Acceptance acknowledges the work conformed to the contract, and FAR 46.501 says acceptance ordinarily must not come before quality assurance is complete. Your own records show work was not performed. The CO decides how to handle it; your records are what the CO will rely on.',
+        wrong: '<strong>Not quite.</strong> The correct answer is C. Fixed price does not mean the government pays for services not performed (A). Accepting and reporting later (B) puts the government on record accepting work that did not happen. Trading future work for a current defect (D) is a change only the CO can make.'
+      }
+    };
+
+    var text = isCorrect ? feedbackText[num].correct : feedbackText[num].wrong;
+    fb.innerHTML = text;
+    fb.className = 'quiz-feedback shown ' + (isCorrect ? 'right' : 'wrong');
+
+    var options = document.querySelectorAll('#q' + num + '-options .quiz-option');
+    options.forEach(function(o){
+      var radio = o.querySelector('input[type=radio]');
+      if (radio.value === correctAnswer) {
+        o.classList.add('correct-answer');
+      } else if (radio.value === quizAnswers[num] && !isCorrect) {
+        o.classList.add('wrong-answer');
+      }
+    });
+  }
+</script>
+<script src="main.js"></script>
+<script src="player.js?v=20261110-r2"></script>
+<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+(function(){
+  var el = document.getElementById('gc-stats');
+  if (!el) return;
+  var x = new XMLHttpRequest();
+  x.onreadystatechange = function(){
+    if (x.readyState === 4 && x.status === 200) {
+      try {
+        var d = JSON.parse(x.responseText);
+        el.innerHTML = 'Site Visits: <strong style="color:#8a9bb0;">' + d.count + '</strong>';
+      } catch(e){}
+    }
+  };
+  x.open('GET', 'https://nhazelett.goatcounter.com/counter/TOTAL.json');
+  x.send();
+})();
+</script>
+
+</body>
+</html>

@@ -2597,6 +2597,8 @@ input[type=range].cfm-sb-vol-slider::-webkit-slider-thumb {
     'clause-matrix.html',
     'training.html',
     'annual-cor-file-reviews.html',
+    'cor-surveillance.html',
+    'cors.html',
     'award-decision-documents.html',
     'award-notice-letters.html',
     'blanket-purchase-agreements.html',
