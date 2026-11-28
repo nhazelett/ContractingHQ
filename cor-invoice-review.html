@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X2RXS78N7K"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-X2RXS78N7K');</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="How CORs review invoices in WAWF: what acceptance means, the Prompt Payment clocks, a line-by-line check, and when to accept, reject, or call the CO." />
+  <title>Invoice Review for CORs | ContractingHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%202%20L28%207%20L28%2018%20C28%2024%2022%2029%2016%2031%20C10%2029%204%2024%204%2018%20L4%207%20Z%27%20fill%3D%27%230d1117%27%20stroke%3D%27%234a9eff%27%20stroke-width%3D%271.5%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2721%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2Csans-serif%27%20font-weight%3D%27bold%27%20font-size%3D%279%27%20fill%3D%27%234a9eff%27%20letter-spacing%3D%270.5%27%3EKTHQ%3C%2Ftext%3E%3C%2Fsvg%3E" />
+  <style>.rfp-bg{
+      background:
+        radial-gradient(ellipse 110% 35% at 50% 0%,   rgba(251,191,36,0.09) 0%, transparent 65%),
+        radial-gradient(ellipse 80%  25% at 0%   50%,  rgba(251,191,36,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 80%  25% at 100% 50%,  rgba(251,191,36,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 110% 30% at 50% 100%,  rgba(251,191,36,0.07) 0%, transparent 65%),
+        #040d1f;
+      padding: 0 0 6rem;
+      min-height: 100vh;
+    }.rfp-intro{ text-align: center; padding: 2.5rem 1.5rem 0; }.rfp-intro-tag{ display: inline-block; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); color: #fbbf24; font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.9rem; border-radius: 100px; margin-bottom: 0.65rem; }.rfp-intro h2, .rfp-intro h1{ font-family: 'Rajdhani', sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }.rfp-intro p{ color: var(--silver); font-size: 0.9rem; max-width: 640px; margin: 0 auto 1.5rem; line-height: 1.6; }.rfp-tabs{ display: flex; gap: 0; border-bottom: 1px solid rgba(251,191,36,0.15); background: rgba(4,13,31,0.95); position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px); flex-wrap: wrap; }.rfp-tab{ padding: 0.85rem 1.5rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.18s; font-family: inherit; white-space: nowrap; }.rfp-tab:hover{ color: var(--white); }.rfp-tab.active{ color: #fbbf24; border-bottom-color: #fbbf24; }.rfp-panel{ display: none; padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }.rfp-panel.active{ display: block; }.learn-section{ margin-bottom: 2.5rem; }.learn-section h3, .learn-section h2{ font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }.learn-section h3 .section-num, .learn-section h2 .section-num{ display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(251,191,36,0.12); color: #fbbf24; font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }.learn-body{ color: var(--silver); font-size: 0.92rem; line-height: 1.75; }.learn-body p{ margin-bottom: 1rem; }.learn-body strong{ color: var(--white); font-weight: 600; }.learn-body ul{ margin: 0.5rem 0 1rem 1.3rem; padding: 0; }.learn-body ul li{ margin-bottom: 0.4rem; }.learn-divider{ border: none; border-top: 1px solid rgba(251,191,36,0.08); margin: 2rem 0; }.highlight-box{ background: rgba(74,158,255,0.05); border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.88rem; color: var(--silver); }.highlight-box strong{ color: var(--white); }.highlight-box.warn{ background: rgba(248,113,113,0.05); border-color: rgba(248,113,113,0.2); }.highlight-box.warn strong{ color: #fca5a5; }.highlight-box.tip{ background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }.highlight-box.tip strong{ color: #6ee7b7; }.highlight-box.amber{ background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.22); }.highlight-box.amber strong{ color: #fcd34d; }.rfp-table{ width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 1rem 0; }.rfp-table th{ background: rgba(251,191,36,0.1); color: #fbbf24; font-weight: 700; text-align: left; padding: 0.6rem 0.9rem; border-bottom: 1px solid rgba(251,191,36,0.2); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; }.rfp-table td{ color: var(--silver); padding: 0.65rem 0.9rem; border-bottom: 1px solid rgba(74,158,255,0.06); vertical-align: top; }.rfp-table tr:hover td{ background: rgba(251,191,36,0.03); }.rfp-table td strong{ color: var(--white); }/* Slide deck mockup */
+    .slide-deck{ display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0; }.slide{ background: linear-gradient(180deg, rgba(4,10,26,0.8) 0%, rgba(4,10,26,0.55) 100%); border: 1px solid rgba(74,158,255,0.18); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 18px rgba(0,0,0,0.3); }.slide-head{ display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 1.1rem; background: rgba(251,191,36,0.08); border-bottom: 1px solid rgba(251,191,36,0.18); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #fbbf24; }.slide-head .slide-num{ color: #8a9bb0; }.slide-body{ padding: 1.4rem 1.6rem 1.2rem; min-height: 120px; }.slide-title{ font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; line-height: 1.25; }.slide-sub{ font-size: 0.82rem; color: #8a9bb0; font-weight: 500; margin-top: -0.35rem; margin-bottom: 0.9rem; letter-spacing: 0.3px; }.slide-body ul{ margin: 0.4rem 0 0.3rem 1.15rem; padding: 0; font-size: 0.86rem; color: #c5d3e6; line-height: 1.65; }.slide-body ul li{ margin-bottom: 0.3rem; }.slide-body ul li strong{ color: var(--white); }.slide-body p{ font-size: 0.86rem; color: #c5d3e6; line-height: 1.7; margin: 0 0 0.5rem; }.slide-title-big{ text-align: center; padding: 2.2rem 1.5rem 1.8rem; }.slide-title-big .slide-title{ font-size: 1.85rem; margin-bottom: 0.5rem; }.slide-title-big .slide-sub{ font-size: 0.9rem; margin-bottom: 0.3rem; }.slide-notes{ background: rgba(4,10,26,0.55); border-top: 1px dashed rgba(74,158,255,0.22); padding: 0.85rem 1.6rem 1rem; font-size: 0.78rem; color: #8a9bb0; line-height: 1.65; font-style: italic; }.slide-notes-label{ display: block; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #4a9eff; margin-bottom: 0.3rem; font-style: normal; }.slide-kv{ display: grid; grid-template-columns: 140px 1fr; gap: 0.35rem 0.8rem; font-size: 0.82rem; color: #c5d3e6; }.slide-kv .k{ color: #8a9bb0; font-weight: 600; text-transform: uppercase; font-size: 0.68rem; letter-spacing: 0.8px; padding-top: 2px; }/* Quiz styles */
+    .quiz-scenario{ background: rgba(4,10,26,0.7); border: 1px solid rgba(74,158,255,0.12); border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden; }.quiz-scenario-head{ background: rgba(251,191,36,0.08); border-bottom: 1px solid rgba(251,191,36,0.15); padding: 0.8rem 1.1rem; }.quiz-scenario-num{ font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #fbbf24; opacity: 0.8; }.quiz-scenario-title{ font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); margin-top: 0.2rem; }.quiz-scenario-body{ padding: 1rem 1.1rem; font-size: 0.84rem; color: #8a9bb0; line-height: 1.7; }.quiz-options{ display: flex; flex-direction: column; gap: 0.4rem; margin: 0.75rem 0; }.quiz-option{ display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.55rem 0.75rem; border: 1px solid rgba(74,158,255,0.12); border-radius: 8px; cursor: pointer; transition: all 0.14s; font-size: 0.84rem; color: var(--silver); background: rgba(10,20,48,0.3); }.quiz-option:hover{ border-color: rgba(251,191,36,0.3); color: var(--white); background: rgba(251,191,36,0.04); }.quiz-option input[type=radio]{ margin-top: 2px; flex-shrink: 0; accent-color: #fbbf24; }.quiz-option.selected{ border-color: rgba(251,191,36,0.4); color: var(--white); background: rgba(251,191,36,0.07); }.quiz-option.correct-answer{ border-color: rgba(52,211,153,0.5); background: rgba(52,211,153,0.08); }.quiz-option.wrong-answer{ border-color: rgba(248,113,113,0.5); background: rgba(248,113,113,0.08); }.quiz-submit-btn{ background: #fbbf24; color: #050d1c; border: none; border-radius: 8px; padding: 0.5rem 1.3rem; font-weight: 700; font-size: 0.84rem; font-family: inherit; cursor: pointer; transition: opacity 0.2s; margin-top: 0.5rem; }.quiz-submit-btn:hover{ opacity: 0.85; }.quiz-feedback{ display: none; margin-top: 0.75rem; padding: 0.85rem 1rem; border-radius: 8px; font-size: 0.84rem; line-height: 1.7; color: var(--silver); }.quiz-feedback.shown{ display: block; }.quiz-feedback.right{ background: rgba(52,211,153,0.06); border: 1px solid rgba(52,211,153,0.2); }.quiz-feedback.wrong{ background: rgba(248,113,113,0.06); border: 1px solid rgba(248,113,113,0.2); }.quiz-feedback strong{ color: var(--white); }
+    .learn-body a{ color: var(--accent); font-weight: 600; }
+  </style>
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:type"        content="article" />
+  <meta property="og:site_name"   content="ContractingHQ" />
+  <meta property="og:title"       content="Invoice Review for CORs" />
+  <meta property="og:description" content="How CORs review invoices in WAWF: what acceptance means, the Prompt Payment clocks, a line-by-line check, and when to accept, reject, or call the CO." />
+  <meta property="og:url"         content="https://kthq.org/cor-invoice-review.html" />
+  <meta property="og:image"       content="https://kthq.org/og-image.png" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@ContractingHQ" />
+  <meta name="twitter:title"       content="Invoice Review for CORs" />
+  <meta name="twitter:description" content="How CORs review invoices in WAWF: what acceptance means, the Prompt Payment clocks, a line-by-line check, and when to accept, reject, or call the CO." />
+  <meta name="twitter:image"       content="https://kthq.org/og-image.png" />
+  <link rel="canonical"            href="https://kthq.org/cor-invoice-review.html" />
+</head>
+<body>
+
+<nav class="navbar" id="navbar" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="logo-kthq">KTHQ</span><span class="logo-full">ContractingHQ</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="customer-education.html">Customer Education</a></li>
+      <li><a href="gao-decisions.html">GAO Decisions</a></li>
+      <li><a href="federal-register.html">FAR Updates</a></li>
+      <li><a href="training.html">Training</a></li>
+      <li class="nav-more"><a href="#" class="nav-more-toggle">More &#9660;</a>
+        <ul class="nav-more-menu">
+          <li><a href="working-theory/">Leadership</a></li>
+          <li><a href="links.html">Links</a></li>
+          <li><a href="asbca.html">ASBCA</a></li>
+          <li><a href="far-overhaul.html">FAR Overhaul</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+<main id="main">
+
+<div class="rfp-bg">
+  <div class="rfp-intro">
+    <div class="rfp-intro-tag">COR Track &bull; Invoices</div>
+    <h1>Invoice Review for CORs</h1>
+    <p>What you are actually doing when you accept an invoice in WAWF, the clocks that start running when it lands in your queue, what to check line by line, and when to accept, reject, or call the contracting officer.</p>
+  </div>
+
+  <div class="rfp-tabs" role="tablist">
+    <button class="rfp-tab active" onclick="showTab('learn', this)" role="tab" aria-selected="true" aria-controls="tab-learn">&#128214; Learn</button>
+    <button class="rfp-tab" onclick="showTab('showme', this)" role="tab" aria-selected="false" aria-controls="tab-showme">&#128269; Show Me</button>
+    <button class="rfp-tab" onclick="showTab('test', this)" role="tab" aria-selected="false" aria-controls="tab-test">&#9999;&#65039; Test Yourself</button>
+  </div>
+
+  <!-- LEARN -->
+  <div id="tab-learn" class="rfp-panel active" role="tabpanel">
+
+    <div class="learn-section">
+      <h2><span class="section-num">1</span> What You Are Doing When You Accept</h2>
+      <div class="learn-body">
+        <p>When a contracting officer's representative (COR) accepts an invoice in Wide Area Workflow (WAWF), the COR is not just passing paperwork along. Acceptance is the government acknowledging that the supplies or services conform to the contract's quality and quantity requirements (FAR 46.501). It is what lets the payment office pay.</p>
+        <p>Acceptance belongs to the contracting officer (FAR 46.502). Many CORs are authorized to perform it, and your appointment letter says whether you are. If it does not say, ask the CO before you accept anything.</p>
+        <p>Your review answers three questions:</p>
+        <ol>
+          <li><strong>Did it happen?</strong> The supplies arrived or the services were performed, in the quantity billed, for the period billed.</li>
+          <li><strong>Did it meet the contract?</strong> Your surveillance records support acceptance, or they show problems the CO needs to know about.</li>
+          <li><strong>Is the bill right?</strong> The contract line item, price, period, and math match the contract as it stands today, including every modification.</li>
+        </ol>
+        <div class="highlight-box">
+          <strong>Your surveillance is your invoice review.</strong> If you have been documenting performance all month, the invoice check takes minutes. If you have not, you are being asked to confirm work you have no record of. See <a href="cor-surveillance.html">Surveillance That Actually Works</a>.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> WAWF, PIEE, and MyInvoice</h3>
+      <div class="learn-body">
+        <p>In DoD, invoicing runs through the Procurement Integrated Enterprise Environment (PIEE). The contractor submits the invoice in WAWF, it routes through government reviewers, and it goes to the payment office. Other agencies use their own systems, but the review itself works the same way.</p>
+        <p>The table below lays out the WAWF roles an invoice usually passes through. Your contract's WAWF payment instructions (usually in Section G or the contract administration section) list who fills each role on this contract.</p>
+        <table class="rfp-table">
+          <thead><tr><th>WAWF role</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Inspector</strong></td><td>Confirms the supplies or services were inspected. On many services contracts the acceptor does this too.</td></tr>
+            <tr><td><strong>Acceptor</strong></td><td>Accepts or rejects the document on the government's behalf. On services contracts this is usually the COR.</td></tr>
+            <tr><td><strong>Local Processing Official (LPO)</strong></td><td>When the contract routes through one, reviews the document before it goes to the payment office.</td></tr>
+            <tr><td><strong>Payment office</strong></td><td>Pays a proper, accepted invoice. In DoD this is usually the Defense Finance and Accounting Service (DFAS).</td></tr>
+          </tbody>
+        </table>
+        <p>The document type also matters. A <strong>2-in-1</strong> is an invoice and receiving report together, used for services. A <strong>Combo</strong> (Invoice and Receiving Report) is used for supplies that ship. The contract's WAWF payment instructions name the right type; a mismatch is a reason to reject.</p>
+        <div class="highlight-box tip">
+          <strong>Payment status: use MyInvoice.</strong> Once an invoice leaves your queue, WAWF shows where the document is in routing. For where the <em>payment</em> stands, the MyInvoice application in PIEE typically shows it: scheduled, paid, or held. When a contractor asks "where's my money," checking WAWF and then MyInvoice usually answers it. Point the contractor there too; they can see their own invoices.
+        </div>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> The Clocks</h3>
+      <div class="learn-body">
+        <p>An invoice in your queue is on a timer, and the timer keeps running whether you act or not. The Prompt Payment rules in FAR Subpart 32.9 set the clocks. The table below lays out the ones that touch your review.</p>
+        <table class="rfp-table">
+          <thead><tr><th>Clock</th><th>Rule</th><th>What it means for you</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Payment due date</strong></td><td>The later of the 30th day after the billing office receives a proper invoice, or the 30th day after government acceptance (FAR 32.904(b)(1)).</td><td>The government pays interest if it pays late. Your acceptance is usually the long pole.</td></tr>
+            <tr><td><strong>Constructive acceptance</strong></td><td>For computing interest only, acceptance is deemed to happen on the 7th day after the contractor delivers or performs, unless there is a disagreement over quantity, quality, or contract compliance (FAR 32.904(b)(1)(ii)(B)).</td><td>Sitting on a clean invoice does not stop the clock. If you have a real problem with the work, raise it; that is what stops constructive acceptance.</td></tr>
+            <tr><td><strong>Improper invoice</strong></td><td>The billing office has to return an improper invoice with the reasons within 7 days after receipt (FAR 32.905(b)(3)). If it is late, the due date is adjusted for interest purposes.</td><td>When an invoice is wrong, reject it promptly with a clear reason. Holding a bad invoice while you think about it costs the government.</td></tr>
+            <tr><td><strong>Receiving report</strong></td><td>The receiving official should forward the receiving report to the payment office by the 5th working day after government acceptance (FAR 32.905(c)).</td><td>In WAWF, accepting the document does this. Accept promptly once you have checked it.</td></tr>
+          </tbody>
+        </table>
+        <p>Interest is not owed on delays caused by a disagreement over the amount, contract compliance, or amounts withheld under the contract (FAR 32.907(d)). That is the line: a real dispute stops interest; slow processing does not. A temporary lack of funds does not excuse interest either (FAR 32.907(f)).</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> Before the First Invoice Arrives</h3>
+      <div class="learn-body">
+        <p>Set up once, and every review after that is fast. Keep these handy:</p>
+        <ul>
+          <li><strong>The schedule of line items.</strong> Each contract line item number (CLIN), its quantity, unit, unit price, and period. Note which CLINs are options.</li>
+          <li><strong>Every modification.</strong> Price changes, exercised options, added or removed work. An invoice priced from the original award after a modification changed the price is wrong.</li>
+          <li><strong>Payment terms.</strong> Monthly in arrears, per delivery, per milestone. The contract says when the contractor can bill.</li>
+          <li><strong>The WAWF payment instructions.</strong> Document type and routing codes.</li>
+          <li><strong>Your surveillance records</strong> for the period, organized so you can find a given week quickly.</li>
+        </ul>
+        <p>A simple running log of each invoice (number, period, CLIN, amount, date received, date accepted or rejected, and why) makes duplicates and pattern problems easy to spot and gives the CO a clean history if questions come up later.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">5</span> The Line-by-Line Check</h3>
+      <div class="learn-body">
+        <p>The table below lays out what to compare on every invoice and where the answer comes from.</p>
+        <table class="rfp-table">
+          <thead><tr><th>Check</th><th>Compare against</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Contract and order number</strong></td><td>Your contract. Right contract, right order.</td></tr>
+            <tr><td><strong>CLIN</strong></td><td>The schedule. Billed to the CLIN that covers this work and this period, not the next option year's CLIN or a different task.</td></tr>
+            <tr><td><strong>Option status</strong></td><td>Modifications. Option CLINs can be billed only after the option is exercised.</td></tr>
+            <tr><td><strong>Period or delivery date</strong></td><td>The payment terms and your records. Not billed ahead of performance unless the contract allows it.</td></tr>
+            <tr><td><strong>Quantity</strong></td><td>What was actually delivered or performed, per your records.</td></tr>
+            <tr><td><strong>Unit price</strong></td><td>The schedule as modified.</td></tr>
+            <tr><td><strong>Math</strong></td><td>Quantity times price, line totals, invoice total.</td></tr>
+            <tr><td><strong>Duplicates</strong></td><td>Your invoice log. Same period or same delivery billed twice, sometimes under a new invoice number.</td></tr>
+            <tr><td><strong>CLIN balance</strong></td><td>The CLIN's quantity and amount. Cumulative billing should not exceed it.</td></tr>
+            <tr><td><strong>Required attachments</strong></td><td>Whatever the contract requires with the invoice: timesheets, delivery tickets, reports.</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin-top:1.4rem;">Contract type changes the review</h3>
+        <ul>
+          <li><strong>Firm-fixed-price services.</strong> The price covers the work in the PWS for the period. The question is whether the work was performed and met the standards. If your records show required work was not performed, that goes to the CO before you accept; the CO decides whether a reduction or other remedy applies.</li>
+          <li><strong>Supplies.</strong> Count what arrived, check its condition, and compare it to what was ordered. Billing for 50 when 48 arrived is a quantity problem.</li>
+          <li><strong>Time-and-materials or labor-hour.</strong> The government pays for hours, so the hours need support. Check hours against timesheets or sign-in records, labor categories against the contract, and rates against the schedule. Identical round hours every week for every person is worth a closer look.</li>
+          <li><strong>Cost-reimbursement.</strong> Vouchers follow their own process, often with the Defense Contract Audit Agency (DCAA) and an administrative contracting officer involved. Your appointment letter will say what the CO wants from you, often a check that the work billed was actually being performed.</li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">6</span> Accept, Reject, or Call the CO</h3>
+      <div class="learn-body">
+        <p>Every invoice ends in one of three places. The table below sorts the common situations.</p>
+        <table class="rfp-table">
+          <thead><tr><th>Situation</th><th>Your move</th></tr></thead>
+          <tbody>
+            <tr><td>Everything checks, and your records support the work</td><td><strong>Accept</strong>, promptly.</td></tr>
+            <tr><td>Clerical problem: wrong CLIN, wrong period, math error, wrong document type, missing required attachment</td><td><strong>Reject</strong> in WAWF with a specific reason so the contractor can fix and resubmit.</td></tr>
+            <tr><td>Billed quantity is more than was delivered or performed</td><td><strong>Reject</strong> with the quantity your records show, and keep the CO informed.</td></tr>
+            <tr><td>Duplicate of an invoice already paid or in process</td><td><strong>Reject</strong> and cite the earlier invoice number.</td></tr>
+            <tr><td>Option CLIN billed before the option was exercised</td><td><strong>Reject</strong> and tell the CO, since work may have started outside the contract.</td></tr>
+            <tr><td>Work was performed but did not meet the standard, or some required work was not performed</td><td><strong>Call the CO</strong> before acting. Remedies on nonconforming work are the CO's decision.</td></tr>
+            <tr><td>Contractor and you disagree on what the contract requires or what is owed</td><td><strong>Call the CO.</strong> Do not negotiate the amount.</td></tr>
+            <tr><td>The invoice looks right but the CLIN does not have enough money left</td><td><strong>Call the CO.</strong> Funding is a contract action.</td></tr>
+          </tbody>
+        </table>
+
+        <div class="highlight-box amber">
+          <strong>What a COR does not do with an invoice.</strong> FAR 1.404(d) says a COR has no authority to make commitments or changes that affect price, quality, quantity, delivery, or other terms. In invoice terms: you do not agree to a reduced amount, approve billing for work outside the contract, accept now in exchange for a fix later, or hold a correct invoice as leverage on some other issue. Each of those either changes the deal or misuses acceptance.
+        </div>
+
+        <p><strong>Write rejection reasons the contractor can act on.</strong> "Incorrect" sends the invoice right back the same way. "Invoice bills CLIN 1001 (Option Year 1). Period billed is Oct 2026, which falls under base year CLIN 0001. Resubmit against CLIN 0001." gets it fixed on the next try. Rejection comments are visible to the contractor, so stick to facts.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">7</span> After You Accept</h3>
+      <div class="learn-body">
+        <ul>
+          <li><strong>Keep the record.</strong> Note in your invoice log what you accepted and which surveillance records support it.</li>
+          <li><strong>Watch for the bounce-back.</strong> An invoice can be rejected downstream by the LPO or the payment office. If it comes back to your queue, check the reason before re-acting on it.</li>
+          <li><strong>Payment questions.</strong> Check WAWF for routing status and MyInvoice for payment status. If it is sitting at the payment office past the due date, tell the CO and point the contractor to the payment office's customer service. Do not promise a payment date you do not control.</li>
+          <li><strong>If you accepted something you should not have,</strong> tell the CO right away. Acceptance mistakes are fixable early and harder to fix later.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- end learn panel -->
+
+  <!-- SHOW ME -->
+  <div id="tab-showme" class="rfp-panel" role="tabpanel">
+
+    <div class="learn-section">
+      <h2><span class="section-num">1</span> A Sample Invoice</h2>
+      <div class="learn-body">
+        <p>This is a fictional invoice for the custodial contract used in <a href="cor-surveillance.html">Surveillance That Actually Works</a>. The contract is firm-fixed-price, billed monthly in arrears. The base year runs 1 Oct 2026 to 30 Sep 2027 under CLIN 0001 at $18,400 per month. Modification P00002 added Building 30 starting 1 Nov 2026 under CLIN 0002 at $2,100 per month. The table below shows the invoice as the contractor submitted it as a 2-in-1 in WAWF.</p>
+        <table class="rfp-table">
+          <thead><tr><th>Line</th><th>CLIN</th><th>Description</th><th>Qty</th><th>Unit price</th><th>Amount</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>0001</td><td>Custodial services, base year, Nov 2026</td><td>1 MO</td><td>$18,400.00</td><td>$18,400.00</td></tr>
+            <tr><td>2</td><td>0002</td><td>Custodial services, Building 30, Nov 2026</td><td>1 MO</td><td>$2,400.00</td><td>$2,400.00</td></tr>
+            <tr><td>3</td><td>0001</td><td>Custodial services, base year, Dec 2026</td><td>1 MO</td><td>$18,400.00</td><td>$18,400.00</td></tr>
+            <tr><td></td><td></td><td><strong>Total</strong></td><td></td><td></td><td><strong>$39,200.00</strong></td></tr>
+          </tbody>
+        </table>
+        <p>The invoice is dated 2 Dec 2026 and arrives in the COR's queue the same day.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">2</span> The Review</h3>
+      <div class="learn-body">
+        <ul>
+          <li><strong>Line 1 checks out.</strong> Right CLIN, right period, price matches. The COR's November surveillance records show the work performed and within the acceptable quality levels.</li>
+          <li><strong>Line 2 has the wrong price.</strong> P00002 priced Building 30 at $2,100 per month. The invoice says $2,400.</li>
+          <li><strong>Line 3 is billed ahead of performance.</strong> The contract bills monthly in arrears, and December has barely started.</li>
+          <li><strong>The math checks out for what was billed</strong> ($18,400 + $2,400 + $18,400 = $39,200), but two of the three lines are wrong, so the total is too.</li>
+        </ul>
+        <p>Both problems are clerical: the invoice does not match the contract. That makes this a rejection with specific reasons, not a call to negotiate.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">3</span> The Rejection Comment</h3>
+      <div class="learn-body">
+        <p>The table below compares a weak rejection comment with a strong one.</p>
+        <table class="rfp-table">
+          <thead><tr><th>Weak</th><th>Strong</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>"Invoice incorrect, please fix."</td>
+              <td>"Rejected 2 Dec 2026. (1) Line 2, CLIN 0002: unit price per Modification P00002 is $2,100.00/MO, invoice shows $2,400.00. (2) Line 3: contract is billed monthly in arrears; Dec 2026 services may be invoiced after 31 Dec 2026. Line 1 (CLIN 0001, Nov 2026) is acceptable. Resubmit lines 1 and 2 with corrected price; total $20,500.00."</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>The strong version names each problem, cites where the right answer comes from, says what was fine, and tells the contractor exactly what a corrected invoice looks like. It also goes out the same day, well inside the 7-day window for returning an improper invoice.</p>
+      </div>
+    </div>
+
+    <hr class="learn-divider" />
+
+    <div class="learn-section">
+      <h3><span class="section-num">4</span> A Variation That Goes to the CO</h3>
+      <div class="learn-body">
+        <p>Now suppose the invoice is clean: just Line 1 for November at $18,400. But the COR's records show Building 20's exterior trash was missed twice in November, the acceptable quality level was exceeded, and the CO issued a Contract Discrepancy Report.</p>
+        <p>The COR does not accept on autopilot, and does not knock a number off on the COR's own. The COR tells the CO the invoice is in the queue, sends the surveillance records for the misses, and asks how the CO wants to handle acceptance. Because there is a real disagreement over contract compliance, constructive acceptance does not run while it is resolved. Whatever the CO decides, the COR's records are what support it.</p>
+      </div>
+    </div>
+
+  </div><!-- end showme panel -->
+
+  <!-- TEST -->
+  <div id="tab-test" class="rfp-panel" role="tabpanel">
+
+    <div class="learn-section">
+      <h3><span class="section-num">&#9989;</span> Test Yourself</h3>
+      <div class="learn-body">
+        <p>Five scenarios on invoice review. Pick the best answer and check it.</p>
+      </div>
+
+      <div class="quiz-scenario">
+        <div class="quiz-scenario-head">
+          <div class="quiz-scenario-num">Question 1 &bull; The Clock</div>
+          <div class="quiz-scenario-title">A clean invoice in your queue.</div>
+        </div>
+        <div class="quiz-scenario-body">
+          <p>A clean invoice for last month's services lands in the COR's WAWF queue. The COR's records show the work was performed to standard. The COR is busy and plans to get to it in two or three weeks, figuring the 30-day payment clock only starts when the COR accepts. Is that right?</p>
+          <div class="quiz-options" id="q1-options">
+            <label class="quiz-option" onclick="selectQuiz(1, 'a', this)">
+              <input type="radio" name="q1" value="a" />
+              <span><strong>A.</strong> Yes. Nothing runs until the COR accepts.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(1, 'b', this)">
+              <input type="radio" name="q1" value="b" />
+              <span><strong>B.</strong> No. For interest purposes, acceptance is deemed to happen on the 7th day after performance when there is no disagreement, so the delay can cost the government interest.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(1, 'c', this)">
+              <input type="radio" name="q1" value="c" />
+              <span><strong>C.</strong> Yes, as long as the contract is firm-fixed-price.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(1, 'd', this)">
+              <input type="radio" name="q1" value="d" />
+              <span><strong>D.</strong> No, the COR must accept within 24 hours.</span>
+            </label>
+          </div>
+          <button class="quiz-submit-btn" onclick="submitQuiz(1, 'b')">Check Answer</button>
+          <div class="quiz-feedback" id="q1-feedback"></div>
+        </div>
+      </div>
+
+      <div class="quiz-scenario">
+        <div class="quiz-scenario-head">
+          <div class="quiz-scenario-num">Question 2 &bull; Option CLINs</div>
+          <div class="quiz-scenario-title">Billing against an option.</div>
+        </div>
+        <div class="quiz-scenario-body">
+          <p>The base year ends 30 September. On 3 October, an invoice arrives billing Option Year 1, CLIN 1001, for 1 to 2 October. The COR has not seen a modification exercising the option. What should the COR do?</p>
+          <div class="quiz-options" id="q2-options">
+            <label class="quiz-option" onclick="selectQuiz(2, 'a', this)">
+              <input type="radio" name="q2" value="a" />
+              <span><strong>A.</strong> Accept it. The contractor kept working, so the government owes for those days.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(2, 'b', this)">
+              <input type="radio" name="q2" value="b" />
+              <span><strong>B.</strong> Reject it, and tell the CO, since work may have been performed under an option that was not exercised.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(2, 'c', this)">
+              <input type="radio" name="q2" value="c" />
+              <span><strong>C.</strong> Accept it and ask the CO to backdate the option.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(2, 'd', this)">
+              <input type="radio" name="q2" value="d" />
+              <span><strong>D.</strong> Hold it until the option is exercised.</span>
+            </label>
+          </div>
+          <button class="quiz-submit-btn" onclick="submitQuiz(2, 'b')">Check Answer</button>
+          <div class="quiz-feedback" id="q2-feedback"></div>
+        </div>
+      </div>
+
+      <div class="quiz-scenario">
+        <div class="quiz-scenario-head">
+          <div class="quiz-scenario-num">Question 3 &bull; COR Authority</div>
+          <div class="quiz-scenario-title">The contractor offers a discount.</div>
+        </div>
+        <div class="quiz-scenario-body">
+          <p>The COR's records show the contractor missed several required services last month. The contractor's manager calls and says, "Just knock $500 off and accept it so we can move on." What should the COR do?</p>
+          <div class="quiz-options" id="q3-options">
+            <label class="quiz-option" onclick="selectQuiz(3, 'a', this)">
+              <input type="radio" name="q3" value="a" />
+              <span><strong>A.</strong> Agree. $500 is a fair estimate and it saves everyone time.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(3, 'b', this)">
+              <input type="radio" name="q3" value="b" />
+              <span><strong>B.</strong> Ask for $1,000 instead, since the misses were significant.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(3, 'c', this)">
+              <input type="radio" name="q3" value="c" />
+              <span><strong>C.</strong> Decline to negotiate, document the call, and send the invoice question and the surveillance records to the CO.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(3, 'd', this)">
+              <input type="radio" name="q3" value="d" />
+              <span><strong>D.</strong> Accept the full invoice and note the misses in next month's report.</span>
+            </label>
+          </div>
+          <button class="quiz-submit-btn" onclick="submitQuiz(3, 'c')">Check Answer</button>
+          <div class="quiz-feedback" id="q3-feedback"></div>
+        </div>
+      </div>
+
+      <div class="quiz-scenario">
+        <div class="quiz-scenario-head">
+          <div class="quiz-scenario-num">Question 4 &bull; Rejection Comments</div>
+          <div class="quiz-scenario-title">Writing the reason.</div>
+        </div>
+        <div class="quiz-scenario-body">
+          <p>An invoice bills the right CLIN and period but uses a unit price from before Modification P00003 lowered it. Which rejection comment is best?</p>
+          <div class="quiz-options" id="q4-options">
+            <label class="quiz-option" onclick="selectQuiz(4, 'a', this)">
+              <input type="radio" name="q4" value="a" />
+              <span><strong>A.</strong> "Wrong price."</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(4, 'b', this)">
+              <input type="radio" name="q4" value="b" />
+              <span><strong>B.</strong> "Line 1 unit price shows $4,250.00. Modification P00003 changed CLIN 0003 to $3,980.00 effective 1 Nov 2026. Resubmit at $3,980.00."</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(4, 'c', this)">
+              <input type="radio" name="q4" value="c" />
+              <span><strong>C.</strong> "Please call me to discuss your pricing."</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(4, 'd', this)">
+              <input type="radio" name="q4" value="d" />
+              <span><strong>D.</strong> "Rejected per CO."</span>
+            </label>
+          </div>
+          <button class="quiz-submit-btn" onclick="submitQuiz(4, 'b')">Check Answer</button>
+          <div class="quiz-feedback" id="q4-feedback"></div>
+        </div>
+      </div>
+
+      <div class="quiz-scenario">
+        <div class="quiz-scenario-head">
+          <div class="quiz-scenario-num">Question 5 &bull; Payment Status</div>
+          <div class="quiz-scenario-title">Where is my money?</div>
+        </div>
+        <div class="quiz-scenario-body">
+          <p>A contractor emails the COR: the invoice was accepted three weeks ago and still has not been paid. What is the most useful first step?</p>
+          <div class="quiz-options" id="q5-options">
+            <label class="quiz-option" onclick="selectQuiz(5, 'a', this)">
+              <input type="radio" name="q5" value="a" />
+              <span><strong>A.</strong> Tell the contractor payment will come by the end of the week.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(5, 'b', this)">
+              <input type="radio" name="q5" value="b" />
+              <span><strong>B.</strong> Check the document status in WAWF, then check MyInvoice in PIEE for payment status, and share what you find.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(5, 'c', this)">
+              <input type="radio" name="q5" value="c" />
+              <span><strong>C.</strong> Re-accept the invoice to push it through again.</span>
+            </label>
+            <label class="quiz-option" onclick="selectQuiz(5, 'd', this)">
+              <input type="radio" name="q5" value="d" />
+              <span><strong>D.</strong> Tell the contractor it is not the COR's problem.</span>
+            </label>
+          </div>
+          <button class="quiz-submit-btn" onclick="submitQuiz(5, 'b')">Check Answer</button>
+          <div class="quiz-feedback" id="q5-feedback"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end test panel -->
+
+</div><!-- end rfp-bg -->
+
+</main>
+
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-kthq">KTHQ</span>
+      <span class="footer-tagline">ContractingHQ &mdash; Built by practitioners, for practitioners.</span>
+    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="index.html">Home</a>
+      <a href="training.html">Training</a>
+      <a href="gao-decisions.html">GAO Decisions</a>
+      <a href="tools.html">Tools</a>
+      <a href="federal-register.html">FAR Updates</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">Not affiliated with the U.S. Air Force, Department of Defense, or any government agency. For educational purposes only.</p>
+    <p class="footer-copy">&copy; 2026 ContractingHQ. All rights reserved.</p>
+    <div id="gc-stats" style="margin-top:.6rem;font-size:.72rem;color:#555;letter-spacing:.3px;"></div>
+  </div>
+</footer>
+
+<script>
+  /* tab switching */
+  function showTab(name, btn) {
+    document.querySelectorAll('.rfp-panel').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.rfp-tab').forEach(function(b){ b.classList.remove('active'); });
+    var panel = document.getElementById('tab-' + name);
+    if (panel) panel.classList.add('active');
+    if (btn) btn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* quiz logic */
+  var quizAnswers = {};
+
+  function selectQuiz(num, val, el) {
+    quizAnswers[num] = val;
+    var options = document.querySelectorAll('#q' + num + '-options .quiz-option');
+    options.forEach(function(o){ o.classList.remove('selected'); });
+    el.classList.add('selected');
+  }
+
+  function submitQuiz(num, correctAnswer) {
+    if (!quizAnswers[num]) {
+      alert('Select an answer first.');
+      return;
+    }
+    var fb = document.getElementById('q' + num + '-feedback');
+    var isCorrect = quizAnswers[num] === correctAnswer;
+
+    var feedbackText = {
+      1: {
+        correct: '<strong>Correct.</strong> FAR 32.904(b)(1)(ii)(B) deems acceptance to occur on the 7th day after the contractor delivers or performs, for computing interest, unless there is a disagreement over quantity, quality, or contract compliance. A clean invoice sitting in a queue still ages.',
+        wrong: '<strong>Not quite.</strong> The correct answer is B. Constructive acceptance means the clock runs whether or not the COR acts (A, C). There is no 24-hour rule (D); the point is to act promptly, and to raise a real problem if there is one.'
+      },
+      2: {
+        correct: '<strong>Correct.</strong> Option CLINs can be billed only after the option is exercised. If it was not, the invoice is improper and the CO needs to know right away, because work may have continued without a contract to cover it.',
+        wrong: '<strong>Not quite.</strong> The correct answer is B. Accepting (A, C) acknowledges work under a line that is not yet part of the contract and decides something only the CO can sort out. Holding it (D) lets the 7-day improper-invoice window run out.'
+      },
+      3: {
+        correct: '<strong>Correct.</strong> Agreeing to an amount changes the price, which FAR 1.404(d) puts outside a COR\'s authority. Remedies for work not performed are the CO\'s call. The COR\'s job is to get the facts and the records to the CO.',
+        wrong: '<strong>Not quite.</strong> The correct answer is C. Negotiating any amount (A, B) is a price change the COR cannot make. Accepting in full (D) acknowledges conforming performance the COR\'s own records contradict.'
+      },
+      4: {
+        correct: '<strong>Correct.</strong> A good rejection names the line, the correct figure, where it comes from, and what a corrected invoice should show. The contractor can fix it in one pass.',
+        wrong: '<strong>Not quite.</strong> The correct answer is B. The others (A, C, D) give the contractor nothing to act on, which usually means another wrong invoice and more time lost.'
+      },
+      5: {
+        correct: '<strong>Correct.</strong> WAWF shows where the document is in routing, and MyInvoice typically shows where the payment stands. If it is stuck at the payment office past the due date, loop in the CO and point the contractor to the payment office\'s customer service.',
+        wrong: '<strong>Not quite.</strong> The correct answer is B. Promising a date (A) commits to something you do not control. There is no re-accept shortcut (C). Brushing it off (D) helps nobody; a quick status check usually answers the question.'
+      }
+    };
+
+    var text = isCorrect ? feedbackText[num].correct : feedbackText[num].wrong;
+    fb.innerHTML = text;
+    fb.className = 'quiz-feedback shown ' + (isCorrect ? 'right' : 'wrong');
+
+    var options = document.querySelectorAll('#q' + num + '-options .quiz-option');
+    options.forEach(function(o){
+      var radio = o.querySelector('input[type=radio]');
+      if (radio.value === correctAnswer) {
+        o.classList.add('correct-answer');
+      } else if (radio.value === quizAnswers[num] && !isCorrect) {
+        o.classList.add('wrong-answer');
+      }
+    });
+  }
+</script>
+<script src="main.js"></script>
+<script src="player.js?v=20261110-r2"></script>
+<script data-goatcounter="https://nhazelett.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+(function(){
+  var el = document.getElementById('gc-stats');
+  if (!el) return;
+  var x = new XMLHttpRequest();
+  x.onreadystatechange = function(){
+    if (x.readyState === 4 && x.status === 200) {
+      try {
+        var d = JSON.parse(x.responseText);
+        el.innerHTML = 'Site Visits: <strong style="color:#8a9bb0;">' + d.count + '</strong>';
+      } catch(e){}
+    }
+  };
+  x.open('GET', 'https://nhazelett.goatcounter.com/counter/TOTAL.json');
+  x.send();
+})();
+</script>
+
+</body>
+</html>
